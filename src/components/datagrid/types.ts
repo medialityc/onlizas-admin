@@ -1,0 +1,34 @@
+import { DataTableColumn } from "mantine-datatable";
+import { PaginatedResponse } from "@/types/common";
+import { SearchParams } from "@/types/fetch/request";
+
+export interface DataGridProps<T> {
+  data?: PaginatedResponse<T>;
+  simpleData?: T[]; // For simple data without pagination
+  columns: DataTableColumn<T>[];
+  searchParams?: SearchParams;
+  onSearchParamsChange?: (params: SearchParams) => void;
+  searchPlaceholder?: string;
+  enableSearch?: boolean;
+  enablePagination?: boolean;
+  enableSorting?: boolean;
+  enableColumnToggle?: boolean; // New prop for column visibility toggle
+  minHeight?: number;
+  className?: string;
+  emptyText?: string;
+  onCreate?: () => void;
+  createLoading?: boolean; // Optional prop for create button loading state
+  createText?: string; // Optional prop for create button text
+  // Props for additional components
+  leftActions?: React.ReactNode;
+  rightActions?: React.ReactNode;
+  customActions?: React.ReactNode;
+}
+
+export interface ColumnSelectorProps<T> {
+  columns: DataTableColumn<T>[];
+  hiddenColumns: string[];
+  onToggleColumn: (columnAccessor: string) => void;
+  isOpen: boolean;
+  onToggle: () => void;
+}

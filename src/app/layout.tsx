@@ -1,0 +1,86 @@
+import type { Metadata, Viewport } from "next";
+import { Nunito } from "next/font/google";
+// 👇 Import the mantine-core layer CSS file;
+//    this will automatically place it in a `mantine` layer
+
+import "@mantine/core/styles.layer.css";
+
+// 👇 Import the mantine-datatable layer CSS file;
+//    this will automatically place it in a `mantine-datatable` layer
+import "mantine-datatable/styles.layer.css";
+
+import ProviderComponent from "@/layouts/provider-component";
+import { ThemeProvider } from "next-themes";
+import { ToastContainer } from "react-toastify";
+import "./styles/tailwind.css";
+
+const nunito = Nunito({
+  weight: ["400", "500", "600", "700", "800"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-nunito",
+});
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
+export const metadata: Metadata = {
+  title: "ZAS Express | Panel de Administración",
+  description:
+    "Panel de administración para el sistema ZAS - Gestión de usuarios, subsistemas, seguimiento y configuraciones del sistema.",
+  keywords: [
+    "ZAS",
+    "admin",
+    "panel",
+    "administración",
+    "usuarios",
+    "seguimiento",
+    "subsistemas",
+  ],
+  authors: [{ name: "ZAS Team" }],
+  creator: "ZAS Team",
+  applicationName: "ZAS Express",
+  generator: "Next.js",
+  robots: "noindex, nofollow", // Admin panel should not be indexed
+  icons: {
+    icon: "/favicon.png",
+  },
+  openGraph: {
+    type: "website",
+    title: "ZAS Express | Panel de Administración",
+    description:
+      "Panel de administración para el sistema ZAS - Gestión completa del sistema.",
+    siteName: "ZAS Express",
+  },
+  twitter: {
+    card: "summary",
+    title: "ZAS Express | Panel de Administración",
+    description:
+      "Panel de administración para el sistema ZAS - Gestión completa del sistema.",
+  },
+};
+
+export default async function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html suppressHydrationWarning>
+      <body className={nunito.variable}>
+        <ProviderComponent>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            disableTransitionOnChange
+          >
+            {children}
+            <ToastContainer />
+          </ThemeProvider>
+        </ProviderComponent>
+      </body>
+    </html>
+  );
+}
