@@ -8,15 +8,10 @@ import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
-import {
-  Category,
-  CreateCategory,
-  GetAllCategories,
-  UpdateCategory,
-} from "@/types/categories";
+import { Category, GetAllCategories } from "@/types/categories";
 
 export async function createCategory(
-  data: CreateCategory
+  data: FormData
 ): Promise<ApiResponse<Category>> {
   const res = await nextAuthFetch({
     url: backendRoutes.categories.create,
@@ -58,7 +53,7 @@ export async function getAllCategories(
     url,
     method: "GET",
     useAuth: true,
-    next: { tags: ["categories"], revalidate: 3600 },
+    next: { tags: ["categories"] },
   });
 
   if (!res.ok) return handleApiServerError(res);
@@ -68,14 +63,11 @@ export async function getAllCategories(
 
 export async function updateCategory(
   id: string | number,
-  data: UpdateCategory
+  data: FormData
 ): Promise<ApiResponse<Category>> {
   const res = await nextAuthFetch({
     url: backendRoutes.categories.update(id),
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
     data,
     useAuth: true,
   });

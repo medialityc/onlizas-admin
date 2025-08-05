@@ -34,7 +34,7 @@ export async function getAllUsers(
     url,
     method: "GET",
     useAuth: true,
-    next: { tags: ["users"], revalidate: 3600 },
+    next: { tags: ["users"] },
   });
 
   if (!res.ok) return handleApiServerError(res);
@@ -206,7 +206,7 @@ export async function getUserDocuments(
     url: backendRoutes.users.getDocuments(id),
     method: "GET",
     useAuth: true,
-    next: { tags: [`user-documents-${id}`], revalidate: 3600 },
+    next: { tags: [`user-documents-${id}`] },
   });
 
   if (!res.ok) return handleApiServerError(res);

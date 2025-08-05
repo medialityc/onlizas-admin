@@ -1,12 +1,12 @@
 import CategoriesModal from "./categories-modal";
 import { CategoriesDetailsModal } from "./categories-details-modal";
-import { Categorie } from "@/types/categories";
+import { Category } from "@/types/categories";
 
 interface CategoriesModalProps {
   open: boolean;
   onClose: () => void;
   onSuccess?: () => void;
-  category?: Categorie;
+  category?: Category;
   isDetailsView?: boolean;
 }
 

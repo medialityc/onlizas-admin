@@ -28,7 +28,7 @@ export async function getAllRoles(
     url,
     method: "GET",
     useAuth: true,
-    next: { tags: ["roles"], revalidate: 3600 },
+    next: { tags: ["roles"] },
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<GetAllRolesResponse>(res);
@@ -43,7 +43,7 @@ export async function createRole(
     data,
     useAuth: true,
   });
-  
+
   if (!res.ok) return handleApiServerError(res);
   revalidateTag("roles");
   return buildApiResponseAsync<CreateRoleResponse>(res);

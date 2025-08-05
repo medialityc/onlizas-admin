@@ -1,11 +1,9 @@
 import { paths } from "@/config/paths";
-import { ArchiveBoxIcon } from "@heroicons/react/24/outline";
+import { ArchiveBoxIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import {
   BookOpenIcon,
   CubeIcon,
-  LockClosedIcon,
-  ShieldCheckIcon,
-  UserCircleIcon,
+  CurrencyDollarIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "./types";
 
@@ -27,16 +25,23 @@ export const sidebarSections: SidebarSection[] = [
   {
     id: "financial",
     label: "Gestión Financiera",
-    items: [],
+    items: [
+      {
+        id: "currencies",
+        label: "Monedas",
+        path: paths.dashboard.currencies.list,
+        icon: <CurrencyDollarIcon className="h-4 w-4" />,
+      },
+    ],
   },
   {
     id: "catalog",
     label: "Catálogo",
     items: [
       {
-        id: "products",
-        label: "Productos",
-        path: paths.dashboard.products.list,
+        id: "departments",
+        label: "Departamentos",
+        path: paths.dashboard.departments.list,
         icon: <ArchiveBoxIcon className="h-4 w-4" />,
       },
       {
@@ -48,29 +53,41 @@ export const sidebarSections: SidebarSection[] = [
     ],
   },
   {
-    id: "administration",
-    label: "Administración",
+    id: "logistics",
+    label: "Logística",
     items: [
       {
-        id: "users",
-        label: "Usuarios",
-        path: paths.dashboard.users.list,
+        id: "suppliers",
+        label: "Proveedores",
+        path: paths.dashboard.suppliers.list,
         icon: <UserCircleIcon className="h-4 w-4" />,
-      },
-      {
-        id: "roles",
-        label: "Roles",
-        path: paths.dashboard.roles.list,
-        icon: <ShieldCheckIcon className="h-4 w-4" />,
-      },
-      {
-        id: "permissions",
-        label: "Permisos",
-        path: paths.dashboard.permissions.list,
-        icon: <LockClosedIcon className="h-4 w-4" />,
       },
     ],
   },
+  // {
+  //   id: "administration",
+  //   label: "Administración",
+  //   items: [
+  //     {
+  //       id: "users",
+  //       label: "Usuarios",
+  //       path: paths.dashboard.users.list,
+  //       icon: <UserCircleIcon className="h-4 w-4" />,
+  //     },
+  //     {
+  //       id: "roles",
+  //       label: "Roles",
+  //       path: paths.dashboard.roles.list,
+  //       icon: <ShieldCheckIcon className="h-4 w-4" />,
+  //     },
+  //     {
+  //       id: "permissions",
+  //       label: "Permisos",
+  //       path: paths.dashboard.permissions.list,
+  //       icon: <LockClosedIcon className="h-4 w-4" />,
+  //     },
+  //   ],
+  // },
 ];
 
 export const defaultExpandedSections = {

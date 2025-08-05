@@ -1,19 +1,13 @@
 import { z } from "zod";
 
 export const categoriesSchema = z.object({
-  department: z.object({
-    id: z
-      .number({ required_error: "El ID del departamento es obligatorio." })
-      .int("El ID del departamento debe ser un número entero.")
-      .positive("El ID del departamento debe ser un número positivo."),
-    name: z
-      .string({ required_error: "El nombre del departamento es obligatorio." })
-      .min(1, "El nombre del departamento no puede estar vacío.")
-      .max(
-        100,
-        "El nombre del departamento no puede tener más de 100 caracteres."
-      ),
-  }),
+  department: z.object(
+    {
+      id: z.number(),
+      name: z.string(),
+    },
+    { required_error: "Debes seleccionar un departamento." }
+  ),
   name: z
     .string({ required_error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")
@@ -22,10 +16,13 @@ export const categoriesSchema = z.object({
     .string({ required_error: "La descripción es obligatoria." })
     .min(1, "La descripción no puede estar vacía.")
     .max(500, "La descripción no puede tener más de 500 caracteres."),
-  image: z
-    .string({ required_error: "La imagen es obligatoria." })
-    .min(1, "La URL de la imagen no puede estar vacía.")
-    .url("Debe ser una URL válida para la imagen."),
+  image: z.union(
+    [
+      z.string().url("Debe ser una URL válida para la imagen."),
+      z.instanceof(File, { message: "Debe ser un archivo válido." }),
+    ],
+    { required_error: "La imagen es obligatoria." }
+  ),
   isActive: z.boolean({ required_error: "El estado activo es obligatorio." }),
 });
 

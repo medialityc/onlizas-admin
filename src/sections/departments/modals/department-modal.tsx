@@ -8,7 +8,7 @@ import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { DepartmentFormData, departmentSchema } from "./department-schema";
@@ -16,6 +16,7 @@ import { Department } from "@/types/departments";
 import { createDepartment, updateDepartment } from "@/services/department";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import RHFCheckbox from "@/components/react-hook-form/rhf-checkbox";
+import { urlToFile, isValidUrl } from "@/utils/format";
 
 interface ModalProps {
   open: boolean;
@@ -33,17 +34,39 @@ export default function DepartmentModal({
   onSuccess,
 }: ModalProps) {
   const [error, setError] = useState<string | null>(null);
+  const [loadingImage, setLoadingImage] = useState(false);
   const queryClient = useQueryClient();
 
   const methods = useForm<DepartmentFormData>({
     resolver: zodResolver(departmentSchema),
     defaultValues: {
       description: department?.description ?? "",
-      image: department?.image ?? "",
+      image: undefined,
       isActive: department?.isActive ?? true,
       name: department?.name ?? "",
     },
   });
+
+  useEffect(() => {
+    const loadImageFromUrl = async () => {
+      if (department?.image && isValidUrl(department.image)) {
+        setLoadingImage(true);
+        try {
+          const imageFile = await urlToFile(department.image);
+          methods.setValue("image", imageFile);
+        } catch (error) {
+          console.error("Error loading image from URL:", error);
+          // No mostrar toast aquí ya que es una carga inicial
+        } finally {
+          setLoadingImage(false);
+        }
+      }
+    };
+
+    if (open && department?.image) {
+      loadImageFromUrl();
+    }
+  }, [open, department?.image, methods]);
 
   const {
     reset,
@@ -60,10 +83,30 @@ export default function DepartmentModal({
     setError(null);
     let response;
     try {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      formData.append("isActive", String(data.isActive));
+
+      if (data.image) {
+        if (typeof data.image === "string" && isValidUrl(data.image)) {
+          try {
+            const imageFile = await urlToFile(data.image);
+            formData.append("image", imageFile);
+          } catch {
+            toast.error("Error al procesar la imagen desde URL");
+            return;
+          }
+        } else if (data.image instanceof File) {
+          // Already a File object
+          formData.append("image", data.image);
+        }
+      }
+
       if (department) {
-        response = await updateDepartment(department.id, data);
+        response = await updateDepartment(department.id, formData);
       } else {
-        response = await createDepartment(data);
+        response = await createDepartment(formData);
       }
 
       if (!response.error) {
@@ -110,7 +153,7 @@ export default function DepartmentModal({
         )}
 
         <FormProvider methods={methods} onSubmit={onSubmit}>
-          <div className="space-y-4">
+          <div className="space-y-4 w-full">
             {/* Name Input */}
             <RHFInputWithLabel
               name="name"
@@ -142,12 +185,29 @@ export default function DepartmentModal({
             </div>
 
             {/* Image URL Input */}
-            <RHFImageUpload name="image" label="URL de la Imagen" />
+            <div className="relative">
+              <RHFImageUpload
+                name="image"
+                label="URL de la Imagen"
+                variant="rounded"
+                size="full"
+                disabled={loadingImage}
+              />
+              {loadingImage && (
+                <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 flex items-center justify-center rounded-lg">
+                  <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                    <span>Cargando imagen...</span>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* IsActive Checkbox */}
             <RHFCheckbox
               name="isActive"
               id="isActive"
+              label="¿Está activo?"
               className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
             />
           </div>

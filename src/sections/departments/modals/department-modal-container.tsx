@@ -6,7 +6,7 @@ interface DepartmentsModalProps {
   open: boolean;
   onClose: () => void;
   onSuccess?: () => void;
-  department?: Department; // Optional if used for editing
+  department?: Department;
   isDetailsView?: boolean;
 }
 

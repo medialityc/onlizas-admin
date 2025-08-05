@@ -10,8 +10,9 @@ interface RHFImageUploadProps extends UseControllerProps {
   label?: string;
   defaultImage?: string;
   variant?: "square" | "rounded" | "circle";
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "full";
   className?: string;
+  disabled?: boolean;
 }
 
 export function RHFImageUpload({
@@ -20,6 +21,7 @@ export function RHFImageUpload({
   variant = "circle",
   size = "md",
   className,
+  disabled = false,
   ...props
 }: RHFImageUploadProps) {
   const { field, fieldState } = useController(props);
@@ -28,12 +30,28 @@ export function RHFImageUpload({
   const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
+    // Limpiar preview anterior si no hay valor
+    if (!field.value) {
+      setPreview(defaultImage || null);
+      return;
+    }
+
+    // Si el valor es un File, crear object URL
     if (field.value instanceof File) {
       const objectUrl = URL.createObjectURL(field.value);
       setPreview(objectUrl);
       return () => URL.revokeObjectURL(objectUrl);
     }
-  }, [field.value]);
+
+    // Si el valor es una string (URL), usarla directamente
+    if (typeof field.value === "string") {
+      setPreview(field.value);
+      return;
+    }
+
+    // Caso por defecto
+    setPreview(defaultImage || null);
+  }, [field.value, defaultImage]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -43,34 +61,44 @@ export function RHFImageUpload({
   };
 
   const handleClick = () => {
-    fileInputRef.current?.click();
+    if (!disabled) {
+      fileInputRef.current?.click();
+    }
   };
 
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
-    field.onChange(null);
-    setPreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+    if (!disabled) {
+      field.onChange(null);
+      setPreview(defaultImage || null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
+    if (!disabled) {
+      e.preventDefault();
+      setIsDragging(true);
+    }
   };
 
   const handleDragLeave = () => {
-    setIsDragging(false);
+    if (!disabled) {
+      setIsDragging(false);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
+    if (!disabled) {
+      e.preventDefault();
+      setIsDragging(false);
 
-    const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith("image/")) {
-      field.onChange(file);
+      const file = e.dataTransfer.files?.[0];
+      if (file && file.type.startsWith("image/")) {
+        field.onChange(file);
+      }
     }
   };
 
@@ -79,6 +107,7 @@ export function RHFImageUpload({
     sm: "w-24 h-24",
     md: "w-32 h-32",
     lg: "w-40 h-40",
+    full: "w-full h-40 min-h-40",
   };
 
   // Bordes según la variante
@@ -94,11 +123,12 @@ export function RHFImageUpload({
 
       <div
         className={cn(
-          "relative cursor-pointer border-2 border-dashed border-gray-300 flex flex-col items-center justify-center overflow-hidden transition-all",
+          "relative border-2 border-dashed border-gray-300 flex flex-col items-center justify-center overflow-hidden transition-all",
           sizeClasses[size],
           variantClasses[variant],
-          isDragging && "border-blue-500 bg-blue-50",
-          fieldState.error && "border-red-500"
+          isDragging && !disabled && "border-blue-500 bg-blue-50",
+          fieldState.error && "border-red-500",
+          disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"
         )}
         onClick={handleClick}
         onDragOver={handleDragOver}
@@ -110,26 +140,31 @@ export function RHFImageUpload({
             <Image
               src={preview}
               alt="Profile preview"
-              fill
-              className="object-cover"
+              width={200}
+              height={200}
+              className="w-full h-full object-cover"
             />
-            <button
-              type="button"
-              className="absolute top-1 right-1 bg-white rounded-full p-1 shadow-sm hover:bg-gray-100 transition-colors"
-              onClick={handleRemove}
-            >
-              <XMarkIcon className="text-gray-600 size-4" />
-            </button>
+            {!disabled && (
+              <button
+                type="button"
+                className="absolute top-1 right-1 bg-white rounded-full p-1 shadow-sm hover:bg-gray-100 transition-colors z-10"
+                onClick={handleRemove}
+              >
+                <XMarkIcon className="text-gray-600 size-4" />
+              </button>
+            )}
           </>
         ) : (
           <div className="flex flex-col items-center justify-center text-center p-3">
             <ArrowUpTrayIcon className="text-gray-400 mb-2 size-4" />
             <span className="text-xs text-gray-500 font-medium">
-              Arrastra tu foto aquí
+              {disabled ? "Cargando imagen..." : "Arrastra tu foto aquí"}
             </span>
-            <span className="text-xs text-gray-400 mt-1">
-              o haz clic para seleccionar
-            </span>
+            {!disabled && (
+              <span className="text-xs text-gray-400 mt-1">
+                o haz clic para seleccionar
+              </span>
+            )}
           </div>
         )}
 
@@ -139,6 +174,7 @@ export function RHFImageUpload({
           onChange={handleFileChange}
           ref={fileInputRef}
           className="hidden"
+          disabled={disabled}
         />
       </div>
 

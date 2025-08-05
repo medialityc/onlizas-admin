@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 // import DepartmentsModalContainer from "../modals/departments-modal-container";
 // import { deleteDepartment } from "@/services/departments";
 import { Department, GetAllDepartments } from "@/types/departments";
-import DepartmentsModalContainer from "../modals/categories-modal-container";
+import DepartmentsModalContainer from "../modals/department-modal-container";
 
 interface Props {
   data?: GetAllDepartments;

@@ -3,24 +3,26 @@
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { GetAllCategories } from "@/types/categories";
 import { use } from "react";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
-import { CategoriesList } from "./categories-list";
+import { SuppliersList } from "./suppliers-list";
+import { GetAllSuppliers } from "@/types/suppliers";
+import { NavigationTabs } from "@/components/tab/navigation-tabs";
+import { suppliersTabs } from "../config/tabs";
 
-interface CategoriesListPageProps {
-  categoriesPromise: Promise<ApiResponse<GetAllCategories>>;
+interface SuppliersListPageProps {
+  suppliersPromise: Promise<ApiResponse<GetAllSuppliers>>;
   query: SearchParams;
 }
 
-export default function CategoriesListContainer({
-  categoriesPromise,
+export default function SuppliersListContainer({
+  suppliersPromise,
   query,
-}: CategoriesListPageProps) {
-  const categoriesResponse = use(categoriesPromise);
+}: SuppliersListPageProps) {
+  const suppliersResponse = use(suppliersPromise);
   const { updateFiltersInUrl } = useFiltersUrl();
-  useFetchError(categoriesResponse);
+  useFetchError(suppliersResponse);
 
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
@@ -28,21 +30,25 @@ export default function CategoriesListContainer({
 
   return (
     <div className="space-y-6">
-      {categoriesResponse.status == 401 && <SessionExpiredAlert />}
+      {suppliersResponse.status == 401 && <SessionExpiredAlert />}
+
       <div className="panel">
         <div className="mb-5 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-              Gestión de Categorías
+              Gestión de Proveedores
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Administra las categorías del sistema y sus datos asociados
+              Administra los proveedores del sistema y sus datos asociados
             </p>
           </div>
         </div>
 
-        <CategoriesList
-          data={categoriesResponse.data}
+        {/* Navigation Tabs */}
+        <NavigationTabs tabs={suppliersTabs} className="mb-6" />
+
+        <SuppliersList
+          data={suppliersResponse.data}
           searchParams={query}
           onSearchParamsChange={handleSearchParamsChange}
         />

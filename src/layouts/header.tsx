@@ -1,6 +1,5 @@
 "use client";
 import { useAuth } from "@/auth-sso/hooks/use-auth";
-import { Button } from "@/components/button/button";
 import IconLaptop from "@/components/icon/icon-laptop";
 import IconLogout from "@/components/icon/icon-logout";
 import IconMenu from "@/components/icon/icon-menu";
@@ -11,7 +10,6 @@ import Dropdown from "@/components/ui/dropdown";
 import { cn } from "@/lib/utils";
 import { RootState } from "@/store";
 import { toggleSidebar } from "@/store/themeConfigSlice";
-import { DocumentPlusIcon } from "@heroicons/react/24/solid";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
@@ -47,16 +45,6 @@ const Header = () => {
           </div>
 
           <div className="flex items-center space-x-1.5   dark:text-[#d0d2d6] sm:flex-1  lg:space-x-2 justify-end">
-            <Button
-              className={
-                " rounded-md text-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300 flex items-center gap-2 bg-blue-500 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
-              }
-              size="sm"
-              onClick={() => router.push("/dashboard/order/create")}
-            >
-              <DocumentPlusIcon className="h-6 w-6" />
-              Crear Orden
-            </Button>
             <div>
               {theme === "light" ? (
                 <button

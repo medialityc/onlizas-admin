@@ -66,4 +66,22 @@ export const backendRoutes = {
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}departments/${id}`, // PUT
   },
+  currencies: {
+    create: `${process.env.NEXT_PUBLIC_API_URL}currencies`, // POST
+    list: `${process.env.NEXT_PUBLIC_API_URL}currencies`, // GET
+    delete: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}currencies/${id}`, // DELETE
+    update: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}currencies/${id}`, // PUT
+    setAsDefault: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}currencies/${id}/set-as-default`, // PATCH
+  },
+  suppliers: {
+    create: `${process.env.NEXT_PUBLIC_API_URL}suppliers`, // POST
+    list: `${process.env.NEXT_PUBLIC_API_URL}admin/get_suppliers`, // GET
+    delete: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${id}`, // DELETE
+    update: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${id}`, // PUT
+  },
 };

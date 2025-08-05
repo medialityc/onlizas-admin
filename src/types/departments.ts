@@ -14,7 +14,7 @@ export type Department = {
 export type CreateDepartment = {
   name: string;
   description: string;
-  image: string;
+  image: File | string;
   isActive: boolean;
 };
 

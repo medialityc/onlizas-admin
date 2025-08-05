@@ -57,7 +57,7 @@ export async function getAllUnits(
     url,
     method: "GET",
     useAuth: true,
-    next: { tags: ["units"], revalidate: 3600 },
+    next: { tags: ["units"] },
   });
 
   if (!res.ok) return handleApiServerError(res);

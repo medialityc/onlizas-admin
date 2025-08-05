@@ -8,12 +8,17 @@ import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { CategoriesFormData, categoriesSchema } from "./categories-schema";
 import { createCategory, updateCategory } from "@/services/categories";
 import { Category } from "@/types/categories";
+import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
+import { getAllDepartments } from "@/services/department";
+import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
+import RHFCheckbox from "@/components/react-hook-form/rhf-checkbox";
+import { urlToFile } from "@/utils/format";
 
 interface CategoriesModalProps {
   open: boolean;
@@ -31,15 +36,18 @@ export default function CategoriesModal({
   onSuccess,
 }: CategoriesModalProps) {
   const [error, setError] = useState<string | null>(null);
+  const [loadingImage, setLoadingImage] = useState(false);
   const queryClient = useQueryClient();
 
   const methods = useForm<CategoriesFormData>({
     resolver: zodResolver(categoriesSchema),
     defaultValues: {
-      department: {
-        id: category?.department.id ?? 0,
-        name: category?.department.name ?? "",
-      },
+      department: category?.department
+        ? {
+            id: category?.department.id ?? 0,
+            name: category?.department.name ?? "",
+          }
+        : undefined,
       name: category?.name ?? "",
       description: category?.description ?? "",
       image: category?.image ?? "",
@@ -50,7 +58,29 @@ export default function CategoriesModal({
   const {
     reset,
     formState: { isSubmitting },
+    setValue,
   } = methods;
+
+  // Cargar imagen desde URL cuando se abre para editar
+  useEffect(() => {
+    const loadImageAsFile = async () => {
+      if (category?.image && open) {
+        try {
+          setLoadingImage(true);
+          const file = await urlToFile(category.image, "category-image.jpg");
+          setValue("image", file);
+        } catch (error) {
+          console.warn("No se pudo cargar la imagen:", error);
+          // Si falla, mantener la URL como string
+          setValue("image", category.image);
+        } finally {
+          setLoadingImage(false);
+        }
+      }
+    };
+
+    loadImageAsFile();
+  }, [category?.image, open, setValue]);
 
   const handleClose = () => {
     reset();
@@ -62,17 +92,20 @@ export default function CategoriesModal({
     setError(null);
     let response;
     try {
-      const body = {
-        departmentId: data.department.id,
-        name: data.name,
-        description: data.description,
-        image: data.image,
-        isActive: data.isActive,
-      };
+      let imageValue = data.image;
+      if (data.image instanceof File) {
+        imageValue = category?.image || "";
+      }
+      const formData = new FormData();
+      formData.append("departmentId", data.department.id.toString());
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      formData.append("image", imageValue);
+      formData.append("isActive", data.isActive.toString());
       if (category) {
-        response = await updateCategory(category.id, body);
+        response = await updateCategory(category.id, formData);
       } else {
-        response = await createCategory(body);
+        response = await createCategory(formData);
       }
 
       if (!response.error) {
@@ -118,22 +151,12 @@ export default function CategoriesModal({
           <div className="space-y-4">
             {/* Department Select/Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Departamento *
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <RHFInputWithLabel
-                  name="department.id"
-                  label="ID Departamento"
-                  type="number"
-                  placeholder="1"
-                />
-                <RHFInputWithLabel
-                  name="department.name"
-                  label="Nombre Departamento"
-                  placeholder="Ej: Alimentos"
-                />
-              </div>
+              <RHFAutocompleteFetcherInfinity
+                name="department"
+                label="Departamento"
+                required
+                onFetch={getAllDepartments}
+              />
             </div>
 
             {/* Name Input */}
@@ -146,56 +169,27 @@ export default function CategoriesModal({
             />
 
             {/* Description Textarea */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Descripción *
-              </label>
-              <div className="relative">
-                <textarea
-                  {...methods.register("description")}
-                  placeholder="Descripción detallada de la categoría..."
-                  maxLength={500}
-                  rows={4}
-                  className="form-textarea"
-                />
-                {methods.formState.errors.description && (
-                  <div className="text-red-500 text-sm mt-1">
-                    {methods.formState.errors.description.message}
-                  </div>
-                )}
-              </div>
-            </div>
+            <RHFInputWithLabel
+              name="description"
+              label="Descripción"
+              placeholder="Descripción detallada de la categoría..."
+              maxLength={500}
+              rows={4}
+              type="textarea"
+            />
 
             {/* Image URL Input */}
-            <RHFInputWithLabel
+            <RHFImageUpload
               name="image"
-              label="URL de la Imagen"
-              placeholder="https://ejemplo.com/imagen.jpg"
-              type="url"
+              label="Imagen"
+              variant="rounded"
+              size="full"
+              disabled={loadingImage}
             />
 
             {/* IsActive Checkbox */}
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                {...methods.register("isActive")}
-                id="isActive"
-                className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
-              />
-              <label
-                htmlFor="isActive"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Categoría activa
-              </label>
-              {methods.formState.errors.isActive && (
-                <div className="text-red-500 text-sm">
-                  {methods.formState.errors.isActive.message}
-                </div>
-              )}
-            </div>
+            <RHFCheckbox name="isActive" label="Categoría activa" />
           </div>
-
           <div className="flex justify-end gap-3 pt-6">
             <button
               type="button"

@@ -1,5 +1,4 @@
 "use server";
-import { Department, GetAllDepartments } from "./../types/departments";
 
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { backendRoutes } from "@/lib/endpoint";
@@ -9,29 +8,29 @@ import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
+import { GetAllSuppliers, Supplier } from "@/types/suppliers";
 
-export async function createDepartment(
+export async function createSupplier(
   data: FormData
-): Promise<ApiResponse<Department>> {
+): Promise<ApiResponse<Supplier>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.departments.create,
+    url: backendRoutes.suppliers.create,
     method: "POST",
     data,
     useAuth: true,
-    // No establecer Content-Type manualmente para FormData
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
+  revalidateTag("suppliers");
 
-  return buildApiResponseAsync<Department>(res);
+  return buildApiResponseAsync<Supplier>(res);
 }
 
-export async function deleteDepartment(
+export async function deleteSuppliers(
   id: string | number
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.departments.delete(id),
+    url: backendRoutes.suppliers.delete(id),
     method: "DELETE",
     useAuth: true,
   });
@@ -42,40 +41,39 @@ export async function deleteDepartment(
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
-export async function getAllDepartments(
+export async function getAllSuppliers(
   params: IQueryable
-): Promise<ApiResponse<GetAllDepartments>> {
+): Promise<ApiResponse<GetAllSuppliers>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.departments.list
+    backendRoutes.suppliers.list
   ).build();
 
   const res = await nextAuthFetch({
     url,
     method: "GET",
     useAuth: true,
-    next: { tags: ["departments"] },
+    next: { tags: ["suppliers"] },
   });
 
   if (!res.ok) return handleApiServerError(res);
 
-  return buildApiResponseAsync<GetAllDepartments>(res);
+  return buildApiResponseAsync<GetAllSuppliers>(res);
 }
 
-export async function updateDepartment(
+export async function updateSupplier(
   id: string | number,
   data: FormData
-): Promise<ApiResponse<Department>> {
+): Promise<ApiResponse<Supplier>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.departments.update(id),
+    url: backendRoutes.suppliers.update(id),
     method: "PUT",
     data,
     useAuth: true,
-    // No establecer Content-Type manualmente para FormData
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
+  revalidateTag("suppliers");
 
-  return buildApiResponseAsync<Department>(res);
+  return buildApiResponseAsync<Supplier>(res);
 }

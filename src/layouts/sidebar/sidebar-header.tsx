@@ -11,16 +11,27 @@ const SidebarHeader = () => {
   return (
     <div className="flex items-center justify-between px-4 py-3">
       <Link href="/" className="main-logo flex shrink-0 items-center">
-        <Image
-          className="ml-[5px] w-8 flex-none pt-3"
-          src="/assets/images/ZAS.svg"
-          alt="logo"
-          width={32}
-          height={32}
-        />
-        <span className="align-middle text-blue-600 text-2xl font-bold ltr:ml-1.5 rtl:mr-1.5 dark:text-blue-400 lg:inline">
-          OnliZas
-        </span>
+        <div className="py-4 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+              <Image
+                className="ml-[5px] w-8 flex-none pt-3"
+                src="/assets/images/ZAS.svg"
+                alt="logo"
+                width={32}
+                height={32}
+              />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                Panel de Control
+              </h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                ZAS Express
+              </p>
+            </div>
+          </div>
+        </div>
       </Link>
 
       <button

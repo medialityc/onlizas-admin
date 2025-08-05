@@ -30,5 +30,8 @@ export const paths = {
     products: {
       list: `${DASHBOARD}/products`,
     },
+    suppliers: {
+      list: `${DASHBOARD}/suppliers`,
+    },
   },
 };

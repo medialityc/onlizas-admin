@@ -29,35 +29,47 @@ const SidebarItem = ({
   };
 
   return (
-    <li className="nav-item">
+    <li>
       {/* Main item */}
       <div
-        className={`group cursor-pointer ${isActive ? "active" : ""} ${
+        className={`group cursor-pointer transition-all duration-200 ${
           item.disabled ? "pointer-events-none opacity-50" : ""
         }`}
         onClick={handleClick}
       >
         {item.path && !hasSubsections ? (
           <Link href={item.path}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
+            <div
+              className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-primary/5 hover:shadow-sm ${
+                isActive
+                  ? "bg-primary/10 text-primary border-l-3 border-primary shadow-sm"
+                  : "text-gray-700 dark:text-gray-300 hover:text-primary"
+              }`}
+            >
+              <div className="flex items-center space-x-3">
                 <div
-                  className={`shrink-0 group-hover:!text-primary ${
+                  className={`shrink-0 transition-colors duration-200 ${
                     isActive
                       ? "text-primary"
-                      : "text-black/50 dark:text-white/50"
+                      : "text-gray-500 dark:text-gray-400 group-hover:text-primary"
                   }`}
                 >
                   {item.icon}
                 </div>
-                <span className="text-textColor text-xs ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">
+                <span
+                  className={`text-sm font-medium transition-colors duration-200 ${
+                    isActive
+                      ? "text-primary"
+                      : "text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
+                  }`}
+                >
                   {item.label}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 {item.badge && (
                   <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                    className={`rounded-full px-2 py-1 text-xs font-medium shadow-sm ${
                       badgeColors[item.badge.color || "primary"]
                     }`}
                   >
@@ -66,8 +78,8 @@ const SidebarItem = ({
                 )}
                 {hasSubsections && item.isCollapsible && (
                   <ChevronDownIcon
-                    className={`h-4 w-4 transition-transform duration-200 ${
-                      isExpanded ? "rotate-180" : ""
+                    className={`h-4 w-4 transition-all duration-200 ${
+                      isExpanded ? "rotate-180 text-primary" : "text-gray-400"
                     }`}
                   />
                 )}
@@ -75,23 +87,37 @@ const SidebarItem = ({
             </div>
           </Link>
         ) : (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
+          <div
+            className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-primary/5 hover:shadow-sm ${
+              isActive
+                ? "bg-primary/10 text-primary border-l-3 border-primary shadow-sm"
+                : "text-gray-700 dark:text-gray-300 hover:text-primary"
+            }`}
+          >
+            <div className="flex items-center space-x-3">
               <div
-                className={`shrink-0 group-hover:!text-primary ${
-                  isActive ? "text-primary" : "text-black/50 dark:text-white/50"
+                className={`shrink-0 transition-colors duration-200 ${
+                  isActive
+                    ? "text-primary"
+                    : "text-gray-500 dark:text-gray-400 group-hover:text-primary"
                 }`}
               >
                 {item.icon}
               </div>
-              <span className="text-textColor text-xs ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">
+              <span
+                className={`text-sm font-medium transition-colors duration-200 ${
+                  isActive
+                    ? "text-primary"
+                    : "text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
+                }`}
+              >
                 {item.label}
               </span>
             </div>
             <div className="flex items-center gap-2">
               {item.badge && (
                 <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                  className={`rounded-full px-2 py-1 text-xs font-medium shadow-sm ${
                     badgeColors[item.badge.color || "primary"]
                   }`}
                 >
@@ -100,8 +126,8 @@ const SidebarItem = ({
               )}
               {hasSubsections && item.isCollapsible && (
                 <ChevronDownIcon
-                  className={`h-4 w-4 transition-transform duration-200 ${
-                    isExpanded ? "rotate-180" : ""
+                  className={`h-4 w-4 transition-all duration-200 ${
+                    isExpanded ? "rotate-180 text-primary" : "text-gray-400"
                   }`}
                 />
               )}
@@ -113,10 +139,10 @@ const SidebarItem = ({
       {/* Subsections */}
       {hasSubsections && item.subsections && (
         <AnimateHeight duration={300} height={isExpanded ? "auto" : 0}>
-          <div className="mt-2 ml-6">
+          <div className="mt-3 ml-6 pl-3 border-l-2 border-gray-100 dark:border-gray-800">
             {item.subsections.map((subsection) => (
-              <div key={subsection.id} className="mb-2">
-                <h4 className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
+              <div key={subsection.id} className="mb-4">
+                <h4 className="mb-2 px-2 py-1 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   {subsection.label}
                 </h4>
                 <ul className="space-y-1">
@@ -124,12 +150,13 @@ const SidebarItem = ({
                     <li key={subItem.id}>
                       <Link
                         href={subItem.path}
-                        className={`block py-1 px-3 text-xs rounded transition-colors ${
+                        className={`flex items-center px-3 py-2 text-sm rounded-lg transition-all duration-200 hover:shadow-sm ${
                           isActiveLink(subItem.path)
-                            ? "bg-primary/10 text-primary"
-                            : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+                            ? "bg-primary/8 text-primary border-l-2 border-primary font-medium"
+                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200"
                         } ${subItem.disabled ? "pointer-events-none opacity-50" : ""}`}
                       >
+                        <div className="w-1.5 h-1.5 rounded-full bg-current opacity-60 mr-3"></div>
                         {subItem.label}
                       </Link>
                     </li>

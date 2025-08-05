@@ -9,10 +9,7 @@ export const departmentSchema = z.object({
     .string({ required_error: "La descripción es obligatoria." })
     .min(1, "La descripción no puede estar vacía.")
     .max(500, "La descripción no puede tener más de 500 caracteres."),
-  image: z
-    .string({ required_error: "La imagen es obligatoria." })
-    .min(1, "La URL de la imagen no puede estar vacía.")
-    .url("Debe ser una URL válida para la imagen."),
+  image: z.instanceof(File, { message: "La imagen es obligatoria." }),
   isActive: z.boolean({ required_error: "El estado activo es obligatorio." }),
 });
 

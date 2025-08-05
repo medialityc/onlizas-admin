@@ -15,7 +15,6 @@ import { IQueryable } from "@/types/fetch/request";
 import { QueryParamsURLFactory } from "@/lib/request";
 import { revalidateTag } from "next/cache";
 
-
 export async function getAllPermissions(
   params: IQueryable
 ): Promise<ApiResponse<GetAllPermissionsResponse>> {
@@ -27,7 +26,7 @@ export async function getAllPermissions(
     url,
     method: "GET",
     useAuth: true,
-    next: { tags: ["permissions"], revalidate: 3600 },
+    next: { tags: ["permissions"] },
   });
 
   if (!res.ok) return handleApiServerError(res);
