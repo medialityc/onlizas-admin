@@ -4,11 +4,19 @@ import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { backendRoutes } from "@/lib/endpoint";
 import { QueryParamsURLFactory } from "@/lib/request";
 
-import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
+import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
-import { GetAllSuppliers, Supplier } from "@/types/suppliers";
+import {
+  ApprovalProcess,
+  GetAllPendingSuppliers,
+  GetAllSuppliers,
+  GetAllValidSuppliers,
+  GetSupplierEvaluations,
+  Supplier,
+  SupplierDetails,
+} from "@/types/suppliers";
 
 export async function createSupplier(
   data: FormData
@@ -28,7 +36,7 @@ export async function createSupplier(
 
 export async function deleteSuppliers(
   id: string | number
-): Promise<ApiResponse<ApiStatusResponse>> {
+): Promise<ApiResponse<Supplier>> {
   const res = await nextAuthFetch({
     url: backendRoutes.suppliers.delete(id),
     method: "DELETE",
@@ -36,9 +44,9 @@ export async function deleteSuppliers(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
+  revalidateTag("suppliers");
 
-  return buildApiResponseAsync<ApiStatusResponse>(res);
+  return buildApiResponseAsync(res);
 }
 
 export async function getAllSuppliers(
@@ -61,7 +69,7 @@ export async function getAllSuppliers(
   return buildApiResponseAsync<GetAllSuppliers>(res);
 }
 
-export async function updateSupplier(
+export async function updateSupplierData(
   id: string | number,
   data: FormData
 ): Promise<ApiResponse<Supplier>> {
@@ -76,4 +84,87 @@ export async function updateSupplier(
   revalidateTag("suppliers");
 
   return buildApiResponseAsync<Supplier>(res);
+}
+
+export async function getPendingSuppliers(
+  params: IQueryable
+): Promise<ApiResponse<GetAllPendingSuppliers>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.suppliers.pending
+  ).build();
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync(res);
+}
+
+export async function getValidSuppliers(
+  params: IQueryable
+): Promise<ApiResponse<GetAllValidSuppliers>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.suppliers.valid
+  ).build();
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync(res);
+}
+
+export async function getSupplierDetails(
+  id: string
+): Promise<ApiResponse<SupplierDetails>> {
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}admin/supplier/${id}`,
+    method: "GET",
+    cache: "no-store",
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync(res);
+}
+
+export async function getSupplierEvaluations(
+  id: string,
+  params: IQueryable
+): Promise<ApiResponse<GetSupplierEvaluations>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.suppliers.evaluations(id)
+  ).build();
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    cache: "no-store",
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync(res);
+}
+
+export async function getApprovalProcess(
+  id: string
+): Promise<ApiResponse<ApprovalProcess>> {
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}admin/supplier/${id}/approval-process`,
+    method: "GET",
+    cache: "no-store",
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync(res);
 }

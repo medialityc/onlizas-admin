@@ -8,7 +8,9 @@ import { SearchParams } from "@/types/fetch/request";
 import { GetAllSuppliers, Supplier } from "@/types/suppliers";
 import { DataTableColumn } from "mantine-datatable";
 import { useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import SuppliersModalContainer from "../modals/suppliers-modal-container";
+import { deleteSuppliers } from "@/services/supplier";
 
 interface SuppliersListProps {
   data?: GetAllSuppliers;
@@ -21,14 +23,13 @@ export function SuppliersList({
   searchParams,
   onSearchParamsChange,
 }: SuppliersListProps) {
+  const router = useRouter();
   const { openModal, getModalState, closeModal } = useModalState();
 
-  // Estados de los modales
   const createSupplierModal = getModalState("create");
   const editSupplierModal = getModalState<number>("edit");
   const viewSupplierModal = getModalState<number>("view");
 
-  // Obtener el proveedor seleccionado basado en el ID del modal
   const selectedSupplier = useMemo(() => {
     const editId = editSupplierModal.id;
     const viewId = viewSupplierModal.id;
@@ -36,7 +37,11 @@ export function SuppliersList({
 
     if (!targetId || !data?.data) return undefined;
 
-    return data.data.find((supplier) => supplier.id === targetId);
+    // Convertir targetId a número para comparación
+    const numericId =
+      typeof targetId === "string" ? parseInt(targetId, 10) : targetId;
+
+    return data.data.find((supplier) => supplier.id === numericId);
   }, [editSupplierModal.id, viewSupplierModal.id, data?.data]);
 
   const handleCreateSupplier = useCallback(
@@ -58,27 +63,30 @@ export function SuppliersList({
     [openModal]
   );
 
-  const handleDeleteSupplier = useCallback(
-    async (supplier: Supplier) => {
-      try {
-        // TODO: Implementar deleteSupplier cuando esté disponible el servicio
-        // const res = await deleteSupplier(supplier.id);
-        // if (res?.error && res.message) {
-        //   console.error(res);
-        //   showToast(res.message, "error");
-        // } else {
-        //   queryClient.invalidateQueries({ queryKey: ["suppliers"] });
-        //   showToast("Proveedor eliminado correctamente", "success");
-        // }
-        console.log("Eliminar proveedor:", supplier.id);
-        showToast("Función de eliminar en desarrollo", "info");
-      } catch (error) {
-        console.error(error);
-        showToast("Ocurrió un error, intente nuevamente", "error");
-      }
+  const handleEditFullSupplier = useCallback(
+    (supplier: Supplier) => {
+      router.push(`/dashboard/suppliers/${supplier.id}`);
     },
-    [] // Removed queryClient dependency since it's commented out
+    [router]
   );
+
+  const handleToggleActiveSupplier = useCallback(async (supplier: Supplier) => {
+    try {
+      const res = await deleteSuppliers(supplier.id);
+      if (res?.error && res.message) {
+        console.error(res);
+        showToast(res.message, "error");
+      } else {
+        showToast(
+          `Proveedor ${res.data?.isActive ? "activado" : "desactivado"} eliminado correctamente`,
+          "success"
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      showToast("Ocurrió un error, intente nuevamente", "error");
+    }
+  }, []);
 
   const columns = useMemo<DataTableColumn<Supplier>[]>(
     () => [
@@ -141,7 +149,11 @@ export function SuppliersList({
         width: 150,
         render: (supplier) => (
           <span className="text-sm text-gray-600 dark:text-gray-300">
-            {new Date(supplier.lastEvaluationDate).toLocaleDateString("es-ES")}
+            {supplier.lastEvaluationDate
+              ? new Date(supplier.lastEvaluationDate).toLocaleDateString(
+                  "es-ES"
+                )
+              : "No disponible"}
           </span>
         ),
       },
@@ -186,15 +198,22 @@ export function SuppliersList({
         render: (supplier) => (
           <div className="flex justify-center">
             <ActionsMenu
+              isActive={supplier.isActive}
+              onActive={() => handleToggleActiveSupplier(supplier)}
               onViewDetails={() => handleViewSupplier(supplier)}
               onEdit={() => handleEditSupplier(supplier)}
-              onDelete={() => handleDeleteSupplier(supplier)}
+              onEditFull={() => handleEditFullSupplier(supplier)}
             />
           </div>
         ),
       },
     ],
-    [handleViewSupplier, handleEditSupplier, handleDeleteSupplier]
+    [
+      handleViewSupplier,
+      handleEditSupplier,
+      handleEditFullSupplier,
+      handleToggleActiveSupplier,
+    ]
   );
 
   return (

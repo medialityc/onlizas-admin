@@ -14,10 +14,12 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/solid";
 import DeleteDialog from "../modal/delete-modal";
+import ToggleStatusDialog from "../modal/toggle-status-modal";
 
 interface MenuProps {
   onAddUsers?: () => void;
   onEdit?: () => void;
+  onEditFull?: () => void; // Nueva acción para edición completa
   onViewDetails?: () => void;
   onViewDocuments?: () => void;
   onDelete?: () => void;
@@ -36,6 +38,7 @@ const ActionsMenu = ({
   onAddUsers,
   onDelete,
   onEdit,
+  onEditFull,
   onViewDocuments,
   onViewDetails,
   onPay,
@@ -49,6 +52,7 @@ const ActionsMenu = ({
   onModifyAttributes,
 }: MenuProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [toggleStatusDialogOpen, setToggleStatusDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
@@ -61,6 +65,19 @@ const ActionsMenu = ({
       } finally {
         setLoading(false);
         setDeleteDialogOpen(false);
+      }
+    }
+  };
+  const handleActive = async () => {
+    if (onActive) {
+      setLoading(true);
+      try {
+        await onActive();
+      } catch (error) {
+        console.error("Error activating item:", error);
+      } finally {
+        setLoading(false);
+        setToggleStatusDialogOpen(false);
       }
     }
   };
@@ -103,6 +120,16 @@ const ActionsMenu = ({
               onClick={onEdit}
             >
               Editar
+            </Menu.Item>
+          )}
+
+          {onEditFull && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-textColor dark:text-textColor"
+              leftSection={<Cog6ToothIcon className="h-4 w-4 " />}
+              onClick={onEditFull}
+            >
+              Edición Completa
             </Menu.Item>
           )}
 
@@ -165,24 +192,26 @@ const ActionsMenu = ({
             </Menu.Item>
           )}
 
-          {(onDelete || onVerify || onBlocked || onActive) && <Menu.Divider />}
+          {(onDelete || onVerify || onBlocked || onActive) && (
+            <>
+              <Menu.Divider />
+              <Menu.Label>Zona de peligro</Menu.Label>
+            </>
+          )}
           {onActive && (
             <>
               <Menu.Item
                 className={`p-1 text-sm ${isActive ? "hover:bg-red-500" : "hover:bg-green-500"}`}
                 leftSection={<CheckIcon className="h-4 w-4 " />}
-                onClick={() => setDeleteDialogOpen(true)}
+                onClick={() => setToggleStatusDialogOpen(true)}
               >
                 {isActive ? "Desactivar" : "Activar"}
               </Menu.Item>
             </>
           )}
 
-          {(onDelete || onVerify || onBlocked || onActive) && <Menu.Divider />}
-
           {onDelete && (
             <>
-              <Menu.Label>Zona de peligro</Menu.Label>
               <Menu.Item
                 className="p-1 text-sm hover:bg-red-500"
                 leftSection={<TrashIcon className="h-4 w-4 " />}
@@ -201,6 +230,15 @@ const ActionsMenu = ({
           onConfirm={handleDelete}
           loading={loading}
           open={deleteDialogOpen}
+        />
+      )}
+      {onActive && (
+        <ToggleStatusDialog
+          isActive={isActive}
+          onClose={() => setToggleStatusDialogOpen(false)}
+          onConfirm={handleActive}
+          open={toggleStatusDialogOpen}
+          loading={loading}
         />
       )}
     </>

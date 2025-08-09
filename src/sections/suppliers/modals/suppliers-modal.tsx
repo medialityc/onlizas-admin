@@ -15,7 +15,7 @@ import { SuppliersFormData, suppliersSchema } from "./suppliers-schema";
 import RHFCheckbox from "@/components/react-hook-form/rhf-checkbox";
 import { RHFFileUpload } from "@/components/react-hook-form/rhf-file-upload";
 import { Supplier } from "@/types/suppliers";
-import { createSupplier, updateSupplier } from "@/services/supplier";
+import { createSupplier, updateSupplierData } from "@/services/supplier";
 import { TrashIcon, PlusIcon, DocumentIcon } from "@heroicons/react/24/outline";
 
 interface SuppliersModalProps {
@@ -87,7 +87,7 @@ export default function SuppliersModal({
 
       let response = null;
       if (supplier) {
-        response = await updateSupplier(supplier.id, formData);
+        response = await updateSupplierData(supplier.id, formData);
       } else {
         response = await createSupplier(formData);
       }

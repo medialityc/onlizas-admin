@@ -78,10 +78,14 @@ export const backendRoutes = {
   },
   suppliers: {
     create: `${process.env.NEXT_PUBLIC_API_URL}suppliers`, // POST
-    list: `${process.env.NEXT_PUBLIC_API_URL}admin/get_suppliers`, // GET
     delete: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${id}`, // DELETE
+      `${process.env.NEXT_PUBLIC_API_URL}admin/toggle_state/${id}`, // DELETE
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/${id}`, // PUT
+    evaluations: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${id}/evaluations`, // GET
+    list: `${process.env.NEXT_PUBLIC_API_URL}admin/get_suppliers`, // GET
+    pending: `${process.env.NEXT_PUBLIC_API_URL}admin/pending-suppliers`, // GET
+    valid: `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/valids`, // GET
   },
 };

@@ -27,7 +27,7 @@ const SidebarHeader = () => {
                 Panel de Control
               </h3>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                ZAS Express
+                Onlizas
               </p>
             </div>
           </div>

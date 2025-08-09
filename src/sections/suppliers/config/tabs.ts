@@ -12,12 +12,10 @@ export const suppliersTabs: TabItem[] = [
     label: "Proveedores Pendientes",
     href: "/dashboard/suppliers/pending",
     icon: UserMinusIcon,
-    disabled: true, // Deshabilitado hasta implementar
   },
   {
     label: "Proveedores Validos",
     href: "/dashboard/suppliers/valid",
     icon: UserGroupIcon,
-    disabled: true, // Deshabilitado hasta implementar
   },
 ];
