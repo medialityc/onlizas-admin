@@ -15,4 +15,16 @@ export const clientsConfig: Client[] = [
     id: "2",
     url: "https://admin.zasdistributor.com",
   },
+  {
+    id: "3",
+    url: "https://zas-image.zasdistributor.com",
+  },
+  {
+    id: "4",
+    url: "https://fron.zasexpress.com",
+  },
+  {
+    id: "5",
+    url: "https://onlizas-admin.zasdistributor.com",
+  },
 ];
