@@ -93,3 +93,43 @@ export type UpdateUserResponse = { message: string };
 export type UpdateUserAttributesResponse = { success: boolean };
 
 export type UserAttributeLogResponse = UserAttributeLog[];
+
+
+export type Document = {
+    id: number;
+    name: string;
+    description: string;
+    objectCode: string;
+};
+
+
+// ORDER USER TYPES
+export type OrderUser = {
+    id: number;
+    name: string;
+    isVerified: boolean;
+    isBlocked: boolean;
+    email: string;
+    phone: string;
+    birthDate?: string;
+    documents: Document[];
+    address: Address | null;
+};
+
+
+export type PotentialOrderUser = {
+  userExists: boolean;
+  id: number;
+  name: string;
+  documentId: string;
+  email: string | null;
+  phone: string | null;
+  documents: Document[];
+  addresses: Address[];
+};
+
+
+
+export const IDENTITY_DOCUMENT_NAME = 'CI';
+export const LICENSE_DOCUMENT_NAME = 'Licencia';
+export const PASSPORT_DOCUMENT_NAME = 'Pasaporte';

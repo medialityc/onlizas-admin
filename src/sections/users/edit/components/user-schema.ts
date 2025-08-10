@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import { z } from "zod";
 
 // Address schema
 export const addressSchema = z
@@ -61,7 +60,7 @@ export const addressSchema = z
       .string()
       .min(1, "El código postal es requerido")
       .trim()
-      .refine(val => {
+      .refine((val) => {
         // Validación flexible para diferentes formatos internacionales
         const patterns = [
           /^\d{5}$/, // USA: 12345
@@ -70,7 +69,7 @@ export const addressSchema = z
           /^\d{4,6}$/, // Europa general: 1234, 12345, 123456
           /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/, // Reino Unido: SW1A 1AA
         ];
-        return patterns.some(pattern => pattern.test(val));
+        return patterns.some((pattern) => pattern.test(val));
       }, "Formato de código postal inválido"),
 
     countryId: z
@@ -90,13 +89,9 @@ export const addressSchema = z
       .nullable()
       .or(z.literal("")),
 
-    latitude: z
-      .number()     
-      .optional(),
+    latitude: z.number().optional(),
 
-    longitude: z
-      .number()     
-      .optional(),
+    longitude: z.number().optional(),
 
     annotations: z
       .string()
@@ -105,10 +100,9 @@ export const addressSchema = z
       .optional()
       .nullable()
       .or(z.literal("")),
-
   })
   .refine(
-    data => {
+    (data) => {
       // Validación condicional: si hay latitud, debe haber longitud y viceversa
       const hasLatitude = data.latitude !== undefined;
       const hasLongitude = data.longitude !== undefined;
@@ -121,7 +115,7 @@ export const addressSchema = z
     }
   )
   .refine(
-    data => {
+    (data) => {
       // Validación de coordenadas: deben ser números válidos si se proporcionan
       if (data.latitude !== undefined && data.longitude !== undefined) {
         return !isNaN(data.latitude) && !isNaN(data.longitude);
@@ -145,6 +139,8 @@ export const userFormSchema = z.object({
   addresses: z.array(addressSchema).default([]),
   isBlocked: z.boolean().default(false),
   isVerified: z.boolean().default(false),
+  isForeign: z.boolean().default(false),
+  birthDate: z.string().optional(),
   photo: z.instanceof(File).or(z.string()).optional(),
   password: z
     .string()
@@ -158,9 +154,18 @@ export const userFormSchema = z.object({
     .optional()
     .or(z.literal("")),
   businessIds: z.array(z.number()).default([]),
+  documents: z
+    .array(
+      z.object({
+        name: z.string(),
+        description: z.string(),
+        objectCode: z.string(),
+      })
+    )
+    .default([])
+    .optional(),
   attributes: z.record(z.string(), z.string()).optional(),
 });
-
 
 // User update schema (for PATCH requests)
 export const userUpdateSchema = userFormSchema.partial().extend({
@@ -185,7 +190,9 @@ export const updateUserAttributesSchema = z.object({
   attributes: z.record(z.string(), z.string()),
 });
 
-export type UpdateUserAttributesRequest = z.infer<typeof updateUserAttributesSchema>;
+export type UpdateUserAttributesRequest = z.infer<
+  typeof updateUserAttributesSchema
+>;
 
 // Export types
 export type AddressFormData = z.infer<typeof addressSchema>;
@@ -196,25 +203,25 @@ export type UserSearchParams = z.infer<typeof userSearchSchema>;
 
 // Default values
 export const defaultUserForm: Partial<UserFormData> = {
-  name: '',
+  name: "",
   roles: [],
   addresses: [],
   isBlocked: false,
   isVerified: false,
-  password: '',
+  password: "",
   businessIds: [],
 };
 
 export const defaultAddress: AddressFormData = {
-  name: '',
-  mainStreet: '',
-  otherStreets: '',
-  number: '',
-  city: '',
-  state: '',
-  zipcode: '',
+  name: "",
+  mainStreet: "",
+  otherStreets: "",
+  number: "",
+  city: "",
+  state: "",
+  zipcode: "",
   countryId: 0,
   latitude: 0,
   longitude: 0,
-  annotations: '',
+  annotations: "",
 };

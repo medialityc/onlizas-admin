@@ -9,7 +9,6 @@ export default function useRefreshSession() {
   const session = useAuth();
 
   useEffect(() => {
-    console.log("se renderiza AuthGuard");
     setError(false)
     if (!session?.tokens?.accessToken || !session?.tokens?.refreshToken) {
       console.log("No accessToken or refreshToken present");

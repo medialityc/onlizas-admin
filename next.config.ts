@@ -16,6 +16,11 @@ const nextConfig: NextConfig = {
         hostname: "minio-api.zasdistributor.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "minio-api.zasdistributor.com",
+        pathname: "/**",
+      },
     ],
   },
 };

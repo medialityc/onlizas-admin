@@ -2,7 +2,7 @@
 import { paths } from "@/config/paths";
 import crypto from "crypto";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState, useRef, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { authenticateWithTokens } from "../services/server-actions";
 import { useAuth } from "./use-auth";
 
@@ -46,9 +46,18 @@ export function useSSOAuth({ clientId }: { clientId: string }) {
 
   // 2. Manejo seguro de apertura de popup
   const openLogin = useCallback((url: string) => {
+    const popupWidth = 500;
+    const popupHeight = 1000;
+    const left = window.screenX + (window.innerWidth - popupWidth) / 2;
+    const top = window.screenY + (window.innerHeight - popupHeight) / 2;
+
     console.log("[openLogin] INICIO");
     console.log("[openLogin] URL:", url);
-    const popup = window.open(url, "SSO_Login", "width=500,height=1000");
+
+    const features = `width=${popupWidth},height=${popupHeight},left=${left},top=${top}`;
+
+    const popup = window.open(url, "SSO_Login", features);
+
     if (!popup) {
       console.warn(
         "[openLogin] Popup bloqueado, redirigiendo en la misma ventana"

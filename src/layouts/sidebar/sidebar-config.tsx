@@ -4,6 +4,8 @@ import {
   BookOpenIcon,
   CubeIcon,
   CurrencyDollarIcon,
+  LockOpenIcon,
+  UserIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "./types";
 
@@ -61,6 +63,24 @@ export const sidebarSections: SidebarSection[] = [
         label: "Proveedores",
         path: paths.dashboard.suppliers.list,
         icon: <UserCircleIcon className="h-4 w-4" />,
+      },
+    ],
+  },
+  {
+    id: "security",
+    label: "Seguridad",
+    items: [
+      {
+        id: "users",
+        label: "Usuarios",
+        path: paths.dashboard.users.list,
+        icon: <UserIcon className="h-4 w-4" />,
+      },
+      {
+        id: "roles",
+        label: "Roles",
+        path: paths.dashboard.roles.list,
+        icon: <LockOpenIcon className="h-4 w-4" />,
       },
     ],
   },

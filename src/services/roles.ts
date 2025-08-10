@@ -4,6 +4,7 @@ import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { backendRoutes } from "@/lib/endpoint";
 import { QueryParamsURLFactory } from "@/lib/request";
 
+import { RoleUpdateData } from "@/sections/roles/edit/role-update-schema";
 import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import {
@@ -13,9 +14,8 @@ import {
   GetAllRolesResponse,
   UpdateRoleResponse,
 } from "@/types/roles";
-import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { RoleUpdateData } from "@/sections/roles/edit/role-update-schema";
 import { revalidateTag } from "next/cache";
+import { nextAuthFetch } from "./utils/next-auth-fetch";
 
 export async function getAllRoles(
   params: IQueryable

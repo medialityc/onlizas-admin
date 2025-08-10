@@ -14,10 +14,12 @@ export const storeSession = async (
   session: SessionData,
   callbacks?: { onSuccess?: () => void; onError?: (error: unknown) => void }
 ) => {
+
   try {
     const data: SessionData = {
       tokens: {
         ...(session.tokens as Tokens),
+        ...(session.tokens as Tokens),       
       },
       user: {
         emails: session.user?.emails as User["emails"],

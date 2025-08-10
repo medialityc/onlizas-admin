@@ -2,9 +2,12 @@ export const backendRoutes = {
   countries: { get: `${process.env.NEXT_PUBLIC_API_URL}countries` },
   users: {
     me: `${process.env.NEXT_PUBLIC_API_URL}users/me`,
+    register: `${process.env.NEXT_PUBLIC_API_URL}Users/register`,
+    search: `${process.env.NEXT_PUBLIC_API_URL}users/search`,
+    scan: `${process.env.NEXT_PUBLIC_API_URL}users/scan`,
     resendEmail: `${process.env.NEXT_PUBLIC_API_URL}users/me/email/resend-verification`,
     resendPhone: `${process.env.NEXT_PUBLIC_API_URL}users/me/phone/resend-verification`,
-    getAll: `${process.env.NEXT_PUBLIC_API_URL}admin/users`,
+    getAll: `${process.env.NEXT_PUBLIC_API_URL}users`,
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/users`,
     getById: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${id}`,
@@ -26,6 +29,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${userId}/documents`,
     downloadDocument: (userId: number, documentId: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${userId}/documents/${documentId}/download`,
+    scan_document: `${process.env.NEXT_PUBLIC_API_URL}users/scan-document`,
   },
   roles: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}roles`,

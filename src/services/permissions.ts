@@ -2,18 +2,18 @@
 
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { backendRoutes } from "@/lib/endpoint";
+import { QueryParamsURLFactory } from "@/lib/request";
+import { CreatePermissionSchema } from "@/sections/permissions/create/permissions-schemas";
 import { ApiResponse } from "@/types/fetch/api";
+import { IQueryable } from "@/types/fetch/request";
 import {
   CreatePermissionResponse,
   DeletePermissionResponse,
   GetAllPermissionsResponse,
   PermissionUpdateData,
 } from "@/types/permissions";
-import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { CreatePermissionSchema } from "@/sections/permissions/create/permissions-schemas";
-import { IQueryable } from "@/types/fetch/request";
-import { QueryParamsURLFactory } from "@/lib/request";
 import { revalidateTag } from "next/cache";
+import { nextAuthFetch } from "./utils/next-auth-fetch";
 
 export async function getAllPermissions(
   params: IQueryable

@@ -4,6 +4,7 @@ import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { backendRoutes } from "@/lib/endpoint";
 import { QueryParamsURLFactory } from "@/lib/request";
 
+import { CreateUserSchema } from "@/sections/users/create/create-user-schema";
 import {
   UpdateUserAttributesRequest,
   UserUpdateData,
@@ -14,13 +15,15 @@ import {
   GetAllUsersResponse,
   IDocument,
   IUser,
+  OrderUser,
+  PotentialOrderUser,
   UpdateUserAttributesResponse,
   UpdateUserResponse,
   UserAttributeLogResponse,
 } from "@/types/users";
-import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { CreateUserSchema } from "@/sections/users/create/create-user-schema";
 import { revalidateTag } from "next/cache";
+import { nextAuthFetch } from "./utils/next-auth-fetch";
+import { PaginatedResponse } from "@/types/common";
 
 // - [ ] GET ALL USERS
 export async function getAllUsers(
@@ -286,4 +289,50 @@ export async function fetchUserMe(token?: string): Promise<ApiResponse<IUser>> {
 
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<IUser>(res);
+}
+
+/**
+ * Busca usuarios según los parámetros especificados.
+ *
+ * @param params - Parámetros de consulta para la búsqueda de usuarios.
+ *   - `q` (string): Texto de búsqueda. Se usa para buscar por nombre, teléfono o email. Ejemplo: q=juan
+ *   - `foreign` (boolean): Si es true, busca usuarios cuya dirección esté fuera de Cuba (CU). Si es false, solo usuarios con dirección en Cuba. Ejemplo: foreign=true
+ *   - `count` (number): Número máximo de usuarios a devolver. Por defecto es 10. Ejemplo: count=5
+ *   - `recipientId` (number, opcional): ID de un usuario destinatario. Si se incluye, ordena los resultados priorizando los beneficiarios de ese usuario. Ejemplo: recipientId=12
+ * @returns Una promesa que resuelve a un arreglo de usuarios (`IUser[]`) que cumplen con los criterios de búsqueda.
+ */
+export async function searchUsers(
+  params: IQueryable
+): Promise<ApiResponse<PaginatedResponse<OrderUser>>> {
+  const url = new QueryParamsURLFactory(
+    params,
+    backendRoutes.users.search
+  ).build();
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["users"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<PaginatedResponse<OrderUser>>(res);
+}
+
+
+export async function scanUser(
+  params: IQueryable
+): Promise<ApiResponse<PotentialOrderUser>> {
+  const url = new QueryParamsURLFactory(
+    params,
+    backendRoutes.users.scan
+  ).build();
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<PotentialOrderUser>(res);
 }

@@ -2,15 +2,10 @@
 import { clientsConfig } from "../utils/clients";
 import { SSOLogin } from "./auth-page";
 export default function LoginPage() {
-  console.log("clientsConfig:", clientsConfig);
-  console.log("process.env.NEXT_PUBLIC_APP_URL:", process.env.NEXT_PUBLIC_APP_URL);
-  console.log("window.location.origin:", window.location.origin);
-
   const id = clientsConfig.find(
     client => {
       console.log("Checking client:", client);
       const match = client.url == process.env.NEXT_PUBLIC_APP_URL || client.url == window.location.origin;
-      console.log(`client.url: ${client.url}, match: ${match}`);
       return match;
     }
   )?.id;

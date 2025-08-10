@@ -10,8 +10,6 @@ const SidebarContent = ({
 }: SidebarProps & { isActiveLink: (path: string) => boolean }) => {
   return (
     <div className="relative max-h-[calc(100vh-80px)] overflow-auto ultra-thin-scrollbar bg-white dark:bg-gray-900">
-      {/* Header decorativo */}
-
       {/* Contenido de navegación */}
       <div className="px-2 py-4">
         <ul className="space-y-2">
