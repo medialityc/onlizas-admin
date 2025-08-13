@@ -26,6 +26,9 @@ export const paths = {
       documents: {
         list: (id: string | number) => `${DASHBOARD}/users/${id}/documents`,
       },
+      notification: {
+        list: `${DASHBOARD}/user/notifications`,
+      },
     },
     products: {
       list: `${DASHBOARD}/products`,

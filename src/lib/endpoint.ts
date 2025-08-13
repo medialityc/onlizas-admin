@@ -99,4 +99,10 @@ export const backendRoutes = {
     pending: `${process.env.NEXT_PUBLIC_API_URL}admin/approval-processes/pending`, // GET
     valid: `${process.env.NEXT_PUBLIC_API_URL}admin/approval-processes/approved`, // GET
   },
+  notifications: {
+    create: `${process.env.NEXT_PUBLIC_API_URL}admin/notifications`,
+    userNotifications: `${process.env.NEXT_PUBLIC_API_URL}admin/user/notifications/`,
+    delete: (id: number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}admin/notifications/${id}`,
+  },
 };
