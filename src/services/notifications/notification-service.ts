@@ -17,7 +17,7 @@ import { CreateNotificationSchema } from "@/sections/notifications/receipt/creat
 /* import { revalidateTag } from "next/cache"; */
 
 export const createNotification = async (
-  payload: CreateNotificationSchema
+  payload: FormData
 ): Promise<ApiResponse<Notification>> => {
   // Mock para desarrollo
 

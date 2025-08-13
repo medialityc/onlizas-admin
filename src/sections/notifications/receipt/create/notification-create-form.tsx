@@ -2,16 +2,22 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Button } from "@/components/button/button";
 import {
   FormProvider,
   RHFSelect,
+  RHFCheckbox,
   RHFSelectWithLabel,
   RHFInputWithLabel,
-  RHFCheckbox,
 } from "@/components/react-hook-form";
-import { NotificationChannel, NotificationType } from "@/types/notifications";
+import {
+  NotificationChannel,
+  NotificationPriority,
+  NotificationType,
+} from "@/types/notifications";
 import { createNotification } from "@/services/notifications/notification-service";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 import showToast from "@/config/toast/toastConfig";
 import {
   CreateNotificationSchema,
@@ -20,11 +26,12 @@ import {
 
 import { getAllUsers } from "@/services/users";
 import { getAllRoles } from "@/services/roles";
+import { useQuery } from "@tanstack/react-query";
 import { Label } from "@/components/label/label";
 import RHFMultiSelect from "@/components/react-hook-form/rhf-autocomplete-multiple-fetcher-scroll-infinity";
 import LoaderButton from "@/components/loaders/loader-button";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import RHFAutocompleteLocalAdapter from "@/components/react-hook-form/rhf-autocomplete-local-adapter";
+import { Card } from "@/components/cards/card";
 interface NotificationCreateFormProps {
   onClose: () => void;
 }
@@ -32,6 +39,7 @@ interface NotificationCreateFormProps {
 export const NotificationCreateForm = ({
   onClose,
 }: NotificationCreateFormProps) => {
+  const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const methods = useForm<CreateNotificationSchema>({
@@ -42,40 +50,50 @@ export const NotificationCreateForm = ({
       title: "",
       message: "",
       channels: [],
-      roleType: false,
-      specificType: false,
+      recipientType: [],
       roleRecipients: [],
       specificRecipients: [],
     },
   });
 
-  const { watch } = methods;
+  const { watch, setValue } = methods;
+  const recipientType = watch("recipientType");
 
   const onSubmit = async (data: CreateNotificationSchema) => {
     console.log(data);
-    const {
-      channels,
-      message,
-      notificationType,
-      priority,
-      title,
-      roleRecipients,
-      specificRecipients,
-    } = data;
+
     setIsSubmitting(true);
     try {
-      const response = await createNotification({
-        channels,
-        message,
-        notificationType,
-        priority,
-        title,
-        roleRecipients,
-        specificRecipients,
-      } as CreateNotificationSchema);
+      const formData = new FormData();
+      // Campos simples
+      formData.append("title", data.title);
+      formData.append("message", data.message);
+      formData.append("priority", data.priority);
+      formData.append("notificationType", data.notificationType);
+
+      // Canales
+      data.channels?.forEach((channel) => {
+        formData.append("channels", channel);
+      });
+
+      // Tipos de destinatarios
+      data.recipientType?.forEach((type) => {
+        formData.append("recipientType", type);
+      });
+
+      // Usuarios específicos
+      data.specificRecipients?.forEach((id) => {
+        formData.append("specificRecipients", id.toString());
+      });
+
+      // Roles
+      data.roleRecipients?.forEach((id) => {
+        formData.append("roleRecipients", id.toString());
+      });
+      const response = await createNotification(formData);
       if (!response.error) {
         showToast("Notificación creada y enviada exitosamente", "success");
-        onClose();
+        // Reset form
         methods.reset();
       } else {
         showToast(response.message || "Error al crear notificación", "error");
@@ -138,9 +156,11 @@ export const NotificationCreateForm = ({
         {/* Prioridad */}
         <div className="flex justify-between">
           <div className="gap-1">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Prioridad *
+            </label>
             <RHFSelect
               name="priority"
-              label="Prioridad"
               required
               placeholder="Selecciona prioridad"
               options={[
@@ -156,84 +176,113 @@ export const NotificationCreateForm = ({
 
           {/* Canales de envío */}
           <div className="flex ">
-            <div className="gap-3">
-              <RHFMultiSelect
-                style={{ width: 180 }}
-                objectValueKey={"value"}
-                options={channelOptions}
+            <div className="gap-1">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Canales Envío *
+              </label>
+              <RHFSelectWithLabel
                 name="channels"
                 placeholder="Selecciona canales"
-                label="Canales Envío"
-                /*  options={channelOptions} */
+                /*  objectValueKey="label" */
+                options={channelOptions}
                 size="small"
                 multiple
                 required
               />
-              {/* <RHFSelect
-                options={channelOptions}
-                name="channels"
-                bodyClassname="min-h-[30px] p-1 h-4"
-                placeholder="Selecciona canales"
-                label="Canales Envío"
-                /*  options={channelOptions} 
-                size="small"
-                multiple
-                required
-              /> */}
             </div>
           </div>
         </div>
 
         {/* Destinatarios */}
         <div>
-          <Label className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-6">
+          <label className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-6">
             Destinatarios
-          </Label>
+          </label>
           <div className="space-y-4">
             <div className="flex gap-4">
-              <RHFCheckbox label="Usuarios específicos" name="specificType" />
-              <RHFCheckbox label="Por rol" name="roleType" />
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...methods.register("recipientType")}
+                  value="specific"
+                  className="mr-2 h-4 w-4 text-primary focus:ring-primary"
+                />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Usuarios específicos
+                </span>
+              </label>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...methods.register("recipientType")}
+                  value="role"
+                  className="mr-2 h-4 w-4 text-primary focus:ring-primary"
+                />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Por rol
+                </span>
+              </label>
             </div>
-            {methods.formState.errors.specificType && (
+            {methods.formState.errors.recipientType && (
               <p className="text-red-500 text-sm mt-2">
-                {methods.formState.errors.specificType.message}
+                {methods.formState.errors.recipientType.message}
               </p>
             )}
 
-            {watch("specificType") && (
+            {recipientType?.includes("specific") && (
               <div>
+                <label className="text-base font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  Seleccionar Usuarios
+                </label>
                 <RHFAutocompleteFetcherInfinity
                   name="specificRecipients"
                   placeholder="Selecciona usuarios"
-                  label="Seleccionar usuarios"
+                  /* label="Seleccionar usuarios" */
                   multiple
                   required
-                  onFetch={getAllUsers}
+                  onFetch={
+                    () => getAllUsers({}) // tu API debe aceptar page y pageSize
+                  }
+                  objectKeyLabel="name"
+                  objectValueKey="id"
+                  params={{ pageSize: 10 }}
+                  queryKey="user_cache"
+                  /* renderOption={(b) => b.name}
+                  renderMultiplesValues={(b, removeSelected) => (
+                    <div className="mt-3 gap-3 flex flex-col">
+                      {b.map((b) => (
+                        <Card key={b.id}>{b.name}</Card>
+                      ))}
+                    </div>
+                  )} */
                 />
-                {/* {methods.formState.errors.specificRecipients && (
+                {methods.formState.errors.specificRecipients && (
                   <p className="text-red-500 text-sm mt-2">
                     {methods.formState.errors.specificRecipients.message}
                   </p>
-                )} */}
+                )}
               </div>
             )}
 
-            {watch("roleType") && (
+            {recipientType?.includes("role") && (
               <div>
+                <label className="text-base font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  Seleccionar Roles
+                </label>
                 <RHFAutocompleteFetcherInfinity
                   name="roleRecipients"
-                  label="Seleccionar roles"
+                  /* label="Seleccionar roles" */
                   placeholder="Buscar roles..."
                   required
                   params={{ pageSize: 10 }} // batch de 25
                   onFetch={getAllRoles}
                   multiple
                 />
-                {/* {methods.formState.errors.specificRecipients && (
+                {methods.formState.errors.specificRecipients && (
                   <p className="text-red-500 text-sm mt-2">
                     {methods.formState.errors.specificRecipients.message}
                   </p>
-                )} */}
+                )}
               </div>
             )}
           </div>
