@@ -61,6 +61,7 @@ export function ProductList ({
     {
       accessor: 'category',
       title: 'Categoría',
+      sortable: true,
       render: (product: any) => product.category || 'Sin categoría',
     },
     {
@@ -68,7 +69,7 @@ export function ProductList ({
       title: 'Estado',
       sortable: true,
       render: (product) => (
-        <Badge variant={product.status === 'active' ? 'success' : 'secondary'}>
+        <Badge variant={product.status === 'active' ? 'outline-success' : 'outline-secondary'}>
           {product.status === 'active' ? 'Activo' : 'Inactivo'}
         </Badge>
       ),
@@ -76,12 +77,14 @@ export function ProductList ({
     {
       accessor: 'suppliers',
       title: 'Proveedores',
+      sortable: true,
       render: (product: any) => product.suppliers || 'Sin proveedores',
     },
     {
       accessor: 'actions',
       title: 'Acciones',
       width: 100,
+      sortable: true,
       render: (product) => (
         <ActionsMenu
           onViewDetails={() => handleView(product)}
