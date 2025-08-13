@@ -105,10 +105,4 @@ export const backendRoutes = {
     delete: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/notifications/${id}`,
   },
-  notifications: {
-    create: `${process.env.NEXT_PUBLIC_API_URL}admin/notifications`,
-    userNotifications: `${process.env.NEXT_PUBLIC_API_URL}admin/user/notifications/`,
-    delete: (id: number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/notifications/${id}`,
-  },
 };
