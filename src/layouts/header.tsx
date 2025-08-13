@@ -1,5 +1,7 @@
 "use client";
 import { useAuth } from "@/auth-sso/hooks/use-auth";
+import Badge from "@/components/badge/badge";
+import IconBell from "@/components/icon/icon-bell";
 import IconLaptop from "@/components/icon/icon-laptop";
 import IconLogout from "@/components/icon/icon-logout";
 import IconMenu from "@/components/icon/icon-menu";
@@ -15,6 +17,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { paths } from "@/config/paths";
 
 // TODO: Componetizar
 
@@ -45,6 +48,11 @@ const Header = () => {
           </div>
 
           <div className="flex items-center space-x-1.5   dark:text-[#d0d2d6] sm:flex-1  lg:space-x-2 justify-end">
+            <button className="relative items-center flex shrink-0 ltr:mr-2  rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60">
+              <Link href={paths.dashboard.users.notification.list} className="">
+                <IconBell className="h-5 w-5 shrink-0 " />
+              </Link>
+            </button>
             <div>
               {theme === "light" ? (
                 <button
