@@ -34,16 +34,14 @@ export const createPermissionSchema = (
           ),
         { message: "El código ya está en uso" }
       ),
-    permissionType: z
-      .string()
-      /* .transform((val) => Number(val))
-      .pipe(z.number().min(1, "Debe seleccionar un tipo")), */,
+    permissionType: z.number().min(0, "Debe seleccionar un tipo"),
     description: z
       .string()
       .max(255, "La descripción no puede exceder 255 caracteres")
       .optional(),
-    roleId: z.number().optional()
-      
+    roleId: z
+      .number({ required_error: "El rol es requerido" })
+      .min(1, "Debe seleccionar un rol"),
   });
 
 // Permission update schema (partial)

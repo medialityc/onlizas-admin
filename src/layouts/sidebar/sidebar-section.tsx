@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import SidebarItem from "./sidebar-item";
 import { SidebarSectionProps } from "./types";
+import IconCaretsDown from "@/components/icon/icon-carets-down";
 
 const SidebarSection = ({
   section,
@@ -21,7 +21,7 @@ const SidebarSection = ({
 
   // Estado local de apertura/cierre del acordeón
   const [isOpen, setIsOpen] = useState<boolean>(
-    () => hasActiveItem || !!section.noSection
+    () => hasActiveItem || expandedItems[section.id]
   );
 
   // Si cambia el item activo, autoexpande la sección
@@ -30,6 +30,8 @@ const SidebarSection = ({
   }, [hasActiveItem]);
 
   const handleToggleSection = () => setIsOpen((v) => !v);
+  const contentId = `sidebar-section-${section.id}-content`;
+  const buttonId = `sidebar-section-${section.id}-button`;
 
   return (
     <li className="mb-6">
@@ -39,14 +41,16 @@ const SidebarSection = ({
             <button
               type="button"
               onClick={handleToggleSection}
+              id={buttonId}
               aria-expanded={isOpen}
+              aria-controls={contentId}
               className="w-full px-4 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider bg-primary/5 border-l-4 border-primary border-r-4 rounded-lg shadow-sm backdrop-blur-sm flex items-center justify-between"
             >
               <span className="flex items-center space-x-2">
                 <span>{section.label}</span>
               </span>
-              <ChevronDownIcon
-                className={`h-4 w-4 text-primary transition-transform duration-200 ${isOpen ? "rotate-180" : "rotate-0"}`}
+              <IconCaretsDown
+                className={`h-4 w-4 transition-transform duration-200 ${isOpen ? "rotate-180" : "rotate-0"}`}
               />
             </button>
             {/* Línea decorativa */}
@@ -56,7 +60,7 @@ const SidebarSection = ({
       )}
 
       {/* Items de la sección (acordeón) */}
-      {(section.noSection || isOpen) && (
+      {section.noSection ? (
         <ul className="space-y-1">
           {section.items.map((item) => (
             <SidebarItem
@@ -69,6 +73,28 @@ const SidebarSection = ({
             />
           ))}
         </ul>
+      ) : (
+        <div
+          id={contentId}
+          role="region"
+          aria-labelledby={buttonId}
+          className={`grid transition-[grid-template-rows] duration-300 ease-out ${
+            isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+          }`}
+        >
+          <ul className="space-y-1 overflow-hidden">
+            {section.items.map((item) => (
+              <SidebarItem
+                key={item.id}
+                item={item}
+                isActive={item.path ? isActiveLink(item.path) : false}
+                isExpanded={expandedItems[item.id]}
+                onToggle={() => onToggleItem(item.id)}
+                isActiveLink={isActiveLink}
+              />
+            ))}
+          </ul>
+        </div>
       )}
     </li>
   );
