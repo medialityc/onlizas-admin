@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
-import { getProductById } from '@/services/products-mock';
-import { ProductForm } from '@/sections/products/product-form';
+import { getProductById } from '@/services/products';
+import ProductForm from '@/sections/products/product-form';
 import { notFound } from 'next/navigation';
 
 function EditProductFallback () {

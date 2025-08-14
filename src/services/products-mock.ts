@@ -1,64 +1,62 @@
-import { CreateProduct, GetAllProducts, Product, ProductFilter, UpdateProduct } from '@/types/products';
-import { ApiResponse, ApiStatusResponse } from '@/types/fetch/api';
-import { IQueryable } from '@/types/fetch/request';
+import {
+  CreateProductRequest,
+  UpdateProductRequest,
+  Product,
+  ProductFilter,
+  ProductApiResponse,
+} from '@/types/products';
+import { ApiResponse } from '@/types/fetch/api';
 import { mockProducts, mockCategories, mockSuppliers } from '@/data/products';
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+// Simula la base de datos de productos
+let productsDB: Product[] = [...mockProducts];
+
 export async function getAllProducts (
-  params: IQueryable & ProductFilter
-): Promise<ApiResponse<GetAllProducts>> {
+  params: ProductFilter
+): Promise<ApiResponse<ProductApiResponse>> {
   await delay(500);
 
-  let filtered = [...mockProducts];
+  let filtered = [...productsDB];
 
-  // Filtro por búsqueda de texto
-  if (params?.search && params.search.trim() !== '') {
-    const searchTerm = params.search.toLowerCase().trim();
-    filtered = filtered.filter(p =>
-      p.name.toLowerCase().includes(searchTerm) ||
-      (p.description && p.description.toLowerCase().includes(searchTerm)) ||
-      (p.upcCode && p.upcCode.toLowerCase().includes(searchTerm)) ||
-      (p.npnCode && p.npnCode.toLowerCase().includes(searchTerm))
-    );
+  if (params?.search) {
+    const searchTerm = params.search.toLowerCase();
+    filtered = filtered.filter(p => p.name.toLowerCase().includes(searchTerm));
   }
 
-  if (params?.status) {
-    filtered = filtered.filter(p => p.status === params.status);
+  if (params?.isActive !== undefined) {
+    filtered = filtered.filter(p => p.isActive === params.isActive);
   }
+
   if (params?.categoryId) {
-    filtered = filtered.filter(p => p.categoryId === params.categoryId);
+    filtered = filtered.filter(p => p.categories.some(c => c.id === params.categoryId));
   }
+
   if (params?.supplierId) {
-    filtered = filtered.filter(p => p.supplierIds.includes(params.supplierId!));
+    filtered = filtered.filter(p => p.suppliers.some(s => s.id === params.supplierId));
   }
 
-  const enrichedData = filtered.map(product => ({
-    ...product,
-    category: mockCategories.find(c => c.id === product.categoryId)?.name || 'Sin categoría',
-    suppliers: product.supplierIds.map(id =>
-      mockSuppliers.find(s => s.id === id)?.name
-    ).filter(Boolean).join(', ')
-  }));
+  const pageNumber = params.pageNumber || 1;
+  const pageSize = params.pageSize || 10;
+  const totalCount = filtered.length;
+  const totalPages = Math.ceil(totalCount / pageSize);
+  const paginatedData = filtered.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
-  const page = params?.pagination?.page || 1;
-  const pageSize = params?.pagination?.pageSize || 10;
-  const start = (page - 1) * pageSize;
-  const end = start + pageSize;
-
-  const result: GetAllProducts = {
-    data: enrichedData.slice(start, end),
-    totalCount: filtered.length,
-    page: page,
-    pageSize: pageSize,
-    hasNext: page * pageSize < filtered.length,
-    hasPrevious: page > 1
+  const response: ProductApiResponse = {
+    data: paginatedData,
+    totalCount,
+    pageNumber,
+    pageSize,
+    totalPages,
+    hasNextPage: pageNumber < totalPages,
+    hasPreviousPage: pageNumber > 1,
   };
 
   return {
     error: false,
     status: 200,
-    data: result
+    data: response,
   };
 }
 
@@ -66,145 +64,123 @@ export async function getProductById (
   id: number
 ): Promise<ApiResponse<Product>> {
   await delay(300);
-  const product = mockProducts.find(p => p.id === id);
+  const product = productsDB.find(p => p.id === id);
+
   if (!product) {
     return {
       error: true,
       status: 404,
-      message: 'Producto no encontrado'
+      message: 'Producto no encontrado',
     };
   }
 
   return {
     error: false,
     status: 200,
-    data: product
+    data: product,
   };
 }
 
 export async function createProduct (
-  data: CreateProduct
+  data: CreateProductRequest
 ): Promise<ApiResponse<Product>> {
   await delay(800);
+
+  const newId = Math.max(...productsDB.map(p => p.id), 0) + 1;
+
   const newProduct: Product = {
+    id: newId,
     ...data,
-    id: Math.max(...mockProducts.map(p => p.id)) + 1,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    categories: data.categoryIds.map(id => {
+      const category = mockCategories.find(c => c.id === id);
+      return { id: category!.id, name: category!.name };
+    }),
+    suppliers: data.supplierIds.map(id => {
+      const supplier = mockSuppliers.find(s => s.id === id);
+      return { id: supplier!.id, name: supplier!.name };
+    }),
+    features: [],
+    images: [],
   };
-  mockProducts.push(newProduct);
+
+  productsDB.push(newProduct);
 
   return {
     error: false,
     status: 201,
-    data: newProduct
+    data: newProduct,
   };
 }
 
 export async function updateProduct (
   id: number,
-  data: UpdateProduct
+  data: UpdateProductRequest
 ): Promise<ApiResponse<Product>> {
   await delay(800);
-  const index = mockProducts.findIndex(p => p.id === id);
+  const index = productsDB.findIndex(p => p.id === id);
+
   if (index === -1) {
     return {
       error: true,
       status: 404,
-      message: 'Producto no encontrado'
+      message: 'Producto no encontrado',
     };
   }
 
-  mockProducts[index] = {
-    ...mockProducts[index],
-    ...data,
-    updatedAt: new Date().toISOString()
+  const existingProduct = productsDB[index];
+
+  const { features, images, categoryIds, supplierIds, ...restOfData } = data;
+
+  const updatedProduct: Product = {
+    ...existingProduct,
+    ...restOfData,
+    categories: categoryIds
+      ? categoryIds.map(catId => {
+        const category = mockCategories.find(c => c.id === catId);
+        if (!category) throw new Error(`Mock Error: Category with id ${catId} not found`);
+        return { id: category.id, name: category.name };
+      })
+      : existingProduct.categories,
+    suppliers: supplierIds
+      ? supplierIds.map(supId => {
+        const supplier = mockSuppliers.find(s => s.id === supId);
+        if (!supplier) throw new Error(`Mock Error: Supplier with id ${supId} not found`);
+        return { id: supplier.id, name: supplier.name };
+      })
+      : existingProduct.suppliers,
+    // Por ahora, el mock no transforma las características o imágenes, solo las mantiene.
+    features: existingProduct.features,
+    images: existingProduct.images,
   };
+
+  productsDB[index] = updatedProduct;
 
   return {
     error: false,
     status: 200,
-    data: mockProducts[index]
+    data: updatedProduct,
   };
 }
 
 export async function deleteProduct (
   id: number
-): Promise<ApiResponse<ApiStatusResponse>> {
+): Promise<ApiResponse<null>> {
   await delay(500);
-  const index = mockProducts.findIndex(p => p.id === id);
+  const index = productsDB.findIndex(p => p.id === id);
+
   if (index === -1) {
     return {
       error: true,
       status: 404,
-      message: 'Producto no encontrado'
+      message: 'Producto no encontrado',
     };
   }
-  mockProducts.splice(index, 1);
+
+  productsDB.splice(index, 1);
 
   return {
     error: false,
-    status: 200,
-    data: { status: 200 }
-  };
-}
-
-export async function assignSupplierToProduct (
-  productId: number,
-  supplierId: number
-): Promise<ApiResponse<ApiStatusResponse>> {
-  await delay(400);
-  const product = mockProducts.find(p => p.id === productId);
-  if (!product) {
-    return {
-      error: true,
-      status: 404,
-      message: 'Producto no encontrado'
-    };
-  }
-  if (!product.supplierIds.includes(supplierId)) {
-    product.supplierIds.push(supplierId);
-  }
-
-  return {
-    error: false,
-    status: 200,
-    data: { status: 200 }
-  };
-}
-
-export async function unassignSupplierFromProduct (
-  productId: number,
-  supplierId: number
-): Promise<ApiResponse<ApiStatusResponse>> {
-  await delay(400);
-  const product = mockProducts.find(p => p.id === productId);
-  if (!product) {
-    return {
-      error: true,
-      status: 404,
-      message: 'Producto no encontrado'
-    };
-  }
-  product.supplierIds = product.supplierIds.filter(id => id !== supplierId);
-
-  return {
-    error: false,
-    status: 200,
-    data: { status: 200 }
-  };
-}
-
-export async function uploadProductImage (
-  productId: number,
-  file: File
-): Promise<ApiResponse<ApiStatusResponse>> {
-  await delay(1000);
-  console.log(`Imagen subida para producto ${productId}:`, file.name);
-
-  return {
-    error: false,
-    status: 200,
-    data: { status: 200 }
+    status: 204, // No Content
+    data: null,
   };
 }

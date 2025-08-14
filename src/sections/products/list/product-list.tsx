@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Product } from '@/types/products';
+import { Product, ProductSearchParams, GetAllProducts } from '@/types/products';
 import { DataGrid } from '@/components/datagrid/datagrid';
 import Badge from '@/components/badge/badge';
 import ActionsMenu from '@/components/menu/actions-menu';
@@ -14,9 +14,9 @@ import Link from 'next/link';
 import useFiltersUrl from '@/hooks/use-filters-url';
 
 interface ProductListProps {
-  data?: any;
-  searchParams: any;
-  onSearchParamsChange?: (params: any) => void; // ahora opcional
+  data?: GetAllProducts;
+  searchParams: ProductSearchParams;
+  onSearchParamsChange?: (params: ProductSearchParams) => void;
 }
 
 export function ProductList ({
@@ -59,18 +59,25 @@ export function ProductList ({
       ),
     },
     {
-      accessor: 'category',
+      accessor: 'categories',
       title: 'Categoría',
       sortable: true,
-      render: (product: any) => product.category || 'Sin categoría',
+      render: (product) => (
+        <div>
+          {product.categories?.length > 0
+            ? product.categories.map(cat => cat.name).join(', ')
+            : 'Sin categoría'
+          }
+        </div>
+      ),
     },
     {
-      accessor: 'status',
+      accessor: 'isActive',
       title: 'Estado',
       sortable: true,
       render: (product) => (
-        <Badge variant={product.status === 'active' ? 'outline-success' : 'outline-secondary'}>
-          {product.status === 'active' ? 'Activo' : 'Inactivo'}
+        <Badge variant={product.isActive ? 'outline-success' : 'outline-secondary'}>
+          {product.isActive ? 'Activo' : 'Inactivo'}
         </Badge>
       ),
     },
@@ -78,7 +85,14 @@ export function ProductList ({
       accessor: 'suppliers',
       title: 'Proveedores',
       sortable: true,
-      render: (product: any) => product.suppliers || 'Sin proveedores',
+      render: (product) => (
+        <div>
+          {product.suppliers?.length > 0
+            ? product.suppliers.map(sup => sup.name).join(', ')
+            : 'Sin proveedores'
+          }
+        </div>
+      ),
     },
     {
       accessor: 'actions',
@@ -89,7 +103,7 @@ export function ProductList ({
         <ActionsMenu
           onViewDetails={() => handleView(product)}
           onEdit={() => handleEdit(product)}
-          isActive={product.status === 'active'}
+          isActive={product.isActive}
         />
       ),
     },
@@ -106,7 +120,7 @@ export function ProductList ({
           columns={columns}
           onCreate={handleCreateProduct}
           searchParams={searchParams}
-          onSearchParamsChange={(p: any) => {
+          onSearchParamsChange={(p: ProductSearchParams) => {
             updateFiltersInUrl(p);
             onSearchParamsChange?.(p);
           }}

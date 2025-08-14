@@ -5,15 +5,37 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { backendRoutes } from "@/lib/endpoint";
 import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
-import { CreateProduct, GetAllProducts, Product, ProductFilter, UpdateProduct } from '@/types/products';
+import {
+  CreateProduct,
+  GetAllProducts,
+  Product,
+  ProductFilter,
+  UpdateProduct,
+  ProductSearchParams,
+  SimpleCategoriesResponse,
+  SimpleSuppliersResponse,
+  CategoryFeaturesResponse,
+  AssignSuppliersRequest,
+  CanDeleteResponse
+} from '@/types/products';
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
 
 export async function getAllProducts (
-  params: IQueryable & ProductFilter
+  params: ProductSearchParams & ProductFilter
 ): Promise<ApiResponse<GetAllProducts>> {
+  // Transformar parámetros al formato esperado por la API
+  const apiParams = {
+    pageNumber: params.pageNumber || 1,
+    pageSize: params.pageSize || 10,
+    search: params.search,
+    categoryId: params.categoryId,
+    isActive: params.isActive,
+    supplierId: params.supplierId
+  };
+
   const url = new QueryParamsURLFactory(
-    { ...params },
+    apiParams,
     backendRoutes.products.list
   ).build();
 
@@ -50,6 +72,9 @@ export async function createProduct (
   const res = await nextAuthFetch({
     url: backendRoutes.products.create,
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
     data,
     useAuth: true,
   });
@@ -95,13 +120,12 @@ export async function deleteProduct (
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
-export async function assignSupplierToProduct (
-  productId: number,
-  supplierId: number
+export async function deactivateProduct (
+  id: number
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
-    url: `${backendRoutes.products.list}/${productId}/suppliers/${supplierId}`,
-    method: "POST",
+    url: backendRoutes.products.deactivate(id),
+    method: "PATCH",
     useAuth: true,
   });
 
@@ -111,13 +135,31 @@ export async function assignSupplierToProduct (
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
-export async function unassignSupplierFromProduct (
+export async function canDeleteProduct (
+  id: number
+): Promise<ApiResponse<CanDeleteResponse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.products.canDelete(id),
+    method: "GET",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<CanDeleteResponse>(res);
+}
+
+export async function assignSuppliersToProduct (
   productId: number,
-  supplierId: number
+  data: AssignSuppliersRequest
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
-    url: `${backendRoutes.products.list}/${productId}/suppliers/${supplierId}`,
-    method: "DELETE",
+    url: backendRoutes.products.assignSuppliers(productId),
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data,
     useAuth: true,
   });
 
@@ -127,23 +169,69 @@ export async function unassignSupplierFromProduct (
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
-export async function uploadProductImage (
+export async function unassignSuppliersFromProduct (
   productId: number,
-  file: File
+  data: AssignSuppliersRequest
 ): Promise<ApiResponse<ApiStatusResponse>> {
-  const formData = new FormData();
-  formData.append('image', file);
-
   const res = await nextAuthFetch({
-    url: `${backendRoutes.products.list}/${productId}/images`,
+    url: backendRoutes.products.unassignSuppliers(productId),
     method: "POST",
-    data: formData,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data,
     useAuth: true,
-    headers: { 'Content-Type': 'multipart/form-data' }
   });
 
   if (!res.ok) return handleApiServerError(res);
   revalidateTag("products");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
+}
+
+// Servicios complementarios para formularios
+export async function getSimpleCategories (): Promise<ApiResponse<SimpleCategoriesResponse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.products.simpleCategories,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["categories"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<SimpleCategoriesResponse>(res);
+}
+
+export async function getSimpleSuppliers (): Promise<ApiResponse<SimpleSuppliersResponse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.products.simpleSuppliers,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["suppliers"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<SimpleSuppliersResponse>(res);
+}
+
+export async function getCategoryFeatures (
+  categoryIds: number[]
+): Promise<ApiResponse<CategoryFeaturesResponse>> {
+  const url = new QueryParamsURLFactory(
+    { categoryIds: categoryIds.join(',') },
+    backendRoutes.products.categoryFeatures
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["categories"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<CategoryFeaturesResponse>(res);
 }

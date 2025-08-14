@@ -1,58 +1,148 @@
 import { PaginatedResponse } from "./common";
 
-export type ProductVariant = {
-  weight?: number;
-  color?: string;
-  size?: string;
+// Tipos según la API real en product-apis.md
+export type ProductDimensions = {
+  width?: number;
+  height?: number;
+  lenght?: number; // Note: API usa "lenght" no "length"
 };
 
 export type ProductImage = {
-  id: number;
-  url: string;
-  isMain: boolean;
+  image: string;
   order: number;
 };
 
-export type ProductSpecification = {
-  key: string;
+export type ProductDetail = {
+  name: string;
   value: string;
 };
 
-export type ProductDimensions = {
-  height?: number;
-  width?: number;
-  depth?: number;
-  unit: string;
+export type ProductFeature = {
+  id: number;
+  value: string;
 };
 
+export type ProductFeatureResponse = {
+  id: number;
+  name: string;
+  values: string[];
+};
+
+export type ProductCategory = {
+  id: number;
+  name: string;
+};
+
+export type ProductSupplier = {
+  id: number;
+  name: string;
+};
+
+// Producto según respuesta de la API
 export type Product = {
   id: number;
   name: string;
-  description?: string;
-  categoryId: number;
-  status: 'active' | 'inactive';
-  upcCode?: string;
-  npnCode?: string;
-  images: ProductImage[];
-  variants?: ProductVariant;
-  specifications?: ProductSpecification[];
-  featuredCharacteristics?: string[];
+  description: string;
+  isActive: boolean;
+  suppliers: ProductSupplier[];
+  categories: ProductCategory[];
   dimensions?: ProductDimensions;
-  warranty?: string;
-  supplierIds: number[];
-  createdAt: string;
-  updatedAt: string;
+  about: string[];
+  details: ProductDetail[];
+  features: ProductFeatureResponse[];
+  images: ProductImage[];
 };
 
-export type CreateProduct = Omit<Product, 'id' | 'createdAt' | 'updatedAt'>;
+// Para crear producto según la API
+export type CreateProductRequest = {
+  name: string;
+  description: string;
+  isActive: boolean;
+  supplierIds: number[];
+  categoryIds: number[];
+  dimensions?: ProductDimensions;
+  about: string[];
+  details: ProductDetail[];
+  features: ProductFeature[];
+  images: ProductImage[];
+};
 
-export type UpdateProduct = Partial<CreateProduct>;
+// Para actualizar producto según la API  
+export type UpdateProductRequest = Partial<CreateProductRequest>;
 
-export type GetAllProducts = PaginatedResponse<Product>;
+// Aliases para compatibilidad con servicios
+export type CreateProduct = CreateProductRequest;
+export type UpdateProduct = UpdateProductRequest;
+
+// Respuesta específica de la API de productos con su formato de paginación
+export type ProductApiResponse = {
+  data: Product[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+};
+
+export type GetAllProducts = ProductApiResponse;
 
 export type ProductFilter = {
+  search?: string;
   categoryId?: number;
-  status?: 'active' | 'inactive';
+  isActive?: boolean;
   supplierId?: number;
-  hasStock?: boolean;
+  pageNumber?: number;
+  pageSize?: number;
+};
+
+// Search params para productos - actualizado según la nueva API
+export interface ProductSearchParams {
+  pageNumber?: number;
+  pageSize?: number;
+  search?: string;
+  categoryId?: number;
+  isActive?: boolean;
+  supplierId?: number;
+}
+
+// Tipos para endpoints complementarios
+export type SimpleCategory = {
+  id: number;
+  name: string;
+  description?: string;
+};
+
+export type SimpleSupplier = {
+  id: number;
+  name: string;
+};
+
+export type CategoryFeature = {
+  id: number;
+  name: string;
+  description?: string;
+  suggestions: string[];
+  required: boolean;
+};
+
+export type SimpleCategoriesResponse = {
+  categories: SimpleCategory[];
+};
+
+export type SimpleSuppliersResponse = {
+  suppliers: SimpleSupplier[];
+};
+
+export type CategoryFeaturesResponse = {
+  features: CategoryFeature[];
+};
+
+// Tipos para acciones específicas
+export type AssignSuppliersRequest = {
+  supplierIds: number[];
+};
+
+export type CanDeleteResponse = {
+  canDelete: boolean;
 };

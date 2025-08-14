@@ -48,8 +48,8 @@ async function ProductDetails ({ id }: { id: string }) {
         <div className="space-y-4">
           <div>
             <label className="font-semibold">Estado:</label>
-            <Badge variant={product.status === 'active' ? 'success' : 'secondary'}>
-              {product.status === 'active' ? 'Activo' : 'Inactivo'}
+            <Badge variant={product.isActive ? 'success' : 'secondary'}>
+              {product.isActive ? 'Activo' : 'Inactivo'}
             </Badge>
           </div>
           {product.description && (
@@ -58,16 +58,28 @@ async function ProductDetails ({ id }: { id: string }) {
               <p className="text-gray-600">{product.description}</p>
             </div>
           )}
-          {product.upcCode && (
+          {product.categories && product.categories.length > 0 && (
             <div>
-              <label className="font-semibold">Código UPC:</label>
-              <p>{product.upcCode}</p>
+              <label className="font-semibold">Categorías:</label>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {product.categories.map(category => (
+                  <Badge key={category.id} variant="outline-primary">
+                    {category.name}
+                  </Badge>
+                ))}
+              </div>
             </div>
           )}
-          {product.npnCode && (
+          {product.suppliers && product.suppliers.length > 0 && (
             <div>
-              <label className="font-semibold">Código NPN:</label>
-              <p>{product.npnCode}</p>
+              <label className="font-semibold">Proveedores:</label>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {product.suppliers.map(supplier => (
+                  <Badge key={supplier.id} variant="outline-secondary">
+                    {supplier.name}
+                  </Badge>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -76,44 +88,68 @@ async function ProductDetails ({ id }: { id: string }) {
             <div>
               <label className="font-semibold">Dimensiones:</label>
               <p>
-                {product.dimensions.height}x{product.dimensions.width}x{product.dimensions.depth} {product.dimensions.unit}
+                {product.dimensions.height && `Alto: ${product.dimensions.height}cm`}
+                {product.dimensions.width && ` | Ancho: ${product.dimensions.width}cm`}
+                {product.dimensions.lenght && ` | Largo: ${product.dimensions.lenght}cm`}
               </p>
             </div>
           )}
-          {product.warranty && (
+          {product.images && product.images.length > 0 && (
             <div>
-              <label className="font-semibold">Garantía:</label>
-              <p>{product.warranty}</p>
+              <label className="font-semibold">Imágenes:</label>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {product.images
+                  .sort((a, b) => a.order - b.order)
+                  .map((image, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={image.image}
+                        alt={`Imagen ${image.order}`}
+                        className="w-full h-32 object-cover rounded-lg border"
+                      />
+                      {image.order === 1 && (
+                        <Badge className="absolute top-2 left-2" variant="primary">
+                          Principal
+                        </Badge>
+                      )}
+                    </div>
+                  ))}
+              </div>
             </div>
           )}
-          <div>
-            <label className="font-semibold">Creado:</label>
-            <p>{new Date(product.createdAt).toLocaleDateString()}</p>
-          </div>
-          <div>
-            <label className="font-semibold">Actualizado:</label>
-            <p>{new Date(product.updatedAt).toLocaleDateString()}</p>
-          </div>
         </div>
       </div>
-      {(product.featuredCharacteristics ?? []).length > 0 && (
+      {product.about && product.about.length > 0 && (
         <div>
-          <label className="font-semibold">Características destacadas:</label>
+          <label className="font-semibold">Acerca del producto:</label>
           <ul className="list-disc list-inside mt-2">
-            {(product.featuredCharacteristics ?? []).map((char, i) => (
-              <li key={i}>{char}</li>
+            {product.about.map((item, i) => (
+              <li key={i}>{item}</li>
             ))}
           </ul>
         </div>
       )}
-      {(product.specifications ?? []).length > 0 && (
+      {product.details && product.details.length > 0 && (
         <div>
-          <label className="font-semibold">Especificaciones técnicas:</label>
+          <label className="font-semibold">Detalles del producto:</label>
           <div className="mt-2 space-y-2">
-            {(product.specifications ?? []).map((spec, i) => (
+            {product.details.map((detail, i) => (
               <div key={i} className="flex justify-between border-b pb-1">
-                <span className="font-medium">{spec.key}:</span>
-                <span>{spec.value}</span>
+                <span className="font-medium">{detail.name}:</span>
+                <span>{detail.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {product.features && product.features.length > 0 && (
+        <div>
+          <label className="font-semibold">Características:</label>
+          <div className="mt-2 space-y-2">
+            {product.features.map((feature, i) => (
+              <div key={i} className="flex justify-between border-b pb-1">
+                <span className="font-medium">{feature.name}:</span>
+                <span>{feature.values.join(', ')}</span>
               </div>
             ))}
           </div>
