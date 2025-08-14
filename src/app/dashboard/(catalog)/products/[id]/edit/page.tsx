@@ -1,29 +1,52 @@
 import { Suspense } from 'react';
-import { getProductById } from '@/services/products';
-import ProductForm from '@/sections/products/product-form';
+import { getProductById } from '@/services/products-mock';
 import { notFound } from 'next/navigation';
+import ProductForm from '@/sections/products/product-form';
 
-function EditProductFallback () {
+// Esqueleto de carga
+function ProductEditFallback() {
   return (
-    <div className="max-w-4xl mx-auto animate-pulse space-y-4">
+    <div className="max-w-6xl mx-auto space-y-6 animate-pulse">
       <div className="h-8 bg-gray-200 rounded w-1/3" />
-      <div className="h-4 bg-gray-200 rounded w-1/2" />
-      <div className="h-96 bg-gray-200 rounded" />
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2 space-y-6">
+          <div className="bg-white rounded-lg border p-6 space-y-4">
+            <div className="h-6 bg-gray-200 rounded w-1/4" />
+            <div className="h-10 bg-gray-200 rounded" />
+            <div className="h-20 bg-gray-200 rounded" />
+          </div>
+          <div className="bg-white rounded-lg border p-6 space-y-4">
+            <div className="h-6 bg-gray-200 rounded w-1/3" />
+            <div className="h-10 bg-gray-200 rounded" />
+            <div className="h-10 bg-gray-200 rounded" />
+          </div>
+        </div>
+        <div className="xl:col-span-1 space-y-6">
+          <div className="bg-white rounded-lg border p-6 space-y-4">
+            <div className="h-6 bg-gray-200 rounded w-1/3" />
+            <div className="h-32 bg-gray-200 rounded" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-async function EditProductContent ({ id }: { id: string }) {
-  const response = await getProductById(Number(id));
-  if (!response?.data) notFound();
-  return <ProductForm product={response.data} />;
-}
 
-export default async function EditProductPage ({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params; // params es Promesa en Next 15
+
+export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params; // Next 15 params es una Promesa
+    const response = await getProductById(Number(id));
+  if (!response?.data) notFound();
+  
+  const product = response.data;
+
   return (
-    <Suspense fallback={<EditProductFallback />}>
-      <EditProductContent id={id} />
+    <Suspense fallback={<ProductEditFallback />}>
+      <ProductForm
+        product={product} 
+        isModal={false} 
+      />
     </Suspense>
   );
 }
