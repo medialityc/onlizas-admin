@@ -66,12 +66,6 @@ export const sidebarSections: SidebarSection[] = [
         path: paths.dashboard.suppliers.list,
         icon: <UserCircleIcon className="h-4 w-4" />,
       },
-      {
-        id: "business",
-        label: "Negocios",
-        path: paths.dashboard.business.list,
-        icon: <BriefcaseIcon className="h-4 w-4" />,
-      },
     ],
   },
   {
@@ -95,6 +89,12 @@ export const sidebarSections: SidebarSection[] = [
         label: "Permisos",
         path: paths.dashboard.permissions.list,
         icon: <ShieldCheckIcon className="h-4 w-4" />,
+      },
+      {
+        id: "business",
+        label: "Negocios",
+        path: paths.dashboard.business.list,
+        icon: <BriefcaseIcon className="h-4 w-4" />,
       },
     ],
   },
@@ -129,10 +129,15 @@ export const defaultExpandedSections = {
   "order-management": false,
   operations: false,
   financial: false,
-  catalog: false,
+  catalog: true,
+  security: true,
+  logistics: true,
   administration: false,
 };
 
 export const defaultExpandedItems = {
   "invoice-management": false,
+  catalog: true,
+  security: true,
+  logistics: true,
 };

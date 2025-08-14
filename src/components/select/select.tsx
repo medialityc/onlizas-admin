@@ -5,9 +5,32 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/solid";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AdvancedSearchSelect } from "./advance-form-select";
 
-interface SelectProps<T> extends AdvancedSearchSelect<T> {
+interface SearchSelectProps<T = any> {
+  name?: string;
+  label?: string;
+  placeholder?: string;
+  options: T[];
+  objectValueKey: keyof T;
+  objectKeyLabel?: keyof T;
+  exclude?: string[];
+  loading?: boolean;
+  required?: boolean;
+  multiple?: boolean;
+  onChangeOptional?: () => void;
+  onScrollEnd?: () => void;
+  renderOption?: (option: T) => React.ReactNode;
+  optionDisabled?: (option: T) => boolean; // determina si una opción está deshabilitada
+  dataTest?: string;
+  containerClassname?: string;
+  pillsClassname?: string;
+  renderMultiplesValues?: (
+    options: T[],
+    removeSelected: (option: T) => void
+  ) => React.ReactNode;
+}
+
+interface SelectProps<T> extends SearchSelectProps<T> {
   inputRef?: React.RefObject<HTMLInputElement>;
   label?: string;
   placeholder?: string;
@@ -23,6 +46,7 @@ interface SelectProps<T> extends AdvancedSearchSelect<T> {
   onChangeOptional?: () => void;
   onScrollEnd?: () => void;
   renderOption?: (option: T) => React.ReactNode;
+  optionDisabled?: (option: T) => boolean;
   dataTest?: string;
   containerClassname?: string;
   pillsClassname?: string;
@@ -34,33 +58,9 @@ interface SelectProps<T> extends AdvancedSearchSelect<T> {
   error?: { message?: string };
   disabled?: boolean;
   displayValue?: (option: T) => string;
-  /**
-   * Props para el componente Select.
-   * @template T Tipo de las opciones.
-   * @property {React.RefObject<HTMLInputElement>} [inputRef] Referencia al input para manipulación directa (enfocar, limpiar, etc).
-   * @property {string} [label] Texto que se muestra como etiqueta arriba del input.
-   * @property {string} [placeholder] Texto de ayuda que aparece dentro del input cuando está vacío.
-   * @property {T[]} options Arreglo de objetos que representan las opciones disponibles para seleccionar.
-   * @property {keyof T} objectValueKey Propiedad del objeto opción que se usará como valor único (por ejemplo, "id").
-   * @property {keyof T} [objectKeyLabel] Propiedad del objeto opción que se usará como texto visible en la lista (por ejemplo, "nombre"). Si no se especifica, se usa el valor.
-   * @property {string[]} [exclude] Lista de valores (según objectValueKey) que se deben excluir de las opciones.
-   * @property {boolean} [loading] Si es true, muestra un spinner de carga en el input.
-   * @property {boolean} [required] Si es true, indica que el campo es obligatorio y muestra un asterisco en la etiqueta.
-   * @property {boolean} [multiple] Si es true, permite seleccionar varias opciones a la vez (modo multiselección).
-   * @property {T[keyof T] | T[keyof T][]} [value] Valor o valores actualmente seleccionados. Puede ser un solo valor o un array si es múltiple.
-   * @property {(value: T[keyof T] | T[keyof T][]) => void} [onChange] Función que se llama cuando el usuario selecciona o deselecciona una opción. Recibe el nuevo valor o valores.
-   * @property {() => void} [onChangeOptional] Función opcional que se ejecuta en cada cambio, útil para side effects.
-   * @property {() => void} [onScrollEnd] Función que se llama cuando el usuario llega al final del scroll en la lista de opciones (útil para paginación o carga dinámica).
-   * @property {(option: T) => React.ReactNode} [renderOption] Permite personalizar el renderizado de cada opción en la lista.
-   * @property {string} [dataTest] Prop para agregar un atributo de testeo (data-test) al contenedor principal.
-   * @property {string} [containerClassname] Clase CSS adicional para el contenedor principal del select.
-   * @property {string} [pillsClassname] Clase CSS adicional para los "pills" (chips) de opciones seleccionadas en modo múltiple.
-   * @property {string} [inputClassname] Clase CSS adicional para el input de búsqueda.
-   * @property {(options: T[], removeSelected: (option: T) => void) => React.ReactNode} [renderMultiplesValues] Permite personalizar el renderizado de los valores seleccionados en modo múltiple.
-   * @property {{ message?: string }} [error] Objeto de error, con mensaje a mostrar debajo del input si hay error de validación.
-   * @property {boolean} [disabled] Si es true, deshabilita el input y no permite interacción.
-   * @property {() => void} [displayValue] Valor que se muestra en el input.
-   */
+  inputClassName?: string;
+  query: string;
+  setQuery: (query: string) => void;
 }
 
 export function Select<T>({
@@ -78,36 +78,44 @@ export function Select<T>({
   onChangeOptional,
   onScrollEnd,
   renderOption,
+  optionDisabled,
   dataTest,
   containerClassname,
   pillsClassname,
   renderMultiplesValues,
   error,
   disabled,
-  inputClassName,
+  inputClassname,
   inputRef,
   displayValue,
+  query,
+  setQuery,
 }: SelectProps<T>) {
   const scrollRef = useRef<HTMLUListElement>(null);
   const pillsRef = useRef<HTMLDivElement>(null);
-  const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
 
-  const isQuerySelected = () => {
-    // Si no hay valor seleccionado, no hay coincidencia
-    if (!value) return false;
-
-    // Puede ser múltiple o simple
-    const selectedValues = Array.isArray(value) ? value : [value];
-
-    // Recorremos las opciones seleccionadas y comparamos el keyLabel con el query
-    return options.some(
-      (option) =>
-        selectedValues.includes(option[objectValueKey]) &&
-        getKeyLabelValue(option).toLowerCase() === query.trim().toLowerCase()
-    );
+  // Utilidad para escapar regex
+  const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  // Resalta coincidencias del query en un texto
+  const highlightMatch = (text: string) => {
+    if (!query.trim()) return text;
+    try {
+      const regex = new RegExp(`(${escapeRegExp(query)})`, "ig");
+      return text.split(regex).map((part, i) =>
+        regex.test(part) ? (
+          <mark key={i} className="bg-yellow-200 text-inherit p-0 rounded-sm">
+            {part}
+          </mark>
+        ) : (
+          <React.Fragment key={i}>{part}</React.Fragment>
+        )
+      );
+    } catch {
+      return text; // fallback en caso de error regex
+    }
   };
 
   // Get keyLabel value for an option (for filtering/search)
@@ -141,15 +149,28 @@ export function Select<T>({
     const baseOptions = options.filter(
       (opt) => !exclude?.includes(String(opt[objectValueKey]))
     );
-    if (query.trim() === "" || isQuerySelected()) {
-      // Si no hay query o el query es igual a un seleccionado, muestra todas
+    // Detecta si el select simple ya tiene un valor seleccionado y el input solo muestra ese valor (no se está buscando activamente)
+    let effectiveQuery = query;
+    if (!multiple && value) {
+      const selectedOption = options.find(
+        (opt) => opt[objectValueKey] === value
+      );
+      if (
+        selectedOption &&
+        query.trim() !== "" &&
+        query === getDisplayValue(selectedOption)
+      ) {
+        // Mostrar todas las opciones si el texto coincide exactamente con el seleccionado (estado "reposo")
+        effectiveQuery = "";
+      }
+    }
+    if (effectiveQuery.trim() === "") {
       return baseOptions;
     }
-    // Si no, filtra normalmente usando keyLabel
-    return baseOptions.filter((opt) => {
-      const keyLabelValue = getKeyLabelValue(opt).toLowerCase();
-      return keyLabelValue.includes(query.toLowerCase());
-    });
+    const lowered = effectiveQuery.toLowerCase();
+    return baseOptions.filter((opt) =>
+      getKeyLabelValue(opt).toLowerCase().includes(lowered)
+    );
   })();
   const handleScroll = () => {
     if (!scrollRef.current || !onScrollEnd) return;
@@ -227,7 +248,7 @@ export function Select<T>({
         setQuery("");
       }
     },
-    [multiple, options, objectValueKey, getDisplayValue]
+    [multiple, options, objectValueKey, getDisplayValue, setQuery]
   );
 
   // Watch for value changes to sync with query
@@ -257,8 +278,18 @@ export function Select<T>({
             onChangeOptional?.();
           }}
           disabled={disabled}
-          onFocus={() => setIsOpen(true)}
-          onBlur={() => setTimeout(() => setIsOpen(false), 200)}
+          onFocus={() => {
+            setIsOpen(true);
+            if (!multiple && value) {
+              setQuery("");
+            }
+          }}
+          onBlur={() => {
+            setTimeout(() => {
+              setIsOpen(false);
+              syncQueryWithValue(value);
+            }, 200);
+          }}
           placeholder={placeholder}
           /**
            * Componente Select genérico para seleccionar una o varias opciones.
@@ -269,7 +300,7 @@ export function Select<T>({
            */
           className={cn(
             "form-input w-full  h-12 border-2 border-slate-200 rounded-xl focus:border-blue-500 ",
-            inputClassName
+            inputClassname
           )}
           ref={inputRef}
           onKeyDown={(e) => {
@@ -277,22 +308,44 @@ export function Select<T>({
               e.preventDefault();
               if (!isOpen) {
                 setIsOpen(true);
-                setFocusedIndex(0);
+                // primer índice habilitado
+                const first = filteredOptions.findIndex(
+                  (o) => !(optionDisabled?.(o) ?? false)
+                );
+                setFocusedIndex(first === -1 ? 0 : first);
               } else {
                 setFocusedIndex((prev) => {
-                  const next = prev + 1;
-                  return next >= filteredOptions.length ? 0 : next;
+                  let next = prev;
+                  for (let i = 0; i < filteredOptions.length; i++) {
+                    next = (next + 1) % filteredOptions.length;
+                    if (!(optionDisabled?.(filteredOptions[next]) ?? false))
+                      break;
+                  }
+                  return next;
                 });
               }
             } else if (e.key === "ArrowUp") {
               e.preventDefault();
               if (!isOpen) {
                 setIsOpen(true);
-                setFocusedIndex(filteredOptions.length - 1);
+                // último habilitado
+                for (let i = filteredOptions.length - 1; i >= 0; i--) {
+                  if (!(optionDisabled?.(filteredOptions[i]) ?? false)) {
+                    setFocusedIndex(i);
+                    break;
+                  }
+                }
               } else {
                 setFocusedIndex((prev) => {
-                  const next = prev - 1;
-                  return next < 0 ? filteredOptions.length - 1 : next;
+                  let next = prev;
+                  for (let i = 0; i < filteredOptions.length; i++) {
+                    next =
+                      (next - 1 + filteredOptions.length) %
+                      filteredOptions.length;
+                    if (!(optionDisabled?.(filteredOptions[next]) ?? false))
+                      break;
+                  }
+                  return next;
                 });
               }
             } else if (e.key === "Enter") {
@@ -303,21 +356,60 @@ export function Select<T>({
                 e.currentTarget.select?.();
                 return;
               }
-                if (focusedIndex >= 0 && focusedIndex < filteredOptions.length) {
+              if (focusedIndex >= 0 && focusedIndex < filteredOptions.length) {
                 e.preventDefault();
-                handleSelect(filteredOptions[focusedIndex]);
-                // Mueve el foco al siguiente elemento del formulario
-            // Mueve el foco al siguiente input/textarea/select en el DOM
-            const focusable = Array.from(document.querySelectorAll('input, textarea, select, button'))
-              .filter(el => !el.hasAttribute('disabled') && (el as HTMLElement).tabIndex !== -1) as HTMLElement[];
-            const idx = focusable.indexOf(e.currentTarget);
-            if (idx >= 0 && idx < focusable.length - 1) {
-              focusable[idx + 1]?.focus();
-            }
+                const opt = filteredOptions[focusedIndex];
+                if (!(optionDisabled?.(opt) ?? false)) {
+                  handleSelect(opt);
                 }
+                // Mueve el foco al siguiente elemento del formulario
+                // Mueve el foco al siguiente input/textarea/select en el DOM
+                const focusable = Array.from(
+                  document.querySelectorAll("input, textarea, select, button")
+                ).filter(
+                  (el) =>
+                    !el.hasAttribute("disabled") &&
+                    (el as HTMLElement).tabIndex !== -1
+                ) as HTMLElement[];
+                const idx = focusable.indexOf(e.currentTarget);
+                if (idx >= 0 && idx < focusable.length - 1) {
+                  focusable[idx + 1]?.focus();
+                }
+              }
+            } else if (e.key === "Escape") {
+              setIsOpen(false);
+              syncQueryWithValue(value);
+            } else if (
+              e.key === "Backspace" &&
+              !multiple &&
+              query === "" &&
+              value
+            ) {
+              // Borrar selección explícitamente cuando el usuario presiona Backspace con input vacío
+              onChange?.(undefined as unknown as T[keyof T]);
+              setFocusedIndex(-1);
+              setIsOpen(false);
             }
           }}
         />
+
+        {/* Botón para limpiar selección en modo single */}
+        {!multiple && (value || query) && query !== "" && (
+          <button
+            type="button"
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => {
+              setQuery("");
+              onChange?.(undefined as unknown as T[keyof T]);
+              setIsOpen(true);
+              setFocusedIndex(-1);
+              inputRef?.current?.focus();
+            }}
+          >
+            <XMarkIcon className="h-4 w-4" />
+          </button>
+        )}
 
         {loading && (
           <div className="absolute right-3 top-2.5">
@@ -337,21 +429,37 @@ export function Select<T>({
                   ? Array.isArray(value) &&
                     value.includes(option[objectValueKey])
                   : value === option[objectValueKey];
+                const disabledOpt = optionDisabled?.(option) ?? false;
 
                 return (
                   <li
                     key={String(option[objectValueKey])}
                     className={cn(
-                      "cursor-pointer px-4 py-2",
-                      isSelected ? "bg-blue-100 ..." : "hover:bg-blue-100 ...",
-                      focusedIndex === idx ? "bg-blue-300 dark:bg-blue-700" : ""
+                      "px-4 py-2 select-none",
+                      disabledOpt
+                        ? "opacity-50 cursor-not-allowed"
+                        : "cursor-pointer",
+                      isSelected
+                        ? "bg-blue-100 ..."
+                        : !disabledOpt && "hover:bg-blue-100 ...",
+                      focusedIndex === idx && !disabledOpt
+                        ? "bg-blue-300 dark:bg-blue-700"
+                        : ""
                     )}
                     onMouseEnter={() => setFocusedIndex(idx)}
-                    onClick={() => handleSelect(option)}
+                    onClick={() => {
+                      if (!disabledOpt) handleSelect(option);
+                    }}
+                    data-disabled={disabledOpt || undefined}
                   >
                     {renderOption
                       ? renderOption(option)
-                      : getDisplayValue(option)}
+                      : highlightMatch(getDisplayValue(option))}
+                    {disabledOpt && (
+                      <span className="ml-2 text-xs font-medium text-red-500">
+                        Agotado
+                      </span>
+                    )}
                   </li>
                 );
               })

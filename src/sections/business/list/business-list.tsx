@@ -75,172 +75,162 @@ export function BusinessList({
     [queryClient]
   );
 
- const columns = useMemo<DataTableColumn<Business>[]>(
-  () => [
-    {
-      accessor: "id",
-      title: "ID",
-      sortable: true,
-      width: 80,
-      render: (business) => (
-        <span className="font-medium text-dark dark:text-white">
-          #{business.id}
-        </span>
-      ),
-    },
-    {
-      accessor: "name",
-      title: "Name / Code",
-      sortable: true,
-      render: (business) => (
-        <div className="flex flex-col">
-          <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
-            {business.name}
+  const columns = useMemo<DataTableColumn<Business>[]>(
+    () => [
+      {
+        accessor: "id",
+        title: "ID",
+        sortable: true,
+        width: 80,
+        render: (business) => (
+          <span className="font-medium text-dark dark:text-white">
+            #{business.id}
           </span>
-          <span className="text-xs text-gray-500 dark:text-gray-400">
-            {business.code}
+        ),
+      },
+      {
+        accessor: "name",
+        title: "Name / Code",
+        sortable: true,
+        render: (business) => (
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+              {business.name}
+            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              {business.code}
+            </span>
+          </div>
+        ),
+      },
+      {
+        accessor: "description",
+        title: "Description",
+        render: (business) => (
+          <div className="max-w-xs">
+            <span className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+              {business.description?.length > 100
+                ? `${business.description.substring(0, 100)}...`
+                : business.description}
+            </span>
+          </div>
+        ),
+      },
+      {
+        accessor: "locationId",
+        title: "ID Ubicación",
+        render: (business) => (
+          <span className="text-sm text-gray-500 dark:text-gray-300">
+            {business.locationId}
           </span>
-        </div>
-      ),
-    },
-    {
-      accessor: "description",
-      title: "Description",
-      render: (business) => (
-        <div className="max-w-xs">
-          <span className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-            {business.description?.length > 100
-              ? `${business.description.substring(0, 100)}...`
-              : business.description}
+        ),
+      },
+      {
+        accessor: "hblInitial",
+        title: "HBL Inicial",
+        render: (business) => (
+          <span className="text-sm text-gray-500 dark:text-gray-300">
+            {business.initialHbl}
           </span>
-        </div>
-      ),
-    },
-    {
-      accessor: "locationId",
-      title: "ID Ubicación",
-      render: (business) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {business.locationId}
-        </span>
-      ),
-    },
-    {
-      accessor: "hblInitial",
-      title: "HBL Inicial",
-      render: (business) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {business.initialHbl}
-        </span>
-      ),
-    },
-    {
-      accessor: "address",
-      title: "Dirección",
-      render: (business) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {business.address}
-        </span>
-      ),
-    },
-    {
-      accessor: "email",
-      title: "Email",
-      render: (business) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {business.email}
-        </span>
-      ),
-    },
-    {
-      accessor: "phone",
-      title: "Teléfono",
-      render: (business) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {business.phone}
-        </span>
-      ),
-    },
-    {
-      accessor: "isPrimary",
-      title: "Es Primario",
-      render: (business) => (
-        <span
-          className={`text-sm font-medium ${
-            business.isPrimary
-              ? "text-green-600 dark:text-green-400"
-              : "text-red-600 dark:text-red-400"
-          }`}
-        >
-          {business.isPrimary ? "Sí" : "No"}
-        </span>
-      ),
-    },
-    {
-      accessor: "fixedRate",
-      title: "Tarifa Fija",
-      render: (business) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {business.fixedRate}
-        </span>
-      ),
-    },
-    {
-      accessor: "invoiceText",
-      title: "Texto Factura",
-      render: (business) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {business.invoiceText}
-        </span>
-      ),
-    },
-    {
-      accessor: "users",
-      title: "Usuarios",
-      render: (business) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {business.users?.map((u) => u.name).join(", ") || "-"}
-        </span>
-      ),
-    },
-    {
-      accessor: "parentBusiness",
-      title: "Negocio Padre",
-      render: (business) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {business.parentBusiness?.name || "-"}
-        </span>
-      ),
-    },
-    {
-      accessor: "childBusinessIds",
-      title: "Negocios Hijos",
-      render: (business) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {business.childBusinessIds?.length
-            ? business.childBusinessIds.join(", ")
-            : "-"}
-        </span>
-      ),
-    },
-    {
-      accessor: "actions",
-      title: "Actions",
-      textAlign: "center",
-      render: (business) => (
-        <div className="flex justify-center">
-          <ActionsMenu
-            onViewDetails={() => handleViewBusiness(business)}
-            onEdit={() => handleEditBusiness(business)}
-            onDelete={() => handleDeleteBusiness(business)}
-          />
-        </div>
-      ),
-    },
-  ],
-  [handleViewBusiness, handleEditBusiness, handleDeleteBusiness]
-);
-
+        ),
+      },
+      {
+        accessor: "address",
+        title: "Dirección",
+        render: (business) => (
+          <span className="text-sm text-gray-500 dark:text-gray-300">
+            {business.address}
+          </span>
+        ),
+      },
+      {
+        accessor: "email",
+        title: "Email",
+        render: (business) => (
+          <span className="text-sm text-gray-500 dark:text-gray-300">
+            {business.email}
+          </span>
+        ),
+      },
+      {
+        accessor: "phone",
+        title: "Teléfono",
+        render: (business) => (
+          <span className="text-sm text-gray-500 dark:text-gray-300">
+            {business.phone}
+          </span>
+        ),
+      },
+      {
+        accessor: "isPrimary",
+        title: "Es Primario",
+        render: (business) => (
+          <span
+            className={`text-sm font-medium ${
+              business.isPrimary
+                ? "text-green-600 dark:text-green-400"
+                : "text-red-600 dark:text-red-400"
+            }`}
+          >
+            {business.isPrimary ? "Sí" : "No"}
+          </span>
+        ),
+      },
+      {
+        accessor: "fixedRate",
+        title: "Tarifa Fija",
+        render: (business) => (
+          <span className="text-sm text-gray-500 dark:text-gray-300">
+            {business.fixedRate}
+          </span>
+        ),
+      },
+      {
+        accessor: "invoiceText",
+        title: "Texto Factura",
+        render: (business) => (
+          <span className="text-sm text-gray-500 dark:text-gray-300">
+            {business.invoiceText}
+          </span>
+        ),
+      },
+      {
+        accessor: "parentBusiness",
+        title: "Negocio Padre",
+        render: (business) => (
+          <span className="text-sm text-gray-500 dark:text-gray-300">
+            {business.parentBusiness?.name || "-"}
+          </span>
+        ),
+      },
+      {
+        accessor: "childBusinessIds",
+        title: "Negocios Hijos",
+        render: (business) => (
+          <span className="text-sm text-gray-500 dark:text-gray-300">
+            {business.childBusinessIds?.length
+              ? business.childBusinessIds.join(", ")
+              : "-"}
+          </span>
+        ),
+      },
+      {
+        accessor: "actions",
+        title: "Actions",
+        textAlign: "center",
+        render: (business) => (
+          <div className="flex justify-center">
+            <ActionsMenu
+              onViewDetails={() => handleViewBusiness(business)}
+              onEdit={() => handleEditBusiness(business)}
+              onDelete={() => handleDeleteBusiness(business)}
+            />
+          </div>
+        ),
+      },
+    ],
+    [handleViewBusiness, handleEditBusiness, handleDeleteBusiness]
+  );
 
   return (
     <>

@@ -55,7 +55,7 @@ export function PermissionEditModal({
         code: permission.code ?? "",
         description: permission.description ?? "",
         entity: permission.entity ?? "",
-        type: permission.type ?? 0,
+        type: permission.permissionType ?? 0,
       });
     }
   }, [permission, open, reset]);
@@ -67,7 +67,7 @@ export function PermissionEditModal({
         console.error("Error updating permission:", res);
         toast.error(res.message || "Error al actualizar el permiso");
       } else {
-        toast.success("Permiso actualizado exitosamente");    
+        toast.success("Permiso actualizado exitosamente");
         queryClient.invalidateQueries({ queryKey: ["permissions"] });
         onClose();
       }
@@ -100,20 +100,17 @@ export function PermissionEditModal({
               name="name"
               label="Nombre"
               placeholder="Ingrese el nombre del permiso"
-              
             />
 
             <RHFInputWithLabel
               name="code"
               label="Código"
               placeholder="Ingrese el código del permiso (ej: ADMIN, USER, MODERATOR)"
-              
             />
             <RHFInputWithLabel
               name="entity"
               label="Entidad"
               placeholder="Ingrese el nombre de la entidad"
-              
             />
 
             <RHFInputWithLabel
