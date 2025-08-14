@@ -32,9 +32,8 @@ export const paths = {
     },
     products: {
       list: `${DASHBOARD}/products`,
-      create: `${DASHBOARD}/products/create`,
-      edit: (id: string | number) => `${DASHBOARD}/products/${id}/edit`,
       view: (id: string | number) => `${DASHBOARD}/products/${id}`,
+      edit: (id: string | number) => `${DASHBOARD}/products/${id}/edit`,
     },
     suppliers: {
       list: `${DASHBOARD}/suppliers`,

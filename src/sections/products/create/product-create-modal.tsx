@@ -1,6 +1,6 @@
 'use client';
 
-import { ProductForm } from '../product-form';
+import ProductForm from '../product-form';
 
 interface ProductCreateModalProps {
   open: boolean;
