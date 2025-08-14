@@ -100,13 +100,33 @@ export const NotificationCreateForm = ({
     <FormProvider methods={methods} onSubmit={methods.handleSubmit(onSubmit)}>
       <div className="space-y-6">
         {/* Tipo de notificación */}
-        <div>
-          <RHFSelect
-            label="Tipo de notificación"
-            name="notificationType"
-            options={typeOptions}
-            required
-          />
+        <div className="flex justify-between mt-2">
+          <div className="w-1/2 mr-2">
+            <RHFSelect
+              label="Tipo de notificación"
+              name="notificationType"
+              options={typeOptions}
+              required
+              size="small"
+            />
+          </div>
+
+          <div className="w-1/2 ml-2">
+            <RHFSelect
+              name="priority"
+              label="Prioridad"
+              required
+              placeholder="Selecciona prioridad"
+              options={[
+                { value: "low", label: "Baja" },
+                { value: "medium", label: "Media" },
+                { value: "high", label: "Alta" },
+              ]}
+              size="small"
+              /* objectValueKey="label" */
+              multiple={false}
+            />
+          </div>
         </div>
 
         {/* Título y mensaje */}
@@ -135,39 +155,18 @@ export const NotificationCreateForm = ({
 
         {/* Prioridad */}
         <div className="flex justify-between">
-          <div className="gap-1">
-            <RHFSelect
-              name="priority"
-              label="Prioridad"
-              required
-              placeholder="Selecciona prioridad"
-              options={[
-                { value: "low", label: "Baja" },
-                { value: "medium", label: "Media" },
-                { value: "high", label: "Alta" },
-              ]}
-              size="small"
-              /* objectValueKey="label" */
-              multiple={false}
-            />
-          </div>
-
           {/* Canales de envío */}
-          <div className="flex ">
-            <div className="gap-3">
-              <RHFMultiSelect
-                style={{ width: 180 }}
-                objectValueKey={"value"}
-                options={channelOptions}
-                name="channels"
-                placeholder="Selecciona canales"
-                label="Canales Envío"
-                /*  options={channelOptions} */
-                size="small"
-                multiple
-                required
-              />
-              {/* <RHFSelect
+          <div className="w-full ">
+            <RHFSelect
+              options={channelOptions}
+              name="channels"
+              placeholder="Selecciona canales"
+              label="Canales Envío"
+              /*  options={channelOptions} */
+              multiple
+              required
+            />
+            {/* <RHFSelect
                 options={channelOptions}
                 name="channels"
                 bodyClassname="min-h-[30px] p-1 h-4"
@@ -178,7 +177,6 @@ export const NotificationCreateForm = ({
                 multiple
                 required
               /> */}
-            </div>
           </div>
         </div>
 

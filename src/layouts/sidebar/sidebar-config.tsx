@@ -8,6 +8,7 @@ import {
   UserIcon,
   ShieldCheckIcon,
   BriefcaseIcon,
+  BellIcon,
   DocumentChartBarIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "./types";
@@ -96,6 +97,12 @@ export const sidebarSections: SidebarSection[] = [
         label: "Negocios",
         path: paths.dashboard.business.list,
         icon: <BriefcaseIcon className="h-4 w-4" />,
+      },
+      {
+        id: "notification",
+        label: "Notificaciones",
+        path: paths.dashboard.users.notification.list,
+        icon: <BellIcon className="h-4 w-4" />,
       },
     ],
   },
