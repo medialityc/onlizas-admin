@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { cn } from "@/lib/utils";
 
-export interface AdvancedSearchSelect<T> {
+export interface SearchSelectProps<T = any> {
   name: string;
   label?: string;
   placeholder?: string;
@@ -17,7 +17,7 @@ export interface AdvancedSearchSelect<T> {
   exclude?: string[];
   loading?: boolean;
   required?: boolean;
-  multiple?: boolean; // New prop for multiple selection
+  multiple?: boolean;
   onChangeOptional?: () => void;
   onScrollEnd?: () => void;
   renderOption?: (option: T) => React.ReactNode;
@@ -28,6 +28,8 @@ export interface AdvancedSearchSelect<T> {
     options: T[],
     removeSelected: (option: T) => void
   ) => React.ReactNode;
+  query?: string;
+  setQuery?: (q: string) => void;
   inputClassName?: string;
 }
 
@@ -38,7 +40,6 @@ export function AdvancedSearchSelect<T>({
   options,
   objectValueKey,
   objectKeyLabel,
-  exclude,
   loading,
   required,
   multiple = false,
@@ -48,15 +49,17 @@ export function AdvancedSearchSelect<T>({
   dataTest,
   containerClassname,
   pillsClassname,
-  renderMultiplesValues,
   inputClassName,
-}: AdvancedSearchSelect<T>) {
+  renderMultiplesValues,
+  query = "",
+  setQuery,
+}: SearchSelectProps<T>) {
   const { control } = useFormContext();
   const scrollRef = useRef<HTMLUListElement>(null);
   const pillsRef = useRef<HTMLDivElement>(null);
-  const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [isTyping, setIsTyping] = useState(false);
 
   // Get display value for an option
   const getDisplayValue = useCallback(
@@ -75,12 +78,7 @@ export function AdvancedSearchSelect<T>({
   );
 
   // Filter options based on exclude and query
-  const filteredOptions = options
-    .filter((opt) => !exclude?.includes(String(opt[objectValueKey])))
-    .filter((opt) => {
-      const displayValue = getDisplayValue(opt).toLowerCase();
-      return displayValue.includes(query.toLowerCase());
-    });
+  const filteredOptions = options;
 
   const handleScroll = () => {
     if (!scrollRef.current || !onScrollEnd) return;
@@ -103,12 +101,13 @@ export function AdvancedSearchSelect<T>({
         ? currentArray.filter((v) => v !== value)
         : [...currentArray, value];
       onChange(newValue);
-      setQuery("");
+      if (setQuery) setQuery("");
     } else {
       onChange(value);
-      setQuery(getDisplayValue(option));
+      if (setQuery) setQuery(getDisplayValue(option));
       setIsOpen(false);
     }
+    setIsTyping(false); // <- dejar de escribir cuando selecciona!
     onChangeOptional?.();
   };
 
@@ -118,7 +117,6 @@ export function AdvancedSearchSelect<T>({
     onChange: (value: any) => void
   ) => {
     if (!multiple) return;
-
     const newValue = Array.isArray(currentValue)
       ? currentValue.filter((v) => v !== valueToRemove)
       : [];
@@ -153,24 +151,25 @@ export function AdvancedSearchSelect<T>({
     );
   };
 
-  // Sync query with form value for single select
+  // Sync query with form value for single select SOLO si no está escribiendo
   const syncQueryWithValue = useCallback(
     (value: any) => {
+      if (isTyping) return; // <--- prevención!
       if (!multiple && value) {
         const selectedOption = options.find(
           (opt) => opt[objectValueKey] === value
         );
         if (selectedOption) {
-          setQuery(getDisplayValue(selectedOption));
+          if (setQuery) setQuery(getDisplayValue(selectedOption));
         }
       } else if (!multiple && !value) {
-        setQuery("");
+        if (setQuery) setQuery("");
       }
     },
-    [multiple, options, objectValueKey, getDisplayValue]
+    [multiple, options, objectValueKey, getDisplayValue, setQuery, isTyping]
   );
 
-  // Watch for form value changes to sync with query
+  // Watch for form value changes to sync with query SOLO si no está escribiendo
   const { watch } = useFormContext();
   const watchedValue = watch(name);
 
@@ -204,12 +203,19 @@ export function AdvancedSearchSelect<T>({
                 value={query}
                 onChange={(e) => {
                   const newValue = e.target.value;
-                  setQuery(newValue);
+                  if (setQuery) setQuery(newValue);
                   setIsOpen(true);
+                  setIsTyping(true); // <---- ahora está escribiendo!
                   onChangeOptional?.();
                 }}
-                onFocus={() => setIsOpen(true)}
-                onBlur={() => setTimeout(() => setIsOpen(false), 200)}
+                onFocus={() => {
+                  setIsOpen(true);
+                  setIsTyping(true);
+                }}
+                onBlur={() => {
+                  setTimeout(() => setIsOpen(false), 200);
+                  setIsTyping(false); // <---- ya no está escribiendo!
+                }}
                 placeholder={placeholder}
                 className={cn("form-input w-full", inputClassName)}
               />
