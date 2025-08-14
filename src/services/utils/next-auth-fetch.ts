@@ -98,11 +98,11 @@ export async function nextAuthFetch<T>({
 
   const isFormData = data instanceof FormData;
   if (isFormData) {
-    contentType = "multipart/form-data"; // FormData maneja su propio Content-Type
+    // No fijamos Content-Type manualmente para FormData (el navegador añade boundary)
+    contentType = "multipart/form-data";
   }
-  if (
-    (!isFormData && contentType && method.toUpperCase() == "POST") 
-  ) {
+  const upperMethod = method.toUpperCase();
+  if (!isFormData && contentType && upperMethod !== "GET" && upperMethod !== "HEAD") {
     hdrs.set("Content-Type", contentType);
   }
 

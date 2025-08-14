@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -8,13 +8,17 @@ import {
   type UpdateSupplierFormData,
 } from "@/sections/suppliers/modals/suppliers-schema";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
-import RHFSwitch from "@/components/react-hook-form/rhf-switch";
-import RHFSelectWithLabel from "@/components/react-hook-form/rhf-select";
 import { RHFFileUpload } from "@/components/react-hook-form/rhf-file-upload";
 import LoaderButton from "@/components/loaders/loader-button";
-import { SupplierDetails, suppliersTypes } from "@/types/suppliers";
-import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { SupplierDetails } from "@/types/suppliers";
+import {
+  TrashIcon,
+  PlusIcon,
+  EyeIcon,
+  ArrowDownTrayIcon,
+} from "@heroicons/react/24/outline";
 import { updateSupplierData } from "@/services/supplier";
+import { urlToFile } from "@/lib/utils";
 import { toast } from "react-toastify";
 
 export default function SupplierEditForm({
@@ -23,6 +27,7 @@ export default function SupplierEditForm({
   supplierDetails: SupplierDetails;
 }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [docLoading, setDocLoading] = useState<Record<number, boolean>>({});
 
   const methods = useForm<UpdateSupplierFormData>({
     resolver: zodResolver(updateSupplierSchema),
@@ -48,6 +53,48 @@ export default function SupplierEditForm({
     formState: { errors, isDirty },
     reset,
   } = methods;
+
+  useEffect(() => {
+    const isUrl = (val: unknown): val is string =>
+      typeof val === "string" && /^https?:\/\//i.test(val);
+    const prefill = async () => {
+      const docs = methods.getValues("pendingDocuments") as
+        | Array<{
+            fileName: string;
+            content: unknown;
+          }>
+        | undefined;
+      if (!docs || docs.length === 0) return;
+
+      await Promise.all(
+        docs.map(async (doc, idx) => {
+          if (isUrl(doc.content)) {
+            try {
+              setDocLoading((p) => ({ ...p, [idx]: true }));
+              const file = await urlToFile(doc.content, doc.fileName);
+              methods.setValue(
+                `pendingDocuments.${idx}.content` as const,
+                file,
+                {
+                  shouldDirty: false,
+                  shouldValidate: false,
+                }
+              );
+            } catch (e) {
+              // Si falla la descarga, dejamos el valor original (string)
+              console.error("No se pudo convertir la URL a archivo:", e);
+            } finally {
+              setDocLoading((p) => ({ ...p, [idx]: false }));
+            }
+          }
+        })
+      );
+    };
+
+    prefill();
+    // Ejecutar solo al montar con los valores iniciales
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const {
     fields: documentFields,
@@ -89,7 +136,7 @@ export default function SupplierEditForm({
       if (response.error) {
         throw new Error(response.message || "Error al actualizar proveedor");
       }
-      reset(response.data);
+      toast.success("Solicitud actualizada correctamente");
     } catch (error) {
       console.error("Error al actualizar proveedor:", error);
       toast.error("Error al actualizar proveedor");
@@ -103,6 +150,62 @@ export default function SupplierEditForm({
       fileName: "",
       content: "",
     });
+  };
+
+  // Helpers para visualizar/descargar documentos
+  const withObjectUrl = async (
+    file: File,
+    cb: (url: string) => void
+  ): Promise<void> => {
+    const url = URL.createObjectURL(file);
+    try {
+      cb(url);
+    } finally {
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+  };
+
+  const handleViewDocument = async (index: number) => {
+    const doc = methods.getValues(`pendingDocuments.${index}` as const) as {
+      fileName: string;
+      content: unknown;
+    };
+    if (!doc) return;
+    if (doc.content instanceof File) {
+      await withObjectUrl(doc.content, (url) => {
+        window.open(url, "_blank", "noopener,noreferrer");
+      });
+    } else if (typeof doc.content === "string" && doc.content) {
+      // Si aún es URL string
+      window.open(doc.content, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  const handleDownloadDocument = async (index: number) => {
+    const doc = methods.getValues(`pendingDocuments.${index}` as const) as {
+      fileName: string;
+      content: unknown;
+    };
+    if (!doc) return;
+    const filename = doc.fileName?.trim() || "document";
+    if (doc.content instanceof File) {
+      await withObjectUrl(doc.content, (url) => {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
+    } else if (typeof doc.content === "string" && doc.content) {
+      // Descarga directa de la URL
+      const a = document.createElement("a");
+      a.href = doc.content;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
   };
 
   const handleCancel = () => {
@@ -137,17 +240,6 @@ export default function SupplierEditForm({
             type="text"
             required
           />
-
-          <RHFSelectWithLabel
-            name="type"
-            label="Tipo de Proveedor"
-            options={suppliersTypes.map((type) => ({
-              value: type.name,
-              label: type.name,
-            }))}
-            placeholder="Selecciona el tipo de proveedor"
-            required
-          />
         </div>
 
         <RHFInputWithLabel
@@ -178,22 +270,11 @@ export default function SupplierEditForm({
           )}
         </div>
 
-        {/* Estado del Proveedor */}
-        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-          <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
-            Estado del Proveedor
-          </h3>
-          <RHFSwitch name="isActive" label="Proveedor Activo" />
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Determina si el proveedor está activo en el sistema
-          </p>
-        </div>
-
         {/* Documentos */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-medium text-gray-900 dark:text-white">
-              Documentos Pendientes
+              Documentos
             </h3>
             <button
               type="button"
@@ -244,7 +325,53 @@ export default function SupplierEditForm({
                       name={`pendingDocuments.${index}.content`}
                       label="Archivo"
                       accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                      disabled={!!docLoading[index]}
                     />
+                    <div className="flex items-center gap-2 md:col-span-2">
+                      {docLoading[index] ? (
+                        <span className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400">
+                          <svg
+                            className="animate-spin h-4 w-4 mr-2 text-gray-500"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                            ></path>
+                          </svg>
+                          Cargando documento...
+                        </span>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleViewDocument(index)}
+                            className="inline-flex items-center px-2 py-1 text-xs rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                          >
+                            <EyeIcon className="h-4 w-4 mr-1" /> Ver
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDownloadDocument(index)}
+                            className="inline-flex items-center px-2 py-1 text-xs rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                          >
+                            <ArrowDownTrayIcon className="h-4 w-4 mr-1" />{" "}
+                            Descargar
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}

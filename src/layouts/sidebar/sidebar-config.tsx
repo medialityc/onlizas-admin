@@ -1,5 +1,5 @@
 import { paths } from "@/config/paths";
-import { ArchiveBoxIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { ArchiveBoxIcon } from "@heroicons/react/24/outline";
 import {
   BookOpenIcon,
   CubeIcon,
@@ -8,6 +8,7 @@ import {
   UserIcon,
   ShieldCheckIcon,
   BriefcaseIcon,
+  DocumentChartBarIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "./types";
 
@@ -62,9 +63,9 @@ export const sidebarSections: SidebarSection[] = [
     items: [
       {
         id: "suppliers",
-        label: "Proveedores",
+        label: "Solicitud de Proveedores",
         path: paths.dashboard.suppliers.list,
-        icon: <UserCircleIcon className="h-4 w-4" />,
+        icon: <DocumentChartBarIcon className="h-4 w-4" />,
       },
     ],
   },

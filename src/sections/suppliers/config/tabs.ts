@@ -1,21 +1,22 @@
-import { UsersIcon, UserMinusIcon } from "@heroicons/react/24/outline";
 import { TabItem } from "@/components/tab/navigation-tabs";
-import { UserGroupIcon } from "@heroicons/react/24/solid";
 
 export const suppliersTabs: TabItem[] = [
   {
-    label: "Todos los Proveedores",
+    label: "Todas las solicitudes",
     href: "/dashboard/suppliers",
-    icon: UsersIcon,
+    icon: "users",
+    id: "all",
   },
   {
-    label: "Proveedores Pendientes",
+    label: "Solicitudes Pendientes",
     href: "/dashboard/suppliers/pending",
-    icon: UserMinusIcon,
+    icon: "userMinus",
+    id: "pending",
   },
   {
-    label: "Proveedores Validos",
+    label: "Solicitudes Válidos",
     href: "/dashboard/suppliers/valid",
-    icon: UserGroupIcon,
+    icon: "userGroup",
+    id: "valid",
   },
 ];

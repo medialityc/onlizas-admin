@@ -11,10 +11,11 @@ export default function Layout({ children }: LayoutProps) {
       <div className="mb-5 flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-            Gestión de Proveedores
+            Gestión de Solicitud de Proveedores
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Administra los proveedores del sistema y sus datos asociados
+            Administra las solicitudes de proveedores del sistema y sus datos
+            asociados
           </p>
         </div>
       </div>

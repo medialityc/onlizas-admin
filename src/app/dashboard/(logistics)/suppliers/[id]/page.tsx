@@ -1,7 +1,9 @@
 import { Suspense } from "react";
 import SupplierEditForm from "@/sections/suppliers/edit/supplier-edit-form";
+import ApprovalControls from "@/sections/suppliers/edit/approval-controls";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { getSupplierDetails } from "@/services/supplier";
+import WithLoginGate from "../../../../../sections/suppliers/edit/with-login-gate";
 
 export default async function Page({
   params,
@@ -14,6 +16,11 @@ export default async function Page({
 
   return (
     <div className="space-y-8">
+      {/* Modal: Crear usuario cuando el estado sea WithLogin */}
+      <WithLoginGate
+        id={supplierDetails?.id.toString() ?? ""}
+        supplierState={supplierDetails?.state}
+      />
       <section
         id="general"
         className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-xl rounded-2xl border border-gray-200/50 dark:border-gray-700/50 animate-slideUp overflow-hidden"
@@ -31,7 +38,7 @@ export default async function Page({
                 Información General
               </h2>
               <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                Edita la información básica del proveedor.
+                Edita la información básica de la solicitud.
               </p>
             </div>
           </div>
@@ -59,6 +66,28 @@ export default async function Page({
           </Suspense>
         </div>
       </section>
+
+      {/* Aprobación / Rechazo */}
+      {supplierDetails?.state === "Pending" && (
+        <section
+          className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-xl rounded-2xl border border-gray-200/50 dark:border-gray-700/50 animate-slideUp overflow-hidden"
+          style={{ animationDelay: "0.3s" }}
+        >
+          <div className="px-8 py-6 border-b border-gray-200/50 dark:border-gray-700/50">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              Proceso de aprobación
+            </h2>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+              Aprueba o rechaza esta solicitud e incluye comentarios.
+            </p>
+          </div>
+          <div className="p-8">
+            <ApprovalControls
+              approvalProcessId={supplierDetails.id.toString()}
+            />
+          </div>
+        </section>
+      )}
     </div>
   );
 }

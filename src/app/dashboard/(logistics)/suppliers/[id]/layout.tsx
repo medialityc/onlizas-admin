@@ -1,4 +1,3 @@
-import { NavigationTabs } from "@/components/tab/navigation-tabs";
 import EditHeader from "@/sections/suppliers/edit/edit-header";
 import SupplierBreadcrumb from "@/sections/suppliers/edit/supplier-breadcrumb";
 import { getSupplierDetails } from "@/services/supplier";
@@ -17,23 +16,6 @@ export default async function SupplierLayout({
   params,
 }: SupplierLayoutProps) {
   const supplierId = (await params).id;
-  const supplierTabs = [
-    {
-      label: "Información General",
-      href: `/dashboard/suppliers/${supplierId}`,
-      icon: undefined,
-    },
-    {
-      label: "Proceso de Aprobación",
-      href: `/dashboard/suppliers/${supplierId}/approval-process`,
-      icon: undefined,
-    },
-    {
-      label: "Evaluaciones",
-      href: `/dashboard/suppliers/${supplierId}/evaluations`,
-      icon: undefined,
-    },
-  ];
   const { data: supplierDetails } = await getSupplierDetails(supplierId);
 
   if (!supplierDetails) {
@@ -50,11 +32,6 @@ export default async function SupplierLayout({
 
         {/* Header */}
         <EditHeader supplierDetails={supplierDetails} />
-
-        {/* Navigation Tabs */}
-        <div className="animate-slideUp" style={{ animationDelay: "0.1s" }}>
-          <NavigationTabs tabs={supplierTabs} />
-        </div>
 
         {/* Content Sections - Pass supplierDetails to children via React Context */}
         <div className="space-y-8">{children}</div>

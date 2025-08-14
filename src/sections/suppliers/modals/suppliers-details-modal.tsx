@@ -5,7 +5,6 @@ import { Supplier } from "@/types/suppliers";
 import {
   TagIcon,
   DocumentTextIcon,
-  BuildingOfficeIcon,
   CheckCircleIcon,
   XCircleIcon,
   StarIcon,
@@ -62,18 +61,6 @@ function SuppliersGeneralInfo({ supplier }: { supplier: Supplier }) {
           </div>
           <p className="text-lg text-gray-900 dark:text-white font-medium break-all">
             {supplier.email}
-          </p>
-        </div>
-
-        <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-2">
-            <BuildingOfficeIcon className="size-5 text-indigo-500" />
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-              Tipo de Proveedor
-            </label>
-          </div>
-          <p className="text-lg text-gray-900 dark:text-white font-medium">
-            {supplier.type}
           </p>
         </div>
 

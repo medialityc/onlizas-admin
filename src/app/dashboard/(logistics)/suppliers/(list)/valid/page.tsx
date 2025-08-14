@@ -6,8 +6,9 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Gestión de Solicitudes pendientes - Onlizas",
-  description: "Administra los proveedores del sistema y sus datos asociados",
+  title: "Gestión de Solicitudes aprobadas - Onlizas",
+  description:
+    "Administra las solicitudes aprobadas del sistema y sus datos asociados",
   icons: {
     icon: "/assets/images/NEWZAS.svg",
   },

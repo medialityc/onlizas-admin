@@ -9,6 +9,7 @@ export type Supplier = {
   lastEvaluationDate: string;
   isActive: boolean;
   isAproved: boolean;
+  state: "Pending" | "WaitingLogin" | "Approved" | "Rejected";
 };
 
 export type CreateSupplier = {
@@ -49,11 +50,27 @@ export type ValidSupplier = Supplier & {
   ];
 };
 
+export const processesState = [
+  {
+    id: 0,
+    name: "Pendiente",
+    value: "Pending",
+  },
+  {
+    id: 1,
+    name: "Pendiente de usuario",
+    value: "WaitingLogin",
+  },
+  { id: 2, name: "Aprobado", value: "Approved" },
+  { id: 3, name: "Rechazado", value: "Rejected" },
+];
+
 export type SupplierDetails = Supplier & {
   phone: string;
   address: string;
   message: string;
-  approvalProcessId: number;
+  id: number;
+  state: "Pending" | "WaitingLogin" | "Approved" | "Rejected";
   pendingDocuments: [
     {
       fileName: string;
@@ -97,6 +114,12 @@ export type SupplierEvaluation = {
     price: number;
     service: number;
   };
+};
+
+export type AnswerApprovalProcess = {
+  approvalProcessId: string;
+  isApproved: boolean;
+  comments: string;
 };
 
 export type GetAllSuppliers = PaginatedResponse<Supplier>;

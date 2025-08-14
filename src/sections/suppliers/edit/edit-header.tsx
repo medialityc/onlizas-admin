@@ -1,20 +1,31 @@
-import { SupplierDetails } from "@/types/suppliers";
+import type { SupplierDetails } from "@/types/suppliers";
+import { processesState } from "@/types/suppliers";
 import {
   BuildingOfficeIcon,
-  CheckCircleIcon,
-  ClockIcon,
   EnvelopeIcon,
   MapPinIcon,
   PhoneIcon,
 } from "@heroicons/react/24/solid";
 import React from "react";
 import BackButton from "./back-button";
-import {
-  CheckCircleIcon as CheckCircleSolid,
-  XCircleIcon as XCircleSolid,
-} from "@heroicons/react/24/solid";
 
 function EditHeader({ supplierDetails }: { supplierDetails: SupplierDetails }) {
+  const statusInfo = processesState.find(
+    (p) => p.value === supplierDetails.state
+  );
+  const statusLabel = statusInfo?.name ?? supplierDetails.state;
+  const statusClass =
+    {
+      Pending:
+        "bg-amber-100 text-amber-800 ring-amber-300 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800/50",
+      WaitingLogin:
+        "bg-blue-100 text-blue-800 ring-blue-300 dark:bg-blue-900/30 dark:text-blue-200 dark:ring-blue-800/50",
+      Approved:
+        "bg-emerald-100 text-emerald-800 ring-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-200 dark:ring-emerald-800/50",
+      Rejected:
+        "bg-rose-100 text-rose-800 ring-rose-300 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800/50",
+    }[supplierDetails.state] ||
+    "bg-gray-100 text-gray-700 ring-gray-300 dark:bg-gray-800/50 dark:text-gray-200 dark:ring-gray-700/50";
   return (
     <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-xl rounded-2xl border border-gray-200/50 dark:border-gray-700/50 p-8 animate-slideUp">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -25,9 +36,18 @@ function EditHeader({ supplierDetails }: { supplierDetails: SupplierDetails }) {
             </div>
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-              {supplierDetails.name}
-            </h1>
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                {supplierDetails.name}
+              </h1>
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ring-1 ring-inset ${statusClass}`}
+                aria-label={`Estado: ${statusLabel}`}
+              >
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-current" />
+                {statusLabel}
+              </span>
+            </div>
             <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
               <div className="flex items-center text-gray-600 dark:text-gray-400">
                 <EnvelopeIcon className="w-4 h-4 mr-2" />
@@ -51,36 +71,6 @@ function EditHeader({ supplierDetails }: { supplierDetails: SupplierDetails }) {
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <BackButton />
-          <div className="flex flex-wrap items-center gap-3">
-            <span
-              className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold shadow-lg transition-all duration-200 hover:scale-105 ${
-                supplierDetails.isActive
-                  ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-green-200 dark:shadow-green-900/50"
-                  : "bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-red-200 dark:shadow-red-900/50"
-              }`}
-            >
-              {supplierDetails.isActive ? (
-                <CheckCircleSolid className="w-4 h-4 mr-2" />
-              ) : (
-                <XCircleSolid className="w-4 h-4 mr-2" />
-              )}
-              {supplierDetails.isActive ? "Activo" : "Inactivo"}
-            </span>
-            <span
-              className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold shadow-lg transition-all duration-200 hover:scale-105 ${
-                supplierDetails.isAproved
-                  ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-green-200 dark:shadow-green-900/50"
-                  : "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-amber-200 dark:shadow-amber-900/50"
-              }`}
-            >
-              {supplierDetails.isAproved ? (
-                <CheckCircleIcon className="w-4 h-4 mr-2" />
-              ) : (
-                <ClockIcon className="w-4 h-4 mr-2" />
-              )}
-              {supplierDetails.isAproved ? "Aprobado" : "Pendiente"}
-            </span>
-          </div>
         </div>
       </div>
     </div>

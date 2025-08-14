@@ -5,7 +5,7 @@ import ActionsMenu from "@/components/menu/actions-menu";
 import showToast from "@/config/toast/toastConfig";
 import { useModalState } from "@/hooks/use-modal-state";
 import { SearchParams } from "@/types/fetch/request";
-import { GetAllSuppliers, Supplier } from "@/types/suppliers";
+import { GetAllSuppliers, processesState, Supplier } from "@/types/suppliers";
 import { DataTableColumn } from "mantine-datatable";
 import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
@@ -187,7 +187,10 @@ export function SuppliersList({
                 : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
             }`}
           >
-            {supplier.isAproved ? "Aprobado" : "Pendiente"}
+            {
+              processesState.find((state) => state.value === supplier.state)
+                ?.name
+            }
           </span>
         ),
       },
@@ -223,9 +226,9 @@ export function SuppliersList({
         columns={columns}
         searchParams={searchParams}
         onSearchParamsChange={onSearchParamsChange}
-        searchPlaceholder="Buscar proveedores..."
+        searchPlaceholder="Buscar solicitudes..."
         onCreate={handleCreateSupplier}
-        emptyText="No se encontraron proveedores"
+        emptyText="No se encontraron solicitudes"
       />
 
       {/* Create Modal */}

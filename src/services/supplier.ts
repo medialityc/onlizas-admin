@@ -9,6 +9,7 @@ import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
 import {
+  AnswerApprovalProcess,
   ApprovalProcess,
   GetAllPendingSuppliers,
   GetAllSuppliers,
@@ -17,6 +18,7 @@ import {
   Supplier,
   SupplierDetails,
 } from "@/types/suppliers";
+import { WithLoginForm } from "@/sections/suppliers/edit/whitloginSchema";
 
 export async function createSupplier(
   data: FormData
@@ -81,6 +83,7 @@ export async function updateSupplierData(
   });
 
   if (!res.ok) return handleApiServerError(res);
+  revalidateTag("supplier");
   revalidateTag("suppliers");
 
   return buildApiResponseAsync<Supplier>(res);
@@ -129,6 +132,7 @@ export async function getSupplierDetails(
     url: `${process.env.NEXT_PUBLIC_API_URL}admin/supplier/${id}`,
     method: "GET",
     cache: "no-store",
+    next: { tags: ["supplier"] },
   });
 
   if (!res.ok) return handleApiServerError(res);
@@ -167,4 +171,59 @@ export async function getApprovalProcess(
   if (!res.ok) return handleApiServerError(res);
 
   return buildApiResponseAsync(res);
+}
+
+export async function countSuppliers(): Promise<
+  ApiResponse<{
+    pending: 1;
+    approved: 0;
+    total: 1;
+  }>
+> {
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}admin/approval-processes/counts`,
+    method: "GET",
+    cache: "no-store",
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync(res);
+}
+
+export async function answerApprovalProcess(
+  id: string,
+  data: AnswerApprovalProcess
+): Promise<ApiResponse<AnswerApprovalProcess>> {
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${id}/approve`,
+    method: "PUT",
+    contentType: "application/json",
+    data,
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("supplier");
+  return buildApiResponseAsync(res);
+}
+
+export async function createUserSupplier(
+  id: string,
+  data: WithLoginForm
+): Promise<ApiResponse<Supplier>> {
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${id}/user`,
+    method: "POST",
+    data: {
+      changePassword: data.changePassword,
+      approvalProcessId: id,
+      password: data.password,
+    },
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("supplier");
+  return buildApiResponseAsync<Supplier>(res);
 }

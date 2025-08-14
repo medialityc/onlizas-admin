@@ -6,8 +6,9 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Gestión de Proveedores - ZAS Express",
-  description: "Administra los proveedores del sistema y sus datos asociados",
+  title: "Gestión de Solicitudes Proveedores - ZAS Express",
+  description:
+    "Administra las solicitudes de proveedor del sistema y sus datos asociados",
   icons: {
     icon: "/assets/images/NEWZAS.svg",
   },

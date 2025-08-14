@@ -12,7 +12,6 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { toast } from "react-toastify";
 import { SuppliersFormData, suppliersSchema } from "./suppliers-schema";
 
-import RHFCheckbox from "@/components/react-hook-form/rhf-checkbox";
 import { RHFFileUpload } from "@/components/react-hook-form/rhf-file-upload";
 import { Supplier } from "@/types/suppliers";
 import { createSupplier, updateSupplierData } from "@/services/supplier";
@@ -39,11 +38,9 @@ export default function SuppliersModal({
     resolver: zodResolver(suppliersSchema),
     defaultValues: {
       name: supplier?.name ?? "",
-      supplierType: "Persona",
       email: supplier?.email ?? "",
       phone: "",
       address: "",
-      createAutomaticAprovalProcess: false,
       documents: [],
     },
   });
@@ -70,19 +67,17 @@ export default function SuppliersModal({
     try {
       const formData = new FormData();
       formData.append("name", data.name);
-      formData.append("supplierType", data.supplierType);
       formData.append("email", data.email);
       formData.append("phone", data.phone);
       formData.append("address", data.address);
-      formData.append(
-        "createAutomaticAprovalProcess",
-        data.createAutomaticAprovalProcess.toString()
-      );
-
       // Agregar documentos como array de objetos
       data.documents?.forEach((doc) => {
-        formData.append(`contents`, doc.content);
-        formData.append(`documentNames`, doc.fileName);
+        if (doc.content) {
+          formData.append(`contents`, doc.content);
+          formData.append(`documentNames`, doc.fileName);
+        } else {
+          toast.error("El documento debe tener un archivo asociado.");
+        }
       });
 
       let response = null;
@@ -133,34 +128,6 @@ export default function SuppliersModal({
               autoFocus
               maxLength={100}
             />
-
-            {/* Supplier Type */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Tipo de Proveedor
-              </label>
-              <div className="space-y-2">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    value="Persona"
-                    {...methods.register("supplierType")}
-                    className="mr-2"
-                  />
-                  Persona
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    value="Empresa"
-                    {...methods.register("supplierType")}
-                    className="mr-2"
-                  />
-                  Empresa
-                </label>
-              </div>
-            </div>
-
             {/* Email Input */}
             <RHFInputWithLabel
               name="email"
@@ -187,12 +154,6 @@ export default function SuppliersModal({
               type="textarea"
             />
 
-            {/* Automatic Approval Process */}
-            <RHFCheckbox
-              name="createAutomaticAprovalProcess"
-              label="Crear proceso de aprobación automático"
-            />
-
             {/* Documents Section */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -201,9 +162,7 @@ export default function SuppliersModal({
                 </label>
                 <button
                   type="button"
-                  onClick={() =>
-                    append({ fileName: "", content: new File([], "") })
-                  }
+                  onClick={() => append({ fileName: "", content: undefined })}
                   className="flex items-center gap-2 px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                 >
                   <PlusIcon className="size-4" />

@@ -3,12 +3,23 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import {
+  UserGroupIcon,
+  UserMinusIcon,
+  UsersIcon,
+} from "@heroicons/react/24/solid";
+const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  users: UsersIcon,
+  usersMinus: UserMinusIcon,
+  usersGroup: UserGroupIcon,
+};
 
 export interface TabItem {
   label: string;
   href: string;
-  icon?: React.ComponentType<{ className?: string }>;
+  icon?: string;
   count?: number;
+  id?: string;
   disabled?: boolean;
 }
 
@@ -27,7 +38,7 @@ export function NavigationTabs({ tabs, className }: NavigationTabsProps) {
       <nav className="-mb-px flex space-x-8" aria-label="Tabs">
         {tabs.map((tab) => {
           const isActive = pathname === tab.href;
-          const IconComponent = tab.icon;
+          const IconComponent = tab.icon ? ICONS[tab.icon] : undefined;
 
           return (
             <Link

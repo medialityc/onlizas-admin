@@ -1,13 +1,14 @@
 import { buildQueryParams } from "@/lib/request";
 import SuppliersListContainer from "@/sections/suppliers/list/suppliers-list-container";
-import { getAllSuppliers } from "@/services/supplier";
+import { getPendingSuppliers } from "@/services/supplier";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Gestión de Proveedores - ZAS Express",
-  description: "Administra los proveedores del sistema y sus datos asociados",
+  title: "Gestión de solicitudes pendientes - ZAS Express",
+  description:
+    "Administra las solicitudes pendientes del sistema y sus datos asociados",
   icons: {
     icon: "/assets/images/NEWZAS.svg",
   },
@@ -40,7 +41,7 @@ function SuppliersListSkeleton() {
 async function SuppliersListPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const suppliersPromise = getAllSuppliers(query);
+  const suppliersPromise = getPendingSuppliers(query);
 
   return (
     <Suspense fallback={<SuppliersListSkeleton />}>

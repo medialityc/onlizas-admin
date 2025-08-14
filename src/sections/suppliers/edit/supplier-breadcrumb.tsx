@@ -16,7 +16,7 @@ function SupplierBreadcrumb({
           onClick: () => (window.location.href = "/dashboard"),
         },
         {
-          label: "Proveedores",
+          label: "Solicitud",
           onClick: () => (window.location.href = "/dashboard/suppliers"),
         },
         {

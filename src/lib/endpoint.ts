@@ -9,9 +9,9 @@ export const backendRoutes = {
     resendPhone: `${process.env.NEXT_PUBLIC_API_URL}users/me/phone/resend-verification`,
     getAll: `${process.env.NEXT_PUBLIC_API_URL}users`,
     create: `${process.env.NEXT_PUBLIC_API_URL}users`,
-    getById: (id: number) =>
+    getById: (id: number) => `${process.env.NEXT_PUBLIC_API_URL}users/${id}`,
+    update: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}users/${id}`,
-    update: (id: number|string) => `${process.env.NEXT_PUBLIC_API_URL}users/${id}`,
     delete: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${id}`,
     blockToggle: `${process.env.NEXT_PUBLIC_API_URL}admin/users/block-toggle`,
@@ -96,7 +96,7 @@ export const backendRoutes = {
     evaluations: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/${id}/evaluations`, // GET
     list: `${process.env.NEXT_PUBLIC_API_URL}admin/get_suppliers`, // GET
-    pending: `${process.env.NEXT_PUBLIC_API_URL}admin/pending-suppliers`, // GET
-    valid: `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/valids`, // GET
+    pending: `${process.env.NEXT_PUBLIC_API_URL}admin/approval-processes/pending`, // GET
+    valid: `${process.env.NEXT_PUBLIC_API_URL}admin/approval-processes/approved`, // GET
   },
 };
