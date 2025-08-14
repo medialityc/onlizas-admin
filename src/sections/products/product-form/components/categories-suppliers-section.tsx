@@ -14,7 +14,7 @@ function CategoriesAndSuppliersSection() {
         <div>
           <RHFAutocompleteFetcherInfinity
             name="categoryIds"
-            label="Categorías *"
+            label="Categorías"
             placeholder="Seleccionar categorías..."
             onFetch={getAllCategories}
             objectValueKey="id"

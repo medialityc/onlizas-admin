@@ -12,7 +12,7 @@ function BasicInfoSection() {
       <div className="space-y-6">
         <RHFInputWithLabel
           name="name"
-          label="Nombre del Producto *"
+          label="Nombre del Producto"
           placeholder="Ej: iPhone 15 Pro Max"
           required
         />
