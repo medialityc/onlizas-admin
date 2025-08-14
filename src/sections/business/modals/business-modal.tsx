@@ -179,17 +179,17 @@ export default function BusinessModal({
   ];
   return (
     <SimpleModal
-      open={open}
-      onClose={handleClose}
-      loading={loading || loadingImage}
-      title={business ? "Editar Negocio" : "Crear Negocio"}
-    >
-      <div className="p-5">
-        {error && (
-          <div className="mb-4">
-            <div className="alert alert-danger">{error}</div>
-          </div>
-        )}
+  open={open}
+  onClose={handleClose}
+  loading={loading || loadingImage}
+  title={business ? "Editar Negocio" : "Crear Negocio"}
+>
+  <div className="p-5">
+    {error && (
+      <div className="mb-4">
+        <div className="alert alert-danger">{error}</div>
+      </div>
+    )}
 
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
