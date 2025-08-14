@@ -11,12 +11,14 @@ import { paths } from '@/config/paths';
 import FormProvider from '@/components/react-hook-form/form-provider';
 import LoaderButton from '@/components/loaders/loader-button';
 import SimpleModal from '@/components/modal/modal';
+
 import {
   productFormSchema,
   ProductFormValues,
   defaultProductFormValues,
   transformToApiFormat
 } from './product-form/schema/product-schema';
+
 import ResponsiveLayout from './product-form/layouts/responsive-layout';
 
 interface ProductFormProps {

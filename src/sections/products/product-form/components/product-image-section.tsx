@@ -8,7 +8,7 @@ function ProductImageSection() {
       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
         <span className="mr-2">🖼️</span> Imagen del Producto
       </h3>
-      <div className="flex justify-center">
+      <div className="flex">
         <RHFImageUpload 
           name="imageFile" 
           variant="square" 

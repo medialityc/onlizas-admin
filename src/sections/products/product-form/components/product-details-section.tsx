@@ -50,7 +50,7 @@ function ProductDetailsSection() {
                 placeholder="Valor"
               />
             </div>
-            <div className="col-span-1 flex justify-center">
+            <div className="col-span-1 pb-1 h-full flex justify-center items-end">
               <Button
                 type="button"
                 variant="secondary"
