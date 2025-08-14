@@ -26,7 +26,7 @@ export async function getAllProducts (
 ): Promise<ApiResponse<GetAllProducts>> {
   // Transformar parámetros al formato esperado por la API
   const apiParams = {
-    pageNumber: params.pageNumber || 1,
+    page: params.page || 1,
     pageSize: params.pageSize || 10,
     search: params.search,
     categoryId: params.categoryId,

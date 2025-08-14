@@ -37,20 +37,20 @@ export async function getAllProducts (
     filtered = filtered.filter(p => p.suppliers.some(s => s.id === params.supplierId));
   }
 
-  const pageNumber = params.pageNumber || 1;
+  const page = params.page || 1;
   const pageSize = params.pageSize || 10;
   const totalCount = filtered.length;
   const totalPages = Math.ceil(totalCount / pageSize);
-  const paginatedData = filtered.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+  const paginatedData = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   const response: ProductApiResponse = {
     data: paginatedData,
     totalCount,
-    pageNumber,
+    page,
     pageSize,
     totalPages,
-    hasNextPage: pageNumber < totalPages,
-    hasPreviousPage: pageNumber > 1,
+    hasNext: page < totalPages,
+    hasPrevious: page > 1,
   };
 
   return {

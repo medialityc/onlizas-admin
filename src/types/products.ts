@@ -78,11 +78,11 @@ export type UpdateProduct = UpdateProductRequest;
 export type ProductApiResponse = {
   data: Product[];
   totalCount: number;
-  pageNumber: number;
+  page: number;
   pageSize: number;
   totalPages: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
+  hasNext: boolean;
+  hasPrevious: boolean;
 };
 
 export type GetAllProducts = ProductApiResponse;
@@ -92,13 +92,13 @@ export type ProductFilter = {
   categoryId?: number;
   isActive?: boolean;
   supplierId?: number;
-  pageNumber?: number;
+  page?: number;
   pageSize?: number;
 };
 
 // Search params para productos - actualizado según la nueva API
 export interface ProductSearchParams {
-  pageNumber?: number;
+  page?: number;
   pageSize?: number;
   search?: string;
   categoryId?: number;
