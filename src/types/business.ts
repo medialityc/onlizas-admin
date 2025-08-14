@@ -6,8 +6,8 @@ export interface Business {
   code: string;
   name: string;
   description: string;
-  locationId: string; // Reference to location
-  initialHbl: string; // Initial HBL code
+  locationId: number; // Reference to location
+  hblInitial: string; // Initial HBL code
   address: string;
   email: string;
   phone: string;
@@ -15,12 +15,9 @@ export interface Business {
   fixedRate: number;
   invoiceText: string; // Only shown/edited in form
   users: number[]; // Associated user IDs
-  parentBusiness: {
-    id: number;
-    name: string;
-  }; // Parent business ID
+  parentBusiness: number; // Parent business ID
   childBusinessIds: number[]; // Child business IDs
-  photos: string[]; // Image URLs (details)
+  photoObjectCodes: string[]; // Image URLs (details)
 }
 
 /**
@@ -35,18 +32,18 @@ export type CreateBusiness = {
   name: string;
   code: string;
   description: string;
-  locationId: string;
-  initialHbl: string;
+  locationId: number;
+  hblInitial: string;
   address: string;
   email: string;
   phone: string;
   isPrimary: boolean;
   fixedRate: number;
   invoiceText: string;
-  users: number[];
-  parentBusinessId?: number;
-  childBusinessIds: number[];
-  photos: string[]; // Files to upload
+  /* users: number[]; */
+  parentId?: number;
+  //childBusinessIds: number[];
+  photoObjectCodes: string[]; // Files to upload
 };
 export type Photo = { fileName: string; content: File };
 
@@ -75,5 +72,5 @@ export type UpdateBusiness = {
  */
 export type BusinessDetails = Pick<
   Business,
-  "id" | "name" | "initialHbl" | "photos"
+  "id" | "name" | "hblInitial" | "photoObjectCodes"
 >;

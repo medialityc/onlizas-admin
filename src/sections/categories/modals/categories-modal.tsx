@@ -18,7 +18,7 @@ import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-aut
 import { getAllDepartments } from "@/services/department";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import RHFCheckbox from "@/components/react-hook-form/rhf-checkbox";
-import { urlToFile } from "@/utils/format";
+import { isValidUrl, urlToFile } from "@/utils/format";
 import { CreateCategory } from '../../../types/categories';
 
 interface CategoriesModalProps {
@@ -94,16 +94,26 @@ export default function CategoriesModal({
     setError(null);
     let response;
     try {
+      const formData = new FormData();
       let imageValue = data.image;
       console.log(data.image)
-     /*  if (data.image instanceof File) {
-        imageValue = category?.image || "";
-      } */
-      const formData = new FormData();
+           if (data.image) {
+             if (typeof data.image === "string" && isValidUrl(data.image)) {
+               try {
+                 const imageFile = await urlToFile(data.image);
+                 formData.append("image", imageFile);
+               } catch {
+                 toast.error("Error al procesar la imagen desde URL");
+                 return;
+               }
+             } else if (data.image instanceof File) {
+               // Already a File object
+               formData.append("image", data.image);
+             }
+           }
       formData.append("department", data.department.toString());
       formData.append("name", data.name);
       formData.append("description", data.description);
-      formData.append("image", data.image);
       formData.append("isActive", data.isActive.toString());
       if (category) {
         response = await updateCategory(category.id, formData);
