@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 // Definimos los tipos enumerados para prioridad y canales
-const NotificationPriorityEnum = z.enum(["high", "medium", "low"]);
-const NotificationChannelEnum = z.enum(["in_app", "email", "sms"]);
-const NotificationTypeEnum = z.enum(["individual", "massive"]);
+const NotificationPriorityEnum = z.enum(["high", "medium", "low", ""]);
+const NotificationChannelEnum = z.enum(["in_app", "email", "sms", ""]);
+const NotificationTypeEnum = z.enum(["individual", "massive", ""]);
 
 export const createNotificationSchema = z
   .object({
@@ -33,7 +33,8 @@ export const createNotificationSchema = z
     (data) => {
       const hasSpecific = data.specificType;
       const hasRole = data.roleType;
-
+      const priorityNull = data.priority === "";
+      const notificationTypeNull = data.notificationType === "";
       if (!hasSpecific && !hasRole) return false;
       if (
         hasSpecific &&
@@ -42,7 +43,7 @@ export const createNotificationSchema = z
         return false;
       if (hasRole && (!data.roleRecipients || data.roleRecipients.length === 0))
         return false;
-
+      if (priorityNull || notificationTypeNull) return false;
       return true;
     },
     {
