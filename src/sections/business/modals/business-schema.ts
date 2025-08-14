@@ -10,23 +10,15 @@ export const businessSchema = z.object({
     .string({ required_error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")
     .max(100, "Máximo 100 caracteres."),
-  parentBusiness: z
-    .object({
-      id: z.number(),
-      name: z.string(),
-    })
-    .optional(),
+  parentId: z.number().optional(),
 
-  initialHbl: z
+  hblInitial: z
     .string({ required_error: "El HBL inicial es obligatorio." })
-    .min(1, "El HBL no puede estar vacío.")
+    
     .max(30, "Máximo 30 caracteres."),
 
   locationId: z
-    .string({ required_error: "La ubicación es obligatoria." })
-    .refine((val) => /^\d+$/.test(val), {
-      message: "El ID de ubicación debe ser un número positivo.",
-    }),
+    .coerce.number().int().positive({message:"Debe ser un numero"}),
 
   description: z.string().max(500).optional(),
   address: z.string().max(200).optional(),
@@ -44,18 +36,19 @@ export const businessSchema = z.object({
   isPrimary: z.boolean().optional(),
   fixedRate: z.number().min(0).max(999999).optional(),
   invoiceText: z.string().max(500).optional(),
-  users: z.array(z.number().int().positive()).max(50).optional(),
-  childBusinessIds: z.array(z.number().int().positive()).max(50).optional(),
-  photos: z
+  //users: z.array(z.number().int().positive()).max(50).optional(),
+  //childBusinessIds: z.array(z.number().int().positive()).max(50).optional(),
+  photoObjectCodes: z
     .array(
-      z.string()
-      /* z.union([
+      //z.string()
+      z.union([
         z.string().url("Debe ser una URL válida."),
         z.instanceof(File, { message: "Debe ser un archivo válido." }),
-      ]) */
+      ]) 
     )
     .max(10, "Máximo 10 imágenes.")
     .optional(),
 });
+
 
 export type CreateSchemaBusiness = z.infer<typeof businessSchema>;
