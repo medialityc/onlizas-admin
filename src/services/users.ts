@@ -46,6 +46,7 @@ export async function getAllUsers(
 
 // - [ ] UPDATE USER
 export async function updateUser(
+  id: string | number,
   data: UserUpdateData
 ): Promise<ApiResponse<UpdateUserResponse>> {
   const formData = new FormData();
@@ -63,7 +64,7 @@ export async function updateUser(
   });
 
   const res = await nextAuthFetch({
-    url: backendRoutes.users.update,
+    url: backendRoutes.users.update(id),
     method: "PATCH",
     data: formData,
     useAuth: true,

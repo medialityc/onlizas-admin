@@ -8,10 +8,10 @@ export const backendRoutes = {
     resendEmail: `${process.env.NEXT_PUBLIC_API_URL}users/me/email/resend-verification`,
     resendPhone: `${process.env.NEXT_PUBLIC_API_URL}users/me/phone/resend-verification`,
     getAll: `${process.env.NEXT_PUBLIC_API_URL}users`,
-    create: `${process.env.NEXT_PUBLIC_API_URL}admin/users`,
+    create: `${process.env.NEXT_PUBLIC_API_URL}users`,
     getById: (id: number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/users/${id}`,
-    update: `${process.env.NEXT_PUBLIC_API_URL}admin/users`,
+      `${process.env.NEXT_PUBLIC_API_URL}users/${id}`,
+    update: (id: number|string) => `${process.env.NEXT_PUBLIC_API_URL}users/${id}`,
     delete: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${id}`,
     blockToggle: `${process.env.NEXT_PUBLIC_API_URL}admin/users/block-toggle`,
@@ -39,9 +39,9 @@ export const backendRoutes = {
   },
   permissions: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}roles/permissions`,
-    create: `${process.env.NEXT_PUBLIC_API_URL}roles/permissions`,
+    create: `${process.env.NEXT_PUBLIC_API_URL}permissions`,
     update: (id: number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}roles/permissions/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}permissions/${id}`,
     delete: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}roles/permissions/${id}`,
   },
@@ -79,6 +79,13 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}currencies/${id}`, // PUT
     setAsDefault: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}currencies/${id}/set-as-default`, // PATCH
+  },
+  business: {
+    getAll: `${process.env.NEXT_PUBLIC_API_URL}businesses`,
+    create: `${process.env.NEXT_PUBLIC_API_URL}admin/businesses`,
+    update: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}admin/businesses/${id}`,
+    //delete: (id: string | number) => `${process.env.NEXT_PUBLIC_API_URL}roles/${id}`,
   },
   suppliers: {
     create: `${process.env.NEXT_PUBLIC_API_URL}suppliers`, // POST

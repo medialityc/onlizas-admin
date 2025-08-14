@@ -1,17 +1,20 @@
-import { IPermission } from "@/types/permissions";
+import { ICreatePermission, IPermission } from "@/types/permissions";
 import { z } from "zod";
 
 // Permission create schema
-export const createPermissionSchema = (existingPermissions: IPermission[]) =>
+export const createPermissionSchema = (
+  existingPermissions: ICreatePermission[]
+) =>
   z.object({
     name: z
       .string()
       .min(1, "El nombre es requerido")
       .max(50, "El nombre no puede exceder 50 caracteres")
       .refine(
-        val =>
+        (val) =>
           !existingPermissions.some(
-            perm => perm.name.trim().toLowerCase() === val.trim().toLowerCase()
+            (perm) =>
+              perm.name.trim().toLowerCase() === val.trim().toLowerCase()
           ),
         { message: "El nombre ya está en uso" }
       ),
@@ -24,19 +27,23 @@ export const createPermissionSchema = (existingPermissions: IPermission[]) =>
         "El código debe contener solo letras mayúsculas y guiones bajos"
       )
       .refine(
-        val =>
+        (val) =>
           !existingPermissions.some(
-            perm => perm.code.trim().toUpperCase() === val.trim().toUpperCase()
+            (perm) =>
+              perm.code.trim().toUpperCase() === val.trim().toUpperCase()
           ),
         { message: "El código ya está en uso" }
       ),
+    permissionType: z
+      .string()
+      /* .transform((val) => Number(val))
+      .pipe(z.number().min(1, "Debe seleccionar un tipo")), */,
     description: z
       .string()
-      .min(1, "La descripción es requerida")
-      .max(255, "La descripción no puede exceder 255 caracteres").optional(),
-    roleId: z
-      .number({ required_error: "El rol es requerido" })
-      .min(1, "Debe seleccionar un rol"),
+      .max(255, "La descripción no puede exceder 255 caracteres")
+      .optional(),
+    roleId: z.number().optional()
+      
   });
 
 // Permission update schema (partial)
@@ -48,9 +55,10 @@ export const updatePermissionSchema = (existingPermissions: IPermission[]) =>
       .min(1, "El nombre es requerido")
       .max(50, "El nombre no puede exceder 50 caracteres")
       .refine(
-        val =>
+        (val) =>
           !existingPermissions.some(
-            perm => perm.name.trim().toLowerCase() === val.trim().toLowerCase()
+            (perm) =>
+              perm.name.trim().toLowerCase() === val.trim().toLowerCase()
           ),
         { message: "El nombre ya está en uso" }
       ),
@@ -63,9 +71,10 @@ export const updatePermissionSchema = (existingPermissions: IPermission[]) =>
         "El código debe contener solo letras mayúsculas y guiones bajos"
       )
       .refine(
-        val =>
+        (val) =>
           !existingPermissions.some(
-            perm => perm.code.trim().toUpperCase() === val.trim().toUpperCase()
+            (perm) =>
+              perm.code.trim().toUpperCase() === val.trim().toUpperCase()
           ),
         { message: "El código ya está en uso" }
       ),
@@ -91,7 +100,9 @@ export const permissionSearchSchema = z.object({
 export type CreatePermissionSchema = z.infer<
   ReturnType<typeof createPermissionSchema>
 >;
-export type UpdatePermissionSchema = z.infer<ReturnType<typeof updatePermissionSchema>>;
+export type UpdatePermissionSchema = z.infer<
+  ReturnType<typeof updatePermissionSchema>
+>;
 export type PermissionSearchSchema = z.infer<typeof permissionSearchSchema>;
 
 // Default values

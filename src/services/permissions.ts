@@ -39,7 +39,7 @@ export async function createPermission(
   const res = await nextAuthFetch({
     url: backendRoutes.permissions.create,
     method: "POST",
-    data,
+    data:{...data,permissionType:Number(data.permissionType)},
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);

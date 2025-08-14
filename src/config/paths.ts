@@ -33,5 +33,8 @@ export const paths = {
     suppliers: {
       list: `${DASHBOARD}/suppliers`,
     },
+    business:{
+      list: `${DASHBOARD}/business`,
+    }
   },
 };
