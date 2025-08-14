@@ -23,7 +23,7 @@ export function useInfiniteAutocomplete<T>({
       try {
         const response = await onFetch({
           page: pageParam,
-          pageSize: params?.pageSize ?? 35,
+          pageSize: params?.pagination?.pageSize ?? 35,
           sortBy: params?.sortBy,
           isDescending: params?.isDescending ?? false,
           ...params,
