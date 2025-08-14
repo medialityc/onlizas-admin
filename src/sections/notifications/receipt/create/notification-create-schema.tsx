@@ -4,7 +4,6 @@ import { z } from "zod";
 const NotificationPriorityEnum = z.enum(["high", "medium", "low"]);
 const NotificationChannelEnum = z.enum(["in_app", "email", "sms"]);
 const NotificationTypeEnum = z.enum(["individual", "massive"]);
-const RecipientTypeEnum = z.array(z.enum(["specific", "role"]));
 
 export const createNotificationSchema = z
   .object({
@@ -24,27 +23,23 @@ export const createNotificationSchema = z
       .array(NotificationChannelEnum)
       .min(1, "Debe seleccionar al menos un canal de envío"),
 
-    recipientType: RecipientTypeEnum,
+    specificType: z.boolean(),
+    roleType: z.boolean(),
     notificationType: NotificationTypeEnum,
     specificRecipients: z.array(z.coerce.number().int().positive()).optional(),
     roleRecipients: z.array(z.coerce.number().int().positive()).optional(),
   })
   .refine(
     (data) => {
-      const hasSpecific = data.recipientType.includes("specific");
-      const hasRole = data.recipientType.includes("role");
+      const hasSpecific = data.specificType;
+      const hasRole = data.roleType;
 
-      // Si no hay ningún tipo seleccionado
       if (!hasSpecific && !hasRole) return false;
-
-      // Si hay específicos pero no hay destinatarios
       if (
         hasSpecific &&
         (!data.specificRecipients || data.specificRecipients.length === 0)
       )
         return false;
-
-      // Si hay roles pero no hay destinatarios
       if (hasRole && (!data.roleRecipients || data.roleRecipients.length === 0))
         return false;
 
@@ -53,7 +48,7 @@ export const createNotificationSchema = z
     {
       message:
         "Debe seleccionar al menos un destinatario para cada tipo seleccionado",
-      path: ["recipientType"],
+      path: ["specificRecipient"], // Puedes ajustar el path si quieres que el error salga en un campo concreto
     }
   );
 

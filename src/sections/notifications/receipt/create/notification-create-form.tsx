@@ -5,8 +5,8 @@ import { useForm } from "react-hook-form";
 import {
   FormProvider,
   RHFSelect,
-  RHFSelectWithLabel,
   RHFInputWithLabel,
+  RHFCheckbox,
 } from "@/components/react-hook-form";
 import { NotificationChannel, NotificationType } from "@/types/notifications";
 import { createNotification } from "@/services/notifications/notification-service";
@@ -19,6 +19,8 @@ import {
 
 import { getAllUsers } from "@/services/users";
 import { getAllRoles } from "@/services/roles";
+import { Label } from "@/components/label/label";
+import RHFMultiSelect from "@/components/react-hook-form/rhf-autocomplete-multiple-fetcher-scroll-infinity";
 import LoaderButton from "@/components/loaders/loader-button";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 interface NotificationCreateFormProps {
@@ -38,47 +40,37 @@ export const NotificationCreateForm = ({
       title: "",
       message: "",
       channels: [],
-      recipientType: [],
+      roleType: false,
+      specificType: false,
       roleRecipients: [],
       specificRecipients: [],
     },
   });
 
   const { watch } = methods;
-  const recipientType = watch("recipientType");
 
   const onSubmit = async (data: CreateNotificationSchema) => {
     console.log(data);
-
+    const {
+      channels,
+      message,
+      notificationType,
+      priority,
+      title,
+      roleRecipients,
+      specificRecipients,
+    } = data;
     setIsSubmitting(true);
     try {
-      const formData = new FormData();
-      // Campos simples
-      formData.append("title", data.title);
-      formData.append("message", data.message);
-      formData.append("priority", data.priority);
-      formData.append("notificationType", data.notificationType);
-
-      // Canales
-      data.channels?.forEach((channel) => {
-        formData.append("channels", channel);
-      });
-
-      // Tipos de destinatarios
-      data.recipientType?.forEach((type) => {
-        formData.append("recipientType", type);
-      });
-
-      // Usuarios específicos
-      data.specificRecipients?.forEach((id) => {
-        formData.append("specificRecipients", id.toString());
-      });
-
-      // Roles
-      data.roleRecipients?.forEach((id) => {
-        formData.append("roleRecipients", id.toString());
-      });
-      const response = await createNotification(formData);
+      const response = await createNotification({
+        channels,
+        message,
+        notificationType,
+        priority,
+        title,
+        roleRecipients,
+        specificRecipients,
+      } as CreateNotificationSchema);
       if (!response.error) {
         showToast("Notificación creada y enviada exitosamente", "success");
         onClose();
@@ -144,11 +136,9 @@ export const NotificationCreateForm = ({
         {/* Prioridad */}
         <div className="flex justify-between">
           <div className="gap-1">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Prioridad *
-            </label>
             <RHFSelect
               name="priority"
+              label="Prioridad"
               required
               placeholder="Selecciona prioridad"
               options={[
@@ -164,109 +154,84 @@ export const NotificationCreateForm = ({
 
           {/* Canales de envío */}
           <div className="flex ">
-            <div className="gap-1">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Canales Envío *
-              </label>
-              <RHFSelectWithLabel
+            <div className="gap-3">
+              <RHFMultiSelect
+                style={{ width: 180 }}
+                objectValueKey={"value"}
+                options={channelOptions}
                 name="channels"
                 placeholder="Selecciona canales"
-                /*  objectValueKey="label" */
-                options={channelOptions}
+                label="Canales Envío"
+                /*  options={channelOptions} */
                 size="small"
                 multiple
                 required
               />
+              {/* <RHFSelect
+                options={channelOptions}
+                name="channels"
+                bodyClassname="min-h-[30px] p-1 h-4"
+                placeholder="Selecciona canales"
+                label="Canales Envío"
+                /*  options={channelOptions} 
+                size="small"
+                multiple
+                required
+              /> */}
             </div>
           </div>
         </div>
 
         {/* Destinatarios */}
         <div>
-          <label className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-6">
+          <Label className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-6">
             Destinatarios
-          </label>
+          </Label>
           <div className="space-y-4">
             <div className="flex gap-4">
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  {...methods.register("recipientType")}
-                  value="specific"
-                  className="mr-2 h-4 w-4 text-primary focus:ring-primary"
-                />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Usuarios específicos
-                </span>
-              </label>
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  {...methods.register("recipientType")}
-                  value="role"
-                  className="mr-2 h-4 w-4 text-primary focus:ring-primary"
-                />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Por rol
-                </span>
-              </label>
+              <RHFCheckbox label="Usuarios específicos" name="specificType" />
+              <RHFCheckbox label="Por rol" name="roleType" />
             </div>
-            {methods.formState.errors.recipientType && (
+            {methods.formState.errors.specificType && (
               <p className="text-red-500 text-sm mt-2">
-                {methods.formState.errors.recipientType.message}
+                {methods.formState.errors.specificType.message}
               </p>
             )}
 
-            {recipientType?.includes("specific") && (
+            {watch("specificType") && (
               <div>
-                <label className="text-base font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Seleccionar Usuarios
-                </label>
                 <RHFAutocompleteFetcherInfinity
                   name="specificRecipients"
                   placeholder="Selecciona usuarios"
-                  /* label="Seleccionar usuarios" */
+                  label="Seleccionar usuarios"
                   multiple
                   required
-                  onFetch={
-                    getAllUsers // tu API debe aceptar page y pageSize
-                  }
-                  /* renderOption={(b) => b.name}
-                  renderMultiplesValues={(b, removeSelected) => (
-                    <div className="mt-3 gap-3 flex flex-col">
-                      {b.map((b) => (
-                        <Card key={b.id}>{b.name}</Card>
-                      ))}
-                    </div>
-                  )} */
+                  onFetch={getAllUsers}
                 />
-                {methods.formState.errors.specificRecipients && (
+                {/* {methods.formState.errors.specificRecipients && (
                   <p className="text-red-500 text-sm mt-2">
                     {methods.formState.errors.specificRecipients.message}
                   </p>
-                )}
+                )} */}
               </div>
             )}
 
-            {recipientType?.includes("role") && (
+            {watch("roleType") && (
               <div>
-                <label className="text-base font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Seleccionar Roles
-                </label>
                 <RHFAutocompleteFetcherInfinity
                   name="roleRecipients"
-                  /* label="Seleccionar roles" */
+                  label="Seleccionar roles"
                   placeholder="Buscar roles..."
                   required
                   params={{ pageSize: 10 }} // batch de 25
                   onFetch={getAllRoles}
                   multiple
                 />
-                {methods.formState.errors.specificRecipients && (
+                {/* {methods.formState.errors.specificRecipients && (
                   <p className="text-red-500 text-sm mt-2">
                     {methods.formState.errors.specificRecipients.message}
                   </p>
-                )}
+                )} */}
               </div>
             )}
           </div>
