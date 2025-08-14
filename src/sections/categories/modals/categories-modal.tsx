@@ -19,6 +19,7 @@ import { getAllDepartments } from "@/services/department";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import RHFCheckbox from "@/components/react-hook-form/rhf-checkbox";
 import { urlToFile } from "@/utils/format";
+import { CreateCategory } from '../../../types/categories';
 
 interface CategoriesModalProps {
   open: boolean;
@@ -42,15 +43,16 @@ export default function CategoriesModal({
   const methods = useForm<CategoriesFormData>({
     resolver: zodResolver(categoriesSchema),
     defaultValues: {
-      department: category?.department
+      /* department: category?.department
         ? {
             id: category?.department.id ?? 0,
             name: category?.department.name ?? "",
           }
-        : undefined,
+        : undefined, */
+      department:category?.department.id,
       name: category?.name ?? "",
       description: category?.description ?? "",
-      image: category?.image ?? "",
+      image: category?.image ?? undefined,
       isActive: category?.isActive ?? true,
     },
   });
@@ -93,14 +95,15 @@ export default function CategoriesModal({
     let response;
     try {
       let imageValue = data.image;
-      if (data.image instanceof File) {
+      console.log(data.image)
+     /*  if (data.image instanceof File) {
         imageValue = category?.image || "";
-      }
+      } */
       const formData = new FormData();
-      formData.append("departmentId", data.department.id.toString());
+      formData.append("department", data.department.toString());
       formData.append("name", data.name);
       formData.append("description", data.description);
-      formData.append("image", imageValue);
+      formData.append("image", data.image);
       formData.append("isActive", data.isActive.toString());
       if (category) {
         response = await updateCategory(category.id, formData);

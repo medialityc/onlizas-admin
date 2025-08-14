@@ -94,13 +94,13 @@ const ActionsMenu = ({
         <Menu.Dropdown className="bg-white text-gray-700 space-y-2 border border-gray-200 px-1 dark:bg-black">
           <Menu.Label>Opciones</Menu.Label>
           {onViewDetails && (
-            <Menu.Item
-              className="p-1 text-sm hover:text-textColor dark:text-textColor"
-              leftSection={<EyeIcon className="h-4 w-4 " />}
-              onClick={onViewDetails}
-            >
-              Ver detalles
-            </Menu.Item>
+          <Menu.Item
+            className="p-1 text-sm hover:text-primary"
+            leftSection={<EyeIcon className="h-4 w-4" />}
+            onClick={onViewDetails}
+          >
+            Ver detalles
+          </Menu.Item>
           )}
 
           {onDownload && (
@@ -115,7 +115,7 @@ const ActionsMenu = ({
 
           {onEdit && (
             <Menu.Item
-              className="p-1 text-sm hover:text-textColor dark:text-textColor"
+              className="p-1 text-sm hover:text-textColor"
               leftSection={<PencilIcon className="h-4 w-4 " />}
               onClick={onEdit}
             >

@@ -1,13 +1,7 @@
 import { z } from "zod";
 
 export const categoriesSchema = z.object({
-  department: z.object(
-    {
-      id: z.number(),
-      name: z.string(),
-    },
-    { required_error: "Debes seleccionar un departamento." }
-  ),
+  department: z.number({ required_error: "Debes seleccionar un departamento." }),
   name: z
     .string({ required_error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")
@@ -25,5 +19,6 @@ export const categoriesSchema = z.object({
   ),
   isActive: z.boolean({ required_error: "El estado activo es obligatorio." }),
 });
+
 
 export type CategoriesFormData = z.infer<typeof categoriesSchema>;
