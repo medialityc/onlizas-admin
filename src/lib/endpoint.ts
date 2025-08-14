@@ -54,13 +54,23 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}categories/${id}`, // PUT
   },
   products: {
-    create: `${process.env.NEXT_PUBLIC_API_URL}products`, // POST
-    list: `${process.env.NEXT_PUBLIC_API_URL}products`, // GET
+    create: `${process.env.NEXT_PUBLIC_API_URL}admin/products`, // POST
+    list: `${process.env.NEXT_PUBLIC_API_URL}admin/products`, // GET
     delete: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}products/${id}`, // DELETE
+      `${process.env.NEXT_PUBLIC_API_URL}admin/products/${id}`, // DELETE
     update: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}products/${id}`, // PUT
-    import: `${process.env.NEXT_PUBLIC_API_URL}products/import`,
+      `${process.env.NEXT_PUBLIC_API_URL}admin/products/${id}`, // PUT
+    deactivate: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}admin/products/${id}/deactivate`, // PATCH
+    canDelete: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}admin/products/${id}/can-delete`, // GET
+    assignSuppliers: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}admin/products/${id}/suppliers/assign`, // POST
+    unassignSuppliers: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}admin/products/${id}/suppliers/unassign`, // POST
+    simpleCategories: `${process.env.NEXT_PUBLIC_API_URL}admin/products/categories/simple`, // GET
+    simpleSuppliers: `${process.env.NEXT_PUBLIC_API_URL}admin/products/suppliers/simple`, // GET
+    categoryFeatures: `${process.env.NEXT_PUBLIC_API_URL}admin/products/categories/features`, // GET
   },
   departments: {
     create: `${process.env.NEXT_PUBLIC_API_URL}departments`, // POST
