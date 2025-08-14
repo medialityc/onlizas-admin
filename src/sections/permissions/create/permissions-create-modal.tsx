@@ -10,12 +10,13 @@ import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import RoleCreateModal from "@/sections/roles/create/role-create-modal";
 import { createPermission } from "@/services/permissions";
 import { getAllRoles } from "@/services/roles";
-import { IPermission } from "@/types/permissions";
+import { ICreatePermission, IPermission } from "@/types/permissions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import RHFSelectWithLabel from '../../../components/react-hook-form/rhf-select';
 import {
   createPermissionSchema,
   CreatePermissionSchema,
@@ -25,7 +26,7 @@ import {
 interface PermissionCreateModalProps {
   open: boolean;
   onClose: () => void;
-  permissions?: IPermission[];
+  permissions?: ICreatePermission[];
 }
 
 export default function PermissionCreateModal({
@@ -55,7 +56,8 @@ export default function PermissionCreateModal({
 
   const onSubmit = async (data: CreatePermissionSchema) => {
     setError(null);
-
+    console.log(data);
+    
     try {
       const response = await createPermission(data);
       handleClose();
@@ -74,6 +76,14 @@ export default function PermissionCreateModal({
       toast.error(errorMessage);
     }
   };
+  const permisoOptions = [
+  { value: 0, label: "Ver todo" },
+  { value: 1, label: "Ver detalles" },
+  { value: 2, label: "Crear" },
+  { value: 3, label: "Editar" },
+  { value: 4, label: "Eliminar" },
+  { value: 5, label: "Otro" },
+];
 
   return (
     <SimpleModal open={open} onClose={handleClose} title="Crear Nuevo Permiso">
@@ -105,13 +115,21 @@ export default function PermissionCreateModal({
               placeholder="Ingrese la entidad"
             />
             <div className="mt-1.5">
-
+            <RHFSelectWithLabel
+              name="permissionType"
+              options={permisoOptions}
+              label="Tipo de Permiso"
+              placeholder="Seleccione el tipo"
+              required 
+              size="small"
+            />
             <RHFAutocompleteWithAddButton
               name="roleId"
               label="Rol"
               placeholder="Seleccionar el rol "
               objectValueKey={"id"}
               onFetch={getAllRoles}
+              params={{pageSize:10}}
               renderOption={r => r.name}
               buttonColor="blue"
               onOpenModal={() => setIsRoleModalOpen(true)}
@@ -125,7 +143,7 @@ export default function PermissionCreateModal({
                 label="Descripción"
                 placeholder="Describe las responsabilidades de este rol"
                 type="textarea"
-                className="h-24"
+                /* className="h-24" */
                 
               />
             </div>
