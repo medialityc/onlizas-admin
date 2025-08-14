@@ -2,22 +2,15 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/button/button";
 import {
   FormProvider,
   RHFSelect,
-  RHFCheckbox,
   RHFSelectWithLabel,
   RHFInputWithLabel,
 } from "@/components/react-hook-form";
-import {
-  NotificationChannel,
-  NotificationPriority,
-  NotificationType,
-} from "@/types/notifications";
+import { NotificationChannel, NotificationType } from "@/types/notifications";
 import { createNotification } from "@/services/notifications/notification-service";
-import { useEffect, useMemo, useState } from "react";
-import { toast } from "react-toastify";
+import { useState } from "react";
 import showToast from "@/config/toast/toastConfig";
 import {
   CreateNotificationSchema,
@@ -26,12 +19,8 @@ import {
 
 import { getAllUsers } from "@/services/users";
 import { getAllRoles } from "@/services/roles";
-import { useQuery } from "@tanstack/react-query";
-import { Label } from "@/components/label/label";
-import RHFMultiSelect from "@/components/react-hook-form/rhf-autocomplete-multiple-fetcher-scroll-infinity";
 import LoaderButton from "@/components/loaders/loader-button";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import { Card } from "@/components/cards/card";
 interface NotificationCreateFormProps {
   onClose: () => void;
 }
@@ -39,7 +28,6 @@ interface NotificationCreateFormProps {
 export const NotificationCreateForm = ({
   onClose,
 }: NotificationCreateFormProps) => {
-  const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const methods = useForm<CreateNotificationSchema>({
@@ -56,7 +44,7 @@ export const NotificationCreateForm = ({
     },
   });
 
-  const { watch, setValue } = methods;
+  const { watch } = methods;
   const recipientType = watch("recipientType");
 
   const onSubmit = async (data: CreateNotificationSchema) => {
@@ -93,7 +81,7 @@ export const NotificationCreateForm = ({
       const response = await createNotification(formData);
       if (!response.error) {
         showToast("Notificación creada y enviada exitosamente", "success");
-        // Reset form
+        onClose();
         methods.reset();
       } else {
         showToast(response.message || "Error al crear notificación", "error");
@@ -241,12 +229,8 @@ export const NotificationCreateForm = ({
                   multiple
                   required
                   onFetch={
-                    () => getAllUsers({}) // tu API debe aceptar page y pageSize
+                    getAllUsers // tu API debe aceptar page y pageSize
                   }
-                  objectKeyLabel="name"
-                  objectValueKey="id"
-                  params={{ pageSize: 10 }}
-                  queryKey="user_cache"
                   /* renderOption={(b) => b.name}
                   renderMultiplesValues={(b, removeSelected) => (
                     <div className="mt-3 gap-3 flex flex-col">
