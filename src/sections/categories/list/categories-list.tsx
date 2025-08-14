@@ -98,7 +98,7 @@ export function CategoriesList({
               {category.name}
             </span>
             <span className="text-xs text-gray-500 dark:text-gray-400">
-              {category.department.name}
+              {category?.department?.name}
             </span>
           </div>
         ),

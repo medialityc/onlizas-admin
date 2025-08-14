@@ -12,7 +12,9 @@ import { Category, GetAllCategories } from "@/types/categories";
 
 export async function createCategory(
   data: FormData
-): Promise<ApiResponse<Category>> {
+): Promise<ApiResponse<ApiStatusResponse>> {
+  console.log(data);
+  
   const res = await nextAuthFetch({
     url: backendRoutes.categories.create,
     method: "POST",
@@ -23,7 +25,7 @@ export async function createCategory(
   if (!res.ok) return handleApiServerError(res);
   revalidateTag("categories");
 
-  return buildApiResponseAsync<Category>(res);
+  return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
 export async function deleteCategory(
