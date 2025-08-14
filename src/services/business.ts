@@ -8,7 +8,7 @@ import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
-import { Business, GetAllBusiness } from "@/types/business";
+import { Business, CreateBusiness, GetAllBusiness } from "@/types/business";
 
 // Mock data for testing
 /* const mockBusinesses: Business[] = [
@@ -74,7 +74,7 @@ export async function getAllBusiness(
 
 export async function createBusiness(
   data: FormData
-): Promise<ApiResponse<Business>> {
+): Promise<ApiResponse<ApiStatusResponse>> {
   console.log("Creating business with data:");
   const res = await nextAuthFetch({
       url: backendRoutes.business.create,
@@ -86,7 +86,7 @@ export async function createBusiness(
     if (!res.ok) return handleApiServerError(res);
     revalidateTag("categories");
   
-    return buildApiResponseAsync<Business>(res);
+    return buildApiResponseAsync<ApiStatusResponse>(res);
   
   
 }
