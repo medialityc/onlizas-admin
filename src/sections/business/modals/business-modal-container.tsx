@@ -1,7 +1,3 @@
-"use client";
-
-import { useModalState } from "@/hooks/use-modal-state";
-
 import { Business } from "@/types/business";
 import { BusinessDetailsModal } from "./business-details-modal";
 import BusinessModal from "./business-modal";

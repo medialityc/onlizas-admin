@@ -69,9 +69,9 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
     defaultValues: {
       id: initialData?.id || 0,
       name: initialData?.name || "",
-      roles: initialData?.roles?.map(r => r.name) || [],
+      roles: initialData?.roles?.map((r) => r.name) || [],
       addresses:
-        initialData?.addresses?.map(addr => ({
+        initialData?.addresses?.map((addr) => ({
           ...addr,
           otherStreets: addr.otherStreets || "",
           annotations: addr.annotations || "",
@@ -79,7 +79,7 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
       attributes: initialData?.attributes || {},
       isBlocked: initialData?.isBlocked || false,
       isVerified: initialData?.isVerified || false,
-      businessIds: initialData?.businesses?.map(b => b.id) || [],
+      businessIds: initialData?.businesses?.map((b) => b.id) || [],
     },
     mode: "onChange",
     reValidateMode: "onChange",
@@ -99,7 +99,7 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
 
   const onSubmit = async (data: UserUpdateData) => {
     try {
-      const res = await updateUser(data);
+      const res = await updateUser(initialData?.id ?? "", data);
       if (res?.error && res.message) {
         showToast(res.message, "error");
       } else {
@@ -115,7 +115,7 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
   const handleAddressModalSave = (address: AddressFormData) => {
     if (editingAddress) {
       const index = addressFields.findIndex(
-        field => field.id === editingAddress.id
+        (field) => field.id === editingAddress.id
       );
       if (index !== -1) updateAddress(index, address);
     } else {
@@ -202,13 +202,13 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
             <CardContent className="p-6 space-y-6">
               <VerificationStatusList
                 items={
-                  initialData?.emails?.map(email => ({
+                  initialData?.emails?.map((email) => ({
                     value: email.address,
                     isVerified: email.isVerified,
                   })) || []
                 }
                 label="Correos Electrónicos"
-                onVerify={async email => {
+                onVerify={async (email) => {
                   try {
                     const response = await resendEmail({ email });
                     if (response?.error) {
@@ -231,16 +231,16 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
 
               <VerificationStatusList
                 items={
-                  initialData?.phones?.map(phone => ({
+                  initialData?.phones?.map((phone) => ({
                     value: phone.number,
                     isVerified: phone.isVerified,
                   })) || []
                 }
                 label="Teléfonos"
-                onVerify={async value => {
+                onVerify={async (value) => {
                   try {
                     const phone = initialData?.phones?.find(
-                      p => p.number === value
+                      (p) => p.number === value
                     );
                     if (!phone) return;
                     const response = await resendPhone({

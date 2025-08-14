@@ -217,7 +217,14 @@ export function AdvancedSearchSelect<T>({
                   setIsTyping(false); // <---- ya no está escribiendo!
                 }}
                 placeholder={placeholder}
-                className={cn("form-input w-full", inputClassName)}
+                aria-invalid={!!error}
+                aria-describedby={error ? `${name}-error` : undefined}
+                className={cn(
+                  "form-input w-full",
+                  error &&
+                    "ring-1 ring-red-500 border-red-500 focus:ring-red-500 focus:border-red-500",
+                  inputClassName
+                )}
               />
 
               {loading && (
@@ -335,7 +342,9 @@ export function AdvancedSearchSelect<T>({
               </div>
             )}
             {error && (
-              <p className="mt-1 text-sm text-red-600">{error.message}</p>
+              <p id={`${name}-error`} className="mt-1 text-sm text-red-600">
+                {error.message}
+              </p>
             )}
           </div>
         );

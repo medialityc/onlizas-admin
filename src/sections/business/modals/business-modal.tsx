@@ -3,17 +3,19 @@
 import { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Business, CreateBusiness } from "@/types/business";
+import { Business } from "@/types/business";
 import { businessSchema, CreateSchemaBusiness } from "./business-schema";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import RHFCheckbox from "@/components/react-hook-form/rhf-checkbox";
-import { RHFFileUpload } from "@/components/react-hook-form/rhf-file-upload";
 import LoaderButton from "@/components/loaders/loader-button";
-import showToast from "@/config/toast/toastConfig";
 import SimpleModal from "@/components/modal/modal";
 import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import { createBusiness, getAllBusiness, updateBusinessData } from "@/services/business";
+import {
+  createBusiness,
+  getAllBusiness,
+  updateBusinessData,
+} from "@/services/business";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -61,7 +63,6 @@ export default function BusinessModal({
       users: business?.users || [],
       childBusinessIds: business?.childBusinessIds || [],
       photos: business?.photos,
-      
     },
   });
 
@@ -76,7 +77,7 @@ export default function BusinessModal({
     const loadImagesAsFiles = async () => {
       if (business?.photos && open) {
         try {
-          setLoadingImage(true);         
+          setLoadingImage(true);
         } catch (error) {
           console.warn("Failed to load photos:", error);
           setValue("photos", business.photos);
@@ -100,7 +101,7 @@ export default function BusinessModal({
     try {
       let response;
       const formData = new FormData();
-      
+
       // Mapear exactamente los nombres de campos que espera el backend
       formData.append("name", data.name);
       formData.append("code", data.code);
@@ -113,18 +114,19 @@ export default function BusinessModal({
       formData.append("fixedRate", data.fixedRate?.toString() || "0");
       formData.append("invoiceText", data.invoiceText || "");
       formData.append("locationId", data.locationId);
-      
+
       // Campos adicionales que puede esperar el backend
-      formData.append("parentId", data.parentBusiness ? data.parentBusiness.id.toString() : "0");
-      
+      formData.append(
+        "parentId",
+        data.parentBusiness ? data.parentBusiness.id.toString() : "0"
+      );
+
       // Manejo de photoObjectCodes
       if (data.photos && data.photos.length > 0) {
         data.photos.forEach((photo, index) => {
           formData.append(`photoObjectCodes[${index}]`, photo);
         });
       }
-      
-     
 
       if (business) {
         response = await updateBusinessData(business.id, formData);

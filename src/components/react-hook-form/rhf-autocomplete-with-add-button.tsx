@@ -6,7 +6,7 @@ import { IQueryable } from "@/types/fetch/request";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import RHFAutocompleteFetcherInfinity from "./rhf-autcomplete-fetcher-scroll-infinity";
 
-type cacheTagEntities = "units"| "categories" | "roles"
+type cacheTagEntities = "units" | "categories" | "roles";
 
 interface RHFAutocompleteWithAddButtonProps<T> {
   name: string;
@@ -88,6 +88,7 @@ export const RHFAutocompleteWithAddButton = <T,>({
       <Label className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
         {icon}
         {label}
+        {props.required ? <span className="text-red-500">*</span> : null}
       </Label>
       <div className="flex gap-2 items-center">
         <RHFAutocompleteFetcherInfinity
