@@ -47,7 +47,7 @@ export default function BusinessModal({
     defaultValues: {
       name: business?.name || "",
       code: business?.code || "",
-      parentId: business?.parentBusiness,
+      parentId: business?.parentBusiness.id,
       description: business?.description || "",
       locationId: business?.locationId || 0,
       hblInitial: business?.hblInitial || "",
@@ -138,25 +138,20 @@ export default function BusinessModal({
       }
       if (business) {
         response = await updateBusinessData(business.id, formData);
-      } else {
-        response = await createBusiness(formData);
-      }
 
-      if (!response.error) {
-        queryClient.invalidateQueries({ queryKey: ["businesses"] });
-        onSuccess?.();
-        reset();
-        toast.success(
-          business
-            ? "Negocio editado exitosamente"
-            : "Negocio creado exitosamente"
-        );
-        handleClose();
-      } else {
-        if (response.status === 409) {
-          toast.error("Ya existe un negocio con ese código");
+        if (!response.error) {
+          queryClient.invalidateQueries({ queryKey: ["businesses"] });
+          onSuccess?.();
+          reset();
+          toast.success("Negocio editado exitosamente");
+
+          handleClose();
         } else {
-          toast.error(response.message || "No se pudo procesar este negocio");
+          if (response.status === 409) {
+            toast.error("Ya existe un negocio con ese código");
+          } else {
+            toast.error(response.message || "No se pudo procesar este negocio");
+          }
         }
       }
     } catch (err) {

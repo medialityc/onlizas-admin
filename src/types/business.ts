@@ -15,7 +15,7 @@ export interface Business {
   fixedRate: number;
   invoiceText: string; // Only shown/edited in form
   users: number[]; // Associated user IDs
-  parentBusiness: number; // Parent business ID
+  parentBusiness: {id:number,name:string}; // Parent business ID
   childBusinessIds: number[]; // Child business IDs
   photoObjectCodes: string[]; // Image URLs (details)
 }
@@ -45,7 +45,7 @@ export type CreateBusiness = {
   //childBusinessIds: number[];
   photoObjectCodes: string[]; // Files to upload
 };
-export type Photo = { fileName: string; content: File };
+
 
 /**
  * Allowed data to update a Business
@@ -64,7 +64,7 @@ export type UpdateBusiness = {
   users?: number[];
   parentBusinessId?: number;
   childBusinessIds?: number[];
-  photos?: Photo[]; // File or existing URL
+  photos?: []; // File or existing URL
 };
 
 /**

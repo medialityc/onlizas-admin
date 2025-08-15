@@ -123,22 +123,4 @@ export async function deleteBusiness(
   };
 }
 
-/* export async function getBusinessDetails(
-  id: string | number
-): Promise<ApiResponse<Business>> {  
-  console.log("Fetching business details for id:", id);
-  const business = mockBusinesses.find((b) => b.id === Number(id));
-  if (!business) {
-    return {
-      data: {} as Business,
-      error: true,
-      status: 404,
-      message: "Business not found",
-    };
-  }
-  return {
-    data: business,
-    error: false,
-    status: 200,
-  };
-} */
+
