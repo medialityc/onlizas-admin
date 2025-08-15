@@ -5,8 +5,9 @@ import RHFInputWithLabel from '@/components/react-hook-form/rhf-input';
 import { Button } from '@/components/button/button';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import IconTrash from '@/components/icon/icon-trash';
+import IconInfoCircle from '@/components/icon/icon-info-circle';
 
-function AboutProductSection() {
+function AboutProductSection () {
   const { control } = useFormContext();
   const {
     fields: aboutFields,
@@ -21,7 +22,7 @@ function AboutProductSection() {
     <div className="bg-white rounded-lg border p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-          <span className="mr-2">ℹ️</span> Acerca del Producto
+          <IconInfoCircle className="mr-2 w-5 h-5" /> Acerca del Producto
         </h3>
         <Button
           type="button"
@@ -45,13 +46,12 @@ function AboutProductSection() {
                 label=""
                 placeholder={`Línea ${index + 1}`}
               />
-            </div>
+            </div>            
             <Button
               type="button"
-              variant="secondary"
               size="sm"
               onClick={() => removeAbout(index)}
-              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+              className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-300 hover:border-red-400"
             >
               <IconTrash className="w-4 h-4" />
             </Button>

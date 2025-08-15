@@ -3,12 +3,13 @@
 import RHFAutocompleteFetcherInfinity from '@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity';
 import { getAllCategories } from '@/services/categories';
 import { getAllSuppliers } from '@/services/supplier';
+import IconBox from '@/components/icon/icon-box';
 
-function CategoriesAndSuppliersSection() {
+function CategoriesAndSuppliersSection () {
   return (
     <div className="bg-white rounded-lg border p-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-        <span className="mr-2">📦</span> Categorías y Proveedores
+        <IconBox className="mr-2 w-5 h-5" /> Categorías y Proveedores
       </h3>
       <div className="space-y-6">
         <div>
