@@ -54,13 +54,13 @@ export const paths = {
       list: `${PROVIDER}/profile`,
     },
     products: {
-      list: `${PROVIDER}/products`,
+      list: `${PROVIDER}/profile`,
     },
     inventory: {
       list: `${PROVIDER}/inventory`,
     },
     warehouse: {
-      list: `${PROVIDER}/warehouses`,
+      list: `${PROVIDER}/warehouse`,
     },
     stores: {
       list: `${PROVIDER}/stores`,

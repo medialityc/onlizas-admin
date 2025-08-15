@@ -1,19 +1,11 @@
 import { paths } from "@/config/paths";
-import { ArchiveBoxIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import {
-  BookOpenIcon,
   CubeIcon,
-  CurrencyDollarIcon,
-  LockOpenIcon,
   UserIcon,
-  ShieldCheckIcon,
-  BriefcaseIcon,
-  BellIcon,
   BuildingStorefrontIcon,
   ArchiveBoxXMarkIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "../types";
-import IconCashBanknotes from "@/components/icon/icon-cash-banknotes";
 
 export const sidebarProviderSections: SidebarSection[] = [
   {
@@ -49,7 +41,7 @@ export const sidebarProviderSections: SidebarSection[] = [
         id: "provider-store",
         label: "Mis Tiendas",
         path: paths.provider.stores.list,
-        icon: <IconCashBanknotes className="h-4 w-4" />,
+        icon: <CubeIcon className="h-4 w-4" />,
       },
     ],
   },
