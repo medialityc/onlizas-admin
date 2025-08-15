@@ -111,6 +111,7 @@ module.exports = {
       strategy: "class",
     }),
     require("@tailwindcss/typography"),
+    require("@tailwindcss/container-queries"),
     rotateX,
   ],
 };
