@@ -57,77 +57,78 @@ export function WarehouseList ({ data, searchParams, onSearchParamsChange }: War
     onSearchParamsChange?.(newParams);
   }; return (
     <>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Gestión de Almacenes</h1>
-            <p className="text-gray-600 text-sm mt-1">Administra almacenes físicos y virtuales</p>
+      <div className="space-y-6">        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
+              Gestión de Almacenes
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1 hidden sm:block">
+              Administra almacenes físicos y virtuales
+            </p>
           </div>
-          <div className="flex gap-3">
-            <Button variant="secondary" outline>
-              <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-              Transferencias
-            </Button>
-            <Button variant="primary" onClick={handleCreate}>
-              <PlusIcon className="h-4 w-4 mr-2" />
-              Nuevo Almacén
+          <div className="flex gap-2 sm:gap-3 flex-shrink-0">            <Button variant="secondary" outline className="whitespace-nowrap">
+            <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            Transferencias
+          </Button>
+            <Button variant="primary" onClick={handleCreate} className="whitespace-nowrap">
+              <PlusIcon className="h-4 w-4 mr-1 sm:mr-2" />
+              <span className="hidden xs:inline">Nuevo Almacén</span>
+              <span className="xs:hidden">Nuevo</span>
             </Button>
           </div>
-        </div>
-
-        {/* Métricas principales */}
+        </div>{/* Métricas principales */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <BuildingStorefrontIcon className="h-6 w-6 text-purple-600" />
+              <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                <BuildingStorefrontIcon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Almacenes Físicos</p>
-                <p className="text-2xl font-bold text-gray-900">3</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Almacenes Físicos</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">3</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <BuildingOfficeIcon className="h-6 w-6 text-blue-600" />
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                <BuildingOfficeIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Almacenes Virtuales</p>
-                <p className="text-2xl font-bold text-gray-900">3</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Almacenes Virtuales</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">3</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                <svg className="h-6 w-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Capacidad Total</p>
-                <p className="text-2xl font-bold text-gray-900">25.000</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Capacidad Total</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">25.000</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <svg className="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                <svg className="h-6 w-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
                 </svg>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Stock Actual</p>
-                <p className="text-2xl font-bold text-gray-900">17.000</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Stock Actual</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">17.000</p>
               </div>
             </div>
           </div>
@@ -157,10 +158,9 @@ export function WarehouseList ({ data, searchParams, onSearchParamsChange }: War
                 onDelete={handleDeleteModalOpen}
               />
             ))}
-          </div>
-        ) : (
+          </div>) : (
           <div className="text-center py-12">
-            <div className="text-gray-500 mb-4">
+            <div className="text-gray-500 dark:text-gray-400 mb-4">
               {searchQuery ?
                 'No se encontraron almacenes que coincidan con tu búsqueda' :
                 'No se encontraron almacenes'

@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { getWarehouseById } from '@/services/warehouses-mock';
 import { EditWarehouseTabs } from '../../../../../../sections/warehouses/edit/edit-warehouse-tabs';
 import { WarehouseGeneralData } from '../../../../../../sections/warehouses/edit/warehouse-general-data';
 import { WarehouseInventory } from '../../../../../../sections/warehouses/edit/warehouse-inventory';
 import { WarehouseTransfers } from '../../../../../../sections/warehouses/edit/warehouse-transfers';
+import EditHeader from '../../../../../../sections/warehouses/edit/edit-header';
 import Loader from '../../../../../../components/loaders/loader';
 
 export default function EditWarehousePage () {
@@ -29,12 +30,11 @@ export default function EditWarehousePage () {
       </div>
     );
   }
-
   if (!warehouse || resp?.error) {
     return (
       <div className="text-center py-12">
-        <div className="text-red-500 mb-4">Error al cargar el almacén</div>
-        <p className="text-gray-500">El almacén solicitado no existe o no tienes permisos para verlo.</p>
+        <div className="text-red-500 dark:text-red-400 mb-4">Error al cargar el almacén</div>
+        <p className="text-gray-500 dark:text-gray-400">El almacén solicitado no existe o no tienes permisos para verlo.</p>
       </div>
     );
   }
@@ -50,23 +50,10 @@ export default function EditWarehousePage () {
       default:
         return <WarehouseGeneralData warehouse={warehouse} />;
     }
-  };
-
-  return (
+  }; return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="border-b border-gray-200 pb-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">{warehouse.name}</h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Almacén {warehouse.type === 'physical' ? 'Físico' : 'Virtual'} •
-              ID: {warehouse.id} •
-              Estado: {warehouse.status === 'active' ? 'Activo' : warehouse.status === 'maintenance' ? 'Mantenimiento' : 'Inactivo'}
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* Header con información del almacén */}
+      <EditHeader warehouse={warehouse} />
 
       {/* Tabs */}
       <EditWarehouseTabs
@@ -76,7 +63,7 @@ export default function EditWarehousePage () {
       />
 
       {/* Tab Content */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
         {renderTabContent()}
       </div>
     </div>
