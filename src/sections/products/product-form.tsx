@@ -115,9 +115,9 @@ function ProductForm ({ product, isModal = false, open, onClose }: ProductFormPr
         open={open || false}
         onClose={onClose || (() => { })}
         title={isEdit ? 'Editar Producto' : 'Nuevo Producto'}
-        className="max-w-[95vw] xl:max-w-7xl w-full mx-4"
+        className="max-w-[95vw] xl:max-w-7xl  w-full mx-4"
       >
-        <div className="max-h-[85vh] overflow-y-auto p-2">
+        <div className="p-2">
           {formContent}
         </div>
       </SimpleModal>
