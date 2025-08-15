@@ -35,6 +35,11 @@ export const paths = {
       view: (id: string | number) => `${DASHBOARD}/products/${id}`,
       edit: (id: string | number) => `${DASHBOARD}/products/${id}/edit`,
     },
+    warehouses: {
+      list: `${DASHBOARD}/warehouses`,
+      edit: (id: string | number) => `${DASHBOARD}/warehouses/${id}/edit`,
+      view: (id: string | number) => `${DASHBOARD}/warehouses/${id}`,
+    },
     suppliers: {
       list: `${DASHBOARD}/suppliers`,
     },

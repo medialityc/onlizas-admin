@@ -8,10 +8,19 @@ import {
   UserMinusIcon,
   UsersIcon,
 } from "@heroicons/react/24/solid";
+import {
+  BuildingOfficeIcon,
+  BuildingStorefrontIcon
+} from "@heroicons/react/24/outline";
+import { BuildingLibraryIcon } from "@heroicons/react/24/solid";
+
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   users: UsersIcon,
   usersMinus: UserMinusIcon,
   usersGroup: UserGroupIcon,
+  buildingLibrary: BuildingLibraryIcon,
+  buildingStorefront: BuildingStorefrontIcon,
+  buildingOffice: BuildingOfficeIcon,
 };
 
 export interface TabItem {
@@ -28,7 +37,7 @@ interface NavigationTabsProps {
   className?: string;
 }
 
-export function NavigationTabs({ tabs, className }: NavigationTabsProps) {
+export function NavigationTabs ({ tabs, className }: NavigationTabsProps) {
   const pathname = usePathname();
 
   return (
