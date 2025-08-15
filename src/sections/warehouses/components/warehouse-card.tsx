@@ -86,7 +86,7 @@ export function WarehouseCard ({ warehouse, onEdit, onDelete }: WarehouseCardPro
         <div className="grid grid-cols-2 gap-4">
           {/* Capacidad */}
           {warehouse.maxCapacity && (<div>
-            <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-2 justify-between mb-1">
               <span className="text-xs text-gray-500 dark:text-gray-400">Capacidad</span>
               <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{warehouse.currentCapacity || 0} / {warehouse.maxCapacity}</span>
             </div>
