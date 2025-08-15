@@ -95,7 +95,7 @@ export default function CategoriesModal({
     let response;
     try {
       const formData = new FormData();
-      let imageValue = data.image;
+      
       console.log(data.image)
            if (data.image) {
              if (typeof data.image === "string" && isValidUrl(data.image)) {

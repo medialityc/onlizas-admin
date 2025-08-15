@@ -10,7 +10,7 @@ export const businessSchema = z.object({
     .string({ required_error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")
     .max(100, "Máximo 100 caracteres."),
-  parentId: z.number().optional(),
+  parentId:z.coerce.number().optional(),
 
   hblInitial: z
     .string({ required_error: "El HBL inicial es obligatorio." })

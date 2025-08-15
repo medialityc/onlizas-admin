@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const categoriesSchema = z.object({
-  department: z.number({ required_error: "Debes seleccionar un departamento." }),
+  department: z.coerce.number({ required_error: "Debes seleccionar un departamento." }),
   name: z
     .string({ required_error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")

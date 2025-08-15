@@ -95,19 +95,19 @@ export async function updateBusinessData(
   id: string | number,
   data: FormData
 ): Promise<ApiResponse<Business>> {
-  // TODO: Implement real backend call when available
-  console.log(
-    "Updating business with id:",
-    id,
-    "data:",
-    Object.fromEntries(data)
-  );
-  return {
-    data: {} as Business,
-    error: false,
-    status: 200,
-    message: "Business updated (mock)",
-  };
+  const res = await nextAuthFetch({
+    url: backendRoutes.business.update(id),
+    method: "PUT",
+    data,
+    useAuth: true,
+    contentType: "multipart/form-data"
+    // No establecer Content-Type manualmente para FormData
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("categories");
+
+  return buildApiResponseAsync<Business>(res);
 }
 
 export async function deleteBusiness(
