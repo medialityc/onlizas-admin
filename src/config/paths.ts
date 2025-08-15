@@ -1,4 +1,5 @@
 const DASHBOARD = "/dashboard";
+const PROVIDER = "/provider";
 
 export const paths = {
   dashboard: {
@@ -36,8 +37,26 @@ export const paths = {
     suppliers: {
       list: `${DASHBOARD}/suppliers`,
     },
-    business:{
+    business: {
       list: `${DASHBOARD}/business`,
-    }
+    },
+  },
+  provider: {
+    root: PROVIDER,
+    profile: {
+      list: `${PROVIDER}/profile`,
+    },
+    products: {
+      list: `${PROVIDER}/profile`,
+    },
+    inventory: {
+      list: `${PROVIDER}/inventory`,
+    },
+    warehouse: {
+      list: `${PROVIDER}/warehouse`,
+    },
+    stores: {
+      list: `${PROVIDER}/stores`,
+    },
   },
 };
