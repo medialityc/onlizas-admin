@@ -1,10 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Warehouse } from '@/types/warehouses';
-import { deleteWarehouse, updateWarehouse } from '@/services/warehouses-mock';
+import { deleteWarehouse, deactivateWarehouse } from '@/services/warehouses';
 import SimpleModal from '@/components/modal/modal';
 import { Button } from '@/components/button/button';
 import InputWithLabel from '@/components/input/input-with-label';
@@ -17,60 +16,59 @@ interface WarehouseDeleteModalProps {
 }
 
 export function WarehouseDeleteModal ({ open, onClose, warehouse }: WarehouseDeleteModalProps) {
-  const queryClient = useQueryClient();
   const router = useRouter();
   const [reason, setReason] = useState('');
+  const [isDeletePending, startDeleteTransition] = useTransition();
+  const [isDeactivatePending, startDeactivateTransition] = useTransition();
 
   // Validación frontend basada en permisos del backend (BFF)
   const canDelete = warehouse?.permissions?.canDelete ?? false;
   const canDeactivate = warehouse?.permissions?.canDeactivate ?? false;
   const hasInventory = warehouse?.hasActiveInventory ?? ((warehouse?.currentCapacity || 0) > 0);
-
-  const deleteMutation = useMutation({
-    mutationFn: () => deleteWarehouse(warehouse!.id, { reason }),
-    onSuccess: (response) => {
-      if (response.error) {
-        if (response.status === 409) {
-          showToast('No se puede eliminar: el almacén tiene inventario activo.', 'warning');
-        } else {
-          showToast(response.message || 'Error al eliminar el almacén.', 'error');
-        }
-        return;
-      }
-      showToast('Almacén eliminado correctamente (lógico).', 'success');
-      queryClient.invalidateQueries({ queryKey: ['warehouses'] });
-      handleClose();
-      router.refresh();
-    },
-    onError: () => {
-      showToast('Ocurrió un error inesperado.', 'error');
-    },
-  });
-
-  const deactivateMutation = useMutation({
-    mutationFn: () => updateWarehouse(warehouse!.id, { status: 'inactive' }, { reason }),
-    onSuccess: (response) => {
-      if (response.error) {
-        showToast(response.message || 'Error al desactivar el almacén.', 'error');
-        return;
-      }
-      showToast('Almacén desactivado correctamente.', 'success');
-      queryClient.invalidateQueries({ queryKey: ['warehouses'] });
-      handleClose();
-      router.refresh();
-    },
-    onError: () => {
-      showToast('Ocurrió un error inesperado.', 'error');
-    },
-  });
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!warehouse || !canDelete || hasInventory) return;
-    deleteMutation.mutate();
+
+    startDeleteTransition(async () => {
+      try {
+        const response = await deleteWarehouse(warehouse.id, { reason });
+
+        if (response.error) {
+          if (response.status === 409) {
+            showToast('No se puede eliminar: el almacén tiene inventario activo.', 'warning');
+          } else {
+            showToast(response.message || 'Error al eliminar el almacén.', 'error');
+          }
+          return;
+        }
+
+        showToast('Almacén eliminado correctamente (lógico).', 'success');
+        handleClose();
+        router.refresh();
+      } catch (error) {
+        showToast('Ocurrió un error inesperado.', 'error');
+      }
+    });
   };
 
-  const handleConfirmDeactivate = () => {
+  const handleConfirmDeactivate = async () => {
     if (!warehouse || !canDeactivate) return;
-    deactivateMutation.mutate();
+
+    startDeactivateTransition(async () => {
+      try {
+        const response = await deactivateWarehouse(warehouse.id, { reason });
+
+        if (response.error) {
+          showToast(response.message || 'Error al desactivar el almacén.', 'error');
+          return;
+        }
+
+        showToast('Almacén desactivado correctamente.', 'success');
+        handleClose();
+        router.refresh();
+      } catch (error) {
+        showToast('Ocurrió un error inesperado.', 'error');
+      }
+    });
   };
 
   const handleClose = () => {
@@ -129,9 +127,9 @@ export function WarehouseDeleteModal ({ open, onClose, warehouse }: WarehouseDel
               type="button"
               variant="warning"
               onClick={handleConfirmDeactivate}
-              disabled={deactivateMutation.isPending}
+              disabled={isDeactivatePending}
             >
-              {deactivateMutation.isPending ? 'Desactivando...' : 'Desactivar'}
+              {isDeactivatePending ? 'Desactivando...' : 'Desactivar'}
             </Button>
           )}
 
@@ -140,9 +138,9 @@ export function WarehouseDeleteModal ({ open, onClose, warehouse }: WarehouseDel
               type="button"
               variant="danger"
               onClick={handleConfirmDelete}
-              disabled={deleteMutation.isPending}
+              disabled={isDeletePending}
             >
-              {deleteMutation.isPending ? 'Eliminando...' : 'Eliminar'}
+              {isDeletePending ? 'Eliminando...' : 'Eliminar'}
             </Button>
           )}
         </div>

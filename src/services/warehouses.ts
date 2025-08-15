@@ -29,16 +29,38 @@ export async function createWarehouse (data: CreateWarehouse): Promise<ApiRespon
   return buildApiResponseAsync<Warehouse>(res);
 }
 
-export async function updateWarehouse (id: number, data: UpdateWarehouse): Promise<ApiResponse<Warehouse>> {
-  const res = await nextAuthFetch({ url: backendRoutes.warehouses.update(id), method: 'PUT', data, useAuth: true });
+export async function updateWarehouse (id: number, data: UpdateWarehouse, audit: { reason?: string } = {}): Promise<ApiResponse<Warehouse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.warehouses.update(id),
+    method: 'PUT',
+    data: { ...data, audit },
+    useAuth: true
+  });
   if (!res.ok) return handleApiServerError(res);
   revalidateTag('warehouses');
   return buildApiResponseAsync<Warehouse>(res);
 }
 
-export async function deleteWarehouse (id: number): Promise<ApiResponse<{ success: boolean }>> {
-  const res = await nextAuthFetch({ url: backendRoutes.warehouses.delete(id), method: 'DELETE', useAuth: true });
+export async function deleteWarehouse (id: number, audit: { reason?: string } = {}): Promise<ApiResponse<{ success: boolean }>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.warehouses.delete(id),
+    method: 'DELETE',
+    data: audit,
+    useAuth: true
+  });
   if (!res.ok) return handleApiServerError(res);
   revalidateTag('warehouses');
   return buildApiResponseAsync<{ success: boolean }>(res);
+}
+
+export async function deactivateWarehouse (id: number, audit: { reason?: string } = {}): Promise<ApiResponse<Warehouse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.warehouses.update(id),
+    method: 'PUT',
+    data: { status: 'inactive', audit },
+    useAuth: true
+  });
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag('warehouses');
+  return buildApiResponseAsync<Warehouse>(res);
 }
