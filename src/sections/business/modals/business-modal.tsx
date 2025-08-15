@@ -47,7 +47,7 @@ export default function BusinessModal({
     defaultValues: {
       name: business?.name || "",
       code: business?.code || "",
-      parentId: business?.parentBusiness.id,
+      parentId: business?.parentBusiness?.id || 0,
       description: business?.description || "",
       locationId: business?.locationId || 0,
       hblInitial: business?.hblInitial || "",
@@ -96,6 +96,8 @@ export default function BusinessModal({
 
   const onSubmit = async (data: CreateSchemaBusiness) => {
     setError(null);
+    console.log(data.parentId)
+    console.log(data.locationId)
     try {
       let response;
       const formData = new FormData();
@@ -114,9 +116,7 @@ export default function BusinessModal({
       formData.append("locationId", data.locationId.toString());
 
       // Campos adicionales que puede esperar el backend
-      formData.append(
-        "parentId",
-        data.parentId ? data.parentId.toString() : ""
+      formData.append(        "parentId",        data.parentId ? data.parentId.toString() : ""
       );
 
       // Manejo de photoObjectCodes
@@ -233,7 +233,7 @@ export default function BusinessModal({
 
             {/* Negocio Padre */}
             <RHFAutocompleteFetcherInfinity
-              name="parent"
+              name="parentId"
               label="Negocio Padre"
               placeholder="Selecciona un negocio padre"
               onFetch={getAllBusiness}

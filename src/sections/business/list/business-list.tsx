@@ -12,6 +12,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import BusinessModalContainer from "../modals/business-modal-container";
 import { Business, GetAllBusiness } from "@/types/business";
 import { deleteBusiness } from "@/services/business";
+import StatusBadge from "@/components/badge/status-badge";
+import CircleIndicator from "@/components/badge/circle-indicator";
 
 interface BusinessListProps {
   data?: GetAllBusiness;
@@ -165,15 +167,10 @@ export function BusinessList({
         accessor: "isPrimary",
         title: "Es Primario",
         render: (business) => (
-          <span
-            className={`text-sm font-medium ${
-              business.isPrimary
-                ? "text-green-600 dark:text-green-400"
-                : "text-red-600 dark:text-red-400"
-            }`}
-          >
-            {business.isPrimary ? "Sí" : "No"}
-          </span>
+          <CircleIndicator
+            isActive={business.isPrimary}
+            
+          />
         ),
       },
       {
