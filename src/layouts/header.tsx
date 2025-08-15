@@ -77,6 +77,9 @@ const Header = () => {
                 <IconMenu className="h-5 w-5" />
               </button>
             </div>
+            <h1 className="text-2xl md:text-xl font-bold text-gray-500 dark:text-white-light tracking-tight whitespace-nowrap select-none">
+              Portal de proveedor - ZAZ Express
+            </h1>
           </div>
 
           <div className="flex items-center space-x-1.5 dropdown sm:flex-1  lg:space-x-2 justify-end">
