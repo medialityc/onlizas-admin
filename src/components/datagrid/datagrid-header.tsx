@@ -1,7 +1,6 @@
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { ColumnSelector } from "./column-selector";
 import { DataTableColumn } from "mantine-datatable";
-import { SearchInput } from "../search/search-input";
 
 interface DataGridHeaderProps<T> {
   enableSearch: boolean;
@@ -49,10 +48,12 @@ export function DataGridHeader<T extends Record<string, any>> ({
 
         {enableSearch && (
           <div className="">
-            <SearchInput
-              value={searchValue}
-              onChange={onSearchChange}
+            <input
+              type="text"
+              className="form-input w-auto min-w-[100px] md:min-w-[300px]"
               placeholder={searchPlaceholder || "Buscar"}
+              value={searchValue}
+              onChange={(e) => onSearchChange(e.target.value)}
             />
           </div>
         )}
