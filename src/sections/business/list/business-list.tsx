@@ -130,7 +130,7 @@ export function BusinessList({
         title: "HBL Inicial",
         render: (business) => (
           <span className="text-sm text-gray-500 dark:text-gray-300">
-            {business.initialHbl}
+            {business.hblInitial}
           </span>
         ),
       },
@@ -194,12 +194,21 @@ export function BusinessList({
           </span>
         ),
       },
+      /* {
+      accessor: "users",
+      title: "Usuarios",
+      render: (business) => (
+        <span className="text-sm text-gray-500 dark:text-gray-300">
+          {business.users?.map((u) => u.name).join(", ") || "-"}
+        </span>
+      ),
+    }, */
       {
         accessor: "parentBusiness",
         title: "Negocio Padre",
         render: (business) => (
           <span className="text-sm text-gray-500 dark:text-gray-300">
-            {business.parentBusiness?.name || "-"}
+            {business.parentBusiness.name || "-"}
           </span>
         ),
       },
@@ -240,14 +249,9 @@ export function BusinessList({
         searchParams={searchParams}
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Search businesses..."
-        onCreate={handleCreateBusiness}
         emptyText="No businesses found"
       />
-      {/* Create Modal */}
-      <BusinessModalContainer
-        open={createBusinessModal.open}
-        onClose={() => closeModal("create")}
-      />
+
       {/* Edit Modal */}
       {selectedBusiness && (
         <BusinessModalContainer
