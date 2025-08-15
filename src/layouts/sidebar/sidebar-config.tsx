@@ -62,7 +62,8 @@ export const sidebarSections: SidebarSection[] = [
         label: "Productos",
         path: paths.dashboard.products.list,
         icon: <ShoppingBagIcon className="h-4 w-4" />,
-      },
+      }
+
     ],
   },
   {
@@ -74,6 +75,12 @@ export const sidebarSections: SidebarSection[] = [
         label: "Solicitud de Proveedores",
         path: paths.dashboard.suppliers.list,
         icon: <DocumentChartBarIcon className="h-4 w-4" />,
+      },
+      {
+        id: "warehouses",
+        label: "Almacenes",
+        path: paths.dashboard.warehouses.list,
+        icon: <ArchiveBoxIcon className="h-4 w-4" />,
       },
     ],
   },
