@@ -57,7 +57,8 @@ export function WarehouseList ({ data, searchParams, onSearchParamsChange }: War
     onSearchParamsChange?.(newParams);
   }; return (
     <>
-      <div className="space-y-6">        {/* Header */}
+      <div className="space-y-6 px-2">       
+         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="min-w-0 flex-1">
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
@@ -145,19 +146,19 @@ export function WarehouseList ({ data, searchParams, onSearchParamsChange }: War
             placeholder="Buscar almacenes..."
             className="max-w-md"
           />
-        </div>
-
-        {/* Lista de almacenes en formato de cards */}
+        </div>        {/* Lista de almacenes en formato de cards */}
         {filteredData.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredData.map((warehouse: Warehouse) => (
-              <WarehouseCard
-                key={warehouse.id}
-                warehouse={warehouse}
-                onEdit={handleEdit}
-                onDelete={handleDeleteModalOpen}
-              />
-            ))}
+          <div className="@container">
+            <div className="grid grid-cols-1 @2xl:grid-cols-2 @5xl:grid-cols-3 gap-6">
+              {filteredData.map((warehouse: Warehouse) => (
+                <WarehouseCard
+                  key={warehouse.id}
+                  warehouse={warehouse}
+                  onEdit={handleEdit}
+                  onDelete={handleDeleteModalOpen}
+                />
+              ))}
+            </div>
           </div>) : (
           <div className="text-center py-12">
             <div className="text-gray-500 dark:text-gray-400 mb-4">
