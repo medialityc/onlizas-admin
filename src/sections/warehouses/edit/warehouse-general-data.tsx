@@ -77,84 +77,82 @@ export function WarehouseGeneralData ({ warehouse }: WarehouseGeneralDataProps) 
     mutation.mutate(data);
   });
 
-  return (
-    <div className="space-y-6">
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">Información General</h3>
+  return (<div className="space-y-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Información General</h3>
 
-        <FormProvider {...methods}>
-          <form onSubmit={onSubmit} className="space-y-6">
-            {/* Información básica */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <RHFInput
-                name="name"
-                label="Nombre del Almacén"
-                placeholder="Ej: Centro de Distribución Principal"
-                required
-              />
-              <RHFInput
-                name="address"
-                label="Dirección"
-                placeholder="Ej: Av. Industrial 123, Ciudad de México"
-              />
-            </div>
+      <FormProvider {...methods}>
+        <form onSubmit={onSubmit} className="space-y-6">
+          {/* Información básica */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <RHFInput
+              name="name"
+              label="Nombre del Almacén"
+              placeholder="Ej: Centro de Distribución Principal"
+              required
+            />
+            <RHFInput
+              name="address"
+              label="Dirección"
+              placeholder="Ej: Av. Industrial 123, Ciudad de México"
+            />
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <RHFInput
-                name="city"
-                label="Ciudad"
-                placeholder="Ej: Ciudad de México"
-              />
-              <RHFInput
-                name="maxCapacity"
-                label="Capacidad"
-                type="number"
-                placeholder="10000"
-              />
+          <div className="grid items-end grid-cols-1 md:grid-cols-3 gap-6">
+            <RHFInput
+              name="city"
+              label="Ciudad"
+              placeholder="Ej: Ciudad de México"
+            />
+            <RHFInput
+              name="maxCapacity"
+              label="Capacidad"
+              type="number"
+              placeholder="10000"
+            />
+            <RHFSelect
+              name="status"
+              label="Estado"
+              options={[
+                { value: 'active', label: 'Activo' },
+                { value: 'inactive', label: 'Inactivo' },
+                { value: 'maintenance', label: 'Mantenimiento' },
+              ]}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <RHFInput
+              name="managerName"
+              label="Gestor"
+              placeholder="Ej: Carlos Rodríguez"
+            />
+            {watchedType === 'virtual' && (
               <RHFSelect
-                name="status"
-                label="Estado"
+                name="supplierId"
+                label="Proveedor Asociado"
                 options={[
-                  { value: 'active', label: 'Activo' },
-                  { value: 'inactive', label: 'Inactivo' },
-                  { value: 'maintenance', label: 'Mantenimiento' },
+                  { value: 101, label: 'TechSupply Corp' },
+                  { value: 102, label: 'ElectroMax SA' },
+                  { value: 103, label: 'HomeGoods Inc' },
                 ]}
               />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <RHFInput
-                name="managerName"
-                label="Gestor"
-                placeholder="Ej: Carlos Rodríguez"
-              />
-              {watchedType === 'virtual' && (
-                <RHFSelect
-                  name="supplierId"
-                  label="Proveedor Asociado"
-                  options={[
-                    { value: 101, label: 'TechSupply Corp' },
-                    { value: 102, label: 'ElectroMax SA' },
-                    { value: 103, label: 'HomeGoods Inc' },
-                  ]}
-                />
-              )}
-            </div>
-
-            <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
-              <Button type="button" variant="secondary" outline>
-                Cancelar
-              </Button>              <Button
-                type="submit"
-                variant="primary"
-                disabled={mutation.isPending}
-              >
-                {mutation.isPending ? 'Guardando...' : 'Guardar Cambios'}
-              </Button>
-            </div>
-          </form>
-        </FormProvider>
-      </div>
+            )}
+          </div>            <div className="flex justify-end gap-3 pt-6 border-t border-gray-100 dark:border-gray-700">
+            <Button type="button" variant="secondary" outline>
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending ? 'Guardando...' : 'Guardar Cambios'}
+            </Button>
+          </div>
+        </form>
+      </FormProvider>
     </div>
+  </div>
   );
 }
