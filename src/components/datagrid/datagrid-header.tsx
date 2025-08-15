@@ -1,6 +1,7 @@
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { ColumnSelector } from "./column-selector";
 import { DataTableColumn } from "mantine-datatable";
+import { SearchInput } from "../search/search-input";
 
 interface DataGridHeaderProps<T> {
   enableSearch: boolean;
@@ -22,7 +23,7 @@ interface DataGridHeaderProps<T> {
   customActions?: React.ReactNode;
 }
 
-export function DataGridHeader<T extends Record<string, any>>({
+export function DataGridHeader<T extends Record<string, any>> ({
   enableSearch,
   enableColumnToggle,
   searchPlaceholder,
@@ -45,15 +46,13 @@ export function DataGridHeader<T extends Record<string, any>>({
       <div className="flex items-center gap-3">
         {/* Componentes adicionales del lado izquierdo */}
         {leftActions}
-        
+
         {enableSearch && (
           <div className="">
-            <input
-              type="text"
-              className="form-input w-auto min-w-[100px] md:min-w-[300px]"
-              placeholder={searchPlaceholder || "Buscar"}
+            <SearchInput
               value={searchValue}
-              onChange={(e) => onSearchChange(e.target.value)}
+              onChange={onSearchChange}
+              placeholder={searchPlaceholder || "Buscar"}
             />
           </div>
         )}
@@ -62,7 +61,7 @@ export function DataGridHeader<T extends Record<string, any>>({
       <div className="flex items-center gap-3">
         {/* Componentes adicionales del lado derecho (antes de los botones predeterminados) */}
         {rightActions}
-        
+
         {enableColumnToggle && (
           <ColumnSelector
             columns={columns}
@@ -88,7 +87,7 @@ export function DataGridHeader<T extends Record<string, any>>({
             )}
           </button>
         )}
-        
+
         {/* Componentes adicionales personalizados (después de todos los botones) */}
         {customActions}
       </div>
