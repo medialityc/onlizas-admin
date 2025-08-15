@@ -2,42 +2,57 @@
 
 import { Warehouse } from '@/types/warehouses';
 import { cn } from '@/lib/utils';
+import { useRouter, useParams } from 'next/navigation';
 
 interface Tab {
   id: string;
   label: string;
+  path: string;
   icon?: React.ReactNode;
   disabled?: boolean;
 }
 
 interface EditWarehouseTabsProps {
   activeTab: string;
-  onTabChange: (tabId: string) => void;
   warehouse: Warehouse;
 }
 
-export function EditWarehouseTabs ({ activeTab, onTabChange, warehouse }: EditWarehouseTabsProps) {
+export function EditWarehouseTabs ({ activeTab, warehouse }: EditWarehouseTabsProps) {
+  const router = useRouter();
+  const params = useParams();
+  const warehouseId = params.id;
+
   const tabs: Tab[] = [
     {
       id: 'general',
       label: 'Datos Generales',
+      path: `/dashboard/warehouses/${warehouseId}/edit`,
     },
     {
       id: 'inventory',
       label: 'Inventarios',
+      path: `/dashboard/warehouses/${warehouseId}/edit/inventory`,
     },
     {
       id: 'transfers',
       label: 'Transferencias',
+      path: `/dashboard/warehouses/${warehouseId}/edit/transfers`,
     },
   ];
+
+  const handleTabChange = (tab: Tab) => {
+    if (!tab.disabled) {
+      router.push(tab.path);
+    }
+  };
+
   return (
     <div className="border-b border-gray-200 dark:border-gray-700">
       <nav className="-mb-px flex space-x-8">
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => !tab.disabled && onTabChange(tab.id)}
+            onClick={() => handleTabChange(tab)}
             className={cn(
               'py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap',
               activeTab === tab.id

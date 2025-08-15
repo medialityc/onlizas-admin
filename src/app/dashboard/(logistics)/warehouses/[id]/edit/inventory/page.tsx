@@ -2,11 +2,11 @@ import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import { getWarehouseById } from '@/services/warehouses-mock';
 import { EditWarehouseTabs } from '@/sections/warehouses/edit/edit-warehouse-tabs';
-import { WarehouseGeneralData } from '@/sections/warehouses/edit/warehouse-general-data';
+import { WarehouseInventory } from '@/sections/warehouses/edit/warehouse-inventory';
 import EditHeader from '@/sections/warehouses/edit/edit-header';
 import Loader from '@/components/loaders/loader';
 
-function EditWarehouseLoadingFallback () {
+function EditWarehouseInventoryLoadingFallback () {
   return (
     <div className="flex justify-center items-center min-h-[400px]">
       <Loader />
@@ -14,7 +14,7 @@ function EditWarehouseLoadingFallback () {
   );
 }
 
-async function EditWarehouseContent ({ id }: { id: string }) {
+async function EditWarehouseInventoryContent ({ id }: { id: string }) {
   const response = await getWarehouseById(Number(id));
 
   if (!response?.data) {
@@ -29,17 +29,17 @@ async function EditWarehouseContent ({ id }: { id: string }) {
       <EditHeader warehouse={warehouse} />
 
       {/* Tabs */}
-      <EditWarehouseTabs activeTab="general" warehouse={warehouse} />
+      <EditWarehouseTabs activeTab="inventory" warehouse={warehouse} />
 
-      {/* Tab Content - Datos Generales */}
+      {/* Tab Content - Inventarios */}
       <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-        <WarehouseGeneralData warehouse={warehouse} />
+        <WarehouseInventory warehouse={warehouse} />
       </div>
     </div>
   );
 }
 
-export default async function EditWarehousePage ({
+export default async function EditWarehouseInventoryPage ({
   params
 }: {
   params: Promise<{ id: string }>;
@@ -47,8 +47,8 @@ export default async function EditWarehousePage ({
   const { id } = await params;
 
   return (
-    <Suspense fallback={<EditWarehouseLoadingFallback />}>
-      <EditWarehouseContent id={id} />
+    <Suspense fallback={<EditWarehouseInventoryLoadingFallback />}>
+      <EditWarehouseInventoryContent id={id} />
     </Suspense>
   );
 }
