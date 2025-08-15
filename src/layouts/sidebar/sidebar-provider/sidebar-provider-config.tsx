@@ -6,6 +6,7 @@ import {
   ArchiveBoxXMarkIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "../types";
+import IconCashBanknotes from "@/components/icon/icon-cash-banknotes";
 
 export const sidebarProviderSections: SidebarSection[] = [
   {
@@ -41,7 +42,7 @@ export const sidebarProviderSections: SidebarSection[] = [
         id: "provider-store",
         label: "Mis Tiendas",
         path: paths.provider.stores.list,
-        icon: <CubeIcon className="h-4 w-4" />,
+        icon: <IconCashBanknotes className="h-4 w-4" />,
       },
     ],
   },
