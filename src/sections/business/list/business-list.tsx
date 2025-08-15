@@ -90,7 +90,7 @@ export function BusinessList({
       },
       {
         accessor: "name",
-        title: "Name / Code",
+        title: "Nombre",
         sortable: true,
         render: (business) => (
           <div className="flex flex-col">
@@ -116,7 +116,7 @@ export function BusinessList({
           </div>
         ),
       },
-      {
+      /* {
         accessor: "locationId",
         title: "ID Ubicación",
         render: (business) => (
@@ -124,7 +124,7 @@ export function BusinessList({
             {business.locationId}
           </span>
         ),
-      },
+      }, */
       {
         accessor: "hblInitial",
         title: "HBL Inicial",
@@ -203,7 +203,7 @@ export function BusinessList({
         </span>
       ),
     }, */
-      {
+      /* {
         accessor: "parentBusiness",
         title: "Negocio Padre",
         render: (business) => (
@@ -222,7 +222,7 @@ export function BusinessList({
               : "-"}
           </span>
         ),
-      },
+      }, */
       {
         accessor: "actions",
         title: "Actions",
@@ -251,7 +251,6 @@ export function BusinessList({
         searchPlaceholder="Search businesses..."
         emptyText="No businesses found"
       />
-
       {/* Edit Modal */}
       {selectedBusiness && (
         <BusinessModalContainer
