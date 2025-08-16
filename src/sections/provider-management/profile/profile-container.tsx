@@ -13,6 +13,8 @@ import { ProfileSkeleton } from "@/sections/provider-management/profile/componen
 import { useSimpleQuery } from "@/hooks/react-query/use-simple-query";
 import { fetchUserMe } from "@/services/users";
 import { useAuth } from "@/auth-sso/hooks/use-auth";
+import UserDetailsModal from "@/sections/users/details/user-details";
+import UserEditModal from "./edit/user-edit-modal";
 
 interface ProfileContainerProps {
   query: SearchParams;
@@ -33,7 +35,7 @@ export default function ProfileContainer({ query }: ProfileContainerProps) {
     return <ProfileSkeleton />;
   }
 
-  if (error || !user?.data) {
+  /*   if (error || !user?.data ) {
     return (
       <div className="space-y-6">
         <div className="">
@@ -79,7 +81,7 @@ export default function ProfileContainer({ query }: ProfileContainerProps) {
         </div>
       </div>
     );
-  }
+  } */
 
   return (
     <div className="space-y-6">
@@ -110,22 +112,31 @@ export default function ProfileContainer({ query }: ProfileContainerProps) {
               content: (
                 <PersonalInfoTab
                   isEditing={isEditing}
-                  user={user.data ? user.data : null}
+                  user={user?.data ? user.data : null}
                 />
               ),
             },
             {
-              label: "Configuración",
+              label: "Información Comercial",
               icon: <IconSettings className="h-5 w-5" />,
               content: (
                 <AccountSettingsTab
                   isEditing={isEditing}
-                  user={user.data ? user.data : null}
+                  user={user?.data ? user.data : null}
                 />
               ),
             },
           ]}
         />
+        {isEditing && (
+          <UserEditModal
+            onClose={() => setIsEditing(false)}
+            open={isEditing}
+            user={user?.data ? user.data : null}
+            loading={false}
+            onSuccess={() => setIsEditing(false)}
+          />
+        )}
       </div>
     </div>
   );
