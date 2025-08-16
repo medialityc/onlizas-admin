@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { Warehouse } from '@/types/warehouses';
-import { cn } from '@/lib/utils';
-import { useRouter, useParams } from 'next/navigation';
+import { Warehouse } from "@/types/warehouses";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface Tab {
   id: string;
@@ -17,25 +17,27 @@ interface EditWarehouseTabsProps {
   warehouse: Warehouse;
 }
 
-export function EditWarehouseTabs ({ activeTab, warehouse }: EditWarehouseTabsProps) {
+export function EditWarehouseTabs({
+  activeTab,
+  warehouse,
+}: EditWarehouseTabsProps) {
   const router = useRouter();
-  const params = useParams();
-  const warehouseId = params.id;
+  const warehouseId = warehouse.id;
 
   const tabs: Tab[] = [
     {
-      id: 'general',
-      label: 'Datos Generales',
+      id: "general",
+      label: "Datos Generales",
       path: `/dashboard/warehouses/${warehouseId}/edit`,
     },
     {
-      id: 'inventory',
-      label: 'Inventarios',
+      id: "inventory",
+      label: "Inventarios",
       path: `/dashboard/warehouses/${warehouseId}/edit/inventory`,
     },
     {
-      id: 'transfers',
-      label: 'Transferencias',
+      id: "transfers",
+      label: "Transferencias",
       path: `/dashboard/warehouses/${warehouseId}/edit/transfers`,
     },
   ];
@@ -54,11 +56,11 @@ export function EditWarehouseTabs ({ activeTab, warehouse }: EditWarehouseTabsPr
             key={tab.id}
             onClick={() => handleTabChange(tab)}
             className={cn(
-              'py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap',
+              "py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap",
               activeTab === tab.id
-                ? 'border-primary text-primary'
-                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600',
-              tab.disabled && 'opacity-50 cursor-not-allowed'
+                ? "border-primary text-primary"
+                : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600",
+              tab.disabled && "opacity-50 cursor-not-allowed"
             )}
             disabled={tab.disabled}
           >
