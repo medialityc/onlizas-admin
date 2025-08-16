@@ -17,7 +17,10 @@ import {
   PhoneIcon,
   SparklesIcon,
   IdentificationIcon,
-  BriefcaseIcon,
+  BuildingStorefrontIcon,
+  ShieldCheckIcon,
+  EyeIcon,
+  MapPinIcon,
 } from "@heroicons/react/24/outline";
 import StatusBadge from "@/components/badge/status-badge";
 import { IUser } from "@/types/users";
@@ -67,7 +70,7 @@ export function PersonalInfoTab({
             <CardDescription>
               <div className="mt-2">
                 <StatusBadge
-                  isActive={true}
+                  isActive={user?.isActive ?? false}
                   activeText="Proveedor verificado"
                   inactiveText="No verificado"
                 />
@@ -93,23 +96,6 @@ export function PersonalInfoTab({
                 placeholder={`${user?.name ? "" : "Usuario"}`}
                 label=""
                 value={user?.name || ""}
-                disabled
-              />
-            </div>
-
-            <div className="mb-4">
-              <div className="flex items-center gap-2 mb-2">
-                <BriefcaseIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Rol
-                </span>
-              </div>
-              <InputWithLabel
-                id="role"
-                onChange={() => {}}
-                label=""
-                placeholder={`${user ? "" : "Sin registrar"}`}
-                value={user?.name || "-"}
                 disabled
               />
             </div>
@@ -150,10 +136,69 @@ export function PersonalInfoTab({
                 )}
               </div>
             </div>
+
+            {/* Direcciones */}
+            <div>
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                <MapPinIcon className="h-4 w-4" />
+                Direcciones
+              </label>
+              <div className="space-y-2">
+                {!user?.addresses || user.addresses.length === 0 ? (
+                  <InputWithLabel
+                    id="no-address"
+                    onChange={() => {}}
+                    label=""
+                    value="Sin direcciones registradas"
+                    disabled
+                  />
+                ) : (
+                  user.addresses
+                    .slice(0, 2)
+                    .map((address, index) => (
+                      <InputWithLabel
+                        key={index}
+                        id={`address-${index}`}
+                        onChange={() => {}}
+                        label={address.name || `Dirección ${index + 1}`}
+                        value={`${address.mainStreet} ${address.number}, ${address.city}, ${address.state}`}
+                        disabled
+                      />
+                    ))
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Columna derecha */}
           <div className="space-y-4">
+            {/* Estado de la cuenta */}
+            <div className="mb-4">
+              <div className="flex items-center gap-2 mb-2">
+                <ShieldCheckIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Estado de la cuenta
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <StatusBadge
+                  isActive={user?.isActive ?? false}
+                  activeText="Activo"
+                  inactiveText="Inactivo"
+                />
+                <StatusBadge
+                  isActive={user?.isVerified ?? false}
+                  activeText="Verificado"
+                  inactiveText="No verificado"
+                />
+                <StatusBadge
+                  isActive={!(user?.isBlocked ?? true)}
+                  activeText="Desbloqueado"
+                  inactiveText="Bloqueado"
+                />
+              </div>
+            </div>
+
             {/* Teléfonos */}
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
