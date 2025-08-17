@@ -26,3 +26,15 @@ export type CreateCategory = {
 export type UpdateCategory = CreateCategory;
 
 export type GetAllCategories = PaginatedResponse<Category>;
+
+export type CategoryLogs = {
+  id: number;
+  timestamp: string;
+  description: string;
+  categoryId: number;
+  categoryName: string;
+  userId: number;
+  userName: string;
+};
+
+export type GetAllCategoriesLogs = PaginatedResponse<CategoryLogs>;

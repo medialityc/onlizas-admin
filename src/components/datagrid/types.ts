@@ -8,6 +8,7 @@ export interface DataGridProps<T> {
   columns: DataTableColumn<T>[];
   searchParams?: SearchParams;
   onSearchParamsChange?: (params: SearchParams) => void;
+  onRowClick?: (record: T) => void;
   searchPlaceholder?: string;
   enableSearch?: boolean;
   enablePagination?: boolean;

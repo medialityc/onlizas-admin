@@ -19,3 +19,15 @@ export type CreateDepartment = {
 };
 
 export type GetAllDepartments = PaginatedResponse<Department>;
+
+export type DepartmentLogs = {
+  id: number;
+  timestamp: string;
+  description: string;
+  departmentId: number;
+  departmentName: string;
+  userId: number;
+  userName: string;
+};
+
+export type GetAllDepartmentsLogs = PaginatedResponse<DepartmentLogs>;

@@ -62,8 +62,7 @@ export const sidebarSections: SidebarSection[] = [
         label: "Productos",
         path: paths.dashboard.products.list,
         icon: <ShoppingBagIcon className="h-4 w-4" />,
-      }
-
+      },
     ],
   },
   {
@@ -88,6 +87,12 @@ export const sidebarSections: SidebarSection[] = [
     id: "security",
     label: "Seguridad",
     items: [
+      {
+        id: "logs",
+        label: "Logs",
+        path: paths.dashboard.logs.list,
+        icon: <DocumentChartBarIcon className="h-4 w-4" />,
+      },
       {
         id: "users",
         label: "Usuarios",

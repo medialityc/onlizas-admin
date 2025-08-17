@@ -13,6 +13,7 @@ export function DataGrid<T extends Record<string, any>>({
   columns,
   searchParams = {},
   onSearchParamsChange,
+  onRowClick,
   searchPlaceholder,
   enableSearch = true,
   enablePagination = true,
@@ -126,6 +127,10 @@ export function DataGrid<T extends Record<string, any>>({
           loadingText={"Cargando"}
           striped
           highlightOnHover
+          onRowClick={(record: any) => {
+            if (onRowClick) onRowClick(record as T);
+          }}
+          rowClassName={onRowClick ? "cursor-pointer" : undefined}
         />
       </div>
     </div>

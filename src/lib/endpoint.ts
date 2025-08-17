@@ -30,6 +30,7 @@ export const backendRoutes = {
     downloadDocument: (userId: number, documentId: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${userId}/documents/${documentId}/download`,
     scan_document: `${process.env.NEXT_PUBLIC_API_URL}users/scan-document`,
+    listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/users`, // GET
   },
   roles: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}roles`,
@@ -48,6 +49,7 @@ export const backendRoutes = {
   categories: {
     create: `${process.env.NEXT_PUBLIC_API_URL}categories`, // POST
     list: `${process.env.NEXT_PUBLIC_API_URL}admin/categories`, // GET
+    listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/categories`, // GET
     delete: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}categories/${id}`, // DELETE
     update: (id: string | number) =>
@@ -87,6 +89,7 @@ export const backendRoutes = {
   departments: {
     create: `${process.env.NEXT_PUBLIC_API_URL}departments`, // POST
     list: `${process.env.NEXT_PUBLIC_API_URL}admin/departments`, // GET
+    listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/departments`, // GET
     delete: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}departments/${id}`, // DELETE
     update: (id: string | number) =>
@@ -95,6 +98,7 @@ export const backendRoutes = {
   currencies: {
     create: `${process.env.NEXT_PUBLIC_API_URL}currencies`, // POST
     list: `${process.env.NEXT_PUBLIC_API_URL}currencies`, // GET
+    listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/currencies`, // GET
     delete: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}currencies/${id}`, // DELETE
     update: (id: string | number) =>
@@ -104,6 +108,7 @@ export const backendRoutes = {
   },
   business: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}businesses`,
+    getAllLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/business`,
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/businesses`,
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/businesses/${id}`,

@@ -4,6 +4,9 @@ const PROVIDER = "/provider";
 export const paths = {
   dashboard: {
     root: DASHBOARD,
+    logs: {
+      list: `${DASHBOARD}/businesslogs`,
+    },
     currencies: {
       list: `${DASHBOARD}/currencies`,
     },

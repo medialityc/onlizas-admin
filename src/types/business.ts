@@ -73,3 +73,19 @@ export type BusinessDetails = Pick<
   Business,
   "id" | "name" | "hblInitial" | "photoObjectCodes"
 >;
+
+export type BusinessLogs = {
+  id: number;
+  timestamp: string;
+  description: string;
+  businessGuid: string;
+  businessName: string;
+  businessCode: string;
+  userId: number;
+  userName: string;
+  ownerId: number;
+  ownerName: string;
+  locationId: number;
+  locationName: string;
+};
+export type GetAllBusinessLogs = PaginatedResponse<BusinessLogs>;

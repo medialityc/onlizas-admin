@@ -1,12 +1,9 @@
 import { buildQueryParams } from "@/lib/request";
 import BusinessListContainer from "@/sections/business/list/business-list-container";
 import { getAllBusiness } from "@/services/business";
-
-import { getAllSuppliers } from "@/services/supplier";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
 import { Suspense } from "react";
-
 
 export const metadata: Metadata = {
   title: "Gestión de Negocios - ZAS Express",
@@ -47,10 +44,7 @@ async function BusinessListPage({ searchParams }: PageProps) {
 
   return (
     <Suspense fallback={<BusinessListSkeleton />}>
-      <BusinessListContainer
-        businessPromise={businessPromise}
-        query={params}
-      />
+      <BusinessListContainer businessPromise={businessPromise} query={params} />
     </Suspense>
   );
 }
