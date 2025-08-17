@@ -43,7 +43,7 @@ interface Props
 export default function RHFSelectWithLabel({
   name,
   disabled,
-  size = "medium",
+  size = "small",
   label,
   placeholder = "Seleccionar...",
   underLabel,
@@ -81,8 +81,9 @@ export default function RHFSelectWithLabel({
       case "small":
         return "px-3 py-2 text-sm";
       case "medium":
-      default:
         return "px-4 py-3 text-base";
+      default:
+        return "px-3 py-2 text-sm";
     }
   };
 

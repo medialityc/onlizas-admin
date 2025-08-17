@@ -3,9 +3,8 @@
 import { Warehouse } from "@/types/warehouses";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
-import RHFInput from "@/components/react-hook-form/rhf-input";
-import RHFSelect from "@/components/react-hook-form/rhf-select";
 import { Button } from "@/components/button/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateWarehouse } from "@/services/warehouses-mock";
@@ -14,6 +13,11 @@ import {
   transformToApiFormat,
   warehouseFormSchema,
 } from "../../warehouse-form/schema/warehouse-schema";
+import HeaderBar from "./components/HeaderBar";
+import BasicInfoSection from "./components/BasicInfoSection";
+import CapacitySection from "./components/CapacitySection";
+import LocationSection from "./components/LocationSection";
+import ManagerSection from "./components/ManagerSection";
 
 interface WarehouseGeneralDataProps {
   warehouse: Warehouse;
@@ -59,7 +63,17 @@ export function WarehouseGeneralData({ warehouse }: WarehouseGeneralDataProps) {
   });
 
   const { handleSubmit, watch } = methods;
-  const watchedType = watch("type");
+  const watchedMax = Number(watch("maxCapacity") || 0);
+  const watchedCurrent = Number(watch("currentCapacity") || 0);
+  const occupancy = Math.min(
+    100,
+    Math.max(
+      0,
+      watchedMax > 0 ? Math.round((watchedCurrent / watchedMax) * 100) : 0
+    )
+  );
+  const capacityError = watchedMax > 0 && watchedCurrent > watchedMax;
+  const capacityWarnZeroMax = watchedMax === 0 && watchedCurrent > 0;
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
@@ -79,75 +93,131 @@ export function WarehouseGeneralData({ warehouse }: WarehouseGeneralDataProps) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-          Información General
-        </h3>
-
+      <div className="panel rounded-lg border border-gray-100 dark:border-gray-700 p-0">
         <FormProvider {...methods}>
-          <form onSubmit={onSubmit} className="space-y-6">
-            {/* Información básica */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <RHFInput
-                name="name"
-                label="Nombre del Almacén"
-                placeholder="Ej: Centro de Distribución Principal"
-                required
-              />
-              <RHFInput
-                name="address"
-                label="Dirección"
-                placeholder="Ej: Av. Industrial 123, Ciudad de México"
-              />
-            </div>
-            <div className="grid items-end grid-cols-1 md:grid-cols-3 gap-6">
-              <RHFInput
-                name="city"
-                label="Ciudad"
-                placeholder="Ej: Ciudad de México"
-              />
-              <RHFInput
-                name="maxCapacity"
-                label="Capacidad"
-                type="number"
-                placeholder="10000"
-              />
-              <RHFSelect
-                name="status"
-                label="Estado"
-                options={[
-                  { value: "active", label: "Activo" },
-                  { value: "inactive", label: "Inactivo" },
-                  { value: "maintenance", label: "Mantenimiento" },
-                ]}
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <RHFInput
-                name="managerName"
-                label="Gestor"
-                placeholder="Ej: Carlos Rodríguez"
-              />
-              {watchedType === "virtual" && (
-                <RHFSelect
-                  name="supplierId"
-                  label="Proveedor Asociado"
-                  options={[
-                    { value: 101, label: "TechSupply Corp" },
-                    { value: 102, label: "ElectroMax SA" },
-                    { value: 103, label: "HomeGoods Inc" },
-                  ]}
+          {/* Header visual */}
+          <div className="px-6 py-5 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-[#0d1a2b] dark:to-[#0b1624] border-b border-gray-100 dark:border-gray-700">
+            <HeaderBar />
+          </div>
+
+          <form onSubmit={onSubmit} className="p-6">
+            {capacityError && (
+              <div className="mb-4 rounded-md border border-red-200 bg-red-50 dark:border-red-900/50 dark:bg-red-900/20 p-3 flex items-start gap-3">
+                <ExclamationTriangleIcon className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-red-700 dark:text-red-300">
+                    Capacidad inválida
+                  </p>
+                  <p className="text-xs text-red-700/90 dark:text-red-300/90">
+                    La capacidad actual no puede exceder la capacidad máxima.
+                    Ajusta los valores para continuar.
+                  </p>
+                </div>
+              </div>
+            )}
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 xl:gap-8">
+              {/* Columna principal */}
+              <div className="xl:col-span-2 space-y-8">
+                <BasicInfoSection />
+                <CapacitySection
+                  occupancy={occupancy}
+                  max={watchedMax}
+                  current={watchedCurrent}
+                  capacityError={capacityError}
+                  capacityWarnZeroMax={capacityWarnZeroMax}
                 />
-              )}
-            </div>{" "}
-            <div className="flex justify-end gap-3 pt-6 border-t border-gray-100 dark:border-gray-700">
+                <LocationSection />
+                <ManagerSection />
+              </div>
+
+              {/* Aside resumen */}
+              <aside className="space-y-6 xl:pl-6 xl:border-l border-gray-100 dark:border-gray-700">
+                <div className="space-y-6 xl:sticky xl:top-16">
+                  {/* Tarjeta de resumen */}
+                  <div className="rounded-lg border border-gray-100 dark:border-gray-700 p-4">
+                    <h5 className="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-3">
+                      Resumen
+                    </h5>
+                    <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-2">
+                      <li className="flex justify-between">
+                        <span>ID</span>
+                        <span className="font-medium">#{warehouse.id}</span>
+                      </li>
+                      <li className="flex justify-between">
+                        <span>Creado</span>
+                        <span className="font-medium">
+                          {new Date(warehouse.createdAt).toLocaleDateString()}
+                        </span>
+                      </li>
+                      <li className="flex justify-between">
+                        <span>Actualizado</span>
+                        <span className="font-medium">
+                          {new Date(warehouse.updatedAt).toLocaleDateString()}
+                        </span>
+                      </li>
+                    </ul>
+
+                    <div className="mt-4">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                        Ocupación actual
+                      </p>
+                      <div
+                        className="w-full h-2 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden"
+                        title={
+                          isFinite(occupancy)
+                            ? `${watchedCurrent} de ${watchedMax} (${occupancy}%)`
+                            : watchedCurrent > 0
+                              ? `${watchedCurrent} sin capacidad máxima definida`
+                              : "Sin datos de capacidad"
+                        }
+                      >
+                        <div
+                          className={
+                            "h-full rounded-full transition-all duration-300 " +
+                            (occupancy < 70
+                              ? "bg-emerald-500"
+                              : occupancy < 90
+                                ? "bg-amber-500"
+                                : "bg-rose-500")
+                          }
+                          style={{
+                            width: `${isFinite(occupancy) ? occupancy : 0}%`,
+                          }}
+                        />
+                      </div>
+                      <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                        {isFinite(occupancy) ? `${occupancy}%` : "0%"}
+                        {watchedMax > 0 && ` • ${watchedCurrent}/${watchedMax}`}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Ayuda */}
+                  <div className="rounded-lg border border-dashed border-gray-200 dark:border-gray-700 p-4">
+                    <h5 className="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-2">
+                      Consejos rápidos
+                    </h5>
+                    <ul className="list-disc pl-5 text-xs text-gray-600 dark:text-gray-300 space-y-1">
+                      <li>El subtipo solo aplica para almacenes virtuales.</li>
+                      <li>La capacidad actual no debe exceder la máxima.</li>
+                      <li>
+                        Completa la dirección para optimizar rutas logísticas.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </aside>
+            </div>
+
+            {/* Actions stickies */}
+            <div className="sticky bottom-0 mt-6 -mx-6 px-6 py-4 bg-white/80 dark:bg-gray-900/60 backdrop-blur border-t border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row justify-end gap-3">
               <Button type="button" variant="secondary" outline>
                 Cancelar
               </Button>
               <Button
                 type="submit"
                 variant="primary"
-                disabled={mutation.isPending}
+                disabled={mutation.isPending || capacityError}
               >
                 {mutation.isPending ? "Guardando..." : "Guardar Cambios"}
               </Button>

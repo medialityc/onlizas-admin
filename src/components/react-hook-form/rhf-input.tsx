@@ -4,6 +4,7 @@ import InputWithLabel from "../input/input-with-label";
 import { cn } from "@/lib/utils";
 import TextArea from "../input/text-area";
 import PhoneInput from "react-phone-number-input";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 // ----------------------------------------------------------------------
 
@@ -146,9 +147,38 @@ export default function RHFInputWithLabel({
                 )}
               </div>
               <div className="relative">
+                {/** Normalize initial value to E.164 (strip spaces/dashes). If it's not international, try parsing with default country. */}
+                {(() => {
+                  const toE164OrUndefined = (raw?: string) => {
+                    if (!raw) return undefined;
+                    const trimmed = String(raw).trim();
+                    if (!trimmed) return undefined;
+                    if (trimmed.startsWith("+")) {
+                      const digits = trimmed.replace(/[^0-9]/g, "");
+                      return digits ? `+${digits}` : undefined;
+                    }
+                    // Attempt parse using the same default country as the input
+                    const parsed = parsePhoneNumberFromString(trimmed, "US");
+                    return parsed?.number as string | undefined;
+                  };
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  const _ = toE164OrUndefined; // keep function for below use
+                  return null;
+                })()}
                 <PhoneInput
                   id={name}
-                  value={(value as string) ?? undefined}
+                  value={(() => {
+                    const raw = (value as string) ?? undefined;
+                    if (!raw) return undefined;
+                    const trimmed = String(raw).trim();
+                    if (!trimmed) return undefined;
+                    if (trimmed.startsWith("+")) {
+                      const digits = trimmed.replace(/[^0-9]/g, "");
+                      return digits ? `+${digits}` : undefined;
+                    }
+                    const parsed = parsePhoneNumberFromString(trimmed, "US");
+                    return parsed?.number as string | undefined;
+                  })()}
                   onChange={(val) => onChange(val)}
                   onBlur={onBlur as any}
                   defaultCountry="US"
