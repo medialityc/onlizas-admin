@@ -1,6 +1,5 @@
 import { PaginatedResponse } from "./common";
 
-
 export interface Business {
   id: number;
   code: string;
@@ -15,9 +14,10 @@ export interface Business {
   fixedRate: number;
   invoiceText: string; // Only shown/edited in form
   users: number[]; // Associated user IDs
-  parentBusiness: {id:number,name:string}; // Parent business ID
+  parentBusiness: { id: number; name: string }; // Parent business ID
   childBusinessIds: number[]; // Child business IDs
   photoObjectCodes: string[]; // Image URLs (details)
+  isActive: boolean; // Active status
 }
 
 /**
@@ -45,7 +45,6 @@ export type CreateBusiness = {
   //childBusinessIds: number[];
   photoObjectCodes: string[]; // Files to upload
 };
-
 
 /**
  * Allowed data to update a Business

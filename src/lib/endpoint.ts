@@ -75,11 +75,14 @@ export const backendRoutes = {
   warehouses: {
     create: `${process.env.NEXT_PUBLIC_API_URL}warehouses`,
     list: `${process.env.NEXT_PUBLIC_API_URL}warehouses`,
-    update: (id: string | number) => `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}`,
-    delete: (id: string | number) => `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}`,
+    update: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}`,
+    delete: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}`,
     locations: `${process.env.NEXT_PUBLIC_API_URL}warehouses/locations`,
     transfers: `${process.env.NEXT_PUBLIC_API_URL}warehouses/transfers`,
-    transferById: (id: string | number) => `${process.env.NEXT_PUBLIC_API_URL}warehouses/transfers/${id}`,
+    transferById: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}warehouses/transfers/${id}`,
   },
   departments: {
     create: `${process.env.NEXT_PUBLIC_API_URL}departments`, // POST
@@ -104,7 +107,8 @@ export const backendRoutes = {
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/businesses`,
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/businesses/${id}`,
-    //delete: (id: string | number) => `${process.env.NEXT_PUBLIC_API_URL}roles/${id}`,
+    delete: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}business/${id}`,
   },
   suppliers: {
     create: `${process.env.NEXT_PUBLIC_API_URL}suppliers`, // POST

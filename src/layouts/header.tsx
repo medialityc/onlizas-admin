@@ -1,7 +1,5 @@
 "use client";
 import { useAuth } from "@/auth-sso/hooks/use-auth";
-import Badge from "@/components/badge/badge";
-import IconBell from "@/components/icon/icon-bell";
 import IconLaptop from "@/components/icon/icon-laptop";
 import IconLogout from "@/components/icon/icon-logout";
 import IconMenu from "@/components/icon/icon-menu";
@@ -17,7 +15,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { paths } from "@/config/paths";
 import IconBellBing from "@/components/icon/icon-bell-bing";
 import IconXCircle from "@/components/icon/icon-x-circle";
 import { useState } from "react";
@@ -68,7 +65,7 @@ const Header = () => {
       <div className="shadow-sm border-b border-gray-200/60 dark:border-white/10">
         <div className="relative flex w-full items-center bg-white px-5 py-2.5 dark:bg-black">
           <div className="flex items-center gap-4">
-            <div className="horizontal-logo flex items-center justify-between ltr:mr-2 rtl:ml-2 lg:hidden">
+            <div className="horizontal-logo flex gap-4 items-center justify-between ltr:mr-2 rtl:ml-2 lg:hidden">
               <button
                 type="button"
                 className="collapse-icon flex flex-none rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary ltr:ml-2 rtl:mr-2 dark:bg-dark/40 dark:text-[#d0d2d6] dark:hover:bg-dark/60 dark:hover:text-primary lg:hidden"
@@ -76,10 +73,27 @@ const Header = () => {
               >
                 <IconMenu className="h-5 w-5" />
               </button>
+              <Link href="/" className="main-logo flex shrink-0 items-center">
+                <div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <Image
+                        className="ml-[5px] w-8 flex-none pt-3"
+                        src="/assets/images/ZAS.svg"
+                        alt="logo"
+                        width={32}
+                        height={32}
+                      />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                        Panel de Control Onlizas
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+              </Link>
             </div>
-            <h1 className="text-2xl md:text-xl font-bold text-gray-500 dark:text-white-light tracking-tight whitespace-nowrap select-none">
-              Portal de proveedor - ZAZ Express
-            </h1>
           </div>
 
           <div className="flex items-center space-x-1.5 dropdown sm:flex-1  lg:space-x-2 justify-end">

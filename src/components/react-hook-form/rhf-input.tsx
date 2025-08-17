@@ -3,6 +3,7 @@ import { CSSProperties, ChangeEvent, useState } from "react";
 import InputWithLabel from "../input/input-with-label";
 import { cn } from "@/lib/utils";
 import TextArea from "../input/text-area";
+import PhoneInput from "react-phone-number-input";
 
 // ----------------------------------------------------------------------
 
@@ -117,6 +118,65 @@ export default function RHFInputWithLabel({
             )}
             {showError && error && (
               <span className="text-sm text-red-600">{error.message}</span>
+            )}
+          </div>
+        ) : type === "tel" ? (
+          <div
+            className={cn(
+              "w-full flex flex-col gap-1 relative",
+              containerClassname
+            )}
+            style={{ width }}
+          >
+            <div className={cn("flex flex-col", label && "gap-2")}>
+              <div className="flex flex-col gap-1">
+                {label && (
+                  <label
+                    htmlFor={name}
+                    className="text-sm font-semibold text-gray-700 dark:text-gray-200"
+                  >
+                    {label}
+                    {required && "*"}
+                  </label>
+                )}
+                {underLabel && (
+                  <p className="font-normal text-xs text-gray-600">
+                    {underLabel}
+                  </p>
+                )}
+              </div>
+              <div className="relative">
+                <PhoneInput
+                  id={name}
+                  value={(value as string) ?? undefined}
+                  onChange={(val) => onChange(val)}
+                  onBlur={onBlur as any}
+                  defaultCountry="US"
+                  disabled={disabled}
+                  placeholder={placeholder}
+                  className="w-full"
+                  numberInputProps={{
+                    id: name,
+                    name,
+                    autoComplete: autoComplete || "tel",
+                    "data-test": dataTest,
+                    className: cn(
+                      "form-input", // base style to match InputWithLabel
+                      size === "small" ? "form-input-sm" : "form-input",
+                      showError &&
+                        error &&
+                        "border-red-500 focus:border-red-500 focus:ring-red-500",
+                      disabled && "cursor-not-allowed opacity-50"
+                    ),
+                    style: { width },
+                  }}
+                />
+
+                {/* Nota: El componente agrega su propio selector de país a la izquierda */}
+              </div>
+            </div>
+            {showError && error && (
+              <p className="text-xs ml-3 text-red-500">{error.message}</p>
             )}
           </div>
         ) : (

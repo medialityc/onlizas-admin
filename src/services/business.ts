@@ -8,53 +8,11 @@ import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
-import { Business, CreateBusiness, GetAllBusiness } from "@/types/business";
-
-// Mock data for testing
-/* const mockBusinesses: Business[] = [
-  {
-    id: 1,
-    code: "BUS001",
-    name: "ZAS Express Main",
-    description: "Main logistics and transport business",
-    locationId: "LOC001",
-    initialHbl: "HBL2024001",
-    address: "Main Ave 123, City",
-    email: "contact@zasexpress.com",
-    phone: "+1234567890",
-    isPrimary: true,
-    fixedRate: 150.5,
-    invoiceText: "Thank you for your preference",
-    users: [1, 2, 3],
-    childBusinessIds: [2],
-    photos: [],
-    parentBusiness: 0
-  },
-  {
-    id: 2,
-    code: "BUS002",
-    name: "ZAS Express North Branch",
-    description: "Branch specialized in international shipments",
-    locationId: "LOC002",
-    initialHbl: "HBL2024002",
-    address: "North Street 456, City",
-    email: "north@zasexpress.com",
-    phone: "+1234567891",
-    isPrimary: false,
-    fixedRate: 120.0,
-    invoiceText: "Specialized service in international shipments",
-    users: [4, 5],
-    parentBusiness: 1,
-    childBusinessIds: [],
-    photos: [
-      
-    ],
-  },
-]; */
+import { Business, GetAllBusiness } from "@/types/business";
 
 export async function getAllBusiness(
   params: IQueryable
-): Promise<ApiResponse<GetAllBusiness>> { 
+): Promise<ApiResponse<GetAllBusiness>> {
   const url = new QueryParamsURLFactory(
     { ...params },
     backendRoutes.business.getAll
@@ -77,18 +35,16 @@ export async function createBusiness(
 ): Promise<ApiResponse<ApiStatusResponse>> {
   console.log("Creating business with data:");
   const res = await nextAuthFetch({
-      url: backendRoutes.business.create,
-      method: "POST",
-      data,
-      useAuth: true,
-    });
-  
-    if (!res.ok) return handleApiServerError(res);
-    revalidateTag("categories");
-  
-    return buildApiResponseAsync<ApiStatusResponse>(res);
-  
-  
+    url: backendRoutes.business.create,
+    method: "POST",
+    data,
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("categories");
+
+  return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
 export async function updateBusinessData(
@@ -100,7 +56,7 @@ export async function updateBusinessData(
     method: "PUT",
     data,
     useAuth: true,
-    contentType: "multipart/form-data"
+    contentType: "multipart/form-data",
     // No establecer Content-Type manualmente para FormData
   });
 
@@ -113,14 +69,14 @@ export async function updateBusinessData(
 export async function deleteBusiness(
   id: string | number
 ): Promise<ApiResponse<ApiStatusResponse>> {
-  // TODO: Implement real backend call when available
-  console.log("Deleting business with id:", id);
-  return {
-    data: { status: 200 } as ApiStatusResponse,
-    error: false,
-    status: 200,
-    message: "Business deleted (mock)",
-  };
+  const res = await nextAuthFetch({
+    url: backendRoutes.business.delete(id),
+    method: "DELETE",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("business");
+
+  return buildApiResponseAsync(res);
 }
-
-

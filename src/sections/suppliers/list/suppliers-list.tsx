@@ -49,13 +49,6 @@ export function SuppliersList({
     [openModal]
   );
 
-  const handleEditSupplier = useCallback(
-    (supplier: Supplier) => {
-      openModal<number>("edit", supplier.id);
-    },
-    [openModal]
-  );
-
   const handleViewSupplier = useCallback(
     (supplier: Supplier) => {
       openModal<number>("view", supplier.id);
@@ -204,19 +197,13 @@ export function SuppliersList({
               isActive={supplier.isActive}
               onActive={() => handleToggleActiveSupplier(supplier)}
               onViewDetails={() => handleViewSupplier(supplier)}
-              onEdit={() => handleEditSupplier(supplier)}
-              onEditFull={() => handleEditFullSupplier(supplier)}
+              onEdit={() => handleEditFullSupplier(supplier)}
             />
           </div>
         ),
       },
     ],
-    [
-      handleViewSupplier,
-      handleEditSupplier,
-      handleEditFullSupplier,
-      handleToggleActiveSupplier,
-    ]
+    [handleViewSupplier, handleEditFullSupplier, handleToggleActiveSupplier]
   );
 
   return (
@@ -236,15 +223,6 @@ export function SuppliersList({
         open={createSupplierModal.open}
         onClose={() => closeModal("create")}
       />
-
-      {/* Edit Modal */}
-      {selectedSupplier && (
-        <SuppliersModalContainer
-          onClose={() => closeModal("edit")}
-          open={editSupplierModal.open}
-          supplier={selectedSupplier}
-        />
-      )}
 
       {/* Details Modal */}
       {selectedSupplier && (

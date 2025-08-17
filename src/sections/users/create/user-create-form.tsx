@@ -152,7 +152,7 @@ const UserCreateForm = ({ onSuccess }: Props) => {
                     <RHFInputWithLabel
                       className="flex-1 "
                       id="Phone"
-                      type="text"
+                      type="tel"
                       placeholder="Ingresa tu teléfono"
                       name="phoneNumber"
                       showError={false}

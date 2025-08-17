@@ -7,13 +7,10 @@ import { useModalState } from "@/hooks/use-modal-state";
 import { SearchParams } from "@/types/fetch/request";
 import { DataTableColumn } from "mantine-datatable";
 import { useCallback, useMemo } from "react";
-
-import { useQueryClient } from "@tanstack/react-query";
 import BusinessModalContainer from "../modals/business-modal-container";
 import { Business, GetAllBusiness } from "@/types/business";
 import { deleteBusiness } from "@/services/business";
 import StatusBadge from "@/components/badge/status-badge";
-import CircleIndicator from "@/components/badge/circle-indicator";
 
 interface BusinessListProps {
   data?: GetAllBusiness;
@@ -27,9 +24,7 @@ export function BusinessList({
   onSearchParamsChange,
 }: BusinessListProps) {
   const { getModalState, openModal, closeModal } = useModalState();
-  const queryClient = useQueryClient();
 
-  const createBusinessModal = getModalState("create");
   const editBusinessModal = getModalState<number>("edit");
   const viewBusinessModal = getModalState<number>("view");
 
@@ -38,11 +33,6 @@ export function BusinessList({
     if (!id || !data?.data) return null;
     return data.data.find((business) => business.id == id);
   }, [editBusinessModal, viewBusinessModal, data?.data]);
-
-  const handleCreateBusiness = useCallback(
-    () => openModal("create"),
-    [openModal]
-  );
 
   const handleEditBusiness = useCallback(
     (business: Business) => {
@@ -58,24 +48,20 @@ export function BusinessList({
     [openModal]
   );
 
-  const handleDeleteBusiness = useCallback(
-    async (business: Business) => {
-      try {
-        const res = await deleteBusiness(business.id);
-        if (res?.error && res.message) {
-          console.error(res);
-          showToast(res.message, "error");
-        } else {
-          queryClient.invalidateQueries({ queryKey: ["business"] });
-          showToast("Business deleted successfully", "success");
-        }
-      } catch (error) {
-        console.error(error);
-        showToast("An error occurred, please try again", "error");
+  const handleDeleteBusiness = useCallback(async (business: Business) => {
+    try {
+      const res = await deleteBusiness(business.id);
+      if (res?.error && res.message) {
+        console.error(res);
+        showToast(res.message, "error");
+      } else {
+        showToast("Negocio desactivado exitosamente", "success");
       }
-    },
-    [queryClient]
-  );
+    } catch (error) {
+      console.error(error);
+      showToast("Ocurrió un error, por favor intenta de nuevo", "error");
+    }
+  }, []);
 
   const columns = useMemo<DataTableColumn<Business>[]>(
     () => [
@@ -113,27 +99,9 @@ export function BusinessList({
             <span className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
               {business.description?.length > 100
                 ? `${business.description.substring(0, 100)}...`
-                : business.description}
+                : (business.description ?? "-")}
             </span>
           </div>
-        ),
-      },
-      /* {
-        accessor: "locationId",
-        title: "ID Ubicación",
-        render: (business) => (
-          <span className="text-sm text-gray-500 dark:text-gray-300">
-            {business.locationId}
-          </span>
-        ),
-      }, */
-      {
-        accessor: "hblInitial",
-        title: "HBL Inicial",
-        render: (business) => (
-          <span className="text-sm text-gray-500 dark:text-gray-300">
-            {business.hblInitial}
-          </span>
         ),
       },
       {
@@ -141,16 +109,16 @@ export function BusinessList({
         title: "Dirección",
         render: (business) => (
           <span className="text-sm text-gray-500 dark:text-gray-300">
-            {business.address}
+            {business.address ?? "-"}
           </span>
         ),
       },
       {
         accessor: "email",
-        title: "Email",
+        title: "Correo",
         render: (business) => (
           <span className="text-sm text-gray-500 dark:text-gray-300">
-            {business.email}
+            {business.email ?? "-"}
           </span>
         ),
       },
@@ -159,67 +127,21 @@ export function BusinessList({
         title: "Teléfono",
         render: (business) => (
           <span className="text-sm text-gray-500 dark:text-gray-300">
-            {business.phone}
+            {business.phone ?? "-"}
           </span>
         ),
       },
       {
-        accessor: "isPrimary",
-        title: "Es Primario",
+        accessor: "isActive",
+        title: "Estado",
         render: (business) => (
-          <CircleIndicator
-            isActive={business.isPrimary}
-            
+          <StatusBadge
+            isActive={business.isActive}
+            activeText="Activo"
+            inactiveText="Inactivo"
           />
         ),
       },
-      {
-        accessor: "fixedRate",
-        title: "Tarifa Fija",
-        render: (business) => (
-          <span className="text-sm text-gray-500 dark:text-gray-300">
-            {business.fixedRate}
-          </span>
-        ),
-      },
-      {
-        accessor: "invoiceText",
-        title: "Texto Factura",
-        render: (business) => (
-          <span className="text-sm text-gray-500 dark:text-gray-300">
-            {business.invoiceText}
-          </span>
-        ),
-      },
-      /* {
-      accessor: "users",
-      title: "Usuarios",
-      render: (business) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {business.users?.map((u) => u.name).join(", ") || "-"}
-        </span>
-      ),
-    }, */
-      /* {
-        accessor: "parentBusiness",
-        title: "Negocio Padre",
-        render: (business) => (
-          <span className="text-sm text-gray-500 dark:text-gray-300">
-            {business.parentBusiness.name || "-"}
-          </span>
-        ),
-      },
-      {
-        accessor: "childBusinessIds",
-        title: "Negocios Hijos",
-        render: (business) => (
-          <span className="text-sm text-gray-500 dark:text-gray-300">
-            {business.childBusinessIds?.length
-              ? business.childBusinessIds.join(", ")
-              : "-"}
-          </span>
-        ),
-      }, */
       {
         accessor: "actions",
         title: "Actions",
@@ -227,9 +149,10 @@ export function BusinessList({
         render: (business) => (
           <div className="flex justify-center">
             <ActionsMenu
+              isActive={business.isActive}
               onViewDetails={() => handleViewBusiness(business)}
               onEdit={() => handleEditBusiness(business)}
-              onDelete={() => handleDeleteBusiness(business)}
+              onActive={() => handleDeleteBusiness(business)}
             />
           </div>
         ),
@@ -245,8 +168,8 @@ export function BusinessList({
         columns={columns}
         searchParams={searchParams}
         onSearchParamsChange={onSearchParamsChange}
-        searchPlaceholder="Search businesses..."
-        emptyText="No businesses found"
+        searchPlaceholder="Buscar negocios..."
+        emptyText="No se encontraron negocios"
       />
       {/* Edit Modal */}
       {selectedBusiness && (

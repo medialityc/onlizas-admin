@@ -237,7 +237,7 @@ export default function SupplierEditForm({
             name="phone"
             label="Teléfono"
             placeholder="Ingresa el número de teléfono"
-            type="text"
+            type="tel"
             required
           />
         </div>

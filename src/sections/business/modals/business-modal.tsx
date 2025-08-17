@@ -11,15 +11,11 @@ import LoaderButton from "@/components/loaders/loader-button";
 import SimpleModal from "@/components/modal/modal";
 import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import {
-  createBusiness,
-  getAllBusiness,
-  updateBusinessData,
-} from "@/services/business";
+import { getAllBusiness, updateBusinessData } from "@/services/business";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import { isValidUrl, urlToFile } from "@/utils/format";
-import { RHFSelect, RHFSelectWithLabel } from "@/components/react-hook-form";
+import { RHFSelectWithLabel } from "@/components/react-hook-form";
 
 interface BusinessModalProps {
   open: boolean;
@@ -96,8 +92,8 @@ export default function BusinessModal({
 
   const onSubmit = async (data: CreateSchemaBusiness) => {
     setError(null);
-    console.log(data.parentId)
-    console.log(data.locationId)
+    console.log(data.parentId);
+    console.log(data.locationId);
     try {
       let response;
       const formData = new FormData();
@@ -116,7 +112,9 @@ export default function BusinessModal({
       formData.append("locationId", data.locationId.toString());
 
       // Campos adicionales que puede esperar el backend
-      formData.append(        "parentId",        data.parentId ? data.parentId.toString() : ""
+      formData.append(
+        "parentId",
+        data.parentId ? data.parentId.toString() : ""
       );
 
       // Manejo de photoObjectCodes
@@ -260,6 +258,7 @@ export default function BusinessModal({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
               <RHFInputWithLabel
                 name="phone"
+                type="tel"
                 label="Teléfono"
                 placeholder="+53 555 555 555"
                 disabled={isDetailsView}
@@ -331,6 +330,6 @@ export default function BusinessModal({
           </form>
         </FormProvider>
       </div>
-      </SimpleModal>
+    </SimpleModal>
   );
 }
