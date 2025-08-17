@@ -142,4 +142,10 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}documents/${id}/validate`, // PUT
     create: `${process.env.NEXT_PUBLIC_API_URL}documents`, // POST
   },
+  store: {
+    create: `${process.env.NEXT_PUBLIC_API_URL}admin/notifications`,
+    list: `${process.env.NEXT_PUBLIC_API_URL}user/suplier/store`,
+    delete: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}user/store${id}`,
+  },
 };
