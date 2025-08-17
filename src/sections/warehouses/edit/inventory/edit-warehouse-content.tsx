@@ -18,7 +18,7 @@ export default async function EditWarehouseInventoryContent({
 
   return (
     <EditWarehouseLayout warehouse={warehouse}>
-      <WarehouseInventory warehouse={warehouse} />
+      <WarehouseInventory />
     </EditWarehouseLayout>
   );
 }
