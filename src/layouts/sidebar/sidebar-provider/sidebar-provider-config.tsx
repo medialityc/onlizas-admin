@@ -1,14 +1,7 @@
 import { paths } from "@/config/paths";
-import { ArchiveBoxIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import {
-  BookOpenIcon,
   CubeIcon,
-  CurrencyDollarIcon,
-  LockOpenIcon,
   UserIcon,
-  ShieldCheckIcon,
-  BriefcaseIcon,
-  BellIcon,
   BuildingStorefrontIcon,
   ArchiveBoxXMarkIcon,
 } from "@heroicons/react/24/solid";
