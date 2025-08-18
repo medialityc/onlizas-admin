@@ -5,6 +5,7 @@ import {
   CurrencyDollarIcon,
   TagIcon,
   UserGroupIcon,
+  KeyIcon,
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -44,6 +45,20 @@ const modules = [
     icon: UserGroupIcon,
     color: "text-pink-600 dark:text-pink-400",
     bg: "bg-pink-50 dark:bg-pink-900/20",
+  },
+  {
+    name: "Permisos",
+    href: "/dashboard/permissionslogs",
+    icon: KeyIcon,
+    color: "text-amber-600 dark:text-amber-400",
+    bg: "bg-amber-50 dark:bg-amber-900/20",
+  },
+  {
+    name: "Roles",
+    href: "/dashboard/roleslogs",
+    icon: UserGroupIcon,
+    color: "text-indigo-600 dark:text-indigo-400",
+    bg: "bg-indigo-50 dark:bg-indigo-900/20",
   },
   // Agrega más módulos aquí cuando estén disponibles
 ];

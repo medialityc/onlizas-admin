@@ -1,6 +1,5 @@
 import { PaginatedResponse } from "./common";
 
-
 // Permission types
 export interface IPermission {
   id: number;
@@ -18,7 +17,7 @@ export interface ICreatePermission {
   name: string;
   code: string;
   description: string;
-/*   entity: string; */
+  /*   entity: string; */
   permissionType: number;
   roleId: number;
   roleName: string;
@@ -57,3 +56,18 @@ export type PermissionUpdateData = {
 };
 
 export type DeletePermissionResponse = { status: string };
+
+export type PermissionsLogs = {
+  id: number;
+  timestamp: string;
+  description: string;
+  permissionName: string;
+  permissionCode: string;
+  permissionEntity: string;
+  permissionType: string;
+  permissionDescription: string;
+  userId: number;
+  userName: string;
+};
+
+export type GetAllPermissionsLogsResponse = PaginatedResponse<PermissionsLogs>;

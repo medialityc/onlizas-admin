@@ -29,7 +29,18 @@ export type CreateRoleRequest = {
 
 export type CreateRoleResponse = { status: string };
 
-
 export type DeleteRoleResponse = { status: string };
 
+export type RoleLogs = {
+  id: number;
+  timestamp: string;
+  description: string;
+  roleGuid: string;
+  roleName: string;
+  roleCode: string;
+  roleDescription: string;
+  userId: number;
+  userName: string;
+};
 
+export type GetAllRolesLogsResponse = PaginatedResponse<RoleLogs>;

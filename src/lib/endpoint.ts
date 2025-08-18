@@ -37,6 +37,7 @@ export const backendRoutes = {
     create: `${process.env.NEXT_PUBLIC_API_URL}roles`,
     update: (id: number) => `${process.env.NEXT_PUBLIC_API_URL}roles/${id}`,
     delete: (id: number) => `${process.env.NEXT_PUBLIC_API_URL}roles/${id}`,
+    listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/roles`, // GET
   },
   permissions: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}roles/permissions`,
@@ -45,6 +46,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}permissions/${id}`,
     delete: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}roles/permissions/${id}`,
+    listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/permissions`, // GET
   },
   categories: {
     create: `${process.env.NEXT_PUBLIC_API_URL}categories`, // POST
