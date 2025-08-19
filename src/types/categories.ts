@@ -13,6 +13,15 @@ export type Category = {
   totalProducts: number;
   activeProducts: number;
   productsWithStock: number;
+  features?: Feature[];
+};
+
+export type Feature = {
+  featureName: string;
+  featureDescription: string;
+  suggestions: string[];
+  isPrimary: boolean;
+  isRequired: boolean;
 };
 
 export type CreateCategory = {
@@ -21,6 +30,7 @@ export type CreateCategory = {
   description: string;
   image: string;
   isActive: boolean;
+  features: Feature[];
 };
 
 export type UpdateCategory = CreateCategory;

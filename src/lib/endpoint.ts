@@ -56,6 +56,8 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}categories/${id}`, // DELETE
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}categories/${id}`, // PUT
+    detail: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}categories/${id}`, // GET
   },
   products: {
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/products`, // POST

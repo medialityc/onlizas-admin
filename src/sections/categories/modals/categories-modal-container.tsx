@@ -5,7 +5,6 @@ import { Category } from "@/types/categories";
 interface CategoriesModalProps {
   open: boolean;
   onClose: () => void;
-  onSuccess?: () => void;
   category?: Category;
   isDetailsView?: boolean;
 }
@@ -15,7 +14,6 @@ export default function CategoriesModalContainer({
   onClose,
   category,
   isDetailsView,
-  onSuccess,
 }: CategoriesModalProps) {
   if (!open) return null;
 
@@ -37,7 +35,6 @@ export default function CategoriesModalContainer({
       onClose={onClose}
       open={open}
       category={category}
-      onSuccess={onSuccess}
     />
   );
 }

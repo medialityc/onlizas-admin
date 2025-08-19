@@ -7,9 +7,10 @@ import { useModalState } from "@/hooks/use-modal-state";
 import { SearchParams } from "@/types/fetch/request";
 import { DataTableColumn } from "mantine-datatable";
 import { useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
 
-import { useQueryClient } from "@tanstack/react-query";
 import CategoriesModalContainer from "../modals/categories-modal-container";
+import { useQueryClient } from "@tanstack/react-query";
 import { Category, GetAllCategories } from "@/types/categories";
 import { deleteCategory } from "@/services/categories";
 
@@ -26,8 +27,8 @@ export function CategoriesList({
 }: CategoriesListProps) {
   const { getModalState, openModal, closeModal } = useModalState();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
-  const createCategoryModal = getModalState("create");
   const editCategoryModal = getModalState<number>("edit");
   const viewCategoryModal = getModalState<number>("view");
 
@@ -37,16 +38,15 @@ export function CategoriesList({
     return data.data.find((category) => category.id == id);
   }, [editCategoryModal, viewCategoryModal, data?.data]);
 
-  const handleCreateCategory = useCallback(
-    () => openModal("create"),
-    [openModal]
-  );
+  const handleCreateCategory = useCallback(() => {
+    router.push("/dashboard/categories/new");
+  }, [router]);
 
   const handleEditCategory = useCallback(
     (category: Category) => {
-      openModal<number>("edit", category.id);
+      router.push(`/dashboard/categories/${category.id}/edit`);
     },
-    [openModal]
+    [router]
   );
 
   const handleViewCategory = useCallback(
@@ -178,19 +178,7 @@ export function CategoriesList({
         onCreate={handleCreateCategory}
         emptyText="No se encontraron categorías"
       />
-      {/* Create Modal */}
-      <CategoriesModalContainer
-        open={createCategoryModal.open}
-        onClose={() => closeModal("create")}
-      />
-      {/* Edit Modal */}
-      {selectedCategory && (
-        <CategoriesModalContainer
-          onClose={() => closeModal("edit")}
-          open={editCategoryModal.open}
-          category={selectedCategory}
-        />
-      )}
+      {/* Creación/edición redirige a vistas; mantenemos modal de detalles */}
       {/* Details Modal */}
       {selectedCategory && (
         <CategoriesModalContainer

@@ -1,5 +1,3 @@
-import { PaginatedResponse } from "./common";
-
 // Tipos según la API real en product-apis.md
 export type ProductDimensions = {
   width?: number;
@@ -67,7 +65,7 @@ export type CreateProductRequest = {
   images: ProductImage[];
 };
 
-// Para actualizar producto según la API  
+// Para actualizar producto según la API
 export type UpdateProductRequest = Partial<CreateProductRequest>;
 
 // Aliases para compatibilidad con servicios

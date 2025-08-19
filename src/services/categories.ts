@@ -14,7 +14,7 @@ export async function createCategory(
   data: FormData
 ): Promise<ApiResponse<ApiStatusResponse>> {
   console.log(data);
-  
+
   const res = await nextAuthFetch({
     url: backendRoutes.categories.create,
     method: "POST",
@@ -77,5 +77,18 @@ export async function updateCategory(
   if (!res.ok) return handleApiServerError(res);
   revalidateTag("categories");
 
+  return buildApiResponseAsync<Category>(res);
+}
+
+export async function getCategoryById(
+  id: string | number
+): Promise<ApiResponse<Category>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.categories.detail(id),
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["categories"] },
+  });
+  if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<Category>(res);
 }
