@@ -114,6 +114,8 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}admin/businesses/${id}`,
     delete: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}business/${id}`,
+    getAllByUser: (userId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}users/${userId}/businesses`,
   },
   suppliers: {
     create: `${process.env.NEXT_PUBLIC_API_URL}suppliers`, // POST

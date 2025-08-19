@@ -23,7 +23,7 @@ interface BusinessModalProps {
   business?: Business;
   isDetailsView?: boolean;
   loading: boolean;
-  onSuccess?: () => void;
+  onSuccess?: (data?: Business) => void;
 }
 
 export default function BusinessModal({
@@ -139,7 +139,7 @@ export default function BusinessModal({
 
         if (!response.error) {
           queryClient.invalidateQueries({ queryKey: ["businesses"] });
-          onSuccess?.();
+          onSuccess?.(response.data);
           reset();
           toast.success("Negocio editado exitosamente");
 
