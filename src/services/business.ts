@@ -29,6 +29,26 @@ export async function getAllBusiness(
 
   return buildApiResponseAsync<GetAllBusiness>(res);
 }
+export async function getAllBusinessByUser(
+  params: IQueryable,
+  id: string | number
+): Promise<ApiResponse<Business[]>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.business.getAllByUser(id)
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["business"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<Business[]>(res);
+}
 
 export async function createBusiness(
   data: FormData

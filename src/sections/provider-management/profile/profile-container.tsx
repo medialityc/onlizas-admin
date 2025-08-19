@@ -19,12 +19,14 @@ import { updateUser } from "@/services/users";
 import { useQueryClient } from "@tanstack/react-query";
 import LoaderButton from "@/components/loaders/loader-button";
 import {
-  userUpdateSchema,
-  defaultUserForm,
-  type UserUpdateData,
-} from "@/sections/users/edit/components/user-schema";
+  providerProfileSchema,
+  defaultProviderProfileForm,
+  type ProviderProfileFormData,
+} from "./profile-schema";
 import { getMockBusinessById } from "./mock-businesses";
 import { Business } from "@/types/business";
+import { IUser } from "@/types/users";
+import { useBusiness } from "./edit/hook/use-business";
 
 interface ProfileContainerProps {
   query: SearchParams;
@@ -33,33 +35,84 @@ interface ProfileContainerProps {
 export default function ProfileContainer({ query }: ProfileContainerProps) {
   const [isEditing, setIsEditing] = useState(false);
   const { data: user, isLoading, error } = useUserProfile();
-  // activeUser is the data source used to render the form. When the real user
+  const { data: business } = useBusiness(user?.id);
+  // user is the data source used to render the form. When the real user
   // is not available (and not loading), use the local mock for testing.
-  const activeUser = user ?? (isLoading ? undefined : mockUser);
-  const business: Business[] =
-    (activeUser?.businesses ?? [])
+
+  /* const business: Business[] =
+    (user?.businesses ?? [])
       .map((b: any) => {
         if (!b) return null;
         if (typeof b === "object" && b?.id && b?.name) return b as Business;
         const id = typeof b === "number" ? b : b?.id;
         return id ? getMockBusinessById(id) : null;
       })
-      .filter((b): b is Business => b !== null) || [];
+      .filter((b): b is Business => b !== null) || [];*/
   const queryClient = useQueryClient();
+  console.log(user);
   console.log(business);
 
-  // Form setup to control both tabs when editing. Use external zod schema and sensible defaults
-  const methods = useForm<UserUpdateData>({
-    resolver: zodResolver(userUpdateSchema),
-    defaultValues: {
-      ...defaultUserForm,
-    },
+  // Helper: build initial values from a user-like source
+  const buildInitialValues = (source: IUser): ProviderProfileFormData => ({
+    id: source?.id,
+    name: source?.name || "",
+    photo: source?.photoUrl || undefined,
+    emails: Array.isArray(source?.emails)
+      ? source.emails.map((e: any) => ({
+          address: e.address,
+          isVerified: !!e.isVerified,
+        }))
+      : [],
+    phones: Array.isArray(source?.phones)
+      ? source.phones.map((p: any) => ({
+          countryId: Number(p.countryId ?? 0),
+          number: String(p.number ?? ""),
+          isVerified: !!p.isVerified,
+        }))
+      : [],
+    addresses: Array.isArray(source?.addresses)
+      ? source.addresses.map((a: any) => ({
+          id: a.id,
+          name: a.name ?? "",
+          mainStreet: a.mainStreet ?? "",
+          number: a.number ?? "",
+          city: a.city ?? "",
+          state: a.state ?? "",
+          zipcode: a.zipcode ?? "",
+          countryId: Number(a.countryId ?? 0),
+          otherStreets: a.otherStreets ?? "",
+          latitude: typeof a.latitude === "number" ? a.latitude : undefined,
+          longitude: typeof a.longitude === "number" ? a.longitude : undefined,
+          annotations: a.annotations ?? "",
+        }))
+      : [],
+    isBlocked: !!source?.isBlocked,
+    isVerified: !!source?.isVerified,
+    attributes: source?.attributes || {},
+    businesses: Array.isArray(source?.businesses)
+      ? source.businesses.map((b: any) =>
+          b && typeof b === "object"
+            ? { id: b.id, name: b.name, code: b.code }
+            : { id: b }
+        )
+      : [],
+    beneficiaries: Array.isArray(source?.beneficiaries)
+      ? source.beneficiaries
+      : [],
+  });
+
+  // Form setup to control both tabs when editing. Use provider profile schema
+  const methods = useForm<ProviderProfileFormData>({
+    resolver: zodResolver(providerProfileSchema),
+    defaultValues: buildInitialValues(user ? user : ({} as IUser)),
     mode: "onChange",
   });
 
   // submit handler shared by form and header Save button
-  const onSubmit = async (data: UserUpdateData) => {
-    const currentUser = activeUser;
+  const onSubmit = async (data: ProviderProfileFormData) => {
+    console.log(data);
+
+    const currentUser = user;
     if (!currentUser?.id) return;
     try {
       // If we're showing the mock user (no real `user`), don't call the API.
@@ -78,83 +131,69 @@ export default function ProfileContainer({ query }: ProfileContainerProps) {
       setIsEditing(false);
     } catch (e) {
       console.error(e);
-      methods.reset({
-        ...(defaultUserForm as any),
-        ...(currentUser as any),
-        ...(data as any),
-      });
+      methods.reset(buildInitialValues(currentUser));
     }
   };
 
-  useEffect(() => {
-    // Wait until loading finishes. Then reset the form with either the real
-    // user (if present) or the mock user so the form is always populated for
-    // local testing.
+  /* useEffect(() => {
     if (isLoading) return;
     const source = user ?? mockUser;
-    methods.reset({
-      ...(defaultUserForm as any),
-      ...(source || {}),
-      photo: (source as any)?.photoUrl || undefined,
-      website: "",
-    });
+    methods.reset(buildInitialValues(source));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, isLoading]);
+  }, [user, isLoading]); */
 
-  // Show skeleton while the profile is loading or if user is not yet available
-  /*   if (isLoading || !user) {
+  if (isLoading) {
     return <ProfileSkeleton />;
-  } */
+  }
 
   return (
     <div className="space-y-6">
       <div className="">
-        <div className="mb-5 flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-dark dark:text-white-light">
-              Mi Perfil
-            </h2>
-          </div>
-          <div className="flex items-center gap-2">
-            {!isEditing ? (
-              <Button
-                type="button"
-                onClick={() => setIsEditing(true)}
-                className="flex items-center gap-2"
-              >
-                <PencilIcon className="h-4 w-4" />
-                Editar Perfil
-              </Button>
-            ) : (
-              <>
+        <FormProvider methods={methods} onSubmit={onSubmit}>
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-dark dark:text-white-light">
+                Mi Perfil
+              </h2>
+            </div>
+            <div className="flex items-center gap-2">
+              {!isEditing ? (
                 <Button
                   type="button"
-                  outline
-                  onClick={() => {
-                    // Reset to the current active source (real user or mock)
-                    const source = user ?? mockUser;
-                    methods.reset({
-                      ...(defaultUserForm as any),
-                      ...(source || {}),
-                    });
-                    setIsEditing(false);
-                  }}
+                  onClick={() => setIsEditing(true)}
+                  className="flex items-center gap-2"
                 >
-                  Cancelar
+                  <PencilIcon className="h-4 w-4" />
+                  Editar Perfil
                 </Button>
-                <LoaderButton
-                  type="button"
-                  loading={methods.formState.isSubmitting}
-                  onClick={methods.handleSubmit(onSubmit)}
-                >
-                  Guardar
-                </LoaderButton>
-              </>
-            )}
+              ) : (
+                <>
+                  <Button
+                    type="button"
+                    outline
+                    onClick={() => {
+                      // Reset to the current active source (real user or mock)
+                      const source = user;
+                      methods.reset(
+                        buildInitialValues(source ? user : ({} as IUser))
+                      );
+                      setIsEditing(false);
+                    }}
+                  >
+                    Cancelar
+                  </Button>
+                  <LoaderButton
+                    type="submit"
+                    loading={methods.formState.isSubmitting}
+                    onClick={methods.handleSubmit(onSubmit)}
+                  >
+                    Guardar
+                  </LoaderButton>
+                </>
+              )}
+            </div>
           </div>
-        </div>
 
-        <FormProvider methods={methods} onSubmit={onSubmit}>
           <TabsWithIcons
             tabs={[
               {
@@ -163,7 +202,7 @@ export default function ProfileContainer({ query }: ProfileContainerProps) {
                 content: (
                   <PersonalInfoTab
                     isEditing={isEditing}
-                    user={activeUser ? activeUser : null}
+                    user={user ? user : null}
                   />
                 ),
               },
@@ -173,8 +212,8 @@ export default function ProfileContainer({ query }: ProfileContainerProps) {
                 content: (
                   <AccountSettingsTab
                     isEditing={isEditing}
-                    user={activeUser ? activeUser : null}
-                    business={business}
+                    user={user ? user : null}
+                    business={business ? business : []}
                   />
                 ),
               },
