@@ -5,9 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { authenticateWithTokens } from "../services/server-actions";
 import { useAuth } from "./use-auth";
+import { useDispatch } from "react-redux";
+import { setLoading } from "../store/auth-slice";
 
 export function useSSOAuth({ clientId }: { clientId: string }) {
   const router = useRouter();
+  const dispatch = useDispatch();
+
   const params = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -188,8 +192,8 @@ export function useSSOAuth({ clientId }: { clientId: string }) {
         if (handlerRef.current) {
           window.removeEventListener("message", handlerRef.current);
         }
-        clearInterval(popupCheckIntervalRef.current!);
-        popupCheckIntervalRef.current = null;
+        clearInterval(popupCheckIntervalRef.current!);       
+        dispatch(setLoading(true));
       }
     }, 1000);
   }, [
