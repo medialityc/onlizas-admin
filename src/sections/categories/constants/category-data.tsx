@@ -13,11 +13,11 @@ export const setCategoryFormData = async (
     description: f.featureDescription,
     isPrimary: !!f.isPrimary,
     isRequired: !!f.isRequired,
-    ...(f?.featureId
+    /*  ...(f?.featureId
       ? {
           featureId: f?.featureId,
         }
-      : {}),
+      : {}), */
     suggestions: f.suggestions ?? [],
   }));
 

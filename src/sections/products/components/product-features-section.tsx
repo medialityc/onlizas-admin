@@ -5,8 +5,6 @@ import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import { Button } from "@/components/button/button";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import IconTrash from "@/components/icon/icon-trash";
-import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import { getAllCategories } from "@/services/categories";
 import { ListBulletIcon } from "@heroicons/react/24/outline";
 
 function ProductFeatureSection() {
@@ -42,30 +40,8 @@ function ProductFeatureSection() {
 
       <div className="space-y-3">
         {aboutFields.map((field, index) => (
-          <div
-            key={field.id}
-            className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-4"
-          >
-            <div className="col-span-1">
-              <RHFAutocompleteFetcherInfinity
-                name={`features.${index}.categoryFeatureId`}
-                label=""
-                placeholder="Seleccionar categorías..."
-                onFetch={getAllCategories}
-                objectValueKey="id"
-                objectKeyLabel="name"
-                queryKey="categories"
-                required
-              />
-            </div>
-            <div className="col-span-1">
-              <RHFInputWithLabel
-                name={`features.${index}.featureName`}
-                label=""
-                placeholder={`Nombre ${index + 1}`}
-              />
-            </div>
-            <div className="col-span-1 flex flex-row gap-2">
+          <div key={field.id} className="grid grid-cols-1 ">
+            <div className="col-span-1 flex flex-row gap-2  items-start">
               <RHFInputWithLabel
                 name={`features.${index}.value`}
                 label=""

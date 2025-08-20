@@ -4,13 +4,11 @@ import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { QueryParamsURLFactory } from "@/lib/request";
 import { backendRoutes } from "@/lib/endpoint";
 import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
-import { IQueryable } from "@/types/fetch/request";
+
 import {
-  CreateProduct,
   GetAllProducts,
   Product,
   ProductFilter,
-  UpdateProduct,
   ProductSearchParams,
   SimpleCategoriesResponse,
   SimpleSuppliersResponse,
@@ -67,11 +65,9 @@ export async function getProductById(
 }
 
 export async function createProduct(
-  data: CreateProduct
+  data: FormData
 ): Promise<ApiResponse<Product>> {
-  console.log(data);
-  return null
-  /* const res = await nextAuthFetch({
+  const res = await nextAuthFetch({
     url: backendRoutes.products.create,
     method: "POST",
     headers: {
@@ -81,15 +77,15 @@ export async function createProduct(
     useAuth: true,
   });
 
-  if (!res.ok) return handleApiServerError(res);
+  if (!res.ok) throw await handleApiServerError(res);
   revalidateTag("products");
 
-  return buildApiResponseAsync<Product>(res); */
+  return buildApiResponseAsync<Product>(res);
 }
 
 export async function updateProduct(
   id: number,
-  data: UpdateProduct
+  data: FormData
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.update(id),
@@ -101,9 +97,9 @@ export async function updateProduct(
     useAuth: true,
   });
 
-  if (!res.ok) return handleApiServerError(res);
-  revalidateTag("products");
+  if (!res.ok) throw await handleApiServerError(res);
 
+  revalidateTag("products");
   return buildApiResponseAsync<Product>(res);
 }
 

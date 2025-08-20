@@ -39,7 +39,7 @@ function AboutProductSection() {
 
       <div className="space-y-3">
         {aboutFields.map((field, index) => (
-          <div key={field.id} className="flex items-center gap-3">
+          <div key={field.id} className="flex items-start gap-3">
             <div className="flex-1">
               <RHFInputWithLabel
                 name={`about.${index}.value`}

@@ -33,27 +33,25 @@ function ProductDetailsSection() {
           className="flex items-center gap-2"
         >
           <IconPlus className="w-4 h-4" />
-          Detalle
+          Línea
         </Button>
       </div>
       <div className="space-y-4">
         {detailFields.map((field, index) => (
-          <div key={field.id} className="grid grid-cols-5 gap-3 items-center">
+          <div key={field.id} className="grid grid-cols-5 gap-3 items-start">
             <div className="col-span-2">
               <RHFInputWithLabel
                 name={`details.${index}.name`}
-                // label="Nombre"
                 placeholder="Nombre"
               />
             </div>
             <div className="col-span-2">
               <RHFInputWithLabel
                 name={`details.${index}.value`}
-                // label="Valor"
                 placeholder="Valor"
               />
             </div>
-            <div className="col-span-1 pb-1 h-full flex justify-end items-end">
+            <div className="col-span-1  h-full flex justify-end items-start">
               <Button
                 type="button"
                 size="sm"
