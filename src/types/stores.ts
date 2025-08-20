@@ -1,4 +1,3 @@
-import { Category } from "./categories";
 import { PaginatedResponse } from "./common";
 
 // Tipos auxiliares
@@ -158,18 +157,18 @@ export type Store = {
       name: string;
       email: string;
       phoneNumber: string;
-    }
-  ],
+    },
+  ];
   banners: [
     {
-      title: string,
-      urlDestinity: string,
-      position: string,
-      initDate: string,
-      endDate: string,
-      image: string,
-    }
-  ],
+      title: string;
+      urlDestinity: string;
+      position: string;
+      initDate: string;
+      endDate: string;
+      image: string;
+    },
+  ];
   businessName: string;
 };
 
@@ -184,27 +183,12 @@ export type StoreMetric = {
   productCount?: number;
   visitCount?: number;
   conversionRate?: number;
-}
-export type StoreMetricsResponse = 
-{
-  totalStores: 0,
-  activeStores: 0,
-  totalVisits: 0,
-  averageConversionRate: 0,
-  storeMetrics: /* [
-    {
-      id: 0,
-      title: string,
-      isActive: true,
-      logo: string,
-      url: string,
-      description: string,
-      categoryCount: 0,
-      productCount: 0,
-      visitCount: 0,
-      conversionRate: 0
-    }
-  ] */
- StoreMetric[]
-}
+};
+export type StoreMetricsResponse = {
+  totalStores: number;
+  activeStores: number;
+  totalVisits: number;
+  averageConversionRate: number;
+  storeMetrics: StoreMetric[];
+};
 export type GetStoreMetrics = StoreMetricsResponse;

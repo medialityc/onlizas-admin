@@ -3,7 +3,7 @@
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { GetAllStores, StoreMetricsResponse } from "@/types/stores";
+import { StoreMetricsResponse } from "@/types/stores";
 import { use } from "react";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
