@@ -1,7 +1,7 @@
 import { buildQueryParams } from "@/lib/request";
 import StoresListContainer from "@/sections/provider-management/stores/list/stores-list-container";
 
-import { getAllStores } from "@/services/stores";
+import { getAllStores, getMetricStores } from "@/services/stores";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
 import { Suspense } from "react";
@@ -20,28 +20,57 @@ interface PageProps {
 
 function StoresListSkeleton() {
   return (
-    <div className="panel">
-      <div className="mb-5">
-        <div className="h-8 bg-gray-200 rounded animate-pulse mb-4"></div>
-        <div className="flex gap-4 mb-4">
-          <div className="h-10 bg-gray-200 rounded animate-pulse w-64"></div>
-          <div className="h-10 bg-gray-200 rounded animate-pulse w-32"></div>
-          <div className="h-10 bg-gray-200 rounded animate-pulse w-32"></div>
+    <div className="p-6 space-y-6">
+  {/* ——— HEADER: buscador + “Crear tienda” ——— */}
+  <div className="flex items-center justify-between space-x-4 animate-pulse">
+    {/* input skeleton */}
+    <div className="h-10 bg-gray-200 rounded w-1/3"></div>
+    {/* botón skeleton */}
+    <div className="h-10 bg-gray-200 rounded w-36"></div>
+  </div>
+
+  {/* ——— MÉTRICAS ——— */}
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-pulse">
+    {[...Array(4)].map((_, i) => (
+      <div key={i} className="h-20 bg-gray-200 rounded"></div>
+    ))}
+  </div>
+
+  {/* ——— GRID DE TARJETAS ——— */}
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {[...Array(6)].map((_, i) => (
+      <div
+        key={i}
+        className="flex flex-col justify-between p-4 bg-gray-200 rounded animate-pulse min-h-[300px]"
+      >
+        {/* header de la tarjeta */}
+        <div className="space-y-2">
+          <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+          <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+        </div>
+        {/* descripción / métricas */}
+        <div className="flex-1 mt-4 space-y-2">
+          {[...Array(4)].map((_, j) => (
+            <div key={j} className="h-4 bg-gray-300 rounded"></div>
+          ))}
+        </div>
+        {/* botones “Ver” / “Configurar” */}
+        <div className="flex items-center justify-between space-x-2 mt-4">
+          <div className="h-8 w-20 bg-gray-300 rounded"></div>
+          <div className="h-8 w-20 bg-gray-300 rounded"></div>
         </div>
       </div>
-      <div className="space-y-3">
-        {[...Array(10)].map((_, i) => (
-          <div key={i} className="h-16 bg-gray-200 rounded animate-pulse"></div>
-        ))}
-      </div>
-    </div>
+    ))}
+  </div>
+</div>
+
   );
 }
 
 async function StoresListPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const storesPromise = getAllStores(query);
+  const storesPromise = getMetricStores(query);
 
   return (
     <Suspense fallback={<StoresListSkeleton />}>
