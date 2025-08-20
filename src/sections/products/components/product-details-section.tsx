@@ -19,33 +19,6 @@ function ProductDetailsSection() {
     name: "details",
   });
 
-  /*  return (
-    <div className="bg-white rounded-lg border p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-          <IconClipboardText className="mr-2 w-5 h-5" /> Detalles del Producto
-        </h3>
-      </div>
-      <div className="flex flex-col gap-2 md:gap-4">
-        <RHFInputWithLabel
-          name={`details.additionalProp1`}
-          // label="Detalle 1"
-          placeholder="Detalle 1"
-        />
-        <RHFInputWithLabel
-          name={`details.additionalProp2`}
-          // label="Detalle 2"
-          placeholder="Detalle 2"
-        />
-        <RHFInputWithLabel
-          name={`details.additionalProp3`}
-          // label="Detalle 3"
-          placeholder="Detalle 3"
-        />
-      </div>
-    </div>
-  ); */
-
   return (
     <div className="bg-white rounded-lg border p-6">
       <div className="flex items-center justify-between mb-4">
@@ -62,21 +35,21 @@ function ProductDetailsSection() {
           <IconPlus className="w-4 h-4" />
           Detalle
         </Button>
-      </div>{" "}
+      </div>
       <div className="space-y-4">
         {detailFields.map((field, index) => (
           <div key={field.id} className="grid grid-cols-5 gap-3 items-center">
             <div className="col-span-2">
               <RHFInputWithLabel
                 name={`details.${index}.name`}
-                label="Nombre"
+                // label="Nombre"
                 placeholder="Nombre"
               />
             </div>
             <div className="col-span-2">
               <RHFInputWithLabel
                 name={`details.${index}.value`}
-                label="Valor"
+                // label="Valor"
                 placeholder="Valor"
               />
             </div>

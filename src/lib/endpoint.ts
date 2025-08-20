@@ -58,7 +58,7 @@ export const backendRoutes = {
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}categories/${id}`, // PUT
     detail: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}categories/${id}`, // GET
+      `${process.env.NEXT_PUBLIC_API_URL}categories/admin/${id}`, // GET
   },
   products: {
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/products`, // POST

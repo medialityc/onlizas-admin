@@ -1,6 +1,7 @@
 import React from "react";
 import ProductForm from "../components/product-form";
 import { ProductFormData } from "../schema/product-schema";
+import { productTransformData } from "../utils/product-transform-data";
 
 type Props = {
   product: ProductFormData;
@@ -13,10 +14,10 @@ const ProductEditContainer = ({ product }: Props) => {
           Editar Product
         </h2>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Define el producto
+          Define el producto y sus características
         </p>
       </div>
-      <ProductForm initValue={product} />
+      <ProductForm initValue={productTransformData(product)} />
     </div>
   );
 };

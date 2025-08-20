@@ -1,6 +1,7 @@
 import { getCategoryById } from "@/services/categories";
-import CategoryForm from "@/sections/categories/form/category-form";
 import { notFound } from "next/navigation";
+import CategoryEditFormContainer from "@/sections/categories/containers/category-edit-from.container";
+import { CategoryFormData } from "@/sections/categories/schemas/category-schema";
 
 interface EditPageProps {
   params: { id: string };
@@ -20,7 +21,9 @@ export default async function EditCategoryPage({ params }: EditPageProps) {
           Actualiza la categoría y sus características
         </p>
       </div>
-      <CategoryForm category={res.data!} />
+      <CategoryEditFormContainer
+        category={res.data! as unknown as CategoryFormData}
+      />
     </div>
   );
 }
