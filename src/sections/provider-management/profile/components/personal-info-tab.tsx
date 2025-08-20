@@ -7,60 +7,97 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/cards/card";
-import InputWithLabel from "@/components/input/input-with-label";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
-import { User } from "@/auth-sso/types";
-import Image from "next/image";
+import { RHFFileUpload } from "@/components/react-hook-form/rhf-file-upload";
 import {
-  UserCircleIcon,
-  EnvelopeIcon,
-  PhoneIcon,
   SparklesIcon,
   IdentificationIcon,
-  BuildingStorefrontIcon,
   ShieldCheckIcon,
-  EyeIcon,
   MapPinIcon,
+  EnvelopeIcon,
+  PhoneIcon,
 } from "@heroicons/react/24/outline";
 import StatusBadge from "@/components/badge/status-badge";
 import { IUser } from "@/types/users";
-import { useFormContext, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { PasswordToggleField } from "@/sections/users/edit/components/password-toggle-field";
 import { resendEmail, resendPhone } from "@/services/users";
 import LoaderButton from "@/components/loaders/loader-button";
-import { VerificationStatusList } from "@/sections/users/edit/components/verification-status-list";
 import showToast from "@/config/toast/toastConfig";
 import { Button } from "@/components/button/button";
-import { UserUpdateData } from "@/sections/users/edit/components/user-schema";
-import { ProviderProfileFormData } from "../profile-schema";
+import FormProvider from "@/components/react-hook-form/form-provider";
+import {
+  PersonalInfoFormData,
+  personalInfoSchema,
+} from "../schemas/personal-info-schema";
 import AdressField from "@/sections/users/edit/components/adress-field";
 import { AddressModal } from "@/sections/users/edit/components/adress-modal";
 import { EmptyState } from "@/sections/users/edit/components/empty-state-component";
 import { AddressFormData as UserAddressFormData } from "@/sections/users/edit/components/user-schema";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useModalState } from "@/hooks/use-modal-state";
 
 interface PersonalInfoTabProps {
   user: IUser | null;
-  isEditing?: boolean;
+  onSave?: (data: PersonalInfoFormData) => void;
 }
 
-export function PersonalInfoTab({
-  user,
-  isEditing = false,
-}: PersonalInfoTabProps) {
+export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
   const emails = user?.emails ?? [];
   const phones = user?.phones ?? [];
-  const methods = useFormContext<ProviderProfileFormData>();
-  const { setValue, control, watch } = methods;
-  const [enablePasswordEdit, setEnablePasswordEdit] = useState(false);
+
   // Modal state using global useModalState pattern
   const { getModalState, openModal, closeModal } = useModalState();
   const createAddressModal = getModalState("createAddress");
   const editAddressModal = getModalState<number>("editAddress");
 
+  // Independent form for personal info only
+  const methods = useForm<PersonalInfoFormData>({
+    resolver: zodResolver(personalInfoSchema),
+    defaultValues: {
+      id: user?.id,
+      name: user?.name || "",
+      photo: user?.photoUrl || undefined,
+      emails: Array.isArray(user?.emails)
+        ? user.emails.map((e: any) => ({
+            address: e.address,
+            isVerified: !!e.isVerified,
+          }))
+        : [],
+      phones: Array.isArray(user?.phones)
+        ? user.phones.map((p: any) => ({
+            countryId: Number(p.countryId ?? 0),
+            number: String(p.number ?? ""),
+            isVerified: !!p.isVerified,
+          }))
+        : [],
+      addresses: Array.isArray(user?.addresses)
+        ? user.addresses.map((a: any) => ({
+            id: a.id,
+            name: a.name ?? "",
+            mainStreet: a.mainStreet ?? "",
+            number: a.number ?? "",
+            city: a.city ?? "",
+            state: a.state ?? "",
+            zipcode: a.zipcode ?? "",
+            countryId: Number(a.countryId ?? 0),
+            otherStreets: a.otherStreets ?? "",
+            latitude: typeof a.latitude === "number" ? a.latitude : undefined,
+            longitude:
+              typeof a.longitude === "number" ? a.longitude : undefined,
+            annotations: a.annotations ?? "",
+          }))
+        : [],
+      isBlocked: !!user?.isBlocked,
+      isVerified: !!user?.isVerified,
+      attributes: user?.attributes || {},
+    },
+    mode: "onChange",
+  });
+
+  const { control, watch } = methods;
   const emailWatch = watch("emails") || [];
   const phoneWatch = watch("phones") || [];
 
@@ -83,8 +120,14 @@ export function PersonalInfoTab({
     update: updateAddress,
   } = useFieldArray({ control, name: "addresses", keyName: "_key" });
 
-  type ProviderAddress = ProviderProfileFormData["addresses"][number];
-  const toProviderAddress = (a: UserAddressFormData): ProviderAddress => ({
+  const {
+    fields: documentFields,
+    append: appendDocument,
+    remove: removeDocument,
+  } = useFieldArray({ control, name: "documents" });
+
+  type PersonalAddress = PersonalInfoFormData["addresses"][number];
+  const toPersonalAddress = (a: UserAddressFormData): PersonalAddress => ({
     id: a.id,
     name: a.name,
     mainStreet: a.mainStreet,
@@ -142,11 +185,11 @@ export function PersonalInfoTab({
   const handleAddressModalSave = (address: UserAddressFormData) => {
     const editIndex = editAddressModal.id ?? null;
     if (editIndex !== null) {
-      updateAddress(editIndex, toProviderAddress(address));
+      updateAddress(editIndex, toPersonalAddress(address));
       closeModal("editAddress");
     } else {
       const withId = { ...address, id: Date.now() } as UserAddressFormData;
-      appendAddress(toProviderAddress(withId));
+      appendAddress(toPersonalAddress(withId));
       closeModal("createAddress");
     }
   };
@@ -162,8 +205,14 @@ export function PersonalInfoTab({
     return (addressFields[idx] as unknown as UserAddressFormData) ?? null;
   }, [editAddressModal, addressFields]);
 
+  const handleFormSubmit = async (data: PersonalInfoFormData) => {
+    if (onSave) {
+      onSave(data);
+    }
+  };
+
   return (
-    <>
+    <FormProvider methods={methods} onSubmit={handleFormSubmit}>
       <Card className="border rounded-lg dark:border-gray-800">
         <CardHeader>
           <div className="mb-3 flex items-center gap-2">
@@ -173,34 +222,18 @@ export function PersonalInfoTab({
           <div className="flex items-center gap-4">
             {/* Avatar */}
             <div className="flex-shrink-0">
-              {isEditing ? (
-                <RHFImageUpload
-                  name="photo"
-                  label="Foto"
-                  defaultImage={user?.photoUrl}
-                  variant="rounded"
-                  size="md"
-                />
-              ) : user?.photoUrl ? (
-                <Image
-                  src={user.photoUrl}
-                  alt={user.name || "avatar"}
-                  width={64}
-                  height={64}
-                  className="w-16 h-16 rounded-full object-cover border-2 border-gray-100 dark:border-gray-700"
-                />
-              ) : (
-                <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                  <UserCircleIcon className="w-8 h-8 text-gray-500 dark:text-gray-300" />
-                </div>
-              )}
+              <RHFImageUpload
+                name="photo"
+                label="Foto"
+                defaultImage={user?.photoUrl}
+                variant="rounded"
+                size="md"
+              />
             </div>
 
             {/* Título con nombre */}
             <div>
-              <CardTitle className="text-2xl font-bold">
-                {user?.name || "Usuario"}
-              </CardTitle>
+              <CardTitle className="text-2xl font-bold">{user?.name}</CardTitle>
               <CardDescription>
                 <div className="mt-2">
                   <StatusBadge
@@ -216,177 +249,120 @@ export function PersonalInfoTab({
         <CardContent className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Columna izquierda */}
-            <div className="space-y-4">
-              <div className="mb-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <IdentificationIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Nombre
-                  </span>
+            <div className="space-y-6">
+              {/* Panel: Nombre */}
+              <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <IdentificationIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Nombre
+                    </span>
+                  </div>
                 </div>
-                {isEditing ? (
-                  <RHFInputWithLabel
-                    name="name"
-                    label=""
-                    placeholder="Usuario"
-                    required
-                  />
-                ) : (
-                  <InputWithLabel
-                    id="name"
-                    onChange={() => {}}
-                    placeholder={`${user?.name ? "" : "Usuario"}`}
-                    label=""
-                    value={user?.name || ""}
-                    disabled
-                  />
-                )}
+                <RHFInputWithLabel
+                  name="name"
+                  label=""
+                  placeholder="Usuario"
+                  required
+                />
               </div>
 
-              {/* Emails */}
-              <div>
-                {!isEditing ? (
-                  <div>
-                    <label className="text-sm font-semibold mb-2 block">
+              {/* Panel: Emails */}
+              <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <EnvelopeIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       Emails
-                    </label>
-                    {emails && emails.length > 0 ? (
-                      <ul className="space-y-2">
-                        {emails.map((e, idx) => (
-                          <li
-                            key={e.address + idx}
-                            className="flex items-center justify-between bg-gray-50 dark:bg-black-dark-light p-3 rounded"
-                          >
-                            <span className="text-sm">{e.address}</span>
-                            <div>
-                              <StatusBadge
-                                isActive={!!e.isVerified}
-                                activeText="Verificado"
-                                inactiveText="No verificado"
-                              />
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-muted-foreground text-sm italic">
-                        No hay emails registrados
-                      </p>
-                    )}
+                    </span>
                   </div>
-                ) : (
-                  <div className="space-y-2">
-                    {emailFields.map((field, index) => (
-                      <div key={field.id} className="flex items-center gap-2">
-                        <RHFInputWithLabel
-                          name={`emails.${index}.address`}
-                          label={`Email ${index + 1}`}
-                          className="flex-1"
-                        />
-                        <div className="flex items-center gap-2 mt-7">
-                          <div className="flex items-center gap-2">
-                            {(emailWatch[index]?.isVerified ??
-                            emails[index]?.isVerified) ? (
-                              <StatusBadge
-                                isActive={true}
-                                activeText="Verificado"
-                                inactiveText="No"
-                              />
-                            ) : (
-                              <LoaderButton
-                                type="button"
-                                onClick={() =>
-                                  handleResendEmail(emailWatch[index]?.address)
-                                }
-                                className="bg-primary text-white px-2 py-1 text-sm"
-                              >
-                                Enviar
-                              </LoaderButton>
-                            )}
-                          </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() =>
+                      appendEmail({ address: "", isVerified: false })
+                    }
+                    className="flex items-center gap-2 mr-4"
+                  >
+                    <PlusIcon className="h-4 w-4" />
+                    Añadir
+                  </Button>
+                </div>
 
-                          <div className="flex items-center">
-                            <button
+                <div className="divide-y divide-gray-200 dark:divide-gray-800 max-h-48 overflow-y-auto pr-2 ultra-thin-scrollbar">
+                  {emailFields.map((field, index) => (
+                    <div key={field.id} className="py-3 first:pt-0 last:pb-0">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-1">
+                          <RHFInputWithLabel
+                            name={`emails.${index}.address`}
+                            label={`Email ${index + 1}`}
+                            className="flex-1"
+                          />
+                        </div>
+                        <div className="flex items-center gap-3 mt-7">
+                          {(emailWatch[index]?.isVerified ??
+                          emails[index]?.isVerified) ? (
+                            <StatusBadge
+                              isActive={true}
+                              activeText="Verificado"
+                              inactiveText="No"
+                            />
+                          ) : (
+                            <LoaderButton
                               type="button"
-                              onClick={() => handleRemoveEmail(index)}
-                              className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
-                              aria-label={`Eliminar email ${index + 1}`}
+                              onClick={() =>
+                                handleResendEmail(emailWatch[index]?.address)
+                              }
+                              className="bg-primary text-white px-2 py-1 text-sm"
                             >
-                              <TrashIcon className="h-4 w-4" />
-                            </button>
-                          </div>
+                              Enviar
+                            </LoaderButton>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveEmail(index)}
+                            className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
+                            aria-label={`Eliminar email ${index + 1}`}
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </button>
                         </div>
                       </div>
-                    ))}
-
-                    <div>
-                      <Button
-                        type="button"
-                        size="sm"
-                        onClick={() =>
-                          appendEmail({ address: "", isVerified: false })
-                        }
-                        className="flex items-center gap-2 px-2 py-1"
-                      >
-                        <PlusIcon className="h-4 w-4" />
-                        Añadir
-                      </Button>
                     </div>
-                  </div>
-                )}
+                  ))}
+                  {emailFields.length === 0 && (
+                    <div className="text-sm text-gray-500 dark:text-gray-400 py-2">
+                      No hay emails añadidos.
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {/* Direcciones */}
-              <div>
-                <label className="flex items-center justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  <span className="flex items-center gap-2">
+              {/* Panel: Direcciones */}
+              <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                     <MapPinIcon className="h-4 w-4" />
                     Direcciones
-                  </span>
-                  {isEditing && (
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={() => openModal("createAddress")}
-                      className="flex items-center gap-2"
-                    >
-                      <PlusIcon className="h-4 w-4" />
-                      Nueva Dirección
-                    </Button>
-                  )}
-                </label>
-
-                {!isEditing ? (
-                  <div>
-                    {!user?.addresses || user.addresses.length === 0 ? (
-                      <InputWithLabel
-                        id="no-address"
-                        onChange={() => {}}
-                        label=""
-                        value="Sin direcciones registradas"
-                        disabled
-                      />
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {user.addresses.map((address, index) => (
-                          <InputWithLabel
-                            key={index}
-                            id={`address-${index}`}
-                            onChange={() => {}}
-                            label={address.name || `Dirección ${index + 1}`}
-                            value={`${address.mainStreet} ${address.number}, ${address.city}, ${address.state}`}
-                            disabled
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ) : addressFields.length > 0 ? (
+                  </label>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => openModal("createAddress")}
+                    className="flex items-center gap-2"
+                  >
+                    <PlusIcon className="h-4 w-4" />
+                    Nueva Dirección
+                  </Button>
+                </div>
+                {addressFields.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {addressFields.map((field, index) => (
                       <AdressField
-                        key={field._key ?? `${field.id}-${index}`}
-                        field={field as UserAddressFormData}
+                        key={field._key ?? `${(field as any).id}-${index}`}
+                        field={field as unknown as UserAddressFormData}
                         index={index}
                         handleEditAddress={(addr) =>
                           handleEditAddress(addr, index)
@@ -408,10 +384,10 @@ export function PersonalInfoTab({
             </div>
 
             {/* Columna derecha */}
-            <div className="space-y-4">
-              {/* Estado de la cuenta */}
-              <div className="mb-4">
-                <div className="flex items-center gap-2 mb-2">
+            <div className="space-y-6">
+              {/* Panel: Estado de la cuenta */}
+              <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
+                <div className="flex items-center gap-2 mb-3">
                   <ShieldCheckIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Estado de la cuenta
@@ -423,152 +399,169 @@ export function PersonalInfoTab({
                     activeText="Activo"
                     inactiveText="Inactivo"
                   />
-                  {/* <StatusBadge
-                  isActive={user?.isVerified ?? false}
-                  activeText="Verificado"
-                  inactiveText="No verificado"
-                />
-                <StatusBadge
-                  isActive={!(user?.isBlocked ?? true)}
-                  activeText="Desbloqueado"
-                  inactiveText="Bloqueado"
-                /> */}
                 </div>
               </div>
 
-              {/* Teléfonos */}
-              <div>
-                {!isEditing ? (
-                  <div>
-                    <label className="text-sm font-semibold mb-2 block">
+              {/* Panel: Teléfonos */}
+              <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <PhoneIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       Teléfonos
-                    </label>
-                    {phones && phones.length > 0 ? (
-                      <ul className="space-y-2">
-                        {phones.map((p, idx) => (
-                          <li
-                            key={p.number + idx}
-                            className="flex items-center justify-between bg-gray-50 dark:bg-black-dark-light p-3 rounded"
-                          >
-                            <span className="text-sm">{p.number}</span>
-                            <div>
-                              <StatusBadge
-                                isActive={!!p.isVerified}
-                                activeText="Verificado"
-                                inactiveText="No verificado"
-                              />
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-muted-foreground text-sm italic">
-                        No hay teléfonos registrados
-                      </p>
-                    )}
+                    </span>
                   </div>
-                ) : (
-                  <div className="space-y-2">
-                    {phoneFields.map((field, index) => (
-                      <div key={field.id} className="flex items-center gap-2">
-                        <RHFInputWithLabel
-                          name={`phones.${index}.number`}
-                          label={`Teléfono ${index + 1}`}
-                          className="flex-1"
-                          type="tel"
-                        />
-                        <div className="flex items-center gap-2 mt-7">
-                          <div className="flex items-center gap-2">
-                            {(phoneWatch[index]?.isVerified ??
-                            phones[index]?.isVerified) ? (
-                              <StatusBadge
-                                isActive={true}
-                                activeText="Verificado"
-                                inactiveText="No"
-                              />
-                            ) : (
-                              <LoaderButton
-                                type="button"
-                                onClick={() =>
-                                  handleResendPhone(phoneWatch[index])
-                                }
-                                className="bg-primary text-white px-2 py-1 text-sm"
-                              >
-                                Enviar
-                              </LoaderButton>
-                            )}
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() =>
+                      appendPhone({
+                        countryId: 1,
+                        number: "",
+                        isVerified: false,
+                      })
+                    }
+                    className="flex items-center gap-2 mr-4"
+                  >
+                    <PlusIcon className="h-4 w-4" />
+                    Añadir
+                  </Button>
+                </div>
+                <div className="divide-y divide-gray-200 dark:divide-gray-800 max-h-48 overflow-y-auto pr-2 ultra-thin-scrollbar">
+                  {phoneFields.map((field, index) => (
+                    <div
+                      key={`phone-${field.id}-${index}`}
+                      className="py-3 first:pt-0 last:pb-0"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="flex-1">
+                          <RHFInputWithLabel
+                            name={`phones.${index}.number`}
+                            label={`Teléfono ${index + 1}`}
+                            className="flex-1"
+                            type="tel"
+                          />
+                        </div>
+                        <div className="flex items-center gap-3 mt-7">
+                          {(phoneWatch[index]?.isVerified ??
+                          phones[index]?.isVerified) ? (
+                            <StatusBadge
+                              isActive={true}
+                              activeText="Verificado"
+                              inactiveText="No"
+                            />
+                          ) : (
+                            <LoaderButton
+                              type="button"
+                              onClick={() =>
+                                handleResendPhone(phoneWatch[index])
+                              }
+                              className="bg-primary text-white px-2 py-1 text-sm"
+                            >
+                              Enviar
+                            </LoaderButton>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleRemovePhone(index)}
+                            className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
+                            aria-label={`Eliminar teléfono ${index + 1}`}
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {phoneFields.length === 0 && (
+                    <div className="text-sm text-gray-500 dark:text-gray-400 py-2">
+                      No hay teléfonos añadidos.
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Panel: Documentos */}
+              <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <IdentificationIcon className="h-4 w-4" />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Documentos
+                    </span>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() =>
+                      appendDocument({ fileName: "", content: "" })
+                    }
+                    className="flex items-center gap-2 mr-4"
+                  >
+                    <PlusIcon className="h-4 w-4" />
+                    Añadir
+                  </Button>
+                </div>
+
+                <div className="space-y-3">
+                  {documentFields.length > 0 ? (
+                    <div className="space-y-3">
+                      {documentFields.map((docField, idx) => (
+                        <div
+                          key={docField.id}
+                          className="flex items-start gap-3 border rounded p-3 bg-gray-50 dark:bg-gray-800"
+                        >
+                          <div className="flex-1">
+                            <RHFFileUpload
+                              name={`documents.${idx}.content`}
+                              label="Archivo"
+                              accept="*/*"
+                            />
+                            <RHFInputWithLabel
+                              name={`documents.${idx}.fileName`}
+                              label="Nombre/Descripción"
+                              placeholder="Opcional"
+                              className="mt-2"
+                            />
                           </div>
 
-                          <div className="flex items-center">
+                          <div className="flex flex-col items-center gap-2 mt-2">
                             <button
                               type="button"
-                              onClick={() => handleRemovePhone(index)}
-                              className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
-                              aria-label={`Eliminar teléfono ${index + 1}`}
+                              onClick={() => removeDocument(idx)}
+                              className="p-2 rounded-md text-red-500 hover:bg-red-600/10"
+                              aria-label={`Eliminar documento ${idx + 1}`}
                             >
-                              <TrashIcon className="h-4 w-4" />
+                              <TrashIcon className="h-5 w-5" />
                             </button>
                           </div>
                         </div>
-                      </div>
-                    ))}
-
-                    <div>
-                      <Button
-                        type="button"
-                        size="sm"
-                        onClick={() =>
-                          appendPhone({
-                            countryId: 1,
-                            number: "",
-                            isVerified: false,
-                          })
-                        }
-                        className="flex items-center gap-2 px-2 py-1"
-                      >
-                        <PlusIcon className="h-4 w-4" />
-                        Añadir
-                      </Button>
+                      ))}
                     </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Documentos - Botón para ir a la página dedicada */}
-              <div>
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  <IdentificationIcon className="h-4 w-4" />
-                  Documentos
-                </label>
-                <div className="space-y-2">
-                  <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800">
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                      Gestiona tus documentos personales desde una página
-                      dedicada
-                    </p>
-                    <Button
-                      type="button"
-                      onClick={() =>
-                        window.open(
-                          `/provider/profile/${user?.id}/documents`,
-                          "_blank"
-                        )
-                      }
-                      className="flex items-center gap-2"
-                      size="sm"
-                    >
-                      <IdentificationIcon className="h-4 w-4" />
-                      Ver Documentos
-                    </Button>
-                  </div>
+                  ) : (
+                    <div className="text-sm text-gray-500 dark:text-gray-400 py-2">
+                      No hay documentos añadidos. Puedes subirlos aquí.
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Botón de submit */}
+          <div className="mt-6 flex justify-end">
+            <LoaderButton
+              type="submit"
+              loading={methods.formState.isSubmitting}
+              className="px-6 py-2"
+            >
+              Guardar Información Personal
+            </LoaderButton>
+          </div>
         </CardContent>
       </Card>
 
-      {/* Modal para crear/editar direcciones */}
+      {/* Modal para crear/editar direcciones - FUERA del FormProvider */}
       <AddressModal
         key={
           createAddressModal.open
@@ -585,8 +578,6 @@ export function PersonalInfoTab({
         onSave={handleAddressModalSave}
         editingAddress={selectedAddress ?? undefined}
       />
-    </>
+    </FormProvider>
   );
 }
-
-// Modales locales
