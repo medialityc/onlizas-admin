@@ -8,17 +8,11 @@ import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-import { RHFFileUpload } from "@/components/react-hook-form/rhf-file-upload";
-import { Supplier } from "@/types/suppliers";
-import { createSupplier, updateSupplierData } from "@/services/supplier";
-import { TrashIcon, PlusIcon, DocumentIcon } from "@heroicons/react/24/outline";
-
 import { StoreFormData, storeSchema } from "./stores-schema";
-import { CreateStore, CreateStoreRequest, Store } from "@/types/stores";
-import { any, object } from "zod";
+import { CreateStore } from "@/types/stores";
 import { createStore } from "@/services/stores";
 import { isValidUrl, urlToFile } from "@/utils/format";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
@@ -63,10 +57,8 @@ export default function StoresCreateModal({
     },
   });
 
-  /* console.log(methods.getValues()); */
   const {
     reset,
-    control,
     formState: { isSubmitting },
   } = methods;
 
@@ -80,7 +72,6 @@ export default function StoresCreateModal({
     setError(null);
     try {
       const formData = new FormData();
-      
 
       if (data.logoStyle) {
         if (typeof data.logoStyle === "string" && isValidUrl(data.logoStyle)) {

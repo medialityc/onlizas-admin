@@ -6,42 +6,33 @@ import {
   CardTitle,
 } from "@/components/cards/card";
 import Badge from "@/components/badge/badge";
-import { BuildingStorefrontIcon, EyeIcon } from "@heroicons/react/24/outline";
-import { Store, StoreMetric } from "@/types/stores";
+import {
+  ArrowTrendingUpIcon,
+  BuildingStorefrontIcon,
+  EyeIcon,
+  ShoppingCartIcon,
+  Squares2X2Icon,
+} from "@heroicons/react/24/outline";
+import { StoreMetric } from "@/types/stores";
 import IconGlobe from "@/components/icon/icon-globe";
 import { Button } from "@/components/button/button";
 import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { useState } from "react";
-import { getStoreById } from "@/services/stores";
 import { useRouter } from "next/navigation";
 import { isValidUrl } from "@/utils/format";
 
 interface DataCardProps {
   store: StoreMetric;
-
-  handleViewStore: (storeData: Store) => void;
-  handleEdit: (storeData: Store) => void;
 }
 
-export const DataCard = ({
-  store,
-  //storeData,
-  handleViewStore,
-  handleEdit,
-}: DataCardProps) => {
+export const DataCard = ({ store }: DataCardProps) => {
   const [hasImageError, setHasImageError] = useState(false);
   const router = useRouter();
 
   const formatNumber = (val?: number | null) =>
     typeof val === "number" ? val.toLocaleString() : "0";
 
-  async function fetchStoreData() {
-    const response = await getStoreById(store.id);
-    if (response && response.data) {
-      return response.data;
-    }
-  }
   const viewUrl = (() => {
     if (store.url && isValidUrl(String(store.url))) return String(store.url);
     if (store.url && /\./.test(String(store.url)))
@@ -52,104 +43,139 @@ export const DataCard = ({
   return (
     <Card
       key={store.id}
-      className="h-full min-h-[320px] w-full flex flex-col justify-between p-2 shadow-lg hover:shadow-xl transition-shadow duration-300"
+      className="group py-0 h-full min-h-[340px] w-full flex flex-col justify-between overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 dark:shadow-none dark:hover:shadow-lg bg-white dark:bg-gray-900"
     >
-      <CardHeader className="pb-0 flex-shrink-0">
-        <div className="relative">
-          <div className="absolute top-3 right-3">
-            <Badge variant={store.isActive ? "primary" : "outline-primary"}>
-              {store.isActive ? "Activa" : "Inactiva"}
-            </Badge>
-          </div>
+      {/* Decorative header */}
+      <div className="relative h-20 w-full bg-gradient-to-r from-primary/15 via-blue-100 to-indigo-100 dark:from-primary/10 dark:via-slate-800 dark:to-slate-900">
+        <div className="absolute inset-0 opacity-10 dark:opacity-20 bg-[radial-gradient(circle_at_1px_1px,_#000_1px,_transparent_0)] [background-size:12px_12px]" />
+      </div>
 
-          <div className="flex items-center justify-start space-x-3">
-            {store.logo && !hasImageError ? (
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-200">
-                {/* Build absolute URL if backend returns relative path */}
-
-                {/* <Image
+      {/* Header content */}
+      <CardHeader className="pt-0 pb-0">
+        <div className="relative -mt-8 flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            {/* Avatar / Logo */}
+            <div className="w-14 h-14 rounded-full bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden flex items-center justify-center">
+              {store.logo && !hasImageError ? (
+                <Image
                   src={store.logo}
                   alt={`${store.title} logo`}
-                  width={48}
-                  height={48}
-                  className="object-cover"
+                  width={56}
+                  height={56}
+                  className="object-cover w-full h-full"
                   onError={() => setHasImageError(true)}
                   unoptimized
-                /> */}
-              </div>
-            ) : (
-              <div className="w-12 h-12 rounded-full bg-gray-100 flex-shrink-0 flex items-center justify-center border border-gray-200">
-                <BuildingStorefrontIcon className="w-5 h-5 text-gray-600" />
-              </div>
-            )}
-
+                />
+              ) : (
+                <BuildingStorefrontIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+              )}
+            </div>
             <div className="min-w-0">
-              <CardTitle className="text-sm md:text-base font-semibold truncate">
+              <CardTitle className="text-base font-semibold truncate">
                 {store.title}
               </CardTitle>
-              <CardDescription className="text-xs text-gray-500 truncate">
+              <CardDescription className="text-xs text-gray-500 dark:text-gray-400 truncate">
                 {store.description ?? store.url ?? "—"}
               </CardDescription>
             </div>
           </div>
+          <div className="shrink-0">
+            <Badge variant={store.isActive ? "primary" : "outline-primary"}>
+              <span
+                className={`mr-1 inline-block h-2 w-2 rounded-full ${store.isActive ? "bg-green-500" : "bg-gray-400"}`}
+              />
+              {store.isActive ? "Activa" : "Inactiva"}
+            </Badge>
+          </div>
         </div>
       </CardHeader>
 
-      <CardContent className="pt-0 px-3 flex-grow flex flex-col justify-between">
-        <div className="flex items-center text-sm text-muted-foreground">
-          <IconGlobe className="w-4 h-4 mr-2 " />
-          <span className="text-pretty font-semibold truncate">
+      <CardContent className="px-3 flex-grow flex flex-col justify-between">
+        {/* URL badge */}
+        <div className="flex items-center text-xs text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 border dark:border-gray-700 rounded px-2 py-1 w-fit">
+          <IconGlobe className="w-4 h-4 mr-1 text-gray-500 dark:text-gray-400" />
+          <a
+            href={viewUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium truncate hover:underline dark:text-gray-200"
+            title={viewUrl}
+          >
             /{store.url ?? "-"}
-          </span>
+          </a>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 text-sm text-gray-700 mt-3">
-          <p className="whitespace-nowrap">
-            <span className="font-medium">Productos:</span>{" "}
-            {formatNumber(store.productCount)}
-          </p>
-          <p className="whitespace-nowrap">
-            <span className="font-medium">Categorías:</span>{" "}
-            {formatNumber(store.categoryCount)}
-          </p>
-          <p className="whitespace-nowrap">
-            <span className="font-medium">Visitas/mes:</span>{" "}
-            {formatNumber(store.visitCount)}
-          </p>
-          <p className="whitespace-nowrap">
-            <span className="font-medium">Conversión:</span>{" "}
-            {typeof store.conversionRate === "number"
-              ? `${store.conversionRate}%`
-              : "-"}
-          </p>
-
-          <p className="whitespace-nowrap">
-            <span className="font-medium">Ventas del mes:</span> -
-          </p>
-          <p className="overflow-hidden whitespace-nowrap">
-            <span className="font-medium">Ingresos del mes:</span> -
-          </p>
-          <p className="whitespace-nowrap">
-            <span className="font-medium">Total ventas:</span> -
-          </p>
-          <p className="whitespace-nowrap">
-            <span className="font-medium">Total ingresos:</span> -
-          </p>
+        {/* KPIs */}
+        <div className="grid grid-cols-2 gap-2 mt-3">
+          <div className="flex items-center gap-2 rounded-md border bg-white dark:border-gray-700 dark:bg-gray-800 p-2 text-sm">
+            <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300">
+              <ShoppingCartIcon className="w-4 h-4" />
+            </span>
+            <div className="min-w-0">
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                Productos
+              </div>
+              <div className="font-semibold text-gray-800 dark:text-gray-100 truncate">
+                {formatNumber(store.productCount)}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 rounded-md border bg-white dark:border-gray-700 dark:bg-gray-800 p-2 text-sm">
+            <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-300">
+              <Squares2X2Icon className="w-4 h-4" />
+            </span>
+            <div className="min-w-0">
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                Categorías
+              </div>
+              <div className="font-semibold text-gray-800 dark:text-gray-100 truncate">
+                {formatNumber(store.categoryCount)}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 rounded-md border bg-white dark:border-gray-700 dark:bg-gray-800 p-2 text-sm">
+            <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-purple-50 text-purple-600 dark:bg-purple-950 dark:text-purple-300">
+              <EyeIcon className="w-4 h-4" />
+            </span>
+            <div className="min-w-0">
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                Visitas/mes
+              </div>
+              <div className="font-semibold text-gray-800 dark:text-gray-100 truncate">
+                {formatNumber(store.visitCount)}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 rounded-md border bg-white dark:border-gray-700 dark:bg-gray-800 p-2 text-sm">
+            <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-300">
+              <ArrowTrendingUpIcon className="w-4 h-4" />
+            </span>
+            <div className="min-w-0">
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                Conversión
+              </div>
+              <div className="font-semibold text-gray-800 dark:text-gray-100 truncate">
+                {typeof store.conversionRate === "number"
+                  ? `${store.conversionRate}%`
+                  : "-"}
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-4 pt-2">
-          <div className="text-xs text-gray-500 hidden sm:block"></div>
-
+        {/* Footer actions */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-4 pb-4">
+          <div className="text-xs text-gray-500 hidden sm:block" />
           <div className="flex w-full sm:w-auto gap-2">
             <a
               href={viewUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto flex-1 sm:flex-none inline-flex items-center justify-center px-2 py-1 border rounded text-sm text-gray-700 bg-white hover:bg-gray-50"
+              className="w-full sm:w-auto flex-1 sm:flex-none inline-flex items-center justify-center px-3 py-1.5 border rounded text-sm text-gray-700 bg-white hover:bg-gray-50 dark:text-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700"
+              aria-label="Ver tienda pública"
             >
               <EyeIcon className="w-4 h-4 mr-1" /> Ver
             </a>
-
             <Button
               onClick={() => router.push(`/provider/stores/${store.id}`)}
               className="w-full sm:w-auto flex-1 sm:flex-none"
