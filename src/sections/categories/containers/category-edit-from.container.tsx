@@ -7,7 +7,6 @@ type Props = {
   category: CategoryFormData;
 };
 const CategoryEditFormContainer = ({ category }: Props) => {
-  console.log(category,'AAA')
   return (
     <div className="panel">
       <div className="mb-5">

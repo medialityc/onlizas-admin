@@ -12,7 +12,10 @@ export const productSchema = z.object({
     .max(500, "La descripción no puede tener más de 500 caracteres.")
     .default(""),
   isActive: z.boolean(),
-  categories: z
+  supplierIds: z
+    .array(z.number())
+    .min(1, "Debe seleccionar al menos un proveedor."),
+  categoryIds: z
     .array(z.number())
     .min(1, "Debe seleccionar al menos una categoría."),
   dimensions: z
@@ -32,7 +35,16 @@ export const productSchema = z.object({
     })
     .optional(),
   about: z
-    .union([z.array(z.object({ value: z.string() })), z.array(z.string())])
+    .union([
+      z.array(
+        z.object({
+          value: z
+            .string({ required_error: "Requerido" })
+            .min(4, "Mínimo 4 caracteres"),
+        })
+      ),
+      z.array(z.string()),
+    ])
     .transform((val) => {
       if (val.length > 0 && typeof val[0] === "object" && "value" in val[0]) {
         return val.map((item: any) => item.value);
@@ -45,10 +57,12 @@ export const productSchema = z.object({
     .optional(),
   details: z
     .array(
-      z.object({
-        name: z.string().min(1, "El nombre del detalle es obligatorio."),
-        value: z.string().min(1, "El valor del detalle es obligatorio."),
-      }).optional()
+      z
+        .object({
+          name: z.string().min(1, "El nombre del detalle es obligatorio."),
+          value: z.string().min(1, "El valor del detalle es obligatorio."),
+        })
+        .optional()
     )
     .optional()
     .default([]),
@@ -56,9 +70,9 @@ export const productSchema = z.object({
   features: z
     .array(
       z.object({
-        categoryFeatureId: z.number({ required_error: "Requerido" }),
-        featureName: z.string({ required_error: "Requerido" }),
-        value: z.string({ required_error: "Requerido" }),
+        value: z
+          .string({ required_error: "Requerido" })
+          .min(4, "Mínimo 4 caracteres"),
       })
     )
     .optional()

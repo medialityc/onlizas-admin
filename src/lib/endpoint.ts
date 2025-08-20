@@ -61,12 +61,12 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}categories/admin/${id}`, // GET
   },
   products: {
-    create: `${process.env.NEXT_PUBLIC_API_URL}admin/products`, // POST
-    list: `${process.env.NEXT_PUBLIC_API_URL}admin/products`, // GET
+    create: `${process.env.NEXT_PUBLIC_API_URL}products`, // POST
+    list: `${process.env.NEXT_PUBLIC_API_URL}products`, // GET
     delete: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/products/${id}`, // DELETE
+      `${process.env.NEXT_PUBLIC_API_URL}products/${id}`, // DELETE
     update: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/products/${id}`, // PUT
+      `${process.env.NEXT_PUBLIC_API_URL}products/${id}`, // PUT
     deactivate: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/products/${id}/deactivate`, // PATCH
     canDelete: (id: string | number) =>

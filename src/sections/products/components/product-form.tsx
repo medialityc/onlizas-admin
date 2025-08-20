@@ -23,8 +23,6 @@ const ProductForm = ({ initValue }: Props) => {
   const { form, isPending, onSubmit } = useProductCreateForm(initValue);
   const { push } = useRouter();
 
-  console.log(initValue,'initValue')
-
   const isEdit = useMemo(() => !!initValue?.id, [initValue?.id]);
 
   const handleCancel = useCallback(() => push("/dashboard/products"), [push]);
@@ -43,12 +41,9 @@ const ProductForm = ({ initValue }: Props) => {
             <SpecificationsSection />
           </div>
 
-          {/* // todo -> error en el componente imagen */}
-          {!isEdit && (
-            <div className="col-span-1 lg:col-span-2">
-              <ProductImageSection />
-            </div>
-          )}
+          <div className="col-span-1 lg:col-span-2">
+            <ProductImageSection />
+          </div>
           <div className="col-span-1 lg:col-span-2">
             <ProductFeatureSection />
           </div>
@@ -61,7 +56,7 @@ const ProductForm = ({ initValue }: Props) => {
         </div>
       </FormProvider>
       {/* Botones de acción */}
-      <div className={cn("flex gap-4 pt-6 mt-6 border-t")}>
+      <div className={cn("flex gap-4 pt-6 mt-6 border-t justify-end")}>
         <Button
           type="button"
           variant="secondary"

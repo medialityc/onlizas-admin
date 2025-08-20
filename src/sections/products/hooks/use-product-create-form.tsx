@@ -3,8 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { ProductFormData, productSchema } from "../schema/product-schema";
 import { useMutation } from "@tanstack/react-query";
-import { createProduct } from "@/services/products";
+import { createProduct, updateProduct } from "@/services/products";
 import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import { urlToFile } from "@/utils/format";
+import { setProductFormData } from "../constants/product-data";
 
 const initValues: ProductFormData = {
   name: "",
@@ -15,7 +18,9 @@ const initValues: ProductFormData = {
     length: 0,
   },
   isActive: false,
-  categories: [],
+  categoryIds: [],
+  supplierIds: [],
+  about: [],
   details: [],
   features: [],
   images: [],
@@ -24,6 +29,7 @@ const initValues: ProductFormData = {
 export const useProductCreateForm = (
   defaultValues: ProductFormData = initValues
 ) => {
+  const [loadingImage, setLoadingImage] = useState(true);
   const form = useForm({
     defaultValues,
     resolver: zodResolver(productSchema),
@@ -31,29 +37,44 @@ export const useProductCreateForm = (
 
   console.log(form.formState.errors, "ERRORS");
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (payload: any) => {
-      /*  if (payload.images && payload.images.length > 0) {
-        const formData = new FormData();
-        await Promise.all(
-          payload.images.map(async (image: any, index: number) => {
-            if (typeof image === "string" && isValidUrl(image)) {
-              try {
-                const imageFile = await urlToFile(image);
-                formData.append(`photoObjectCodes[${index}]`, imageFile);
-              } catch {
-                toast.error(`Error al procesar la imagen desde URL (${image})`);
-              }
-            } else if (image instanceof File) {
-              formData.append(`images[${index}]`, image);
-            }
-          })
-        );
-      } */
+  useEffect(() => {
+    const loadImagesAsFiles = async () => {
+      if (defaultValues?.images?.length) {
+        try {
+          setLoadingImage(true);
 
-      console.log(payload, "PRODUCT");
-      return Promise.resolve({});
-      return createProduct(payload);
+          const imageFiles = await Promise.all(
+            defaultValues.images.map(async (imageUrl, index) => {
+              try {
+                return await urlToFile(imageUrl, `category-image-${index}.jpg`);
+              } catch (error) {
+                console.error(`Error loading image ${index}:`, error);
+                return null;
+              }
+            })
+          );
+
+          const validFiles = imageFiles.filter((file) => file !== null);
+          form.setValue("images", validFiles);
+        } catch (error) {
+          console.error("Error loading images:", error);
+          form.setValue("images", defaultValues.images);
+        } finally {
+          setLoadingImage(false);
+        }
+      }
+    };
+
+    loadImagesAsFiles();
+  }, [defaultValues?.images, form]);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (payload: ProductFormData) => {
+      const fromData = await setProductFormData(payload);
+      if (payload?.id) {
+        return await updateProduct(payload?.id, fromData);
+      }
+      return await createProduct(fromData);
     },
     onSuccess() {
       toast.success("Se creo correctamente el producto");
@@ -66,6 +87,7 @@ export const useProductCreateForm = (
   return {
     form: form,
     isPending,
+    loadingImage,
     onSubmit: form.handleSubmit((values) => {
       mutate(values);
     }),
