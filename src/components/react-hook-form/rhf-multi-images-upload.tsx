@@ -34,24 +34,23 @@ export function RHFMultiImageUpload({
       return;
     }
 
-    const previewUrls = value.map(item =>
+    const previewUrls = value.map((item) =>
       typeof item === "string" ? item : URL.createObjectURL(item)
     );
 
     setPreviews(previewUrls);
 
     return () => {
-      previewUrls.forEach(url => {
+      previewUrls.forEach((url) => {
         URL.revokeObjectURL(url);
       });
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(field.value), JSON.stringify(defaultImages)]);
-  
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
-    const validImages = files.filter(file => file.type.startsWith("image/"));
+    const validImages = files.filter((file) => file.type.startsWith("image/"));
 
     if (validImages.length > 0) {
       const current = (field.value as UploadValue) || [];

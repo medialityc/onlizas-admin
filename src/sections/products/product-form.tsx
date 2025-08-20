@@ -17,9 +17,9 @@ import {
   ProductFormValues,
   defaultProductFormValues,
   transformToApiFormat
-} from './product-form/schema/product-schema';
+} from './schema/product-schema';
 
-import ResponsiveLayout from './product-form/layouts/responsive-layout';
+import ResponsiveLayout from './layouts/responsive-layout';
 
 interface ProductFormProps {
   product?: Product;

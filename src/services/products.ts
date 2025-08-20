@@ -16,12 +16,12 @@ import {
   SimpleSuppliersResponse,
   CategoryFeaturesResponse,
   AssignSuppliersRequest,
-  CanDeleteResponse
-} from '@/types/products';
+  CanDeleteResponse,
+} from "@/types/products";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
 
-export async function getAllProducts (
+export async function getAllProducts(
   params: ProductSearchParams & ProductFilter
 ): Promise<ApiResponse<GetAllProducts>> {
   // Transformar parámetros al formato esperado por la API
@@ -31,7 +31,7 @@ export async function getAllProducts (
     search: params.search,
     categoryId: params.categoryId,
     isActive: params.isActive,
-    supplierId: params.supplierId
+    supplierId: params.supplierId,
   };
 
   const url = new QueryParamsURLFactory(
@@ -51,7 +51,7 @@ export async function getAllProducts (
   return buildApiResponseAsync<GetAllProducts>(res);
 }
 
-export async function getProductById (
+export async function getProductById(
   id: number
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
@@ -66,10 +66,12 @@ export async function getProductById (
   return buildApiResponseAsync<Product>(res);
 }
 
-export async function createProduct (
+export async function createProduct(
   data: CreateProduct
 ): Promise<ApiResponse<Product>> {
-  const res = await nextAuthFetch({
+  console.log(data);
+  return null
+  /* const res = await nextAuthFetch({
     url: backendRoutes.products.create,
     method: "POST",
     headers: {
@@ -82,10 +84,10 @@ export async function createProduct (
   if (!res.ok) return handleApiServerError(res);
   revalidateTag("products");
 
-  return buildApiResponseAsync<Product>(res);
+  return buildApiResponseAsync<Product>(res); */
 }
 
-export async function updateProduct (
+export async function updateProduct(
   id: number,
   data: UpdateProduct
 ): Promise<ApiResponse<Product>> {
@@ -105,7 +107,7 @@ export async function updateProduct (
   return buildApiResponseAsync<Product>(res);
 }
 
-export async function deleteProduct (
+export async function deleteProduct(
   id: number
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
@@ -120,7 +122,7 @@ export async function deleteProduct (
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
-export async function deactivateProduct (
+export async function deactivateProduct(
   id: number
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
@@ -135,7 +137,7 @@ export async function deactivateProduct (
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
-export async function canDeleteProduct (
+export async function canDeleteProduct(
   id: number
 ): Promise<ApiResponse<CanDeleteResponse>> {
   const res = await nextAuthFetch({
@@ -149,7 +151,7 @@ export async function canDeleteProduct (
   return buildApiResponseAsync<CanDeleteResponse>(res);
 }
 
-export async function assignSuppliersToProduct (
+export async function assignSuppliersToProduct(
   productId: number,
   data: AssignSuppliersRequest
 ): Promise<ApiResponse<ApiStatusResponse>> {
@@ -169,7 +171,7 @@ export async function assignSuppliersToProduct (
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
-export async function unassignSuppliersFromProduct (
+export async function unassignSuppliersFromProduct(
   productId: number,
   data: AssignSuppliersRequest
 ): Promise<ApiResponse<ApiStatusResponse>> {
@@ -190,7 +192,9 @@ export async function unassignSuppliersFromProduct (
 }
 
 // Servicios complementarios para formularios
-export async function getSimpleCategories (): Promise<ApiResponse<SimpleCategoriesResponse>> {
+export async function getSimpleCategories(): Promise<
+  ApiResponse<SimpleCategoriesResponse>
+> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.simpleCategories,
     method: "GET",
@@ -203,7 +207,9 @@ export async function getSimpleCategories (): Promise<ApiResponse<SimpleCategori
   return buildApiResponseAsync<SimpleCategoriesResponse>(res);
 }
 
-export async function getSimpleSuppliers (): Promise<ApiResponse<SimpleSuppliersResponse>> {
+export async function getSimpleSuppliers(): Promise<
+  ApiResponse<SimpleSuppliersResponse>
+> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.simpleSuppliers,
     method: "GET",
@@ -216,11 +222,11 @@ export async function getSimpleSuppliers (): Promise<ApiResponse<SimpleSuppliers
   return buildApiResponseAsync<SimpleSuppliersResponse>(res);
 }
 
-export async function getCategoryFeatures (
+export async function getCategoryFeatures(
   categoryIds: number[]
 ): Promise<ApiResponse<CategoryFeaturesResponse>> {
   const url = new QueryParamsURLFactory(
-    { categoryIds: categoryIds.join(',') },
+    { categoryIds: categoryIds.join(",") },
     backendRoutes.products.categoryFeatures
   ).build();
 
