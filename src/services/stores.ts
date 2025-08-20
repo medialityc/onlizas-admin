@@ -1,13 +1,11 @@
-"use server"
+"use server";
 import { IQueryable } from "@/types/fetch/request";
 
-import { Store, CreateStore, UpdateStore,GetAllStores, CreateStoreRequest, StoreMetricsResponse, GetStoreMetrics } from "../types/stores";
+import { Store, GetAllStores, GetStoreMetrics } from "../types/stores";
 import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
-import { delay } from "lodash";
 import { QueryParamsURLFactory } from "@/lib/request";
 import { backendRoutes } from "@/lib/endpoint";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { mockStores } from "@/data/stores";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { revalidateTag } from "next/cache";
 
@@ -25,7 +23,6 @@ export async function getAllStores(
     useAuth: true,
     next: { tags: ["stores"] },
   });
-  
 
   if (!res.ok) return handleApiServerError(res);
 
@@ -45,7 +42,6 @@ export async function getMetricStores(
     useAuth: true,
     next: { tags: ["stores-metrics"] },
   });
-  
 
   if (!res.ok) return handleApiServerError(res);
 
@@ -66,8 +62,9 @@ export async function deleteStore(
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
-export async function getStoreById(id: number): Promise<ApiResponse<Store | undefined>> {
-  
+export async function getStoreById(
+  id: number
+): Promise<ApiResponse<Store | undefined>> {
   const url = backendRoutes.store.storeById(id);
   const res = await nextAuthFetch({
     url,
@@ -79,9 +76,7 @@ export async function getStoreById(id: number): Promise<ApiResponse<Store | unde
   return buildApiResponseAsync<Store>(res);
 }
 
-export async function createStore(
-  data: FormData
-): Promise<ApiResponse<Store>> {
+export async function createStore(data: FormData): Promise<ApiResponse<Store>> {
   const res = await nextAuthFetch({
     url: backendRoutes.store.create,
     method: "POST",

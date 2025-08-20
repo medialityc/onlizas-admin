@@ -136,6 +136,8 @@ export type GetAllStores = PaginatedResponse<Store>;
 
 export type Store = {
   id: number;
+  isActive: boolean;
+  metrics: StoreMetrics;
   name: string;
   description: string;
   url: string;

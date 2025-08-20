@@ -1,15 +1,11 @@
 "use client";
 
-import { useMemo, useCallback, useState, useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useCallback, useState, useEffect } from "react";
 
 import { Store } from "@/types/stores";
 import { GetAllStores } from "@/types/stores";
 import { SearchParams } from "@/types/fetch/request";
 import { useModalState } from "@/hooks/use-modal-state";
-import { deleteStore } from "@/services/stores";
-import showToast from "@/config/toast/toastConfig";
-
 import { Button } from "@/components/button/button";
 import {
   Card,
@@ -24,7 +20,6 @@ import {
   ChartBarIcon,
   EyeIcon,
 } from "@heroicons/react/24/outline";
-import { GlobeAltIcon } from "@heroicons/react/24/solid";
 import IconGlobe from "@/components/icon/icon-globe";
 import IconSettings from "@/components/icon/icon-settings";
 import { getAllStores } from "@/services/stores";
@@ -36,51 +31,14 @@ interface StoresListProps {
   onSearchParamsChange: (params: SearchParams) => void;
 }
 
-export function StoresList({
-  data,
-  searchParams,
-  onSearchParamsChange,
-}: StoresListProps) {
-  const { getModalState, openModal, closeModal } = useModalState();
-  const queryClient = useQueryClient();
-
-  const createStoreModal = getModalState("create");
-  const editStoreModal = getModalState<number>("edit");
-  const viewStoreModal = getModalState<number>("view");
-
-  const selectedStore = useMemo(() => {
-    const id = editStoreModal.id || viewStoreModal.id;
-    if (!id || !data?.data) return null;
-    return data.data.find((store) => store.id == id);
-  }, [editStoreModal, viewStoreModal, data?.data]);
+export function StoresList({ data }: StoresListProps) {
+  const { openModal } = useModalState();
 
   const handleCreateStore = useCallback(() => openModal("create"), [openModal]);
-  const handleEditStore = useCallback(
-    (store: Store) => openModal<number>("edit", store.id),
-    [openModal]
-  );
+
   const handleViewStore = useCallback(
     (store: Store) => openModal<number>("view", store.id),
     [openModal]
-  );
-
-  const handleDeleteStore = useCallback(
-    async (store: Store) => {
-      try {
-        const res = await deleteStore(store.id as number);
-        if (res?.error && res.message) {
-          console.error(res);
-          showToast(res.message, "error");
-        } else {
-          queryClient.invalidateQueries({ queryKey: ["stores"] });
-          showToast("Tienda eliminada correctamente", "success");
-        }
-      } catch (error) {
-        console.error(error);
-        showToast("Ocurrió un error, intente nuevamente", "error");
-      }
-    },
-    [queryClient]
   );
 
   function handleProducts(store: Store): void {
@@ -118,7 +76,7 @@ export function StoresList({
         pageSize: 10,
         page: 1,
       };
-      
+
       const response = await getAllStores(params);
       if (response.data) {
         setSearchResults(response.data.data || []);
@@ -148,7 +106,8 @@ export function StoresList({
     : "0";
 
   // Datos a mostrar (búsqueda o todos)
-  const displayData = searchResults.length > 0 && searchTerm ? searchResults : data?.data || [];
+  const displayData =
+    searchResults.length > 0 && searchTerm ? searchResults : data?.data || [];
 
   return (
     <div className="p-6 space-y-6">
@@ -170,7 +129,9 @@ export function StoresList({
             />
             {isSearching && (
               <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
-                <div className="px-4 py-2 text-sm text-gray-500">Buscando...</div>
+                <div className="px-4 py-2 text-sm text-gray-500">
+                  Buscando...
+                </div>
               </div>
             )}
             {searchResults.length > 0 && searchTerm && !isSearching && (
@@ -246,7 +207,9 @@ export function StoresList({
               </div>
               <p className="text-sm text-gray-600">{store.description}</p>
               <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-gray-700 font-medium mt-3">
-                <p className="text-muted-foreground">Productos: {store.metrics?.totalProducts}</p>
+                <p className="text-muted-foreground">
+                  Productos: {store.metrics?.totalProducts}
+                </p>
                 <p>Categorías: {store.metrics?.totalCategories}</p>
                 <p>Visitas/mes: {store.metrics?.monthlyVisits}</p>
                 <p>Conversión: {store.metrics?.conversionRate}%</p>
