@@ -111,9 +111,20 @@ export function AccountSettingsTab({ user, onSave }: AccountSettingsTabProps) {
     <FormProvider methods={methods} onSubmit={handleFormSubmit}>
       <Card className="border rounded-lg dark:border-gray-800">
         <CardHeader>
-          <div className="mb-3 flex items-center gap-2">
-            <SparklesIcon className="h-5 w-5" />
-            <h2 className="font-bold">Información Comercial</h2>
+          <div className="mb-3 flex items-center gap-2 w-full">
+            <div className="flex items-center gap-2">
+              <SparklesIcon className="h-5 w-5" />
+              <h2 className="font-bold">Información Comercial</h2>
+            </div>
+            <div className="ml-auto">
+              <LoaderButton
+                type="submit"
+                loading={methods.formState.isSubmitting}
+                className="px-4 py-2"
+              >
+                Guardar
+              </LoaderButton>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="p-6">
@@ -246,16 +257,6 @@ export function AccountSettingsTab({ user, onSave }: AccountSettingsTabProps) {
                 </div>
               </div>
             </div>
-          </div>
-          {/* Botón de submit */}
-          <div className="mt-6 flex justify-end">
-            <LoaderButton
-              type="submit"
-              loading={methods.formState.isSubmitting}
-              className="px-6 py-2"
-            >
-              Guardar Información Comercial
-            </LoaderButton>
           </div>
         </CardContent>
       </Card>
