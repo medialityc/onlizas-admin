@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { urlToFile } from "@/utils/format";
 import { setProductFormData } from "../constants/product-data";
+import { useRouter } from "next/navigation";
 
 const initValues: ProductFormData = {
   name: "",
@@ -30,12 +31,11 @@ export const useProductCreateForm = (
   defaultValues: ProductFormData = initValues
 ) => {
   const [loadingImage, setLoadingImage] = useState(true);
+  const { push } = useRouter();
   const form = useForm({
     defaultValues,
     resolver: zodResolver(productSchema),
   });
-
-  console.log(form.formState.errors, "ERRORS");
 
   useEffect(() => {
     const loadImagesAsFiles = async () => {
@@ -78,9 +78,10 @@ export const useProductCreateForm = (
     },
     onSuccess() {
       toast.success("Se creo correctamente el producto");
+      push("/dashboard/products");
     },
-    onError() {
-      toast.error("Ocurrió un error");
+    onError(error: any) {
+      toast.error(`Ocurrió un error, ${error?.message}`);
     },
   });
 

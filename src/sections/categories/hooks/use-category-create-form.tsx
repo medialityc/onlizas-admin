@@ -71,7 +71,6 @@ export const useCategoryCreateForm = (
       push("/dashboard/categories");
     },
     onError: (error) => {
-      console.log(error?.message, "AQUI");
       toast.error(`Ocurrió un error ${error?.message}`);
     },
   });
