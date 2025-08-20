@@ -26,6 +26,23 @@ export async function createCategory(
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
+export async function updateCategory(
+  id: string | number,
+  data: FormData
+): Promise<ApiResponse<Category>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.categories.update(id),
+    method: "PUT",
+    data,
+    useAuth: true,
+  });
+
+  if (!res.ok) throw await handleApiServerError(res);
+  revalidateTag("categories");
+
+  return buildApiResponseAsync<Category>(res);
+}
+
 export async function deleteCategory(
   id: string | number
 ): Promise<ApiResponse<ApiStatusResponse>> {
@@ -59,23 +76,6 @@ export async function getAllCategories(
   if (!res.ok) return handleApiServerError(res);
 
   return buildApiResponseAsync<GetAllCategories>(res);
-}
-
-export async function updateCategory(
-  id: string | number,
-  data: FormData
-): Promise<ApiResponse<Category>> {
-  const res = await nextAuthFetch({
-    url: backendRoutes.categories.update(id),
-    method: "PUT",
-    data,
-    useAuth: true,
-  });
-
-  if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
-
-  return buildApiResponseAsync<Category>(res);
 }
 
 export async function getCategoryById(

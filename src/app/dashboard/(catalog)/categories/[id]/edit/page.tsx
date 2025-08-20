@@ -3,6 +3,10 @@ import { notFound } from "next/navigation";
 import CategoryEditFormContainer from "@/sections/categories/containers/category-edit-from.container";
 import { CategoryFormData } from "@/sections/categories/schemas/category-schema";
 
+export const metadata = {
+  title: "Editar Categoría - ZAS Express",
+};
+
 interface EditPageProps {
   params: { id: string };
 }
@@ -12,18 +16,8 @@ export default async function EditCategoryPage({ params }: EditPageProps) {
   if (!res || res.error || !res.data) notFound();
 
   return (
-    <div className="panel">
-      <div className="mb-5">
-        <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-          Editar Categoría
-        </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          Actualiza la categoría y sus características
-        </p>
-      </div>
-      <CategoryEditFormContainer
-        category={res.data! as unknown as CategoryFormData}
-      />
-    </div>
+    <CategoryEditFormContainer
+      category={res.data! as unknown as CategoryFormData}
+    />
   );
 }
