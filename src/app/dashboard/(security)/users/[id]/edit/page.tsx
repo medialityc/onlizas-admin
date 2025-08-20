@@ -137,7 +137,7 @@ async function UserEditPage({ params }: PageProps) {
       redirect("/");
     } else if (response.error || !response.data) {
       console.error(
-        response.message || "Ocurrio un error al obtener el usuario"
+        response.message || "Ocurrió un error al obtener el usuario"
       );
       notFound();
     }

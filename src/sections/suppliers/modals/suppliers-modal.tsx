@@ -40,6 +40,11 @@ export default function SuppliersModal({
       phone: "",
       address: "",
       documents: [],
+      useExistingUser: false,
+      userId: undefined,
+      userMissingEmail: false,
+      userMissingPhone: false,
+      userMissingAddress: false,
       sellerType: "",
       nacionalityType: "",
       mincexCode: "",
@@ -58,10 +63,21 @@ export default function SuppliersModal({
     setError(null);
     try {
       const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("email", data.email);
-      formData.append("phone", data.phone);
-      formData.append("address", data.address);
+
+      if (data.useExistingUser) {
+        if (data.userId !== undefined && data.userId !== null) {
+          formData.append("userId", String(data.userId));
+          if (data.email) formData.append("email", data.email);
+          if (data.phone) formData.append("phone", data.phone);
+          if (data.address) formData.append("address", data.address);
+        }
+      } else {
+        if (data.name) formData.append("name", data.name);
+        if (data.email) formData.append("email", data.email);
+        if (data.phone) formData.append("phone", data.phone);
+        if (data.address) formData.append("address", data.address);
+      }
+
       // Enums y condicionales
       formData.append("sellerType", String(data.sellerType));
       formData.append("nacionalityType", String(data.nacionalityType));

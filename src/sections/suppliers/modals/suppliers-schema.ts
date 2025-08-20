@@ -1,22 +1,26 @@
 import { z } from "zod";
 
 export const suppliersSchema = z.object({
+  // Manual supplier fields: make optional here and enforce conditionally in superRefine
   name: z
-    .string({ required_error: "El nombre es obligatorio." })
-    .min(1, "El nombre no puede estar vacío.")
-    .max(100, "El nombre no puede tener más de 100 caracteres."),
-  email: z
-    .string({ required_error: "El email es obligatorio." })
-    .min(1, "El email no puede estar vacío.")
-    .email("Debe ser un email válido."),
+    .string()
+    .max(100, "El nombre no puede tener más de 100 caracteres.")
+    .optional(),
+  email: z.string().optional(),
   phone: z
-    .string({ required_error: "El teléfono es obligatorio." })
-    .min(1, "El teléfono no puede estar vacío.")
-    .max(20, "El teléfono no puede tener más de 20 caracteres."),
+    .string()
+    .max(20, "El teléfono no puede tener más de 20 caracteres.")
+    .optional(),
   address: z
-    .string({ required_error: "La dirección es obligatoria." })
-    .min(1, "La dirección no puede estar vacía.")
-    .max(200, "La dirección no puede tener más de 200 caracteres."),
+    .string()
+    .max(200, "La dirección no puede tener más de 200 caracteres.")
+    .optional(),
+  // When selecting an existing user
+  useExistingUser: z.boolean().optional(),
+  userMissingEmail: z.boolean().optional(),
+  userMissingPhone: z.boolean().optional(),
+  userMissingAddress: z.boolean().optional(),
+  userId: z.union([z.number(), z.string()]).optional(),
   documents: z
     .array(
       z.object({
@@ -34,14 +38,14 @@ export const suppliersSchema = z.object({
       required_error: "El tipo de vendedor es obligatorio.",
       invalid_type_error: "El tipo de vendedor es obligatorio.",
     })
-    .min(1)
+    .min(1, "El tipo de vendedor no puede estar vacío.")
     .max(100),
   nacionalityType: z
     .string({
       required_error: "La nacionalidad es obligatoria.",
       invalid_type_error: "La nacionalidad es obligatoria.",
     })
-    .min(1),
+    .min(1, "La nacionalidad no puede estar vacía."),
   mincexCode: z.string().optional(),
 });
 
@@ -49,6 +53,108 @@ export type SuppliersFormData = z.infer<typeof suppliersSchema>;
 
 export const suppliersSchemaWithRules = suppliersSchema.superRefine(
   (data, ctx) => {
+    const useExisting = !!data.useExistingUser;
+
+    // If using an existing user, require userId
+    if (useExisting) {
+      if (
+        data.userId === undefined ||
+        data.userId === null ||
+        (typeof data.userId === "string" && data.userId.trim() === "")
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["userId"],
+          message: "Debes seleccionar un usuario existente.",
+        });
+      }
+
+      // If user is missing email/phone/address, require those fields to be completed
+      if (data.userMissingEmail) {
+        if (!data.email || data.email.trim().length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["email"],
+            message: "El email es obligatorio para el usuario seleccionado.",
+          });
+        } else {
+          const res = z.string().email().safeParse(data.email);
+          if (!res.success) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ["email"],
+              message: "Debe ser un email válido.",
+            });
+          }
+        }
+      }
+
+      if (data.userMissingPhone) {
+        if (!data.phone || data.phone.trim().length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["phone"],
+            message: "El teléfono es obligatorio para el usuario seleccionado.",
+          });
+        }
+      }
+
+      if (data.userMissingAddress) {
+        if (!data.address || data.address.trim().length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["address"],
+            message:
+              "La dirección es obligatoria para el usuario seleccionado.",
+          });
+        }
+      }
+    } else {
+      // When not using existing user, require manual fields
+      if (!data.name || data.name.trim().length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["name"],
+          message: "El nombre es obligatorio.",
+        });
+      }
+
+      if (!data.email || data.email.trim().length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["email"],
+          message: "El email es obligatorio.",
+        });
+      } else {
+        // validate email format
+        const res = z.string().email().safeParse(data.email);
+        if (!res.success) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["email"],
+            message: "Debe ser un email válido.",
+          });
+        }
+      }
+
+      if (!data.phone || data.phone.trim().length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["phone"],
+          message: "El teléfono es obligatorio.",
+        });
+      }
+
+      if (!data.address || data.address.trim().length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["address"],
+          message: "La dirección es obligatoria.",
+        });
+      }
+    }
+
+    // Existing rule for mincexCode depending on nationality
     if (
       data.nacionalityType === "Extranjero" ||
       data.nacionalityType === "Ambos"

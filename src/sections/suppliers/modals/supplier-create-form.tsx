@@ -3,17 +3,48 @@ import {
   RHFFileUpload,
   RHFInputWithLabel,
   RHFSelectWithLabel,
+  RHFSwitch,
 } from "@/components/react-hook-form";
+import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
+import { getAllUsers } from "@/services/users";
+import { IUser } from "@/types/users";
 import { DocumentIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
   const {
     watch,
     control,
+    setValue,
     formState: { isSubmitting },
   } = useFormContext();
+  const useExisting = watch("useExistingUser") ?? false;
+  const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    // When switching to existing user, clear manual fields
+    if (useExisting) {
+      setValue("name", undefined);
+      setValue("email", undefined);
+      setValue("phone", undefined);
+      setValue("address", undefined);
+      setValue("mincexCode", undefined);
+      // ensure flags initialized
+      setValue("userMissingEmail", false);
+      setValue("userMissingPhone", false);
+      setValue("userMissingAddress", false);
+      // keep selectedUser as-is
+    } else {
+      // When switching off, clear selected userId
+      setValue("userId", undefined);
+      setValue("userMissingEmail", false);
+      setValue("userMissingPhone", false);
+      setValue("userMissingAddress", false);
+      setSelectedUser(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useExisting]);
   const { fields, append, remove } = useFieldArray({
     control,
     name: "documents",
@@ -22,33 +53,160 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
   return (
     <>
       <div className="space-y-4">
-        {/* Name Input */}
-        <RHFInputWithLabel
-          name="name"
-          label="Nombre del Proveedor"
-          placeholder="Ej: Proveedor ABC S.A."
-          autoFocus
-          maxLength={100}
-        />
-        {/* Email Input */}
-        <RHFInputWithLabel
-          name="email"
-          label="Email"
-          placeholder="contacto@proveedor.com"
-          type="email"
-          required
-        />
+        {/* Use existing user toggle */}
+        <div>
+          <RHFSwitch name="useExistingUser" label="Usar usuario existente" />
+        </div>
+        {useExisting && (
+          <>
+            <RHFAutocompleteFetcherInfinity
+              name="userId"
+              label="Usuario existente"
+              placeholder="Buscar usuario por nombre, email o teléfono..."
+              onFetch={getAllUsers}
+              objectValueKey="id"
+              objectKeyLabel="name"
+              params={{ pageSize: 20 }}
+              onOptionSelected={(option: any) => {
+                if (option && option.id) {
+                  setValue("userId", option.id);
+                  console.log(option);
 
-        {/* Phone Input */}
-        <RHFInputWithLabel
-          name="phone"
-          label="Teléfono"
-          type="tel"
-          placeholder="+1234567890"
-          maxLength={20}
-          required
-        />
+                  setSelectedUser(option);
+                  // set missing flags for validation
+                  setValue("userMissingEmail", !option.hasEmail);
+                  setValue("userMissingPhone", !option.hasPhoneNumber);
+                  setValue(
+                    "userMissingAddress",
+                    !(option.addresses && option.addresses.length > 0)
+                  );
+                }
+              }}
+            />
 
+            {selectedUser && (
+              <div className="mt-2 flex items-center gap-3 p-2 border rounded bg-gray-50 dark:bg-gray-800">
+                <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-sm font-semibold text-gray-700 dark:text-gray-200">
+                  {selectedUser.name
+                    ? selectedUser.name
+                        .split(" ")
+                        .map((n: string) => n[0])
+                        .slice(0, 2)
+                        .join("")
+                        .toUpperCase()
+                    : String(selectedUser.id)}
+                </div>
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
+                    {selectedUser.name}
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    {selectedUser.emails[0].address ??
+                      selectedUser.phones[0].number ??
+                      ""}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  className="ml-auto text-sm text-red-600 hover:underline"
+                  onClick={() => {
+                    setValue("userId", undefined);
+                    setValue("userMissingEmail", undefined);
+                    setValue("userMissingPhone", undefined);
+                    setValue("userMissingAddress", undefined);
+                    setSelectedUser(null);
+                  }}
+                >
+                  Quitar
+                </button>
+              </div>
+            )}
+            {/* If selected user is missing data, allow completing it */}
+            {selectedUser &&
+              (() => {
+                const needEmail = !selectedUser.hasEmail;
+                const needPhone = !selectedUser.hasPhoneNumber;
+                const needAddress = !(
+                  selectedUser.addresses && selectedUser.addresses.length > 0
+                );
+                const needName = !selectedUser.name;
+                if (!needEmail && !needPhone && !needAddress && !needName)
+                  return null;
+                return (
+                  <div className="mt-3 p-3 border rounded bg-white dark:bg-gray-900">
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                      Completar información del usuario
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {needName && (
+                        <RHFInputWithLabel
+                          name="name"
+                          label="Nombre"
+                          placeholder="Nombre del usuario"
+                          required
+                        />
+                      )}
+                      {needEmail && (
+                        <RHFInputWithLabel
+                          name="email"
+                          label="Email"
+                          placeholder="contacto@usuario.com"
+                          type="email"
+                          required
+                        />
+                      )}
+                      {needPhone && (
+                        <RHFInputWithLabel
+                          name="phone"
+                          label="Teléfono"
+                          placeholder="+1234567890"
+                          type="tel"
+                          required
+                        />
+                      )}
+                      {needAddress && (
+                        <RHFInputWithLabel
+                          name="address"
+                          label="Dirección"
+                          placeholder="Calle, Ciudad, País"
+                          type="textarea"
+                          required
+                          rows={2}
+                        />
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
+          </>
+        )}
+        {!useExisting && (
+          <>
+            <RHFInputWithLabel
+              name="name"
+              label="Nombre del Proveedor"
+              placeholder="Ej: Proveedor ABC S.A."
+              autoFocus
+              maxLength={100}
+            />
+            <RHFInputWithLabel
+              name="email"
+              label="Email"
+              placeholder="contacto@proveedor.com"
+              type="email"
+              required
+            />
+
+            <RHFInputWithLabel
+              name="phone"
+              label="Teléfono"
+              type="tel"
+              placeholder="+1234567890"
+              maxLength={20}
+              required
+            />
+          </>
+        )}
         {/* Seller Type */}
         <RHFSelectWithLabel
           name="sellerType"
@@ -77,27 +235,31 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
           variant="custom"
         />
 
-        {/* Address Input */}
-        <RHFInputWithLabel
-          name="address"
-          label="Dirección"
-          placeholder="Calle Principal 123, Ciudad, País"
-          maxLength={200}
-          rows={3}
-          type="textarea"
-          required
-        />
+        {/* Usuario existente (buscar y seleccionar) */}
 
-        {/* Mincex Code (conditional) */}
-        {watch("nacionalityType") !== 0 && (
+        {/* Address Input */}
+        {!useExisting && (
           <RHFInputWithLabel
-            name="mincexCode"
-            label="Código Mincex"
-            placeholder="Ingresa el código Mincex"
-            type="text"
+            name="address"
+            label="Dirección"
+            placeholder="Calle Principal 123, Ciudad, País"
+            maxLength={200}
+            rows={3}
+            type="textarea"
             required
           />
         )}
+        {/* Mincex Code (conditional) */}
+        {watch("nacionalityType") &&
+          watch("nacionalityType") !== "Nacional" && (
+            <RHFInputWithLabel
+              name="mincexCode"
+              label="Código Mincex"
+              placeholder="Ingresa el código Mincex"
+              type="text"
+              required
+            />
+          )}
 
         {/* Documents Section */}
         <div className="space-y-3">
