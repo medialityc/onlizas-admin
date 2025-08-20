@@ -35,6 +35,7 @@ interface Props<T> extends Omit<AutocompleteProps, "data" | "renderOption"> {
   multiple?: boolean;
   dataTest?: string;
   onChangeOptional?: VoidFunction;
+  onOptionSelected?: (option: T) => void;
   onScrollEnd?: VoidFunction;
   renderOption?: (option: T) => React.ReactNode;
   renderMultiplesValues?: (
@@ -69,6 +70,7 @@ export default function RHFAutocompleteFetcherInfinity<T>({
   queryKey = "no-cache",
   enabled = true,
   inputClassName,
+  onOptionSelected,
   ...other
 }: Props<T>) {
   // Estado para el término de búsqueda
@@ -116,8 +118,6 @@ export default function RHFAutocompleteFetcherInfinity<T>({
 
   // Unifica los datos en un array y filtra por exclude
   const options = useMemo(() => {
-    console.log("Data from useInfiniteAutocomplete:", data);
-
     const allOptions =
       data?.pages?.flatMap(
         (page: PaginatedResponse<T> | undefined) => page?.data ?? []
@@ -149,6 +149,7 @@ export default function RHFAutocompleteFetcherInfinity<T>({
       objectValueKey={objectValueKey}
       onScrollEnd={handleScrollEnd}
       onChangeOptional={onChangeOptional}
+      onOptionSelected={onOptionSelected}
       exclude={exclude}
       objectKeyLabel={objectKeyLabel}
       multiple={multiple}

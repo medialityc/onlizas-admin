@@ -158,7 +158,7 @@ export default function PermissionCreateModal({
             <LoaderButton
               type="submit"
               loading={isSubmitting}
-              className="btn btn-primary text-textColor"
+              className="btn btn-primary "
             >
               Crear Permiso
             </LoaderButton>

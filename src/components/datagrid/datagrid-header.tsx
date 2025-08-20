@@ -22,7 +22,7 @@ interface DataGridHeaderProps<T> {
   customActions?: React.ReactNode;
 }
 
-export function DataGridHeader<T extends Record<string, any>> ({
+export function DataGridHeader<T extends Record<string, any>>({
   enableSearch,
   enableColumnToggle,
   searchPlaceholder,
@@ -75,7 +75,7 @@ export function DataGridHeader<T extends Record<string, any>> ({
         {onCreate && (
           <button
             type="button"
-            className="btn btn-primary text-textColor dark:text-textColor flex gap-2"
+            className="btn btn-primary dark:text-textColor flex gap-2"
             onClick={onCreate}
           >
             {createLoading ? (

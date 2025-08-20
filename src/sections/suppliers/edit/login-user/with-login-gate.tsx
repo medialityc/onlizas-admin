@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import WithLoginModal from "@/sections/suppliers/edit/with-login-modal";
 import { toast } from "react-toastify";
 import { createUserSupplier } from "@/services/supplier";
+import WithLoginModal from "./with-login-modal";
 
 export default function WithLoginGate({
   supplierState,

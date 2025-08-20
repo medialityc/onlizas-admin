@@ -319,7 +319,7 @@ export default function RHFSelectWithLabel({
             <label
               className={cn(
                 "text-sm font-medium text-gray-700 dark:text-gray-300",
-                required && "after:content-['*'] after:text-red-500 after:ml-1"
+                required && "after:content-['*'] after:ml-1"
               )}
               htmlFor={name}
             >

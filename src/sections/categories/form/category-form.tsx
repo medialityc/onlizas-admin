@@ -237,7 +237,7 @@ export default function CategoryForm({
         <LoaderButton
           type="submit"
           loading={submitting || isSubmitting}
-          className="btn btn-primary text-textColor"
+          className="btn btn-primary "
         >
           Guardar
         </LoaderButton>

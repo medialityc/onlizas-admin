@@ -137,4 +137,9 @@ export const backendRoutes = {
     delete: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/notifications/${id}`,
   },
+  documents: {
+    validate: (id: number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}documents/${id}/validate`, // PUT
+    create: `${process.env.NEXT_PUBLIC_API_URL}documents`, // POST
+  },
 };

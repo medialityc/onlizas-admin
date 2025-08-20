@@ -24,6 +24,8 @@ export default function ApprovalControls({
         toast.error(res?.message || "No se pudo procesar la solicitud");
         return;
       }
+      console.log(res);
+
       if (res.data) {
         toast.success(
           res.data.isApproved ? "Solicitud aprobada" : "Solicitud rechazada"

@@ -101,8 +101,12 @@ export default function RHFInputWithLabel({
             style={{ width }}
           >
             {label && (
-              <label className="dark:text-white text-black" htmlFor={name}>
+              <label
+                htmlFor={name}
+                className="text-sm font-semibold text-gray-700 dark:text-gray-200"
+              >
                 {label}
+                {required && " *"}
               </label>
             )}
             <TextArea

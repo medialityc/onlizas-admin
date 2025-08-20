@@ -321,7 +321,7 @@ export default function BusinessModal({
               <LoaderButton
                 type="submit"
                 loading={isSubmitting}
-                className="btn btn-primary text-textColor"
+                className="btn btn-primary "
                 disabled={isSubmitting}
               >
                 {business ? "Guardar Cambios" : "Crear Negocio"}

@@ -1,9 +1,9 @@
 import { Suspense } from "react";
-import SupplierEditForm from "@/sections/suppliers/edit/supplier-edit-form";
 import ApprovalControls from "@/sections/suppliers/edit/approval-controls";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { getSupplierDetails } from "@/services/supplier";
-import WithLoginGate from "../../../../../sections/suppliers/edit/with-login-gate";
+import SupplierEditForm from "@/sections/suppliers/edit/form/supplier-edit-form";
+import WithLoginGate from "@/sections/suppliers/edit/login-user/with-login-gate";
 
 export default async function Page({
   params,
@@ -13,6 +13,7 @@ export default async function Page({
   }>;
 }) {
   const { data: supplierDetails } = await getSupplierDetails((await params).id);
+  console.log(supplierDetails);
 
   return (
     <div className="space-y-8">

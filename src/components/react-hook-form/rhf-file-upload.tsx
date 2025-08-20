@@ -7,6 +7,7 @@ import {
   ArrowUpTrayIcon,
   XMarkIcon,
   DocumentIcon,
+  EyeIcon,
 } from "@heroicons/react/24/outline";
 
 interface RHFFileUploadProps extends UseControllerProps {
@@ -92,7 +93,9 @@ export function RHFFileUpload({
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
-  const selectedFile = field.value as File | null;
+  const value = field.value as unknown;
+  const selectedFile = value instanceof File ? (value as File) : null;
+  const existingUrl = typeof value === "string" ? (value as string) : null;
 
   return (
     <div className={cn("space-y-2", className)}>
@@ -102,7 +105,7 @@ export function RHFFileUpload({
         </label>
       )}
 
-      {!selectedFile ? (
+      {!selectedFile && !existingUrl ? (
         <div
           onClick={openFileDialog}
           onDragOver={handleDragOver}
@@ -128,7 +131,7 @@ export function RHFFileUpload({
             Tamaño máximo: {(maxSize / (1024 * 1024)).toFixed(1)}MB
           </p>
         </div>
-      ) : (
+      ) : selectedFile ? (
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -150,6 +153,50 @@ export function RHFFileUpload({
             >
               <XMarkIcon className="size-5" />
             </button>
+          </div>
+        </div>
+      ) : (
+        <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <DocumentIcon className="size-8 text-blue-500" />
+              <div>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {(() => {
+                    try {
+                      const url = new URL(existingUrl!);
+                      const name = url.pathname.split("/").pop() || existingUrl;
+                      return name;
+                    } catch {
+                      const parts = existingUrl!.split("/");
+                      return parts[parts.length - 1] || existingUrl;
+                    }
+                  })()}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Documento existente
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() =>
+                  window.open(existingUrl!, "_blank", "noopener,noreferrer")
+                }
+                className="px-2 py-1 text-xs rounded-md border  border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+              >
+                <EyeIcon className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={removeFile}
+                disabled={disabled}
+                className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-50"
+              >
+                <XMarkIcon className="size-5" />
+              </button>
+            </div>
           </div>
         </div>
       )}

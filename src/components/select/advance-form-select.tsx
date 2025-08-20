@@ -19,6 +19,7 @@ export interface SearchSelectProps<T = any> {
   required?: boolean;
   multiple?: boolean;
   onChangeOptional?: () => void;
+  onOptionSelected?: (option: T) => void;
   onScrollEnd?: () => void;
   renderOption?: (option: T) => React.ReactNode;
   dataTest?: string;
@@ -50,6 +51,7 @@ export function AdvancedSearchSelect<T>({
   containerClassname,
   pillsClassname,
   inputClassName,
+  onOptionSelected,
   renderMultiplesValues,
   query = "",
   setQuery,
@@ -109,6 +111,7 @@ export function AdvancedSearchSelect<T>({
     }
     setIsTyping(false); // <- dejar de escribir cuando selecciona!
     onChangeOptional?.();
+    onOptionSelected?.(option);
   };
 
   const removeSelected = (

@@ -90,13 +90,11 @@ export default function RoleCreateModal({
               name="name"
               label="Nombre del Rol"
               placeholder="Ej: Administrador"
-              
             />
             <RHFInput
               name="code"
               label="Código del Rol"
               placeholder="Ej: ADMIN_ROLE"
-              
             />{" "}
             <RHFInput
               name="description"
@@ -104,9 +102,7 @@ export default function RoleCreateModal({
               placeholder="Describe las responsabilidades de este rol"
               type="textarea"
               className="h-24"
-              
             />
-          
             <div className="flex justify-end gap-3 pt-4">
               <button
                 type="button"
@@ -119,14 +115,13 @@ export default function RoleCreateModal({
               <LoaderButton
                 type="submit"
                 loading={isSubmitting}
-                className="btn btn-primary text-textColor"
+                className="btn btn-primary "
               >
                 Crear Rol
               </LoaderButton>
             </div>
           </form>
         </FormProvider>
-      
       </div>
     </SimpleModal>
   );
