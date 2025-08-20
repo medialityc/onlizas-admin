@@ -4,13 +4,19 @@ import { PaginatedResponse } from "./common";
 // Tipos auxiliares
 export type StoreContact = {
   email: string;
-  phone: string;
+  phoneNumber: string;
+  address: string;
 };
 
 export type StoreAddress = {
   street: string;
   city?: string;
   country?: string;
+};
+export type StorePolicy = {
+  returnPolicy: string;
+  shippingPolicy: string;
+  termsOfService: string;
 };
 
 export type StoreAppearance = {
@@ -45,24 +51,24 @@ export type StorePromotion = {
 };
 
 // Tienda completa según API
-export type Store = {
+export type StoreNo = {
   id: number;
-  supplierId: string,
-  url:string;
+  //supplierId: string,
+  ownerId: number;
+  businessId: number;
+  url: string;
   name: string;
   description: string;
   isActive: boolean;
-  ownerId: string;
-  logo: string;
+  logoStyle: string;
   contact: StoreContact;
-  address: StoreAddress;
   appearance: StoreAppearance;
   banners: StoreBanner[];
   promotions: StorePromotion[];
-  
-  categories:Category[]
-  metrics:StoreMetrics
-  
+  policy: StorePolicy;
+  //categories:Category[]
+  metrics: StoreMetrics;
+
   // Nuevos campos de ventas e ingresos
   ventasDelMes: number;
   ingresosDelMes: number;
@@ -82,7 +88,7 @@ export type Store = {
     totalCategories: number;
   }; */
 };
-export type StoreMetrics = {
+type StoreMetrics = {
   totalProducts: number;
   views: number;
   sales: number;
@@ -95,17 +101,24 @@ export type StoreMetrics = {
 // Para crear tienda
 export type CreateStoreRequest = {
   name: string;
-  description: string;
-  isActive: boolean;
-  slug: string;
-  logo: string;
-  contact: StoreContact;
-  address: StoreAddress;
-  appearance: StoreAppearance;
+  ownerId: number;
+  businessId: number;
+  url: string;
+  description?: string;
+  // Logo puede ser URL o nombre de archivo según manejo multipart
+  logoStyle?: string;
+  // Contacto (campos planos, no objeto)
+  email: string;
+  phoneNumber: string;
+  address: string;
+  // Políticas (campos planos)
+  returnPolicy: string;
+  shippingPolicy: string;
+  termsOfService: string;
 };
 
 // Para actualizar tienda
-export type UpdateStoreRequest = Partial<CreateStoreRequest>;
+export type UpdateStoreRequest = Partial<Store>;
 
 // Alias
 export type CreateStore = CreateStoreRequest;
@@ -121,3 +134,77 @@ export type StoreSearchParams = {
 
 // Respuesta paginada
 export type GetAllStores = PaginatedResponse<Store>;
+
+export type Store = {
+  id: number;
+  name: string;
+  description: string;
+  url: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  logoStyle: string;
+  returnPolicy: string;
+  shippingPolicy: string;
+  termsOfService: string;
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  font: string;
+  template: string;
+  followers: [
+    {
+      id: number;
+      name: string;
+      email: string;
+      phoneNumber: string;
+    }
+  ],
+  banners: [
+    {
+      title: string,
+      urlDestinity: string,
+      position: string,
+      initDate: string,
+      endDate: string,
+      image: string,
+    }
+  ],
+  businessName: string;
+};
+
+export type StoreMetric = {
+  id: number;
+  title: string;
+  isActive: boolean;
+  logo?: string | null;
+  url?: string | null;
+  description?: string | null;
+  categoryCount?: number;
+  productCount?: number;
+  visitCount?: number;
+  conversionRate?: number;
+}
+export type StoreMetricsResponse = 
+{
+  totalStores: 0,
+  activeStores: 0,
+  totalVisits: 0,
+  averageConversionRate: 0,
+  storeMetrics: /* [
+    {
+      id: 0,
+      title: string,
+      isActive: true,
+      logo: string,
+      url: string,
+      description: string,
+      categoryCount: 0,
+      productCount: 0,
+      visitCount: 0,
+      conversionRate: 0
+    }
+  ] */
+ StoreMetric[]
+}
+export type GetStoreMetrics = StoreMetricsResponse;

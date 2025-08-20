@@ -143,9 +143,11 @@ export const backendRoutes = {
     create: `${process.env.NEXT_PUBLIC_API_URL}documents`, // POST
   },
   store: {
-    create: `${process.env.NEXT_PUBLIC_API_URL}admin/notifications`,
-    list: `${process.env.NEXT_PUBLIC_API_URL}user/suplier/store`,
+    create: `${process.env.NEXT_PUBLIC_API_URL}stores/admin`,
+    list: `${process.env.NEXT_PUBLIC_API_URL}stores/metrics`,
     delete: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}user/store${id}`,
+    storeById: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/admin/${id}`,
   },
 };

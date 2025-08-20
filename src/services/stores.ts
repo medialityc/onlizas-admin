@@ -1,7 +1,7 @@
 "use server"
 import { IQueryable } from "@/types/fetch/request";
 
-import { Store, CreateStore, UpdateStore, GetAllStores } from "../types/stores";
+import { Store, CreateStore, UpdateStore,GetAllStores, CreateStoreRequest, StoreMetricsResponse, GetStoreMetrics } from "../types/stores";
 import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { delay } from "lodash";
 import { QueryParamsURLFactory } from "@/lib/request";
@@ -10,9 +10,6 @@ import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { mockStores } from "@/data/stores";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { revalidateTag } from "next/cache";
-
-
-
 
 export async function getAllStores(
   params: IQueryable
@@ -28,11 +25,31 @@ export async function getAllStores(
     useAuth: true,
     next: { tags: ["stores"] },
   });
-  return mockStores
+  
 
   if (!res.ok) return handleApiServerError(res);
 
   return buildApiResponseAsync<GetAllStores>(res);
+}
+export async function getMetricStores(
+  params: IQueryable
+): Promise<ApiResponse<GetStoreMetrics>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.store.list
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["stores-metrics"] },
+  });
+  
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetStoreMetrics>(res);
 }
 
 export async function deleteStore(
@@ -49,17 +66,9 @@ export async function deleteStore(
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
-/* export async function getStoreById(id: number): Promise<ApiResponse<Store | undefined>> {
-  if (useMock) {
-    await wait(400);
-    const store = stores.find((s) => s.id === id);
-    return {
-      status: store ? 200 : 404,
-      data: store,
-    };
-  }
-
-  const url = `${backendRoutes.stores.detail}/${id}`;
+export async function getStoreById(id: number): Promise<ApiResponse<Store | undefined>> {
+  
+  const url = backendRoutes.store.storeById(id);
   const res = await nextAuthFetch({
     url,
     method: "GET",
@@ -70,45 +79,26 @@ export async function deleteStore(
   return buildApiResponseAsync<Store>(res);
 }
 
-export async function createStore(data: CreateStore): Promise<ApiResponse<Store>> {
-  if (useMock) {
-    await wait(500);
-    const newStore: Store = {
-      ...data,
-      id: stores.length ? Math.max(...stores.map((s) => s.id)) + 1 : 1,
-      ownerId: "user-mock",
-      banners: [],
-      promotions: [],
-      categories: [],
-      metrics: {
-        totalProducts: 0,
-        views: 0,
-        sales: 0,
-        income: 0,
-        monthlyVisits: 0,
-        conversionRate: 0,
-        totalCategories: 0,
-      },
-    };
-    stores.push(newStore);
-    return {
-      status: 201,
-      data: newStore,
-    };
-  }
-
+export async function createStore(
+  data: FormData
+): Promise<ApiResponse<Store>> {
   const res = await nextAuthFetch({
     url: backendRoutes.store.create,
     method: "POST",
-    useAuth: true,
     data,
+    useAuth: true,
   });
 
-  if (!res.ok) return handleApiServerError(res);
+  if (!res.ok) {
+    console.log("Error creating store", res);
+    return handleApiServerError(res);
+  }
+  revalidateTag("stores");
+  console.log("Store created successfully", res);
   return buildApiResponseAsync<Store>(res);
 }
 
-export async function updateStore(id: number, data: UpdateStore): Promise<ApiResponse<Store | undefined>> {
+/*export async function updateStore(id: number, data: UpdateStore): Promise<ApiResponse<Store | undefined>> {
   if (useMock) {
     await wait(400);
     const idx = stores.findIndex((s) => s.id === id);
