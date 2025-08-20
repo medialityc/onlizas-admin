@@ -27,7 +27,11 @@ const featureSchema = z.object({
 });
 
 export const categorySchema = z.object({
+  /* inmutable data */
   id: z.number().optional(),
+  departmentName: z.string().optional(),
+
+  /* fields */
   name: z
     .string({ required_error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")

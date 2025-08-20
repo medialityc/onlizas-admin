@@ -12,6 +12,8 @@ export const paths = {
     },
     categories: {
       list: `${DASHBOARD}/categories`,
+      view: (id: string | number) => `${DASHBOARD}/categories/${id}`,
+      edit: (id: string | number) => `${DASHBOARD}/categories/${id}/edit`,
     },
     departments: {
       list: `${DASHBOARD}/departments`,
