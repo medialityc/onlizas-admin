@@ -23,6 +23,7 @@ const featureSchema = z.object({
     ),
   isPrimary: z.boolean().default(false),
   isRequired: z.boolean().default(false),
+  featureId: z.number().optional(),
 });
 
 export const categorySchema = z.object({
@@ -45,7 +46,9 @@ export const categorySchema = z.object({
     ],
     { required_error: "La imagen es obligatoria." }
   ),
-  isActive: z.boolean({ required_error: "El estado activo es obligatorio." }).default(false),
+  isActive: z
+    .boolean({ required_error: "El estado activo es obligatorio." })
+    .default(false),
   features: z
     .array(featureSchema)
     .min(1, "Debes agregar al menos una característica."),

@@ -37,8 +37,6 @@ export const useCategoryCreateForm = (
     resolver: zodResolver(categorySchema),
   });
 
-  console.log(form.formState.errors);
-
   useEffect(() => {
     const loadImageAsFile = async () => {
       if (defaultValues?.image) {
@@ -62,7 +60,6 @@ export const useCategoryCreateForm = (
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: any) => {
       const formData = await setCategoryFormData(payload);
-      console.log(payload, "CATEGORIA");
 
       if (payload?.id) {
         return await updateCategory(payload?.id, formData);
