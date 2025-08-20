@@ -35,7 +35,7 @@ export function RHFMultiImageUpload({
     }
 
     const previewUrls = value.map((item) =>
-      typeof item === "string" ? item : URL.createObjectURL(item)
+      typeof item === "string" ? item : URL?.createObjectURL(item)
     );
 
     setPreviews(previewUrls);

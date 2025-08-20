@@ -32,7 +32,25 @@ export const useProductCreateForm = (
   console.log(form.formState.errors, "ERRORS");
 
   const { mutate, isPending } = useMutation({
-    mutationFn: (payload: any) => {
+    mutationFn: async (payload: any) => {
+      /*  if (payload.images && payload.images.length > 0) {
+        const formData = new FormData();
+        await Promise.all(
+          payload.images.map(async (image: any, index: number) => {
+            if (typeof image === "string" && isValidUrl(image)) {
+              try {
+                const imageFile = await urlToFile(image);
+                formData.append(`photoObjectCodes[${index}]`, imageFile);
+              } catch {
+                toast.error(`Error al procesar la imagen desde URL (${image})`);
+              }
+            } else if (image instanceof File) {
+              formData.append(`images[${index}]`, image);
+            }
+          })
+        );
+      } */
+
       console.log(payload, "PRODUCT");
       return Promise.resolve({});
       return createProduct(payload);
