@@ -16,7 +16,7 @@ import ProductDetailsSection from "./product-details-section";
 import ProductFeatureSection from "./product-features-section";
 
 type Props = {
-  initValue: ProductFormData;
+  initValue?: ProductFormData;
 };
 
 const ProductForm = ({ initValue }: Props) => {
@@ -25,10 +25,7 @@ const ProductForm = ({ initValue }: Props) => {
 
   const isEdit = useMemo(() => !!initValue?.id, [initValue?.id]);
 
-  const handleCancel = useCallback(
-    () => push("/dashboard/(catalog)/products"),
-    [push]
-  );
+  const handleCancel = useCallback(() => push("/dashboard/products"), [push]);
 
   return (
     <section>
@@ -43,9 +40,13 @@ const ProductForm = ({ initValue }: Props) => {
           <div className="col-span-1 lg:col-span-1">
             <SpecificationsSection />
           </div>
-          <div className="col-span-1 lg:col-span-2">
-            <ProductImageSection />
-          </div>
+
+          {/* // todo -> error en el componente imagen */}
+          {!isEdit && (
+            <div className="col-span-1 lg:col-span-2">
+              <ProductImageSection />
+            </div>
+          )}
           <div className="col-span-1 lg:col-span-2">
             <ProductFeatureSection />
           </div>
