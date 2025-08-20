@@ -23,6 +23,8 @@ const ProductForm = ({ initValue }: Props) => {
   const { form, isPending, onSubmit } = useProductCreateForm(initValue);
   const { push } = useRouter();
 
+  console.log(initValue,'initValue')
+
   const isEdit = useMemo(() => !!initValue?.id, [initValue?.id]);
 
   const handleCancel = useCallback(() => push("/dashboard/products"), [push]);
