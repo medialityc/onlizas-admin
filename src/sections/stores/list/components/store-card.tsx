@@ -31,7 +31,7 @@ type DataCardProps = {
   store: Store;
 };
 
-export const DataCard = ({ store }: DataCardProps) => {
+export const SoreCard = ({ store }: DataCardProps) => {
   const [hasImageError, setHasImageError] = useState(false);
   const [hasBannerError, setHasBannerError] = useState(false);
   const router = useRouter();
@@ -111,6 +111,11 @@ export const DataCard = ({ store }: DataCardProps) => {
               {store.businessName && (
                 <div className="text-xs text-gray-400 dark:text-gray-500 truncate">
                   {store.businessName}
+                </div>
+              )}
+              {store.supplierName && (
+                <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                  Proveedor: {store.supplierName}
                 </div>
               )}
             </div>

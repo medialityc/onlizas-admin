@@ -18,7 +18,8 @@ import { isValidUrl, urlToFile } from "@/utils/format";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { useRouter } from "next/navigation";
-import { getAllBusiness } from "@/services/business";
+import { getAllUserBusiness } from "@/services/business";
+import { useAuth } from "@/auth-sso/hooks/use-auth";
 
 interface StoresModalProps {
   open: boolean;
@@ -36,7 +37,7 @@ export default function StoresCreateModal({
   onSuccess,
 }: StoresModalProps) {
   const [error, setError] = useState<string | null>(null);
-
+  const { user } = useAuth();
   const routerHook = useRouter();
 
   const methods = useForm<StoreFormData>({
@@ -180,7 +181,7 @@ export default function StoresCreateModal({
               label="Negocio"
               placeholder="Buscar negocio..."
               required
-              onFetch={getAllBusiness}
+              onFetch={(params) => getAllUserBusiness(user?.id ?? 0, params)}
               objectKeyLabel="name"
               size="medium"
               params={{ pageSize: 10 }}

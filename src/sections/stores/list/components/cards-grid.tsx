@@ -1,6 +1,6 @@
 "use client";
 
-import { DataCard } from "../../modals/components/info-card";
+import { SoreCard } from "./store-card";
 import { Store } from "@/types/stores";
 
 export type CardsGridProps = {
@@ -15,7 +15,7 @@ export function CardsGrid({ items }: CardsGridProps) {
         grid-cols-[repeat(auto-fit,minmax(300px,1fr))]"
     >
       {items.map((store) => (
-        <DataCard key={store.id} store={store} />
+        <SoreCard key={store.id} store={store} />
       ))}
     </div>
   );

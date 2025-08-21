@@ -50,6 +50,9 @@ export const paths = {
     business: {
       list: `${DASHBOARD}/business`,
     },
+    stores: {
+      list: `${DASHBOARD}/stores`,
+    },
   },
   provider: {
     root: PROVIDER,

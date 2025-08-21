@@ -31,6 +31,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${userId}/documents/${documentId}/download`,
     scan_document: `${process.env.NEXT_PUBLIC_API_URL}users/scan-document`,
     listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/users`, // GET
+    listSuppliers: `${process.env.NEXT_PUBLIC_API_URL}users/suppliers`,
   },
   roles: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}roles`,
@@ -112,6 +113,8 @@ export const backendRoutes = {
   },
   business: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}businesses`,
+    getByUser: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}users/${id}/businesses`,
     getAllLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/business`,
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/businesses`,
     update: (id: string | number) =>
@@ -145,6 +148,9 @@ export const backendRoutes = {
   store: {
     create: `${process.env.NEXT_PUBLIC_API_URL}stores/admin`,
     list: `${process.env.NEXT_PUBLIC_API_URL}stores/metrics`,
+    listAll: `${process.env.NEXT_PUBLIC_API_URL}stores`,
+    listProvider: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/supplier/${id}`,
     delete: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}user/store${id}`,
     storeById: (id: string | number) =>

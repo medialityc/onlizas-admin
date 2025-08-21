@@ -3,14 +3,14 @@
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { StoreMetricsResponse } from "@/types/stores";
+import { GetAllStores } from "@/types/stores";
 import { use } from "react";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 import { StoresList } from "./stores-list";
 
 interface StoresListPageProps {
-  storesPromise: Promise<ApiResponse<StoreMetricsResponse>>;
+  storesPromise: Promise<ApiResponse<GetAllStores>>;
   query: SearchParams;
 }
 

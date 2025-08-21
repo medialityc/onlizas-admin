@@ -73,19 +73,6 @@ export type StoreNo = {
   ingresosDelMes: number;
   totalVentas: number;
   totalIngresos: number;
-  /* categories: {
-    id: number;
-    name: string;
-    productCount: number;
-    visits: number;
-    conversion: number;
-  }[]; */
-  /* metrics: {
-    monthlyVisits: number;
-    conversionRate: number;
-    totalProducts: number;
-    totalCategories: number;
-  }; */
 };
 type StoreMetrics = {
   totalProducts: number;
@@ -104,13 +91,10 @@ export type CreateStoreRequest = {
   businessId: number;
   url: string;
   description?: string;
-  // Logo puede ser URL o nombre de archivo según manejo multipart
   logoStyle?: string;
-  // Contacto (campos planos, no objeto)
   email: string;
   phoneNumber: string;
   address: string;
-  // Políticas (campos planos)
   returnPolicy: string;
   shippingPolicy: string;
   termsOfService: string;
@@ -132,7 +116,6 @@ export type StoreSearchParams = {
 };
 
 // Respuesta paginada
-export type GetAllStores = PaginatedResponse<Store>;
 
 export type Store = {
   id: number;
@@ -172,7 +155,10 @@ export type Store = {
     },
   ];
   businessName: string;
+  supplierName: string;
 };
+
+export type GetAllStores = PaginatedResponse<Store>;
 
 export type StoreMetric = {
   id: number;

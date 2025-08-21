@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect } from "react";
 
-import { GetStoreMetrics, StoreMetric } from "@/types/stores";
+import { GetAllStores, Store } from "@/types/stores";
 import { SearchParams } from "@/types/fetch/request";
 import { useModalState } from "@/hooks/use-modal-state";
 import { useState } from "react";
@@ -12,12 +12,11 @@ import useFiltersUrl from "@/hooks/use-filters-url";
 import { PAGE_SIZES } from "@/components/datagrid/constants";
 import { useDataGridHandlers } from "@/components/datagrid/hooks";
 import StoreListToolbar from "./components/toolbar";
-import MetricsGrid from "./components/metrics-grid";
 import CardsGrid from "./components/cards-grid";
 import Pagination from "./components/pagination";
 
 interface StoresListProps {
-  data?: GetStoreMetrics;
+  data?: GetAllStores;
   searchParams: SearchParams;
   onSearchParamsChange: (params: SearchParams) => void;
 }
@@ -34,17 +33,9 @@ export function StoresList({
   const handleCreateStore = useCallback(() => openModal("create"), [openModal]);
 
   const response = data;
-  const items: StoreMetric[] = response?.storeMetrics ?? [];
+  const items: Store[] = response?.data ?? [];
 
-  // Métricas agregadas — preferir valores que vienen del backend, si no, calcular
-  const totalStores =
-    typeof response?.totalStores === "number"
-      ? response.totalStores
-      : items.length;
-  const totalVisits =
-    typeof response?.totalVisits === "number"
-      ? response.totalVisits
-      : items.reduce((acc, s) => acc + (s.visitCount ?? 0), 0);
+  const totalStores = response?.totalCount;
 
   const [searchValue, setSearchValue] = useState(searchParams.search || "");
 
@@ -92,7 +83,7 @@ export function StoresList({
         onCreate={handleCreateStore}
       />
 
-      <MetricsGrid totalStores={totalStores} totalVisits={totalVisits} />
+      {/* <MetricsGrid totalStores={totalStores ?? 0} totalVisits={0} /> */}
 
       <CardsGrid items={visibleItems} />
 

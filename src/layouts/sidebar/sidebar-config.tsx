@@ -81,6 +81,12 @@ export const sidebarSections: SidebarSection[] = [
         path: paths.dashboard.warehouses.list,
         icon: <ArchiveBoxIcon className="h-4 w-4" />,
       },
+      {
+        id: "stores",
+        label: "Tiendas",
+        path: paths.dashboard.stores.list,
+        icon: <ShoppingBagIcon className="h-4 w-4" />,
+      },
     ],
   },
   {

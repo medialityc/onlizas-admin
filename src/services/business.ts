@@ -80,3 +80,23 @@ export async function deleteBusiness(
 
   return buildApiResponseAsync(res);
 }
+
+export async function getAllUserBusiness(
+  id: string | number,
+  params: IQueryable
+): Promise<ApiResponse<GetAllBusiness>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.business.getByUser(id)
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["business"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<GetAllBusiness>(res);
+}

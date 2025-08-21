@@ -320,7 +320,6 @@ export async function searchUsers(
   return buildApiResponseAsync<PaginatedResponse<OrderUser>>(res);
 }
 
-
 export async function scanUser(
   params: IQueryable
 ): Promise<ApiResponse<PotentialOrderUser>> {
@@ -336,4 +335,22 @@ export async function scanUser(
 
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<PotentialOrderUser>(res);
+}
+
+export async function getAllSupplierUsers(
+  params: IQueryable
+): Promise<ApiResponse<GetAllUsersResponse>> {
+  const url = new QueryParamsURLFactory(
+    params,
+    backendRoutes.users.listSuppliers
+  ).build();
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["users"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<GetAllUsersResponse>(res);
 }

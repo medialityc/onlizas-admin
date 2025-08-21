@@ -14,7 +14,7 @@ export async function getAllStores(
 ): Promise<ApiResponse<GetAllStores>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.store.list
+    backendRoutes.store.listAll
   ).build();
 
   const res = await nextAuthFetch({
@@ -28,6 +28,27 @@ export async function getAllStores(
 
   return buildApiResponseAsync<GetAllStores>(res);
 }
+export async function getAllProviderStores(
+  providerId: number,
+  params: IQueryable
+): Promise<ApiResponse<GetAllStores>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.store.listProvider(providerId)
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["stores"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetAllStores>(res);
+}
+
 export async function getMetricStores(
   params: IQueryable
 ): Promise<ApiResponse<GetStoreMetrics>> {
@@ -92,61 +113,3 @@ export async function createStore(data: FormData): Promise<ApiResponse<Store>> {
   console.log("Store created successfully", res);
   return buildApiResponseAsync<Store>(res);
 }
-
-/*export async function updateStore(id: number, data: UpdateStore): Promise<ApiResponse<Store | undefined>> {
-  if (useMock) {
-    await wait(400);
-    const idx = stores.findIndex((s) => s.id === id);
-    if (idx === -1) {
-      return {
-        status: 404,
-        data: undefined,
-      };
-    }
-    stores[idx] = { ...stores[idx], ...data };
-    return {
-      status: 200,
-      data: stores[idx],
-    };
-  }
-
-  const url = backendRoutes.store.update(id);
-  const res = await nextAuthFetch({
-    url,
-    method: "PUT",
-    useAuth: true,
-    body: data,
-  });
-
-  if (!res.ok) return handleApiServerError(res);
-  return buildApiResponseAsync<Store>(res);
-}
-
-export async function deleteStore(id: number): Promise<ApiResponse<boolean>> {
-  if (useMock) {
-    await wait(300);
-    const prevLen = stores.length;
-    const updated = stores.filter((s) => s.id !== id);
-    const deleted = updated.length < prevLen;
-    if (deleted) stores.splice(0, stores.length, ...updated);
-    return {
-      status: deleted ? 200 : 404,
-      data: deleted,
-    };
-  }
-
-  const url = `${backendRoutes.stores.delete}/${id}`;
-  const res = await nextAuthFetch({
-    url,
-    method: "DELETE",
-    useAuth: true,
-  });
-
-  if (!res.ok) return handleApiServerError(res);
-  return buildApiResponseAsync<boolean>(res);
-}
- */
-/*  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) throw new Error("Unauthorized");
-
-  return await getStoreById(storeId, session.user.id); */

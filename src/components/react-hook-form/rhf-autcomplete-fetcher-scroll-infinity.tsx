@@ -77,15 +77,21 @@ export default function RHFAutocompleteFetcherInfinity<T>({
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 350);
 
+  // Reset search when the field identity changes
+  useEffect(() => {
+    setSearchTerm("");
+  }, [name, queryKey]);
+
   // Genera la queryKey estable basada en nombre, params y búsqueda
   const stableQueryKey = useMemo(() => {
     return [
       queryKey,
       "infinite-autocomplete",
+      name,
       JSON.stringify(params),
       debouncedSearchTerm,
     ];
-  }, [queryKey, params, debouncedSearchTerm]);
+  }, [queryKey, name, params, debouncedSearchTerm]);
 
   const cacheConfig = useMemo(() => {
     if (queryKey === "no-cache") {
