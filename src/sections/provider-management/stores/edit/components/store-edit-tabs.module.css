@@ -1,0 +1,14 @@
+.tabsUnderline :global([role="tablist"]) {
+  border-bottom: 1px solid var(--tw-prose-borders, rgba(229, 231, 235, 1));
+}
+.tabsUnderline :global([role="tab"]) {
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+}
+.tabsUnderline :global([role="tab"][aria-selected="true"]) {
+  color: rgb(37 99 235 / 1);
+  border-bottom-color: rgb(37 99 235 / 1);
+}
+.tabsUnderline :global([role="tab"][aria-selected="false"]) {
+  color: rgb(17 24 39 / 0.85);
+}

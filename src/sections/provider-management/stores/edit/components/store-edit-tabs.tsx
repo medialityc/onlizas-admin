@@ -1,18 +1,20 @@
 "use client";
 
 import React from "react";
-import IconSettings from "@/components/icon/icon-settings";
-import IconBook from "@/components/icon/icon-book";
-import IconLayout from "@/components/icon/icon-layout";
-import IconTag from "@/components/icon/icon-tag";
-import { TabItem } from "@/components/tab/navigation-tabs";
-import { store } from "@/store";
+import {
+  Cog6ToothIcon,
+  BookOpenIcon,
+  Squares2X2Icon,
+  TagIcon,
+} from "@heroicons/react/24/outline";
+
 import AppearanceContainer from "../appearance/appearance-container";
 import CategoriesContainer from "../categories/categories-container";
 import GeneralContainer from "../general/general-container";
 import PromotionsContainer from "../promotions/promotions-container";
 import TabsWithErrorIndicators from "../../../../../components/tab/tabs-with-error-indicators";
 import { Store } from "@/types/stores";
+import styles from "./store-edit-tabs.module.css";
 
 interface TabsProps {
   store: Store;
@@ -20,31 +22,34 @@ interface TabsProps {
 
 const StoreTabs = ({ store }: TabsProps) => {
   return (
-    <div>
-      <TabsWithErrorIndicators
-        tabs={[
-          {
-            label: "Información General",
-            icon: <IconSettings className="w-4 h-4" />,
-            content: <GeneralContainer store={store} />,
-          },
-          {
-            label: "Categorias",
-            icon: <IconBook className="w-4 h-4" />,
-            content: <CategoriesContainer store={store} />,
-          },
-          {
-            label: "Apariencia",
-            icon: <IconLayout className="w-4 h-4" />,
-            content: <AppearanceContainer store={store} />,
-          },
-          {
-            label: "Promociones",
-            icon: <IconTag className="w-4 h-4" />,
-            content: <PromotionsContainer store={store} />,
-          },
-        ]}
-      />
+    <div className={`store-edit-tabs ${styles.tabsUnderline}`}>
+      <div className="border-b border-gray-200 dark:border-gray-800">
+        <TabsWithErrorIndicators
+          activeColorClass="text-primary"
+          tabs={[
+            {
+              label: "Información General",
+              icon: <Cog6ToothIcon className="w-6 h-6" />,
+              content: <GeneralContainer store={store} />,
+            },
+            {
+              label: "Categorías",
+              icon: <BookOpenIcon className="w-6 h-6" />,
+              content: <CategoriesContainer store={store} />,
+            },
+            {
+              label: "Apariencia",
+              icon: <Squares2X2Icon className="w-6 h-6" />,
+              content: <AppearanceContainer store={store} />,
+            },
+            {
+              label: "Promociones",
+              icon: <TagIcon className="w-6 h-6" />,
+              content: <PromotionsContainer store={store} />,
+            },
+          ]}
+        />
+      </div>
     </div>
   );
 };
@@ -52,8 +57,8 @@ const StoreTabs = ({ store }: TabsProps) => {
 export default StoreTabs;
 
 export const DefaultIcons = {
-  general: <IconSettings className="w-4 h-4" />,
-  categories: <IconBook className="w-4 h-4" />,
-  appearance: <IconLayout className="w-4 h-4" />,
-  promotions: <IconTag className="w-4 h-4" />,
+  general: <Cog6ToothIcon className="w-4 h-4" />,
+  categories: <BookOpenIcon className="w-4 h-4" />,
+  appearance: <Squares2X2Icon className="w-4 h-4" />,
+  promotions: <TagIcon className="w-4 h-4" />,
 };
