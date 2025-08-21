@@ -267,115 +267,141 @@ export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
           </CardHeader>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Columna izquierda */}
-              <div className="space-y-6">
-                {/* Panel: Nombre */}
-                <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <IdentificationIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Nombre
-                      </span>
+              {/* Row 1: Nombre (left) */}
+              <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-md bg-indigo-50 dark:bg-indigo-900/10">
+                      <IdentificationIcon className="h-5 w-5 text-dark-dark-light-600" />
                     </div>
+                    <h3 className="text-base font-semibold text-gray-700 dark:text-gray-300">
+                      Nombre
+                    </h3>
                   </div>
-                  <RHFInputWithLabel
-                    name="name"
-                    label=""
-                    placeholder="Usuario"
-                    required
+                </div>
+                <RHFInputWithLabel
+                  name="name"
+                  label=""
+                  placeholder="Usuario"
+                  required
+                />
+              </div>
+
+              {/* Row 1: Estado de la cuenta (right) */}
+              <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 rounded-md bg-green-50 dark:bg-green-900/10">
+                    <ShieldCheckIcon className="h-5 w-5 text-green-600" />
+                  </div>
+                  <h3 className="text-base font-semibold text-gray-700 dark:text-gray-300">
+                    Estado de la cuenta
+                  </h3>
+                </div>
+                <div className="flex gap-2">
+                  <StatusBadge
+                    isActive={user?.isActive ?? false}
+                    activeText="Activo"
+                    inactiveText="Inactivo"
                   />
                 </div>
+              </div>
 
-                {/* Panel: Emails */}
-                <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <EnvelopeIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Emails
-                      </span>
+              {/* Row 2: Emails - full width */}
+              <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4 md:col-span-2 h-96 flex flex-col">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-md bg-sky-50 dark:bg-sky-900/10">
+                      <EnvelopeIcon className="h-5 w-5 text-sky-600" />
                     </div>
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={() =>
-                        appendEmail({ address: "", isVerified: false })
-                      }
-                      className="flex items-center gap-2 mr-9"
-                    >
-                      <PlusIcon className="h-4 w-4" />
-                      Añadir
-                    </Button>
+                    <h3 className="text-base font-semibold text-gray-700 dark:text-gray-300">
+                      Emails
+                    </h3>
                   </div>
-
-                  <div className="divide-y divide-gray-200 dark:divide-gray-800 max-h-48 overflow-y-auto pr-2 ultra-thin-scrollbar">
-                    {emailFields.map((field, index) => (
-                      <div key={field.id} className="py-3 first:pt-0 last:pb-0">
-                        <div className="flex items-start gap-3">
-                          <div className="flex-1">
-                            <RHFInputWithLabel
-                              name={`emails.${index}.address`}
-                              label={`Email ${index + 1}`}
-                              className="flex-1"
-                            />
-                          </div>
-                          <div className="flex items-center gap-3 mt-7">
-                            {(emailWatch[index]?.isVerified ??
-                            emails[index]?.isVerified) ? (
-                              <StatusBadge
-                                isActive={true}
-                                activeText="Verificado"
-                                inactiveText="No"
-                              />
-                            ) : (
-                              <LoaderButton
-                                type="button"
-                                onClick={() =>
-                                  handleResendEmail(emailWatch[index]?.address)
-                                }
-                                className="bg-primary text-white px-2 py-1 text-sm"
-                              >
-                                Enviar
-                              </LoaderButton>
-                            )}
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveEmail(index)}
-                              className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
-                              aria-label={`Eliminar email ${index + 1}`}
-                            >
-                              <TrashIcon className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                    {emailFields.length === 0 && (
-                      <div className="text-sm text-gray-500 dark:text-gray-400 py-2">
-                        No hay emails añadidos.
-                      </div>
-                    )}
-                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() =>
+                      appendEmail({ address: "", isVerified: false })
+                    }
+                    className="flex items-center gap-2 mr-9"
+                  >
+                    <PlusIcon className="h-4 w-4" />
+                    Añadir
+                  </Button>
                 </div>
 
-                {/* Panel: Direcciones */}
-                <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                      <MapPinIcon className="h-4 w-4" />
+                <div className="h-80 divide-y divide-gray-200 dark:divide-gray-800 overflow-y-auto pr-2 ultra-thin-scrollbar flex-1">
+                  {emailFields.map((field, index) => (
+                    <div key={field.id} className="py-3 first:pt-0 last:pb-0">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-1">
+                          <RHFInputWithLabel
+                            name={`emails.${index}.address`}
+                            label={`Email ${index + 1}`}
+                            className="flex-1"
+                          />
+                        </div>
+                        <div className="flex items-center gap-3 mt-7">
+                          {(emailWatch[index]?.isVerified ??
+                          emails[index]?.isVerified) ? (
+                            <StatusBadge
+                              isActive={true}
+                              activeText="Verificado"
+                              inactiveText="No"
+                            />
+                          ) : (
+                            <LoaderButton
+                              type="button"
+                              onClick={() =>
+                                handleResendEmail(emailWatch[index]?.address)
+                              }
+                              className="bg-primary text-white px-2 py-1 text-sm"
+                            >
+                              Enviar
+                            </LoaderButton>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveEmail(index)}
+                            className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
+                            aria-label={`Eliminar email ${index + 1}`}
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {emailFields.length === 0 && (
+                    <div className="text-sm text-gray-500 dark:text-gray-400 py-2">
+                      No hay emails añadidos.
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Row 3: Direcciones (left) */}
+              <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4 h-96">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-md bg-amber-50 dark:bg-amber-900/10">
+                      <MapPinIcon className="h-5 w-5 text-amber-600" />
+                    </div>
+                    <h3 className="text-base font-semibold text-gray-700 dark:text-gray-300">
                       Direcciones
-                    </label>
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={() => openModal("createAddress")}
-                      className="flex items-center gap-2"
-                    >
-                      <PlusIcon className="h-4 w-4" />
-                      Nueva Dirección
-                    </Button>
+                    </h3>
                   </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => openModal("createAddress")}
+                    className="flex items-center gap-2"
+                  >
+                    <PlusIcon className="h-4 w-4" />
+                    Nueva Dirección
+                  </Button>
+                </div>
+                <div className="h-80 overflow-y-auto pr-2 ultra-thin-scrollbar">
                   {addressFields.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {addressFields.map((field, index) => (
@@ -402,126 +428,108 @@ export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
                 </div>
               </div>
 
-              {/* Columna derecha */}
-              <div className="space-y-6">
-                {/* Panel: Estado de la cuenta */}
-                <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <ShieldCheckIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Estado de la cuenta
-                    </span>
-                  </div>
-                  <div className="flex gap-2">
-                    <StatusBadge
-                      isActive={user?.isActive ?? false}
-                      activeText="Activo"
-                      inactiveText="Inactivo"
-                    />
-                  </div>
-                </div>
-
-                {/* Panel: Teléfonos */}
-                <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <PhoneIcon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Teléfonos
-                      </span>
+              {/* Row 3: Teléfonos (right) */}
+              <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4 h-96">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-md bg-rose-50 dark:bg-rose-900/10">
+                      <PhoneIcon className="h-5 w-5 text-rose-600" />
                     </div>
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={() =>
-                        appendPhone({
-                          countryId: 1,
-                          number: "",
-                          isVerified: false,
-                        })
-                      }
-                      className="flex items-center gap-2 mr-9"
-                    >
-                      <PlusIcon className="h-4 w-4" />
-                      Añadir
-                    </Button>
+                    <h3 className="text-base font-semibold text-gray-700 dark:text-gray-300">
+                      Teléfonos
+                    </h3>
                   </div>
-                  <div className="divide-y divide-gray-200 dark:divide-gray-800 max-h-48 overflow-y-auto pr-2 ultra-thin-scrollbar">
-                    {phoneFields.map((field, index) => (
-                      <div
-                        key={`phone-${field.id}-${index}`}
-                        className="py-3 first:pt-0 last:pb-0"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="flex-1">
-                            <RHFInputWithLabel
-                              name={`phones.${index}.number`}
-                              label={`Teléfono ${index + 1}`}
-                              className="flex-1"
-                              type="tel"
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() =>
+                      appendPhone({
+                        countryId: 1,
+                        number: "",
+                        isVerified: false,
+                      })
+                    }
+                    className="flex items-center gap-2 mr-9"
+                  >
+                    <PlusIcon className="h-4 w-4" />
+                    Añadir
+                  </Button>
+                </div>
+                <div className="h-80 divide-y divide-gray-200 dark:divide-gray-800 overflow-y-auto pr-2 ultra-thin-scrollbar">
+                  {phoneFields.map((field, index) => (
+                    <div
+                      key={`phone-${field.id}-${index}`}
+                      className="py-3 first:pt-0 last:pb-0"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="flex-1">
+                          <RHFInputWithLabel
+                            name={`phones.${index}.number`}
+                            label={`Teléfono ${index + 1}`}
+                            className="flex-1"
+                            type="tel"
+                          />
+                        </div>
+                        <div className="flex items-center gap-3 mt-7">
+                          {(phoneWatch[index]?.isVerified ??
+                          phones[index]?.isVerified) ? (
+                            <StatusBadge
+                              isActive={true}
+                              activeText="Verificado"
+                              inactiveText="No"
                             />
-                          </div>
-                          <div className="flex items-center gap-3 mt-7">
-                            {(phoneWatch[index]?.isVerified ??
-                            phones[index]?.isVerified) ? (
-                              <StatusBadge
-                                isActive={true}
-                                activeText="Verificado"
-                                inactiveText="No"
-                              />
-                            ) : (
-                              <LoaderButton
-                                type="button"
-                                onClick={() =>
-                                  handleResendPhone(phoneWatch[index])
-                                }
-                                className="bg-primary text-white px-2 py-1 text-sm"
-                              >
-                                Enviar
-                              </LoaderButton>
-                            )}
-                            <button
+                          ) : (
+                            <LoaderButton
                               type="button"
-                              onClick={() => handleRemovePhone(index)}
-                              className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
-                              aria-label={`Eliminar teléfono ${index + 1}`}
+                              onClick={() =>
+                                handleResendPhone(phoneWatch[index])
+                              }
+                              className="bg-primary text-white px-2 py-1 text-sm"
                             >
-                              <TrashIcon className="h-4 w-4" />
-                            </button>
-                          </div>
+                              Enviar
+                            </LoaderButton>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleRemovePhone(index)}
+                            className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
+                            aria-label={`Eliminar teléfono ${index + 1}`}
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </button>
                         </div>
                       </div>
-                    ))}
-                    {phoneFields.length === 0 && (
-                      <div className="text-sm text-gray-500 dark:text-gray-400 py-2">
-                        No hay teléfonos añadidos.
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Panel: Documentos (reusable list) */}
-                <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <IdentificationIcon className="h-4 w-4" />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Documentos
-                      </span>
                     </div>
-                  </div>
-
-                  <Suspense
-                    fallback={
-                      <div className="py-4">Cargando documentos...</div>
-                    }
-                  >
-                    <UserDocumentsList
-                      documentsPromise={documentsPromise}
-                      userId={user?.id ?? 0}
-                    />
-                  </Suspense>
+                  ))}
+                  {phoneFields.length === 0 && (
+                    <div className="text-sm text-gray-500 dark:text-gray-400 py-2">
+                      No hay teléfonos añadidos.
+                    </div>
+                  )}
                 </div>
+              </div>
+
+              {/* Row 4: Documentos - full width and last */}
+              <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4 md:col-span-2">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-md bg-violet-50 dark:bg-violet-900/10">
+                      <IdentificationIcon className="h-5 w-5 text-violet-600" />
+                    </div>
+                    <h3 className="text-base font-semibold text-gray-700 dark:text-gray-300">
+                      Documentos
+                    </h3>
+                  </div>
+                </div>
+
+                <Suspense
+                  fallback={<div className="py-4">Cargando documentos...</div>}
+                >
+                  <UserDocumentsList
+                    documentsPromise={documentsPromise}
+                    userId={user?.id ?? 0}
+                  />
+                </Suspense>
               </div>
             </div>
           </CardContent>
