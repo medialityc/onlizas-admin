@@ -11,9 +11,9 @@ export interface ClientRoutePermission {
 }
 
 export const CLIENT_ROUTE_PERMISSIONS: ClientRoutePermission[] = [
-  { pattern: "/dashboard/users", perms: ["users:view"] },
-  { pattern: "/dashboard/users/create", perms: ["users:create"] },
-  { pattern: "/dashboard/roles", perms: ["roles:view"] },
+  { pattern: "/dashboard/users", perms: ["READ_ALL", "users:view"] },
+  { pattern: "/dashboard/users/create", perms: ["READ_ALL", "users:create"] },
+  { pattern: "/dashboard/roles", perms: ["READ_ALL", "roles:view"] },
 ];
 
 export function resolveRoutePermissions(pathname: string): string[] {

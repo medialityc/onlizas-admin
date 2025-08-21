@@ -2,7 +2,7 @@
 import Loading from "@/layouts/loading";
 import useRefreshSession from "../hooks/use-refresh-session";
 import { SessionExpiredAlert } from "../components/session-expired-alert";
-import { usePathname,  forbidden } from "next/navigation";
+import { usePathname, forbidden } from "next/navigation";
 import usePermissions from "../hooks/use-permissions";
 import {
   ACTIVE_PERMISSIONS,
@@ -35,8 +35,9 @@ export default function AuthGuard({ children }: Readonly<Props>) {
 
   if (ACTIVE_PERMISSIONS) {
     const required = resolveRoutePermissions(pathname || "");
+
     if (required.length) {
-      const ok = required.every(perms.has);
+      const ok = required.some(perms.has);
       if (!ok) {
         return forbidden();
       }

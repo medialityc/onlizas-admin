@@ -237,7 +237,6 @@ export function UserList({
         accessor: "actions",
         title: "Acciones",
         titleClassName: "bg-gray-500 dark:bg-gray-800",
-        cellsClassName: "flex justify-center items-center",
         width: 100,
         render: (user) => (
           <ActionsMenu
