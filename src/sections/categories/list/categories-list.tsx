@@ -22,7 +22,6 @@ export function CategoriesList({
   searchParams,
   onSearchParamsChange,
 }: CategoriesListProps) {
-  // const queryClient = useQueryClient();
   const router = useRouter();
 
   const handleCreateCategory = useCallback(() => {
