@@ -43,11 +43,11 @@ function CategoryFallback() {
 }
 
 interface EditPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function EditCategoryPage({ params }: EditPageProps) {
-  const res = await getCategoryById(params.id);
+  const res = await getCategoryById((await params).id);
   if (!res || res.error || !res.data) notFound();
 
   return (
