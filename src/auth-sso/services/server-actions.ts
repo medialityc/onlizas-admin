@@ -2,12 +2,7 @@
 
 import { cookies as cookiesFn } from "next/headers";
 import { SessionData, Tokens, User } from "../types";
-import {
-  COOKIE_SESSION_NAME,
-  COOKIE_PERMISSIONS_NAME,
-  ENDPOINTS,
-  MAX_COOKIES_AGE,
-} from "../lib/config";
+import { COOKIE_SESSION_NAME, ENDPOINTS, MAX_COOKIES_AGE } from "../lib/config";
 import { ApiResponse } from "@/types/fetch/api";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { decrypt, encrypt } from "../lib/crypto";
@@ -19,14 +14,14 @@ export const storeSession = async (
   session: SessionData,
   callbacks?: { onSuccess?: () => void; onError?: (error: unknown) => void }
 ) => {
+
   try {
     const data: SessionData = {
       tokens: {
         ...(session.tokens as Tokens),
-        ...(session.tokens as Tokens),
+        ...(session.tokens as Tokens),       
       },
       user: {
-        id: session.user?.id as User["id"],
         emails: session.user?.emails as User["emails"],
         name: session.user?.name as User["name"],
         phones: session.user?.phones as User["phones"],
@@ -42,20 +37,6 @@ export const storeSession = async (
       sameSite: "lax",
       maxAge: MAX_COOKIES_AGE,
     });
-    // Cookie ligera de permisos (sin datos sensibles). Permisos únicos separados por coma.
-    const permSet = new Set<string>();
-    session.user?.roles?.forEach((r) =>
-      r.permissions?.forEach((p) => p.code && permSet.add(p.code))
-    );
-    console.log("[PERM] server", permSet);
-    // if (permSet.size) {
-    //   cookies.set(COOKIE_PERMISSIONS_NAME, Array.from(permSet).join("."), {
-    //     httpOnly: false, // accesible en cliente
-    //     secure: process.env.NODE_ENV === "production",
-    //     sameSite: "lax",
-    //     maxAge: MAX_COOKIES_AGE,
-    //   });
-    // }
     callbacks?.onSuccess?.();
   } catch (error) {
     callbacks?.onError?.(error);
@@ -73,7 +54,6 @@ export const clearSession = async (callbacks?: {
   const cookies = await cookiesFn();
   try {
     cookies.delete(COOKIE_SESSION_NAME);
-    cookies.delete(COOKIE_PERMISSIONS_NAME);
     callbacks?.onSuccess?.();
   } catch (error) {
     callbacks?.onError?.(error);
@@ -165,17 +145,5 @@ export const getSession = async () => {
     return JSON.parse(decryptedData) as SessionData;
   } catch {
     return { user: null, tokens: null, shouldClear: true };
-  }
-};
-
-// Obtener permisos ligeros desde cookie (edge/client friendly)
-export const getPermissions = async (): Promise<string[]> => {
-  try {
-    const cookies = await cookiesFn();
-    const raw = cookies.get(COOKIE_PERMISSIONS_NAME)?.value || "";
-    if (!raw) return [];
-    return raw.split(".").filter(Boolean);
-  } catch {
-    return [];
   }
 };
