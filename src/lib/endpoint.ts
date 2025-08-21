@@ -1,3 +1,5 @@
+import { update } from "lodash";
+
 export const backendRoutes = {
   countries: { get: `${process.env.NEXT_PUBLIC_API_URL}countries` },
   users: {
@@ -152,8 +154,11 @@ export const backendRoutes = {
     listProvider: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/supplier/${id}`,
     delete: (id: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_URL}user/store${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
     storeById: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}stores/admin/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
+    update: (id: number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
+
   },
 };
