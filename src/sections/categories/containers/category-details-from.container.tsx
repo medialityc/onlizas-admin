@@ -104,47 +104,49 @@ const CategoryDetailsContainer = ({ category }: Props) => {
         <CardHeader>
           <CardTitle className="text-lg font-bold">Características</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex flex-col gap-4">
           {category?.features?.map((fet) => (
-            <div
-              key={fet?.featureId}
-              className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4"
-            >
-              <div className="col-span-1 md:col-span-2 flex flex-row gap-2 justify-between">
-                <p className="text-sm font-bold">Nombre:</p>
-                <p className="text-sm font-normal">{fet?.featureName}</p>
-              </div>
-              <div className="col-span-1 md:col-span-2 flex flex-row gap-2 justify-between">
-                <p className="text-sm font-bold">Descripción:</p>
-                <p className="text-sm font-normal">{fet?.featureDescription}</p>
-              </div>
-              <div className="col-span-1 flex flex-row gap-2 justify-between items-center">
-                <p className="text-sm font-bold">Obligatoria:</p>
-                <Badge variant={fet.isRequired ? "success" : "secondary"}>
-                  {fet.isRequired ? "Activo" : "Inactivo"}
-                </Badge>
-              </div>
-
-              <div className="col-span-1 flex flex-row gap-2 justify-between items-center">
-                <p className="text-sm font-bold">Principal:</p>
-                <Badge variant={fet.isRequired ? "success" : "secondary"}>
-                  {fet.isRequired ? "Activo" : "Inactivo"}
-                </Badge>
-              </div>
-
-              {/* suggestion */}
-              {fet?.suggestions && (
-                <div className="col-span-1 md:col-span-2 gap-2">
-                  <p className="text-sm font-bold">Sugerencias:</p>
-                  <div className="flex flex-row flex-wrap gap-2">
-                    {fet?.suggestions?.map((sug) => (
-                      <Badge key={sug} variant={"outline-primary"}>
-                        {sug}
-                      </Badge>
-                    ))}
-                  </div>
+            <div key={fet?.featureId}>
+              <div className="border-b-2 my-2" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="col-span-1 md:col-span-2 flex flex-row gap-2 justify-between">
+                  <p className="text-sm font-bold">Nombre:</p>
+                  <p className="text-sm font-normal">{fet?.featureName}</p>
                 </div>
-              )}
+                <div className="col-span-1 md:col-span-2 flex flex-row gap-2 justify-between">
+                  <p className="text-sm font-bold">Descripción:</p>
+                  <p className="text-sm font-normal">
+                    {fet?.featureDescription}
+                  </p>
+                </div>
+                <div className="col-span-1 flex flex-row gap-2 justify-between items-center">
+                  <p className="text-sm font-bold">Obligatoria:</p>
+                  <Badge variant={fet.isRequired ? "success" : "secondary"}>
+                    {fet.isRequired ? "Activo" : "Inactivo"}
+                  </Badge>
+                </div>
+
+                <div className="col-span-1 flex flex-row gap-2 justify-between items-center">
+                  <p className="text-sm font-bold">Principal:</p>
+                  <Badge variant={fet.isRequired ? "success" : "secondary"}>
+                    {fet.isRequired ? "Activo" : "Inactivo"}
+                  </Badge>
+                </div>
+
+                {/* suggestion */}
+                {fet?.suggestions && (
+                  <div className="flex flex-row flex-wrap col-span-1 md:col-span-2 gap-2 justify-between items-center">
+                    <p className="text-sm font-bold">Sugerencias:</p>
+                    <div className="flex flex-row flex-wrap gap-2">
+                      {fet?.suggestions?.map((sug) => (
+                        <Badge key={sug} variant={"outline-primary"}>
+                          {sug}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </CardContent>

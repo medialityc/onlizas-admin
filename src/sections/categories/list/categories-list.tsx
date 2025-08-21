@@ -7,10 +7,8 @@ import { SearchParams } from "@/types/fetch/request";
 import { DataTableColumn } from "mantine-datatable";
 import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-
-import { useQueryClient } from "@tanstack/react-query";
 import { Category, GetAllCategories } from "@/types/categories";
-import { deleteCategory } from "@/services/categories";
+import { toggleStatusCategory } from "@/services/categories";
 import { paths } from "@/config/paths";
 
 interface CategoriesListProps {
@@ -24,14 +22,8 @@ export function CategoriesList({
   searchParams,
   onSearchParamsChange,
 }: CategoriesListProps) {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   const router = useRouter();
-
-  /* const selectedCategory = useMemo(() => {
-    const id = editCategoryModal.id || viewCategoryModal.id;
-    if (!id || !data?.data) return null;
-    return data.data.find((category) => category.id == id);
-  }, [editCategoryModal, viewCategoryModal, data?.data]); */
 
   const handleCreateCategory = useCallback(() => {
     router.push("/dashboard/categories/new");
@@ -51,24 +43,23 @@ export function CategoriesList({
     [router]
   );
 
-  const handleDeleteCategory = useCallback(
-    async (category: Category) => {
-      try {
-        const res = await deleteCategory(category.id);
-        if (res?.error && res.message) {
-          console.error(res);
-          showToast(res.message, "error");
-        } else {
-          queryClient.invalidateQueries({ queryKey: ["categories"] });
-          showToast("Categoría eliminada correctamente", "success");
-        }
-      } catch (error) {
-        console.error(error);
-        showToast("Ocurrió un error, intente nuevamente", "error");
+  const handleToggleActiveCategory = useCallback(async (category: Category) => {
+    try {
+      const res = await toggleStatusCategory(category?.id as number);
+      if (res?.error && res.message) {
+        console.error(res);
+        showToast(res.message, "error");
+      } else {
+        showToast(
+          `Categoría ${(res.data as unknown as Category)?.isActive ? "activada" : "desactivada"}  correctamente`,
+          "success"
+        );
       }
-    },
-    [queryClient]
-  );
+    } catch (error) {
+      console.error(error);
+      showToast("Ocurrió un error, intente nuevamente", "error");
+    }
+  }, []);
 
   const columns = useMemo<DataTableColumn<Category>[]>(
     () => [
@@ -151,15 +142,17 @@ export function CategoriesList({
         render: (category) => (
           <div className="flex justify-center">
             <ActionsMenu
+              isActive={category.isActive}
+              onActive={() => handleToggleActiveCategory(category)}
               onViewDetails={() => handleViewCategory(category)}
               onEdit={() => handleEditCategory(category)}
-              onDelete={() => handleDeleteCategory(category)}
+              //  onDelete={() => handleDeleteCategory(category)}
             />
           </div>
         ),
       },
     ],
-    [handleViewCategory, handleEditCategory, handleDeleteCategory]
+    [handleToggleActiveCategory, handleViewCategory, handleEditCategory]
   );
 
   return (

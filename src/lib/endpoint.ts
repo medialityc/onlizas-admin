@@ -53,8 +53,8 @@ export const backendRoutes = {
     create: `${process.env.NEXT_PUBLIC_API_URL}categories`, // POST
     list: `${process.env.NEXT_PUBLIC_API_URL}admin/categories`, // GET
     listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/categories`, // GET
-    delete: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}categories/${id}`, // DELETE
+    toggleStatus: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}categories/${id}/toggle-status`, // TOGGLE STATUS
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}categories/${id}`, // PUT
     detail: (id: string | number) =>

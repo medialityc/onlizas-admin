@@ -5,7 +5,7 @@ import CategoryDetailsContainer from "@/sections/categories/containers/category-
 import { Suspense } from "react";
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export const metadata = {
@@ -47,7 +47,7 @@ function CategoryFallback() {
 }
 
 export default async function CategoryDetailPage({ params }: Props) {
-  const res = await getCategoryById(params.id);
+  const res = await getCategoryById((await params).id);
   if (!res || res.error || !res.data) notFound();
 
   return (
