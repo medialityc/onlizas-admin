@@ -1,15 +1,35 @@
-// TODO: Implement product management table
+import { buildQueryParams } from "@/lib/request";
+import { Suspense } from "react";
+import { getAllProducts } from "@/services/products-mock";
+import ProductsListContainer from "@/sections/products/list/products-list-container";
+import ProductsListProviderContainer from "@/sections/provider-management/products/list/products-list-container";
 
-import { Metadata } from "next";
+function ProductsListFallback() {
+  return (
+    <div className="space-y-4 animate-pulse">
+      <div className="h-8 bg-gray-200 rounded w-1/4" />
+      <div className="h-6 bg-gray-200 rounded w-full" />
+      <div className="h-6 bg-gray-200 rounded w-5/6" />
+      <div className="h-6 bg-gray-200 rounded w-2/3" />
+    </div>
+  );
+}
 
-export const metadata: Metadata = {
-  title: "Products | ZAS Express",
-  description: "Product management for ZAS Express provider",
-  icons: {
-    icon: "/assets/images/NEWZAS.svg",
-  },
-};
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[]>>;
+}) {
+  const params = await searchParams;
+  const query = buildQueryParams(params);
+  const productsPromise = getAllProducts(query);
 
-export default function ProductsPage() {
-  return <h1>Product Management</h1>;
+  return (
+    <Suspense fallback={<ProductsListFallback />}>
+      <ProductsListProviderContainer
+        productsPromise={productsPromise}
+        query={params} // <-- Solo parámetros planos, nunca el objeto con pagination
+      />
+    </Suspense>
+  );
 }
