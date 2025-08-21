@@ -29,13 +29,27 @@ export const handleApiServerError = async <T>(
         message: getErrorMessage(error),
       };
     } else {
-      // No es JSON, intentamos obtener texto plano
       const errorText = await response.text();
-      console.error("API Error on text:", { error: errorText, url: response });
+      console.error("API Error on text:", {
+        error: errorText,
+        url: response,
+      });
+
+      let message = errorText || "Ocurrió un error inesperado";
+      try {
+        const maybeJson = JSON.parse(errorText);
+        message = getErrorMessage(maybeJson);
+      } catch {
+        // keep message as text
+      }
+      console.error("API Error on text:", {
+        error: errorText,
+        url: response.url,
+      });
       return {
         error: true,
         status: response.status,
-        message: errorText || "Ocurrió un error inesperado",
+        message,
       };
     }
   } catch (err) {
@@ -78,12 +92,45 @@ export const buildApiResponseAsync = async <T>(
 };
 
 export const getErrorMessage = (error: unknown): string => {
-  if (typeof error === "string") return error;
+  if (typeof error === "string") {
+    // try parse JSON string
+    try {
+      const parsed = JSON.parse(error);
+      return getErrorMessage(parsed);
+    } catch {
+      return error;
+    }
+  }
   if (error instanceof Error) return error.message;
   if (error instanceof ApiError) return error.detail;
   if (isApiError(error)) return error.detail;
+  // Backend common shape: { statusCode, message, errors: { field: [msg] } }
+  if (typeof error === "object" && error && !Array.isArray(error)) {
+    const anyErr = error as Record<string, any>;
+    const baseMessage: string | undefined =
+      anyErr.message || anyErr.title || anyErr.detail;
+    const errorsMap = anyErr.errors;
+    if (errorsMap && typeof errorsMap === "object") {
+      const fieldMessages: string[] = [];
+      for (const [field, messages] of Object.entries(errorsMap)) {
+        if (Array.isArray(messages)) {
+          fieldMessages.push(`${field}: ${messages.join(", ")}`);
+        } else if (typeof messages === "string") {
+          fieldMessages.push(`${field}: ${messages}`);
+        }
+      }
+      if (fieldMessages.length > 0) {
+        return fieldMessages.join(" | ");
+      }
+    }
+    if (baseMessage) return baseMessage;
+  }
   if (Array.isArray(error)) {
-    return error.map(e => e.detail).join(", ");
+    // array of error objects or strings
+    return (error as any[])
+      .map((e) => (typeof e === "string" ? e : e?.detail || e?.message))
+      .filter(Boolean)
+      .join(", ");
   }
   return "Ocurrió un error inesperado...";
 };

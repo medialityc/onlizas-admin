@@ -162,7 +162,7 @@ export default function CurrenciesModal({
             <LoaderButton
               type="submit"
               loading={isSubmitting}
-              className="btn btn-primary text-textColor"
+              className="btn btn-primary"
             >
               {currency ? "Editar" : "Crear"} Moneda
             </LoaderButton>

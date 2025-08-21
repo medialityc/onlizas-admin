@@ -12,6 +12,8 @@ export const paths = {
     },
     categories: {
       list: `${DASHBOARD}/categories`,
+      view: (id: string | number) => `${DASHBOARD}/categories/${id}`,
+      edit: (id: string | number) => `${DASHBOARD}/categories/${id}/edit`,
     },
     departments: {
       list: `${DASHBOARD}/departments`,
@@ -49,6 +51,9 @@ export const paths = {
     },
     business: {
       list: `${DASHBOARD}/business`,
+    },
+    stores: {
+      list: `${DASHBOARD}/stores`,
     },
   },
   provider: {

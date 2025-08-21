@@ -94,18 +94,18 @@ const ActionsMenu = ({
         <Menu.Dropdown className="bg-white text-gray-700 space-y-2 border border-gray-200 px-1 dark:bg-black">
           <Menu.Label>Opciones</Menu.Label>
           {onViewDetails && (
-          <Menu.Item
-            className="p-1 text-sm hover:text-primary"
-            leftSection={<EyeIcon className="h-4 w-4" />}
-            onClick={onViewDetails}
-          >
-            Ver detalles
-          </Menu.Item>
+            <Menu.Item
+              className="p-1 text-sm  hover:text-white"
+              leftSection={<EyeIcon className="h-4 w-4" />}
+              onClick={onViewDetails}
+            >
+              Ver detalles
+            </Menu.Item>
           )}
 
           {onDownload && (
             <Menu.Item
-              className="p-1 text-sm  hover:text-textColor dark:text-textColor"
+              className="p-1 text-sm  hover:text-white"
               leftSection={<ArrowDownTrayIcon className="h-4 w-4 " />}
               onClick={onDownload}
             >
@@ -115,7 +115,7 @@ const ActionsMenu = ({
 
           {onEdit && (
             <Menu.Item
-              className="p-1 text-sm hover:text-textColor"
+              className="p-1 text-sm hover:text-white"
               leftSection={<PencilIcon className="h-4 w-4 " />}
               onClick={onEdit}
             >
@@ -125,7 +125,7 @@ const ActionsMenu = ({
 
           {onEditFull && (
             <Menu.Item
-              className="p-1 text-sm hover:text-textColor dark:text-textColor"
+              className="p-1 text-sm hover:text-white"
               leftSection={<Cog6ToothIcon className="h-4 w-4 " />}
               onClick={onEditFull}
             >
@@ -135,7 +135,7 @@ const ActionsMenu = ({
 
           {onModifyAttributes && (
             <Menu.Item
-              className="p-1 text-sm hover:text-textColor dark:text-textColor"
+              className="p-1 text-sm hover:text-white"
               leftSection={<Cog6ToothIcon className="h-4 w-4 " />}
               onClick={onModifyAttributes}
             >
@@ -145,7 +145,7 @@ const ActionsMenu = ({
 
           {onPay && (
             <Menu.Item
-              className="p-1 text-sm hover:text-textColor dark:text-textColor"
+              className="p-1 text-sm hover:text-white"
               leftSection={<CurrencyDollarIcon className="h-4 w-4 " />}
               onClick={onPay}
             >
@@ -155,7 +155,7 @@ const ActionsMenu = ({
 
           {onVerify && (
             <Menu.Item
-              className="p-1 text-sm hover:text-textColor dark:text-textColor"
+              className="p-1 text-sm hover:text-white"
               leftSection={<CheckIcon className="h-4 w-4 " />}
               onClick={onVerify}
             >
@@ -165,7 +165,7 @@ const ActionsMenu = ({
 
           {onBlocked && (
             <Menu.Item
-              className="p-1 text-sm hover:text-textColor dark:text-textColor"
+              className="p-1 text-sm hover:text-white"
               leftSection={<LockClosedIcon className="h-4 w-4 " />}
               onClick={onBlocked}
             >
@@ -184,7 +184,7 @@ const ActionsMenu = ({
           )}
           {onAddUsers && (
             <Menu.Item
-              className="p-1 text-sm hover:text-textColor dark:text-textColor"
+              className="p-1 text-sm hover:text-white"
               leftSection={<UserPlusIcon className="h-4 w-4 " />}
               onClick={onAddUsers}
             >

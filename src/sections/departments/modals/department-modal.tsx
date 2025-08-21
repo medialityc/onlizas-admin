@@ -224,7 +224,7 @@ export default function DepartmentModal({
             <LoaderButton
               type="submit"
               loading={isSubmitting}
-              className="btn btn-primary text-textColor"
+              className="btn btn-primary"
             >
               {department ? "Editar" : "Crear"} Departamento
             </LoaderButton>

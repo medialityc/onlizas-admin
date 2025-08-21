@@ -12,6 +12,11 @@ import {
   UserIcon,
   CalendarIcon,
 } from "@heroicons/react/24/solid";
+import {
+  GlobeAltIcon,
+  BriefcaseIcon,
+  IdentificationIcon,
+} from "@heroicons/react/24/outline";
 
 interface SuppliersDetailsModalProps {
   supplier: Supplier;
@@ -63,6 +68,48 @@ function SuppliersGeneralInfo({ supplier }: { supplier: Supplier }) {
             {supplier.email}
           </p>
         </div>
+
+        {typeof supplier.sellerType !== "undefined" && (
+          <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <BriefcaseIcon className="size-5 text-indigo-500" />
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                Tipo de vendedor
+              </label>
+            </div>
+            <p className="text-lg text-gray-900 dark:text-white font-medium">
+              {supplier.sellerType}
+            </p>
+          </div>
+        )}
+
+        {supplier.nacionality && (
+          <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <GlobeAltIcon className="size-5 text-emerald-500" />
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                Nacionalidad
+              </label>
+            </div>
+            <p className="text-lg text-gray-900 dark:text-white font-medium">
+              {supplier.nacionality}
+            </p>
+          </div>
+        )}
+
+        {supplier.mincexCode && (
+          <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <IdentificationIcon className="size-5 text-rose-500" />
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                Código Mincex
+              </label>
+            </div>
+            <p className="text-lg text-gray-900 dark:text-white font-medium">
+              {supplier.mincexCode}
+            </p>
+          </div>
+        )}
 
         <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 shadow-sm">
           <div className="flex items-center gap-2 mb-2">

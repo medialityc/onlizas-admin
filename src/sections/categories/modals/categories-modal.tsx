@@ -55,7 +55,7 @@ export default function CategoriesModal({
                 ? `/dashboard/categories/${category.id}/edit`
                 : "/dashboard/categories/new"
             }
-            className="btn btn-primary text-textColor"
+            className="btn btn-primary "
           >
             {category ? "Editar en vista" : "Crear en vista"}
           </Link>

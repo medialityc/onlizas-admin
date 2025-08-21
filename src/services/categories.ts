@@ -13,8 +13,6 @@ import { Category, GetAllCategories } from "@/types/categories";
 export async function createCategory(
   data: FormData
 ): Promise<ApiResponse<ApiStatusResponse>> {
-  console.log(data);
-
   const res = await nextAuthFetch({
     url: backendRoutes.categories.create,
     method: "POST",
@@ -22,10 +20,27 @@ export async function createCategory(
     useAuth: true,
   });
 
-  if (!res.ok) return handleApiServerError(res);
+  if (!res.ok) throw await handleApiServerError(res);
+
+  revalidateTag("categories");
+  return buildApiResponseAsync<ApiStatusResponse>(res);
+}
+
+export async function updateCategory(
+  id: string | number,
+  data: FormData
+): Promise<ApiResponse<Category>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.categories.update(id),
+    method: "PUT",
+    data,
+    useAuth: true,
+  });
+
+  if (!res.ok) throw await handleApiServerError(res);
   revalidateTag("categories");
 
-  return buildApiResponseAsync<ApiStatusResponse>(res);
+  return buildApiResponseAsync<Category>(res);
 }
 
 export async function deleteCategory(
@@ -61,23 +76,6 @@ export async function getAllCategories(
   if (!res.ok) return handleApiServerError(res);
 
   return buildApiResponseAsync<GetAllCategories>(res);
-}
-
-export async function updateCategory(
-  id: string | number,
-  data: FormData
-): Promise<ApiResponse<Category>> {
-  const res = await nextAuthFetch({
-    url: backendRoutes.categories.update(id),
-    method: "PUT",
-    data,
-    useAuth: true,
-  });
-
-  if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
-
-  return buildApiResponseAsync<Category>(res);
 }
 
 export async function getCategoryById(

@@ -3,16 +3,15 @@
 import { DataGrid } from "@/components/datagrid/datagrid";
 import ActionsMenu from "@/components/menu/actions-menu";
 import showToast from "@/config/toast/toastConfig";
-import { useModalState } from "@/hooks/use-modal-state";
 import { SearchParams } from "@/types/fetch/request";
 import { DataTableColumn } from "mantine-datatable";
 import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
-import CategoriesModalContainer from "../modals/categories-modal-container";
 import { useQueryClient } from "@tanstack/react-query";
 import { Category, GetAllCategories } from "@/types/categories";
 import { deleteCategory } from "@/services/categories";
+import { paths } from "@/config/paths";
 
 interface CategoriesListProps {
   data?: GetAllCategories;
@@ -25,35 +24,31 @@ export function CategoriesList({
   searchParams,
   onSearchParamsChange,
 }: CategoriesListProps) {
-  const { getModalState, openModal, closeModal } = useModalState();
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const editCategoryModal = getModalState<number>("edit");
-  const viewCategoryModal = getModalState<number>("view");
-
-  const selectedCategory = useMemo(() => {
+  /* const selectedCategory = useMemo(() => {
     const id = editCategoryModal.id || viewCategoryModal.id;
     if (!id || !data?.data) return null;
     return data.data.find((category) => category.id == id);
-  }, [editCategoryModal, viewCategoryModal, data?.data]);
+  }, [editCategoryModal, viewCategoryModal, data?.data]); */
 
   const handleCreateCategory = useCallback(() => {
     router.push("/dashboard/categories/new");
   }, [router]);
 
   const handleEditCategory = useCallback(
-    (category: Category) => {
-      router.push(`/dashboard/categories/${category.id}/edit`);
+    (cat: Category) => {
+      router.push(`/dashboard/categories/${cat.id}/edit`);
     },
     [router]
   );
 
   const handleViewCategory = useCallback(
-    (category: Category) => {
-      openModal<number>("view", category.id);
+    (cat: Category) => {
+      return router.push(paths.dashboard.categories.view(cat.id));
     },
-    [openModal]
+    [router]
   );
 
   const handleDeleteCategory = useCallback(
@@ -177,17 +172,18 @@ export function CategoriesList({
         searchPlaceholder="Buscar categorías..."
         onCreate={handleCreateCategory}
         emptyText="No se encontraron categorías"
+        createText="Crear categoría"
       />
       {/* Creación/edición redirige a vistas; mantenemos modal de detalles */}
       {/* Details Modal */}
-      {selectedCategory && (
+      {/* {selectedCategory && (
         <CategoriesModalContainer
           onClose={() => closeModal("view")}
           open={viewCategoryModal.open}
           category={selectedCategory}
           isDetailsView
         />
-      )}
+      )} */}
     </>
   );
 }

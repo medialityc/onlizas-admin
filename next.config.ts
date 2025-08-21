@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "50mb", // Aumenta el límite según tus necesidades
     },
+    authInterrupts: true,
   },
   images: {
     remotePatterns: [

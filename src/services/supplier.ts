@@ -18,7 +18,7 @@ import {
   Supplier,
   SupplierDetails,
 } from "@/types/suppliers";
-import { WithLoginForm } from "@/sections/suppliers/edit/whitloginSchema";
+import { WithLoginForm } from "@/sections/suppliers/edit/login-user/whitloginSchema";
 
 export async function createSupplier(
   data: FormData

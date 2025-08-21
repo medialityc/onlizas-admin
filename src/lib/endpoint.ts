@@ -31,6 +31,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${userId}/documents/${documentId}/download`,
     scan_document: `${process.env.NEXT_PUBLIC_API_URL}users/scan-document`,
     listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/users`, // GET
+    listSuppliers: `${process.env.NEXT_PUBLIC_API_URL}users/suppliers`,
   },
   roles: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}roles`,
@@ -57,15 +58,15 @@ export const backendRoutes = {
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}categories/${id}`, // PUT
     detail: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}categories/${id}`, // GET
+      `${process.env.NEXT_PUBLIC_API_URL}categories/admin/${id}`, // GET
   },
   products: {
-    create: `${process.env.NEXT_PUBLIC_API_URL}admin/products`, // POST
-    list: `${process.env.NEXT_PUBLIC_API_URL}admin/products`, // GET
+    create: `${process.env.NEXT_PUBLIC_API_URL}products`, // POST
+    list: `${process.env.NEXT_PUBLIC_API_URL}products`, // GET
     delete: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/products/${id}`, // DELETE
+      `${process.env.NEXT_PUBLIC_API_URL}products/${id}`, // DELETE
     update: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/products/${id}`, // PUT
+      `${process.env.NEXT_PUBLIC_API_URL}products/${id}`, // PUT
     deactivate: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/products/${id}/deactivate`, // PATCH
     canDelete: (id: string | number) =>
@@ -112,6 +113,8 @@ export const backendRoutes = {
   },
   business: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}businesses`,
+    getByUser: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}users/${id}/businesses`,
     getAllLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/business`,
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/businesses`,
     update: (id: string | number) =>
@@ -138,5 +141,21 @@ export const backendRoutes = {
     userNotifications: `${process.env.NEXT_PUBLIC_API_URL}admin/user/notifications/`,
     delete: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/notifications/${id}`,
+  },
+  documents: {
+    validate: (id: number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}documents/${id}/validate`, // PUT
+    create: `${process.env.NEXT_PUBLIC_API_URL}documents`, // POST
+  },
+  store: {
+    create: `${process.env.NEXT_PUBLIC_API_URL}stores/admin`,
+    list: `${process.env.NEXT_PUBLIC_API_URL}stores/metrics`,
+    listAll: `${process.env.NEXT_PUBLIC_API_URL}stores`,
+    listProvider: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/supplier/${id}`,
+    delete: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}user/store${id}`,
+    storeById: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/admin/${id}`,
   },
 };

@@ -4,12 +4,37 @@ export type Supplier = {
   id: number;
   name: string;
   email: string;
+  phone: string;
+  address: string;
   type: string;
   currentRating: number;
   lastEvaluationDate: string;
   isActive: boolean;
   isAproved: boolean;
   state: "Pending" | "WaitingLogin" | "Approved" | "Rejected";
+  expirationDate: string;
+  message: string;
+  sellerType?: "Persona" | "Empresa" | "";
+  nacionality?: "Nacional" | "Extranjero" | "Ambos" | "";
+  mincexCode?: string;
+  pendingDocuments: Document[];
+  approvedDocuments: Document[];
+  pendingCategories: Category[];
+  approvedCategories: Category[];
+};
+
+export type Category = {
+  id: number;
+  name: string;
+  state: boolean;
+  departmentId: number;
+  departmentName: string;
+};
+
+export type Document = {
+  id: number;
+  fileName: string;
+  content: string;
 };
 
 export type CreateSupplier = {

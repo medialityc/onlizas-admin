@@ -178,7 +178,7 @@ const UserCreateForm = ({ onSuccess }: Props) => {
 
         <LoaderButton
           type="submit"
-          className="btn btn-primary text-textColor mt-6! w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]"
+          className="btn btn-primary mt-6! w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]"
           disabled={!form.formState.isValid || form.formState.isSubmitting}
           loading={form.formState.isSubmitting}
         >
