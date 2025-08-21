@@ -113,3 +113,20 @@ export async function createStore(data: FormData): Promise<ApiResponse<Store>> {
   console.log("Store created successfully", res);
   return buildApiResponseAsync<Store>(res);
 }
+
+export async function updateStore(
+  id: number,
+  data: FormData
+): Promise<ApiResponse<Store | undefined>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.store.update(id),
+    method: "PUT",
+    data,
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("stores");
+  return buildApiResponseAsync<Store>(res);
+}
+
