@@ -202,7 +202,7 @@ export default function StoresCreateModal({
             {/* Logo Upload */}
             <RHFImageUpload
               name="logoStyle"
-              label="Logo de la tienda *"
+              label="Logo de la tienda"
               variant="rounded"
               size="full"
               className="[&>label]:text-base"
@@ -233,7 +233,7 @@ export default function StoresCreateModal({
             {/* Address Input */}
             <RHFInputWithLabel
               name="address"
-              label="Dirección *"
+              label="Dirección"
               placeholder="Calle Principal 123, Ciudad, País"
               maxLength={200}
               rows={3}
@@ -244,7 +244,7 @@ export default function StoresCreateModal({
             {/* Return Policy Input */}
             <RHFInputWithLabel
               name="returnPolicy"
-              label="Política de Reembolso *"
+              label="Política de Reembolso"
               placeholder=" Escriba la política que seguirá su tienda"
               maxLength={200}
               rows={3}
@@ -256,7 +256,7 @@ export default function StoresCreateModal({
             {/* Shipping Policy Input */}
             <RHFInputWithLabel
               name="shippingPolicy"
-              label="Política de Envío *"
+              label="Política de Envío"
               placeholder=" Escriba la política que seguirá su tienda"
               maxLength={200}
               rows={3}
@@ -268,7 +268,7 @@ export default function StoresCreateModal({
             {/* Terms of Service Input */}
             <RHFInputWithLabel
               name="termsOfService"
-              label="Términos del Servicio *"
+              label="Términos del Servicio"
               placeholder=" Escriba la términos que seguirá su tienda"
               maxLength={200}
               rows={3}
