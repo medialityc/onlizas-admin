@@ -47,15 +47,15 @@ export const storeSession = async (
     session.user?.roles?.forEach((r) =>
       r.permissions?.forEach((p) => p.code && permSet.add(p.code))
     );
-    console.log("[PERM] server", permSet)
-    if (permSet.size) {
-      cookies.set(COOKIE_PERMISSIONS_NAME, Array.from(permSet).join("."), {
-        httpOnly: false, // accesible en cliente
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: MAX_COOKIES_AGE,
-      });
-    }
+    console.log("[PERM] server", permSet);
+    // if (permSet.size) {
+    //   cookies.set(COOKIE_PERMISSIONS_NAME, Array.from(permSet).join("."), {
+    //     httpOnly: false, // accesible en cliente
+    //     secure: process.env.NODE_ENV === "production",
+    //     sameSite: "lax",
+    //     maxAge: MAX_COOKIES_AGE,
+    //   });
+    // }
     callbacks?.onSuccess?.();
   } catch (error) {
     callbacks?.onError?.(error);

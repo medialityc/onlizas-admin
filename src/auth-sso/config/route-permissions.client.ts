@@ -3,7 +3,7 @@
 // Cada entrada: { pattern, perms } donde pattern es un prefijo de pathname.
 // Estrategia: se elige la coincidencia más específica (prefijo más largo) y se valida que el usuario tenga TODOS los permisos listados.
 
-export const ACTIVE_PERMISSIONS = true; // cambiar a false para desactivar globalmente
+export const ACTIVE_PERMISSIONS = false; // cambiar a false para desactivar globalmente
 
 export interface ClientRoutePermission {
   pattern: string; // ej: '/dashboard/users'
