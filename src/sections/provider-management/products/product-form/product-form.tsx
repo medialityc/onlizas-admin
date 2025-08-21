@@ -76,7 +76,7 @@ function ProductFormProvider({
         methods.reset(defaultProductFormValues);
         onClose?.();
       } else {
-        router.push(paths.dashboard.products.list);
+        router.push(paths.provider.products.list);
       }
     },
   });
@@ -89,7 +89,7 @@ function ProductFormProvider({
     if (isModal) {
       onClose?.();
     } else {
-      router.push(paths.dashboard.products.list);
+      router.push(paths.provider.products.list);
     }
   };
 

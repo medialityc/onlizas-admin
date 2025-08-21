@@ -1,7 +1,7 @@
-import { Suspense } from 'react';
-import { getProductById } from '@/services/products-mock';
-import { notFound } from 'next/navigation';
-import ProductForm from '@/sections/products/product-form';
+import { Suspense } from "react";
+import { getProductById } from "@/services/products-mock";
+import { notFound } from "next/navigation";
+import ProductFormProvider from "@/sections/provider-management/products/product-form/product-form";
 
 // Esqueleto de carga
 function ProductEditFallback() {
@@ -32,21 +32,20 @@ function ProductEditFallback() {
   );
 }
 
-
-
-export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function EditProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params; // Next 15 params es una Promesa
-    const response = await getProductById(Number(id));
+  const response = await getProductById(Number(id));
   if (!response?.data) notFound();
-  
+
   const product = response.data;
 
   return (
     <Suspense fallback={<ProductEditFallback />}>
-      <ProductForm
-        product={product} 
-        isModal={false} 
-      />
+      <ProductFormProvider product={product} isModal={false} />
     </Suspense>
   );
 }

@@ -1,12 +1,16 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import {
+  InformationCircleIcon,
+  ClipboardDocumentIcon,
+} from "@heroicons/react/24/outline";
 import { Button } from "@/components/button/button";
 import TabsWithIcons from "@/components/tab/tabs";
 import IconSettings from "@/components/icon/icon-settings";
 import { PersonalInfoTab } from "./components/personal-info-tab";
 import { AccountSettingsTab } from "./components/account-settings-tab-new";
+import VendorRequestsTab from "./components/vendor-requests-tab";
 import { SearchParams } from "@/types/fetch/request";
 import { useUserProfile } from "@/hooks/react-query/use-user-profile";
 import { ProfileSkeleton } from "@/sections/provider-management/profile/components/profile-skeleton";
@@ -70,6 +74,7 @@ export default function ProfileContainer({ query }: ProfileContainerProps) {
                 />
               ),
             },
+
             {
               label: "Información Comercial",
               icon: <IconSettings className="h-5 w-5" />,
@@ -79,6 +84,11 @@ export default function ProfileContainer({ query }: ProfileContainerProps) {
                   onSave={handleAccountSettingsSave}
                 />
               ),
+            },
+            {
+              label: "Solicitudes de Aprobación",
+              icon: <ClipboardDocumentIcon className="h-5 w-5" />,
+              content: <VendorRequestsTab />,
             },
           ]}
         />

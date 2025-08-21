@@ -1,7 +1,6 @@
 import { buildQueryParams } from "@/lib/request";
 import { Suspense } from "react";
 import { getAllProducts } from "@/services/products-mock";
-import ProductsListContainer from "@/sections/products/list/products-list-container";
 import ProductsListProviderContainer from "@/sections/provider-management/products/list/products-list-container";
 
 function ProductsListFallback() {
