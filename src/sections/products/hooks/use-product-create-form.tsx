@@ -74,7 +74,7 @@ export const useProductCreateForm = (
     },
     onSuccess() {
       toast.success(
-        `Se ${defaultValues?.id ? "creó" : "editó"} correctamente el producto`
+        `Se ${defaultValues?.id ? "editó" : "creó"} correctamente el producto`
       );
       push("/dashboard/products");
     },
