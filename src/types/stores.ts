@@ -37,43 +37,22 @@ export type StoreBanner = {
   isActive: boolean;
 };
 
-export type StorePromotion = {
-  id: number;
-  title: string;
-  type: "percentage" | "freeShipping";
-  value: string;
-  usageLimit: number;
-  usageCount: number;
-  startDate: string;
-  endDate: string;
-  isActive: boolean;
-};
 
-// Tienda completa según API
-export type StoreNo = {
+export type Promotion = {
   id: number;
-  //supplierId: string,
-  ownerId: number;
-  businessId: number;
-  url: string;
   name: string;
-  description: string;
+  description?: string;
+  type: "percent" | "amount";
+  value: number; // 0-100 for percent, currency otherwise
+  code?: string;
+  usageLimit?: number;
+  usedCount?: number;
+  startDate?: string; // ISO
+  endDate?: string;   // ISO
   isActive: boolean;
-  logoStyle: string;
-  contact: StoreContact;
-  appearance: StoreAppearance;
-  banners: StoreBanner[];
-  promotions: StorePromotion[];
-  policy: StorePolicy;
-  //categories:Category[]
-  metrics: StoreMetrics;
-
-  // Nuevos campos de ventas e ingresos
-  ventasDelMes: number;
-  ingresosDelMes: number;
-  totalVentas: number;
-  totalIngresos: number;
+  badge?: string; // e.g., "Envío Gratis"
 };
+
 type StoreMetrics = {
   totalProducts: number;
   views: number;
