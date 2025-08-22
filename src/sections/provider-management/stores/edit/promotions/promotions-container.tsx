@@ -1,22 +1,65 @@
 "use client";
 
-import React from "react";
-import { Store } from "@/types/stores";
+import React, { useMemo, useState } from "react";
+import { Promotion, Store } from "@/types/stores";
+import { GiftIcon, UsersIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
+import StatCard from "./components/stat-card";
+import PromotionsToolbar from "./components/toolbar";
+import PromotionRow from "./components/promotion-row";
+import { mockPromotions } from "./mock";
+import CreatePromotionModal from "./components/create-promotion-modal";
 
 interface Props { store: Store }
 
 export default function PromotionsContainer({ store }: Props) {
+  const [items, setItems] = useState<Promotion[]>(mockPromotions);
+  const [open, setOpen] = useState(false);
+
+  const stats = useMemo(() => {
+    const total = items.length;
+    const active = items.filter((x) => x.isActive).length;
+    const uses = items.reduce((acc, x) => acc + (x.usedCount ?? 0), 0);
+    const expired = items.filter((x) => x.endDate && new Date(x.endDate) < new Date()).length;
+    return { total, active, uses, expired };
+  }, [items]);
+
   return (
     <div className="p-6">
-      <div className="bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow p-5">
-        <div className="mb-2">
-          <h2 className="text-base font-semibold text-gray-900">Promociones</h2>
-          <p className="text-xs text-gray-500">Gestión de promociones y reglas para: {store?.name}</p>
-        </div>
-        <div className="border-t border-gray-100 pt-4 min-h-16">
-          {/* TODO: Implement promotions list and create modal */}
-        </div>
+      {/* Breadcrumb/title area could be outside - kept minimal here */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+        <StatCard label="Total Promociones" value={stats.total} icon={<GiftIcon className="text-indigo-600" />} />
+        <StatCard label="Promociones Activas" value={stats.active} icon={<GiftIcon className="text-emerald-600" />} />
+        <StatCard label="Usos Totales" value={stats.uses} icon={<UsersIcon className="text-violet-600" />} />
+        <StatCard label="Promociones Vencidas" value={stats.expired} icon={<CalendarDaysIcon className="text-rose-600" />} />
       </div>
+
+      <PromotionsToolbar onNew={() => setOpen(true)} />
+
+      {/* Filters tabs placeholder */}
+      <div className="flex gap-3 text-xs text-gray-600 mb-3">
+        <button className="px-2 py-1 rounded bg-gray-100">Todas</button>
+        <button className="px-2 py-1 rounded">Activas</button>
+        <button className="px-2 py-1 rounded">Inactivas</button>
+        <button className="px-2 py-1 rounded">Vencidas</button>
+      </div>
+
+      <div className="space-y-3">
+        {items.map((p) => (
+          <PromotionRow
+            key={p.id}
+            p={p}
+            onToggle={(id, checked) =>
+              setItems((prev) => prev.map((x) => (x.id === id ? { ...x, isActive: checked } : x)))
+            }
+          />
+        ))}
+      </div>
+
+      <CreatePromotionModal
+        open={open}
+        onClose={() => setOpen(false)}
+        onCreate={(p) => setItems((prev) => [p, ...prev])}
+      />
     </div>
   );
 }

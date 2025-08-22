@@ -22,6 +22,7 @@ export default function RHFSwitch({
     <Controller
       name={name}
       control={control}
+      defaultValue={false}
       render={({ field, fieldState: { error } }) => (
         <div className="flex flex-col space-y-1">
           {label && (
@@ -40,7 +41,7 @@ export default function RHFSwitch({
               id={name}
               {...props}
               {...field}
-              checked={field.value}
+              checked={!!field.value}
             />
             <span
               className={`bg-[#ebedf2] dark:bg-dark block h-full rounded-full overflow-hidden
