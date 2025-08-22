@@ -24,11 +24,8 @@ const initValues: ProductFormData = {
   categoryIds: [],
   supplierUserIds: [],
   aboutThis: [],
-  details: {
-    additionalProp1: "",
-    additionalProp2: "",
-    additionalProp3: "",
-  },
+  details: {},
+  detailsArray: [],
   image: "",
 };
 
@@ -41,8 +38,6 @@ export const useProductCreateForm = (
     defaultValues,
     resolver: zodResolver(productSchema),
   });
-
-  console.log(form.formState.errors)
 
   useEffect(() => {
     const loadImageAsFile = async () => {
@@ -67,7 +62,6 @@ export const useProductCreateForm = (
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: ProductFormData) => {
       const fromData = await setProductFormData(payload);
-
       const res = payload?.id
         ? await updateProduct(payload?.id, fromData)
         : await createProduct(fromData);

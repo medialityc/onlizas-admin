@@ -62,7 +62,9 @@ export const backendRoutes = {
   },
   products: {
     create: `${process.env.NEXT_PUBLIC_API_URL}products`, // POST
-    list: `${process.env.NEXT_PUBLIC_API_URL}products`, // GET
+    list: `${process.env.NEXT_PUBLIC_API_URL}products/admin`, // GET
+    byId: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}products/${id}`, // GET
     delete: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}products/${id}`, // DELETE
     update: (id: string | number) =>

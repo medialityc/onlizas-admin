@@ -8,8 +8,6 @@ import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import {
   GetAllProducts,
   Product,
-  ProductFilter,
-  ProductSearchParams,
   SimpleCategoriesResponse,
   SimpleSuppliersResponse,
   CategoryFeaturesResponse,
@@ -18,28 +16,18 @@ import {
 } from "@/types/products";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
+import { IQueryable } from "@/types/fetch/request";
 
 export async function getAllProducts(
-  params: ProductSearchParams & ProductFilter
+  params: IQueryable
 ): Promise<ApiResponse<GetAllProducts>> {
-  // Transformar parámetros al formato esperado por la API
-  const apiParams = {
-    page: params.page || 1,
-    pageSize: params.pageSize || 10,
-    search: params.search,
-    categoryId: params.categoryId,
-    isActive: params.isActive,
-    supplierId: params.supplierId,
-  };
-
   const url = new QueryParamsURLFactory(
-    apiParams,
+    params,
     backendRoutes.products.list
   ).build();
 
   const res = await nextAuthFetch({
     url,
-    method: "GET",
     useAuth: true,
     next: { tags: ["products"] },
   });
@@ -53,7 +41,7 @@ export async function getProductById(
   id: number
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
-    url: `${backendRoutes.products.list}/${id}`,
+    url: backendRoutes.products.byId(id),
     method: "GET",
     useAuth: true,
     next: { tags: ["products"] },
