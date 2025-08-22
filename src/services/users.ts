@@ -341,9 +341,11 @@ export async function getAllSupplierUsers(
   params: IQueryable
 ): Promise<ApiResponse<GetAllUsersResponse>> {
   const url = new QueryParamsURLFactory(
-    params,
+    { ...params, role: "ONL_SUPPLIER" },
     backendRoutes.users.listSuppliers
   ).build();
+  console.log(url);
+
   const res = await nextAuthFetch({
     url,
     method: "GET",
