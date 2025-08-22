@@ -1,4 +1,4 @@
-import { isValidUrl, urlToFile } from "@/utils/format";
+import { detailsArrayToObject, isValidUrl, urlToFile } from "@/utils/format";
 import { toast } from "react-toastify";
 import { ProductFormData } from "../schema/product-schema";
 
@@ -33,7 +33,13 @@ export const setProductFormData = async (
   formData.append("weight", String(product.weight));
 
   formData.append("aboutThis", JSON.stringify(product.aboutThis));
-  formData.append("details", JSON.stringify(product.details));
+  // Details: enviar como pares details[clave]
+  if (product.detailsArray) {
+    formData.append(
+      "details",
+      JSON.stringify(detailsArrayToObject(product.detailsArray))
+    );
+  }
 
   return formData;
 };

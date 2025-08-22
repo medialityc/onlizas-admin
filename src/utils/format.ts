@@ -282,3 +282,75 @@ export function fileToBase64(file: File): Promise<string> {
     reader.onerror = () => reject(new Error("Error reading file"));
   });
 }
+
+export function detailsArrayToObject(
+  arr: Array<{ key: string; value: string }>,
+  {
+    trim = true,
+    skipEmpty = true,
+    max = 50,
+  }: { trim?: boolean; skipEmpty?: boolean; max?: number } = {}
+) {
+  const out: Record<string, string> = {};
+  for (const item of arr.slice(0, max)) {
+    if (!item) continue;
+    let k = item.key ?? "";
+    let v = item.value ?? "";
+    if (trim) {
+      k = k.trim();
+      v = v.trim();
+    }
+    if (!k) continue;
+    if (skipEmpty && !v) continue;
+    // Último gana si hay duplicado
+    out[k] = v;
+  }
+  return out;
+}
+
+/**
+ * Convierte un objeto de detalles (diccionario) a un array de pares {key,value}
+ * Compatible con el componente de edición dinámico.
+ */
+export function detailsObjectToArray(
+  obj: Record<string, any> | null | undefined,
+  {
+    trimKeys = true,
+    trimValues = true,
+    skipEmpty = true,
+    max = 50,
+    sort = "none",
+  }: {
+    trimKeys?: boolean;
+    trimValues?: boolean;
+    skipEmpty?: boolean;
+    max?: number;
+    sort?: "none" | "asc" | "desc";
+  } = {}
+): Array<{ key: string; value: string }> {
+  if (!obj || typeof obj !== "object") return [];
+  let entries = Object.keys(obj).map((k) => {
+    let key = k;
+    let value = obj[k];
+    if (trimKeys) key = key.trim();
+    if (value == null) value = "";
+    else if (typeof value !== "string") value = String(value);
+    if (trimValues) value = value.trim();
+    return { key, value };
+  });
+
+  if (skipEmpty) {
+    entries = entries.filter((e) => e.key && e.value);
+  } else {
+    entries = entries.filter((e) => e.key); // siempre necesita clave
+  }
+
+  if (sort !== "none") {
+    entries.sort(
+      (a, b) => a.key.localeCompare(b.key) * (sort === "asc" ? 1 : -1)
+    );
+  }
+
+  if (entries.length > max) entries = entries.slice(0, max);
+  return entries;
+}

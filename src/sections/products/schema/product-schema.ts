@@ -11,7 +11,7 @@ export const productSchema = z.object({
     .string()
     .max(500, "La descripción no puede tener más de 500 caracteres.")
     .default(""),
-  isActive: z.boolean(),
+  isActive: z.boolean().default(false).optional(),
 
   supplierUserIds: z
     .array(z.number())
@@ -53,11 +53,29 @@ export const productSchema = z.object({
           "Las sugerencias deben ser únicas (no se permiten duplicados).",
       }
     ),
-  details: z.object({
-    additionalProp1: z.string({ required_error: "Requerido" }).min(1,'Requerido'),
-    additionalProp2: z.string({ required_error: "Requerido" }).min(1,'Requerido'),
-    additionalProp3: z.string({ required_error: "Requerido" }).min(1,'Requerido'),
-  }),
+  // details dinámicos (objeto de claves arbitrarias string -> string)
+  details: z
+    .record(
+      z.string(),
+      z.string().trim().min(1, "Valor requerido para el detalle")
+    )
+    .default({})
+    .refine((obj) => Object.keys(obj).length <= 50, "Máximo 50 detalles"),
+  // soporte interno para UI (array de pares) no enviado directo a la API
+  detailsArray: z
+    .array(
+      z.object({
+        key: z.string().trim().min(1, "Clave requerida").max(50),
+        value: z
+          .string()
+          .trim()
+          .min(1, "Valor requerido")
+          .max(100, "Máximo 100 caracteres"),
+      })
+    )
+    .max(50, "Máximo 50 detalles")
+    .optional()
+    .default([]),
 
   image: z
     .union([

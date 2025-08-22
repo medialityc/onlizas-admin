@@ -41,7 +41,7 @@ export type Product = {
   id: number;
   name: string;
   description: string;
-  isActive: boolean;
+  state: boolean;
   suppliers: ProductSupplier[];
   categories: ProductCategory[];
   dimensions?: ProductDimensions;
