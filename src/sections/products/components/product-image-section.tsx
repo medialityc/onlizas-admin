@@ -1,7 +1,7 @@
 "use client";
 
 import IconGallery from "@/components/icon/icon-gallery";
-import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
+import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 
 function ProductImageSection() {
   return (
@@ -10,7 +10,12 @@ function ProductImageSection() {
         <IconGallery className="mr-2 w-5 h-5" /> Imagen del Producto
       </h3>
       <div className="flex w-full">
-        <RHFMultiImageUpload name="images" className="flex-1" />
+        <RHFImageUpload
+          name="image"
+          label="Imagen"
+          variant="rounded"
+          size="full"
+        />
       </div>
     </div>
   );

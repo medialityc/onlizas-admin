@@ -15,7 +15,7 @@ function AboutProductSection() {
     remove: removeAbout,
   } = useFieldArray({
     control,
-    name: "about",
+    name: "aboutThis",
   });
 
   return (
@@ -28,7 +28,7 @@ function AboutProductSection() {
           type="button"
           variant="secondary"
           size="sm"
-          onClick={() => appendAbout({ value: "" })}
+          onClick={() => appendAbout("")}
           disabled={aboutFields.length >= 10}
           className="flex items-center gap-2"
         >
@@ -42,7 +42,7 @@ function AboutProductSection() {
           <div key={field.id} className="flex items-start gap-3">
             <div className="flex-1">
               <RHFInputWithLabel
-                name={`about.${index}.value`}
+                name={`aboutThis.${index}`}
                 label=""
                 placeholder={`Línea ${index + 1}`}
               />

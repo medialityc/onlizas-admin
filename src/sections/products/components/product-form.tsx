@@ -9,11 +9,9 @@ import { ProductFormData } from "../schema/product-schema";
 import LoaderButton from "@/components/loaders/loader-button";
 import BasicInfoSection from "./basic-info-section";
 import CategoriesAndSuppliersSection from "./categories-suppliers-section";
-import SpecificationsSection from "./specifications-section";
-import ProductImageSection from "./product-image-section";
+import ProductDimensionSection from "./product-dimension-section";
 import AboutProductSection from "./about-product-section";
 import ProductDetailsSection from "./product-details-section";
-import ProductFeatureSection from "./product-features-section";
 
 type Props = {
   initValue?: ProductFormData;
@@ -34,19 +32,16 @@ const ProductForm = ({ initValue }: Props) => {
           <div className="col-span-1 lg:col-span-2">
             <BasicInfoSection />
           </div>
+          {/*  <div className="col-span-1 lg:col-span-2">
+            <ProductImageSection />
+          </div> */}
           <div className="col-span-1 lg:col-span-1">
             <CategoriesAndSuppliersSection />
           </div>
           <div className="col-span-1 lg:col-span-1">
-            <SpecificationsSection />
+            <ProductDimensionSection />
           </div>
 
-          <div className="col-span-1 lg:col-span-2">
-            <ProductImageSection />
-          </div>
-          <div className="col-span-1 lg:col-span-2">
-            <ProductFeatureSection />
-          </div>
           <div className="col-span-1 lg:col-span-2">
             <AboutProductSection />
           </div>

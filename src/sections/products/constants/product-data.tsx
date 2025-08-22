@@ -7,41 +7,33 @@ export const setProductFormData = async (
 ): Promise<FormData> => {
   const formData = new FormData();
 
-  if (product.images && product.images.length > 0) {
-    for (let i = 0; i < product.images.length; i++) {
-      const image = product.images[i];
-
-      if (typeof image === "string" && isValidUrl(image)) {
-        try {
-          const imageFile = await urlToFile(image, `image-${i}.jpg`);
-          formData.append("images", imageFile);
-        } catch (error) {
-          console.error(`Error al procesar imagen ${i} desde URL:`, error);
-          toast.error(`Error al procesar la imagen ${i + 1} desde URL`);
-        }
-      } else if (image instanceof File) {
-        formData.append("images", image);
-      } else if (image && typeof image === "object" && image.url) {
-        try {
-          const imageFile = await urlToFile(image.url, `image-${i}.jpg`);
-          formData.append("images", imageFile);
-        } catch (error) {
-          console.error(`Error al procesar imagen ${i} desde objeto:`, error);
-          toast.error(`Error al procesar la imagen ${i + 1}`);
-        }
+  // Procesar imagen
+  if (product.image) {
+    if (typeof product.image === "string" && isValidUrl(product.image)) {
+      try {
+        const imageFile = await urlToFile(product.image);
+        formData.append("image", imageFile);
+      } catch {
+        toast.error("Error al procesar la imagen desde URL");
       }
+    } else if (product.image instanceof File) {
+      formData.append("image", product.image);
     }
   }
 
   formData.append("name", product.name);
   formData.append("description", product.description);
   formData.append("isActive", String(product.isActive));
-  formData.append("supplierIds", JSON.stringify(product.supplierIds));
+  formData.append("supplierUserIds", JSON.stringify(product.supplierUserIds));
   formData.append("categoryIds", JSON.stringify(product.categoryIds));
-  formData.append("dimensions", JSON.stringify(product.dimensions));
-  formData.append("about", JSON.stringify(product.about));
+  /* dimensions */
+  formData.append("width", String(product.width));
+  formData.append("height", String(product.height));
+  formData.append("length", String(product.length));
+  formData.append("weight", String(product.weight));
+
+  formData.append("aboutThis", JSON.stringify(product.aboutThis));
   formData.append("details", JSON.stringify(product.details));
-  formData.append("features", JSON.stringify(product.features));
 
   return formData;
 };
