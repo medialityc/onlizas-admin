@@ -348,7 +348,7 @@ export async function getAllSupplierUsers(
     url,
     method: "GET",
     useAuth: true,
-    next: { tags: ["users"] },
+    next: { tags: ["users-supplier"] },
   });
 
   if (!res.ok) return handleApiServerError(res);

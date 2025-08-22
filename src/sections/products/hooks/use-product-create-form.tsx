@@ -13,18 +13,23 @@ import { useRouter } from "next/navigation";
 const initValues: ProductFormData = {
   name: "",
   description: "",
-  dimensions: {
-    width: 0,
-    height: 0,
-    length: 0,
-  },
+
+  //dimensions
+  length: 0,
+  width: 0,
+  height: 0,
+  weight: 0,
+
   isActive: false,
   categoryIds: [],
-  supplierIds: [],
-  about: [],
-  details: [],
-  features: [],
-  images: [],
+  supplierUserIds: [],
+  aboutThis: [],
+  details: {
+    additionalProp1: "",
+    additionalProp2: "",
+    additionalProp3: "",
+  },
+  image: "",
 };
 
 export const useProductCreateForm = (
@@ -38,50 +43,47 @@ export const useProductCreateForm = (
   });
 
   useEffect(() => {
-    const loadImagesAsFiles = async () => {
-      if (defaultValues?.images?.length) {
+    const loadImageAsFile = async () => {
+      if (defaultValues?.image) {
         try {
           setLoadingImage(true);
-
-          const imageFiles = await Promise.all(
-            defaultValues.images.map(async (imageUrl, index) => {
-              try {
-                return await urlToFile(imageUrl, `category-image-${index}.jpg`);
-              } catch (error) {
-                console.error(`Error loading image ${index}:`, error);
-                return null;
-              }
-            })
+          const file = await urlToFile(
+            defaultValues?.image as string,
+            "product-image.jpg"
           );
-
-          const validFiles = imageFiles.filter((file) => file !== null);
-          form.setValue("images", validFiles);
-        } catch (error) {
-          console.error("Error loading images:", error);
-          form.setValue("images", defaultValues.images);
+          form.setValue("image", file);
+        } catch {
+          form.setValue("image", defaultValues.image);
         } finally {
           setLoadingImage(false);
         }
       }
     };
-
-    loadImagesAsFiles();
-  }, [defaultValues?.images, form]);
+    loadImageAsFile();
+  }, [defaultValues.image, form]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: ProductFormData) => {
       const fromData = await setProductFormData(payload);
-      if (payload?.id) {
-        return await updateProduct(payload?.id, fromData);
+
+      const res = payload?.id
+        ? await updateProduct(payload?.id, fromData)
+        : await createProduct(fromData);
+
+      if (res.error) {
+        throw res;
       }
-      return await createProduct(fromData);
+
+      return;
     },
     onSuccess() {
-      toast.success("Se creo correctamente el producto");
+      toast.success(
+        `Se ${defaultValues?.id ? "creó" : "editó"} correctamente el producto`
+      );
       push("/dashboard/products");
     },
-    onError(error: any) {
-      toast.error(`Ocurrió un error, ${error?.message}`);
+    onError: async (error: any) => {
+      toast.error(error?.message);
     },
   });
 

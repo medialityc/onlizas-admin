@@ -3,7 +3,7 @@
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAllCategories } from "@/services/categories";
 import IconBox from "@/components/icon/icon-box";
-import { getAllSuppliers } from "@/services/supplier";
+import { getAllSupplierUsers } from "@/services/users";
 
 function CategoriesAndSuppliersSection() {
   return (
@@ -27,13 +27,13 @@ function CategoriesAndSuppliersSection() {
         </div>
         <div>
           <RHFAutocompleteFetcherInfinity
-            name="supplierIds"
-            label="Proveedores"
-            placeholder="Seleccionar proveedores..."
-            onFetch={getAllSuppliers}
+            name="supplierUserIds"
+            label="Usuarios proveedores"
+            placeholder="Seleccionar usuarios proveedores..."
+            onFetch={getAllSupplierUsers}
             objectValueKey="id"
             objectKeyLabel="name"
-            queryKey="suppliers"
+            queryKey="users-suppliers"
             multiple
           />
         </div>

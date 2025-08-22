@@ -77,7 +77,7 @@ export async function createProduct(
     useAuth: true,
   });
 
-  if (!res.ok) throw await handleApiServerError(res);
+  if (!res.ok) return handleApiServerError(res);
   revalidateTag("products");
 
   return buildApiResponseAsync<Product>(res);
@@ -97,7 +97,7 @@ export async function updateProduct(
     useAuth: true,
   });
 
-  if (!res.ok) throw await handleApiServerError(res);
+  if (!res.ok) return handleApiServerError(res);
 
   revalidateTag("products");
   return buildApiResponseAsync<Product>(res);
