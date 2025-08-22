@@ -83,7 +83,7 @@ export default function CategoryModal({ open, onClose, onSubmit, title = "Nueva 
           <button
             type="button"
             onClick={handleSave}
-            className="px-3 py-1.5 text-xs rounded-md bg-gray-900 text-white hover:bg:black/90 disabled:opacity-50"
+            className="px-3 py-1.5 text-xs rounded-md bg-gray-900 text-white hover:bg-black/90 disabled:opacity-50"
             disabled={!name.trim()}
           >
             Guardar
