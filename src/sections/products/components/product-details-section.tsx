@@ -13,9 +13,9 @@ function ProductDetailsSection() {
         </h3>
       </div>
       <div className="space-y-4">
-        <RHFInputWithLabel name={"additionalProp1"} placeholder="Detalle 1" />
-        <RHFInputWithLabel name={"additionalProp2"} placeholder="Detalle 2" />
-        <RHFInputWithLabel name={"additionalProp3"} placeholder="Detalle 3" />
+        <RHFInputWithLabel name={"details.additionalProp1"} placeholder="Detalle 1" />
+        <RHFInputWithLabel name={"details.additionalProp2"} placeholder="Detalle 2" />
+        <RHFInputWithLabel name={"details.additionalProp3"} placeholder="Detalle 3" />
       </div>
     </div>
   );

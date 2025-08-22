@@ -21,7 +21,7 @@ const initValues: ProductFormData = {
   weight: 0,
 
   isActive: false,
-  categoryIds: [1],
+  categoryIds: [],
   supplierUserIds: [],
   aboutThis: [],
   details: {
@@ -41,6 +41,8 @@ export const useProductCreateForm = (
     defaultValues,
     resolver: zodResolver(productSchema),
   });
+
+  console.log(form.formState.errors)
 
   useEffect(() => {
     const loadImageAsFile = async () => {

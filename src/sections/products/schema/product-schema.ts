@@ -54,9 +54,9 @@ export const productSchema = z.object({
       }
     ),
   details: z.object({
-    additionalProp1: z.string({ required_error: "Requerido" }),
-    additionalProp2: z.string({ required_error: "Requerido" }),
-    additionalProp3: z.string({ required_error: "Requerido" }),
+    additionalProp1: z.string({ required_error: "Requerido" }).min(1,'Requerido'),
+    additionalProp2: z.string({ required_error: "Requerido" }).min(1,'Requerido'),
+    additionalProp3: z.string({ required_error: "Requerido" }).min(1,'Requerido'),
   }),
 
   image: z
