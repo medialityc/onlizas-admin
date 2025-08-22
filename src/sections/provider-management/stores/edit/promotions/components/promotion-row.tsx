@@ -49,7 +49,7 @@ export default function PromotionRow({ p, onToggle }: { p: Promotion; onToggle: 
             <div className="text-indigo-600 font-semibold">
               {p.type === "percent" ? `${p.value}%` : `>$${p.value}`}
             </div>
-            <div className="text-[11px] text-gray-500">{p.usedCount ?? 0}% usado</div>
+            <div className="text-[11px] text-gray-500">{p.usedCount ?? 0} usos</div>
           </div>
           <div onClick={(e) => e.stopPropagation()}>
             <RHFSwitch name="active" aria-label="Cambiar estado" checkedClassName="peer-checked:bg-gradient-to-r peer-checked:from-secondary peer-checked:to-indigo-600" />
