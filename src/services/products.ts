@@ -70,9 +70,6 @@ export async function createProduct(
   const res = await nextAuthFetch({
     url: backendRoutes.products.create,
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     data,
     useAuth: true,
   });
@@ -90,9 +87,6 @@ export async function updateProduct(
   const res = await nextAuthFetch({
     url: backendRoutes.products.update(id),
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
     data,
     useAuth: true,
   });
