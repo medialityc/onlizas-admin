@@ -21,7 +21,7 @@ const initValues: ProductFormData = {
   weight: 0,
 
   isActive: false,
-  categoryIds: [],
+  categoryIds: [1],
   supplierUserIds: [],
   aboutThis: [],
   details: {
