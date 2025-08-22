@@ -1,4 +1,10 @@
-import React, { useRef, useState, useCallback, useEffect } from "react";
+import React, {
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import {
   XMarkIcon,
@@ -63,6 +69,19 @@ export function AdvancedSearchSelect<T>({
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
 
+  // Dedupe options by objectValueKey (evita triples cuando llegan duplicados por paginación acumulada)
+  const uniqueOptions = useMemo(() => {
+    const seen = new Set<any>();
+    const list: T[] = [];
+    for (const opt of options) {
+      const val: any = (opt as any)[objectValueKey];
+      if (seen.has(val)) continue;
+      seen.add(val);
+      list.push(opt);
+    }
+    return list;
+  }, [options, objectValueKey]);
+
   // Get display value for an option
   const getDisplayValue = useCallback(
     (option: T): string => {
@@ -79,8 +98,8 @@ export function AdvancedSearchSelect<T>({
     [objectKeyLabel, objectValueKey, renderOption]
   );
 
-  // Filter options based on exclude and query
-  const filteredOptions = options;
+  // Filter options based on exclude and query (si en el futuro se usa query local)
+  const filteredOptions = uniqueOptions;
 
   const handleScroll = () => {
     if (!scrollRef.current || !onScrollEnd) return;
@@ -149,7 +168,7 @@ export function AdvancedSearchSelect<T>({
     const selectedValues = Array.isArray(currentValue)
       ? currentValue
       : [currentValue];
-    return options.filter((opt) =>
+    return uniqueOptions.filter((opt) =>
       selectedValues.includes(opt[objectValueKey])
     );
   };
@@ -159,17 +178,26 @@ export function AdvancedSearchSelect<T>({
     (value: any) => {
       if (isTyping) return; // <--- prevención!
       if (!multiple && value) {
-        const selectedOption = options.find(
+        const selectedOption = uniqueOptions.find(
           (opt) => opt[objectValueKey] === value
         );
         if (selectedOption) {
-          if (setQuery) setQuery(getDisplayValue(selectedOption));
+          const display = getDisplayValue(selectedOption);
+          if (setQuery && display !== query) setQuery(display); // evita re-sincronizar idéntico
         }
       } else if (!multiple && !value) {
         if (setQuery) setQuery("");
       }
     },
-    [multiple, options, objectValueKey, getDisplayValue, setQuery, isTyping]
+    [
+      multiple,
+      uniqueOptions,
+      objectValueKey,
+      getDisplayValue,
+      setQuery,
+      isTyping,
+      query,
+    ]
   );
 
   // Watch for form value changes to sync with query SOLO si no está escribiendo

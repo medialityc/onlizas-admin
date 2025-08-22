@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Nunito } from "next/font/google";
-import NextTopLoader from 'nextjs-toploader';
+import NextTopLoader from "nextjs-toploader";
 // 👇 Import the mantine-core layer CSS file;
 //    this will automatically place it in a `mantine` layer
 
@@ -15,6 +15,7 @@ import { ThemeProvider } from "next-themes";
 import { ToastContainer } from "react-toastify";
 import "./styles/tailwind.css";
 import "react-phone-number-input/style.css";
+import { mantineHtmlProps } from "@mantine/core";
 
 const nunito = Nunito({
   weight: ["400", "500", "600", "700", "800"],
@@ -70,7 +71,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html suppressHydrationWarning>
+    <html {...mantineHtmlProps}>
       <body className={nunito.variable}>
         <NextTopLoader
           color="#2563EB"
