@@ -33,7 +33,10 @@ export const productSchema = z.object({
     .number()
     .positive("La longitud debe ser un número positivo.")
     .optional(),
-  weight: z.number().positive("El peso debe ser un número positivo.").optional(),
+  weight: z
+    .number()
+    .positive("El peso debe ser un número positivo.")
+    .optional(),
 
   aboutThis: z
     .array(z.string().min(1, "Se requiere al menos una"))
