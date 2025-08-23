@@ -31,6 +31,7 @@ async function InventoryProviderPage({ searchParams, params }: PageProps) {
       <InventoryProviderCardListContainer
         inventories={inventories}
         query={search}
+        provider={provider}
       />
     </Suspense>
   );

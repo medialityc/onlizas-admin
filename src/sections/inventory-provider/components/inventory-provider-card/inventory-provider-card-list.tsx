@@ -14,15 +14,15 @@ const InventoryProviderCardList = ({ data, searchParams }: Props) => {
   const id = useId();
   if (!data) {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-12 flex flex-col justify-center">
         <div className="text-gray-500 dark:text-gray-400 mb-4">
-          {searchParams
+          {searchParams?.search
             ? "No se encontraron inventarios que coincidan con tu búsqueda"
             : "No se encontraron inventarios"}
         </div>
-        {!searchParams && (
-          <Button variant="primary">
-            <Link href={"/dashboard/inventory/106/inventory/new"}>
+        {!searchParams?.search && (
+          <Button variant="primary" className="mx-auto">
+            <Link className="flex flex-row gap-2 items-center justify-center" href={"/dashboard/inventory/106/inventory/new"}>
               <PlusIcon className="h-4 w-4 mr-2" />
               Crear un inventario
             </Link>

@@ -1,10 +1,7 @@
 import { paths } from "@/config/paths";
 import {
-  ArchiveBoxIcon,
-  ClipboardDocumentIcon,
-} from "@heroicons/react/24/outline";
-import {
   BookOpenIcon,
+  ArchiveBoxIcon,
   CubeIcon,
   CurrencyDollarIcon,
   LockOpenIcon,
@@ -14,6 +11,7 @@ import {
   BriefcaseIcon,
   BellIcon,
   DocumentChartBarIcon,
+  ClipboardDocumentIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "./types";
 
@@ -92,7 +90,7 @@ export const sidebarSections: SidebarSection[] = [
       },
       {
         id: "inventory",
-        label: "Inventario por Proveedores",
+        label: "Inventario",
         path: paths.dashboard.inventory.list,
         icon: <ClipboardDocumentIcon className="h-4 w-4" />,
       },
