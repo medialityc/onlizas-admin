@@ -147,6 +147,10 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}documents/${id}/validate`, // PUT
     create: `${process.env.NEXT_PUBLIC_API_URL}documents`, // POST
   },
+  approvalProcesses: {
+    extend: (id: number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${id}/extend`, // POST
+  },
   store: {
     create: `${process.env.NEXT_PUBLIC_API_URL}stores/admin`,
     list: `${process.env.NEXT_PUBLIC_API_URL}stores/metrics`,

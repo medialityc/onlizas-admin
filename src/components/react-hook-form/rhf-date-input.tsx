@@ -1,25 +1,26 @@
-"use client"
+"use client";
 
-import { Controller, useFormContext } from "react-hook-form"
-import { CSSProperties } from "react"
-import DateInput from "../input/date-input"
+import { Controller, useFormContext } from "react-hook-form";
+import { CSSProperties } from "react";
+import DateInput from "../input/date-input";
 
 // ----------------------------------------------------------------------
 
 interface Props {
-  name: string
-  disabled?: boolean
-  label?: string
-  placeholder?: string
-  underLabel?: string
-  width?: CSSProperties["width"]
-  required?: boolean
-  showError?: boolean
-  containerClassName?: string
-  className?: string
-  minDate?: Date
-  maxDate?: Date
-  locale?: string
+  name: string;
+  disabled?: boolean;
+  label?: string;
+  placeholder?: string;
+  underLabel?: string;
+  width?: CSSProperties["width"];
+  required?: boolean;
+  showError?: boolean;
+  containerClassName?: string;
+  className?: string;
+  minDate?: Date;
+  maxDate?: Date;
+  locale?: string;
+  validate?: (value?: Date) => boolean | string;
 }
 
 export default function RHFDateInput({
@@ -36,15 +37,17 @@ export default function RHFDateInput({
   minDate,
   maxDate,
   locale,
+  validate,
 }: Props) {
-  const { control } = useFormContext()
+  const { control } = useFormContext();
 
   return (
     <Controller
       name={name}
       control={control}
-      rules={{ 
-        required: required ? "Este campo es requerido" : false 
+      rules={{
+        required: required ? "Este campo es requerido" : false,
+        validate,
       }}
       render={({
         field: { onChange, onBlur, value },
@@ -52,8 +55,8 @@ export default function RHFDateInput({
       }) => (
         <DateInput
           id={name}
-          value={value}
-          onChange={onChange}
+          value={value as any}
+          onChange={(d) => onChange(d)}
           onBlur={onBlur}
           placeholder={placeholder}
           label={label}
@@ -71,7 +74,7 @@ export default function RHFDateInput({
         />
       )}
     />
-  )
+  );
 }
 
 /*

@@ -88,7 +88,7 @@ export default function ProfileContainer({ query }: ProfileContainerProps) {
             {
               label: "Solicitudes de Aprobación",
               icon: <ClipboardDocumentIcon className="h-5 w-5" />,
-              content: <VendorRequestsTab />,
+              content: <VendorRequestsTab user={user ? user : null} />,
             },
           ]}
         />

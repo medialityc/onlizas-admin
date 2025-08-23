@@ -16,6 +16,7 @@ import {
   GetAllValidSuppliers,
   GetSupplierEvaluations,
   Supplier,
+  SupplierApprovalProcess,
   SupplierDetails,
 } from "@/types/suppliers";
 import { WithLoginForm } from "@/sections/suppliers/edit/login-user/whitloginSchema";
@@ -171,6 +172,21 @@ export async function getApprovalProcess(
   if (!res.ok) return handleApiServerError(res);
 
   return buildApiResponseAsync(res);
+}
+
+export async function getSupplierApprovalProcess(
+  id: string
+): Promise<ApiResponse<SupplierApprovalProcess>> {
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}suppliers/${id}/approval-process`,
+    method: "GET",
+    cache: "no-store",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<SupplierApprovalProcess>(res);
 }
 
 export async function countSuppliers(): Promise<
