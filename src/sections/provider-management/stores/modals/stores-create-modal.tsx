@@ -41,7 +41,6 @@ export default function StoresCreateModal({
   const routerHook = useRouter();
 
   const methods = useForm<StoreFormData>({
-    // Use a modal-specific schema that only validates the fields present in this form
     resolver: zodResolver(storeSchema),
     defaultValues: {
       name: store?.name ?? "",
@@ -53,15 +52,19 @@ export default function StoresCreateModal({
       returnPolicy: store?.returnPolicy ?? "",
       shippingPolicy: store?.shippingPolicy ?? "",
       termsOfService: store?.termsOfService ?? "",
-      ownerId: store?.ownerId ?? 1,
-      businessId: store?.businessId ?? 0,
+      ownerId: user?.id ?? 0,
+      businessId: store?.businessId ?? undefined,
     },
   });
 
   const {
     reset,
+    watch,
     formState: { isSubmitting },
   } = methods;
+
+  const ownerId = watch("ownerId");
+  const businessId = watch("businessId");
 
   const handleClose = () => {
     reset();
@@ -71,6 +74,14 @@ export default function StoresCreateModal({
 
   const onSubmit = async (data: StoreFormData) => {
     setError(null);
+    if (!data.ownerId) {
+      toast.error("Propietario no disponible");
+      return;
+    }
+    if (!data.businessId) {
+      toast.error("Debe seleccionar un negocio");
+      return;
+    }
     try {
       const formData = new FormData();
 
@@ -89,8 +100,8 @@ export default function StoresCreateModal({
         }
       }
 
-      formData.append("ownerId", data.ownerId.toString());
-      formData.append("businessId", data.businessId.toString());
+      formData.append("ownerId", String(data.ownerId));
+      formData.append("businessId", String(data.businessId));
       console.log(formData.get("businessId"), "Esta es la data");
       // url es obligatorio según el schema
       formData.append("url", data.url);
@@ -108,7 +119,7 @@ export default function StoresCreateModal({
 
       console.log(response);
 
-      if (response && response.status === 200) {
+      if (response && (response.status === 200 || response.status === 201)) {
         //queryClient.invalidateQueries({ queryKey: ["stores"] });
         const createdId =
           (response.data as any)?.id ?? (response.data as any)?.storeId;
@@ -122,10 +133,10 @@ export default function StoresCreateModal({
         reset();
         handleClose();
       } else {
-        if (response.status === 409) {
+        if (response?.status === 409) {
           toast.error("Ya existe un negocio con ese código");
         } else {
-          toast.error(response.message || "No se pudo procesar esta Tienda");
+          toast.error(response?.message || "No se pudo procesar esta Tienda");
         }
       }
     } catch (err) {
@@ -191,7 +202,7 @@ export default function StoresCreateModal({
             {/* Logo Upload */}
             <RHFImageUpload
               name="logoStyle"
-              label="Logo de la tienda *"
+              label="Logo de la tienda"
               variant="rounded"
               size="full"
               className="[&>label]:text-base"
@@ -222,7 +233,7 @@ export default function StoresCreateModal({
             {/* Address Input */}
             <RHFInputWithLabel
               name="address"
-              label="Dirección *"
+              label="Dirección"
               placeholder="Calle Principal 123, Ciudad, País"
               maxLength={200}
               rows={3}
@@ -233,7 +244,7 @@ export default function StoresCreateModal({
             {/* Return Policy Input */}
             <RHFInputWithLabel
               name="returnPolicy"
-              label="Política de Reembolso *"
+              label="Política de Reembolso"
               placeholder=" Escriba la política que seguirá su tienda"
               maxLength={200}
               rows={3}
@@ -245,7 +256,7 @@ export default function StoresCreateModal({
             {/* Shipping Policy Input */}
             <RHFInputWithLabel
               name="shippingPolicy"
-              label="Política de Envío *"
+              label="Política de Envío"
               placeholder=" Escriba la política que seguirá su tienda"
               maxLength={200}
               rows={3}
@@ -257,7 +268,7 @@ export default function StoresCreateModal({
             {/* Terms of Service Input */}
             <RHFInputWithLabel
               name="termsOfService"
-              label="Términos del Servicio *"
+              label="Términos del Servicio"
               placeholder=" Escriba la términos que seguirá su tienda"
               maxLength={200}
               rows={3}
@@ -281,8 +292,9 @@ export default function StoresCreateModal({
               type="submit"
               loading={isSubmitting}
               className="btn btn-primary text-textColor"
+              disabled={isSubmitting || !ownerId || !businessId}
             >
-              Tienda
+              Crear Tienda
             </LoaderButton>
           </div>
         </FormProvider>

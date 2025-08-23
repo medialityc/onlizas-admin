@@ -20,7 +20,7 @@ export async function createCategory(
     useAuth: true,
   });
 
-  if (!res.ok) throw await handleApiServerError(res);
+  if (!res.ok) return handleApiServerError(res);
 
   revalidateTag("categories");
   return buildApiResponseAsync<ApiStatusResponse>(res);
@@ -37,18 +37,18 @@ export async function updateCategory(
     useAuth: true,
   });
 
-  if (!res.ok) throw await handleApiServerError(res);
+  if (!res.ok) return handleApiServerError(res);
   revalidateTag("categories");
 
   return buildApiResponseAsync<Category>(res);
 }
 
-export async function deleteCategory(
+export async function toggleStatusCategory(
   id: string | number
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.categories.delete(id),
-    method: "DELETE",
+    url: backendRoutes.categories.toggleStatus(id),
+    method: "PUT",
     useAuth: true,
   });
 

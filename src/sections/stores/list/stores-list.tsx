@@ -13,7 +13,7 @@ import { PAGE_SIZES } from "@/components/datagrid/constants";
 import { useDataGridHandlers } from "@/components/datagrid/hooks";
 import StoreListToolbar from "./components/toolbar";
 import CardsGrid from "./components/cards-grid";
-import Pagination from "../../../components/pagination/pagination";
+import Pagination from "@/components/pagination/pagination";
 
 interface StoresListProps {
   data?: GetAllStores;
@@ -82,6 +82,8 @@ export function StoresList({
         onSearchChange={setSearchValue}
         onCreate={handleCreateStore}
       />
+
+      {/* <MetricsGrid totalStores={totalStores ?? 0} totalVisits={0} /> */}
 
       <CardsGrid items={visibleItems} />
 

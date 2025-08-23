@@ -129,6 +129,7 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
     setModalOpen("address");
   };
 
+  console.log(methods.formState.errors, "Form Errors");
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-4xl mx-auto space-y-8">
@@ -136,13 +137,11 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
           title="Gestión de Usuario"
           description="Complete la información del usuario y configure sus permisos"
         />
-
         <FormProvider
           methods={methods}
           onSubmit={onSubmit}
           className="space-y-8"
         >
-          {/* Información Personal */}
           <Card className="shadow-lg border-0 bg-white/80 dark:bg-black backdrop-blur-sm">
             <CardHeader className="bg-primary text-white rounded-t-lg p-4 text-lg">
               <CardTitle className="flex items-center gap-2">
@@ -177,7 +176,6 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
                   />
                 </div>
               </div>
-
               <div className="flex gap-8">
                 <div className="flex items-center space-x-3">
                   <RHFCheckbox name="isVerified" label="Usuario verificado" />
@@ -188,7 +186,6 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
               </div>
             </CardContent>
           </Card>
-          {/* Emails y Teléfonos */}
           <Card className="shadow-lg border-0 bg-white/80 dark:bg-black backdrop-blur-sm">
             <CardHeader className="bg-gradient-to-r from-cyan-600 to-sky-600 text-white rounded-t-lg p-4 text-lg">
               <CardTitle className="flex items-center gap-2">
@@ -281,7 +278,6 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
               <AttributesSection />
             </CardContent>
           </Card>
-          {/* Roles y Permisos */}
           <Card className="shadow-lg border-0 bg-white/80  dark:bg-black  backdrop-blur-sm">
             <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg p-4 text-lg">
               <CardTitle className="flex items-center gap-2">
@@ -301,7 +297,6 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
               />
             </CardContent>
           </Card>
-          {/* Direcciones */}
           <Card className="shadow-lg border-0 bg-white/80  dark:bg-black  backdrop-blur-sm">
             <CardHeader className="bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-t-lg p-4 text-lg">
               <CardTitle className="flex items-center gap-2">
@@ -358,7 +353,6 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
           />
         </FormProvider>
 
-        {/* Modals */}
         <AddressModal
           open={modalOpen === "address"}
           onClose={() => setModalOpen("none")}
@@ -373,13 +367,6 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
             invalidateAutocomplete(["roles", "infinite-autocomplete"]);
           }}
         />
-        {/* <BusinessModalContainer
-          open={modalOpen === "business"}
-          onClose={() => setModalOpen("none")}
-          onSuccess={() => {
-            invalidateAutocomplete(["businessIds", "infinite-autocomplete"]);
-          }}
-        /> */}
       </div>
     </div>
   );

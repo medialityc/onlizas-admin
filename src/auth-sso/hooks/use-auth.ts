@@ -24,7 +24,6 @@ export const useAuth = () => {
       const session = await res.json();
 
       if (session?.tokens) {
-        console.log("Session loaded:", session);
         dispatch(setSession(session));
       } else {
         dispatch(clearSession());

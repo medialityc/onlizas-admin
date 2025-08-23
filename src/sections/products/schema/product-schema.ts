@@ -11,73 +11,78 @@ export const productSchema = z.object({
     .string()
     .max(500, "La descripción no puede tener más de 500 caracteres.")
     .default(""),
-  isActive: z.boolean(),
-  supplierIds: z
+  isActive: z.boolean().default(false).optional(),
+
+  supplierUserIds: z
     .array(z.number())
     .min(1, "Debe seleccionar al menos un proveedor."),
   categoryIds: z
     .array(z.number())
     .min(1, "Debe seleccionar al menos una categoría."),
-  dimensions: z
-    .object({
-      width: z
-        .number()
-        .positive("El ancho debe ser un número positivo.")
-        .optional(),
-      height: z
-        .number()
-        .positive("La altura debe ser un número positivo.")
-        .optional(),
-      length: z
-        .number()
-        .positive("La longitud debe ser un número positivo.")
-        .optional(),
-    })
-    .optional(),
-  about: z
-    .union([
-      z.array(
-        z.object({
-          value: z
-            .string({ required_error: "Requerido" })
-            .min(4, "Mínimo 4 caracteres"),
-        })
-      ),
-      z.array(z.string()),
-    ])
-    .transform((val) => {
-      if (val.length > 0 && typeof val[0] === "object" && "value" in val[0]) {
-        return val.map((item: any) => item.value);
-      }
 
-      return val as string[];
-    })
-    .pipe(z.array(z.string()).max(10, "Máximo 10 líneas de texto."))
+  /* dimensions */
+  width: z
+    .number()
+    .positive("El ancho debe ser un número positivo.")
+    .optional(),
+  height: z
+    .number()
+    .positive("La altura debe ser un número positivo.")
+    .optional(),
+  length: z
+    .number()
+    .positive("La longitud debe ser un número positivo.")
+    .optional(),
+  weight: z
+    .number()
+    .positive("El peso debe ser un número positivo.")
+    .optional(),
+
+  aboutThis: z
+    .array(z.string().min(1, "Se requiere al menos una"))
     .default([])
-    .optional(),
+    .refine(
+      (suggestions) => {
+        const uniqueSuggestions = new Set(
+          suggestions.map((s) => s.toLowerCase().trim())
+        );
+        return uniqueSuggestions.size === suggestions.length;
+      },
+      {
+        message:
+          "Las sugerencias deben ser únicas (no se permiten duplicados).",
+      }
+    ),
+  // details dinámicos (objeto de claves arbitrarias string -> string)
   details: z
-    .array(
-      z
-        .object({
-          name: z.string().min(1, "El nombre del detalle es obligatorio."),
-          value: z.string().min(1, "El valor del detalle es obligatorio."),
-        })
-        .optional()
+    .record(
+      z.string(),
+      z.string().trim().min(1, "Valor requerido para el detalle")
     )
-    .optional()
-    .default([]),
-
-  features: z
+    .default({})
+    .refine((obj) => Object.keys(obj).length <= 50, "Máximo 50 detalles"),
+  // soporte interno para UI (array de pares) no enviado directo a la API
+  detailsArray: z
     .array(
       z.object({
+        key: z.string().trim().min(1, "Clave requerida").max(50),
         value: z
-          .string({ required_error: "Requerido" })
-          .min(4, "Mínimo 4 caracteres"),
+          .string()
+          .trim()
+          .min(1, "Valor requerido")
+          .max(100, "Máximo 100 caracteres"),
       })
     )
+    .max(50, "Máximo 50 detalles")
     .optional()
     .default([]),
-  images: z.array(z.any()).optional().default([]),
+
+  image: z
+    .union([
+      z.string().url("Debe ser una URL válida para la imagen."),
+      z.instanceof(File, { message: "Debe ser un archivo válido." }),
+    ])
+    .optional(),
 });
 
 export type ProductFormData = z.infer<typeof productSchema>;

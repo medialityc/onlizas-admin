@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import { getProductById } from "@/services/products-mock";
 import { notFound } from "next/navigation";
 import ProductEditContainer from "@/sections/products/containers/product-edit-container";
+import { getProductById } from "@/services/products";
 
 // Esqueleto de carga
 function ProductEditFallback() {
@@ -37,7 +37,7 @@ export default async function EditProductPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params; // Next 15 params es una Promesa
+  const { id } = await params;
   const response = await getProductById(Number(id));
   if (!response?.data) notFound();
 

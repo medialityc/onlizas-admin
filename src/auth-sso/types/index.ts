@@ -21,20 +21,6 @@ export interface User {
   emails: Email[];
   phones: Phone[];
   photoUrl: string;
-  roles?: IRole[];
-}
-
-export interface IRole {
-  id: number;
-  name: string;
-  code: string;
-  permissions: IPermission[];
-}
-
-export interface IPermission {
-  id: number;
-  name: string;
-  code: string;
 }
 
 export type SessionData = {

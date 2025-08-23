@@ -164,7 +164,17 @@ export const userFormSchema = z.object({
     )
     .default([])
     .optional(),
-  attributes: z.record(z.string(), z.string()).optional(),
+  // Atributos dinámicos: permitir string, null u objetos anidados
+  attributes: z
+    .record(
+      z.union([
+        z.string(),
+        z.null(),
+        // objetos arbitrarios: clave -> cualquier cosa (anidado)
+        z.object({}).catchall(z.any()),
+      ])
+    )
+    .optional(),
 });
 
 // User update schema (for PATCH requests)
@@ -187,7 +197,7 @@ export const userSearchSchema = z.object({
 
 // User attributes update schema
 export const updateUserAttributesSchema = z.object({
-  attributes: z.record(z.string(), z.string()),
+  attributes: z.record(z.any()),
 });
 
 export type UpdateUserAttributesRequest = z.infer<

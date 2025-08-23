@@ -31,7 +31,10 @@ const CategoryFeatureSection = () => {
               <label className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                 Sugerencias
               </label>
-              <ArrayStringField name={`features.${idx}.suggestions`} />
+              <ArrayStringField
+                name={`features.${idx}.suggestions`}
+                index={idx}
+              />
             </div>
           </div>
           {/* Opciones de característica */}
@@ -70,7 +73,13 @@ const CategoryFeatureSection = () => {
 
 export default CategoryFeatureSection;
 
-function ArrayStringField({ name }: { name: string }) {
+function ArrayStringField({
+  name,
+  index = 0,
+}: {
+  name: string;
+  index: number;
+}) {
   const { control, formState } = useFormContext<any>();
   const { fields, append, remove } = useFieldArray({ control, name });
 
@@ -98,9 +107,9 @@ function ArrayStringField({ name }: { name: string }) {
       ))}
 
       {/* errors  */}
-      {_error?.features?.[0]?.suggestions?.root?.message && (
-        <span className="text-sm text-red-600  ">
-          {_error?.features?.[0]?.suggestions?.root?.message}
+      {_error?.features?.[index]?.suggestions?.root?.message && (
+        <span className="text-sm text-red-600">
+          {_error?.features?.[index]?.suggestions?.root?.message}
         </span>
       )}
 

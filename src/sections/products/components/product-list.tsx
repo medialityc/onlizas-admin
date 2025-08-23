@@ -69,14 +69,14 @@ export function ProductList({
       ),
     },
     {
-      accessor: "isActive",
+      accessor: "state",
       title: "Estado",
       sortable: true,
       render: (product) => (
         <Badge
-          variant={product.isActive ? "outline-success" : "outline-secondary"}
+          variant={product.state ? "outline-success" : "outline-secondary"}
         >
-          {product.isActive ? "Activo" : "Inactivo"}
+          {product.state ? "Activo" : "Inactivo"}
         </Badge>
       ),
     },
@@ -101,7 +101,7 @@ export function ProductList({
         <ActionsMenu
           onViewDetails={() => handleView(product)}
           onEdit={() => handleEdit(product)}
-          isActive={product.isActive}
+          isActive={product.state}
         />
       ),
     },

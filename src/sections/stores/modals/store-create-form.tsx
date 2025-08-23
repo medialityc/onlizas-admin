@@ -14,7 +14,6 @@ type Props = {
 function StoreCreateForm({ handleClose, isSubmitting }: Props) {
   const { watch, resetField } = useFormContext<StoreFormData>();
   const ownerId = watch("ownerId");
-  console.log(ownerId);
 
   // Clear business when owner changes
   useEffect(() => {
@@ -54,6 +53,7 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
           required
           onFetch={getAllSupplierUsers}
           size="medium"
+          key={`owner-${ownerId}`}
         />
         {ownerId && (
           <RHFAutocompleteFetcherInfinity
@@ -157,9 +157,9 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
         <LoaderButton
           type="submit"
           loading={isSubmitting}
-          className="btn btn-primary text-textColor"
+          className="btn btn-primary"
         >
-          Tienda
+          Crear Tienda
         </LoaderButton>
       </div>
     </>

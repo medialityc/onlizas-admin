@@ -58,20 +58,25 @@ export const useCategoryCreateForm = (
   }, [defaultValues.image, form]);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (payload: any) => {
+    mutationFn: async (payload: CategoryFormData) => {
       const formData = await setCategoryFormData(payload);
-
-      if (payload?.id) {
-        return await updateCategory(payload?.id, formData);
+      const res = payload?.id
+        ? await updateCategory(payload?.id, formData)
+        : await createCategory(formData);
+      if (res.error) {
+        throw res;
       }
-      return await createCategory(formData);
+
+      return;
     },
     onSuccess: () => {
-      toast.success("Se creo correctamente la categoría");
+      toast.success(
+        `Se ${defaultValues?.id ? "editó" : "creó"} correctamente la categoría`
+      );
       push("/dashboard/categories");
     },
-    onError: (error) => {
-      toast.error(`Ocurrió un error ${error?.message}`);
+    onError: async (error: any) => {
+      toast.error(error?.message);
     },
   });
 

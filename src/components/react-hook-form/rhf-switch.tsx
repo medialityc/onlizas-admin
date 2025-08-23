@@ -5,12 +5,15 @@ interface RHFSwitchProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   label?: string;
   helperText?: string;
+  /** Tailwind classes to apply when checked, e.g. 'peer-checked:bg-gradient-to-r peer-checked:from-secondary peer-checked:to-indigo-600' */
+  checkedClassName?: string;
 }
 
 export default function RHFSwitch({
   name,
   label,
   helperText,
+  checkedClassName,
   ...props
 }: RHFSwitchProps) {
   const { control } = useFormContext();
@@ -19,6 +22,7 @@ export default function RHFSwitch({
     <Controller
       name={name}
       control={control}
+      defaultValue={false}
       render={({ field, fieldState: { error } }) => (
         <div className="flex flex-col space-y-1">
           {label && (
@@ -37,14 +41,15 @@ export default function RHFSwitch({
               id={name}
               {...props}
               {...field}
-              checked={field.value}
+              checked={!!field.value}
             />
             <span
-              className="bg-[#ebedf2] dark:bg-dark block h-full rounded-full 
+              className={`bg-[#ebedf2] dark:bg-dark block h-full rounded-full overflow-hidden
               before:absolute before:left-1 before:bg-white dark:before:bg-white-dark 
               dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 
-              before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary 
-              before:transition-all before:duration-300"
+              before:rounded-full peer-checked:before:left-7 
+              ${checkedClassName ?? "peer-checked:bg-primary"}
+              before:transition-all before:duration-300`}
             />
           </label>
 

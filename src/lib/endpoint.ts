@@ -1,3 +1,5 @@
+import { update } from "lodash";
+
 export const backendRoutes = {
   countries: { get: `${process.env.NEXT_PUBLIC_API_URL}countries` },
   users: {
@@ -53,8 +55,8 @@ export const backendRoutes = {
     create: `${process.env.NEXT_PUBLIC_API_URL}categories`, // POST
     list: `${process.env.NEXT_PUBLIC_API_URL}admin/categories`, // GET
     listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/categories`, // GET
-    delete: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}categories/${id}`, // DELETE
+    toggleStatus: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}categories/${id}/toggle-status`, // TOGGLE STATUS
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}categories/${id}`, // PUT
     detail: (id: string | number) =>
@@ -62,7 +64,9 @@ export const backendRoutes = {
   },
   products: {
     create: `${process.env.NEXT_PUBLIC_API_URL}products`, // POST
-    list: `${process.env.NEXT_PUBLIC_API_URL}products`, // GET
+    list: `${process.env.NEXT_PUBLIC_API_URL}products/admin`, // GET
+    byId: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}products/${id}`, // GET
     delete: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}products/${id}`, // DELETE
     update: (id: string | number) =>
@@ -158,8 +162,11 @@ export const backendRoutes = {
     listProvider: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/supplier/${id}`,
     delete: (id: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_URL}user/store${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
     storeById: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}stores/admin/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
+    update: (id: number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
+
   },
 };

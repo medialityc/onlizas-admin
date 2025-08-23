@@ -19,6 +19,7 @@ export default function StoresListContainer({
   query,
 }: StoresListPageProps) {
   const storesResponse = use(storesPromise);
+
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(storesResponse);
 
