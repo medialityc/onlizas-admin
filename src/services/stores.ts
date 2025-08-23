@@ -29,12 +29,13 @@ export async function getAllStores(
   return buildApiResponseAsync<GetAllStores>(res);
 }
 export async function getAllProviderStores(
-  providerId: number,
-  params: IQueryable
+  supplierId: number,
+  params: IQueryable,
+  includeMetics: boolean = true
 ): Promise<ApiResponse<GetAllStores>> {
   const url = new QueryParamsURLFactory(
-    { ...params },
-    backendRoutes.store.listProvider(providerId)
+    { ...params, includeMetics },
+    backendRoutes.store.listProvider(supplierId)
   ).build();
 
   const res = await nextAuthFetch({
@@ -70,10 +71,11 @@ export async function getMetricStores(
 }
 
 export async function deleteStore(
-  id: string | number
+  supplierId: number,
+  storeId: string | number
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.store.delete(id),
+    url: backendRoutes.store.delete(supplierId, storeId),
     method: "DELETE",
     useAuth: true,
   });
@@ -84,9 +86,10 @@ export async function deleteStore(
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 export async function getStoreById(
-  id: number
+  supplierId: number,
+  storeId: number
 ): Promise<ApiResponse<Store | undefined>> {
-  const url = backendRoutes.store.storeById(id);
+  const url = backendRoutes.store.storeById(supplierId, storeId);
   const res = await nextAuthFetch({
     url,
     method: "GET",
@@ -97,7 +100,10 @@ export async function getStoreById(
   return buildApiResponseAsync<Store>(res);
 }
 
-export async function createStore(data: FormData): Promise<ApiResponse<Store>> {
+export async function createStore(
+  supplierId: number,
+  data: FormData
+): Promise<ApiResponse<Store>> {
   const res = await nextAuthFetch({
     url: backendRoutes.store.create,
     method: "POST",
@@ -113,13 +119,33 @@ export async function createStore(data: FormData): Promise<ApiResponse<Store>> {
   console.log("Store created successfully", res);
   return buildApiResponseAsync<Store>(res);
 }
+export async function createStoreSupplier(
+  supplierId: number,
+  data: FormData
+): Promise<ApiResponse<Store>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.store.createSupplier(supplierId),
+    method: "POST",
+    data,
+    useAuth: true,
+  });
+
+  if (!res.ok) {
+    console.log("Error creating store", res);
+    return handleApiServerError(res);
+  }
+  revalidateTag("stores-supplier");
+  console.log("Store created successfully", res);
+  return buildApiResponseAsync<Store>(res);
+}
 
 export async function updateStore(
-  id: number,
+  supplierId: number,
+  storeId: number,
   data: FormData
 ): Promise<ApiResponse<Store | undefined>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.store.update(id),
+    url: backendRoutes.store.update(supplierId, storeId),
     method: "PUT",
     data,
     useAuth: true,

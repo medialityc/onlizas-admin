@@ -3,8 +3,8 @@
 import React from "react";
 import type { Promotion } from "@/types/stores";
 import SimpleModal from "@/components/modal/modal";
-import { useForm } from "react-hook-form";
-import { FormProvider, RHFInputWithLabel, RHFSelectWithLabel } from "@/components/react-hook-form";
+import { FormProvider as RHFFormProvider, useForm } from "react-hook-form";
+import { RHFInputWithLabel, RHFSelectWithLabel } from "@/components/react-hook-form";
 import RHFDatePicker from "@/components/react-hook-form/rhf-date-picker";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { promotionFormSchema, PromotionFormValues } from "../schema";
@@ -28,20 +28,7 @@ export default function CreatePromotionModal({ open, onClose, onCreate }: { open
   const toYMD = (d?: Date) => (d ? new Date(d).toISOString().slice(0, 10) : undefined);
 
   const onSubmit = (data: PromotionFormValues) => {
-    // Construcción de FormData pensada para API (stringy dates)
-    const fd = new FormData();
-    fd.append("name", data.name);
-    fd.append("type", data.type);
-    if (data.description) fd.append("description", data.description);
-    fd.append("value", String(data.value));
-    if (data.usageLimit !== undefined && data.usageLimit !== "") {
-      fd.append("usageLimit", String(data.usageLimit));
-    }
-    if (data.code) fd.append("code", data.code);
-    if (data.startDate) fd.append("startDate", toYMD(data.startDate) as string);
-    if (data.endDate) fd.append("endDate", toYMD(data.endDate) as string);
-
-    // Por ahora trabajamos en mock, pero normalizamos el objeto para el estado local
+  // Normalizar el objeto y devolverlo al contenedor para que actualice el form global
     onCreate({
       id: Date.now(),
       name: data.name,
@@ -62,7 +49,8 @@ export default function CreatePromotionModal({ open, onClose, onCreate }: { open
 
   return (
     <SimpleModal open={open} onClose={onClose} title="Crear Nueva Promoción">
-      <FormProvider methods={methods} onSubmit={onSubmit} className="space-y-5">
+      <RHFFormProvider {...methods}>
+        <div className="space-y-5">
         {/* Básicos */}
         <Card>
           <CardHeader>
@@ -129,11 +117,12 @@ export default function CreatePromotionModal({ open, onClose, onCreate }: { open
           <Button type="button" outline variant="secondary" onClick={onClose} size="md">
             Cancelar
           </Button>
-          <Button className="shadow-none"  type="submit">
+          <Button className="shadow-none" type="button" onClick={() => methods.handleSubmit(onSubmit)()}>
             Guardar
           </Button>
         </div>
-      </FormProvider>
+        </div>
+      </RHFFormProvider>
     </SimpleModal>
   );
 }

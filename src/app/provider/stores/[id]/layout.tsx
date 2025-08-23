@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { getStoreById } from "@/services/stores";
+import { getSession } from "@/auth-sso/services/server-actions";
 import StoreBreadcrumb from "@/sections/provider-management/stores/edit/components/store-breadcrumb";
 import StoreEditHeader from "@/sections/provider-management/stores/edit/components/store-edit-header";
 import { Params } from "next/dist/server/request/params";
@@ -14,7 +15,9 @@ type LayoutProps = {
 
 export default async function StoreLayout({ children, params }: LayoutProps) {
   const id = (await params).id;
-  const { data: store } = await getStoreById(id);
+  const { user } = await getSession();
+  const supplierId = user?.id ?? 0;
+  const { data: store } = await getStoreById(supplierId, id);
   if (!store) return notFound();
 
   return (

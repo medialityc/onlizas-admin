@@ -1,8 +1,7 @@
 import React, { HTMLAttributes } from "react";
 import { EllipsisVerticalIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { RHFSwitch } from "@/components/react-hook-form";
 import Badge from "@/components/badge/badge";
-import type { StoreCategory } from "./mock";
+import type { StoreCategory } from "../mock";
 
 type Props = {
   category: StoreCategory;
@@ -39,7 +38,6 @@ export default function CategoryListItem({ category: c, onToggleActive, onEdit, 
         </div>
         <div className="flex items-center gap-3">
           <div className="min-w-[3rem]">
-            {/* Local toggle replaced by shared RHFSwitch-like behavior without form binding */}
             <button
               type="button"
               aria-label="Cambiar estado"

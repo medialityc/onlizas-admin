@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import SimpleModal from "@/components/modal/modal";
 
-import type { StoreCategory } from "./mock";
+import type { StoreCategory } from "../mock";
 
 type Props = {
   open: boolean;

@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getStoreById } from "@/services/stores";
 import StoreEditContainer from "@/sections/provider-management/stores/edit/store-edit-container";
+import { getSession } from "@/auth-sso/services/server-actions";
 
 type PageProps = {
   params: Promise<{
@@ -87,13 +88,18 @@ function StoreSkeleton({ store }: { store?: any }) {
 export default async function StoreEditPage({ params }: PageProps) {
   const { id } = await params;
   const storeID = Number(id);
-  const { data: store } = await getStoreById(storeID);
+  // Obtener usuario autenticado (proveedor)
+  const { user } = await getSession();
+  if (!user) return notFound();
+  const supplierId = user.id ?? 0;
+
+  const { data: store } = await getStoreById(supplierId, storeID);
 
   if (!store) return notFound();
 
   return (
     <Suspense fallback={<StoreSkeleton store={store} />}>
-      <StoreEditContainer store={store} />
+  <StoreEditContainer store={store} supplierId={supplierId} />
     </Suspense>
   );
 }
