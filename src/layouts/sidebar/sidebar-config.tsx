@@ -1,5 +1,8 @@
 import { paths } from "@/config/paths";
-import { ArchiveBoxIcon } from "@heroicons/react/24/outline";
+import {
+  ArchiveBoxIcon,
+  ClipboardDocumentIcon,
+} from "@heroicons/react/24/outline";
 import {
   BookOpenIcon,
   CubeIcon,
@@ -87,8 +90,15 @@ export const sidebarSections: SidebarSection[] = [
         path: paths.dashboard.stores.list,
         icon: <ShoppingBagIcon className="h-4 w-4" />,
       },
+      {
+        id: "inventory",
+        label: "Inventario por Proveedores",
+        path: paths.dashboard.inventory.list,
+        icon: <ClipboardDocumentIcon className="h-4 w-4" />,
+      },
     ],
   },
+
   {
     id: "security",
     label: "Seguridad",
