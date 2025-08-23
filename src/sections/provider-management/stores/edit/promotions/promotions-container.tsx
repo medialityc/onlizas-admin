@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { Promotion, Store } from "@/types/stores";
 import { GiftIcon, UsersIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
-import StatCard from "./components/stat-card";
+
+import MetricStatCard from "../components/metric-stat-card";
 import PromotionsToolbar from "./components/toolbar";
 import PromotionRow from "./components/promotion-row";
 import { mockPromotions } from "./mock";
@@ -12,8 +14,22 @@ import CreatePromotionModal from "./components/create-promotion-modal";
 interface Props { store: Store }
 
 export default function PromotionsContainer({ store }: Props) {
-  const [items, setItems] = useState<Promotion[]>(mockPromotions);
   const [open, setOpen] = useState(false);
+  const { register, setValue, getValues } = useFormContext();
+  const initial = (getValues("promotionsPayload") as any[])?.length
+    ? (getValues("promotionsPayload") as any[])
+    : mockPromotions;
+  const [items, setItems] = useState<Promotion[]>(initial);
+  const [source] = useState<string>((getValues("promotionsPayload") as any[])?.length ? "form" : "mock");
+
+  
+  useEffect(() => {
+    register("promotionsPayload");
+  }, [register]);
+
+  useEffect(() => {
+    setValue("promotionsPayload", items, { shouldDirty: true });
+  }, [items, setValue]);
 
   const stats = useMemo(() => {
     const total = items.length;
@@ -25,12 +41,13 @@ export default function PromotionsContainer({ store }: Props) {
 
   return (
     <div className="p-6">
+  <div className="text-xs text-gray-500 mb-2">Fuente: {source === "form" ? "Formulario" : "Mock"}</div>
       {/* Breadcrumb/title area could be outside - kept minimal here */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-        <StatCard label="Total Promociones" value={stats.total} icon={<GiftIcon className="text-indigo-600" />} />
-        <StatCard label="Promociones Activas" value={stats.active} icon={<GiftIcon className="text-emerald-600" />} />
-        <StatCard label="Usos Totales" value={stats.uses} icon={<UsersIcon className="text-violet-600" />} />
-        <StatCard label="Promociones Vencidas" value={stats.expired} icon={<CalendarDaysIcon className="text-rose-600" />} />
+        <MetricStatCard label="Total Promociones" value={stats.total} icon={<GiftIcon className="text-indigo-600" />} />
+        <MetricStatCard label="Promociones Activas" value={stats.active} icon={<GiftIcon className="text-emerald-600" />} />
+        <MetricStatCard label="Usos Totales" value={stats.uses} icon={<UsersIcon className="text-violet-600" />} />
+        <MetricStatCard label="Promociones Vencidas" value={stats.expired} icon={<CalendarDaysIcon className="text-rose-600" />} />
       </div>
 
       <PromotionsToolbar onNew={() => setOpen(true)} />

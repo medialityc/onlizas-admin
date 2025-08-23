@@ -153,14 +153,21 @@ export const backendRoutes = {
     create: `${process.env.NEXT_PUBLIC_API_URL}stores/admin`,
     list: `${process.env.NEXT_PUBLIC_API_URL}stores/metrics`,
     listAll: `${process.env.NEXT_PUBLIC_API_URL}stores`,
-    listProvider: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}stores/supplier/${id}`,
-    delete: (id: number | string) =>
+    listProvider: (supplierId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores`,
+    storeById: (supplierId: string | number, storeId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores/${storeId}`,
+    update: (supplierId: string | number, storeId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores/${storeId}`,
+    createSupplier: (supplierId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores`,
+    delete: (supplierId: string | number, storeId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores/${storeId}`,
+
+    // Admin delete
+    deleteAdmin: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
-    storeById: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
-    update: (id: number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
+
 
   },
 };
