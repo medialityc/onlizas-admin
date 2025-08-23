@@ -23,7 +23,7 @@ export interface PaginatedResponse<T> {
   data: T[];
   totalCount: number;
   page: number;
-  pageSize: number; 
+  pageSize: number;
   hasNext: boolean;
   hasPrevious: boolean;
 }

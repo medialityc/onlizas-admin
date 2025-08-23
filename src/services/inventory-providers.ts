@@ -8,6 +8,7 @@ import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
 import { backendRoutes } from "@/lib/endpoint";
+import { PaginatedResponse } from "@/types/common";
 
 // Tipos para Currency
 export type InventoryProvider = {
@@ -28,6 +29,9 @@ export type GetAllInventoryProvider = {
     totalPages: number;
   };
 };
+
+export type GetAllInventoryProviderResponse =
+  PaginatedResponse<InventoryProvider>;
 
 const INVENTORY_TAG_KEY = "inventory-provider";
 
@@ -80,4 +84,28 @@ export async function deleteInventoryProvider(
   revalidateTag(INVENTORY_TAG_KEY);
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
+}
+
+export async function getAllInventoryByUserProvider(
+  userProviderId: number,
+  params: IQueryable
+): Promise<ApiResponse<GetAllInventoryProviderResponse>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.inventoryProvider.listByUserProvider(userProviderId)
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    headers: {
+      supplierId: String(userProviderId),
+    },
+    next: { tags: [INVENTORY_TAG_KEY] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetAllInventoryProviderResponse>(res);
 }

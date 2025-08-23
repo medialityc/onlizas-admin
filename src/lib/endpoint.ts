@@ -164,5 +164,7 @@ export const backendRoutes = {
     list: `${process.env.NEXT_PUBLIC_API_URL}inventories/admin`,
     delete: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/${id}`,
+    listByUserProvider: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/list/${id}`,
   },
 };
