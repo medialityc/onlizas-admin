@@ -3,7 +3,7 @@ import { update } from "lodash";
 export const backendRoutes = {
   countries: { get: `${process.env.NEXT_PUBLIC_API_URL}countries` },
   users: {
-    me: `${process.env.NEXT_PUBLIC_API_URL}users/me`,
+    me: `${process.env.NEXT_PUBLIC_API_URL}me`,
     register: `${process.env.NEXT_PUBLIC_API_URL}Users/register`,
     search: `${process.env.NEXT_PUBLIC_API_URL}users/search`,
     scan: `${process.env.NEXT_PUBLIC_API_URL}users/scan`,
@@ -139,6 +139,8 @@ export const backendRoutes = {
     list: `${process.env.NEXT_PUBLIC_API_URL}admin/get_suppliers`, // GET
     pending: `${process.env.NEXT_PUBLIC_API_URL}admin/approval-processes/pending`, // GET
     valid: `${process.env.NEXT_PUBLIC_API_URL}admin/approval-processes/approved`, // GET
+    productsBySupplier: (supplierId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/products`, // GET
   },
   notifications: {
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/notifications`,
@@ -165,8 +167,6 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
     storeById: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
-    update: (id: number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
-
+    update: (id: number) => `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
   },
 };

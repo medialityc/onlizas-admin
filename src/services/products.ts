@@ -219,3 +219,24 @@ export async function getCategoryFeatures(
 
   return buildApiResponseAsync<CategoryFeaturesResponse>(res);
 }
+
+export async function getAllProductsBySupplier(
+  params: IQueryable,
+  supplierId: number | string
+): Promise<ApiResponse<GetAllProducts>> {
+  const url = new QueryParamsURLFactory(
+    params,
+    backendRoutes.suppliers.productsBySupplier(supplierId)
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["products"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetAllProducts>(res);
+}
