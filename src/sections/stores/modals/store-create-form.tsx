@@ -1,3 +1,5 @@
+"use client";
+
 import LoaderButton from "@/components/loaders/loader-button";
 import { RHFInputWithLabel } from "@/components/react-hook-form";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
@@ -53,8 +55,8 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
           required
           onFetch={getAllSupplierUsers}
           size="medium"
-          key={`owner-${ownerId}`}
         />
+
         {ownerId && (
           <RHFAutocompleteFetcherInfinity
             key={`business-${ownerId}`}

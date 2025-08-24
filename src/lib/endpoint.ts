@@ -1,5 +1,3 @@
-import { update } from "lodash";
-
 export const backendRoutes = {
   countries: { get: `${process.env.NEXT_PUBLIC_API_URL}countries` },
   users: {
@@ -119,6 +117,7 @@ export const backendRoutes = {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}businesses`,
     getByUser: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}users/${id}/businesses`,
+    forUser: `${process.env.NEXT_PUBLIC_API_URL}suppliers/businesses`,
     getAllLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/business`,
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/businesses`,
     update: (id: string | number) =>
@@ -153,21 +152,23 @@ export const backendRoutes = {
     create: `${process.env.NEXT_PUBLIC_API_URL}stores/admin`,
     list: `${process.env.NEXT_PUBLIC_API_URL}stores/metrics`,
     listAll: `${process.env.NEXT_PUBLIC_API_URL}stores`,
-    listProvider: (supplierId: string | number) =>
+    listByProvider: (supplierId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores`,
+    listForProvider: `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores`,
     storeById: (supplierId: string | number, storeId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores/${storeId}`,
+    storeDetails: (storeId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
     update: (supplierId: string | number, storeId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores/${storeId}`,
     createSupplier: (supplierId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores`,
     delete: (supplierId: string | number, storeId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores/${storeId}`,
-
+    details: (storeId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}`,
     // Admin delete
     deleteAdmin: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
-
-
   },
 };

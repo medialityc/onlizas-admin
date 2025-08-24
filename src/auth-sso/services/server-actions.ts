@@ -22,6 +22,7 @@ export const storeSession = async (
       },
       user: {
         id: session.user?.id as User["id"],
+        globalId: session.user?.globalId as User["globalId"],
         emails: session.user?.emails as User["emails"],
         name: session.user?.name as User["name"],
         phones: session.user?.phones as User["phones"],
