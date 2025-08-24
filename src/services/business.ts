@@ -100,3 +100,21 @@ export async function getAllUserBusiness(
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<GetAllBusiness>(res);
 }
+export async function getUserBusiness(
+  params: IQueryable
+): Promise<ApiResponse<GetAllBusiness>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.business.forUser
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["business"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<GetAllBusiness>(res);
+}

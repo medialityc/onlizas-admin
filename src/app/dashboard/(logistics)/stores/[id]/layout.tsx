@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { notFound } from "next/navigation";
-import { getStoreSupplierDetails } from "@/services/stores";
+import { getStoreDetails } from "@/services/stores";
 import StoreBreadcrumb from "@/sections/provider-management/stores/edit/components/store-breadcrumb";
 import StoreEditHeader from "@/sections/provider-management/stores/edit/components/store-edit-header";
 
@@ -13,7 +13,7 @@ type LayoutProps = {
 
 export default async function StoreLayout({ children, params }: LayoutProps) {
   const id = (await params).id;
-  const { data: store } = await getStoreSupplierDetails(id);
+  const { data: store } = await getStoreDetails(id);
   if (!store) return notFound();
 
   return (

@@ -311,7 +311,7 @@ export const SoreCard = ({ store }: DataCardProps) => {
             </a>
           )}
           <Button
-            onClick={() => router.push(`/provider/stores/${store.id}`)}
+            onClick={() => router.push(`/dashboard/stores/${store.id}`)}
             className="flex-1"
             size="sm"
           >

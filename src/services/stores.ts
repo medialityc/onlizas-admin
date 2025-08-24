@@ -29,13 +29,33 @@ export async function getAllStores(
   return buildApiResponseAsync<GetAllStores>(res);
 }
 export async function getAllProviderStores(
-  supplierId: number,
+  supplierId: string,
   params: IQueryable,
   includeMetics: boolean = true
 ): Promise<ApiResponse<GetAllStores>> {
   const url = new QueryParamsURLFactory(
     { ...params, includeMetics },
-    backendRoutes.store.listProvider(supplierId)
+    backendRoutes.store.listByProvider(supplierId)
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["stores"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetAllStores>(res);
+}
+export async function getProviderStores(
+  params: IQueryable,
+  includeMetics: boolean = true
+): Promise<ApiResponse<GetAllStores>> {
+  const url = new QueryParamsURLFactory(
+    { ...params, includeMetics },
+    backendRoutes.store.listForProvider
   ).build();
 
   const res = await nextAuthFetch({
@@ -101,7 +121,7 @@ export async function getStoreById(
 }
 
 export async function createStore(
-  supplierId: number,
+  // supplierId: number,
   data: FormData
 ): Promise<ApiResponse<Store>> {
   const res = await nextAuthFetch({
@@ -156,3 +176,30 @@ export async function updateStore(
   return buildApiResponseAsync<Store>(res);
 }
 
+export async function getStoreDetails(
+  storeId: number
+): Promise<ApiResponse<Store | undefined>> {
+  const url = backendRoutes.store.details(storeId);
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<Store>(res);
+}
+
+export async function getStoreSupplierDetails(
+  storeId: number
+): Promise<ApiResponse<Store | undefined>> {
+  const url = backendRoutes.store.storeDetails(storeId);
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<Store>(res);
+}
