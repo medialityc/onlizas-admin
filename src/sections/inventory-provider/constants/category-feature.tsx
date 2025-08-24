@@ -11,5 +11,5 @@ export const getCategoryFeature = (feature: FeatureFormData[]) => {
     return 0;
   });
 
-  return feature;
+  return feature?.map((fet) => ({ ...fet, name: fet?.featureName, value: "" }));
 };

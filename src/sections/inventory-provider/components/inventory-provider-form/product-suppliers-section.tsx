@@ -29,13 +29,12 @@ function ProductSupplierSection({ supplierId }: Props) {
       const sortFeature = getCategoryFeature(
         data?.data?.features as unknown as FeatureFormData[]
       );
+
       if (sortFeature?.length > 0) {
-        setValue("categoryFeature", sortFeature);
+        setValue("categoryFeatures", sortFeature, { shouldDirty: true });
       }
     }
   }, [data, setValue]);
-
-  console.log(data);
 
   return (
     <div className="bg-white rounded-lg border p-6 h-full">

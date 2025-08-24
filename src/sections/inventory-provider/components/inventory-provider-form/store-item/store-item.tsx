@@ -8,6 +8,7 @@ import { useState } from "react";
 import AnimateHeight from "react-animate-height";
 import StoreVariant from "./store-variants";
 import { useFormContext } from "react-hook-form";
+import { Separator } from "@/components/ui/separator";
 
 type Props = {
   title: string;
@@ -21,25 +22,25 @@ const StoreItem = ({ title, index }: Props) => {
   console.log(providerId, "id para obtener los almacenes del proveedor");
   return (
     <StoreAccordion title={title}>
-      <div className="flex flex-col gap-4 py-2">
+      <div className="flex flex-col gap-4  border border-dotted py-2 px-4 rounded-lg">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <RHFAutocompleteFetcherInfinity
-              name="warehouseGeneralIds"
-              label="Almacenes"
-              placeholder="Seleccionar almacenes"
+              name={`stores.${index}.warehousePhysicalIds`}
+              label="Almacenes físicos"
+              placeholder="Seleccionar almacenes físicos"
               onFetch={getAllWarehouses}
               objectValueKey="id"
               objectKeyLabel="name"
-              queryKey="warehouses"
+              queryKey="warehouses-physical"
               required
               multiple
             />
           </div>
           <div>
             <RHFAutocompleteFetcherInfinity
-              name="warehouseIds"
-              label="Almacenes"
+              name={`stores.${index}.warehouseIds`}
+              label="Almacenes del proveedor"
               placeholder="Seleccionar almacenes del proveedor"
               onFetch={getAllWarehouses}
               objectValueKey="id"
@@ -50,6 +51,8 @@ const StoreItem = ({ title, index }: Props) => {
             />
           </div>
         </div>
+
+        <Separator className="my-2" />
 
         {/* lista de variantes  */}
         <StoreVariant storeIndex={index} />
@@ -65,7 +68,7 @@ type StoreAccordionProps = ChildrenProps & {
 const StoreAccordion = ({ children, title }: StoreAccordionProps) => {
   const [active, setActive] = useState(true);
   return (
-    <div className="flex flex-col gap-2 border border-dotted py-2 px-2 rounded-lg">
+    <div className="flex flex-col gap-2">
       <button
         type="button"
         className={`px-6 py-3 bg-gray-100 rounded-md w-full flex items-center justify-between dark:bg-[#1b2e4b] `}

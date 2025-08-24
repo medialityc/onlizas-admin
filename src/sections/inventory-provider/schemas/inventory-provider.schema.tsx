@@ -1,15 +1,16 @@
 import { featureSchema } from "@/sections/categories/schemas/category-schema";
 import { z } from "zod";
 
+
+// todo mejorar validaciones al final
 export const inventoryProviderArraySchema = z
   .array(
     z.object({
       /*   productId: z.number({ required_error: "Requerido" }),
       supplierId: z.number({ required_error: "Requerido" }), */
-      storeId: z.number({ required_error: "Requerido" }),
-      warehouseIds: z
-        .array(z.number())
-        .min(1, "Debes seleccionar al menos un almacén"),
+      storeId: z.number(),
+      warehouseIds: z.array(z.number()),
+      // .min(1, "Debes seleccionar al menos un almacén"),
       productVariants: z.array(
         z.object({
           details: z.array(
@@ -40,7 +41,7 @@ export const inventoryProviderSchema = z.object({
   stores: inventoryProviderArraySchema,
   productId: z.number({ required_error: "Requerido" }),
   supplierId: z.number({ required_error: "Requerido" }),
-  categoryFeature: z.array(featureSchema)
+  categoryFeatures: z.array(featureSchema),
 });
 
 export type InventoryProviderStoreSettingItem = {

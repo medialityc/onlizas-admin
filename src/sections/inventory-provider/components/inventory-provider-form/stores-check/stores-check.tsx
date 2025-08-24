@@ -40,9 +40,10 @@ export default function StoresCheck({
       if (existingIndex === -1) {
         append({
           storeId: store?.id,
-          storeName: store?.name,
-          warehouseIds: [],
+          storeName: store?.name, // only for name accordion
           productVariants: [],
+          warehouseIds: [],
+          warehousePhysicalIds: [],
         });
       }
     } else {
@@ -96,7 +97,7 @@ export default function StoresCheck({
             <div
               key={`${id}-${item.id}`}
               className={cn(
-                "relative flex  cursor-pointer flex-col gap-2 rounded-md border px-4 py-2 shadow-sm outline-none transition-colors",
+                "relative flex cursor-pointer flex-col gap-2 rounded-md border px-3 py-1 shadow-sm outline-none transition-colors",
                 "hover:bg-gray-100  ",
                 isChecked
                   ? "border-primary/50 bg-primary/5"
@@ -107,7 +108,7 @@ export default function StoresCheck({
                 <picture className="p-2 rounded-lg bg-primary/10 text-primary">
                   <ShoppingBagIcon
                     className={cn(
-                      "h-6 w-6 transition-opacity ",
+                      "h-4 w-4 transition-opacity ",
                       isChecked ? "opacity-80" : "opacity-60"
                     )}
                     aria-hidden="true"
@@ -124,7 +125,7 @@ export default function StoresCheck({
               </div>
               <Label htmlFor={`${id}-${item.id}`} className="cursor-pointer ">
                 <LongText
-                  className="font-semibold text-[1rem]"
+                  className="font-semibold"
                   text={item.name}
                   lineClamp={1}
                   as="h3"

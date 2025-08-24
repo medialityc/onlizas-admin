@@ -8,15 +8,17 @@ type Props = {
   storeIndex: number;
 };
 const StoreVariant = ({ storeIndex }: Props) => {
-  const { control } = useFormContext<any>();
+  const { control, watch } = useFormContext<any>();
   const { append, remove, fields } = useFieldArray({
     control,
     name: `stores.${storeIndex}.productVariants`,
   });
 
+  const features: any[] = watch("categoryFeatures");
+
   const handleAddVariant = useCallback(() => {
     append({
-      details: [],
+      details: features,
 
       //Información de Inventario
       quantity: 0,
@@ -36,15 +38,19 @@ const StoreVariant = ({ storeIndex }: Props) => {
       },
       packageDelivery: false,
     });
-  }, [append]);
+  }, [append, features]);
 
   return (
-    <div className="mt-2 flex flex-col gap-4">
+    <div className="mt-1 flex flex-col gap-2">
       <div className="flex flex-row justify-between gap-2 items-center">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           Variantes del producto
         </h3>
-        <Button variant="secondary" onClick={handleAddVariant}>
+        <Button
+          disabled={features?.length === 0}
+          variant="secondary"
+          onClick={handleAddVariant}
+        >
           <PlusIcon className="h-4 w-4" />
           Agregar variante
         </Button>

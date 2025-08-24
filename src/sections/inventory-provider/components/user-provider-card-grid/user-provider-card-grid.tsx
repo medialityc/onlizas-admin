@@ -15,8 +15,6 @@ export function UserProviderCardGrid({
   searchParams,
   onSearchParamsChange,
 }: Props) {
-
-  console.log(data?.data, 'AAA')
   return (
     <>
       <DataGridCard

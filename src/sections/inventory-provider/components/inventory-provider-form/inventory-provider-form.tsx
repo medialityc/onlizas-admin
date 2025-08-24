@@ -30,7 +30,7 @@ const InventoryProviderForm = ({ initValue, userProvider, stores }: Props) => {
 
   return (
     <section>
-      <FormProvider methods={form} onSubmit={onSubmit} id="product-form">
+      <FormProvider methods={form} onSubmit={onSubmit} id="inventory-provider-form">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-4">
           <div className="col-span-1 lg:col-span-2">
             <ProductSupplierSection supplierId={userProvider?.id as number} />
@@ -51,7 +51,7 @@ const InventoryProviderForm = ({ initValue, userProvider, stores }: Props) => {
           Cancelar
         </Button>
         <LoaderButton
-          form="product-form"
+          form="inventory-provider-form"
           type="submit"
           loading={isPending}
           disabled={isPending}

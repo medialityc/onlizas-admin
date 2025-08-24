@@ -41,11 +41,9 @@ const InventoryProviderCreateContainer = ({ userProvider, stores }: Props) => {
           stores: [],
           productId: 0,
           supplierId: provider?.id as number,
-          categoryFeature: [],
+          categoryFeatures: [],
         }}
       />
-
-      <pre> {JSON.stringify(_stores, null, 2)} </pre>
     </div>
   );
 };

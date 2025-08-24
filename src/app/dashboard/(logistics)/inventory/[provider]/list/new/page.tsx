@@ -17,15 +17,12 @@ export default async function InventoryPage({ params }: Props) {
   const userProvider = await getUserProviderById(Number(provider));
   const stores = await getAllProviderStores(Number(provider), {});
 
-  // todo get one provider
-
   return (
     <Suspense>
       <InventoryProviderCreateContainer
         userProvider={userProvider}
         stores={stores}
       />
-      ;
     </Suspense>
   );
 }
