@@ -2,7 +2,7 @@
 
 import React, { useRef } from "react";
 import type { StoreCategory } from "../mock";
-import CategoryListItem from "./category-list-item";
+import { CategoryListItem } from "./index";
 import { persistCategoryOrder } from "../mock";
 
 type Props = {

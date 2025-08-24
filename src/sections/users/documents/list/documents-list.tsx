@@ -25,14 +25,11 @@ export function UserDocumentsList({ documentsPromise, userId }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-
-
-
-  // const handleCreate = useCallback(() => {
-  //   const params = new URLSearchParams(searchParams);
-  //   params.set("modal", "create");
-  //   router.push(`?${params.toString()}`, { scroll: false });
-  // }, [router, searchParams]);
+  const handleCreate = useCallback(() => {
+    const params = new URLSearchParams(searchParams);
+    params.set("modal", "create");
+    router.push(`?${params.toString()}`, { scroll: false });
+  }, [router, searchParams]);
 
   const handleEdit = useCallback(
     (document: IDocument) => {
@@ -43,7 +40,6 @@ export function UserDocumentsList({ documentsPromise, userId }: Props) {
     },
     [router, searchParams]
   );
-
 
   const handleDownload = useCallback(
     async (doc: IDocument) => {
@@ -86,14 +82,16 @@ export function UserDocumentsList({ documentsPromise, userId }: Props) {
         accessor: "name",
         title: "Nombre",
         sortable: true,
-        render: document => <div className="font-medium">{document.name}</div>,
+        render: (document) => (
+          <div className="font-medium">{document.name}</div>
+        ),
       },
       {
         accessor: "description",
         title: "Descripción",
         sortable: true,
-        render: document => (
-          <p  className="text-sm text-gray-600 dark:text-gray-300 truncate max-w-[200px] block">
+        render: (document) => (
+          <p className="text-sm text-gray-600 dark:text-gray-300 truncate max-w-[200px] block">
             {document.description || "Sin descripción"}
           </p>
         ),
@@ -102,14 +100,14 @@ export function UserDocumentsList({ documentsPromise, userId }: Props) {
         accessor: "objectCode",
         title: "Código de Objeto",
         sortable: true,
-        render: document => (
+        render: (document) => (
           <div className="font-mono text-sm">{document.objectCode}</div>
         ),
       },
       {
         accessor: "actions",
         width: 100,
-        render: document => (
+        render: (document) => (
           <ActionsMenu
             onEdit={() => handleEdit(document)}
             onDownload={() => handleDownload(document)}
@@ -127,7 +125,7 @@ export function UserDocumentsList({ documentsPromise, userId }: Props) {
         <div className="mb-5 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-              Gestión de Documentos 
+              Gestión de Documentos
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Administra los documentos del usuario
@@ -135,7 +133,7 @@ export function UserDocumentsList({ documentsPromise, userId }: Props) {
           </div>
         </div>
         <DataGrid
-          // onCreate={handleCreate}
+          onCreate={handleCreate}
           simpleData={data}
           columns={columns}
           enablePagination={false}
@@ -143,7 +141,6 @@ export function UserDocumentsList({ documentsPromise, userId }: Props) {
           enableSorting={false}
           className="mt-6"
         />
-     
       </div>
     </>
   );

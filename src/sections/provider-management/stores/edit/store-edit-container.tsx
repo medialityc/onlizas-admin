@@ -9,6 +9,7 @@ interface Props {
 }
 
 export default function StoreEditContainer({ store }: Props) {
+  
   return (
     <div className="p-6">
       <StoreTabs store={store} />

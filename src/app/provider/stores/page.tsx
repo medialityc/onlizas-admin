@@ -1,6 +1,7 @@
+import { getSession } from "@/auth-sso/services/server-actions";
 import { buildQueryParams } from "@/lib/request";
 import StoresListContainer from "@/sections/provider-management/stores/list/stores-list-container";
-import { getProviderStores } from "@/services/stores";
+import { getAllProviderStores } from "@/services/stores";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
 import { Suspense } from "react";
@@ -59,8 +60,9 @@ function StoresListSkeleton() {
 
 async function StoresListPage({ searchParams }: PageProps) {
   const params = await searchParams;
+  const { user } = await getSession();
   const query: IQueryable = buildQueryParams(params);
-  const storesPromise = getProviderStores(query);
+  const storesPromise = getAllProviderStores(user?.id ?? 0, query);
 
   return (
     <Suspense fallback={<StoresListSkeleton />}>

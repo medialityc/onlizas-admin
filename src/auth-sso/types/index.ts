@@ -17,7 +17,6 @@ export interface Phone {
 // User types
 export interface User {
   id: number;
-  globalId: string;
   name: string;
   emails: Email[];
   phones: Phone[];

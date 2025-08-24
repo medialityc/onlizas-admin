@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Store } from "@/types/stores";
-import CategoriesToolbar from "./components/categories-toolbar";
+import CategoriesToolbar from "./categories-toolbar";
 import { mockCategories, type StoreCategory } from "./mock";
 
 import DeleteDialog from "@/components/modal/delete-modal";
@@ -79,6 +79,27 @@ function CategoriesContent({ store }: Props) {
         onEdit={() => { /* TODO */ }}
         onDelete={(id) => setDeleteId(id)}
       />
+
+      {/* Modals */}
+      {/**
+       * Crear categoría deshabilitado por ahora
+       *
+       * <CategoryModal
+       *   open={openNew}
+       *   onClose={() => setOpenNew(false)}
+       *   onSubmit={(data) =>
+       *     setItems((prev) => [
+       *       {
+       *         id: Math.max(0, ...prev.map((x) => x.id)) + 1,
+       *         productCount: 0,
+       *         views: 0,
+       *         ...data,
+       *       },
+       *       ...prev,
+       *     ])
+       *   }
+       * />
+       */}
 
       <DeleteDialog
         open={deleteId !== null}

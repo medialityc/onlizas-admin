@@ -6,7 +6,7 @@ export const GeneralStoreSchema = z.object({
 
   // Información básica
   name: z.string().min(1, "Nombre requerido"),
-  description: z.string().optional(),
+  description: z.string().min(1, "Descripción requerida"),
   url: z.string().min(1, "URL requerida"),
   logoStyle: z.union([z.string().min(1, "Logo requerido"), z.instanceof(File)]),
 

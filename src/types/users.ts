@@ -64,6 +64,7 @@ export interface IDocument {
 export interface IUser {
   id: number;
   name: string;
+  approvalProcessId?: number;
   hasPassword: boolean;
   hasEmail: boolean;
   hasPhoneNumber: boolean;
