@@ -16,7 +16,7 @@ import {
   GetAllValidSuppliers,
   GetSupplierEvaluations,
   Supplier,
-  SupplierApprovalProcess,
+  SupplierApprovalProcess, 
   SupplierDetails,
 } from "@/types/suppliers";
 import { WithLoginForm } from "@/sections/suppliers/edit/login-user/whitloginSchema";
@@ -174,11 +174,11 @@ export async function getApprovalProcess(
   return buildApiResponseAsync(res);
 }
 
-export async function getSupplierApprovalProcess(): Promise<
-  ApiResponse<SupplierApprovalProcess>
-> {
+export async function getSupplierApprovalProcess(
+  id: string
+): Promise<ApiResponse<SupplierApprovalProcess>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.approvalProcesses.list,
+    url: `${process.env.NEXT_PUBLIC_API_URL}suppliers/${id}/approval-process`,
     method: "GET",
     cache: "no-store",
     useAuth: true,

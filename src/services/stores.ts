@@ -43,7 +43,7 @@ export async function getAllProviderStores(
     url,
     method: "GET",
     useAuth: true,
-    next: { tags: ["supplier-stores"] },
+    next: { tags: ["stores-all-provider"] },
   });
   
 

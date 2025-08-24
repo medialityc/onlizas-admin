@@ -1,7 +1,7 @@
 // TODO: Implement provider profile
 
 import { buildQueryParams } from "@/lib/request";
-import ProfileContainer from "@/sections/provider-management/profile/containers/profile-container";
+import ProfileContainer from "@/sections/provider-management/profile/profile-container";
 import { getAllCategories } from "@/services/categories";
 import { getUserById } from "@/services/users";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
@@ -41,6 +41,7 @@ function CategoriesListSkeleton() {
 
 export default async function ProfilePage({ searchParams }: PageProps) {
   const params = await searchParams;
+  const query: IQueryable = buildQueryParams(params);
   return (
     <Suspense fallback={<CategoriesListSkeleton />}>
       <ProfileContainer query={params} />

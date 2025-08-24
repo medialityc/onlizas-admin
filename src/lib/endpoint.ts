@@ -137,9 +137,8 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/businesses/${id}`,
     delete: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}business/${id}`,
-    deleteBySupplier: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/businesses/${id}`,
-    getAllByUser: `${process.env.NEXT_PUBLIC_API_URL}businesses/mine`,
+    getAllByUser: (userId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}users/${userId}/businesses`,
   },
   suppliers: {
     create: `${process.env.NEXT_PUBLIC_API_URL}suppliers`, // POST
@@ -167,11 +166,10 @@ export const backendRoutes = {
     create: `${process.env.NEXT_PUBLIC_API_URL}documents`, // POST
   },
   approvalProcesses: {
-    list: `${process.env.NEXT_PUBLIC_API_URL}admin/supplier/me`,
     extend: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${id}/extend`, // POST
   },
- store: {
+  store: {
     create: `${process.env.NEXT_PUBLIC_API_URL}stores/admin`,
     list: `${process.env.NEXT_PUBLIC_API_URL}stores/metrics`,
     listAll: `${process.env.NEXT_PUBLIC_API_URL}stores`,
@@ -201,10 +199,6 @@ export const backendRoutes = {
     update: (id: number) => `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
     updateAdminStore: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
-  },
-  storeBanner: {
-    create: `${process.env.NEXT_PUBLIC_API_DEV_URL}banners`,
-    update: `${process.env.NEXT_PUBLIC_API_DEV_URL}banners`,
 
   },
   storeBanner: {

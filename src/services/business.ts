@@ -31,11 +31,12 @@ export async function getAllBusiness(
   return buildApiResponseAsync<GetAllBusiness>(res);
 }
 export async function getAllBusinessByUser(
-  params: IQueryable
-): Promise<ApiResponse<PaginatedResponse<Business>>> {
+  params: IQueryable,
+  id: string | number
+): Promise<ApiResponse<Business[]>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.business.getAllByUser
+    backendRoutes.business.getAllByUser(id)
   ).build();
 
   const res = await nextAuthFetch({
@@ -47,7 +48,7 @@ export async function getAllBusinessByUser(
 
   if (!res.ok) return handleApiServerError(res);
 
-  return buildApiResponseAsync<PaginatedResponse<Business>>(res);
+  return buildApiResponseAsync<Business[]>(res);
 }
 
 export async function createBusiness(

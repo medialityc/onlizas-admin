@@ -142,44 +142,24 @@ export type SupplierApprovalProcess = {
   email: string;
   phone: string;
   countryId: number;
-  countryName: string;
-  nacionality: string;
-  sellerType: string;
-  mincexCode: string;
-  expirationDate: string;
-  pendingDocuments: EnhancedDocument[];
-  approvedDocuments: EnhancedDocument[];
-  pendingCategories: EnhancedCategory[];
-  approvedCategories: EnhancedCategory[];
-};
-
-// New extended types for enhanced approval process
-export type EnhancedDocument = {
-  id: number;
-  fileName: string;
-  content: string;
-  beApproved: boolean;
-  rejectionReason: string;
-};
-
-export type CategoryFeature = {
-  featureId: number;
-  featureName: string;
-  featureDescription: string;
-  suggestions: string[];
-  isRequired: boolean;
-  isPrimary: boolean;
-};
-
-export type EnhancedCategory = {
-  id: number;
-  name: string;
-  isActive: boolean;
-  departmentId: number;
-  departmentName: string;
-  description: string;
-  image: string;
-  features: CategoryFeature[];
+  approvedDocuments: {
+    id: number;
+    fileName: string;
+    isApproved: boolean;
+  }[];
+  approvedCategories: {
+    categoryId: number;
+    categoryName: string;
+  }[];
+  pendingDocuments: {
+    id: number;
+    fileName: string;
+    isApproved: boolean;
+  }[];
+  pendingCategories: {
+    categoryId: number;
+    categoryName: string;
+  }[];
 };
 
 export type SupplierEvaluation = {

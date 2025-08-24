@@ -14,10 +14,15 @@ import LoaderButton from "@/components/loaders/loader-button";
 import SimpleModal from "@/components/modal/modal";
 import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import { getAllBusiness } from "@/services/business";
+import {
+  getAllBusiness,
+  updateBusinessData,
+  createBusiness,
+} from "@/services/business";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+import { isValidUrl, urlToFile } from "@/utils/format";
 import { FormProvider, RHFSelectWithLabel } from "@/components/react-hook-form";
-import { useProviderBusinessMutation } from "@/sections/provider-management/profile/hooks/use-provider-business-mutation";
-import { Label } from "@headlessui/react";
 
 interface ProviderBusinessModalProps {
   open: boolean;
@@ -38,22 +43,14 @@ export default function ProviderBusinessModal({
 }: ProviderBusinessModalProps) {
   const [error, setError] = useState<string | null>(null);
   const [loadingImage, setLoadingImage] = useState(false);
-
-  const { mutate: submitBusiness, isLoading: isSubmitting } =
-    useProviderBusinessMutation({
-      business,
-      userId,
-      onSuccess,
-      // onClose: handleClose,
-    });
-  console.log(business);
+  const queryClient = useQueryClient();
 
   const methods = useForm<CreateSchemaBusiness>({
     resolver: zodResolver(businessSchema),
     defaultValues: {
       name: business?.name || "",
       code: business?.code || "",
-      parentId: business?.parentBusiness?.id,
+      parentId: business?.parentBusiness?.id || 0,
       description: business?.description || "",
       locationId: business?.locationId || 0,
       hblInitial: business?.hblInitial || "",
@@ -67,7 +64,12 @@ export default function ProviderBusinessModal({
     },
   });
 
-  const { reset, handleSubmit, setValue } = methods;
+  const {
+    reset,
+    handleSubmit,
+    formState: { isSubmitting },
+    setValue,
+  } = methods;
 
   useEffect(() => {
     const loadImagesAsFiles = async () => {
@@ -114,9 +116,124 @@ export default function ProviderBusinessModal({
     onClose();
   };
 
-  const onSubmit = (data: CreateSchemaBusiness) => {
+  const onSubmit = async (data: CreateSchemaBusiness) => {
     setError(null);
-    submitBusiness(data);
+
+    // Validación específica para provider: si no hay userId, mostrar error
+    if (!userId && !business) {
+      setError("No se puede crear un negocio sin asociar a un usuario");
+      toast.error("Error: Usuario no identificado");
+      return;
+    }
+
+    try {
+      let response;
+      const formData = new FormData();
+
+      // Mapear campos base
+      formData.append("name", data.name);
+      formData.append("code", data.code);
+      formData.append("description", data.description || "");
+      formData.append("hblInitial", data.hblInitial);
+      formData.append("address", data.address || "");
+      formData.append("email", data.email || "");
+      formData.append("phone", data.phone || "");
+      formData.append("isPrimary", data.isPrimary ? "true" : "false");
+      formData.append("fixedRate", data.fixedRate?.toString() || "0");
+      formData.append("invoiceText", data.invoiceText || "");
+      formData.append("locationId", data.locationId.toString());
+      formData.append(
+        "parentId",
+        data.parentId ? data.parentId.toString() : ""
+      );
+
+      // Manejo de imágenes
+      if (data.photoObjectCodes && data.photoObjectCodes.length > 0) {
+        await Promise.all(
+          data.photoObjectCodes.map(async (photo, index) => {
+            if (typeof photo === "string" && isValidUrl(photo)) {
+              try {
+                const imageFile = await urlToFile(photo);
+                formData.append(`photoObjectCodes[${index}]`, imageFile);
+              } catch {
+                toast.error(`Error al procesar la imagen desde URL (${photo})`);
+              }
+            } else if (photo instanceof File) {
+              formData.append(`photoObjectCodes[${index}]`, photo);
+            }
+          })
+        );
+      }
+
+      if (business) {
+        // Editando business existente
+        response = await updateBusinessData(business.id, formData);
+
+        if (!response.error) {
+          // Invalidar queries relacionadas con business y user específico
+          queryClient.invalidateQueries({ queryKey: ["businesses"] });
+          if (userId) {
+            queryClient.invalidateQueries({
+              queryKey: ["user", "businesses", userId],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["business", "user", userId],
+            });
+          }
+          /* queryClient.invalidateQueries({
+            queryKey: ["user", "profile", "me"],
+          }); */
+
+          onSuccess?.(response.data);
+          toast.success("Negocio editado exitosamente");
+          handleClose();
+        } else {
+          const errorMsg =
+            response.status === 409
+              ? "Ya existe un negocio con ese código"
+              : response.message || "No se pudo procesar este negocio";
+          setError(errorMsg);
+          toast.error(errorMsg);
+        }
+      } else {
+        // Creando nuevo business
+        response = await createBusiness(formData);
+
+        if (!response.error) {
+          // Invalidar queries relacionadas específicamente para provider context
+          queryClient.invalidateQueries({ queryKey: ["businesses"] });
+          if (userId) {
+            queryClient.invalidateQueries({
+              queryKey: ["user", "businesses", userId],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["business", "user", userId],
+            });
+          }
+          queryClient.invalidateQueries({
+            queryKey: ["user", "profile", "me"],
+          });
+
+          // Para nuevos business, response.data es ApiStatusResponse, no Business
+          // Llamamos onSuccess sin data específica para forzar refetch
+          onSuccess?.();
+          toast.success("Negocio creado exitosamente");
+          handleClose();
+        } else {
+          const errorMsg =
+            response.status === 409
+              ? "Ya existe un negocio con ese código"
+              : response.message || "No se pudo crear este negocio";
+          setError(errorMsg);
+          toast.error(errorMsg);
+        }
+      }
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Error al procesar el negocio";
+      setError(errorMessage);
+      toast.error(errorMessage);
+    }
   };
 
   if (!open) return null;
@@ -301,10 +418,7 @@ export default function ProviderBusinessModal({
           </div>
 
           {/* Imágenes */}
-          <label className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-            Fotos
-          </label>
-          <RHFMultiImageUpload name="photoObjectCodes" />
+          <RHFMultiImageUpload name="photoObjectCodes" label="Fotos" />
 
           {/* Botones */}
           <div className="flex justify-end gap-3 pt-6">
