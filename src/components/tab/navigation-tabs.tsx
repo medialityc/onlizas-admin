@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/24/solid";
 import {
   BuildingOfficeIcon,
-  BuildingStorefrontIcon
+  BuildingStorefrontIcon,
 } from "@heroicons/react/24/outline";
 import { BuildingLibraryIcon } from "@heroicons/react/24/solid";
 
@@ -37,7 +37,7 @@ interface NavigationTabsProps {
   className?: string;
 }
 
-export function NavigationTabs ({ tabs, className }: NavigationTabsProps) {
+export function NavigationTabs({ tabs, className }: NavigationTabsProps) {
   const pathname = usePathname();
 
   return (

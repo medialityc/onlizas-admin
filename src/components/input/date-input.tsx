@@ -42,6 +42,9 @@ export default function DateInput({
   width = "100%",
   containerClassName,
   showError = true,
+  minDate,
+  maxDate,
+  locale,
 }: DateInputProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   // Formato DD/MM/YYYY
@@ -85,21 +88,33 @@ export default function DateInput({
     };
   }, [isOpen, onBlur]);
 
-  // Validación de edad
-  const isValidAge = (date: Date | undefined) => {
-    if (!date) return true; // Permitir fechas vacías para habilitar el calendario
-    const now = new Date();
-    const min = new Date(
-      now.getFullYear() - 102,
-      now.getMonth(),
-      now.getDate()
-    );
-    const max = new Date(now.getFullYear() - 16, now.getMonth(), now.getDate());
-    return date >= min && date <= max;
+  // Validación simple usando minDate / maxDate si se proveen.
+  // Si no se proveen, permitir cualquier fecha.
+  const isWithinRange = (date: Date | undefined) => {
+    if (!date) return true;
+    if (minDate && date < startOfDay(minDate)) return false;
+    if (maxDate && date > endOfDay(maxDate)) return false;
+    return true;
   };
 
+  function startOfDay(d: Date) {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+  }
+
+  function endOfDay(d: Date) {
+    return new Date(
+      d.getFullYear(),
+      d.getMonth(),
+      d.getDate(),
+      23,
+      59,
+      59,
+      999
+    );
+  }
+
   const handleDateSelect = (date: Date | undefined) => {
-    if (date && !isValidAge(date)) {
+    if (date && !isWithinRange(date)) {
       setSelectedDate(undefined);
       setInputValue("");
       onChange(undefined);
@@ -153,7 +168,7 @@ export default function DateInput({
 
         <div className="relative">
           <MaskedInput
-            id="date-input"
+            id={id}
             type="text"
             value={inputValue}
             placeholder={placeholder}
@@ -162,7 +177,7 @@ export default function DateInput({
               setInputValue(val);
               if (val.length === 10) {
                 const date = parseDate(val);
-                if (date && isValidAge(date)) {
+                if (date && isWithinRange(date)) {
                   setSelectedDate(date);
                   onChange(date);
                 } else {
@@ -201,7 +216,7 @@ export default function DateInput({
                 // Sincronizar input y calendario al abrir
                 if (inputValue && inputValue.length === 10) {
                   const date = parseDate(inputValue);
-                  if (date && isValidAge(date)) {
+                  if (date && isWithinRange(date)) {
                     setSelectedDate(date);
                   }
                 }
@@ -221,8 +236,8 @@ export default function DateInput({
                 selected={selectedDate}
                 onSelect={handleDateSelect}
                 disabled={(date) => {
-                  // Solo permitir fechas entre 16 y 102 años
-                  return !isValidAge(date);
+                  // Deshabilitar fechas fuera del rango si se proporcionó min/max
+                  return !isWithinRange(date);
                 }}
                 initialFocus
                 month={selectedDate ?? new Date(2000, 0, 1)}

@@ -28,7 +28,7 @@ const StoreTabs = ({ store }: TabsProps) => {
   return (
     <div className={`store-edit-tabs ${styles.tabsUnderline}`}>
       {/* Botón Guardar Cambios con loader, apuntando al form "store-edit-form" */}
-      <div className="flex justify-end py-0">
+      <div className="flex justify-end py-3">
         <LoaderButton
           type="submit"
           loading={formState.isSubmitting}

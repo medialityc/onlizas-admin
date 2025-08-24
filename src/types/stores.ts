@@ -37,6 +37,7 @@ export type StoreBanner = {
   isActive: boolean;
 };
 
+
 export type Promotion = {
   id: number;
   name: string;
@@ -47,7 +48,7 @@ export type Promotion = {
   usageLimit?: number;
   usedCount?: number;
   startDate?: string; // ISO
-  endDate?: string; // ISO
+  endDate?: string;   // ISO
   isActive: boolean;
   badge?: string; // e.g., "Envío Gratis"
 };
@@ -134,7 +135,6 @@ export type Store = {
   ];
   businessName: string;
   supplierName: string;
-  supplierId: number;
 };
 
 export type GetAllStores = PaginatedResponse<Store>;

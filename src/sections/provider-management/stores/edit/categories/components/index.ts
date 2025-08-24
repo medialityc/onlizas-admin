@@ -1,1 +1,2 @@
-export { default as CategoryList } from "./category-list";
+export { default as MetricCard } from "../metric-card";
+export { default as CategoryListItem } from "../category-list-item";
