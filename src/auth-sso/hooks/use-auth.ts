@@ -55,7 +55,7 @@ export const useAuth = () => {
     dispatch(setLoading(true));
     try {
       const res = await serverCleanSession();
-      console.log("clear session", res);
+      console.log('clear session',res)
       dispatch(clearSession());
     } catch (err) {
       console.error(err);

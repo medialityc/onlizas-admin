@@ -72,7 +72,10 @@ function UsuariosSection({ business }: { business: Business }) {
         <ul className="list-disc pl-6 text-gray-800 dark:text-gray-200">
           {users.map((u, i) => {
             const id = typeof u === "object" ? u.id : u;
-            const name = typeof u === "object" ? (u.name ?? `Usuario ${i + 1}`) : String(u);
+            const name =
+              typeof u === "object"
+                ? (u.name ?? `Usuario ${i + 1}`)
+                : String(u);
             return (
               <li key={id ?? i} className="flex items-center gap-2">
                 <span className="font-medium">{name}</span>
@@ -89,8 +92,7 @@ function UsuariosSection({ business }: { business: Business }) {
 }
 
 function NegociosHijosSection({ business }: { business: Business }) {
-  const children =
-    (business as any)?.childBusinesses as Array<any> | undefined;
+  const children = (business as any)?.childBusinesses as Array<any> | undefined;
   if (!children || children.length === 0) return null;
 
   return (
@@ -103,7 +105,10 @@ function NegociosHijosSection({ business }: { business: Business }) {
         <ul className="list-disc pl-6 text-gray-800 dark:text-gray-200">
           {children.map((n, i) => {
             const id = typeof n === "object" ? n.id : n;
-            const name = typeof n === "object" ? (n.name ?? `Negocio ${i + 1}`) : String(n);
+            const name =
+              typeof n === "object"
+                ? (n.name ?? `Negocio ${i + 1}`)
+                : String(n);
             return (
               <li key={id ?? i} className="flex items-center gap-2">
                 <span className="font-medium">{name}</span>

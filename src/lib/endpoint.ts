@@ -1,7 +1,7 @@
 export const backendRoutes = {
   countries: { get: `${process.env.NEXT_PUBLIC_API_URL}countries` },
   users: {
-    me: `${process.env.NEXT_PUBLIC_API_URL}users/me`,
+    me: `${process.env.NEXT_PUBLIC_API_URL}me`,
     register: `${process.env.NEXT_PUBLIC_API_URL}Users/register`,
     search: `${process.env.NEXT_PUBLIC_API_URL}users/search`,
     scan: `${process.env.NEXT_PUBLIC_API_URL}users/scan`,
@@ -125,14 +125,15 @@ export const backendRoutes = {
   business: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}businesses`,
     getByUser: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${id}/businesses`,
-    forUser: `${process.env.NEXT_PUBLIC_API_URL}suppliers/businesses`,
+      `${process.env.NEXT_PUBLIC_API_URL}users/${id}/businesses`,
     getAllLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/business`,
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/businesses`,
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/businesses/${id}`,
     delete: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}business/${id}`,
+    getAllByUser: (userId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}users/${userId}/businesses`,
   },
   suppliers: {
     create: `${process.env.NEXT_PUBLIC_API_URL}suppliers`, // POST
@@ -145,6 +146,8 @@ export const backendRoutes = {
     list: `${process.env.NEXT_PUBLIC_API_URL}admin/get_suppliers`, // GET
     pending: `${process.env.NEXT_PUBLIC_API_URL}admin/approval-processes/pending`, // GET
     valid: `${process.env.NEXT_PUBLIC_API_URL}admin/approval-processes/approved`, // GET
+    productsBySupplier: (supplierId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/products`, // GET
   },
   notifications: {
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/notifications`,
@@ -157,29 +160,19 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}documents/${id}/validate`, // PUT
     create: `${process.env.NEXT_PUBLIC_API_URL}documents`, // POST
   },
+  approvalProcesses: {
+    extend: (id: number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${id}/extend`, // POST
+  },
   store: {
     create: `${process.env.NEXT_PUBLIC_API_URL}stores/admin`,
     list: `${process.env.NEXT_PUBLIC_API_URL}stores/metrics`,
     listAll: `${process.env.NEXT_PUBLIC_API_URL}stores`,
-    listByProvider: (supplierId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${supplierId}/stores`,
-    listForProvider: `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores`,
-    storeById: (supplierId: string | number, storeId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores/${storeId}`,
-    storeDetails: (storeId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
-    updateSupplierStore: (storeId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
-    updateAdminStore: (storeId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}`,
-    createSupplier: (supplierId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores`,
-    delete: (supplierId: string | number, storeId: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores/${storeId}`,
-    details: (storeId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}`,
-    // Admin delete
-    deleteAdmin: (id: number | string) =>
+    listProvider: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/supplier/${id}`,
+    delete: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
+    storeById: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
     update: (id: number) => `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
   },

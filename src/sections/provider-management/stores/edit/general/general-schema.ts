@@ -1,14 +1,13 @@
 import { z } from "zod";
 
-
-export const GeneralStoreSchema = z
-  .object({
+// Todos los campos obligatorios por ahora, según tipo Store actual
+export const GeneralStoreSchema = z.object({
   // Estado
   isActive: z.boolean({ required_error: "El estado es obligatorio" }).default(true),
 
   // Información básica
   name: z.string().min(1, "Nombre requerido"),
-  description: z.string().optional(),
+  description: z.string().min(1, "Descripción requerida"),
   url: z.string().min(1, "URL requerida"),
   logoStyle: z.union([z.string().min(1, "Logo requerido"), z.instanceof(File)]),
 
@@ -21,8 +20,6 @@ export const GeneralStoreSchema = z
   returnPolicy: z.string().min(1, "Requerido"),
   shippingPolicy: z.string().min(1, "Requerido"),
   termsOfService: z.string().min(1, "Requerido"),
-  })
-  
-  .passthrough();
+});
 
 export type GeneralStoreForm = z.infer<typeof GeneralStoreSchema>;
