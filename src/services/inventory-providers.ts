@@ -87,22 +87,19 @@ export async function deleteInventoryProvider(
 }
 
 export async function getAllInventoryByUserProvider(
-  userProviderId: number,
+  supplierId: number,
   params: IQueryable
 ): Promise<ApiResponse<GetAllInventoryProviderResponse>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.inventoryProvider.listByUserProvider(userProviderId)
+    backendRoutes.inventoryProvider.listByUserProvider(supplierId)
   ).build();
 
   const res = await nextAuthFetch({
     url,
     method: "GET",
     useAuth: true,
-    headers: {
-      supplierId: String(userProviderId),
-    },
-    next: { tags: [INVENTORY_TAG_KEY] },
+    next: { tags: [INVENTORY_TAG_KEY, String(supplierId)] },
   });
 
   if (!res.ok) return handleApiServerError(res);

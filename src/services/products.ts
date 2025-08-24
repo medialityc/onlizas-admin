@@ -37,6 +37,26 @@ export async function getAllProducts(
   return buildApiResponseAsync<GetAllProducts>(res);
 }
 
+export async function getAllProductsBySupplier(
+  supplierId: number,
+  params: IQueryable
+): Promise<ApiResponse<GetAllProducts>> {
+  const url = new QueryParamsURLFactory(
+    params,
+    backendRoutes.products.listBySupplier(supplierId)
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    useAuth: true,
+    next: { tags: ["products-supplier"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetAllProducts>(res);
+}
+
 export async function getProductById(
   id: number
 ): Promise<ApiResponse<Product>> {

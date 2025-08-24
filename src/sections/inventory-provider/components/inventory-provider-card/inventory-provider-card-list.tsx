@@ -5,14 +5,17 @@ import InventoryProviderCard from "./inventory-provider-card";
 import { Button } from "@/components/button/button";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { IUserProvider } from "@/types/users";
 
 type Props = {
   data?: InventoryProvider[];
   searchParams: SearchParams;
+  provider: IUserProvider;
 };
-const InventoryProviderCardList = ({ data, searchParams }: Props) => {
+const InventoryProviderCardList = ({ data, searchParams, provider }: Props) => {
   const id = useId();
-  if (!data) {
+
+  if (data?.length === 0) {
     return (
       <div className="text-center py-12 flex flex-col justify-center">
         <div className="text-gray-500 dark:text-gray-400 mb-4">
@@ -22,7 +25,10 @@ const InventoryProviderCardList = ({ data, searchParams }: Props) => {
         </div>
         {!searchParams?.search && (
           <Button variant="primary" className="mx-auto">
-            <Link className="flex flex-row gap-2 items-center justify-center" href={"/dashboard/inventory/106/inventory/new"}>
+            <Link
+              className="flex flex-row gap-2 items-center justify-center"
+              href={`/dashboard/inventory/${provider?.id}/list/new`}
+            >
               <PlusIcon className="h-4 w-4 mr-2" />
               Crear un inventario
             </Link>

@@ -133,7 +133,7 @@ export default function RHFInputWithLabel({
             )}
             style={{ width }}
           >
-            <div className={cn("flex flex-col", label && "gap-2")}>
+            <div className={cn("flex flex-col", label && "gap-1")}>
               <div className="flex flex-col gap-1">
                 {label && (
                   <label

@@ -17,11 +17,12 @@ import AnimateHeight from "react-animate-height";
 
 type Props = {
   item: IUserProvider;
+  className?: string;
 };
 
-const UserProviderCard = ({ item }: Props) => {
+const UserProviderCard = ({ item, className }: Props) => {
   return (
-    <Card>
+    <Card className={cn(className)}>
       <CardHeader className="flex flex-row gap-2 items-start justify-between">
         <div className="flex flex-row gap-2 items-center ">
           <div
@@ -94,7 +95,7 @@ const UserProviderCard = ({ item }: Props) => {
         {/* actions */}
         <div className="flex flex-1 w-full mt-4">
           <Button className="w-full border border-primary bg-transparent shadow-none text-black">
-            <Link href={`/dashboard/inventory/${item?.id}/inventory`}>
+            <Link href={`/dashboard/inventory/${item?.id}/list`}>
               Ver inventario
             </Link>
           </Button>

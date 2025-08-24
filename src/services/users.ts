@@ -143,6 +143,20 @@ export async function getUserById(id: number): Promise<ApiResponse<IUser>> {
   return buildApiResponseAsync<IUser>(res);
 }
 
+// - [ ] GET USER PROVIDER BY ID
+export async function getUserProviderById(
+  id: number
+): Promise<ApiResponse<IUser>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.users.getById(id),
+    method: "GET",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<IUser>(res);
+}
+
 // - [ ] UPDATE USER ATTRIBUTES
 export async function updateUserAttributes(
   id: number,

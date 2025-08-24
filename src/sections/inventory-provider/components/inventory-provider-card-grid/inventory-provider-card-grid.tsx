@@ -5,12 +5,13 @@ import { GetAllInventoryProviderResponse } from "@/services/inventory-providers"
 import InventoryProviderCardList from "../inventory-provider-card/inventory-provider-card-list";
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { IUserProvider } from "@/types/users";
 
 interface Props {
   data?: GetAllInventoryProviderResponse;
   searchParams: SearchParams;
   onSearchParamsChange: (params: SearchParams) => void;
-  provider: number;
+  provider: IUserProvider;
 }
 
 export function InventoryProviderCardGrid({
@@ -21,7 +22,7 @@ export function InventoryProviderCardGrid({
 }: Props) {
   const { push } = useRouter();
   const handleInventoryProviderCreate = useCallback(
-    () => push(`/dashboard/inventory/${provider}/inventory/new`),
+    () => push(`/dashboard/inventory/${provider?.id}/list/new`),
     [provider, push]
   );
   return (
@@ -39,6 +40,7 @@ export function InventoryProviderCardGrid({
           <InventoryProviderCardList
             data={data?.data}
             searchParams={searchParams}
+            provider={provider}
           />
         }
       />

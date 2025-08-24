@@ -63,6 +63,8 @@ export const backendRoutes = {
   products: {
     create: `${process.env.NEXT_PUBLIC_API_URL}products`, // POST
     list: `${process.env.NEXT_PUBLIC_API_URL}products/admin`, // GET
+    listBySupplier: (supplierId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}products/admin/${supplierId}`, // GET
     byId: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}products/${id}`, // GET
     delete: (id: string | number) =>
@@ -79,7 +81,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}admin/products/${id}/suppliers/unassign`, // POST
     simpleCategories: `${process.env.NEXT_PUBLIC_API_URL}admin/products/categories/simple`, // GET
     simpleSuppliers: `${process.env.NEXT_PUBLIC_API_URL}admin/products/suppliers/simple`, // GET
-    categoryFeatures: `${process.env.NEXT_PUBLIC_API_URL}admin/products/categories/features`, // GET
+    categoryFeatures: `${process.env.NEXT_PUBLIC_API_URL}categories/features`, // GET
   },
   warehouses: {
     create: `${process.env.NEXT_PUBLIC_API_URL}warehouses`,
@@ -164,7 +166,7 @@ export const backendRoutes = {
     list: `${process.env.NEXT_PUBLIC_API_URL}inventories/admin`,
     delete: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/${id}`,
-    listByUserProvider: (id: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/list/${id}`,
+    listByUserProvider: (supplierId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/list/${supplierId}`,
   },
 };

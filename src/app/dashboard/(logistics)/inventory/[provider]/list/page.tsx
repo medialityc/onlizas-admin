@@ -2,7 +2,10 @@ import { buildQueryParams } from "@/lib/request";
 import { InventoryListSkeleton } from "@/sections/inventory-provider/components/skeleton/inventory-list-skeleton";
 import InventoryProviderCardListContainer from "@/sections/inventory-provider/containers/inventory-provider-card-list-container";
 import { getAllInventoryByUserProvider } from "@/services/inventory-providers";
+
+import { getUserProviderById } from "@/services/users";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
+import { IUserProvider } from "@/types/users";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -21,17 +24,19 @@ interface PageProps {
 
 async function InventoryProviderPage({ searchParams, params }: PageProps) {
   const search = await searchParams;
-  const { provider } = await params;
+  const { provider: supplierId } = await params;
   const query: IQueryable = buildQueryParams(search);
 
-  const inventories = getAllInventoryByUserProvider(provider, query);
+  const inventories = getAllInventoryByUserProvider(supplierId, query);
+
+  const provider = await getUserProviderById(Number(supplierId));
 
   return (
     <Suspense fallback={<InventoryListSkeleton />}>
       <InventoryProviderCardListContainer
         inventories={inventories}
         query={search}
-        provider={provider}
+        provider={provider?.data as IUserProvider}
       />
     </Suspense>
   );
