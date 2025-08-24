@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import IconPlus from '@/components/icon/icon-plus';
-import RHFInputWithLabel from '@/components/react-hook-form/rhf-input';
-import { Button } from '@/components/button/button';
-import { useFieldArray, useFormContext } from 'react-hook-form';
-import IconTrash from '@/components/icon/icon-trash';
-import IconInfoCircle from '@/components/icon/icon-info-circle';
+import IconPlus from "@/components/icon/icon-plus";
+import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
+import { Button } from "@/components/button/button";
+import { useFieldArray, useFormContext } from "react-hook-form";
+import IconTrash from "@/components/icon/icon-trash";
+import IconInfoCircle from "@/components/icon/icon-info-circle";
 
-function AboutProductSection () {
+function AboutProductSection() {
   const { control } = useFormContext();
   const {
     fields: aboutFields,
@@ -15,7 +15,7 @@ function AboutProductSection () {
     remove: removeAbout,
   } = useFieldArray({
     control,
-    name: 'about',
+    name: "aboutThis",
   });
 
   return (
@@ -28,7 +28,7 @@ function AboutProductSection () {
           type="button"
           variant="secondary"
           size="sm"
-          onClick={() => appendAbout({ value: '' })}
+          onClick={() => appendAbout("")}
           disabled={aboutFields.length >= 10}
           className="flex items-center gap-2"
         >
@@ -39,19 +39,19 @@ function AboutProductSection () {
 
       <div className="space-y-3">
         {aboutFields.map((field, index) => (
-          <div key={field.id} className="flex items-center gap-3">
+          <div key={field.id} className="flex items-start gap-3">
             <div className="flex-1">
               <RHFInputWithLabel
-                name={`about.${index}.value`}
+                name={`aboutThis.${index}`}
                 label=""
                 placeholder={`Línea ${index + 1}`}
               />
-            </div>            
+            </div>
             <Button
               type="button"
               size="sm"
+              variant="danger"
               onClick={() => removeAbout(index)}
-              className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-300 hover:border-red-400"
             >
               <IconTrash className="w-4 h-4" />
             </Button>

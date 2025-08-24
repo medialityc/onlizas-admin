@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getProductById } from "@/services/products-mock";
+import { getProductById } from "@/services/products";
 import Badge from "@/components/badge/badge";
 import { Button } from "@/components/button/button";
 import { paths } from "@/config/paths";
@@ -128,11 +128,11 @@ async function ProductDetails({ id }: { id: string }) {
                   <span className="text-sm font-medium text-gray-500">
                     Estado:
                   </span>
-                  <div className="mt-1">
+                  {/* <div className="mt-1">
                     <Badge variant={product.isActive ? "success" : "secondary"}>
                       {product.isActive ? "Activo" : "Inactivo"}
                     </Badge>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div>
