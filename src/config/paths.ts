@@ -70,6 +70,8 @@ export const paths = {
     },
     warehouse: {
       list: `${PROVIDER}/warehouses`,
+      edit: (id: string | number) => `${PROVIDER}/warehouses/${id}/edit`,
+      view: (id: string | number) => `${PROVIDER}/warehouses/${id}`,
     },
     stores: {
       list: `${PROVIDER}/stores`,
