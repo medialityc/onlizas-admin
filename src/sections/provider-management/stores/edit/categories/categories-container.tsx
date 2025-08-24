@@ -3,12 +3,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Store } from "@/types/stores";
-import CategoriesToolbar from "./components/categories-toolbar";
+import CategoriesToolbar from "./categories-toolbar";
 import { mockCategories, type StoreCategory } from "./mock";
 import { EyeIcon, ChartBarIcon } from "@heroicons/react/24/outline";
 // import CategoryModal from "./category-modal"; // NOTE: Crear categoría deshabilitado por ahora
 import DeleteDialog from "@/components/modal/delete-modal";
-import MetricStatCard from "../components/metric-stat-card";
+import { MetricCard } from "./components";
 import CategoryList from "./components/category-list";
 
 interface Props {
@@ -16,19 +16,8 @@ interface Props {
 }
 
 export default function CategoriesContainer({ store }: Props) {
-  const { register, setValue, getValues } = useFormContext();
-  const initial = (getValues("categoriesPayload") as any[])?.length
-    ? (getValues("categoriesPayload") as any[]).map((c: any, idx) => ({
-        id: c.id ?? idx + 1,
-        name: c.name ?? `Cat ${idx + 1}`,
-        productCount: c.productCount ?? 0,
-        views: c.views ?? 0,
-        isActive: Boolean(c.isActive ?? true),
-        order: c.order ?? idx + 1,
-      }))
-    : mockCategories;
-  const [items, setItems] = useState<StoreCategory[]>(initial);
-  const [source] = useState<string>((getValues("categoriesPayload") as any[])?.length ? "form" : "mock");
+  const [items, setItems] = useState<StoreCategory[]>(mockCategories);
+  const { register, setValue } = useFormContext();
   // const [openNew, setOpenNew] = useState(false); // NOTE: Crear categoría deshabilitado por ahora
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
@@ -52,20 +41,19 @@ export default function CategoriesContainer({ store }: Props) {
 
   return (
     <div className="p-6 text-lg">
-  <div className="text-xs text-gray-500 mb-2">Fuente: {source === "form" ? "Formulario" : "Mock"}</div>
       {/* Metrics header */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <MetricStatCard
+        <MetricCard
           label="Total Categorías"
           value={totals.total}
           icon={<ChartBarIcon className="w-6 h-6 text-indigo-500" />}
         />
-        <MetricStatCard
+        <MetricCard
           label="Categorías Activas"
           value={totals.active}
           icon={<EyeIcon className="w-6 h-6 text-emerald-600" />}
         />
-        <MetricStatCard
+        <MetricCard
           label="Total Productos"
           value={totals.products}
           icon={<ChartBarIcon className="w-6 h-6 text-violet-600" />}
@@ -82,6 +70,27 @@ export default function CategoriesContainer({ store }: Props) {
         onEdit={() => { /* TODO */ }}
         onDelete={(id) => setDeleteId(id)}
       />
+
+      {/* Modals */}
+      {/**
+       * Crear categoría deshabilitado por ahora
+       *
+       * <CategoryModal
+       *   open={openNew}
+       *   onClose={() => setOpenNew(false)}
+       *   onSubmit={(data) =>
+       *     setItems((prev) => [
+       *       {
+       *         id: Math.max(0, ...prev.map((x) => x.id)) + 1,
+       *         productCount: 0,
+       *         views: 0,
+       *         ...data,
+       *       },
+       *       ...prev,
+       *     ])
+       *   }
+       * />
+       */}
 
       <DeleteDialog
         open={deleteId !== null}

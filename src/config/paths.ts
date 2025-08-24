@@ -66,6 +66,8 @@ export const paths = {
     },
     products: {
       list: `${PROVIDER}/products`,
+      edit: (id: string | number) => `${PROVIDER}/products/${id}/edit`,
+      view: (id: string | number) => `${PROVIDER}/products/${id}/view`,
     },
     inventory: {
       list: `${PROVIDER}/inventory`,

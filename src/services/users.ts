@@ -358,7 +358,6 @@ export async function getAllSupplierUsers(
     { ...params, role: "ONL_SUPPLIER" },
     backendRoutes.users.listSuppliers
   ).build();
-  console.log(url);
 
   const res = await nextAuthFetch({
     url,

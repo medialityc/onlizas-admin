@@ -5,7 +5,7 @@ import BusinessModal from "./business-modal";
 interface BusinessModalContainerProps {
   open: boolean;
   onClose: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (data?: Business) => void;
   business?: Business;
   isDetailsView?: boolean;
 }

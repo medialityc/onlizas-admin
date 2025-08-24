@@ -10,15 +10,17 @@ export const businessSchema = z.object({
     .string({ required_error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")
     .max(100, "Máximo 100 caracteres."),
-  parentId:z.coerce.number().optional(),
+  parentId: z.coerce.number().optional(),
 
   hblInitial: z
     .string({ required_error: "El HBL inicial es obligatorio." })
-    
+
     .max(30, "Máximo 30 caracteres."),
 
-  locationId: z
-    .coerce.number().int().positive({message:"Debe ser un numero"}),
+  locationId: z.coerce
+    .number()
+    .int()
+    .positive({ message: "Debe ser un numero" }),
 
   description: z.string().max(500).optional(),
   address: z.string().max(200).optional(),
@@ -44,11 +46,10 @@ export const businessSchema = z.object({
       z.union([
         z.string().url("Debe ser una URL válida."),
         z.instanceof(File, { message: "Debe ser un archivo válido." }),
-      ]) 
+      ])
     )
     .max(10, "Máximo 10 imágenes.")
     .optional(),
 });
-
 
 export type CreateSchemaBusiness = z.infer<typeof businessSchema>;

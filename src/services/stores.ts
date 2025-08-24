@@ -29,33 +29,12 @@ export async function getAllStores(
   return buildApiResponseAsync<GetAllStores>(res);
 }
 export async function getAllProviderStores(
-  supplierId: string,
-  params: IQueryable,
-  includeMetics: boolean = true
+  providerId: number,
+  params: IQueryable
 ): Promise<ApiResponse<GetAllStores>> {
   const url = new QueryParamsURLFactory(
-    { ...params, includeMetics },
-    backendRoutes.store.listByProvider(supplierId)
-  ).build();
-
-  const res = await nextAuthFetch({
-    url,
-    method: "GET",
-    useAuth: true,
-    next: { tags: ["stores"] },
-  });
-
-  if (!res.ok) return handleApiServerError(res);
-
-  return buildApiResponseAsync<GetAllStores>(res);
-}
-export async function getProviderStores(
-  params: IQueryable,
-  includeMetics: boolean = true
-): Promise<ApiResponse<GetAllStores>> {
-  const url = new QueryParamsURLFactory(
-    { ...params, includeMetics },
-    backendRoutes.store.listForProvider
+    { ...params },
+    backendRoutes.store.listProvider(providerId)
   ).build();
 
   const res = await nextAuthFetch({
@@ -91,11 +70,10 @@ export async function getMetricStores(
 }
 
 export async function deleteStore(
-  supplierId: number,
-  storeId: string | number
+  id: string | number
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.store.delete(supplierId, storeId),
+    url: backendRoutes.store.delete(id),
     method: "DELETE",
     useAuth: true,
   });
@@ -106,10 +84,9 @@ export async function deleteStore(
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 export async function getStoreById(
-  supplierId: number,
-  storeId: number
+  id: number
 ): Promise<ApiResponse<Store | undefined>> {
-  const url = backendRoutes.store.storeById(supplierId, storeId);
+  const url = backendRoutes.store.storeById(id);
   const res = await nextAuthFetch({
     url,
     method: "GET",
@@ -120,10 +97,7 @@ export async function getStoreById(
   return buildApiResponseAsync<Store>(res);
 }
 
-export async function createStore(
-  // supplierId: number,
-  data: FormData
-): Promise<ApiResponse<Store>> {
+export async function createStore(data: FormData): Promise<ApiResponse<Store>> {
   const res = await nextAuthFetch({
     url: backendRoutes.store.create,
     method: "POST",
@@ -139,32 +113,13 @@ export async function createStore(
   console.log("Store created successfully", res);
   return buildApiResponseAsync<Store>(res);
 }
-export async function createStoreSupplier(
-  supplierId: number,
-  data: FormData
-): Promise<ApiResponse<Store>> {
-  const res = await nextAuthFetch({
-    url: backendRoutes.store.createSupplier(supplierId),
-    method: "POST",
-    data,
-    useAuth: true,
-  });
 
-  if (!res.ok) {
-    console.log("Error creating store", res);
-    return handleApiServerError(res);
-  }
-  revalidateTag("stores-supplier");
-  console.log("Store created successfully", res);
-  return buildApiResponseAsync<Store>(res);
-}
-
-export async function updateSupplierStore(
-  storeId: number,
+export async function updateStore(
+  id: number,
   data: FormData
 ): Promise<ApiResponse<Store | undefined>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.store.updateSupplierStore(storeId),
+    url: backendRoutes.store.update(id),
     method: "PUT",
     data,
     useAuth: true,
@@ -192,31 +147,3 @@ export async function updateAdminStore(
   return buildApiResponseAsync<Store>(res);
 }
 
-export async function getStoreDetails(
-  storeId: number
-): Promise<ApiResponse<Store | undefined>> {
-  const url = backendRoutes.store.details(storeId);
-  const res = await nextAuthFetch({
-    url,
-    method: "GET",
-    useAuth: true,
-    next: { tags: ["store-details"] },
-  });
-
-  if (!res.ok) return handleApiServerError(res);
-  return buildApiResponseAsync<Store>(res);
-}
-
-export async function getStoreSupplierDetails(
-  storeId: number
-): Promise<ApiResponse<Store | undefined>> {
-  const url = backendRoutes.store.storeDetails(storeId);
-  const res = await nextAuthFetch({
-    url,
-    method: "GET",
-    useAuth: true,
-  });
-
-  if (!res.ok) return handleApiServerError(res);
-  return buildApiResponseAsync<Store>(res);
-}

@@ -126,6 +126,34 @@ export type ApprovalProcess = {
   rejectedBy?: string;
 };
 
+export type SupplierApprovalProcess = {
+  approvalProcessId: number;
+  state: string;
+  isApproved: boolean;
+  name: string;
+  email: string;
+  phone: string;
+  countryId: number;
+  approvedDocuments: {
+    id: number;
+    fileName: string;
+    isApproved: boolean;
+  }[];
+  approvedCategories: {
+    categoryId: number;
+    categoryName: string;
+  }[];
+  pendingDocuments: {
+    id: number;
+    fileName: string;
+    isApproved: boolean;
+  }[];
+  pendingCategories: {
+    categoryId: number;
+    categoryName: string;
+  }[];
+};
+
 export type SupplierEvaluation = {
   id: number;
   supplierId: number;
