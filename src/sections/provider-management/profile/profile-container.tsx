@@ -14,20 +14,17 @@ import VendorRequestsTab from "./components/vendor-requests-tab";
 import { SearchParams } from "@/types/fetch/request";
 import { useUserProfile } from "@/hooks/react-query/use-user-profile";
 import { ProfileSkeleton } from "@/sections/provider-management/profile/components/profile-skeleton";
-import { updateUser } from "@/services/users";
-import { useQueryClient } from "@tanstack/react-query";
-import LoaderButton from "@/components/loaders/loader-button";
 import { PersonalInfoFormData } from "./schemas/personal-info-schema";
 import { AccountSettingsFormData } from "./schemas/account-settings-schema";
-import { IUser } from "@/types/users";
-import showToast from "@/config/toast/toastConfig";
+import { useAuth } from "@/auth-sso/hooks/use-auth";
 
 interface ProfileContainerProps {
   query: SearchParams;
 }
 
 export default function ProfileContainer({ query }: ProfileContainerProps) {
-  const { data: user, isLoading, error } = useUserProfile();
+  const { user: id } = useAuth();
+  const { data: user, isLoading, error } = useUserProfile(id?.id);
 
   // State to hold form data from both tabs
   const [personalInfoData, setPersonalInfoData] =

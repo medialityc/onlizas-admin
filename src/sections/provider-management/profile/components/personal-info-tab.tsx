@@ -231,7 +231,7 @@ export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
                   <RHFImageUpload
                     name="photo"
                     label="Foto"
-                    defaultImage={user?.photoUrl}
+                    // defaultImage={user?.photoUrl}
                     variant="rounded"
                     size="md"
                   />

@@ -485,21 +485,21 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                   </p>
                 </div>
               </div>
-              {isRequestsDisabled && (
-                <div className="mb-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+              {/* {
+                 isRequestsDisabled &&   <div className="mb-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
                   <p className="text-sm text-amber-700 dark:text-amber-300">
                     ⚠️ Debe tener un proceso de aprobación activo para solicitar
                     categorías
                   </p>
                 </div>
-              )}
+              } */}
               <Button
                 onClick={() => setCategoryModalOpen(true)}
-                disabled={isRequestsDisabled}
-                className={`w-full py-2 px-4 rounded-lg font-medium shadow-none border-none transition-colors duration-200 flex items-center justify-center space-x-2 ${
-                  isRequestsDisabled
+                /*                 disabled={isRequestsDisabled}
+                 */ className={`w-full py-2 px-4 rounded-lg font-medium shadow-none border-none transition-colors duration-200 flex items-center justify-center space-x-2 ${
+                  /* isRequestsDisabled
                     ? "bg-gray-400 dark:bg-gray-600 text-gray-200 dark:text-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700 text-white"
+                    : */ "bg-blue-600 hover:bg-blue-700 text-white"
                 }`}
               >
                 <PlusIcon className="h-4 w-4" />
@@ -520,21 +520,21 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                   </p>
                 </div>
               </div>
-              {isRequestsDisabled && (
-                <div className="mb-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+              {/* {
+                 isRequestsDisabled &&   <div className="mb-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
                   <p className="text-sm text-amber-700 dark:text-amber-300">
                     ⚠️ Debe tener un proceso de aprobación activo para extender
                     la fecha
                   </p>
                 </div>
-              )}
+              } */}
               <Button
                 onClick={() => setExpirationModalOpen(true)}
-                disabled={isRequestsDisabled}
-                className={`w-full py-2 px-4 rounded-lg shadow-none border-none font-medium transition-colors duration-200 flex items-center justify-center space-x-2 ${
-                  isRequestsDisabled
+                /*                 disabled={isRequestsDisabled}
+                 */ className={`w-full py-2 px-4 rounded-lg shadow-none border-none font-medium transition-colors duration-200 flex items-center justify-center space-x-2 ${
+                  /*  isRequestsDisabled
                     ? "bg-gray-400 dark:bg-gray-600 text-gray-200 dark:text-gray-400 cursor-not-allowed"
-                    : "bg-green-600 hover:bg-green-700 text-white"
+                    : */ "bg-green-600 hover:bg-green-700 text-white"
                 }`}
               >
                 <CalendarIcon className="h-4 w-4" />
