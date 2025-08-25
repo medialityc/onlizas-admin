@@ -3,14 +3,11 @@ import { Business } from "@/types/business";
 import { ApiResponse } from "@/types/fetch/api";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
-export function useBusiness(id?: number): UseQueryResult<Business[], Error> {
+export function useBusiness(): UseQueryResult<Business[], Error> {
   return useQuery<Business[], Error>({
-    queryKey: ["user", "profile", id],
+    queryKey: ["user", "profile", "business"],
     queryFn: async () => {
-      const response: ApiResponse<Business[]> = await getAllBusinessByUser(
-        {},
-        id ?? 1
-      );
+      const response: ApiResponse<Business[]> = await getAllBusinessByUser({});
 
       if (response.error || !response.data) {
         throw new Error(

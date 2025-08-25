@@ -303,6 +303,11 @@ export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
                     activeText="Activo"
                     inactiveText="Inactivo"
                   />
+                  <StatusBadge
+                    isActive={user?.isBlocked ?? false}
+                    activeText="Desbloqueado"
+                    inactiveText="Bloqueado"
+                  />
                 </div>
               </div>
 
