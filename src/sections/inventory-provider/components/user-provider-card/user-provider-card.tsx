@@ -32,6 +32,16 @@ const UserProviderCard = ({ item, className }: Props) => {
             )}
           >
             <UserGroupIcon className="h-6 w-6" />
+            {/* {item?.photoUrl ? (
+              <Image
+                src={item?.photoUrl}
+                height={24}
+                width={24}
+                alt={item?.name ?? "provider-image"}
+              />
+            ) : (
+              <UserGroupIcon className="h-6 w-6" />
+            )} */}
           </div>
           <div>
             <Link href={`/dashboard/inventory/${item?.id}/list`}>

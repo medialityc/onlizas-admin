@@ -53,7 +53,8 @@ export default function InventoryProviderCardListContainer({
               Inventario - <span className="font-bold"> {provider?.name}</span>
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Gestiona el inventario del proveedor - <span className="font-bold"> {provider?.name}</span>
+              Gestiona el inventario del proveedor -{" "}
+              <span className="font-bold"> {provider?.name}</span>
             </p>
           </div>
         </div>
