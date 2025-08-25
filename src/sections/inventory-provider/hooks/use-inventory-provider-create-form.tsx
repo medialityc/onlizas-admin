@@ -9,6 +9,7 @@ import {
 } from "../schemas/inventory-provider.schema";
 import { setInventoryProviderFormData } from "../constants/inventory-provider-data";
 import { createInventoryProvider } from "@/services/inventory-providers";
+import { useRouter } from "next/navigation";
 
 const initValues: InventoryProviderFormData = {
   storesWarehouses: [],
@@ -20,18 +21,15 @@ const initValues: InventoryProviderFormData = {
 export const useInventoryProviderCreateForm = (
   defaultValues: InventoryProviderFormData = initValues
 ) => {
-  // const { push } = useRouter();
+  const { push } = useRouter();
 
   const form = useForm({
     defaultValues,
     resolver: zodResolver(inventoryProviderSchema),
   });
 
-  console.log(form.formState.errors, "ERRORS");
-
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: InventoryProviderFormData) => {
-      console.log(payload, "INVENTORY");
       const fromData = await setInventoryProviderFormData(payload);
       const res = await createInventoryProvider(fromData);
 
@@ -42,8 +40,8 @@ export const useInventoryProviderCreateForm = (
       return;
     },
     onSuccess() {
-      toast.success(`Se creó el inventario`);
-      // push("/dashboard/inventory");
+      toast.success(`Se creó el inventario correctamente`);
+      push("/dashboard/inventory");
     },
     onError: async (error: any) => {
       toast.error(error?.message);
