@@ -1,19 +1,18 @@
-import { RHFInputWithLabel } from "@/components/react-hook-form";
 import React from "react";
+import { RHFInputWithLabel } from "@/components/react-hook-form";
+import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import { useFieldArray, useFormContext } from "react-hook-form";
+import Tippy from "@tippyjs/react";
 
 type Props = {
-  name: string;
+  variantName: string;
 };
-const InventoryProviderDetailSection = ({ name }: Props) => {
+const InventoryProviderDetailSection = ({ variantName }: Props) => {
   const { control } = useFormContext();
 
-  const detailName = `${name}.details`;
+  const detailName = `${variantName}.details`;
 
-  const { /* remove, */ fields } = useFieldArray({
-    control,
-    name: `${name}.details`,
-  });
+  const { fields } = useFieldArray({ control, name: detailName });
 
   if (fields?.length === 0) {
     return null;
@@ -35,11 +34,24 @@ const InventoryProviderDetailSection = ({ name }: Props) => {
                 readOnly
               />
             </div>
-            <div>
+            <div className="flex flex-row">
               <RHFInputWithLabel
                 name={`${detailName}.${detailIndex}.value`}
                 type="text"
-                label={feat?.featureName}
+                label={
+                  <div className="flex flex-row gap-1">
+                    <p>{feat?.featureName}</p>
+                    {feat?.suggestions?.length !== 0 && (
+                      <Tippy
+                        trigger="mouseenter focus"
+                        content={feat?.suggestions?.join(", ")}
+                        className=""
+                      >
+                        <InformationCircleIcon className="w-5 h-5 text-blue-500" />
+                      </Tippy>
+                    )}
+                  </div>
+                }
                 placeholder={feat?.featureDescription ?? feat?.featureName}
               />
             </div>

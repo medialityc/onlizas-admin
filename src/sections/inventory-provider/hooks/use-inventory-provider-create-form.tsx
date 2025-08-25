@@ -7,9 +7,11 @@ import {
   InventoryProviderFormData,
   inventoryProviderSchema,
 } from "../schemas/inventory-provider.schema";
+import { setInventoryProviderFormData } from "../constants/inventory-provider-data";
+import { createInventoryProvider } from "@/services/inventory-providers";
 
 const initValues: InventoryProviderFormData = {
-  stores: [],
+  storesWarehouses: [],
   productId: 0,
   supplierId: 0,
   categoryFeatures: [],
@@ -30,12 +32,12 @@ export const useInventoryProviderCreateForm = (
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: InventoryProviderFormData) => {
       console.log(payload, "INVENTORY");
-      /*  const fromData = await setInventoryProviderFormData(payload);
+      const fromData = await setInventoryProviderFormData(payload);
       const res = await createInventoryProvider(fromData);
 
       if (res.error) {
         throw res;
-      } */
+      }
 
       return;
     },

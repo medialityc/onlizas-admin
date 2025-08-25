@@ -13,15 +13,16 @@ import InventoryProviderDetailSection from "../inventory-provider-detail-section
 type Props = {
   variantIndex: number;
   remove: UseFieldArrayRemove;
-  name: string;
+  variantName: string;
 };
-const InventoryVariantFrom = ({ variantIndex, name, remove }: Props) => {
+const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
   const { watch } = useFormContext();
+
   const onRemoveVariant = useCallback(() => {
     remove(variantIndex);
   }, [variantIndex, remove]);
 
-  const isWarranty = watch(`${name}.warranty.isWarranty`);
+  const isWarranty = watch(`${variantName}.warranty.isWarranty`);
 
   return (
     <div className="flex flex-col gap-2 mt-4 p-4 border border-dashed rounded-lg bg-slate-50">
@@ -37,7 +38,7 @@ const InventoryVariantFrom = ({ variantIndex, name, remove }: Props) => {
       </div>
 
       {/* details section */}
-      <InventoryProviderDetailSection name={name}/>
+      <InventoryProviderDetailSection variantName={variantName} />
 
       <Separator className="my-2" />
 
@@ -48,7 +49,7 @@ const InventoryVariantFrom = ({ variantIndex, name, remove }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <RHFInputWithLabel
-              name={`${name}.quantity`}
+              name={`${variantName}.quantity`}
               label="Cantidad disponible"
               type="number"
               placeholder="0"
@@ -58,7 +59,7 @@ const InventoryVariantFrom = ({ variantIndex, name, remove }: Props) => {
           </div>
           <div>
             <RHFInputWithLabel
-              name={`${name}.price`}
+              name={`${variantName}.price`}
               label="Precio de la variante"
               type="number"
               placeholder="0"
@@ -68,7 +69,7 @@ const InventoryVariantFrom = ({ variantIndex, name, remove }: Props) => {
           </div>
           <div>
             <RHFInputWithLabel
-              name={`${name}.discountValue`}
+              name={`${variantName}.discountValue`}
               label="Descuento %"
               type="number"
               placeholder="0"
@@ -87,7 +88,7 @@ const InventoryVariantFrom = ({ variantIndex, name, remove }: Props) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           <RHFInputWithLabel
-            name={`${name}.purchaseLimit`}
+            name={`${variantName}.purchaseLimit`}
             label="Límite de compras por usuario"
             type="number"
             placeholder="0"
@@ -95,7 +96,7 @@ const InventoryVariantFrom = ({ variantIndex, name, remove }: Props) => {
             step="0"
           />
 
-          <RHFSwitch name={`${name}.isPrime`} label="Entrega express" />
+          <RHFSwitch name={`${variantName}.isPrime`} label="Entrega express" />
         </div>
       </div>
 
@@ -106,7 +107,7 @@ const InventoryVariantFrom = ({ variantIndex, name, remove }: Props) => {
         <p className="text-sm font-bold">Garantía</p>
 
         <RHFCheckbox
-          name={`${name}.warranty.isWarranty`}
+          name={`${variantName}.warranty.isWarranty`}
           label="Tiene garantía?"
           className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
         />
@@ -114,7 +115,7 @@ const InventoryVariantFrom = ({ variantIndex, name, remove }: Props) => {
           {isWarranty && (
             <>
               <RHFInputWithLabel
-                name={`${name}.warranty.warrantyTime`}
+                name={`${variantName}.warranty.warrantyTime`}
                 label="Tiempo de garantía (meses)"
                 type="number"
                 placeholder="Ej: 12"
@@ -122,7 +123,7 @@ const InventoryVariantFrom = ({ variantIndex, name, remove }: Props) => {
                 step="0"
               />
               <RHFInputWithLabel
-                name={`${name}.warranty.warrantyPrice`}
+                name={`${variantName}.warranty.warrantyPrice`}
                 label="Precio de la garantía"
                 type="number"
                 placeholder="Ej: 12"
@@ -140,7 +141,7 @@ const InventoryVariantFrom = ({ variantIndex, name, remove }: Props) => {
       <div className="flex flex-col gap-2">
         <p className="text-sm font-bold">Producto por Paquetería</p>
         <RHFCheckbox
-          name={`${name}.packageDelivery`}
+          name={`${variantName}.packageDelivery`}
           label="Habilitar entrega por"
           className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
         />

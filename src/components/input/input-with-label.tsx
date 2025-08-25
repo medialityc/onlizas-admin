@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { EyeIcon as EyeIconOutline } from "@heroicons/react/24/outline";
 import { EyeIcon } from "@heroicons/react/24/solid";
-import { CSSProperties, ChangeEvent, forwardRef } from "react";
+import { CSSProperties, ChangeEvent, ReactNode, forwardRef } from "react";
 import { FieldError } from "react-hook-form";
 
 interface Props
@@ -15,7 +15,7 @@ interface Props
   onChange: (_: ChangeEvent<HTMLInputElement>) => void;
   onBlur?: () => void;
   error?: FieldError;
-  label?: string;
+  label?: ReactNode | string;
   underLabel?: string;
   disabled?: boolean;
   type?: string;

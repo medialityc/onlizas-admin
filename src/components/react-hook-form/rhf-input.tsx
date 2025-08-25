@@ -1,5 +1,5 @@
 import { Controller, useFormContext } from "react-hook-form";
-import { CSSProperties, ChangeEvent, useState } from "react";
+import { CSSProperties, ChangeEvent, ReactNode, useState } from "react";
 import InputWithLabel from "../input/input-with-label";
 import { cn } from "@/lib/utils";
 import TextArea from "../input/text-area";
@@ -17,7 +17,7 @@ interface Props
   type?: string;
   disabled?: boolean;
   size?: "small" | "medium";
-  label?: string;
+  label?: ReactNode |  string;
   placeholder?: string;
   underLabel?: string;
   width?: CSSProperties["width"];

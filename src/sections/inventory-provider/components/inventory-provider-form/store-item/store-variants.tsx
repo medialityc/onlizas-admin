@@ -1,6 +1,6 @@
 import { Button } from "@/components/button/button";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import InventoryVariantFrom from "../../inventory-variant-from/inventory-variant-from";
 
@@ -9,9 +9,15 @@ type Props = {
 };
 const StoreVariant = ({ storeIndex }: Props) => {
   const { control, watch } = useFormContext<any>();
+
+  const storeName = useMemo(
+    () => `storesWarehouses.${storeIndex}.productVariants`,
+    [storeIndex]
+  );
+
   const { append, remove, fields } = useFieldArray({
     control,
-    name: `stores.${storeIndex}.productVariants`,
+    name: storeName,
   });
 
   const features: any[] = watch("categoryFeatures");
@@ -62,7 +68,7 @@ const StoreVariant = ({ storeIndex }: Props) => {
           <InventoryVariantFrom
             key={variant?.id}
             variantIndex={variantIndex}
-            name={`stores.${storeIndex}.productVariants.${variantIndex}`}
+            variantName={`${storeName}.${variantIndex}`} //variant name
             remove={remove}
           />
         ))}

@@ -94,11 +94,11 @@ const UserProviderCard = ({ item, className }: Props) => {
 
         {/* actions */}
         <div className="flex flex-1 w-full mt-4">
-          <Button className="w-full border border-primary bg-transparent shadow-none text-black">
-            <Link href={`/dashboard/inventory/${item?.id}/list`}>
+          <Link href={`/dashboard/inventory/${item?.id}/list`}>
+            <Button className="w-full border border-primary bg-transparent shadow-none text-black">
               Ver inventario
-            </Link>
-          </Button>
+            </Button>
+          </Link>
         </div>
       </CardContent>
       {/*  <pre> {JSON.stringify(item, null, 2)} </pre> */}

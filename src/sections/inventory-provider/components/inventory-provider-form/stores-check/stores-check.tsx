@@ -23,7 +23,7 @@ type Props = {
 export default function StoresCheck({
   stores,
   control,
-  name = "stores",
+  name = "storesWarehouses",
 }: Props) {
   const id = useId();
   const { append, fields, remove } = useFieldArray({

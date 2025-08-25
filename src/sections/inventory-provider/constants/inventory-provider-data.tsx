@@ -1,5 +1,3 @@
-import { isValidUrl, urlToFile } from "@/utils/format";
-import { toast } from "react-toastify";
 import { InventoryProviderFormData } from "../schemas/inventory-provider.schema";
 
 export const setInventoryProviderFormData = async (
@@ -8,7 +6,7 @@ export const setInventoryProviderFormData = async (
   const formData = new FormData();
 
   // Procesar imagen
-  if (product.image) {
+  /*   if (product.image) {
     if (typeof product.image === "string" && isValidUrl(product.image)) {
       try {
         const imageFile = await urlToFile(product.image);
@@ -19,9 +17,14 @@ export const setInventoryProviderFormData = async (
     } else if (product.image instanceof File) {
       formData.append("image", product.image);
     }
-  }
+  } */
 
-  formData.append("name", product.name);
+  formData.append("productId", String(product.productId));
+  formData.append("supplierId", String(product.supplierId));
+  formData.append(
+    "storesWarehouses",
+    JSON.stringify(product?.storesWarehouses)
+  );
 
   return formData;
 };

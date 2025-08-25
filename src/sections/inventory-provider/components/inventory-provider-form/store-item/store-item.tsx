@@ -20,6 +20,7 @@ const StoreItem = ({ title, index }: Props) => {
 
   const providerId = watch("supplierId");
   console.log(providerId, "id para obtener los almacenes del proveedor");
+
   return (
     <StoreAccordion title={title}>
       <div className="flex flex-col gap-4  border border-dotted py-2 px-4 rounded-lg">
@@ -29,7 +30,13 @@ const StoreItem = ({ title, index }: Props) => {
               name={`stores.${index}.warehousePhysicalIds`}
               label="Almacenes físicos"
               placeholder="Seleccionar almacenes físicos"
-              onFetch={getAllWarehouses}
+              onFetch={(params) =>
+                getAllWarehouses({
+                  ...params,
+                  isPhysical: true,
+                  isActive: true,
+                })
+              }
               objectValueKey="id"
               objectKeyLabel="name"
               queryKey="warehouses-physical"
@@ -37,7 +44,7 @@ const StoreItem = ({ title, index }: Props) => {
               multiple
             />
           </div>
-          <div>
+          {/* <div>
             <RHFAutocompleteFetcherInfinity
               name={`stores.${index}.warehouseIds`}
               label="Almacenes del proveedor"
@@ -49,7 +56,7 @@ const StoreItem = ({ title, index }: Props) => {
               required
               multiple
             />
-          </div>
+          </div> */}
         </div>
 
         <Separator className="my-2" />

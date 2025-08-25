@@ -36,7 +36,7 @@ const InventoryProviderForm = ({ initValue, userProvider, stores }: Props) => {
             <ProductSupplierSection supplierId={userProvider?.id as number} />
           </div>
           <div className="col-span-1 lg:col-span-2">
-            <StoresCheck control={form.control} stores={stores} />
+            <StoresCheck control={form.control} stores={stores} name="storesWarehouses"/>
           </div>
         </div>
       </FormProvider>
