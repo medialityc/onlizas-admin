@@ -3,7 +3,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useEffect, useRef } from "react";
 
-
 export const useFetchError = (response: ApiResponse<any>) => {
   const router = useRouter();
   const lastStatusRef = useRef<number | null>(null);
@@ -13,7 +12,7 @@ export const useFetchError = (response: ApiResponse<any>) => {
 
     let message = "";
 
-   if (response.status === 403) {
+    if (response.status === 403) {
       message =
         "No tienes permisos para acceder a esta sección. Por favor, contacta al administrador del sistema.";
     } else if (response.status === 404) {

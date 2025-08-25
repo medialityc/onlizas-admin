@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const featureSchema = z.object({
+export const featureSchema = z.object({
   featureName: z
     .string()
     .min(1, "El nombre de la característica es obligatorio."),

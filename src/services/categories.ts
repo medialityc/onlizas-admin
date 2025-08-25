@@ -90,3 +90,5 @@ export async function getCategoryById(
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<Category>(res);
 }
+
+

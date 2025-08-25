@@ -4,10 +4,12 @@ import { IRole } from "./roles";
 // User-related types and interfaces
 
 export interface Email {
+  id?: number;
   address: string;
   isVerified: boolean;
 }
 export interface Phone {
+  id?: number;
   countryId: number;
   number: string;
   isVerified: boolean;
@@ -93,6 +95,9 @@ export type UpdateUserResponse = { message: string };
 export type UpdateUserAttributesResponse = { success: boolean };
 
 export type UserAttributeLogResponse = UserAttributeLog[];
+
+export type IUserProvider = IUser;
+export type GetAllUsersProviderResponse = PaginatedResponse<IUserProvider>;
 
 export type Document = {
   id: number;

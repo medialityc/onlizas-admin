@@ -63,6 +63,8 @@ export const backendRoutes = {
   products: {
     create: `${process.env.NEXT_PUBLIC_API_URL}products`, // POST
     list: `${process.env.NEXT_PUBLIC_API_URL}products/admin`, // GET
+    listBySupplier: (supplierId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}products/admin/${supplierId}`, // GET
     byId: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}products/${id}`, // GET
     delete: (id: string | number) =>
@@ -79,7 +81,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}admin/products/${id}/suppliers/unassign`, // POST
     simpleCategories: `${process.env.NEXT_PUBLIC_API_URL}admin/products/categories/simple`, // GET
     simpleSuppliers: `${process.env.NEXT_PUBLIC_API_URL}admin/products/suppliers/simple`, // GET
-    categoryFeatures: `${process.env.NEXT_PUBLIC_API_URL}admin/products/categories/features`, // GET
+    categoryFeatures: `${process.env.NEXT_PUBLIC_API_URL}categories/features`, // GET
   },
   warehouses: {
     create: `${process.env.NEXT_PUBLIC_API_URL}warehouses`,
@@ -92,6 +94,10 @@ export const backendRoutes = {
     transfers: `${process.env.NEXT_PUBLIC_API_URL}warehouses/transfers`,
     transferById: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}warehouses/transfers/${id}`,
+    listBySupplier: (supplierId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${supplierId}/warehouses`,
+    listPhysical: `${process.env.NEXT_PUBLIC_API_URL}warehouses/physical`,
+    listVirtual: `${process.env.NEXT_PUBLIC_API_URL}warehouses/virtual`,
   },
   departments: {
     create: `${process.env.NEXT_PUBLIC_API_URL}departments`, // POST
@@ -172,5 +178,14 @@ export const backendRoutes = {
     // Admin delete
     deleteAdmin: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
+    update: (id: number) => `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
+  },
+  inventoryProvider: {
+    create: `${process.env.NEXT_PUBLIC_API_URL}inventories/admin`,
+    list: `${process.env.NEXT_PUBLIC_API_URL}inventories/admin`,
+    delete: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/${id}`,
+    listByUserProvider: (supplierId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/list/${supplierId}`,
   },
 };

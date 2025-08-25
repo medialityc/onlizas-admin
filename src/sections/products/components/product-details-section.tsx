@@ -102,35 +102,31 @@ function ProductDetailsSection() {
         )}
         {fields.map((field, index) => {
           return (
-            <>
-              <div
-                key={`${field.id}-${index}`}
-                className={`flex gap-2 items-end border rounded-md p-3 `}
+            <div
+              key={`${field.id}-${index}`}
+              className={`flex flex-col md:flex-row gap-2 items-end border rounded-md p-1 justify-start`}
+            >
+              <RHFInputWithLabel
+                className="col-span-6"
+                label="Clave"
+                name={`detailsArray[${index}].key`}
+                placeholder="Ej: Color"
+              />
+              <RHFInputWithLabel
+                className="col-span-6"
+                label="Valor"
+                name={`detailsArray[${index}].value`}
+                placeholder="Ej: Azul"
+              />
+              <Button
+                type="button"
+                size="sm"
+                variant="danger"
+                onClick={() => remove(index)}
               >
-                <RHFInputWithLabel
-                  className="col-span-6"
-                  label="Clave"
-                  name={`detailsArray[${index}].key`}
-                  placeholder="Ej: Color"
-                />
-                <RHFInputWithLabel
-                  className="col-span-6"
-                  label="Valor"
-                  name={`detailsArray[${index}].value`}
-                  placeholder="Ej: Azul"
-                />
-                <div className="col-span-1 flex flex-col gap-1 items-end justify-end">
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="danger"
-                    onClick={() => remove(index)}
-                  >
-                    <IconTrash className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </>
+                <IconTrash className="w-4 h-4" />
+              </Button>
+            </div>
           );
         })}
       </div>

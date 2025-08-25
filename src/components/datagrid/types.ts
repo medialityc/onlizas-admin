@@ -1,6 +1,7 @@
 import { DataTableColumn } from "mantine-datatable";
 import { PaginatedResponse } from "@/types/common";
 import { SearchParams } from "@/types/fetch/request";
+import { ReactNode } from "react";
 
 export interface DataGridProps<T> {
   data?: PaginatedResponse<T>;
@@ -24,6 +25,9 @@ export interface DataGridProps<T> {
   leftActions?: React.ReactNode;
   rightActions?: React.ReactNode;
   customActions?: React.ReactNode;
+
+  //pagination
+  hidePagination?: boolean;
 }
 
 export interface ColumnSelectorProps<T> {
@@ -33,3 +37,10 @@ export interface ColumnSelectorProps<T> {
   isOpen: boolean;
   onToggle: () => void;
 }
+
+export type DataGridCardProps<T> = Omit<
+  DataGridProps<T>,
+  "leftActions" | "simpleData" | "columns"
+> & {
+  component: ReactNode;
+};
