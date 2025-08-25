@@ -9,7 +9,7 @@ import { Button } from "@/components/button/button";
 import TabsWithIcons from "@/components/tab/tabs";
 import IconSettings from "@/components/icon/icon-settings";
 import { PersonalInfoTab } from "./components/personal-info-tab";
-import { AccountSettingsTab } from "./components/account-settings-tab-new";
+import { AccountSettingsTab } from "./components/account-settings-tab";
 import VendorRequestsTab from "./components/vendor-requests-tab";
 import { SearchParams } from "@/types/fetch/request";
 import { useUserProfile } from "@/hooks/react-query/use-user-profile";
@@ -25,6 +25,7 @@ interface ProfileContainerProps {
 export default function ProfileContainer({ query }: ProfileContainerProps) {
   const { user: id } = useAuth();
   const { data: user, isLoading, error } = useUserProfile(id?.id);
+  console.log(id);
 
   // State to hold form data from both tabs
   const [personalInfoData, setPersonalInfoData] =
