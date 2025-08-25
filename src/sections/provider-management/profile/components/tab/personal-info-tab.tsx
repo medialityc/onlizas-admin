@@ -11,7 +11,7 @@ import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import { UserDocumentsList } from "@/sections/users/documents/list/documents-list";
 import { getUserDocuments } from "@/services/users";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import {
   SparklesIcon,
   IdentificationIcon,
@@ -21,7 +21,7 @@ import {
   PhoneIcon,
 } from "@heroicons/react/24/outline";
 import StatusBadge from "@/components/badge/status-badge";
-import { IUser } from "@/types/users";
+import { IUser, UserResponseMe } from "@/types/users";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -33,16 +33,18 @@ import FormProvider from "@/components/react-hook-form/form-provider";
 import {
   PersonalInfoFormData,
   personalInfoSchema,
-} from "../schemas/personal-info-schema";
+} from "../../schemas/personal-info-schema";
 import AdressField from "@/sections/users/edit/components/adress-field";
 import { AddressModal } from "@/sections/users/edit/components/adress-modal";
 import { EmptyState } from "@/sections/users/edit/components/empty-state-component";
 import { AddressFormData as UserAddressFormData } from "@/sections/users/edit/components/user-schema";
 import { useMemo } from "react";
 import { useModalState } from "@/hooks/use-modal-state";
+import { useUpdateProviderPersonalInfo } from "@/sections/provider-management/profile/hooks/use-update-provider-personal-info";
+import { urlToFile } from "@/lib/utils";
 
 interface PersonalInfoTabProps {
-  user: IUser | null;
+  user: UserResponseMe | null;
   onSave?: (data: PersonalInfoFormData) => void;
 }
 
@@ -56,13 +58,21 @@ export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
   const createAddressModal = getModalState("createAddress");
   const editAddressModal = getModalState<number>("editAddress");
 
+  // Hook para actualizar información personal del proveedor
+  const updateProviderMutation = useUpdateProviderPersonalInfo(user?.id ?? 0, {
+    onSuccess: (data) => {
+      console.log("Información actualizada:", data);
+      onSave?.(methods.getValues()); // Llama al callback original si existe
+    },
+  });
+
   // Independent form for personal info only
   const methods = useForm<PersonalInfoFormData>({
     resolver: zodResolver(personalInfoSchema),
     defaultValues: {
       id: user?.id,
       name: user?.name || "",
-      photo: user?.photoUrl || undefined,
+      photoFile: user?.photoUrl || undefined,
       emails: Array.isArray(user?.emails)
         ? user.emails.map((e: any) => ({
             address: e.address,
@@ -95,7 +105,7 @@ export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
         : [],
       isBlocked: !!user?.isBlocked,
       isVerified: !!user?.isVerified,
-      attributes: user?.attributes || {},
+      // attributes: user?.attributes || {},
     },
     mode: "onChange",
   });
@@ -144,6 +154,21 @@ export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
     longitude: a.longitude,
     annotations: a.annotations ?? "",
   });
+
+  useEffect(() => {
+    const loadImageAsFile = async () => {
+      if (user?.photoUrl) {
+        try {
+          const file = await urlToFile(user.photoUrl, "product-image.jpg");
+          methods.setValue("photoFile", file);
+        } catch {
+          methods.setValue("photoFile", user.photoUrl);
+        } finally {
+        }
+      }
+    };
+    loadImageAsFile();
+  }, [user?.photoUrl, methods]);
 
   const handleResendEmail = async (email: string) => {
     if (!email) return;
@@ -209,9 +234,8 @@ export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
   }, [editAddressModal, addressFields]);
 
   const handleFormSubmit = async (data: PersonalInfoFormData) => {
-    if (onSave) {
-      onSave(data);
-    }
+    // Usar la mutación del hook en lugar del callback directo
+    updateProviderMutation.mutate(data);
   };
 
   return (
@@ -229,7 +253,7 @@ export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
                 {/* Avatar */}
                 <div className="flex-shrink-0">
                   <RHFImageUpload
-                    name="photo"
+                    name="photoFile"
                     label="Foto"
                     // defaultImage={user?.photoUrl}
                     variant="rounded"
@@ -257,7 +281,7 @@ export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
               <div className="ml-4">
                 <LoaderButton
                   type="submit"
-                  loading={methods.formState.isSubmitting}
+                  loading={updateProviderMutation.isPending}
                   className="px-4 py-2"
                 >
                   Guardar

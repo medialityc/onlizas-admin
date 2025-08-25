@@ -11,7 +11,7 @@ import {
 } from "@/components/cards/card";
 import { Label } from "@/components/label/label";
 import { Input } from "@mantine/core";
-import { IUser } from "@/types/users";
+import { IUser, UserResponseMe } from "@/types/users";
 import {
   CalendarIcon,
   UserIcon,
@@ -24,14 +24,14 @@ import {
   FolderIcon,
   PlusIcon,
 } from "@heroicons/react/24/outline";
-import { useSupplierApprovalProcess } from "@/hooks/react-query/use-supplier-approval-process";
+import { useSupplierApprovalProcess } from "@/sections/provider-management/profile/hooks/use-supplier-approval-process";
 import { extendApprovalProcess } from "@/services/approval-processes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Badge from "@/components/badge/badge";
-import CategoryRequestModal from "./category-request-modal";
-import ExpirationExtensionModal from "./expiration-extension-modal";
+import CategoryRequestModal from "../modal/category-request-modal";
+import ExpirationExtensionModal from "../modal/expiration-extension-modal";
 import showToast from "@/config/toast/toastConfig";
-import { ExpirationExtensionModalFormData } from "./schemas/expiration-extension-modal-schema";
+import { ExpirationExtensionModalFormData } from "../../schemas/expiration-extension-modal-schema";
 
 type FormData = {
   categories: string;
@@ -52,12 +52,11 @@ interface ProviderAttributes {
 }
 
 interface VendorRequestsTabProps {
-  user: IUser | null;
+  user: UserResponseMe | null;
 }
 
 export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
   // Cast the attributes to the specific provider attributes type
-  const attributes = user?.attributes as ProviderAttributes;
 
   // Por ahora uso el ID del usuario como supplierId, esto puede cambiar según la estructura real
   const supplierId = user?.id?.toString() || null;
@@ -399,7 +398,7 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                   Fecha de Expiración
                 </p>
                 <p className="text-sm text-gray-600 dark:text-gray-300 break-words">
-                  {attributes?.ExpirationDate || "No especificada"}
+                  {user?.supplierInfo?.expirationDate || "No especificada"}
                 </p>
               </div>
             </div>
@@ -411,7 +410,7 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                   Tipo de Vendedor
                 </p>
                 <p className="text-sm text-gray-600 dark:text-gray-300 break-words">
-                  {attributes?.SellerType || "No especificado"}
+                  {user?.supplierInfo?.sellerType || "No especificado"}
                 </p>
               </div>
             </div>
@@ -423,7 +422,7 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                   Alcance de Mercado
                 </p>
                 <p className="text-sm text-gray-600 dark:text-gray-300 break-words">
-                  {attributes?.Nacionality || "No especificado"}
+                  {user?.supplierInfo?.nacionality || "No especificado"}
                 </p>
               </div>
             </div>
@@ -435,7 +434,7 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                   Código MINCEX
                 </p>
                 <p className="text-sm text-gray-600 dark:text-gray-300 break-words">
-                  {attributes?.MincexCode || "No especificado"}
+                  {user?.supplierInfo?.mincexCode || "No especificado"}
                 </p>
               </div>
             </div>
@@ -447,7 +446,7 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                   País
                 </p>
                 <p className="text-sm text-gray-600 dark:text-gray-300 break-words">
-                  {attributes?.Country?.Name || "No especificado"}
+                  {user?.supplierInfo.country.name || "No especificado"}
                 </p>
               </div>
             </div>
@@ -559,7 +558,7 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
         onClose={() => setExpirationModalOpen(false)}
         onSubmit={handleExpirationExtension}
         loading={extendApprovalMutation.isPending}
-        currentExpirationDate={attributes?.ExpirationDate || undefined}
+        currentExpirationDate={user?.supplierInfo.expirationDate || undefined}
       />
     </div>
   );
