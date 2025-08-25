@@ -1,4 +1,5 @@
 import { Attributes, PaginatedResponse } from "./common";
+import { Country } from "./countries";
 import { IRole } from "./roles";
 
 // User-related types and interfaces
@@ -82,6 +83,30 @@ export interface IUser {
   benefactor?: IUser;
   attributes: Attributes;
 }
+//
+export interface IUserResponseMe {
+  id: number;
+  name: string;
+  globalId: string;
+  approvalProcessId?: number;
+  emails: Email[];
+  phones: Phone[];
+  isBlocked: boolean;
+  isVerified: boolean;
+  isActive: boolean;
+  photoUrl: string;
+  addresses: Address[];
+  businesses: Business[];
+  supplierInfo: SuplierInfo;
+}
+
+interface SuplierInfo {
+  expirationDate: string;
+  sellerType: string;
+  nacionality: string;
+  mincexCode: string;
+  country: Country;
+}
 
 export type UserAttributeLog = {
   changedAt: string;
@@ -97,9 +122,7 @@ export type UpdateUserAttributesResponse = { success: boolean };
 
 export type UserAttributeLogResponse = UserAttributeLog[];
 
-export type IUserProvider = IUser;
-export type GetAllUsersProviderResponse = PaginatedResponse<IUserProvider>;
-
+export type UserResponseMe = IUserResponseMe;
 export type Document = {
   id: number;
   name: string;

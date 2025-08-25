@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { addressSchema } from "../edit/user-edit-schema";
+import { addressSchema } from "../components/edit/user-edit-schema";
 
 // Email and Phone schemas for personal info
 export const emailSchema = z.object({
@@ -16,7 +16,12 @@ export const phoneSchema = z.object({
 export const personalInfoSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(1, "El nombre es requerido").max(100),
-  photo: z.instanceof(File).or(z.string()).optional(),
+  photoFile: z
+    .union([
+      z.instanceof(File, { message: "Debe ser un archivo válido." }),
+      z.string().url("URL inválido"),
+    ])
+    .optional(),
   emails: z.array(emailSchema),
   phones: z.array(phoneSchema),
   addresses: z.array(addressSchema),

@@ -8,14 +8,14 @@ import {
 import { Button } from "@/components/button/button";
 import TabsWithIcons from "@/components/tab/tabs";
 import IconSettings from "@/components/icon/icon-settings";
-import { PersonalInfoTab } from "./components/personal-info-tab";
-import { AccountSettingsTab } from "./components/account-settings-tab";
-import VendorRequestsTab from "./components/vendor-requests-tab";
+import { PersonalInfoTab } from "../components/tab/personal-info-tab";
+import { AccountSettingsTab } from "../components/tab/account-settings-tab";
+import VendorRequestsTab from "../components/tab/vendor-requests-tab";
 import { SearchParams } from "@/types/fetch/request";
 import { useUserProfile } from "@/hooks/react-query/use-user-profile";
 import { ProfileSkeleton } from "@/sections/provider-management/profile/components/profile-skeleton";
-import { PersonalInfoFormData } from "./schemas/personal-info-schema";
-import { AccountSettingsFormData } from "./schemas/account-settings-schema";
+import { PersonalInfoFormData } from "../schemas/personal-info-schema";
+import { AccountSettingsFormData } from "../schemas/account-settings-schema";
 import { useAuth } from "@/auth-sso/hooks/use-auth";
 
 interface ProfileContainerProps {

@@ -16,12 +16,12 @@ import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-aut
 import LoaderButton from "@/components/loaders/loader-button";
 import InputWithLabel from "@/components/input/input-with-label";
 import { FormProvider } from "@/components/react-hook-form";
-import RHFInputWithLabel from "../../../../components/react-hook-form/rhf-input";
+import RHFInputWithLabel from "../../../../../components/react-hook-form/rhf-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CategoryRequestModalFormData,
   categoryRequestModalSchema,
-} from "./schemas/category-request-modal-schema";
+} from "../../schemas/category-request-modal-schema";
 
 interface CategoryRequestFormData {
   categoryIds: string[];
