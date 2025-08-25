@@ -130,14 +130,6 @@ export default function StoresCheck({
                   lineClamp={1}
                   as="h3"
                 />
-                {item?.description && (
-                  <LongText
-                    className="font-light text-sm"
-                    text={item.description}
-                    lineClamp={1}
-                    as="p"
-                  />
-                )}
               </Label>
             </div>
           );

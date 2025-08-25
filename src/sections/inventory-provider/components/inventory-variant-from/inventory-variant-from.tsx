@@ -142,7 +142,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
         <p className="text-sm font-bold">Producto por Paquetería</p>
         <RHFCheckbox
           name={`${variantName}.packageDelivery`}
-          label="Habilitar entrega por"
+          label="Habilitar entrega por paquetería"
           className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
         />
       </div>

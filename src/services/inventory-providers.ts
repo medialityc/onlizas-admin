@@ -39,7 +39,7 @@ export async function createInventoryProvider(
   data: any
 ): Promise<ApiResponse<InventoryProvider>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.currencies.create,
+    url: backendRoutes.inventoryProvider.create,
     method: "POST",
     data,
     useAuth: true,
