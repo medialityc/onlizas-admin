@@ -1,7 +1,7 @@
 // TODO: Implement provider profile
 
 import { buildQueryParams } from "@/lib/request";
-import ProfileContainer from "@/sections/provider-management/profile/profile-container";
+import ProfileContainer from "@/sections/provider-management/profile/containers/profile-container";
 import { getAllCategories } from "@/services/categories";
 import { getUserById } from "@/services/users";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
