@@ -299,7 +299,8 @@ export async function fetchUserMe(token?: string): Promise<ApiResponse<IUser>> {
     url: backendRoutes.users.me,
     method: "GET",
     useAuth: true,
-    token,
+    //   token: token,
+    // token,
   });
 
   if (!res.ok) return handleApiServerError(res);

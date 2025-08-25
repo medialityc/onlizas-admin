@@ -8,9 +8,11 @@ export function useUserProfile(id?: number): UseQueryResult<IUser, Error> {
   return useQuery<IUser, Error>({
     queryKey: ["user", "profile", /* 'me' */ id],
     queryFn: async () => {
-      const response: ApiResponse<IUser> = await getUserById(id ?? 0);
+      const response: ApiResponse<IUser> = await fetchUserMe();
       /*       const response: ApiResponse<IUser> = await fetchUserMe();
        */
+      console.log(response.data);
+
       if (response.error || !response.data) {
         throw new Error(
           response.message || "Error al cargar perfil del usuario"
