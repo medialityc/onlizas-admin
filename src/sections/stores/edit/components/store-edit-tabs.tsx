@@ -48,7 +48,7 @@ const StoreTabs = ({ store }: TabsProps) => {
             {
               label: "Información General",
               icon: <Cog6ToothIcon className="w-6 h-6" />,
-              content: <GeneralContainer store={store} />,
+              content: <GeneralContainer />,
             },
             {
               label: "Categorías",

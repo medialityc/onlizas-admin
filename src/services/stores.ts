@@ -159,13 +159,12 @@ export async function createStoreSupplier(
   return buildApiResponseAsync<Store>(res);
 }
 
-export async function updateStore(
-  supplierId: number,
+export async function updateSupplierStore(
   storeId: number,
   data: FormData
 ): Promise<ApiResponse<Store | undefined>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.store.update(supplierId, storeId),
+    url: backendRoutes.store.updateSupplierStore(storeId),
     method: "PUT",
     data,
     useAuth: true,
@@ -173,6 +172,23 @@ export async function updateStore(
 
   if (!res.ok) return handleApiServerError(res);
   revalidateTag("stores");
+  revalidateTag("store-details");
+  return buildApiResponseAsync<Store>(res);
+}
+export async function updateAdminStore(
+  storeId: number,
+  data: FormData
+): Promise<ApiResponse<Store | undefined>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.store.updateAdminStore(storeId),
+    method: "PUT",
+    data,
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("stores");
+  revalidateTag("store-details");
   return buildApiResponseAsync<Store>(res);
 }
 
@@ -184,6 +200,7 @@ export async function getStoreDetails(
     url,
     method: "GET",
     useAuth: true,
+    next: { tags: ["store-details"] },
   });
 
   if (!res.ok) return handleApiServerError(res);

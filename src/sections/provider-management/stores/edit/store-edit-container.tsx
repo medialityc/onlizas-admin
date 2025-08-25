@@ -1,23 +1,26 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import { Store } from "@/types/stores";
 
 import StoreTabs from "./components/store-edit-tabs";
-import { updateStore } from "@/services/stores";
 import { FormProvider } from "@/components/react-hook-form";
+import { updateSupplierStore } from "@/services/stores";
+import { zodResolver } from "@hookform/resolvers/zod";
+import storeEditSchema, {
+  StoreEditFormData,
+} from "../modals/store-edit-form.schema";
 
 interface Props {
   store: Store;
 }
 
 export default function StoreEditContainer({ store }: Props) {
-  const router = useRouter();
-  const methods = useForm<any>({
+  const methods = useForm<StoreEditFormData>({
+    resolver: zodResolver(storeEditSchema),
     mode: "onBlur",
     shouldUnregister: false,
     defaultValues: {
@@ -119,6 +122,7 @@ export default function StoreEditContainer({ store }: Props) {
       formData.append("businessName", store.businessName ?? "");
       formData.append("supplierId", String(store.supplierId));
       formData.append("supplierName", store.supplierName ?? "");
+      formData.append("isActive", store.isActive ? "true" : "false");
 
       // Arreglos complejos como JSON strings
       formData.append(
@@ -130,11 +134,9 @@ export default function StoreEditContainer({ store }: Props) {
         console.log(`${key}:`, value);
       });
 
-      const res = await updateStore(store.supplierId, store.id, formData);
+      const res = await updateSupplierStore(store.id, formData);
       if (!res.error) {
         toast.success("Tienda actualizada correctamente");
-        // Volver a la pantalla anterior tras guardar cambios
-        router.back();
       } else {
         toast.error(res.message || "No se pudo actualizar la tienda");
       }
@@ -148,7 +150,6 @@ export default function StoreEditContainer({ store }: Props) {
     <FormProvider id="store-edit-form" methods={methods} onSubmit={onSubmit}>
       <div className="p-6">
         <StoreTabs store={store} />
-        <div className="mt-6"></div>
       </div>
     </FormProvider>
   );

@@ -159,8 +159,10 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores/${storeId}`,
     storeDetails: (storeId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
-    update: (supplierId: string | number, storeId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores/${storeId}`,
+    updateSupplierStore: (storeId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
+    updateAdminStore: (storeId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}`,
     createSupplier: (supplierId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores`,
     delete: (supplierId: string | number, storeId: number | string) =>

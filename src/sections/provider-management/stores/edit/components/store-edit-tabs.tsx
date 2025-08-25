@@ -30,9 +30,9 @@ const StoreTabs = ({ store }: TabsProps) => {
       {/* Botón Guardar Cambios con loader, apuntando al form "store-edit-form" */}
       <div className="flex justify-end py-0">
         <LoaderButton
-          form="store-edit-form"
           type="submit"
           loading={formState.isSubmitting}
+          disabled={!formState.isDirty}
           className="border-t-secondary-dark-light btn-md "
         >
           <span className="inline-flex items-center gap-2">
@@ -48,7 +48,7 @@ const StoreTabs = ({ store }: TabsProps) => {
             {
               label: "Información General",
               icon: <Cog6ToothIcon className="w-6 h-6" />,
-              content: <GeneralContainer store={store} />,
+              content: <GeneralContainer />,
             },
             {
               label: "Categorías",
@@ -67,11 +67,9 @@ const StoreTabs = ({ store }: TabsProps) => {
             },
           ]}
         />
-        
       </div>
     </div>
   );
 };
 
 export default StoreTabs;
-

@@ -1,20 +1,12 @@
 "use client";
 
 import React from "react";
-import { Store } from "@/types/stores";
 import GeneralStatusCard from "./components/general-status-card";
 import BasicInfoCard from "./components/basic-info-card";
 import ContactInfoCard from "./components/contact-info-card";
 import PoliciesCard from "./components/policies-card";
 
-interface Props {
-  store: Store;
-}
-
-export default function GeneralContainer({ store }: Props) {
-  // Los valores iniciales ya vienen desde defaultValues en el contenedor principal.
-  // Este tab no altera datos de otros tabs ni resetea el formulario global.
-
+export default function GeneralContainer() {
   return (
     <div className="space-y-6">
       <GeneralStatusCard />
@@ -30,6 +22,6 @@ export default function GeneralContainer({ store }: Props) {
 
       {/* Políticas de la tienda */}
       <PoliciesCard />
-      </div>
+    </div>
   );
 }

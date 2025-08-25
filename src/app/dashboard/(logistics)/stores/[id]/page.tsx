@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getStoreDetails } from "@/services/stores";
-import StoreEditContainer from "@/sections/provider-management/stores/edit/store-edit-container";
+import StoreEditAdminContainer from "@/sections/provider-management/stores/edit/store-edit-admin-container";
 
 type PageProps = {
   params: Promise<{
@@ -93,7 +93,7 @@ export default async function StoreEditPage({ params }: PageProps) {
 
   return (
     <Suspense fallback={<StoreSkeleton store={store} />}>
-      <StoreEditContainer store={store} />
+      <StoreEditAdminContainer store={store} />
     </Suspense>
   );
 }
