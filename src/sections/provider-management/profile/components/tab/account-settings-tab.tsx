@@ -11,15 +11,15 @@ import {
   IdentificationIcon,
   SparklesIcon,
 } from "@heroicons/react/24/outline";
-import { IUser } from "@/types/users";
-import ProviderBusinessModalContainer from "./business/provider-business-modal-container";
-import BeneficiaryModal from "./beneficiary-modal";
+import { IUser, UserResponseMe } from "@/types/users";
+import ProviderBusinessModalContainer from "../business/provider-business-modal-container";
+import BeneficiaryModal from "../modal/beneficiary-modal";
 import { Business } from "@/types/business";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 import {
   AccountSettingsFormData,
   accountSettingsSchema,
-} from "../schemas/account-settings-schema";
+} from "../../schemas/account-settings-schema";
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { updateUser } from "@/services/users";
@@ -30,7 +30,7 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { Button } from "@/components/button/button";
 
 interface AccountSettingsTabProps {
-  user: IUser | null;
+  user: UserResponseMe | null;
   onSave?: (data: AccountSettingsFormData) => void;
 }
 
@@ -59,9 +59,9 @@ export function AccountSettingsTab({ user, onSave }: AccountSettingsTabProps) {
               : { id: b }
           )
         : [],
-      beneficiaries: Array.isArray(user?.beneficiaries)
+      /* beneficiaries: Array.isArray(user?.beneficiaries)
         ? user.beneficiaries
-        : [],
+        : [], */
     },
     mode: "onChange",
   });

@@ -11,7 +11,7 @@ import {
   DocumentTextIcon,
   ChatBubbleLeftEllipsisIcon,
 } from "@heroicons/react/24/outline";
-import RHFInputWithLabel from "../../../../components/react-hook-form/rhf-input";
+import RHFInputWithLabel from "../../../../../components/react-hook-form/rhf-input";
 import { FormProvider } from "@/components/react-hook-form";
 import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
 import LoaderButton from "@/components/loaders/loader-button";

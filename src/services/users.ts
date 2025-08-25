@@ -20,10 +20,12 @@ import {
   UpdateUserAttributesResponse,
   UpdateUserResponse,
   UserAttributeLogResponse,
+  UserResponseMe,
 } from "@/types/users";
 import { revalidateTag } from "next/cache";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { PaginatedResponse } from "@/types/common";
+import { PersonalInfoFormData } from "@/sections/provider-management/profile/schemas/personal-info-schema";
 
 // - [ ] GET ALL USERS
 export async function getAllUsers(
@@ -294,7 +296,9 @@ export async function toggleBlockUser(data: { userId: number }): Promise<
 }
 
 // - [ ] GET CURRENT USER (ME)
-export async function fetchUserMe(token?: string): Promise<ApiResponse<IUser>> {
+export async function fetchUserMe(
+  token?: string
+): Promise<ApiResponse<UserResponseMe>> {
   const res = await nextAuthFetch({
     url: backendRoutes.users.me,
     method: "GET",
@@ -304,7 +308,7 @@ export async function fetchUserMe(token?: string): Promise<ApiResponse<IUser>> {
   });
 
   if (!res.ok) return handleApiServerError(res);
-  return buildApiResponseAsync<IUser>(res);
+  return buildApiResponseAsync<UserResponseMe>(res);
 }
 
 /**
@@ -369,4 +373,74 @@ export async function getAllSupplierUsers(
 
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<GetAllUsersResponse>(res);
+}
+
+// Actualiza la información personal de un proveedor
+export async function updateProviderPersonalInfo(
+  id: string | number,
+  data: PersonalInfoFormData
+): Promise<ApiResponse<void>> {
+  const formData = new FormData();
+
+  // Campos requeridos del esquema
+  formData.append("name", data.name);
+  formData.append("isBlocked", data.isBlocked.toString());
+  formData.append("isVerified", data.isVerified.toString());
+  formData.append("inaccessible", "false"); // Valor por defecto
+  formData.append("isActive", "true"); // Valor por defecto
+  formData.append("apiRole", "0"); // Valor por defecto
+
+  // Manejo de la foto
+  if (data.photoFile instanceof File) {
+    formData.append("photoFile", data.photoFile);
+    formData.append("removePhoto", "false");
+  } else if (!data.photoFile) {
+    // Si no hay foto, marcamos para remover
+    formData.append("removePhoto", "true");
+  } else {
+    // Si es una URL (foto existente), no removemos
+    formData.append("removePhoto", "false");
+  }
+
+  // Emails
+  if (data.emails && data.emails.length > 0) {
+    const emailsFormatted = data.emails.map((email) => ({
+      address: email.address,
+      isVerified: email.isVerified,
+      isActive: true, // Siempre activo por defecto
+    }));
+    formData.append("emails", JSON.stringify(emailsFormatted));
+  }
+
+  // Phones
+  if (data.phones && data.phones.length > 0) {
+    const phonesFormatted = data.phones.map((phone) => ({
+      number: phone.number,
+      countryId: phone.countryId,
+      isVerified: phone.isVerified,
+      isActive: true, // Siempre activo por defecto
+    }));
+    formData.append("phones", JSON.stringify(phonesFormatted));
+  }
+
+  // Attributes si existen
+  if (data.attributes && Object.keys(data.attributes).length > 0) {
+    formData.append("attributesJson", JSON.stringify(data.attributes));
+  }
+
+  const res = await nextAuthFetch({
+    url: backendRoutes.suppliers.update(id),
+    method: "PUT",
+    data: formData,
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  // Revalidar caches
+  revalidateTag("supplier");
+  revalidateTag("suppliers");
+  revalidateTag(`supplier-${id}`);
+
+  return buildApiResponseAsync<void>(res);
 }
