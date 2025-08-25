@@ -94,6 +94,10 @@ export const backendRoutes = {
     transfers: `${process.env.NEXT_PUBLIC_API_URL}warehouses/transfers`,
     transferById: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}warehouses/transfers/${id}`,
+    listBySupplier: (supplierId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${supplierId}/warehouses`,
+    listPhysical: `${process.env.NEXT_PUBLIC_API_URL}warehouses/physical`,
+    listVirtual: `${process.env.NEXT_PUBLIC_API_URL}warehouses/virtual`,
   },
   departments: {
     create: `${process.env.NEXT_PUBLIC_API_URL}departments`, // POST

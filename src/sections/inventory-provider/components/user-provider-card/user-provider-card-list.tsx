@@ -1,5 +1,4 @@
 import { SearchParams } from "@/types/fetch/request";
-import React, { useId } from "react";
 import UserProviderCard from "./user-provider-card";
 import { IUserProvider } from "@/types/users";
 
@@ -8,7 +7,6 @@ type Props = {
   searchParams: SearchParams;
 };
 const UserProviderCardList = ({ data, searchParams }: Props) => {
-  const id = useId();
   if (!data) {
     return (
       <div className="text-center py-12">
@@ -25,7 +23,7 @@ const UserProviderCardList = ({ data, searchParams }: Props) => {
       {data?.map((provider: IUserProvider, index: number) => (
         <UserProviderCard
           className="col-span-1"
-          key={`${id}-${provider?.id}-${index}`}
+          key={`${provider?.id}-${index}`}
           item={provider}
         />
       ))}

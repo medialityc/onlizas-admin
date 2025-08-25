@@ -2,13 +2,16 @@
 
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { cn } from "@/lib/utils";
-import { getAllWarehouses } from "@/services/warehouses-mock";
 import { ChevronDownIcon, ShoppingBagIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import AnimateHeight from "react-animate-height";
 import StoreVariant from "./store-variants";
 import { useFormContext } from "react-hook-form";
 import { Separator } from "@/components/ui/separator";
+import {
+  getAllWarehousesBySupplier,
+  getAllWarehousesPhysical,
+} from "@/services/warehouses";
 
 type Props = {
   title: string;
@@ -19,7 +22,6 @@ const StoreItem = ({ title, index }: Props) => {
   const { watch } = useFormContext();
 
   const providerId = watch("supplierId");
-  console.log(providerId, "id para obtener los almacenes del proveedor");
 
   return (
     <StoreAccordion title={title}>
@@ -27,16 +29,10 @@ const StoreItem = ({ title, index }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <RHFAutocompleteFetcherInfinity
-              name={`stores.${index}.warehousePhysicalIds`}
+              name={`storesWarehouses.${index}.warehousePhysicalIds`}
               label="Almacenes físicos"
               placeholder="Seleccionar almacenes físicos"
-              onFetch={(params) =>
-                getAllWarehouses({
-                  ...params,
-                  isPhysical: true,
-                  isActive: true,
-                })
-              }
+              onFetch={getAllWarehousesPhysical}
               objectValueKey="id"
               objectKeyLabel="name"
               queryKey="warehouses-physical"
@@ -44,19 +40,21 @@ const StoreItem = ({ title, index }: Props) => {
               multiple
             />
           </div>
-          {/* <div>
+          <div>
             <RHFAutocompleteFetcherInfinity
-              name={`stores.${index}.warehouseIds`}
+              name={`storesWarehouses.${index}.warehouseIds`}
               label="Almacenes del proveedor"
               placeholder="Seleccionar almacenes del proveedor"
-              onFetch={getAllWarehouses}
+              onFetch={(params) =>
+                getAllWarehousesBySupplier(providerId, params)
+              }
               objectValueKey="id"
               objectKeyLabel="name"
               queryKey="warehouses"
               required
               multiple
             />
-          </div> */}
+          </div>
         </div>
 
         <Separator className="my-2" />

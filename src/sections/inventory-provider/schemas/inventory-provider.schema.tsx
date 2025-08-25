@@ -6,7 +6,9 @@ export const inventoryProviderArraySchema = z
   .array(
     z.object({
       storeId: z.number({}),
-      warehouseIds: z.array(z.number({ required_error: "Requerido" })),
+      warehouseIds: z
+        .array(z.number({ required_error: "Requerido" }))
+        .min(1, "Seleccione al menos un almacén del proveedor"),
       warehousePhysicalIds: z.array(z.number()),
       productVariants: z.array(
         z.object({
@@ -17,7 +19,9 @@ export const inventoryProviderArraySchema = z
                 .array(
                   z.object({
                     name: z.string(),
-                    value: z.string(),
+                    value: z
+                      .string({ required_error: "Requerido" })
+                      .min(1, "Requerido"),
                   })
                 )
                 .min(1, "Es requerido al menos una característica"),
@@ -44,10 +48,16 @@ export const inventoryProviderArraySchema = z
             .number({ required_error: "Requerido" })
             .min(1, "La cantidad debe ser al menos 1")
             .default(1),
-          price: z.number({ required_error: "Requerido" }).min(1,'El precio es requerido').default(0),
-          discountType: z.number({ required_error: "Requerido" }).default(0),//todo definir que es
+          price: z
+            .number({ required_error: "Requerido" })
+            .min(1, "El precio es requerido")
+            .default(0),
+          discountType: z.number({ required_error: "Requerido" }).default(0), //todo definir que es
           discountValue: z.number({ required_error: "Requerido" }).default(0),
-          purchaseLimit: z.number({ required_error: "Requerido" }).default(0),
+          purchaseLimit: z
+            .number({ required_error: "Requerido" })
+            .min(1, "El límite no puede ser 0")
+            .default(1),
           isPrime: z.boolean().default(true),
           warranty: z.object({
             isWarranty: z.boolean().default(true),
