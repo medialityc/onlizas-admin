@@ -22,7 +22,6 @@ export function UserProviderCardGrid({
         searchParams={searchParams}
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar proveedor..."
-        // onCreate={handleInventoryProviderCreate}
         emptyText="No se encontraron proveedor"
         enableColumnToggle={false}
         rightActions={<></>}

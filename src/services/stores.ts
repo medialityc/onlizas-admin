@@ -42,7 +42,7 @@ export async function getAllProviderStores(
     url,
     method: "GET",
     useAuth: true,
-    next: { tags: ["stores"] },
+    next: { tags: ["supplier-stores"] },
   });
 
   if (!res.ok) return handleApiServerError(res);

@@ -42,7 +42,7 @@ export default function UserSupplierCardListContainer({
         </div>
 
         <UserProviderCardGrid
-          data={supplierUsersResponse.data}
+          data={supplierUsersResponse?.data}
           searchParams={query}
           onSearchParamsChange={handleSearchParamsChange}
         />

@@ -62,7 +62,9 @@ export default function StoresCheck({
     return fields.some((field: any) => field.storeId === storeId);
   };
 
-  if (stores?.length === 0) {
+  console.log(stores, 'stores')
+
+  if (!stores || stores?.length === 0) {
     return (
       <div className="flex flex-col p-4 rounded-lg bg-gray-50 justify-center items-center">
         <div className="p-4 bg-gray-100 rounded-full">
