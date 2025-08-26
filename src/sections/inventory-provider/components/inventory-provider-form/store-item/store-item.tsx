@@ -2,7 +2,6 @@
 
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { cn } from "@/lib/utils";
-import { ChevronDownIcon, ShoppingBagIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import AnimateHeight from "react-animate-height";
 import StoreVariant from "./store-variants";
@@ -12,6 +11,7 @@ import {
   getAllWarehousesBySupplier,
   getAllWarehousesPhysical,
 } from "@/services/warehouses";
+import { ChevronDownIcon, ShoppingBagIcon } from "@heroicons/react/24/solid";
 
 type Props = {
   title: string;
@@ -25,7 +25,7 @@ const StoreItem = ({ title, index }: Props) => {
 
   return (
     <StoreAccordion title={title}>
-      <div className="flex flex-col gap-4  border border-dotted py-2 px-4 rounded-lg">
+      <div className="flex flex-col gap-4 rounded-lg mt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <RHFAutocompleteFetcherInfinity
@@ -76,18 +76,18 @@ const StoreAccordion = ({ children, title }: StoreAccordionProps) => {
     <div className="flex flex-col gap-2">
       <button
         type="button"
-        className={`px-6 py-3 bg-gray-100 rounded-md w-full flex items-center justify-between dark:bg-[#1b2e4b] `}
+        className={`px-4 py-3 bg-gray-100 rounded-md w-full flex items-center justify-between dark:bg-slate-800`}
         onClick={() => setActive(!active)}
       >
         <div className="flex flex-row gap-2 items-center">
-          <div className="p-2 rounded-lg bg-primary/10 text-primary">
+          <div className="p-2 rounded-lg bg-primary/10 text-primary dark:text-white dark:bg-gray-600">
             <ShoppingBagIcon
               className={"h-4 w-4 transition-opacity "}
               aria-hidden="true"
             />
           </div>
 
-          <h3 className="text-lg font-bold">{title}</h3>
+          <h3 className="text-lg font-bold dark:text-white">{title}</h3>
         </div>
 
         <div className="flex flex-row gap-4 items-center">

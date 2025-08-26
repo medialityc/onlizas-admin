@@ -87,7 +87,9 @@ export default function StoresCheck({
 
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="text-lg font-bold mb-2 dark:text-white">Selecciona las tiendas</h2>
+      <h2 className="text-lg font-bold mb-2 dark:text-white">
+        Selecciona las tiendas
+      </h2>
 
       <div className="grid xl:grid-cols-6 md:grid-cols-4 grid-cols-2 gap-2 md:gap-4">
         {stores?.map((item) => {
@@ -105,15 +107,12 @@ export default function StoresCheck({
               )}
             >
               <div className="flex justify-between gap-2">
-                <picture className="p-2 rounded-lg bg-primary/10 text-primary">
+                <div className="p-2 rounded-lg bg-primary/10 text-primary dark:text-white dark:bg-gray-600">
                   <ShoppingBagIcon
-                    className={cn(
-                      "h-4 w-4 transition-opacity ",
-                      isChecked ? "opacity-80" : "opacity-60"
-                    )}
+                    className={"h-4 w-4 transition-opacity "}
                     aria-hidden="true"
                   />
-                </picture>
+                </div>
                 <Checkbox
                   id={`${id}-${item.id}`}
                   checked={isChecked}
@@ -123,7 +122,7 @@ export default function StoresCheck({
                   className="order-1 after:absolute after:inset-0 z-10"
                 />
               </div>
-              <Label htmlFor={`${id}-${item.id}`} className="cursor-pointer ">
+              <Label htmlFor={`${id}-${item.id}`} className="cursor-pointer dark:text-white">
                 <LongText
                   className="font-semibold"
                   text={item.name}
