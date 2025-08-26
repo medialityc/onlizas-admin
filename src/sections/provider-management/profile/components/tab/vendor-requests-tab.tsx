@@ -31,25 +31,6 @@ import Badge from "@/components/badge/badge";
 import CategoryRequestModal from "../modal/category-request-modal";
 import ExpirationExtensionModal from "../modal/expiration-extension-modal";
 import showToast from "@/config/toast/toastConfig";
-import { ExpirationExtensionModalFormData } from "../../schemas/expiration-extension-modal-schema";
-
-type FormData = {
-  categories: string;
-  expiryDate: string;
-  notes: string;
-};
-
-// Interfaz específica para los atributos del proveedor
-interface ProviderAttributes {
-  Country?: {
-    Id: number;
-    Name: string;
-  };
-  MincexCode?: string | null;
-  SellerType?: string;
-  Nacionality?: string;
-  ExpirationDate?: string | null;
-}
 
 interface VendorRequestsTabProps {
   user: UserResponseMe | null;
@@ -58,10 +39,8 @@ interface VendorRequestsTabProps {
 export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
   // Cast the attributes to the specific provider attributes type
 
-  // Por ahora uso el ID del usuario como supplierId, esto puede cambiar según la estructura real
-  const supplierId = user?.id?.toString() || null;
   const { data: approvalProcess, isLoading: isLoadingApproval } =
-    useSupplierApprovalProcess(supplierId);
+    useSupplierApprovalProcess();
 
   const queryClient = useQueryClient();
 
@@ -79,11 +58,11 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
   const [expirationModalOpen, setExpirationModalOpen] = useState(false);
   const existingIds = [
-    ...(approvalProcess?.approvedCategories ?? []).map(
-      (c: { categoryId: number }) => String(c.categoryId)
+    ...(approvalProcess?.approvedCategories ?? []).map((c: { id: number }) =>
+      String(c.id)
     ),
-    ...(approvalProcess?.pendingCategories ?? []).map(
-      (c: { categoryId: number }) => String(c.categoryId)
+    ...(approvalProcess?.pendingCategories ?? []).map((c: { id: number }) =>
+      String(c.id)
     ),
   ];
 
@@ -284,10 +263,10 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                     {(approvalProcess?.approvedCategories?.length ?? 0 > 0) ? (
                       approvalProcess?.approvedCategories.map((category) => (
                         <div
-                          key={category.categoryId}
+                          key={category.id}
                           className="text-sm text-gray-600 dark:text-gray-300 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded border border-green-200 dark:border-green-800"
                         >
-                          {category.categoryName}
+                          {category.name}
                         </div>
                       ))
                     ) : (
@@ -309,10 +288,10 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                     {(approvalProcess?.pendingCategories?.length ?? 0 > 0) ? (
                       approvalProcess?.pendingCategories.map((category) => (
                         <div
-                          key={category.categoryId}
+                          key={category.id}
                           className="text-sm text-gray-600 dark:text-gray-300 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-1 rounded border border-yellow-200 dark:border-yellow-800"
                         >
-                          {category.categoryName}
+                          {category.name}
                         </div>
                       ))
                     ) : (
@@ -398,7 +377,7 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                   Fecha de Expiración
                 </p>
                 <p className="text-sm text-gray-600 dark:text-gray-300 break-words">
-                  {user?.supplierInfo?.expirationDate || "No especificada"}
+                  {approvalProcess?.expirationDate || "No especificada"}
                 </p>
               </div>
             </div>
@@ -410,7 +389,7 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                   Tipo de Vendedor
                 </p>
                 <p className="text-sm text-gray-600 dark:text-gray-300 break-words">
-                  {user?.supplierInfo?.sellerType || "No especificado"}
+                  {approvalProcess?.sellerType || "No especificado"}
                 </p>
               </div>
             </div>
@@ -422,7 +401,7 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                   Alcance de Mercado
                 </p>
                 <p className="text-sm text-gray-600 dark:text-gray-300 break-words">
-                  {user?.supplierInfo?.nacionality || "No especificado"}
+                  {approvalProcess?.nacionality || "No especificado"}
                 </p>
               </div>
             </div>
@@ -434,7 +413,7 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                   Código MINCEX
                 </p>
                 <p className="text-sm text-gray-600 dark:text-gray-300 break-words">
-                  {user?.supplierInfo?.mincexCode || "No especificado"}
+                  {approvalProcess?.mincexCode || "No especificado"}
                 </p>
               </div>
             </div>
@@ -446,7 +425,7 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                   País
                 </p>
                 <p className="text-sm text-gray-600 dark:text-gray-300 break-words">
-                  {user?.supplierInfo.country.name || "No especificado"}
+                  {approvalProcess?.countryName || "No especificado"}
                 </p>
               </div>
             </div>
