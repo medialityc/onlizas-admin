@@ -130,6 +130,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}users/${id}/businesses`,
     getAllLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/business`,
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/businesses`,
+    createBySupplier: `${process.env.NEXT_PUBLIC_API_URL}suppliers/businesses`,
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/businesses/${id}`,
     updateProvider: (id: string | number) =>
