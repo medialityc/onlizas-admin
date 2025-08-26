@@ -41,7 +41,6 @@ function CategoriesListSkeleton() {
 
 export default async function ProfilePage({ searchParams }: PageProps) {
   const params = await searchParams;
-  const query: IQueryable = buildQueryParams(params);
   return (
     <Suspense fallback={<CategoriesListSkeleton />}>
       <ProfileContainer query={params} />

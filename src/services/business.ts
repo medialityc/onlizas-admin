@@ -137,6 +137,21 @@ export async function deleteBusiness(
   return buildApiResponseAsync(res);
 }
 
+export async function deleteBusinessBySupplier(
+  id: string | number
+): Promise<ApiResponse<ApiStatusResponse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.business.deleteBySupplier(id),
+    method: "DELETE",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("business");
+
+  return buildApiResponseAsync(res);
+}
+
 export async function getAllUserBusiness(
   id: string | number,
   params: IQueryable

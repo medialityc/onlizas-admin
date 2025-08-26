@@ -12,6 +12,7 @@ import { UserResponseMe } from "@/types/users";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUpdateProviderPersonalInfo } from "./use-update-provider-personal-info";
 import { useModalState } from "@/hooks/use-modal-state";
+import { AddressFormData } from "../components/edit/user-edit-schema";
 
 interface Props {
   user: UserResponseMe | null;
@@ -45,7 +46,7 @@ export function usePersonalInfoTab({ user }: Props) {
           isVerified: !!p.isVerified,
         })) || [],
       addresses:
-        user?.addresses?.map((a: any) => ({
+        user?.addresses?.map((a: AddressFormData) => ({
           id: a.id,
           name: a.name ?? "",
           mainStreet: a.mainStreet ?? "",
@@ -69,10 +70,6 @@ export function usePersonalInfoTab({ user }: Props) {
   const emailWatch = watch("emails") || [];
   const phoneWatch = watch("phones") || [];
 
-  const documentsPromise = useMemo(() => {
-    const userId = user?.id ?? 0;
-    return getUserDocuments(userId);
-  }, [user?.id]);
   // Field arrays
   const {
     fields: emailFields,
@@ -207,6 +204,5 @@ export function usePersonalInfoTab({ user }: Props) {
     emailWatch,
     phoneWatch,
     toPersonalAddress,
-    documentsPromise,
   };
 }

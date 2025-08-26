@@ -102,7 +102,12 @@ export function useProviderBusinessMutation({
       }
     },
     onSuccess: (result) => {
-      // Invalidar queries relacionadas con business y user específico
+      // Invalidar la query correcta que usa useBusiness
+      queryClient.invalidateQueries({
+        queryKey: ["user", "profile", "business"],
+      });
+
+      // Invalidar queries adicionales relacionadas con business
       queryClient.invalidateQueries({ queryKey: ["businesses"] });
 
       if (userId) {
@@ -112,9 +117,6 @@ export function useProviderBusinessMutation({
         queryClient.invalidateQueries({
           queryKey: ["business", "user", userId],
         });
-      }
-
-      if (result.type === "create") {
         queryClient.invalidateQueries({
           queryKey: ["user", "profile", "me"],
         });

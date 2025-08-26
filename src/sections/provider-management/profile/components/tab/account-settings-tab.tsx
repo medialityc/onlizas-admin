@@ -20,11 +20,15 @@ import {
   AccountSettingsFormData,
   accountSettingsSchema,
 } from "../../schemas/account-settings-schema";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useModalState } from "@/hooks/use-modal-state";
 import { useBusiness } from "../edit/hook/use-business";
 import LoaderButton from "@/components/loaders/loader-button";
 import { Button } from "@/components/button/button";
+import { ProfileSkeleton } from "../profile-skeleton";
+import { AccountingBusinessSkeleton } from "../accounting-skeleton";
+import DeleteDialog from "@/components/modal/delete-modal";
+import { useProviderBusinessDeleteMutation } from "../../hooks/use-provider-business-delete-mutation";
 
 interface AccountSettingsTabProps {
   user: UserResponseMe | null;
@@ -34,8 +38,16 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
   const { getModalState, openModal, closeModal } = useModalState();
   const createBusinessModal = getModalState("createBusiness");
   const editBusinessModal = getModalState<number>("editBusiness");
-  const { data: business } = useBusiness();
-  console.log(business);
+  const deleteBusinessModal = getModalState<number>("deleteBusiness");
+  const { data: business, isLoading } = useBusiness();
+
+  // Hook para eliminar business
+  const deleteBusinessMutation = useProviderBusinessDeleteMutation({
+    userId: user?.id,
+    onSuccess: () => {
+      closeModal("deleteBusiness");
+    },
+  });
 
   const [selectedBeneficiaryIndex, setSelectedBeneficiaryIndex] = useState<
     number | null
@@ -50,12 +62,7 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
   const methods = useForm<AccountSettingsFormData>({
     resolver: zodResolver(accountSettingsSchema),
     defaultValues: {
-      businesses: business?.map((b: Business) => ({
-        id: b.id,
-        name: b.name,
-        code: b.code,
-      })),
-
+      businesses: [],
       beneficiaries: Array.isArray(user?.beneficiaries)
         ? user.beneficiaries
         : [],
@@ -63,14 +70,25 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
     mode: "onChange",
   });
 
-  const { control, reset } = methods;
+  const { control, reset, setValue } = methods;
 
-  const {
-    fields: businessFields,
-    append: appendBusiness,
-    remove: removeBusiness,
-    update: updateBusiness,
-  } = useFieldArray({ control, name: "businesses", keyName: "_key" });
+  // Sincronizar businessFields con los datos del servidor
+  useEffect(() => {
+    if (business && business.length > 0) {
+      const formattedBusinesses = business.map((b: Business) => ({
+        id: b.id,
+        name: b.name,
+        code: b.code,
+      }));
+      reset({
+        businesses: formattedBusinesses,
+      });
+    } else {
+      reset({
+        businesses: [],
+      });
+    }
+  }, [business]);
 
   const {
     fields: beneficiaryFields,
@@ -85,6 +103,21 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
     const ext = (business || []).find((b) => b.id == id);
     return ext || undefined;
   }, [editBusinessModal, business]);
+
+  // Business seleccionado para eliminar
+  const businessToDelete = useMemo(() => {
+    const id = deleteBusinessModal.id;
+    if (!id) return undefined;
+    return (business || []).find((b) => b.id == id);
+  }, [deleteBusinessModal, business]);
+
+  // Función para confirmar eliminación
+  const handleConfirmDelete = () => {
+    if (businessToDelete?.id) {
+      deleteBusinessMutation.mutate(businessToDelete.id);
+    }
+  };
+
   return (
     <FormProvider methods={methods} onSubmit={methods.handleSubmit(() => {})}>
       <Card className="border rounded-lg dark:border-gray-800">
@@ -109,8 +142,10 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
                 </div>
                 <div className="space-y-2">
                   <div className="space-y-2">
-                    {businessFields && businessFields.length > 0 ? (
-                      businessFields.map((b, index) => (
+                    {isLoading ? (
+                      <AccountingBusinessSkeleton />
+                    ) : business && business.length > 0 ? (
+                      business.map((b, index) => (
                         <div
                           key={`${b.id}-${index}`}
                           className="flex items-center gap-2"
@@ -134,7 +169,11 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
                           <button
                             type="button"
                             className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
-                            onClick={() => removeBusiness(index)}
+                            onClick={() => {
+                              if (b?.id) {
+                                openModal<number>("deleteBusiness", b.id);
+                              }
+                            }}
                           >
                             <TrashIcon className="h-4 w-4" />
                           </button>
@@ -238,13 +277,6 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
         business={selectedBusiness}
         userId={user?.id}
         onSuccess={(data?: Business) => {
-          if (selectedBusiness?.id) {
-            updateBusiness(selectedBusiness?.id, {
-              id: selectedBusiness.id,
-              name: data?.name,
-              code: data?.code,
-            });
-          } else appendBusiness(data ? data : ({} as Business));
           if (editBusinessModal.open) closeModal("editBusiness");
           if (createBusinessModal.open) closeModal("createBusiness");
         }}
@@ -261,6 +293,17 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
           }
           setBeneficiaryModalOpen(false);
         }}
+      />
+
+      {/* Modal de confirmación de eliminación */}
+      <DeleteDialog
+        open={deleteBusinessModal.open}
+        onClose={() => closeModal("deleteBusiness")}
+        onConfirm={handleConfirmDelete}
+        loading={deleteBusinessMutation.isLoading}
+        title="Eliminar Negocio"
+        description={`¿Estás seguro de que quieres eliminar el negocio "${businessToDelete?.name}"?`}
+        warningMessage="Esta acción eliminará permanentemente el negocio y toda su información asociada."
       />
     </FormProvider>
   );

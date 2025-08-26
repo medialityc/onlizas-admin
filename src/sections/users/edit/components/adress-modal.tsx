@@ -16,7 +16,7 @@ type AddressFormData = z.infer<typeof addressSchema>;
 
 interface AddressModalProps {
   open: boolean;
- onClose: () => void;
+  onClose: () => void;
   onSave: (address: AddressFormData) => void;
   editingAddress?: AddressFormData | null;
 }
@@ -27,19 +27,21 @@ export function AddressModal({
   onSave,
   editingAddress,
 }: AddressModalProps) {
+  console.log(editingAddress);
+
   const methods = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
-    defaultValues: editingAddress || {
-      name: "",
-      mainStreet: "",
-      otherStreets: "",
-      number: "",
-      city: "",
-      state: "",
-      zipcode: "",     
-      annotations: "",
-      latitude: 0.0,
-      longitude:0.0
+    defaultValues: {
+      name: editingAddress?.name || "",
+      mainStreet: editingAddress?.mainStreet || "",
+      otherStreets: editingAddress?.otherStreets || "",
+      number: editingAddress?.number || "",
+      city: editingAddress?.city || "",
+      state: editingAddress?.state || "",
+      zipcode: editingAddress?.zipcode || "",
+      annotations: editingAddress?.annotations || "",
+      latitude: editingAddress?.latitude || 0.0,
+      longitude: editingAddress?.longitude || 0.0,
     },
     reValidateMode: "onChange",
     mode: "onChange",
@@ -58,11 +60,11 @@ export function AddressModal({
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        position => {
+        (position) => {
           setValue("latitude", position.coords.latitude);
           setValue("longitude", position.coords.longitude);
         },
-        error => {
+        (error) => {
           console.error("Error obteniendo ubicación:", error);
         }
       );
@@ -215,8 +217,6 @@ export function AddressModal({
             className="transition-all focus:ring-2 focus:ring-green-500"
           />
         </div>
-
-      
 
         <div className="grid grid-cols-2 gap-4">
           <Button type="button" outline onClick={() => onClose()}>
