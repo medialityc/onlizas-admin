@@ -24,7 +24,6 @@ import {
   FolderIcon,
   PlusIcon,
 } from "@heroicons/react/24/outline";
-import { useSupplierApprovalProcess } from "@/sections/provider-management/profile/hooks/use-supplier-approval-process";
 import { extendApprovalProcess } from "@/services/approval-processes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Badge from "@/components/badge/badge";
@@ -33,16 +32,20 @@ import ExpirationExtensionModal from "../modal/expiration-extension-modal";
 import showToast from "@/config/toast/toastConfig";
 import { downloadUserDocument } from "@/services/users";
 import Link from "next/link";
+import { SupplierApprovalProcess } from "@/types/suppliers";
 
 interface VendorRequestsTabProps {
   user: UserResponseMe | null;
+  approvalProcess: SupplierApprovalProcess | null;
+  isLoadingApproval: boolean;
 }
 
-export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
+export default function VendorRequestsTab({
+  user,
+  approvalProcess,
+  isLoadingApproval,
+}: VendorRequestsTabProps) {
   // Cast the attributes to the specific provider attributes type
-
-  const { data: approvalProcess, isLoading: isLoadingApproval } =
-    useSupplierApprovalProcess();
 
   const queryClient = useQueryClient();
 
@@ -157,38 +160,6 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
       comments: data.comments,
     });
   };
-
-  const handleDownload = useCallback(
-    async (docId: number, docName: string) => {
-      try {
-        const response = await downloadUserDocument(user?.id ?? 0, docId);
-        if (response.error || !response.data) {
-          showToast(
-            "Error al descargar el documento. Intente nuevamente.",
-            "error"
-          );
-        } else {
-          const link = document.createElement("a");
-          link.href = response.data;
-          link.download = docName || "documento";
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-
-          showToast("Comenzando descarga", "success");
-        }
-      } catch (error) {
-        console.error(error);
-        showToast(
-          "Error al descargar el documento. Intente nuevamente.",
-          "error"
-        );
-      }
-    },
-    [user?.id]
-  );
 
   const getStateColor = (state: string) => {
     console.log("Getting state color for:", state);
@@ -352,6 +323,7 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                         <Link
                           href={document.content}
                           key={document.id}
+                          target="_blank"
                           className="w-full text-left text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded border border-green-200 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors underline cursor-pointer"
                         >
                           {document.fileName}
@@ -375,15 +347,14 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                   <div className="space-y-2 max-h-32 overflow-y-auto">
                     {(approvalProcess?.pendingDocuments?.length ?? 0) > 0 ? (
                       approvalProcess?.pendingDocuments?.map((document) => (
-                        <button
+                        <Link
+                          href={document.content}
                           key={document.id}
-                          onClick={() =>
-                            handleDownload(document.id, document.fileName)
-                          }
+                          target="_blank"
                           className="w-full text-left text-sm text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-1 rounded border border-yellow-200 dark:border-yellow-800 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors underline cursor-pointer"
                         >
                           {document.fileName}
-                        </button>
+                        </Link>
                       ))
                     ) : (
                       <p className="text-sm text-gray-500 dark:text-gray-400 italic">
