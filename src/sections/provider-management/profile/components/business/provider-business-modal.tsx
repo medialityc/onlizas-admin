@@ -18,6 +18,7 @@ import {
   getAllBusiness,
   updateBusinessData,
   createBusiness,
+  updateBusinessProviderData,
 } from "@/services/business";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
@@ -44,13 +45,14 @@ export default function ProviderBusinessModal({
   const [error, setError] = useState<string | null>(null);
   const [loadingImage, setLoadingImage] = useState(false);
   const queryClient = useQueryClient();
+  console.log(business);
 
   const methods = useForm<CreateSchemaBusiness>({
     resolver: zodResolver(businessSchema),
     defaultValues: {
       name: business?.name || "",
       code: business?.code || "",
-      parentId: business?.parentBusiness?.id || 0,
+      parentId: business?.parentBusiness?.id,
       description: business?.description || "",
       locationId: business?.locationId || 0,
       hblInitial: business?.hblInitial || "",
@@ -129,6 +131,7 @@ export default function ProviderBusinessModal({
     try {
       let response;
       const formData = new FormData();
+      console.log(data);
 
       // Mapear campos base
       formData.append("name", data.name);
@@ -142,10 +145,11 @@ export default function ProviderBusinessModal({
       formData.append("fixedRate", data.fixedRate?.toString() || "0");
       formData.append("invoiceText", data.invoiceText || "");
       formData.append("locationId", data.locationId.toString());
-      formData.append(
-        "parentId",
-        data.parentId ? data.parentId.toString() : ""
-      );
+      console.log(data.parentId);
+
+      if (data.parentId) {
+        formData.append("parentId", data.parentId.toString());
+      }
 
       // Manejo de imágenes
       if (data.photoObjectCodes && data.photoObjectCodes.length > 0) {
@@ -167,7 +171,7 @@ export default function ProviderBusinessModal({
 
       if (business) {
         // Editando business existente
-        response = await updateBusinessData(business.id, formData);
+        response = await updateBusinessProviderData(business.id, formData);
 
         if (!response.error) {
           // Invalidar queries relacionadas con business y user específico
@@ -183,8 +187,9 @@ export default function ProviderBusinessModal({
           /* queryClient.invalidateQueries({
             queryKey: ["user", "profile", "me"],
           }); */
+          console.log(data.name);
 
-          onSuccess?.(response.data);
+          onSuccess?.({ name: data.name, code: data.code } as Business);
           toast.success("Negocio editado exitosamente");
           handleClose();
         } else {

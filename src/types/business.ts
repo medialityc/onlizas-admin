@@ -24,6 +24,8 @@ export interface Business {
  * Structure for GET /businesses response
  */
 export type GetAllBusiness = PaginatedResponse<Business>;
+export type GetAllProviderBusiness =
+  PaginatedResponse<BusinessProviderResponse>;
 
 /**
  * Required data to create a Business
@@ -87,5 +89,25 @@ export type BusinessLogs = {
   ownerName: string;
   locationId: number;
   locationName: string;
+};
+
+export type BusinessProviderResponse = {
+  id: number;
+  guid: string;
+  name: string;
+  code: string;
+  description: string;
+  isPrimary: boolean;
+  ownerId: number;
+  ownerName: string;
+  locationId: number;
+  parentId?: number | null;
+  childrenCount: number;
+  usersCount: number;
+  subSystemsCount: number;
+  isActive: boolean;
+  address: string;
+  email: string;
+  phone: string;
 };
 export type GetAllBusinessLogs = PaginatedResponse<BusinessLogs>;

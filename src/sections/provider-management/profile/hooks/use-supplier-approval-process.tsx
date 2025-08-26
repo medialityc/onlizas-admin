@@ -2,16 +2,12 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getSupplierApprovalProcess } from "@/services/supplier";
-import { SupplierApprovalProcess } from "@/types/suppliers";
 
-export function useSupplierApprovalProcess(supplierId: string | null) {
+export function useSupplierApprovalProcess() {
   return useQuery({
-    queryKey: ["supplier-approval-process", supplierId],
+    queryKey: ["supplier-approval-process"],
     queryFn: async () => {
-      if (!supplierId) {
-        throw new Error("Supplier ID is required");
-      }
-      const response = await getSupplierApprovalProcess(supplierId);
+      const response = await getSupplierApprovalProcess();
       if (response.error || !response.data) {
         throw new Error(
           response.message || "Error al cargar perfil del usuario"
@@ -19,7 +15,6 @@ export function useSupplierApprovalProcess(supplierId: string | null) {
       }
       return response.data;
     },
-    enabled: !!supplierId,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
   });

@@ -21,9 +21,6 @@ import {
   accountSettingsSchema,
 } from "../../schemas/account-settings-schema";
 import { useMemo, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { updateUser } from "@/services/users";
-import showToast from "@/config/toast/toastConfig";
 import { useModalState } from "@/hooks/use-modal-state";
 import { useBusiness } from "../edit/hook/use-business";
 import LoaderButton from "@/components/loaders/loader-button";
@@ -31,14 +28,15 @@ import { Button } from "@/components/button/button";
 
 interface AccountSettingsTabProps {
   user: UserResponseMe | null;
-  onSave?: (data: AccountSettingsFormData) => void;
 }
 
-export function AccountSettingsTab({ user, onSave }: AccountSettingsTabProps) {
+export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
   const { getModalState, openModal, closeModal } = useModalState();
   const createBusinessModal = getModalState("createBusiness");
   const editBusinessModal = getModalState<number>("editBusiness");
   const { data: business } = useBusiness();
+  console.log(business);
+
   const [selectedBeneficiaryIndex, setSelectedBeneficiaryIndex] = useState<
     number | null
   >(null);
@@ -52,21 +50,20 @@ export function AccountSettingsTab({ user, onSave }: AccountSettingsTabProps) {
   const methods = useForm<AccountSettingsFormData>({
     resolver: zodResolver(accountSettingsSchema),
     defaultValues: {
-      businesses: Array.isArray(user?.businesses)
-        ? user.businesses.map((b: any) =>
-            b && typeof b === "object"
-              ? { id: b.id, name: b.name, code: b.code }
-              : { id: b }
-          )
-        : [],
-      /* beneficiaries: Array.isArray(user?.beneficiaries)
+      businesses: business?.map((b: Business) => ({
+        id: b.id,
+        name: b.name,
+        code: b.code,
+      })),
+
+      beneficiaries: Array.isArray(user?.beneficiaries)
         ? user.beneficiaries
-        : [], */
+        : [],
     },
     mode: "onChange",
   });
 
-  const { control } = methods;
+  const { control, reset } = methods;
 
   const {
     fields: businessFields,
@@ -81,34 +78,15 @@ export function AccountSettingsTab({ user, onSave }: AccountSettingsTabProps) {
     remove: removeBeneficiary,
     update: updateBeneficiary,
   } = useFieldArray({ control, name: "beneficiaries", keyName: "_key" });
-
-  const queryClient = useQueryClient();
-
-  const handleFormSubmit = async (data: AccountSettingsFormData) => {
-    // Send only the businesses and beneficiaries fields to the updateUser endpoint
-    if (!user?.id) {
-      showToast("Usuario no disponible para actualizar", "error");
-      return;
-    }
-    try {
-      await updateUser(user.id, {
-        businesses: data.businesses || [],
-        beneficiaries: data.beneficiaries || [],
-      } as any);
-      // invalidate queries related to user profile so UI refreshes
-      queryClient.invalidateQueries({ queryKey: ["user", "profile", "me"] });
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-
-      showToast("Información Comercial actualizada", "success");
-      if (onSave) onSave(data);
-    } catch (err) {
-      console.error(err);
-      showToast("Error al actualizar Información Comercial", "error");
-    }
-  };
-
+  //
+  const selectedBusiness = useMemo(() => {
+    const id = editBusinessModal.id;
+    if (!id) return undefined;
+    const ext = (business || []).find((b) => b.id == id);
+    return ext || undefined;
+  }, [editBusinessModal, business]);
   return (
-    <FormProvider methods={methods} onSubmit={handleFormSubmit}>
+    <FormProvider methods={methods} onSubmit={methods.handleSubmit(() => {})}>
       <Card className="border rounded-lg dark:border-gray-800">
         <CardHeader>
           <div className="mb-3 flex items-center gap-2 w-full">
@@ -143,22 +121,20 @@ export function AccountSettingsTab({ user, onSave }: AccountSettingsTabProps) {
                     {businessFields && businessFields.length > 0 ? (
                       businessFields.map((b, index) => (
                         <div
-                          key={b._key ?? `${(b as any).id}-${index}`}
+                          key={`${b.id}-${index}`}
                           className="flex items-center gap-2"
                         >
                           <RHFInputWithLabel
                             name={`businesses.${index}.name`}
-                            label={(b as any).name || `Negocio ${index + 1}`}
+                            //label={b.name || `Negocio ${index + 1}`}
+                            defaultValue={b.name}
                           />
                           <button
                             type="button"
                             className="p-1.5 rounded-full text-sky-600 hover:bg-sky-600/10 transition mt-7"
                             onClick={() => {
-                              if ((b as any)?.id) {
-                                openModal<number>(
-                                  "editBusiness",
-                                  (b as any).id
-                                );
+                              if (b?.id) {
+                                openModal<number>("editBusiness", b.id);
                               }
                             }}
                           >
@@ -215,7 +191,7 @@ export function AccountSettingsTab({ user, onSave }: AccountSettingsTabProps) {
                   {beneficiaryFields && beneficiaryFields.length > 0 ? (
                     beneficiaryFields.map((b, index) => (
                       <div
-                        key={(b as any)._key ?? `${(b as any).id}-${index}`}
+                        key={b._key ?? `${b.id}-${index}`}
                         className="flex items-center gap-2"
                       >
                         <RHFInputWithLabel
@@ -268,19 +244,16 @@ export function AccountSettingsTab({ user, onSave }: AccountSettingsTabProps) {
           if (editBusinessModal.open) closeModal("editBusiness");
           if (createBusinessModal.open) closeModal("createBusiness");
         }}
-        business={useMemo(() => {
-          const id = editBusinessModal.id;
-          if (!id) return undefined;
-          const ext = (business || []).find((b) => b.id == id);
-          return ext || undefined;
-        }, [editBusinessModal, business])}
+        business={selectedBusiness}
         userId={user?.id}
         onSuccess={(data?: Business) => {
-          if (data?.id) {
-            const idx = businessFields.findIndex((b: any) => b.id == data.id);
-            if (idx >= 0) updateBusiness(idx, data);
-            else appendBusiness(data);
-          }
+          if (selectedBusiness?.id) {
+            updateBusiness(selectedBusiness?.id, {
+              id: selectedBusiness.id,
+              name: data?.name,
+              code: data?.code,
+            });
+          } else appendBusiness(data ? data : ({} as Business));
           if (editBusinessModal.open) closeModal("editBusiness");
           if (createBusinessModal.open) closeModal("createBusiness");
         }}

@@ -130,6 +130,8 @@ export const backendRoutes = {
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/businesses`,
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/businesses/${id}`,
+    updateProvider: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/businesses/${id}`,
     delete: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}business/${id}`,
     getAllByUser: `${process.env.NEXT_PUBLIC_API_URL}suppliers/businesses`,
@@ -160,6 +162,7 @@ export const backendRoutes = {
     create: `${process.env.NEXT_PUBLIC_API_URL}documents`, // POST
   },
   approvalProcesses: {
+    list: `${process.env.NEXT_PUBLIC_API_URL}admin/supplier/me`,
     extend: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${id}/extend`, // POST
   },
