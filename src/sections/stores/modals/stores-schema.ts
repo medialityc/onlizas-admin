@@ -1,11 +1,12 @@
 import { z } from "zod";
 
 export const storeSchema = z.object({
-  name: z.string({ required_error: "El nombre es obligatorio" }).max(100),
+  name: z.string().min(1, "El nombre es obligatorio").max(100),
   description: z.string().optional(),
-  url: z.string({ required_error: "La URL es obligatoria" }),
+  url: z.string().min(1, "La URL debe tener al menos 1 carácter"),
   email: z
-    .string({ required_error: "el email es obligatorio" })
+    .string()
+    .min(1, "El email es obligatorio")
     .email("Formato de correo inválido"),
   phoneNumber: z
     .string()

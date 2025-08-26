@@ -122,7 +122,7 @@ export const backendRoutes = {
   business: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}businesses`,
     getByUser: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}users/${id}/businesses`,
+      `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${id}/businesses`,
     forUser: `${process.env.NEXT_PUBLIC_API_URL}suppliers/businesses`,
     getAllLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/business`,
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/businesses`,
@@ -159,7 +159,7 @@ export const backendRoutes = {
     list: `${process.env.NEXT_PUBLIC_API_URL}stores/metrics`,
     listAll: `${process.env.NEXT_PUBLIC_API_URL}stores`,
     listByProvider: (supplierId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores`,
+      `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${supplierId}/stores`,
     listForProvider: `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores`,
     storeById: (supplierId: string | number, storeId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores/${storeId}`,

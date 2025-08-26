@@ -108,7 +108,7 @@ export default function StoresCreateModal({
         onSuccess?.();
         console.log(createdId);
         if (createdId) {
-          routerHook.push(`/provider/stores/${createdId}`);
+          routerHook.push(`/stores/${createdId}`);
           return;
         }
         reset();

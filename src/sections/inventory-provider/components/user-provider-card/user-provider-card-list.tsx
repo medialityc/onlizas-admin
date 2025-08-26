@@ -23,7 +23,7 @@ const UserProviderCardList = ({ data, searchParams }: Props) => {
       {data?.map((provider: IUserProvider, index: number) => (
         <UserProviderCard
           className="col-span-1"
-          key={`${provider?.id}-${index}`}
+          key={`${provider?.id}-${index}-provider`}
           item={provider}
         />
       ))}

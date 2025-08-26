@@ -6,9 +6,7 @@ export const inventoryProviderArraySchema = z
   .array(
     z.object({
       storeId: z.number({}),
-      warehouseIds: z
-        .array(z.number({ required_error: "Requerido" }))
-        .min(1, "Seleccione al menos un almacén del proveedor"),
+      warehouseIds: z.array(z.number({ required_error: "Requerido" })),
       warehousePhysicalIds: z.array(z.number()),
       productVariants: z.array(
         z.object({
@@ -55,9 +53,11 @@ export const inventoryProviderArraySchema = z
           discountType: z.number({ required_error: "Requerido" }).default(0), //todo definir que es
           discountValue: z.number({ required_error: "Requerido" }).default(0),
           purchaseLimit: z
-            .number({ required_error: "Requerido" })
-            .min(1, "El límite no puede ser 0")
-            .default(1),
+            .number({
+              required_error: "Requerido",
+              invalid_type_error: "Debe definir un limite válido",
+            })
+            .default(0),
           isPrime: z.boolean().default(true),
           warranty: z.object({
             isWarranty: z.boolean().default(true),
