@@ -27,9 +27,9 @@ const InventoryProviderDetailSection = ({ variantName }: Props) => {
           <div className="col-span-1" key={feat?.id}>
             <div className="sr-only">
               <RHFInputWithLabel
-                name={`${detailName}.${detailIndex}.name`}
+                name={`${detailName}.${detailIndex}.key`}
                 type="text"
-                label={feat?.featureName}
+                label={feat?.featureName || feat?.key}
                 placeholder={feat?.featureDescription ?? feat?.featureName}
                 readOnly
               />
@@ -40,8 +40,8 @@ const InventoryProviderDetailSection = ({ variantName }: Props) => {
                 type="text"
                 label={
                   <div className="flex flex-row gap-1">
-                    <p>{feat?.featureName}</p>
-                    {feat?.suggestions?.length !== 0 && (
+                    <p>{feat?.featureName || feat?.key}</p>
+                    {feat?.suggestions && feat?.suggestions?.length !== 0 && (
                       <Tippy
                         trigger="mouseenter focus"
                         content={feat?.suggestions?.join(", ")}

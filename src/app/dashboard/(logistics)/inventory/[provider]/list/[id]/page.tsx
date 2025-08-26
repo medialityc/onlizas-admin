@@ -1,13 +1,11 @@
-import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { getInventoryById } from "@/services/inventory-providers";
-import InventoryProviderEditContainer from "@/sections/inventory-provider/containers/inventory-provider-edit-container";
 
-import { getUserProviderById } from "@/services/users";
-import { InventoryStoreFormData } from "@/sections/inventory-provider/schemas/inventory-edit.schema";
+/* interface Props {
+  params: Promise<{ id: string; provider: string }>;
+} */
 
 export const metadata = {
-  title: "Editar Inventario - ZAS Express",
+  title: "Detalles de inventario - ZAS Express",
 };
 
 function InventoryFallback() {
@@ -44,24 +42,9 @@ function InventoryFallback() {
   );
 }
 
-interface EditPageProps {
-  params: Promise<{ id: string; provider: string }>;
-}
+export default async function InventoryDetailPage() {
+  /*   const res = await getCategoryById((await params).id);
+  if (!res || res.error || !res.data) notFound(); */
 
-export default async function InventoryEditPage({ params }: EditPageProps) {
-  const { id, provider } = await params;
-  const res = await getInventoryById(id);
-  const resSupplier = await getUserProviderById(Number(provider));
-
-  if (!res || res.error || !res.data) notFound();
-  if (!resSupplier || resSupplier.error || !resSupplier.data) notFound();
-
-  return (
-    <Suspense fallback={<InventoryFallback />}>
-      <InventoryProviderEditContainer
-        inventory={res.data! as unknown as InventoryStoreFormData}
-        userProvider={resSupplier?.data}
-      />
-    </Suspense>
-  );
+  return <Suspense fallback={<InventoryFallback />}>DETALLES</Suspense>;
 }

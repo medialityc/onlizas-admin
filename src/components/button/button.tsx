@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 
 type ButtonVariant =
   | "primary"
+  | "default"
   | "info"
   | "success"
   | "warning"

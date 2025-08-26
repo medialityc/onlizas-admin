@@ -5,14 +5,15 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import InventoryVariantFrom from "../../inventory-variant-from/inventory-variant-from";
 
 type Props = {
-  storeIndex: number;
+  storeIndex?: number;
+  name?: string;
 };
-const StoreVariant = ({ storeIndex }: Props) => {
+const StoreVariant = ({ storeIndex, name }: Props) => {
   const { control, watch } = useFormContext<any>();
 
   const storeName = useMemo(
-    () => `storesWarehouses.${storeIndex}.productVariants`,
-    [storeIndex]
+    () => name || `storesWarehouses.${storeIndex}.productVariants`,
+    [storeIndex, name]
   );
 
   const { append, remove, fields } = useFieldArray({
@@ -43,7 +44,7 @@ const StoreVariant = ({ storeIndex }: Props) => {
         warrantyPrice: 0,
       },
       packageDelivery: false,
-      images: []
+      images: [],
     });
   }, [append, features]);
 

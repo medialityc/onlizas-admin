@@ -35,9 +35,9 @@ export type InventoryProductItem = {
 // Tipos para Currency
 export type InventoryProvider = {
   id: number;
-  isActive: boolean
-  parentProductId: number
-  parentProductName: string
+  isActive: boolean;
+  parentProductId: number;
+  parentProductName: string;
   storeId: number;
   storeName: string;
   supplierId: number;
@@ -135,4 +135,19 @@ export async function getAllInventoryByUserProvider(
   if (!res.ok) return handleApiServerError(res);
 
   return buildApiResponseAsync<GetAllInventoryProviderResponse>(res);
+}
+
+export async function getInventoryById(
+  id: number | string
+): Promise<ApiResponse<InventoryProvider>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.inventoryProvider.getById(id),
+    method: "GET",
+    useAuth: true,
+    next: { tags: [INVENTORY_TAG_KEY, String(id)] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<InventoryProvider>(res);
 }
