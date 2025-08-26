@@ -97,6 +97,7 @@ export interface IUserResponseMe {
   photoUrl: string;
   addresses: Address[];
   businesses: Business[];
+  beneficiaries: Beneficiary[];
   supplierInfo: SuplierInfo;
 }
 

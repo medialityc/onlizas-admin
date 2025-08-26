@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PersonalInfoFormData } from "@/sections/provider-management/profile/schemas/personal-info-schema";
 import { ApiResponse } from "@/types/fetch/api";
 import showToast from "@/config/toast/toastConfig";
@@ -13,6 +13,8 @@ export function useUpdateProviderPersonalInfo(
   providerId: string | number,
   options?: UseUpdateProviderPersonalInfoOptions
 ) {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (data: PersonalInfoFormData) => {
       const response: ApiResponse<void> = await updateProviderPersonalInfo(
@@ -29,7 +31,13 @@ export function useUpdateProviderPersonalInfo(
       return response.data;
     },
     onSuccess: (data) => {
-      // Invalidar queries relacionadas
+      // Invalidar queries relacionadas con el usuario
+      queryClient.invalidateQueries({
+        queryKey: ["user", "profile", "me", providerId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["users"],
+      });
 
       showToast("Información personal actualizada correctamente", "success");
       options?.onSuccess?.(data);

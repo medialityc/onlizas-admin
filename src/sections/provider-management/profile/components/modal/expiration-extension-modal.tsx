@@ -76,7 +76,6 @@ export default function ExpirationExtensionModal({
       onClose={onClose}
       title="Extender Fecha de Expiración"
       subtitle="Solicita una extensión para la fecha de expiración de tu autorización"
-      loading={loading}
       className="max-w-2xl"
     >
       <FormProvider
@@ -214,6 +213,7 @@ export default function ExpirationExtensionModal({
           <LoaderButton
             type="submit"
             disabled={loading}
+            loading={loading}
             className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
           >
             {loading ? "Enviando..." : "📅 Solicitar Extensión"}
