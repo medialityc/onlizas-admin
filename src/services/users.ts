@@ -429,7 +429,7 @@ export async function updateProviderPersonalInfo(
   }
 
   const res = await nextAuthFetch({
-    url: backendRoutes.suppliers.update(id),
+    url: backendRoutes.users.update(id),
     method: "PUT",
     data: formData,
     useAuth: true,
