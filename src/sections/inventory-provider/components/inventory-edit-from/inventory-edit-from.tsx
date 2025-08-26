@@ -5,50 +5,39 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/button/button";
 import { useRouter } from "next/navigation";
 import LoaderButton from "@/components/loaders/loader-button";
-import { InventoryProviderFormData } from "../../schemas/inventory-provider.schema";
-import { useInventoryProviderCreateForm } from "../../hooks/use-inventory-provider-create-form";
 import { IUserProvider } from "@/types/users";
-import { Store } from "@/types/stores";
-import StoresCheck from "./stores-check/stores-check";
-import ProductSupplierSection from "./product-suppliers-section";
+import { useInventoryProviderEditForm } from "../../hooks/use-inventory-provider-edit-form";
+import InventoryHeader from "./inventory-info";
+import { InventoryStoreFormData } from "../../schemas/inventory-edit.schema";
+import InventoryEditVariantContent from "./inventory-edit-variant-content";
 
 type Props = {
-  initValue?: InventoryProviderFormData;
+  initValue?: InventoryStoreFormData;
   userProvider?: IUserProvider;
-  stores: Store[];
 };
 
-const InventoryProviderForm = ({ initValue, userProvider, stores }: Props) => {
+const InventoryEditForm = ({ initValue, userProvider }: Props) => {
   const { push } = useRouter();
   const handleCancel = useCallback(
     () => push(`/dashboard/inventory/${userProvider?.id}/list`),
     [push, userProvider?.id]
   );
 
-  const { form, isPending, onSubmit } = useInventoryProviderCreateForm(
+  const { form, isPending, onSubmit } = useInventoryProviderEditForm(
     initValue,
     handleCancel
   );
 
   return (
     <section>
+      {/* details */}
+      <InventoryHeader inventory={initValue as InventoryStoreFormData} />
       <FormProvider
         methods={form}
         onSubmit={onSubmit}
-        id="inventory-provider-form"
+        id="inventory-provider-edit-form"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-4">
-          <div className="col-span-1 lg:col-span-2">
-            <ProductSupplierSection supplierId={userProvider?.id as number} />
-          </div>
-          <div className="col-span-1 lg:col-span-2">
-            <StoresCheck
-              control={form.control}
-              stores={stores}
-              name="storesWarehouses"
-            />
-          </div>
-        </div>
+        <InventoryEditVariantContent />
       </FormProvider>
       {/* Botones de acción */}
       <div className={cn("flex gap-4 pt-6 mt-6 border-t justify-end")}>
@@ -61,16 +50,16 @@ const InventoryProviderForm = ({ initValue, userProvider, stores }: Props) => {
           Cancelar
         </Button>
         <LoaderButton
-          form="inventory-provider-form"
+          form="inventory-provider-edit-form"
           type="submit"
           loading={isPending}
           disabled={isPending}
         >
-          {"Crear Inventario"}
+          {"Editar Inventario"}
         </LoaderButton>
       </div>
     </section>
   );
 };
 
-export default InventoryProviderForm;
+export default InventoryEditForm;

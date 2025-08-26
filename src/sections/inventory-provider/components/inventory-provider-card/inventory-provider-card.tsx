@@ -10,54 +10,109 @@ import {
 import LongText from "@/components/long-text/long-text";
 import { cn } from "@/lib/utils";
 import { InventoryProvider } from "@/services/inventory-providers";
-import { PencilIcon } from "@heroicons/react/24/outline";
 import { ClipboardDocumentIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
+import { Edit, EyeIcon, Package, Store, Warehouse } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 type Props = {
   item: InventoryProvider;
   className?: string;
 };
 
-const UserProviderCard = ({ item, className }: Props) => {
+const UserProviderCard = ({ item }: Props) => {
   return (
-    <Card className={cn(className)}>
-      <CardHeader className="flex flex-row gap-2 items-start justify-between">
-        <div className="flex flex-row gap-2 items-center ">
+    <Card key={item.id} className="hover:shadow-lg transition-shadow">
+      <CardHeader>
+        <div className="flex items-start space-x-3">
           <div
             className={cn(
-              "p-3 rounded-lg",
+              "p-2 rounded-lg",
               "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
             )}
           >
             <ClipboardDocumentIcon className="h-6 w-6" />
           </div>
-          <div>
-            <Link href={`/dashboard/inventory/${item?.id}/list`}>
-              <CardTitle className="text-lg text-primary hover:underline font-bold leading-none mb-1">
-                <LongText text={`Tienda: ${item?.storeName}`} lineClamp={1} />
-              </CardTitle>
-            </Link>
-            <Badge
-              className="bg-white"
-              variant={item?.isActive ? "outline-success" : "outline-danger"}
-            >
-              {item?.isActive ? "Activo" : "Inactivo"}
-            </Badge>
+          <div className="flex-1">
+            <CardTitle className="text-lg line-clamp-1">
+              <LongText
+                text={item.parentProductName || "Producto Sin nombre"}
+                lineClamp={1}
+              />
+            </CardTitle>
+            <div className="flex flex-row gap-1 items-center">
+              <p>Proveedor:</p>
+              <Badge variant="outline-primary" className="mt-1">
+                {item.supplierName}
+              </Badge>
+            </div>
           </div>
+          <Badge variant={item.isActive ? "info" : "danger"}>
+            {item.isActive ? "Activo" : "Inactivo"}
+          </Badge>
         </div>
       </CardHeader>
-      <CardContent>
-        {/* actions */}
-        <div className="flex flex-1 w-full mt-4 gap-4">
-          <Link href={`/dashboard/inventory/${item?.id}/list`}>
-            <Button className="w-full" variant="info">
-              Detalles
+
+      <CardContent className="space-y-2">
+        <div className="flex flex-row items-center justify-between  gap-1">
+          <p className="!text-xl text-black">Total:</p>
+          <p className="text-xl font-bold text-green-600 ">
+            ${item.totalPrice}
+          </p>
+        </div>
+
+        <div className="space-y-2 text-sm text-gray-600">
+          <div className="flex items-center">
+            <Store className="h-4 w-4 mr-2" />
+            {item?.storeName}
+          </div>
+          <div className="flex items-center">
+            <Warehouse className="h-4 w-4 mr-2" />
+            {item?.warehouseName}
+          </div>
+          <div className="flex items-center">
+            <Package className="h-4 w-4 mr-2" />
+            {item.totalQuantity} unidades totales
+          </div>
+        </div>
+
+        <Separator />
+
+        <div className="space-y-2">
+          <div className="text-sm font-medium">Variantes:</div>
+          {item.products.slice(0, 2).map((variant, index: number) => (
+            <div key={variant.id} className="flex justify-between text-sm">
+              <span className="text-gray-600">
+                {variant.productName || `Variant ${index + 1}`}
+              </span>
+              <span className="font-medium text-green-600">
+                $ {variant.price}
+              </span>
+            </div>
+          ))}
+          {item.products.length > 2 && (
+            <div className="text-sm text-blue-600">
+              +{item.products.length - 2} variantes más
+            </div>
+          )}
+        </div>
+
+        <div className="flex space-x-2 pt-3 border-t">
+          <Link
+            className="flex-1"
+            href={`/dashboard/inventory/${item?.supplierId}/list/${item?.parentProductId}`}
+          >
+            <Button variant="primary" outline size="sm" className="w-full ">
+              <EyeIcon className="h-4 w-4 mr-1" />
+              Ver
             </Button>
           </Link>
-          <Link href={`/dashboard/inventory/${item?.id}/list`}>
-            <Button className="w-full" variant="secondary">
-              <PencilIcon className="w-4 h-4" />
+          <Link
+            className="flex-1"
+            href={`/dashboard/inventory/${item?.supplierId}/list/${item?.parentProductId}/edit`}
+          >
+            <Button variant="secondary" outline size="sm" className="  w-full ">
+              <Edit className="h-4 w-4 mr-1" />
               Editar
             </Button>
           </Link>
