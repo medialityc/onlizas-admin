@@ -197,5 +197,8 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/${id}`,
     listByUserProvider: (supplierId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/list/${supplierId}`,
+
+    getById: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/${id}`,
   },
 };

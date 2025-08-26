@@ -24,6 +24,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
   }, [variantIndex, remove]);
 
   const isWarranty = watch(`${variantName}.warranty.isWarranty`);
+  const isLimit = watch(`${variantName}.isLimit`);
 
   return (
     <div className="flex flex-col gap-2 mt-4 p-4 border dark:border-gray-600 border-dashed rounded-lg bg-slate-50 dark:bg-slate-900">
@@ -94,16 +95,32 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
         <p className="text-sm font-bold">Restricciones y Límites</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <RHFInputWithLabel
-            name={`${variantName}.purchaseLimit`}
-            label="Límite de compras por usuario"
-            type="number"
-            placeholder="0"
-            min="0"
-            step="0"
-          />
-
           <RHFSwitch name={`${variantName}.isPrime`} label="Entrega express" />
+        </div>
+      </div>
+
+      <Separator className="my-2" />
+
+      {/* Sección garantía */}
+      <div className="flex flex-col gap-2">
+        <p className="text-sm font-bold">Restricciones y Límites</p>
+
+        <RHFCheckbox
+          name={`${variantName}.isLimit`}
+          label="Tiene límite de compras?"
+          className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
+        />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {isLimit && (
+            <RHFInputWithLabel
+              name={`${variantName}.purchaseLimit`}
+              label="Límite de compras por usuario"
+              type="number"
+              placeholder="0"
+              min="0"
+              step="0"
+            />
+          )}
         </div>
       </div>
 

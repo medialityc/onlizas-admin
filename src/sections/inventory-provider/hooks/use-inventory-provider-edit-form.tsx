@@ -3,32 +3,36 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import {
-  InventoryProviderFormData,
-  inventoryProviderSchema,
-} from "../schemas/inventory-provider.schema";
-import { setInventoryProviderFormData } from "../constants/inventory-provider-data";
-import { createInventoryProvider } from "@/services/inventory-providers";
 
-const initValues: InventoryProviderFormData = {
-  storesWarehouses: [],
-  productId: 0,
-  supplierId: 0,
-  categoryFeatures: [],
+import { createInventoryProvider } from "@/services/inventory-providers";
+import { setInventoryEditFormData } from "../constants/inventory-edit-data";
+import {
+  InventoryStoreFormData,
+  InventoryStoreSchema,
+} from "../schemas/inventory-edit.schema";
+
+const initValue: InventoryStoreFormData = {
+  storeId: 0,
+  warehouseId: 0,
+  products: [],
+  parentProductName: "",
+  warehouseName: "",
+  supplierName: "",
+  storeName: "",
 };
 
-export const useInventoryProviderCreateForm = (
-  defaultValues: InventoryProviderFormData = initValues,
+export const useInventoryProviderEditForm = (
+  defaultValues: InventoryStoreFormData = initValue,
   onRedirect: () => void
 ) => {
   const form = useForm({
     defaultValues,
-    resolver: zodResolver(inventoryProviderSchema),
+    resolver: zodResolver(InventoryStoreSchema),
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (payload: InventoryProviderFormData) => {
-      const fromData = setInventoryProviderFormData(payload);
+    mutationFn: async (payload: InventoryStoreFormData) => {
+      const fromData = setInventoryEditFormData(payload);
       const res = await createInventoryProvider(fromData);
 
       if (res.error) {
@@ -38,7 +42,7 @@ export const useInventoryProviderCreateForm = (
       return;
     },
     onSuccess() {
-      toast.success(`Se creó el inventario correctamente`);
+      toast.success(`Se editó el inventario correctamente`);
       onRedirect?.();
     },
     onError: async (error: any) => {
