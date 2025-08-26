@@ -7,7 +7,7 @@ export const setInventoryProviderFormData = async (
 
   formData.append("productId", String(product.productId));
   formData.append("supplierId", String(product.supplierId));
-  formData.append("storesWarehouses", String(product.storesWarehouses));
+  formData.append("storesWarehouses", JSON.stringify(product.storesWarehouses));
 
   return formData;
 };
