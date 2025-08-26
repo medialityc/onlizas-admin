@@ -57,7 +57,6 @@ export function PersonalInfoTab({ user, documents }: PersonalInfoTabProps) {
     removeAddress,
     selectedAddress,
     updateProviderMutation,
-    documentsPromise,
   } = usePersonalInfoTab({ user });
 
   const {
