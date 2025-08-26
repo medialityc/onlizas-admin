@@ -59,7 +59,24 @@ export async function createBusiness(
     method: "POST",
     data,
     useAuth: true,
-    // contentType: "multipart/form-data",
+    contentType: "multipart/form-data",
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("categories");
+
+  return buildApiResponseAsync<ApiStatusResponse>(res);
+}
+export async function createBusinessBySupplier(
+  data: FormData
+): Promise<ApiResponse<ApiStatusResponse>> {
+  console.log("Creating business with data:");
+  const res = await nextAuthFetch({
+    url: backendRoutes.business.createBySupplier,
+    method: "POST",
+    data,
+    useAuth: true,
+    contentType: "multipart/form-data",
   });
 
   if (!res.ok) return handleApiServerError(res);

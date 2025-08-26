@@ -14,16 +14,9 @@ import LoaderButton from "@/components/loaders/loader-button";
 import SimpleModal from "@/components/modal/modal";
 import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import {
-  getAllBusiness,
-  updateBusinessData,
-  createBusiness,
-  updateBusinessProviderData,
-} from "@/services/business";
-import { toast } from "react-toastify";
-import { useQueryClient } from "@tanstack/react-query";
-import { isValidUrl, urlToFile } from "@/utils/format";
+import { getAllBusiness } from "@/services/business";
 import { FormProvider, RHFSelectWithLabel } from "@/components/react-hook-form";
+import { useProviderBusinessMutation } from "@/sections/provider-management/profile/hooks/use-provider-business-mutation";
 
 interface ProviderBusinessModalProps {
   open: boolean;
@@ -44,7 +37,15 @@ export default function ProviderBusinessModal({
 }: ProviderBusinessModalProps) {
   const [error, setError] = useState<string | null>(null);
   const [loadingImage, setLoadingImage] = useState(false);
-  const queryClient = useQueryClient();
+
+  // Hook personalizado para manejar la mutación
+  const { mutate: submitBusiness, isLoading: isSubmitting } =
+    useProviderBusinessMutation({
+      business,
+      userId,
+      onSuccess,
+      // onClose: handleClose,
+    });
   console.log(business);
 
   const methods = useForm<CreateSchemaBusiness>({
@@ -66,12 +67,7 @@ export default function ProviderBusinessModal({
     },
   });
 
-  const {
-    reset,
-    handleSubmit,
-    formState: { isSubmitting },
-    setValue,
-  } = methods;
+  const { reset, handleSubmit, setValue } = methods;
 
   useEffect(() => {
     const loadImagesAsFiles = async () => {
@@ -118,127 +114,9 @@ export default function ProviderBusinessModal({
     onClose();
   };
 
-  const onSubmit = async (data: CreateSchemaBusiness) => {
+  const onSubmit = (data: CreateSchemaBusiness) => {
     setError(null);
-
-    // Validación específica para provider: si no hay userId, mostrar error
-    if (!userId && !business) {
-      setError("No se puede crear un negocio sin asociar a un usuario");
-      toast.error("Error: Usuario no identificado");
-      return;
-    }
-
-    try {
-      let response;
-      const formData = new FormData();
-      console.log(data);
-
-      // Mapear campos base
-      formData.append("name", data.name);
-      formData.append("code", data.code);
-      formData.append("description", data.description || "");
-      formData.append("hblInitial", data.hblInitial);
-      formData.append("address", data.address || "");
-      formData.append("email", data.email || "");
-      formData.append("phone", data.phone || "");
-      formData.append("isPrimary", data.isPrimary ? "true" : "false");
-      formData.append("fixedRate", data.fixedRate?.toString() || "0");
-      formData.append("invoiceText", data.invoiceText || "");
-      formData.append("locationId", data.locationId.toString());
-      console.log(data.parentId);
-
-      if (data.parentId) {
-        formData.append("parentId", data.parentId.toString());
-      }
-
-      // Manejo de imágenes
-      if (data.photoObjectCodes && data.photoObjectCodes.length > 0) {
-        await Promise.all(
-          data.photoObjectCodes.map(async (photo, index) => {
-            if (typeof photo === "string" && isValidUrl(photo)) {
-              try {
-                const imageFile = await urlToFile(photo);
-                formData.append(`photoObjectCodes[${index}]`, imageFile);
-              } catch {
-                toast.error(`Error al procesar la imagen desde URL (${photo})`);
-              }
-            } else if (photo instanceof File) {
-              formData.append(`photoObjectCodes[${index}]`, photo);
-            }
-          })
-        );
-      }
-
-      if (business) {
-        // Editando business existente
-        response = await updateBusinessProviderData(business.id, formData);
-
-        if (!response.error) {
-          // Invalidar queries relacionadas con business y user específico
-          queryClient.invalidateQueries({ queryKey: ["businesses"] });
-          if (userId) {
-            queryClient.invalidateQueries({
-              queryKey: ["user", "businesses", userId],
-            });
-            queryClient.invalidateQueries({
-              queryKey: ["business", "user", userId],
-            });
-          }
-          /* queryClient.invalidateQueries({
-            queryKey: ["user", "profile", "me"],
-          }); */
-          console.log(data.name);
-
-          onSuccess?.({ name: data.name, code: data.code } as Business);
-          toast.success("Negocio editado exitosamente");
-          handleClose();
-        } else {
-          const errorMsg =
-            response.status === 409
-              ? "Ya existe un negocio con ese código"
-              : response.message || "No se pudo procesar este negocio";
-          setError(errorMsg);
-          toast.error(errorMsg);
-        }
-      } else {
-        // Creando nuevo business
-        response = await createBusiness(formData);
-
-        if (!response.error) {
-          // Invalidar queries relacionadas específicamente para provider context
-          queryClient.invalidateQueries({ queryKey: ["businesses"] });
-          if (userId) {
-            queryClient.invalidateQueries({
-              queryKey: ["user", "businesses", userId],
-            });
-            queryClient.invalidateQueries({
-              queryKey: ["business", "user", userId],
-            });
-          }
-          queryClient.invalidateQueries({
-            queryKey: ["user", "profile", "me"],
-          });
-
-          // Para nuevos business, response.data es ApiStatusResponse, no Business
-          // Llamamos onSuccess sin data específica para forzar refetch
-          onSuccess?.();
-          toast.success("Negocio creado exitosamente");
-          handleClose();
-        } else {
-          const errorMsg =
-            response.status === 409
-              ? "Ya existe un negocio con ese código"
-              : response.message || "No se pudo crear este negocio";
-          setError(errorMsg);
-          toast.error(errorMsg);
-        }
-      }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Error al procesar el negocio";
-      setError(errorMessage);
-      toast.error(errorMessage);
-    }
+    submitBusiness(data);
   };
 
   if (!open) return null;
