@@ -131,7 +131,7 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
                           />
                           <button
                             type="button"
-                            className="p-1.5 rounded-full text-sky-600 hover:bg-sky-600/10 transition mt-7"
+                            className="p-1.5 rounded-full text-sky-600 hover:bg-sky-600/10 transition"
                             onClick={() => {
                               if (b?.id) {
                                 openModal<number>("editBusiness", b.id);
@@ -142,7 +142,7 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
                           </button>
                           <button
                             type="button"
-                            className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition mt-7"
+                            className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
                             onClick={() => removeBusiness(index)}
                           >
                             <TrashIcon className="h-4 w-4" />
@@ -200,7 +200,7 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
                         />
                         <button
                           type="button"
-                          className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition mt-7"
+                          className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition self-center"
                           onClick={() => removeBeneficiary(index)}
                         >
                           <TrashIcon className="h-4 w-4" />
