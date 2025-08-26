@@ -13,6 +13,8 @@ import { SearchParams } from "@/types/fetch/request";
 import { useUserProfile } from "@/hooks/react-query/use-user-profile";
 import { ProfileSkeleton } from "@/sections/provider-management/profile/components/profile-skeleton";
 import { useAuth } from "@/auth-sso/hooks/use-auth";
+import { useSupplierApprovalProcess } from "../hooks/use-supplier-approval-process";
+import { EnhancedDocument } from "@/types/suppliers";
 
 interface ProfileContainerProps {
   query: SearchParams;
@@ -20,7 +22,8 @@ interface ProfileContainerProps {
 
 export default function ProfileContainer({ query }: ProfileContainerProps) {
   const { data: user, isLoading, error } = useUserProfile();
-
+  const { data: approvalProcess, isLoading: isLoadingApproval } =
+    useSupplierApprovalProcess();
   if (isLoading) {
     return <ProfileSkeleton />;
   }
@@ -41,7 +44,15 @@ export default function ProfileContainer({ query }: ProfileContainerProps) {
             {
               label: "Información General",
               icon: <InformationCircleIcon className="h-5 w-5" />,
-              content: <PersonalInfoTab user={user ? user : null} />,
+              content: (
+                <PersonalInfoTab
+                  user={user ? user : null}
+                  documents={[
+                    ...(approvalProcess?.approvedDocuments || []),
+                    ...(approvalProcess?.pendingDocuments || []),
+                  ]}
+                />
+              ),
             },
 
             {
@@ -52,7 +63,13 @@ export default function ProfileContainer({ query }: ProfileContainerProps) {
             {
               label: "Solicitudes de Aprobación",
               icon: <ClipboardDocumentIcon className="h-5 w-5" />,
-              content: <VendorRequestsTab user={user ? user : null} />,
+              content: (
+                <VendorRequestsTab
+                  user={user ? user : null}
+                  approvalProcess={approvalProcess ? approvalProcess : null}
+                  isLoadingApproval={isLoadingApproval}
+                />
+              ),
             },
           ]}
         />
