@@ -44,7 +44,7 @@ export default function InventoryProviderCardListContainer({
         <div className="mb-5 flex items-center justify-start gap-2">
           <Button
             onClick={handleCallBack}
-            className="bg-transparent hover:bg-gray-100 shadow-none text-black border-none"
+            className="bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 shadow-none text-black dark:text-white border-none"
           >
             <ArrowLeftIcon className="w-5 h-5" /> Volver
           </Button>

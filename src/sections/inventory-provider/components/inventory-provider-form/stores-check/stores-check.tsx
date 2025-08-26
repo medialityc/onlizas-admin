@@ -62,8 +62,6 @@ export default function StoresCheck({
     return fields.some((field: any) => field.storeId === storeId);
   };
 
-  console.log(stores, 'stores')
-
   if (!stores || stores?.length === 0) {
     return (
       <div className="flex flex-col p-4 rounded-lg bg-gray-50 justify-center items-center">
@@ -89,7 +87,7 @@ export default function StoresCheck({
 
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="text-lg font-bold mb-2">Selecciona las tiendas</h2>
+      <h2 className="text-lg font-bold mb-2 dark:text-white">Selecciona las tiendas</h2>
 
       <div className="grid xl:grid-cols-6 md:grid-cols-4 grid-cols-2 gap-2 md:gap-4">
         {stores?.map((item) => {
@@ -100,7 +98,7 @@ export default function StoresCheck({
               key={`${id}-${item.id}`}
               className={cn(
                 "relative flex cursor-pointer flex-col gap-2 rounded-md border px-3 py-1 shadow-sm outline-none transition-colors",
-                "hover:bg-gray-100  ",
+                "hover:bg-gray-100 dark:hover:bg-gray-700 ",
                 isChecked
                   ? "border-primary/50 bg-primary/5"
                   : "border-input hover:border-primary/30"

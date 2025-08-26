@@ -37,8 +37,8 @@ function ProductSupplierSection({ supplierId }: Props) {
   }, [data, setValue]);
 
   return (
-    <div className="bg-white rounded-lg border p-6 h-full">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+    <div className="  rounded-lg border p-6 h-full ">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-50 mb-4 flex items-center  ">
         <ShoppingBagIcon className="mr-2 w-5 h-5" /> Productos del proveedor
       </h3>
       <div className="space-y-6">
