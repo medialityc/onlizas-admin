@@ -137,7 +137,9 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/businesses/${id}`,
     delete: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}business/${id}`,
-    getAllByUser: `${process.env.NEXT_PUBLIC_API_URL}suppliers/businesses`,
+    deleteBySupplier: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/businesses/${id}`,
+    getAllByUser: `${process.env.NEXT_PUBLIC_API_URL}businesses/mine`,
   },
   suppliers: {
     create: `${process.env.NEXT_PUBLIC_API_URL}suppliers`, // POST
