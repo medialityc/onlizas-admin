@@ -192,7 +192,7 @@ export function WarehouseList({
             </div>
           </div>
         ) : (
-          <div className="text-center py-12">
+          <div className="text-center py-12 flex flex-col justify-center">
             <div className="text-gray-500 dark:text-gray-400 mb-4">
               {searchQuery
                 ? "No se encontraron almacenes que coincidan con tu búsqueda"
