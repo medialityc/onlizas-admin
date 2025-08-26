@@ -28,16 +28,16 @@ import FormProvider from "@/components/react-hook-form/form-provider";
 import AdressField from "@/sections/users/edit/components/adress-field";
 import { AddressModal } from "@/sections/users/edit/components/adress-modal";
 import { EmptyState } from "@/sections/users/edit/components/empty-state-component";
-import { urlToFile } from "@/lib/utils";
 import { usePersonalInfoTab } from "../../hooks/use-personal-info-tab";
-import { getUserDocuments } from "@/services/users";
 import { ProviderDocumentsList } from "../../documents/list/provider-documents-list";
+import { EnhancedDocument } from "@/types/suppliers";
 
 interface PersonalInfoTabProps {
   user: UserResponseMe | null;
+  documents: EnhancedDocument[];
 }
 
-export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
+export function PersonalInfoTab({ user, documents }: PersonalInfoTabProps) {
   const {
     addressFields,
     appendEmail,
@@ -410,7 +410,7 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
                   fallback={<div className="py-4">Cargando documentos...</div>}
                 >
                   <ProviderDocumentsList
-                    documentsPromise={documentsPromise}
+                    documents={documents}
                     userId={user?.id ?? 0}
                   />
                 </Suspense>
@@ -419,7 +419,6 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
           </CardContent>
         </Card>
       </FormProvider>
-      {/* Modal para crear/editar direcciones - FUERA del FormProvider */}
       <AddressModal
         key={
           createAddressModal.open

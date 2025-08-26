@@ -12,17 +12,15 @@ import { DataTableColumn } from "mantine-datatable";
 import { useRouter, useSearchParams } from "next/navigation";
 import { use, useCallback, useMemo, useState } from "react";
 import { DocumentModal } from "../edit/document-modal";
+import { EnhancedDocument } from "@/types/suppliers";
+import Link from "next/link";
 
 interface Props {
   userId: number;
-  documentsPromise: Promise<ApiResponse<IDocument[]>>;
+  documents: EnhancedDocument[];
 }
 
-export function ProviderDocumentsList({ documentsPromise, userId }: Props) {
-  const response = use(documentsPromise);
-  useFetchError(response);
-  const data = useMemo(() => response.data || [], [response.data]);
-
+export function ProviderDocumentsList({ documents, userId }: Props) {
   const router = useRouter();
 
   // Modal state
@@ -35,83 +33,62 @@ export function ProviderDocumentsList({ documentsPromise, userId }: Props) {
     setModalOpen(false);
     setSelectedDocument(undefined);
   }, []);
-  const handleCreate = useCallback(() => {
-    setModalOpen(true);
-    setSelectedDocument(undefined);
-  }, []);
 
   const handleModalSuccess = useCallback(() => {
     // Refresh the page to show updated data
     router.refresh();
   }, [router]);
 
-  const handleDownload = useCallback(
-    async (doc: IDocument) => {
-      try {
-        const response = await downloadUserDocument(userId, doc.id);
-        if (response.error || !response.data) {
-          showToast(
-            "Error al descargar el documento. Intente nuevamente.",
-            "error"
-          );
-        } else {
-          const link = document.createElement("a");
-          link.href = response.data;
-          link.download = doc.name || "documento";
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-
-          showToast("Comenzando descarga", "success");
-        }
-      } catch (error) {
-        console.error(error);
-        showToast(
-          "Error al descargar el documento. Intente nuevamente.",
-          "error"
-        );
-      }
-    },
-    [userId]
-  );
-
-  const columns = useMemo<DataTableColumn<IDocument>[]>(
+  const columns = useMemo<DataTableColumn<EnhancedDocument>[]>(
     () => [
       {
         accessor: "name",
         title: "Nombre",
         sortable: true,
         render: (document) => (
-          <div className="font-medium">{document.name}</div>
+          <div className="font-medium">{document.fileName}</div>
         ),
       },
       {
-        accessor: "description",
-        title: "Descripción",
+        accessor: "Razón de rechazo",
+        title: "Razón de rechazo",
         sortable: true,
         render: (document) => (
           <p className="text-sm text-gray-600 dark:text-gray-300 truncate max-w-[200px] block">
-            {document.description || "Sin descripción"}
+            {document.rejectionReason || "En revisión"}
           </p>
         ),
       },
       {
-        accessor: "objectCode",
-        title: "Código de Objeto",
+        accessor: "Estado de Aprobación",
+        title: "Estado de Aprobación",
         sortable: true,
         render: (document) => (
-          <div className="font-mono text-sm">{document.objectCode}</div>
+          <div className="font-mono text-sm">
+            {document.beApproved ? "Aprobado" : "No Aprobado"}
+          </div>
+        ),
+      },
+      {
+        accessor: "Contenido",
+        title: "Contenido",
+        sortable: true,
+        render: (document) => (
+          <Link
+            className="font-mono text-sm hover:text-blue-400"
+            href={document.content}
+            target="_blank"
+          >
+            {document.content ? "Ver Documento" : "No disponible"}
+          </Link>
         ),
       },
     ],
-    [handleDownload]
+    []
   );
 
   return (
     <>
-      {response.status == 401 && <SessionExpiredAlert />}
       <div className="panel">
         <div className="mb-5 flex items-center justify-between">
           <div>
@@ -124,7 +101,7 @@ export function ProviderDocumentsList({ documentsPromise, userId }: Props) {
           </div>
         </div>
         <DataGrid
-          simpleData={data}
+          simpleData={documents}
           columns={columns}
           enablePagination={false}
           enableSearch={false}

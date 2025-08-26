@@ -8,9 +8,13 @@ export const emailSchema = z.object({
 });
 
 export const phoneSchema = z.object({
-  countryId: z.number().int().positive("Seleccione un país"),
-  number: z.string().min(7, "Teléfono inválido").max(20, "Teléfono inválido"),
-  isVerified: z.boolean(),
+  countryId: z.number().int().optional(),
+  number: z
+    .string()
+    .min(7, "Teléfono inválido")
+    .max(20, "Teléfono inválido")
+    .optional(),
+  isVerified: z.boolean().optional(),
 });
 
 export const personalInfoSchema = z.object({
