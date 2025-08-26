@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/cards/card";
+import { Card, CardContent } from "@/components/cards/card";
 import MetricStatCard from "../../components/metric-stat-card";
 import { EyeIcon, TvIcon, TrashIcon, PencilSquareIcon, PlusIcon } from "@heroicons/react/24/outline";
 import BannerCreateModal from "./banner-create-modal";
@@ -10,22 +10,62 @@ import { BannerItem, mockBanners } from "./banners-mock";
 
 export default function BannersTab() {
   const { register, setValue, getValues } = useFormContext();
-  // Preferir datos existentes del formulario si están presentes; si no, inicializar con store/mock
-  const initial = (getValues("banners") as any[])?.length
-    ? (getValues("banners") as any[]).map((b: any, idx) => ({
-        id: idx + 1,
-        title: b.title,
-        url: b.urlDestinity ?? b.url ?? "",
-        position: b.position ?? "hero",
-        startDate: b.initDate ?? null,
-        endDate: b.endDate ?? null,
-        image: b.image ?? null,
-        isActive: true,
-      }))
-    : mockBanners;
+
+  // Position mapping helpers
+  const POSITION_LABELS: Record<number, string> = {
+    1: "Hero (Principal)",
+    2: "Sidebar", 
+    3: "Slideshow",
+  };
+
+  const normalizePosition = (pos: unknown): number => {
+    if (typeof pos === "number" && Number.isFinite(pos)) return pos;
+    if (typeof pos === "string") {
+      // Try parsing as number first
+      const num = parseInt(pos, 10);
+      if (!Number.isNaN(num) && Number.isFinite(num)) return num;
+      
+      // Map string enums to numbers
+      const normalized = pos.toLowerCase().trim();
+      if (normalized === "hero" || normalized === "1") return 1;
+      if (normalized === "sidebar" || normalized === "2") return 2; 
+      if (normalized === "slideshow" || normalized === "3") return 3;
+    }
+    return 1; // Default to Hero if can't parse
+  };
+
+  const getPositionLabel = (pos: number): string => {
+    return POSITION_LABELS[pos] || `Posición ${pos}`;
+  };
+
+  // Tipar correctamente los banners del backend
+  interface BackendBanner {
+    id?: number;
+    title: string;
+    urlDestinity: string;
+    position: string | number;
+    initDate: string;
+    endDate: string;
+    image: string;
+  }
+
+  // Solo usar datos del formulario (backend) o array vacío, NO usar mock
+  const backendBanners = getValues("banners") as BackendBanner[] | undefined;
+  const initial = backendBanners?.length
+    ? backendBanners.map((b, idx) => ({
+      id: typeof b.id === "number" ? b.id : idx + 1,
+      title: b.title,
+      urlDestinity: b.urlDestinity ?? "",
+      position: normalizePosition(b.position),
+      startDate: b.initDate ?? null,
+      endDate: b.endDate ?? null,
+      image: b.image ?? null,
+      isActive: true,
+    }))
+    : []; // Array vacío en lugar de mockBanners
   const [items, setItems] = useState<BannerItem[]>(initial);
   const [open, setOpen] = useState(false);
-  const [source] = useState<string>((getValues("banners") as any[])?.length ? "form" : "mock");
+  const [source] = useState<string>(backendBanners?.length ? "backend" : "empty");
 
   // Register virtual field under appearance to sync into global form
   useEffect(() => {
@@ -33,19 +73,18 @@ export default function BannersTab() {
   }, [register]);
 
   useEffect(() => {
-    // Map to backend contract keys
-  const payload = items.map((b) => ({
-      title: b.title,
-  urlDestinity: b.url || "",
-  position: b.position || "",
-  initDate: b.startDate || "",
-  endDate: b.endDate || "",
-  image: typeof b.image === "string" ? b.image : b.image ? (b.image as File).name : "",
+    // Construir payload exactamente como lo espera el backend
+    const payload = items.map((b) => ({
+      id: b.id, // ID requerido para el backend
+      title: b.title || "",
+      urlDestinity: b.urlDestinity || "",
+      position: Number.isFinite(b.position) ? Number(b.position) : 1,
+      initDate: b.startDate || "",
+      endDate: b.endDate || "",
+      image: b.image instanceof File ? b.image.name : (b.image || "")
     }));
-  setValue("banners", payload, { shouldDirty: true });
-  }, [items, setValue]);
-
-  const metrics = useMemo(() => {
+    setValue("banners", payload, { shouldDirty: true });
+  }, [items, setValue]);  const metrics = useMemo(() => {
     const total = items.length;
     const active = items.filter((x) => x.isActive).length;
     const positions = new Set(items.map((x) => x.position)).size;
@@ -54,8 +93,8 @@ export default function BannersTab() {
 
   return (
     <div className="space-y-4">
-  {/* Indicador simple de fuente de datos para debugging */}
-  <div className="text-xs text-gray-500">Fuente: {source === "form" ? "Formulario" : "Mock"}</div>
+      {/* Indicador simple de fuente de datos para debugging */}
+      
       {/* Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <MetricStatCard label="Total Banners" value={metrics.total} icon={<PlusIcon className="text-indigo-600" />} />
@@ -63,12 +102,18 @@ export default function BannersTab() {
         <MetricStatCard label="Posiciones" value={metrics.positions} icon={<TvIcon className="text-violet-600" />} />
       </div>
 
-  <Header onNew={() => setOpen(true)} />
+      <Header onNew={() => setOpen(true)} />
 
       {/* List */}
       <div className="space-y-3">
         {items.map((b) => (
-          <BannerRow key={b.id} b={b} onToggle={(id) => setItems((prev) => prev.map((x) => (x.id === id ? { ...x, isActive: !x.isActive } : x)))} onDelete={(id) => setItems((prev) => prev.filter((x) => x.id !== id))} />
+          <BannerRow 
+            key={b.id} 
+            b={b} 
+            positionLabel={getPositionLabel(Number(b.position))}
+            onToggle={(id) => setItems((prev) => prev.map((x) => (x.id === id ? { ...x, isActive: !x.isActive } : x)))} 
+            onDelete={(id) => setItems((prev) => prev.filter((x) => x.id !== id))} 
+          />
         ))}
       </div>
 
@@ -81,10 +126,10 @@ export default function BannersTab() {
             {
               id: Math.max(0, ...prev.map((x) => x.id)) + 1,
               title: banner.title,
-              url: banner.url,
-              position: banner.position,
-              startDate: toISO(banner.startDate),
-              endDate: toISO(banner.endDate),
+              urlDestinity: banner.urlDestinity,
+              position: Number(banner.position),
+              startDate: toISO(banner.initDate) as any,
+              endDate: toISO(banner.endDate) as any,
               image: banner.image ?? null,
               isActive: banner.isActive ?? true,
             },
@@ -116,7 +161,12 @@ function Header({ onNew }: { onNew: () => void }) {
   );
 }
 
-function BannerRow({ b, onToggle, onDelete }: { b: BannerItem; onToggle: (id: number) => void; onDelete: (id: number) => void }) {
+function BannerRow({ b, positionLabel, onToggle, onDelete }: { 
+  b: BannerItem; 
+  positionLabel: string;
+  onToggle: (id: number) => void; 
+  onDelete: (id: number) => void; 
+}) {
   return (
     <Card>
       <CardContent className="py-3">
@@ -132,10 +182,10 @@ function BannerRow({ b, onToggle, onDelete }: { b: BannerItem; onToggle: (id: nu
                   </span>
                 )}
                 <span className="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700 ring-1 ring-inset ring-gray-600/10">
-                  {b.position}
+                  {positionLabel}
                 </span>
               </div>
-              <div className="text-xs text-gray-500">{b.url}</div>
+              <div className="text-xs text-gray-500">{b.urlDestinity}</div>
               {(b.startDate || b.endDate) && (
                 <div className="text-xs text-gray-400 mt-0.5">
                   {b.startDate || ""} {b.endDate ? `- ${b.endDate}` : ""}
