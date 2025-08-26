@@ -99,7 +99,7 @@ export default function StoresCheck({
             <div
               key={`${id}-${item.id}`}
               className={cn(
-                "relative flex cursor-pointer flex-col gap-2 rounded-md border px-3 py-1 shadow-sm outline-none transition-colors",
+                "relative flex cursor-pointer flex-col gap-2 rounded-md border dark:border-gray-800 px-3 py-1 shadow-sm outline-none transition-colors",
                 "hover:bg-gray-100 dark:hover:bg-gray-700 ",
                 isChecked
                   ? "border-primary/50 bg-primary/5"

@@ -9,6 +9,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import React, { useCallback } from "react";
 import { UseFieldArrayRemove, useFormContext } from "react-hook-form";
 import InventoryProviderDetailSection from "../inventory-provider-detail-section/inventory-provider-detail-section";
+import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
 
 type Props = {
   variantIndex: number;
@@ -39,7 +40,13 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
 
       {/* details section */}
       <InventoryProviderDetailSection variantName={variantName} />
+      <Separator className="my-2" />
 
+      {/* Imágenes */}
+      <RHFMultiImageUpload
+        name={`${variantName}.images`}
+        label="Images de producto"
+      />
       <Separator className="my-2" />
 
       {/* inventory info */}
