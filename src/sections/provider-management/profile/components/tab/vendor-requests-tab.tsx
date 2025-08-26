@@ -123,7 +123,7 @@ export default function VendorRequestsTab({
       console.log(formData);
 
       // Use the approval process ID from the current data, or default to 0 if not available
-      return extendApprovalProcess(user?.id || 0, formData);
+      return extendApprovalProcess(user?.approvalProcessId || 0, formData);
     },
     onSuccess: () => {
       showToast("Solicitud enviada exitosamente", "success");
