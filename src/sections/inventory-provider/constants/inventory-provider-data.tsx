@@ -1,52 +1,57 @@
-import { InventoryProviderFormData } from "@/sections/inventory-provider/schemas/inventory-provider.schema";
+import { InventoryProviderFormData } from "../schemas/inventory-provider.schema";
 
-export const setInventoryProviderFormData = async (
+export const setInventoryProviderFormData = (
   product: InventoryProviderFormData
-): Promise<FormData> => {
+): FormData => {
   const formData = new FormData();
 
-  // Si tienes imágenes como FileList o array de File para cada variant:
-  product.storesWarehouses.forEach((sw: any, i) => {
-    formData.append(`StoresWarehouses[${i}].StoreId`, sw.storeId);
+  product.storesWarehouses.forEach((sw: any, i: number) => {
+    formData.append(`storesWarehouses[${i}].storeId`, String(sw.storeId));
 
-    sw.warehouseIds.forEach((wid: any, widIdx: number) => {
-      formData.append(`StoresWarehouses[${i}].WarehouseIds[${widIdx}]`, wid);
+    (sw.warehouseIds || []).forEach((wid: any, widIdx: number) => {
+      formData.append(
+        `storesWarehouses[${i}].warehouseIds[${widIdx}]`,
+        String(wid)
+      );
     });
 
-    sw.productVariants.forEach((variant: any, vi: number) => {
+    (sw.productVariants || []).forEach((variant: any, vi: number) => {
       Object.entries(variant).forEach(([key, value]) => {
-        if (key === "images" && Array.isArray(value)) {
-          value.forEach((file) => {
+        if (key.toLowerCase() === "images" && Array.isArray(value)) {
+          // archivos: repetir la misma key por cada File
+          value.forEach((file: File) => {
             formData.append(
-              `StoresWarehouses[${i}].ProductVariants[${vi}].Images`,
+              `storesWarehouses[${i}].productVariants[${vi}].images`,
               file
             );
           });
         } else if (
-          typeof value === "object" &&
           value !== null &&
+          typeof value === "object" &&
           !(value instanceof File)
         ) {
-          // Para Details y Warranty (que son objetos)
+          // objeto anidado: distinguir entre propiedades normales y "diccionario-like"
+          // Para Details/Warranty queremos Details[clave]
           Object.entries(value).forEach(([subKey, subVal]) => {
             formData.append(
-              `StoresWarehouses[${i}].ProductVariants[${vi}].${key}.${subKey}`,
-              subVal
+              `storesWarehouses[${i}].productVariants[${vi}].${key}[${subKey}]`,
+              subVal == null ? "" : String(subVal)
             );
           });
         } else if (value !== undefined && value !== null) {
+          // primitivos: Price, Quantity, IsPrime, etc.
           formData.append(
-            `StoresWarehouses[${i}].ProductVariants[${vi}].${key}`,
-            value as any
+            `storesWarehouses[${i}].productVariants[${vi}].${key}`,
+            String(value)
           );
         }
       });
     });
   });
 
-  // Los campos de primer nivel:
-  formData.append("ProductId", String(product.productId));
-  formData.append("SupplierId", String(product.supplierId));
+  // campos de primer nivel
+  formData.append("productId", String(product.productId));
+  formData.append("supplierId", String(product.supplierId));
 
   return formData;
 };
