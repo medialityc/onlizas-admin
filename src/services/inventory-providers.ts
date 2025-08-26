@@ -2,7 +2,6 @@
 
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { QueryParamsURLFactory } from "@/lib/request";
-
 import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
@@ -10,14 +9,45 @@ import { revalidateTag } from "next/cache";
 import { backendRoutes } from "@/lib/endpoint";
 import { PaginatedResponse } from "@/types/common";
 
+export type InventoryProductItem = {
+  id: number;
+  productId: number;
+  productName: string;
+  price: number;
+  discountedPrice: number;
+  discountType: number;
+  discountValue: number;
+  limitPurchaseLimit: number;
+  warranty?: {
+    isWarranty: boolean;
+    warrantyTime: number;
+    warrantyPrice: number;
+  };
+  isPrime: boolean;
+  quantity: number;
+  inventoryId: number;
+  storeId: number;
+  storeName: string;
+  details: string[];
+  images?: string[];
+};
+
 // Tipos para Currency
 export type InventoryProvider = {
   id: number;
-  name: string;
-  codIso: string;
-  rate: number;
-  default: boolean;
-  isActive: boolean;
+  isActive: boolean
+  parentProductId: number
+  parentProductName: string
+  storeId: number;
+  storeName: string;
+  supplierId: number;
+  supplierName: string;
+  warehouseId: number;
+  warehouseName: string;
+  totalPrice: number;
+  totalQuantity: number;
+
+  products: InventoryProductItem[];
 };
 
 export type GetAllInventoryProvider = {

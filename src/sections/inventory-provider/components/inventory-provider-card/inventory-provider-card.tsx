@@ -10,17 +10,18 @@ import {
 import LongText from "@/components/long-text/long-text";
 import { cn } from "@/lib/utils";
 import { InventoryProvider } from "@/services/inventory-providers";
-
-import { UserGroupIcon } from "@heroicons/react/24/outline";
+import { PencilIcon } from "@heroicons/react/24/outline";
+import { ClipboardDocumentIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 
 type Props = {
   item: InventoryProvider;
+  className?: string;
 };
 
-const InventoryProviderCard = ({ item }: Props) => {
+const UserProviderCard = ({ item, className }: Props) => {
   return (
-    <Card>
+    <Card className={cn(className)}>
       <CardHeader className="flex flex-row gap-2 items-start justify-between">
         <div className="flex flex-row gap-2 items-center ">
           <div
@@ -29,12 +30,12 @@ const InventoryProviderCard = ({ item }: Props) => {
               "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
             )}
           >
-            <UserGroupIcon className="h-6 w-6" />
+            <ClipboardDocumentIcon className="h-6 w-6" />
           </div>
           <div>
             <Link href={`/dashboard/inventory/${item?.id}/list`}>
               <CardTitle className="text-lg text-primary hover:underline font-bold leading-none mb-1">
-                <LongText text={item?.name} lineClamp={1} />
+                <LongText text={`Tienda: ${item?.storeName}`} lineClamp={1} />
               </CardTitle>
             </Link>
             <Badge
@@ -47,20 +48,24 @@ const InventoryProviderCard = ({ item }: Props) => {
         </div>
       </CardHeader>
       <CardContent>
-        {/* stores and products */}
-        <div></div>
-
         {/* actions */}
-        <div className="flex flex-1 w-full mt-4">
+        <div className="flex flex-1 w-full mt-4 gap-4">
           <Link href={`/dashboard/inventory/${item?.id}/list`}>
-            <Button className="w-full border border-primary bg-transparent shadow-none text-black">
-              Ver inventario
+            <Button className="w-full" variant="info">
+              Detalles
+            </Button>
+          </Link>
+          <Link href={`/dashboard/inventory/${item?.id}/list`}>
+            <Button className="w-full" variant="secondary">
+              <PencilIcon className="w-4 h-4" />
+              Editar
             </Button>
           </Link>
         </div>
       </CardContent>
+      <pre> {JSON.stringify(item, null, 2)} </pre>
     </Card>
   );
 };
 
-export default InventoryProviderCard;
+export default UserProviderCard;
