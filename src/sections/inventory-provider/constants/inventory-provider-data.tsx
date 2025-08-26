@@ -157,20 +157,6 @@ function serializeImages(
 }
 
 /**
- * Utility para debug - muestra el contenido del FormData
- */
-export const debugFormData = (formData: FormData): void => {
-  console.log("FormData contents:");
-  for (const [key, value] of formData.entries()) {
-    if (value instanceof File) {
-      console.log(`${key}: [File] ${value.name} (${value.size} bytes)`);
-    } else {
-      console.log(`${key}: ${value}`);
-    }
-  }
-};
-
-/**
  * Valida los datos antes de la serialización
  */
 export const validateInventoryData = (
