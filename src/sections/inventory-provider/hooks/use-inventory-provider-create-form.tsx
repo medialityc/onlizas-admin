@@ -30,7 +30,7 @@ export const useInventoryProviderCreateForm = (
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: InventoryProviderFormData) => {
-      const fromData = await setInventoryProviderFormData(payload);
+      const fromData = setInventoryProviderFormData(payload);
       const res = await createInventoryProvider(fromData);
 
       if (res.error) {
