@@ -1,6 +1,6 @@
 import { buildQueryParams } from '@/lib/request';
 import { Suspense } from 'react';
-import { getAllWarehouses } from '@/services/warehouses-mock';
+import { getAllWarehouses } from '@/services/warehouses';
 import WarehousesListContainer from '@/sections/warehouses/list/warehouses-list-container';
 
 function WarehousesListFallback () {
