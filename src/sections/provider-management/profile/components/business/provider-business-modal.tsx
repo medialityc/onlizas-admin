@@ -38,7 +38,6 @@ export default function ProviderBusinessModal({
   const [error, setError] = useState<string | null>(null);
   const [loadingImage, setLoadingImage] = useState(false);
 
-  // Hook personalizado para manejar la mutación
   const { mutate: submitBusiness, isLoading: isSubmitting } =
     useProviderBusinessMutation({
       business,

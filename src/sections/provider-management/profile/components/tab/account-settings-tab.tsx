@@ -94,15 +94,6 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
               <SparklesIcon className="h-5 w-5" />
               <h2 className="font-bold">Información Comercial</h2>
             </div>
-            <div className="ml-auto">
-              <LoaderButton
-                type="submit"
-                loading={methods.formState.isSubmitting}
-                className="px-4 py-2"
-              >
-                Guardar
-              </LoaderButton>
-            </div>
           </div>
         </CardHeader>
         <CardContent className="p-6">
