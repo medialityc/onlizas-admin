@@ -4,11 +4,9 @@ import { IUser, UserResponseMe } from "@/types/users";
 import { fetchUserMe, getUserById } from "@/services/users";
 
 // Hook para obtener el perfil del usuario actual
-export function useUserProfile(
-  id?: number
-): UseQueryResult<UserResponseMe, Error> {
+export function useUserProfile(): UseQueryResult<UserResponseMe, Error> {
   return useQuery<UserResponseMe, Error>({
-    queryKey: ["user", "profile", /* 'me' */ id],
+    queryKey: ["user", "profile", "me"],
     queryFn: async () => {
       const response: ApiResponse<UserResponseMe> = await fetchUserMe();
       /*       const response: ApiResponse<IUser> = await fetchUserMe();

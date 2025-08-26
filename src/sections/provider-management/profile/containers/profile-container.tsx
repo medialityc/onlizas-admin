@@ -1,11 +1,9 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
 import {
   InformationCircleIcon,
   ClipboardDocumentIcon,
 } from "@heroicons/react/24/outline";
-import { Button } from "@/components/button/button";
 import TabsWithIcons from "@/components/tab/tabs";
 import IconSettings from "@/components/icon/icon-settings";
 import { PersonalInfoTab } from "../components/tab/personal-info-tab";
@@ -14,8 +12,6 @@ import VendorRequestsTab from "../components/tab/vendor-requests-tab";
 import { SearchParams } from "@/types/fetch/request";
 import { useUserProfile } from "@/hooks/react-query/use-user-profile";
 import { ProfileSkeleton } from "@/sections/provider-management/profile/components/profile-skeleton";
-import { PersonalInfoFormData } from "../schemas/personal-info-schema";
-import { AccountSettingsFormData } from "../schemas/account-settings-schema";
 import { useAuth } from "@/auth-sso/hooks/use-auth";
 
 interface ProfileContainerProps {
@@ -23,9 +19,7 @@ interface ProfileContainerProps {
 }
 
 export default function ProfileContainer({ query }: ProfileContainerProps) {
-  const { user: id } = useAuth();
-  const { data: user, isLoading, error } = useUserProfile(id?.id);
-  console.log(id);
+  const { data: user, isLoading, error } = useUserProfile();
 
   if (isLoading) {
     return <ProfileSkeleton />;
