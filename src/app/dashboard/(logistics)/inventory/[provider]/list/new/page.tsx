@@ -15,7 +15,7 @@ export default async function InventoryPage({ params }: Props) {
   const { provider } = await params;
 
   const userProvider = await getUserProviderById(Number(provider));
-  const stores = await getAllProviderStores(Number(provider), {});
+  const stores = await getAllProviderStores(provider, {});
 
   return (
     <Suspense>

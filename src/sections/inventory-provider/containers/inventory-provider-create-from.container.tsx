@@ -1,7 +1,5 @@
 "use client";
 
-import InventoryProviderForm from "../components/inventory-provider-form/inventory-provider-form";
-
 const CategoryCreateFormContainer = () => {
   return (
     <div className="panel">
@@ -13,7 +11,7 @@ const CategoryCreateFormContainer = () => {
           Define la categoría y sus características
         </p>
       </div>
-      <InventoryProviderForm />
+      {/* <InventoryProviderForm /> */}
     </div>
   );
 };

@@ -38,7 +38,7 @@ const InventoryProviderCreateContainer = ({ userProvider, stores }: Props) => {
         userProvider={provider}
         stores={_stores?.data as Store[]}
         initValue={{
-          stores: [],
+          storesWarehouses: [],
           productId: 0,
           supplierId: provider?.id as number,
           categoryFeatures: [],

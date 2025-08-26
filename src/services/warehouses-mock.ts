@@ -14,7 +14,7 @@ import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 
 // Mock data - Inicialización de almacenes físicos
-let mockWarehouses: Warehouse[] = [
+const mockWarehouses: Warehouse[] = [
   {
     id: 1,
     name: "Centro de Distribución Principal",
@@ -454,14 +454,7 @@ export async function updateWarehouse(
       action = "DEACTIVATE";
     }
     if (action) {
-      warehouseAuditLog.push({
-        id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-        warehouseId: id,
-        action,
-        at: new Date().toISOString(),
-        by: "mockUser",
-        reason: audit.reason,
-      });
+      console.log(action);
     }
   }
 
@@ -509,22 +502,10 @@ export async function deleteWarehouse(
   mockWarehouses[index] = deletedWarehouse;
 
   // Registro de auditoría
-  warehouseAuditLog.push({
-    id: crypto.randomUUID?.() || Math.random().toString(36).slice(2),
-    warehouseId: id,
-    action: "DELETE",
-    at: new Date().toISOString(),
-    by: "mockUser",
-    reason: audit.reason,
-  });
 
   return { data: { success: true }, status: 200, error: false } as ApiResponse<{
     success: boolean;
   }>;
-}
-
-export function getWarehouseAuditLog(): WarehouseAuditLog[] {
-  return warehouseAuditLog;
 }
 
 // Mock data para inventarios simulados
