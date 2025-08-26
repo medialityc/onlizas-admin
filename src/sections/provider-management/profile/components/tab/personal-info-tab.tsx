@@ -46,22 +46,23 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
     createAddressModal,
     editAddressModal,
     emailFields,
-    emailWatch,
     handleAddressModalSave,
     handleEditAddress,
     handleFormSubmit,
     handleRemoveEmail,
     handleRemovePhone,
-    handleResendPhone,
     methods,
     openModal,
     phoneFields,
-    phoneWatch,
     removeAddress,
     selectedAddress,
     updateProviderMutation,
     documentsPromise,
   } = usePersonalInfoTab({ user });
+
+  const {
+    formState: { errors },
+  } = methods;
 
   return (
     <>
@@ -84,6 +85,11 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
                     variant="rounded"
                     size="md"
                   />
+                  {errors.photoFile && (
+                    <p className="text-xs text-red-500 mt-1">
+                      ❌ {errors.photoFile.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Título con nombre */}
@@ -111,6 +117,14 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
                 >
                   Guardar
                 </LoaderButton>
+                {Object.keys(errors).length > 0 && (
+                  <div className="mt-2 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded">
+                    <p className="text-xs text-red-600 dark:text-red-400">
+                      ⚠️ Hay {Object.keys(errors).length} error(es) en el
+                      formulario
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </CardHeader>
@@ -134,6 +148,11 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
                   placeholder="Usuario"
                   required
                 />
+                {errors.name && (
+                  <p className="text-xs text-red-500 mt-1">
+                    ❌ {errors.name.message}
+                  </p>
+                )}
               </div>
 
               {/* Row 1: Estado de la cuenta (right) */}
@@ -185,6 +204,14 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
                 </div>
 
                 <div className="h-80 divide-y divide-gray-200 dark:divide-gray-800 overflow-y-auto pr-2 ultra-thin-scrollbar flex-1">
+                  {errors.emails && (
+                    <div className="mb-3 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded">
+                      <p className="text-xs text-red-600 dark:text-red-400">
+                        ❌ Error en emails:{" "}
+                        {errors.emails.message || "Revise los campos de email"}
+                      </p>
+                    </div>
+                  )}
                   {emailFields.map((field, index) => (
                     <div key={field.id} className="py-3 first:pt-0 last:pb-0">
                       <div className="flex items-start gap-3">
@@ -194,6 +221,11 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
                             label={`Email ${index + 1}`}
                             className="flex-1"
                           />
+                          {errors.emails?.[index]?.address && (
+                            <p className="text-xs text-red-500 mt-1">
+                              ❌ {errors.emails[index].address.message}
+                            </p>
+                          )}
                         </div>
                         <div className="flex items-center gap-3 mt-9">
                           <StatusBadge
@@ -244,6 +276,14 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
                   </Button>
                 </div>
                 <div className="h-80 overflow-y-auto pr-2 ultra-thin-scrollbar">
+                  {errors.addresses && (
+                    <div className="mb-3 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded">
+                      <p className="text-xs text-red-600 dark:text-red-400">
+                        ❌ Error en direcciones:{" "}
+                        {errors.addresses.message || "Revise las direcciones"}
+                      </p>
+                    </div>
+                  )}
                   {addressFields.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {addressFields.map((field, index) => (
@@ -298,6 +338,15 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
                   </Button>
                 </div>
                 <div className="h-80 divide-y divide-gray-200 dark:divide-gray-800 overflow-y-auto pr-2 ultra-thin-scrollbar">
+                  {errors.phones && (
+                    <div className="mb-3 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded">
+                      <p className="text-xs text-red-600 dark:text-red-400">
+                        ❌ Error en teléfonos:{" "}
+                        {errors.phones.message ||
+                          "Revise los campos de teléfono"}
+                      </p>
+                    </div>
+                  )}
                   {phoneFields.map((field, index) => (
                     <div
                       key={`phone-${field.id}-${index}`}
@@ -311,10 +360,15 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
                             className="flex-1"
                             type="tel"
                           />
+                          {errors.phones?.[index]?.number && (
+                            <p className="text-xs text-red-500 mt-1">
+                              ❌ {errors.phones[index].number.message}
+                            </p>
+                          )}
                         </div>
                         <div className="flex items-center gap-3 mt-7">
                           <StatusBadge
-                            isActive={field.isVerified}
+                            isActive={field?.isVerified ?? false}
                             activeText="Verificado"
                             inactiveText="No Verificado"
                           />
