@@ -32,6 +32,7 @@ import CategoryRequestModal from "../modal/category-request-modal";
 import ExpirationExtensionModal from "../modal/expiration-extension-modal";
 import showToast from "@/config/toast/toastConfig";
 import { downloadUserDocument } from "@/services/users";
+import Link from "next/link";
 
 interface VendorRequestsTabProps {
   user: UserResponseMe | null;
@@ -348,15 +349,13 @@ export default function VendorRequestsTab({ user }: VendorRequestsTabProps) {
                   <div className="space-y-2 max-h-32 overflow-y-auto">
                     {(approvalProcess?.approvedDocuments?.length ?? 0 > 0) ? (
                       approvalProcess?.approvedDocuments.map((document) => (
-                        <button
+                        <Link
+                          href={document.content}
                           key={document.id}
-                          onClick={() =>
-                            handleDownload(document.id, document.fileName)
-                          }
                           className="w-full text-left text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded border border-green-200 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors underline cursor-pointer"
                         >
                           {document.fileName}
-                        </button>
+                        </Link>
                       ))
                     ) : (
                       <p className="text-sm text-gray-500 dark:text-gray-400 italic">
