@@ -7,6 +7,7 @@ import {
   BookOpenIcon,
   Squares2X2Icon,
   TagIcon,
+  UsersIcon,
   ClipboardDocumentCheckIcon,
 } from "@heroicons/react/24/outline";
 
@@ -18,6 +19,8 @@ import TabsWithErrorIndicators from "../../../../../components/tab/tabs-with-err
 import LoaderButton from "@/components/loaders/loader-button";
 import { Store } from "@/types/stores";
 import styles from "./store-edit-tabs.module.css";
+import FollowersContainer from "../followers/followers-container";
+
 
 interface TabsProps {
   store: Store;
@@ -30,9 +33,9 @@ const StoreTabs = ({ store }: TabsProps) => {
       {/* Botón Guardar Cambios con loader, apuntando al form "store-edit-form" */}
       <div className="flex justify-end py-0">
         <LoaderButton
+          form="store-edit-form"
           type="submit"
-          loading={formState.isSubmitting}
-          disabled={!formState.isDirty}
+          loading={formState.isSubmitting}         
           className="border-t-secondary-dark-light btn-md "
         >
           <span className="inline-flex items-center gap-2">
@@ -64,6 +67,11 @@ const StoreTabs = ({ store }: TabsProps) => {
               label: "Promociones",
               icon: <TagIcon className="w-6 h-6" />,
               content: <PromotionsContainer store={store} />,
+            },
+            {
+              label: "Followers",
+              icon: <UsersIcon className="w-6 h-6" />,
+              content: <FollowersContainer store={store} />,
             },
           ]}
         />

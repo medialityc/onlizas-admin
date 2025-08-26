@@ -162,7 +162,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${supplierId}/stores`,
     listForProvider: `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores`,
     storeById: (supplierId: string | number, storeId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores/${storeId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
     storeDetails: (storeId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
     updateSupplierStore: (storeId: string | number) =>
@@ -175,6 +175,8 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores/${storeId}`,
     details: (storeId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}`,
+    followers: (storeId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}/followers`,
     // Admin delete
     deleteAdmin: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,

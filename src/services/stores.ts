@@ -8,6 +8,7 @@ import { backendRoutes } from "@/lib/endpoint";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { revalidateTag } from "next/cache";
+import { PaginatedResponse } from "@/types/common";
 
 export async function getAllStores(
   params: IQueryable
@@ -42,8 +43,9 @@ export async function getAllProviderStores(
     url,
     method: "GET",
     useAuth: true,
-    next: { tags: ["stores"] },
+    next: { tags: ["stores-all-provider"] },
   });
+  
 
   if (!res.ok) return handleApiServerError(res);
 
@@ -66,6 +68,7 @@ export async function getProviderStores(
   });
 
   if (!res.ok) return handleApiServerError(res);
+  
 
   return buildApiResponseAsync<GetAllStores>(res);
 }
@@ -219,4 +222,30 @@ export async function getStoreSupplierDetails(
 
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<Store>(res);
+}
+
+export type StoreFollower = {
+  id: number;
+  name: string;
+  email: string;
+  phoneNumber: string;
+};
+
+export async function getStoreFollowers(
+  storeId: number,
+  params: IQueryable
+): Promise<ApiResponse<PaginatedResponse<StoreFollower>>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.store.followers(storeId)
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<PaginatedResponse<StoreFollower>>(res);
 }

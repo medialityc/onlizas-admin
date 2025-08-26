@@ -9,6 +9,7 @@ import { Store } from "@/types/stores";
 import StoreTabs from "./components/store-edit-tabs";
 import { FormProvider } from "@/components/react-hook-form";
 import { updateAdminStore } from "@/services/stores";
+import { buildStoreFormData } from "./utils/transform";
 import storeEditSchema, {
   StoreEditFormData,
 } from "../modals/store-edit-form.schema";
@@ -41,8 +42,8 @@ export default function StoreEditAdminContainer({ store }: Props) {
       primaryColor: store.primaryColor ?? "#3B82F6",
       secondaryColor: store.secondaryColor ?? "#111827",
       accentColor: store.accentColor ?? "#F59E0B",
-      font: store.font ?? "Inter",
-      template: store.template ?? "modern",
+      font: (store.font as any) ?? "ARIAL",
+      template: (store.template as any) ?? "MODERNO",
       banners: store.banners ?? [],
     },
   });
@@ -59,75 +60,26 @@ export default function StoreEditAdminContainer({ store }: Props) {
     methods.register("font");
     methods.register("template");
   }, [methods]);
+  console.log("Errores actuales:", JSON.stringify(methods.formState.errors, null, 2));
+
 
   const onSubmit = async (data: any) => {
+    // Debug visible error panel if there are errors
+    if (Object.keys(methods.formState.errors || {}).length > 0) {
+      console.warn(
+        "RHF Errors:",
+        JSON.stringify(methods.formState.errors, null, 2)
+      );
+    }
+    const result = await methods.trigger();
+    console.log("Errores:", methods.formState.errors);
+
+
     // Limpia errores previos
     methods.clearErrors();
 
     try {
-      const formData = new FormData();
-      console.log(data);
-
-      // Valores de apariencia (aplanados)
-      const primaryColor = data?.primaryColor ?? store.primaryColor ?? "";
-      const secondaryColor = data?.secondaryColor ?? store.secondaryColor ?? "";
-      const accentColor = data?.accentColor ?? store.accentColor ?? "";
-      const font = data?.font ?? store.font ?? "";
-      const template = data?.template ?? store.template ?? "";
-
-      // Banners desde el tab Apariencia (aplanado)
-      const banners = Array.isArray(data?.banners) ? data.banners : [];
-
-      if (data.logoStyle instanceof File) {
-        formData.append("logoStyle", data.logoStyle);
-      }
-
-      // Campos escalares
-      formData.append("id", String(store.id));
-      formData.append("name", data.name ?? store.name ?? "");
-      formData.append(
-        "description",
-        data.description ?? store.description ?? ""
-      );
-      formData.append("url", data.url ?? store.url ?? "");
-      formData.append("email", data.email ?? store.email ?? "");
-      formData.append(
-        "phoneNumber",
-        data.phoneNumber ?? store.phoneNumber ?? ""
-      );
-      formData.append("address", data.address ?? store.address ?? "");
-      formData.append(
-        "returnPolicy",
-        data.returnPolicy ?? store.returnPolicy ?? ""
-      );
-      formData.append(
-        "shippingPolicy",
-        data.shippingPolicy ?? store.shippingPolicy ?? ""
-      );
-      formData.append(
-        "termsOfService",
-        data.termsOfService ?? store.termsOfService ?? ""
-      );
-      formData.append("primaryColor", primaryColor);
-      formData.append("secondaryColor", secondaryColor);
-      formData.append("accentColor", accentColor);
-      formData.append("font", font);
-      formData.append("template", template);
-      formData.append("businessName", store.businessName ?? "");
-      formData.append("supplierId", String(store.supplierId));
-      formData.append("supplierName", store.supplierName ?? "");
-      formData.append("isActive", data.isActive ? "true" : "false");
-
-      // Arreglos complejos como JSON strings
-      formData.append(
-        "followers",
-        JSON.stringify(Array.isArray(store.followers) ? store.followers : [])
-      );
-      formData.append("banners", JSON.stringify(banners ?? []));
-      formData.forEach((value, key) => {
-        console.log(`${key}:`, value);
-      });
-
+      const formData = buildStoreFormData({ store, data });
       const res = await updateAdminStore(store.id, formData);
       if (!res.error) {
         toast.success("Tienda actualizada correctamente");
@@ -142,7 +94,7 @@ export default function StoreEditAdminContainer({ store }: Props) {
 
   return (
     <FormProvider
-      id="store-edit-form-admin"
+      id="store-edit-form"
       methods={methods}
       onSubmit={onSubmit}
     >

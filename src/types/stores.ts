@@ -126,7 +126,7 @@ export type Store = {
     {
       title: string;
       urlDestinity: string;
-      position: string;
+      position: number;
       initDate: string;
       endDate: string;
       image: string;

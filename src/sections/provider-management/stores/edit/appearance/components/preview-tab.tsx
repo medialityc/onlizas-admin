@@ -15,12 +15,15 @@ export default function PreviewTab() {
   const primary = (watch("primaryColor") as string) || "#3B82F6"; // blue-500
   const secondary = (watch("secondaryColor") as string) || "#111827"; // gray-900
   const accent = (watch("accentColor") as string) || "#F59E0B"; // amber-500
-  const font = (watch("font") as string) || "Inter";
-  const template = (watch("template") as string) || "modern";
+  const font = (watch("font") as string) || "ARIAL";
+  const template = (watch("template") as string) || "MODERNO";
   const banners = (watch("banners") as Array<any> | undefined) || [];
 
   const heroBannerTitle = useMemo(() => {
-    const hero = banners?.find((b) => ["hero", "main", "principal"].includes(String(b?.position || "").toLowerCase()));
+    const hero = banners?.find((b) => {
+      const pos = typeof b?.position === "number" ? b.position : parseInt(String(b?.position ?? 0), 10);
+      return pos === 1;
+    });
     return hero?.title || "Banner Principal";
   }, [banners]);
 
@@ -91,14 +94,11 @@ function PreviewSurface({
 }) {
   // Map selected font to a visible stack so changes are noticeable even if a webfont isn't loaded
   const fontStacks: Record<string, string> = {
-    // Map to widely available stacks so the change is obvious without loading webfonts
-    Inter: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
-    Roboto: 'Arial, Helvetica, sans-serif',
-    "Open Sans": '"Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif',
-    Montserrat: 'Montserrat, "Segoe UI", Arial, sans-serif',
-    Poppins: 'Poppins, Arial, Helvetica, sans-serif',
+    // Map backend enums to visible font stacks
+    ARIAL: 'Arial, Helvetica, sans-serif',
+    ARGELIAN: '"Agency FB", "Georgia", serif',
   };
-  const fontFamily = fontStacks[font] ?? fontStacks["Inter"];
+  const fontFamily = fontStacks[font] ?? fontStacks["ARIAL"];
 
   // Frame sizes to emulate devices
   const frameStyle: React.CSSProperties = useMemo(() => {
@@ -108,31 +108,31 @@ function PreviewSurface({
     return { ...common, width: "100%", maxWidth: 1024, borderRadius: 16 };
   }, [device, fontFamily]);
 
-  const headerRadius = template === "minimal" ? 8 : template === "classic" ? 0 : 10;
-  const cardRadius = template === "classic" ? 0 : 10;
+  const headerRadius = template === "MINIMALISTA" ? 8 : template === "CLASICO" ? 0 : 10;
+  const cardRadius = template === "CLASICO" ? 0 : 10;
 
   // Template-specific tweaks to make the differences obvious
   const headerStyle: React.CSSProperties =
-    template === "minimal"
+    template === "MINIMALISTA"
       ? { background: "#F3F4F6", color: "#111827", borderBottom: `1px solid ${accent}` }
       : { background: primary, color: "#ffffff" };
   const heroStyle: React.CSSProperties =
-    template === "classic"
+    template === "CLASICO"
       ? { background: accent, borderRadius: 0 }
       : { background: accent, borderRadius: 8 };
   const cardClass =
-    template === "classic"
+    template === "CLASICO"
       ? "border-gray-400 shadow-sm"
-      : template === "minimal"
+      : template === "MINIMALISTA"
       ? "border-gray-200"
       : "border-gray-300 shadow-sm";
 
   const TemplateComponent =
-    template === "classic"
+    template === "CLASICO"
       ? TemplateClassic
-      : template === "minimal"
+      : template === "MINIMALISTA"
       ? TemplateMinimal
-      : template === "audaz"
+  : (template === "AUDAZ")
       ? TemplateAudaz
       : TemplateModern;
 
