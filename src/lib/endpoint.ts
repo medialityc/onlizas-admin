@@ -183,16 +183,15 @@ export const backendRoutes = {
     updateSupplierStore: (storeId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
     /* updateAdminStore: (storeId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}`,
- */    createSupplier: (supplierId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}`, */
+    createSupplier: (supplierId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores`,
-    delete: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
+    delete: (storeId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}`,
     details: (storeId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}`,
     followers: (storeId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}/followers`,
-
     // Admin delete
     deleteAdmin: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
@@ -205,7 +204,6 @@ export const backendRoutes = {
     update: `${process.env.NEXT_PUBLIC_API_DEV_URL}banners`,
 
   },
-
   inventoryProvider: {
     create: `${process.env.NEXT_PUBLIC_API_URL}inventories/admin`,
     list: `${process.env.NEXT_PUBLIC_API_URL}inventories/admin`,
