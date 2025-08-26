@@ -197,19 +197,41 @@ export const backendRoutes = {
     extend: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${id}/extend`, // POST
   },
-  store: {
+ store: {
     create: `${process.env.NEXT_PUBLIC_API_URL}stores/admin`,
     list: `${process.env.NEXT_PUBLIC_API_URL}stores/metrics`,
     listAll: `${process.env.NEXT_PUBLIC_API_URL}stores`,
-    listProvider: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}stores/supplier/${id}`,
-    delete: (id: number | string) =>
+    listByProvider: (supplierId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${supplierId}/stores`,
+    listForProvider: `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores`,
+    storeById: ( storeId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
+    storeDetails: (storeId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
+    updateSupplierStore: (storeId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
+    /* updateAdminStore: (storeId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}`,
+ */    createSupplier: (supplierId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores`,
+    delete: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
-    storeById: (id: string | number) =>
+    details: (storeId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}`,
+    followers: (storeId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}/followers`,
+
+    // Admin delete
+    deleteAdmin: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
     update: (id: number) => `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
     updateAdminStore: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
+  },
+  storeBanner: {
+    create: `${process.env.NEXT_PUBLIC_API_DEV_URL}banners`,
+    update: `${process.env.NEXT_PUBLIC_API_DEV_URL}banners`,
+
   },
   inventoryProvider: {
     create: `${process.env.NEXT_PUBLIC_API_URL}inventories/admin`,

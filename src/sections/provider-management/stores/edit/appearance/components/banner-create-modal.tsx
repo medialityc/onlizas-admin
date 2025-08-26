@@ -20,9 +20,9 @@ export default function BannerCreateModal({ open, onClose, onCreate }: Props) {
 		resolver: zodResolver(BannerSchema) as any,
 		defaultValues: {
 			title: "",
-			url: "",
-			position: "hero",
-			startDate: undefined,
+			urlDestinity: "",
+			position: 1,
+			initDate: undefined,
 			endDate: undefined,
 			image: null,
 			isActive: true,
@@ -35,25 +35,32 @@ export default function BannerCreateModal({ open, onClose, onCreate }: Props) {
 		onClose();
 	};
 
-	
+	// Log de errores de validación si el submit es inválido (además de los mensajes bajo los inputs)
+	const handleCreate = methods.handleSubmit(
+		(data: BannerForm) => submitOnly(data),
+		(errors) => {
+			// Visible en consola para depurar rápidamente
+			try { console.warn("Errores Banner:", JSON.stringify(errors, null, 2)); } catch { }
+		}
+	);
 
 	return (
 		<SimpleModal open={open} onClose={onClose} title="Crear Nuevo Banner">
 			<RHFFormProvider {...methods}>
 				<div className="grid grid-cols-1 gap-4">
 					<RHFInputWithLabel name="title" label="Título" placeholder="Título del banner" />
-					<RHFInputWithLabel name="url" label="URL de Destino" placeholder="/productos/ofertas" />
+					<RHFInputWithLabel name="urlDestinity" label="URL de Destino" placeholder="/productos/ofertas" />
 					<RHFSelectWithLabel
 						name="position"
 						label="Posición"
 						options={[
-							{ label: "Hero (Principal)", value: "hero" },
-							{ label: "Sidebar", value: "sidebar" },
-							{ label: "Slideshow", value: "slideshow" },
+							{ label: "Hero (Principal)", value: "1" },
+							{ label: "Sidebar", value: "2" },
+							{ label: "Slideshow", value: "3" },
 						]}
 					/>
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-						<RHFDatePicker name="startDate" label="Fecha de Inicio" />
+						<RHFDatePicker name="initDate" label="Fecha de Inicio" />
 						<RHFDatePicker name="endDate" label="Fecha de Fin" />
 					</div>
 					<RHFFileUpload name="image" label="Imagen del Banner" />
@@ -62,10 +69,10 @@ export default function BannerCreateModal({ open, onClose, onCreate }: Props) {
 					<button type="button" className="btn btn-outline" onClick={onClose}>
 						Cancelar
 					</button>
-					<LoaderButton type="button" className="btn btn-dark" onClick={() => methods.handleSubmit(submitOnly)()}>
+					<LoaderButton type="button" className="btn btn-dark" onClick={handleCreate}>
 						Crear
 					</LoaderButton>
-					
+
 				</div>
 			</RHFFormProvider>
 		</SimpleModal>

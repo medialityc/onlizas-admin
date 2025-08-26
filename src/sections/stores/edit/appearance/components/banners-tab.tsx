@@ -16,7 +16,7 @@ export default function BannersTab() {
         id: idx + 1,
         title: b.title,
         url: b.urlDestinity ?? b.url ?? "",
-        position: b.position ?? "hero",
+        position: typeof b.position === "number" ? b.position : parseInt(b.position ?? "0", 10) || 0,
         startDate: b.initDate ?? null,
         endDate: b.endDate ?? null,
         image: b.image ?? null,
@@ -33,16 +33,22 @@ export default function BannersTab() {
   }, [register]);
 
   useEffect(() => {
-    // Map to backend contract keys
-  const payload = items.map((b) => ({
+    // Map to backend contract keys with correct types
+    const toISO = (d?: string | null) => (d ? d : "");
+    const payload = items.map((b) => ({
       title: b.title,
-  urlDestinity: b.url || "",
-  position: b.position || "",
-  initDate: b.startDate || "",
-  endDate: b.endDate || "",
-  image: typeof b.image === "string" ? b.image : b.image ? (b.image as File).name : "",
+      urlDestinity: b.url || "",
+      position: Number.isFinite(b.position as any) ? Number(b.position) : 0,
+      initDate: toISO(b.startDate),
+      endDate: toISO(b.endDate),
+      image:
+        typeof b.image === "string"
+          ? b.image
+          : b.image
+          ? (b.image as File).name
+          : "",
     }));
-  setValue("banners", payload, { shouldDirty: true });
+    setValue("banners", payload, { shouldDirty: true });
   }, [items, setValue]);
 
   const metrics = useMemo(() => {
@@ -82,7 +88,7 @@ export default function BannersTab() {
               id: Math.max(0, ...prev.map((x) => x.id)) + 1,
               title: banner.title,
               url: banner.url,
-              position: banner.position,
+              position: Number(banner.position),
               startDate: toISO(banner.startDate),
               endDate: toISO(banner.endDate),
               image: banner.image ?? null,
