@@ -43,6 +43,7 @@ const StoreVariant = ({ storeIndex }: Props) => {
         warrantyPrice: 0,
       },
       packageDelivery: false,
+      images: []
     });
   }, [append, features]);
 

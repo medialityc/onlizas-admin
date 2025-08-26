@@ -74,6 +74,17 @@ export const inventoryProviderArraySchema = z
                   .default(0),
               }),
               packageDelivery: z.boolean().default(false),
+              images: z
+                .array(
+                  z.union([
+                    z.string().url("Debe ser una URL válida para la imagen."),
+                    z.instanceof(File, {
+                      message: "Debe ser un archivo válido.",
+                    }),
+                  ])
+                )
+                .max(5, { message: "Máximo 5 imágenes permitidas." })
+                .optional(),
             })
           )
           .max(5, "No puedes agregar más de 5 variantes de producto"), // Límite a 5 productVariants

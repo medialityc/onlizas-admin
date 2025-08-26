@@ -7,8 +7,8 @@ import { createProduct, updateProduct } from "@/services/products";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { urlToFile } from "@/utils/format";
-import { setProductFormData } from "../constants/product-data";
 import { useRouter } from "next/navigation";
+import { setProductFormData } from "../constants/product-data";
 
 const initValues: ProductFormData = {
   name: "",
