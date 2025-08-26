@@ -196,25 +196,20 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
                           />
                         </div>
                         <div className="flex items-center gap-3 mt-9">
-                          {(emailWatch[index]?.isVerified ??
-                            user?.emails[index]?.isVerified) && (
-                            <>
-                              <StatusBadge
-                                isActive={field.isVerified}
-                                activeText="Verificado"
-                                inactiveText="No Verificado"
-                              />
+                          <StatusBadge
+                            isActive={field.isVerified}
+                            activeText="Verificado"
+                            inactiveText="No Verificado"
+                          />
 
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveEmail(index)}
-                                className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
-                                aria-label={`Eliminar email ${index + 1}`}
-                              >
-                                <TrashIcon className="h-4 w-4" />
-                              </button>
-                            </>
-                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveEmail(index)}
+                            className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
+                            aria-label={`Eliminar email ${index + 1}`}
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -318,24 +313,12 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
                           />
                         </div>
                         <div className="flex items-center gap-3 mt-7">
-                          {(phoneWatch[index]?.isVerified ??
-                          user?.phones[index]?.isVerified) ? (
-                            <StatusBadge
-                              isActive={true}
-                              activeText="Verificado"
-                              inactiveText="No"
-                            />
-                          ) : (
-                            <LoaderButton
-                              type="button"
-                              onClick={() =>
-                                handleResendPhone(phoneWatch[index])
-                              }
-                              className="bg-primary text-white px-2 py-1 text-sm"
-                            >
-                              Enviar
-                            </LoaderButton>
-                          )}
+                          <StatusBadge
+                            isActive={field.isVerified}
+                            activeText="Verificado"
+                            inactiveText="No Verificado"
+                          />
+
                           <button
                             type="button"
                             onClick={() => handleRemovePhone(index)}
