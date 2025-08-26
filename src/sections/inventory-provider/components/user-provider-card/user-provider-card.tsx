@@ -105,7 +105,7 @@ const UserProviderCard = ({ item, className }: Props) => {
         {/* actions */}
         <div className="flex flex-1 w-full mt-4">
           <Link href={`/dashboard/inventory/${item?.id}/list`}>
-            <Button className="w-full border border-primary bg-transparent shadow-none text-black">
+            <Button className="w-full" variant="secondary">
               Ver inventario
             </Button>
           </Link>
