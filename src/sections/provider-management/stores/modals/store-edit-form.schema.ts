@@ -27,13 +27,14 @@ const promotionSchema = z.object({
   badge: z.string().optional(),
 });
 
+// Banners en el formulario siguen el contrato del backend:
+// { title, urlDestinity, position:number, initDate, endDate, image }
 const bannerSchema = z.object({
   id: z.number().int().nonnegative().optional(),
   title: z.string().min(1, "El título es obligatorio"),
-  image: z.string().url("La imagen debe ser una URL válida"),
-  url: z.string().url("La URL debe ser válida").optional(),
-  position: z.string().min(1, "La posición es obligatoria"),
-  startDate: z
+  urlDestinity: z.string().min(1, "La URL de destino es obligatoria"),
+  position: z.coerce.number().int().nonnegative({ message: "La posición debe ser un número entero" }),
+  initDate: z
     .string()
     .optional()
     .refine((v) => !v || !Number.isNaN(Date.parse(v)), {
@@ -45,6 +46,7 @@ const bannerSchema = z.object({
     .refine((v) => !v || !Number.isNaN(Date.parse(v)), {
       message: "Fecha de fin inválida",
     }),
+  image: z.string().optional().nullable(),
   isActive: z.boolean().optional(),
 });
 

@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { Store } from "@/types/stores";
 
 import StoreTabs from "./components/store-edit-tabs";
+import { updateAdminStore } from "@/services/stores";
 import { FormProvider } from "@/components/react-hook-form";
 import { updateAdminStore } from "@/services/stores";
 
@@ -39,8 +40,9 @@ export default function StoreEditContainer({ store, supplierId }: Props) {
       primaryColor: store.primaryColor ?? "#3B82F6",
       secondaryColor: store.secondaryColor ?? "#111827",
       accentColor: store.accentColor ?? "#F59E0B",
-      font: store.font ?? "Inter",
-      template: store.template ?? "modern",
+      // Use backend enum values directly
+      font: (store.font as any) ?? "ARIAL",
+      template: (store.template as any) ?? "MODERNO",
       banners: store.banners ?? [],
     },
   });
@@ -131,7 +133,7 @@ export default function StoreEditContainer({ store, supplierId }: Props) {
         console.log(`${key}:`, value);
       });
 
-      const res = await updateAdminStore(store.id, formData);
+      const res = await updateAdminStore( store.id, formData);
       if (!res.error) {
         toast.success("Tienda actualizada correctamente");
         // Volver a la pantalla anterior tras guardar cambios

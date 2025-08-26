@@ -6,6 +6,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/cards/car
 import { RHFSelectWithLabel } from "@/components/react-hook-form";
 import RHFColorPicker from "@/components/react-hook-form/rhf-color-picker";
 
+// Local defaults and options aligned to backend enums
+const DEFAULT_PRIMARY = "#3B82F6"; // blue-500
+const DEFAULT_SECONDARY = "#111827"; // gray-900
+const DEFAULT_ACCENT = "#F59E0B"; // amber-500
+
+// Backend font enums
+export const FONT_OPTIONS = [
+  { label: "Arial", value: "ARIAL" },
+  { label: "Argelian", value: "ARGELIAN" },
+];
+
+// Backend template enums
+export const TEMPLATE_OPTIONS = [
+  { label: "Moderno", value: "MODERNO" },
+  { label: "Clásico", value: "CLASICO" },
+  { label: "Minimalista", value: "MINIMALISTA" },
+  { label: "Audaz", value: "AUDAZ" },
+];
+
 // Nombres de campos en el form
 const FIELD_APPEARANCE = {
   primary: "primaryColor",
@@ -15,34 +34,24 @@ const FIELD_APPEARANCE = {
   template: "template",
 } as const;
 
-/* Datos de prueba */
-const fonts = [
-  { value: "Inter", label: "Inter" },
-  { value: "Roboto", label: "Roboto" },
-  { value: "Open Sans", label: "Open Sans" },
-  { value: "Montserrat", label: "Montserrat" },
-  { value: "Poppins", label: "Poppins" },
-];
-
-const templates = [
-  { value: "modern", label: "Moderno" },
-  { value: "classic", label: "Clásico" },
-  { value: "minimal", label: "Minimal" },
-  { value: "audaz", label: "Audaz" },
-];
+// options now come from shared constants
 
 export default function ThemeAndColorsTab() {
   const { watch, setValue, getValues } = useFormContext();
 
   // Establecer valores por defecto si están vacíos, sin registrar manualmente campos controlados
   useEffect(() => {
-    const current = getValues();
-    if (!current?.appearance?.font) setValue(FIELD_APPEARANCE.font, "Inter", { shouldDirty: false });
-    if (!current?.appearance?.template) setValue(FIELD_APPEARANCE.template, "modern", { shouldDirty: false });
-    if (!current?.appearance?.primaryColor) setValue(FIELD_APPEARANCE.primary, "#3B82F6", { shouldDirty: false });
-    if (!current?.appearance?.secondaryColor) setValue(FIELD_APPEARANCE.secondary, "#111827", { shouldDirty: false });
-    if (!current?.appearance?.accentColor) setValue(FIELD_APPEARANCE.accent, "#F59E0B", { shouldDirty: false });
-    
+    const f = getValues(FIELD_APPEARANCE.font) as string | undefined;
+    const t = getValues(FIELD_APPEARANCE.template) as string | undefined;
+    const p = getValues(FIELD_APPEARANCE.primary) as string | undefined;
+    const s = getValues(FIELD_APPEARANCE.secondary) as string | undefined;
+    const a = getValues(FIELD_APPEARANCE.accent) as string | undefined;
+    if (!f) setValue(FIELD_APPEARANCE.font, "ARIAL", { shouldDirty: false });
+    if (!t) setValue(FIELD_APPEARANCE.template, "MODERNO", { shouldDirty: false });
+    if (!p) setValue(FIELD_APPEARANCE.primary, DEFAULT_PRIMARY, { shouldDirty: false });
+    if (!s) setValue(FIELD_APPEARANCE.secondary, DEFAULT_SECONDARY, { shouldDirty: false });
+    if (!a) setValue(FIELD_APPEARANCE.accent, DEFAULT_ACCENT, { shouldDirty: false });
+
   }, []);
 
   // Valores actuales para previsualización
@@ -77,8 +86,8 @@ export default function ThemeAndColorsTab() {
             <CardTitle>Tipografía y Plantilla</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <RHFSelectWithLabel name={FIELD_APPEARANCE.font} label="Fuente" variant="custom" options={fonts} />
-            <RHFSelectWithLabel name={FIELD_APPEARANCE.template} label="Plantilla" variant="custom" options={templates} />
+            <RHFSelectWithLabel name={FIELD_APPEARANCE.font} label="Fuente" variant="custom" options={FONT_OPTIONS} />
+            <RHFSelectWithLabel name={FIELD_APPEARANCE.template} label="Plantilla" variant="custom" options={TEMPLATE_OPTIONS} />
 
             <div>
               <div className="text-xs font-semibold text-gray-700 mb-2">Vista Previa de Colores</div>
