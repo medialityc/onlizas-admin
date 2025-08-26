@@ -52,7 +52,6 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
     handleFormSubmit,
     handleRemoveEmail,
     handleRemovePhone,
-    handleResendEmail,
     handleResendPhone,
     methods,
     openModal,
@@ -196,33 +195,26 @@ export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
                             className="flex-1"
                           />
                         </div>
-                        <div className="flex items-center gap-3 mt-7">
+                        <div className="flex items-center gap-3 mt-9">
                           {(emailWatch[index]?.isVerified ??
-                          user?.emails[index]?.isVerified) ? (
-                            <StatusBadge
-                              isActive={true}
-                              activeText="Verificado"
-                              inactiveText="No Verificado"
-                            />
-                          ) : (
-                            <LoaderButton
-                              type="button"
-                              onClick={() =>
-                                handleResendEmail(emailWatch[index]?.address)
-                              }
-                              className="bg-primary text-white px-2 py-1 text-sm"
-                            >
-                              Enviar
-                            </LoaderButton>
+                            user?.emails[index]?.isVerified) && (
+                            <>
+                              <StatusBadge
+                                isActive={field.isVerified}
+                                activeText="Verificado"
+                                inactiveText="No Verificado"
+                              />
+
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveEmail(index)}
+                                className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
+                                aria-label={`Eliminar email ${index + 1}`}
+                              >
+                                <TrashIcon className="h-4 w-4" />
+                              </button>
+                            </>
                           )}
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveEmail(index)}
-                            className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
-                            aria-label={`Eliminar email ${index + 1}`}
-                          >
-                            <TrashIcon className="h-4 w-4" />
-                          </button>
                         </div>
                       </div>
                     </div>
