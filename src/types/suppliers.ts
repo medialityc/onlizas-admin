@@ -134,14 +134,19 @@ export type SupplierApprovalProcess = {
   email: string;
   phone: string;
   countryId: number;
+  countryName: string;
+  nacionality: string;
+  sellerType: string;
+  mincexCode: string;
+  expirationDate: string;
   approvedDocuments: {
     id: number;
     fileName: string;
     isApproved: boolean;
   }[];
   approvedCategories: {
-    categoryId: number;
-    categoryName: string;
+    id: number;
+    name: string;
   }[];
   pendingDocuments: {
     id: number;
@@ -149,8 +154,8 @@ export type SupplierApprovalProcess = {
     isApproved: boolean;
   }[];
   pendingCategories: {
-    categoryId: number;
-    categoryName: string;
+    id: number;
+    name: string;
   }[];
 };
 

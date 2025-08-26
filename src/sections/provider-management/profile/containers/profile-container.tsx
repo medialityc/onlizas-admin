@@ -27,24 +27,6 @@ export default function ProfileContainer({ query }: ProfileContainerProps) {
   const { data: user, isLoading, error } = useUserProfile(id?.id);
   console.log(id);
 
-  // State to hold form data from both tabs
-  const [personalInfoData, setPersonalInfoData] =
-    useState<PersonalInfoFormData | null>(null);
-  const [accountSettingsData, setAccountSettingsData] =
-    useState<AccountSettingsFormData | null>(null);
-
-  // Handler for personal info form
-  const handlePersonalInfoSave = (data: PersonalInfoFormData) => {
-    setPersonalInfoData(data);
-    console.log("Personal Info data saved to state:", data);
-  };
-
-  // Handler for account settings form
-  const handleAccountSettingsSave = (data: AccountSettingsFormData) => {
-    setAccountSettingsData(data);
-    console.log("Account Settings data saved to state:", data);
-  };
-
   if (isLoading) {
     return <ProfileSkeleton />;
   }
@@ -65,23 +47,13 @@ export default function ProfileContainer({ query }: ProfileContainerProps) {
             {
               label: "Información General",
               icon: <InformationCircleIcon className="h-5 w-5" />,
-              content: (
-                <PersonalInfoTab
-                  user={user ? user : null}
-                  onSave={handlePersonalInfoSave}
-                />
-              ),
+              content: <PersonalInfoTab user={user ? user : null} />,
             },
 
             {
               label: "Información Comercial",
               icon: <IconSettings className="h-5 w-5" />,
-              content: (
-                <AccountSettingsTab
-                  user={user ? user : null}
-                  onSave={handleAccountSettingsSave}
-                />
-              ),
+              content: <AccountSettingsTab user={user ? user : null} />,
             },
             {
               label: "Solicitudes de Aprobación",

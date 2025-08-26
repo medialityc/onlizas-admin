@@ -9,6 +9,7 @@ import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
 import { Business, GetAllBusiness } from "@/types/business";
+import { PaginatedResponse } from "../types/common";
 
 export async function getAllBusiness(
   params: IQueryable
@@ -31,7 +32,7 @@ export async function getAllBusiness(
 }
 export async function getAllBusinessByUser(
   params: IQueryable
-): Promise<ApiResponse<Business[]>> {
+): Promise<ApiResponse<PaginatedResponse<Business>>> {
   const url = new QueryParamsURLFactory(
     { ...params },
     backendRoutes.business.getAllByUser
@@ -46,7 +47,7 @@ export async function getAllBusinessByUser(
 
   if (!res.ok) return handleApiServerError(res);
 
-  return buildApiResponseAsync<Business[]>(res);
+  return buildApiResponseAsync<PaginatedResponse<Business>>(res);
 }
 
 export async function createBusiness(
@@ -58,6 +59,7 @@ export async function createBusiness(
     method: "POST",
     data,
     useAuth: true,
+    // contentType: "multipart/form-data",
   });
 
   if (!res.ok) return handleApiServerError(res);
@@ -72,6 +74,24 @@ export async function updateBusinessData(
 ): Promise<ApiResponse<Business>> {
   const res = await nextAuthFetch({
     url: backendRoutes.business.update(id),
+    method: "PUT",
+    data,
+    useAuth: true,
+    contentType: "multipart/form-data",
+    // No establecer Content-Type manualmente para FormData
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("categories");
+
+  return buildApiResponseAsync<Business>(res);
+}
+export async function updateBusinessProviderData(
+  id: string | number,
+  data: FormData
+): Promise<ApiResponse<Business>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.business.updateProvider(id),
     method: "PUT",
     data,
     useAuth: true,

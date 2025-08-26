@@ -18,8 +18,8 @@ export const personalInfoSchema = z.object({
   name: z.string().min(1, "El nombre es requerido").max(100),
   photoFile: z
     .union([
-      z.instanceof(File, { message: "Debe ser un archivo válido." }),
       z.string().url("URL inválido"),
+      z.instanceof(File, { message: "Debe ser un archivo válido." }),
     ])
     .optional(),
   emails: z.array(emailSchema),

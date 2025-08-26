@@ -7,11 +7,10 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/cards/card";
+import { AddressFormData as UserAddressFormData } from "@/sections/users/edit/components/user-schema";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
-import { UserDocumentsList } from "@/sections/users/documents/list/documents-list";
-import { getUserDocuments } from "@/services/users";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useMemo } from "react";
 import {
   SparklesIcon,
   IdentificationIcon,
@@ -21,222 +20,49 @@ import {
   PhoneIcon,
 } from "@heroicons/react/24/outline";
 import StatusBadge from "@/components/badge/status-badge";
-import { IUser, UserResponseMe } from "@/types/users";
-import { useForm, useFieldArray } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { UserResponseMe } from "@/types/users";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { resendEmail, resendPhone } from "@/services/users";
 import LoaderButton from "@/components/loaders/loader-button";
-import showToast from "@/config/toast/toastConfig";
 import { Button } from "@/components/button/button";
 import FormProvider from "@/components/react-hook-form/form-provider";
-import {
-  PersonalInfoFormData,
-  personalInfoSchema,
-} from "../../schemas/personal-info-schema";
 import AdressField from "@/sections/users/edit/components/adress-field";
 import { AddressModal } from "@/sections/users/edit/components/adress-modal";
 import { EmptyState } from "@/sections/users/edit/components/empty-state-component";
-import { AddressFormData as UserAddressFormData } from "@/sections/users/edit/components/user-schema";
-import { useMemo } from "react";
-import { useModalState } from "@/hooks/use-modal-state";
-import { useUpdateProviderPersonalInfo } from "@/sections/provider-management/profile/hooks/use-update-provider-personal-info";
 import { urlToFile } from "@/lib/utils";
+import { usePersonalInfoTab } from "../../hooks/use-personal-info-tab";
+import { getUserDocuments } from "@/services/users";
+import { ProviderDocumentsList } from "../../documents/list/provider-documents-list";
 
 interface PersonalInfoTabProps {
   user: UserResponseMe | null;
-  onSave?: (data: PersonalInfoFormData) => void;
 }
 
-export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
-  const emails = user?.emails ?? [];
-  const phones = user?.phones ?? [];
-  console.log(user);
-
-  // Modal state using global useModalState pattern
-  const { getModalState, openModal, closeModal } = useModalState();
-  const createAddressModal = getModalState("createAddress");
-  const editAddressModal = getModalState<number>("editAddress");
-
-  // Hook para actualizar información personal del proveedor
-  const updateProviderMutation = useUpdateProviderPersonalInfo(user?.id ?? 0, {
-    onSuccess: (data) => {
-      console.log("Información actualizada:", data);
-      onSave?.(methods.getValues()); // Llama al callback original si existe
-    },
-  });
-
-  // Independent form for personal info only
-  const methods = useForm<PersonalInfoFormData>({
-    resolver: zodResolver(personalInfoSchema),
-    defaultValues: {
-      id: user?.id,
-      name: user?.name || "",
-      photoFile: user?.photoUrl || undefined,
-      emails: Array.isArray(user?.emails)
-        ? user.emails.map((e: any) => ({
-            address: e.address,
-            isVerified: !!e.isVerified,
-          }))
-        : [],
-      phones: Array.isArray(user?.phones)
-        ? user.phones.map((p: any) => ({
-            countryId: Number(p.countryId ?? 0),
-            number: String(p.number ?? ""),
-            isVerified: !!p.isVerified,
-          }))
-        : [],
-      addresses: Array.isArray(user?.addresses)
-        ? user.addresses.map((a: any) => ({
-            id: a.id,
-            name: a.name ?? "",
-            mainStreet: a.mainStreet ?? "",
-            number: a.number ?? "",
-            city: a.city ?? "",
-            state: a.state ?? "",
-            zipcode: a.zipcode ?? "",
-            countryId: Number(a.countryId ?? 0),
-            otherStreets: a.otherStreets ?? "",
-            latitude: typeof a.latitude === "number" ? a.latitude : undefined,
-            longitude:
-              typeof a.longitude === "number" ? a.longitude : undefined,
-            annotations: a.annotations ?? "",
-          }))
-        : [],
-      isBlocked: !!user?.isBlocked,
-      isVerified: !!user?.isVerified,
-      // attributes: user?.attributes || {},
-    },
-    mode: "onChange",
-  });
-
-  const { control, watch } = methods;
-  const emailWatch = watch("emails") || [];
-  const phoneWatch = watch("phones") || [];
-
+export function PersonalInfoTab({ user }: PersonalInfoTabProps) {
   const {
-    fields: emailFields,
-    append: appendEmail,
-    remove: removeEmail,
-  } = useFieldArray({ control, name: "emails" });
-
-  const {
-    fields: phoneFields,
-    append: appendPhone,
-    remove: removePhone,
-  } = useFieldArray({ control, name: "phones" });
-
-  const {
-    fields: addressFields,
-    append: appendAddress,
-    remove: removeAddress,
-    update: updateAddress,
-  } = useFieldArray({ control, name: "addresses", keyName: "_key" });
-
-  // documents are shown via the reusable UserDocumentsList (server-aware)
-  const documentsPromise = useMemo(() => {
-    const userId = user?.id ?? 0;
-    return getUserDocuments(userId);
-  }, [user?.id]);
-
-  type PersonalAddress = PersonalInfoFormData["addresses"][number];
-  const toPersonalAddress = (a: UserAddressFormData): PersonalAddress => ({
-    id: a.id,
-    name: a.name,
-    mainStreet: a.mainStreet,
-    number: a.number,
-    city: a.city ?? "",
-    state: a.state ?? "",
-    zipcode: a.zipcode ?? "",
-    countryId: a.countryId ?? 0,
-    otherStreets: a.otherStreets ?? "",
-    latitude: a.latitude,
-    longitude: a.longitude,
-    annotations: a.annotations ?? "",
-  });
-
-  useEffect(() => {
-    const loadImageAsFile = async () => {
-      if (user?.photoUrl) {
-        try {
-          const file = await urlToFile(user.photoUrl, "product-image.jpg");
-          methods.setValue("photoFile", file);
-        } catch {
-          methods.setValue("photoFile", user.photoUrl);
-        } finally {
-        }
-      }
-    };
-    loadImageAsFile();
-  }, [user?.photoUrl, methods]);
-
-  const handleResendEmail = async (email: string) => {
-    if (!email) return;
-    try {
-      const res = await resendEmail({ email });
-      if (res?.error) {
-        showToast(res.message || "Error al enviar el correo", "error");
-      } else {
-        showToast("Correo de verificación enviado correctamente", "success");
-      }
-    } catch (err) {
-      console.error(err);
-      showToast("Error al enviar la verificación", "error");
-    }
-  };
-
-  const handleResendPhone = async (phone: any) => {
-    if (!phone) return;
-    try {
-      const response = await resendPhone({
-        countryId: phone.countryId || 1,
-        phoneNumber: phone.number || phone,
-      });
-      if (response?.error) {
-        showToast(
-          response.message || "Error al enviar la verificación",
-          "error"
-        );
-      } else {
-        showToast("Verificación enviada correctamente", "success");
-      }
-    } catch (err) {
-      console.error(err);
-      showToast("Error al enviar la verificación", "error");
-    }
-  };
-
-  const handleRemoveEmail = (index: number) => removeEmail(index);
-
-  const handleRemovePhone = (index: number) => removePhone(index);
-
-  const handleAddressModalSave = (address: UserAddressFormData) => {
-    const editIndex = editAddressModal.id ?? null;
-    if (editIndex !== null) {
-      updateAddress(editIndex, toPersonalAddress(address));
-      closeModal("editAddress");
-    } else {
-      const withId = { ...address, id: Date.now() } as UserAddressFormData;
-      appendAddress(toPersonalAddress(withId));
-      closeModal("createAddress");
-    }
-  };
-
-  const handleEditAddress = (_address: any, index: number) => {
-    openModal<number>("editAddress", index);
-  };
-
-  // Selected address by index when editing
-  const selectedAddress = useMemo(() => {
-    const idx = editAddressModal.id;
-    if (idx === undefined || idx === null) return null;
-    return (addressFields[idx] as unknown as UserAddressFormData) ?? null;
-  }, [editAddressModal, addressFields]);
-
-  const handleFormSubmit = async (data: PersonalInfoFormData) => {
-    // Usar la mutación del hook en lugar del callback directo
-    updateProviderMutation.mutate(data);
-  };
+    addressFields,
+    appendEmail,
+    appendPhone,
+    closeModal,
+    createAddressModal,
+    editAddressModal,
+    emailFields,
+    emailWatch,
+    handleAddressModalSave,
+    handleEditAddress,
+    handleFormSubmit,
+    handleRemoveEmail,
+    handleRemovePhone,
+    handleResendEmail,
+    handleResendPhone,
+    methods,
+    openModal,
+    phoneFields,
+    phoneWatch,
+    removeAddress,
+    selectedAddress,
+    updateProviderMutation,
+    documentsPromise,
+  } = usePersonalInfoTab({ user });
 
   return (
     <>
@@ -372,11 +198,11 @@ export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
                         </div>
                         <div className="flex items-center gap-3 mt-7">
                           {(emailWatch[index]?.isVerified ??
-                          emails[index]?.isVerified) ? (
+                          user?.emails[index]?.isVerified) ? (
                             <StatusBadge
                               isActive={true}
                               activeText="Verificado"
-                              inactiveText="No"
+                              inactiveText="No Verificado"
                             />
                           ) : (
                             <LoaderButton
@@ -501,7 +327,7 @@ export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
                         </div>
                         <div className="flex items-center gap-3 mt-7">
                           {(phoneWatch[index]?.isVerified ??
-                          phones[index]?.isVerified) ? (
+                          user?.phones[index]?.isVerified) ? (
                             <StatusBadge
                               isActive={true}
                               activeText="Verificado"
@@ -554,7 +380,7 @@ export function PersonalInfoTab({ user, onSave }: PersonalInfoTabProps) {
                 <Suspense
                   fallback={<div className="py-4">Cargando documentos...</div>}
                 >
-                  <UserDocumentsList
+                  <ProviderDocumentsList
                     documentsPromise={documentsPromise}
                     userId={user?.id ?? 0}
                   />
