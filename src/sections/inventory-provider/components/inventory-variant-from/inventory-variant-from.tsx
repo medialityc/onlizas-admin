@@ -25,7 +25,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
   const isWarranty = watch(`${variantName}.warranty.isWarranty`);
 
   return (
-    <div className="flex flex-col gap-2 mt-4 p-4 border border-dashed rounded-lg bg-slate-50">
+    <div className="flex flex-col gap-2 mt-4 p-4 border dark:border-gray-600 border-dashed rounded-lg bg-slate-50 dark:bg-slate-900">
       <div className="flex flex-row gap-2 items-center justify-between col-span-2 mb-5">
         <h3 className="font-bold">Variante {variantIndex + 1}</h3>
         <Button
