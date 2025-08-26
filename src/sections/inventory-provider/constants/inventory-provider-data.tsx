@@ -1,130 +1,52 @@
 import { InventoryProviderFormData } from "@/sections/inventory-provider/schemas/inventory-provider.schema";
 
-/**
-<<<<<<< HEAD
- * Serializa InventoryProviderFormData a FormData usando notación con corchetes:
- * storesWarehouses[0][storeId], storesWarehouses[0][warehouseIds][0],
- * storesWarehouses[0][productVariants][0][quantity], etc.
-=======
- * Serializa InventoryProviderFormData a FormData compatible con .NET:
- * - storesWarehouses[0].storeId, storesWarehouses[0].warehouseIds[0]
- * - storesWarehouses[0].productVariants[0].quantity, etc.
->>>>>>> 01a2238 (fix issues)
- */
 export const setInventoryProviderFormData = async (
   product: InventoryProviderFormData
 ): Promise<FormData> => {
   const formData = new FormData();
 
-  // Campos principales
-  formData.append("productId", String(product.productId || ""));
-  formData.append("supplierId", String(product.supplierId || ""));
+  // Si tienes imágenes como FileList o array de File para cada variant:
+  product.storesWarehouses.forEach((sw: any, i) => {
+    formData.append(`StoresWarehouses[${i}].StoreId`, sw.storeId);
 
-  if (!product.productId) {
-    throw new Error("productId is required");
-  }
-  if (!product.supplierId) {
-    throw new Error("supplierId is required");
-  }
-
-  const storesWarehouses = product.storesWarehouses || [];
-  if (storesWarehouses.length === 0) {
-    throw new Error("Debes seleccionar al menos una tienda y almacén.");
-  }
-
-  storesWarehouses.forEach((storeItem, storeIndex) => {
-    // Store ID - usar notación de array para .NET
-    formData.append(
-      `storesWarehouses[${storeIndex}].storeId`,
-      String(storeItem.storeId)
-    );
-
-    // Warehouse IDs
-    const warehouseIds = storeItem.warehouseIds || [];
-    warehouseIds.forEach((warehouseId, warehouseIndex) => {
-      formData.append(
-        `storesWarehouses[${storeIndex}].warehouseIds[${warehouseIndex}]`,
-        String(warehouseId)
-      );
+    sw.warehouseIds.forEach((wid: any, widIdx: number) => {
+      formData.append(`StoresWarehouses[${i}].WarehouseIds[${widIdx}]`, wid);
     });
 
-    // Product Variants
-    const productVariants = storeItem.productVariants || [];
-    productVariants.forEach((variant, variantIndex) => {
-      const variantBaseKey = `storesWarehouses[${storeIndex}].productVariants[${variantIndex}]`;
-
-      // Detalles (CPU, RAM, etc.)
-      if (variant.details && typeof variant.details === "object") {
-        Object.entries(variant.details).forEach(([key, value]) => {
-          const val = value == null ? "" : String(value);
-          formData.append(`${variantBaseKey}.details.${key}`, val);
-        });
-      }
-
-      // Campos primitivos - usar camelCase para que coincida con .NET
-      const fieldMappings = {
-        quantity: "quantity",
-        price: "price",
-        discountType: "discountType",
-        discountValue: "discountValue",
-        purchaseLimit: "purchaseLimit",
-        isPrime: "isPrime",
-        packageDelivery: "packageDelivery",
-      };
-
-      Object.entries(fieldMappings).forEach(([jsField, netField]) => {
-        const value = variant[jsField as keyof typeof variant];
-        if (value !== undefined && value !== null) {
-          formData.append(`${variantBaseKey}.${netField}`, String(value));
-        }
-      });
-
-      // Warranty
-      if (variant.warranty && typeof variant.warranty === "object") {
-        Object.entries(variant.warranty).forEach(([key, value]) => {
-          const val = value == null ? "" : String(value);
-          formData.append(`${variantBaseKey}.warranty.${key}`, val);
-        });
-      }
-
-      // Imágenes
-      const images = variant.images || [];
-      images.forEach((image, imageIndex) => {
-        const imageKey = `${variantBaseKey}.images[${imageIndex}]`;
-        if (image instanceof File) {
-          formData.append(imageKey, image);
-        } else if (typeof image === "string") {
-          // Si es URL como string
-          formData.append(imageKey, image);
+    sw.productVariants.forEach((variant: any, vi: number) => {
+      Object.entries(variant).forEach(([key, value]) => {
+        if (key === "images" && Array.isArray(value)) {
+          value.forEach((file) => {
+            formData.append(
+              `StoresWarehouses[${i}].ProductVariants[${vi}].Images`,
+              file
+            );
+          });
+        } else if (
+          typeof value === "object" &&
+          value !== null &&
+          !(value instanceof File)
+        ) {
+          // Para Details y Warranty (que son objetos)
+          Object.entries(value).forEach(([subKey, subVal]) => {
+            formData.append(
+              `StoresWarehouses[${i}].ProductVariants[${vi}].${key}.${subKey}`,
+              subVal
+            );
+          });
+        } else if (value !== undefined && value !== null) {
+          formData.append(
+            `StoresWarehouses[${i}].ProductVariants[${vi}].${key}`,
+            value as any
+          );
         }
       });
     });
   });
+
+  // Los campos de primer nivel:
+  formData.append("ProductId", String(product.productId));
+  formData.append("SupplierId", String(product.supplierId));
 
   return formData;
-};
-
-export const validateInventoryData = (
-  product: InventoryProviderFormData
-): string[] => {
-  const errors: string[] = [];
-
-  if (!product.productId) errors.push("productId es requerido");
-  if (!product.supplierId) errors.push("supplierId es requerido");
-
-  if (!product.storesWarehouses || product.storesWarehouses.length === 0) {
-    errors.push("Debes seleccionar al menos una tienda y almacén");
-    return errors;
-  }
-
-  product.storesWarehouses.forEach((store, index) => {
-    if (!store.storeId) {
-      errors.push(`Store ID requerido para la tienda ${index + 1}`);
-    }
-    if (!store.warehouseIds || store.warehouseIds.length === 0) {
-      errors.push(`Al menos un almacén requerido para la tienda ${index + 1}`);
-    }
-  });
-
-  return errors;
 };
