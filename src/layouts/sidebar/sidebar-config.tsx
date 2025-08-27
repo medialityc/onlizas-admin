@@ -71,6 +71,18 @@ export const sidebarSections: SidebarSection[] = [
     label: "Logística",
     items: [
       {
+        id: "all_inventory",
+        label: "Inventario General",
+        path: paths.dashboard.inventory.all,
+        icon: <ClipboardDocumentIcon className="h-4 w-4" />,
+      },
+      {
+        id: "inventory",
+        label: "Inventario por proveedor",
+        path: paths.dashboard.inventory.list,
+        icon: <ClipboardDocumentIcon className="h-4 w-4" />,
+      },
+      {
         id: "suppliers",
         label: "Solicitud de Proveedores",
         path: paths.dashboard.suppliers.list,
@@ -87,12 +99,6 @@ export const sidebarSections: SidebarSection[] = [
         label: "Tiendas",
         path: paths.dashboard.stores.list,
         icon: <ShoppingBagIcon className="h-4 w-4" />,
-      },
-      {
-        id: "inventory",
-        label: "Inventario",
-        path: paths.dashboard.inventory.list,
-        icon: <ClipboardDocumentIcon className="h-4 w-4" />,
       },
     ],
   },

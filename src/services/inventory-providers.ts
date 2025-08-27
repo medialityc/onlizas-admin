@@ -83,7 +83,7 @@ export async function createInventoryProvider(
 
 export async function getAllInventoryProvider(
   params: IQueryable
-): Promise<ApiResponse<GetAllInventoryProvider>> {
+): Promise<ApiResponse<GetAllInventoryProviderResponse>> {
   const url = new QueryParamsURLFactory(
     { ...params },
     backendRoutes.inventoryProvider.list
@@ -98,22 +98,7 @@ export async function getAllInventoryProvider(
 
   if (!res.ok) return handleApiServerError(res);
 
-  return buildApiResponseAsync<GetAllInventoryProvider>(res);
-}
-
-export async function deleteInventoryProvider(
-  id: string | number
-): Promise<ApiResponse<ApiStatusResponse>> {
-  const res = await nextAuthFetch({
-    url: backendRoutes.inventoryProvider.delete(id),
-    method: "DELETE",
-    useAuth: true,
-  });
-
-  if (!res.ok) return handleApiServerError(res);
-  revalidateTag(INVENTORY_TAG_KEY);
-
-  return buildApiResponseAsync<ApiStatusResponse>(res);
+  return buildApiResponseAsync<GetAllInventoryProviderResponse>(res);
 }
 
 export async function getAllInventoryByUserProvider(
@@ -150,4 +135,19 @@ export async function getInventoryById(
   if (!res.ok) return handleApiServerError(res);
 
   return buildApiResponseAsync<InventoryProvider>(res);
+}
+
+export async function deleteInventoryProvider(
+  id: string | number
+): Promise<ApiResponse<ApiStatusResponse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.inventoryProvider.delete(id),
+    method: "DELETE",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag(INVENTORY_TAG_KEY);
+
+  return buildApiResponseAsync<ApiStatusResponse>(res);
 }
