@@ -1,23 +1,45 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useFormContext } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { Store } from "@/types/stores";
 import CategoriesToolbar from "./categories-toolbar";
 import { mockCategories, type StoreCategory } from "./mock";
-import { EyeIcon, ChartBarIcon } from "@heroicons/react/24/outline";
-// import CategoryModal from "./category-modal"; // NOTE: Crear categoría deshabilitado por ahora
+
 import DeleteDialog from "@/components/modal/delete-modal";
-import { MetricCard } from "./components";
+import CategoriesMetrics from "./components/categories-metrics";
 import CategoryList from "./components/category-list";
 
 interface Props {
   store: Store;
 }
 
-export default function CategoriesContainer({ store }: Props) {
-  const [items, setItems] = useState<StoreCategory[]>(mockCategories);
-  const { register, setValue } = useFormContext();
+// Componente interno que usa el FormContext
+function CategoriesContent({ store }: Props) {
+  const methods = useForm<any>({
+    defaultValues: {
+      categoriesPayload: [],
+      categoriesViewState: mockCategories
+    }
+  });
+
+  const { register, setValue, getValues } = methods;
+  // Rehidratar primero desde un estado "rico" guardado en RHF (no el payload plano)
+  const viewState = getValues("categoriesViewState") as StoreCategory[] | undefined;
+  const initial = viewState?.length
+    ? viewState
+    : ((getValues("categoriesPayload") as any[])?.length
+      ? (getValues("categoriesPayload") as any[]).map((c: any, idx) => ({
+          id: c.id ?? idx + 1,
+          name: c.name ?? `Cat ${idx + 1}`,
+          productCount: c.productCount ?? 0,
+          views: c.views ?? 0,
+          isActive: Boolean(c.isActive ?? true),
+          order: c.order ?? idx + 1,
+        }))
+      : mockCategories);
+  const [items, setItems] = useState<StoreCategory[]>(initial);
+  const [source] = useState<string>(viewState?.length ? "form-view" : (getValues("categoriesPayload") as any[])?.length ? "form" : "mock");
   // const [openNew, setOpenNew] = useState(false); // NOTE: Crear categoría deshabilitado por ahora
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
@@ -28,37 +50,24 @@ export default function CategoriesContainer({ store }: Props) {
     return { total, active, products };
   }, [items]);
 
-  // Register a virtual field to carry categories data in the global submit
+  // Register virtual fields: payload (plano para el back) y viewState (rico para rehidratación UI)
   useEffect(() => {
     register("categoriesPayload");
+    register("categoriesViewState");
   }, [register]);
 
-  // Keep the RHF value in sync whenever items change
+  // Sincronizar ambos: payload minimal para el envío y viewState rico para restaurar al volver al tab
   useEffect(() => {
     const payload = items.map((c, i) => ({ id: c.id, isActive: c.isActive, order: i + 1 }));
-    setValue("categoriesPayload", payload, { shouldDirty: true, shouldTouch: false });
+    setValue("categoriesPayload", payload, { shouldDirty: true, shouldTouch: false, shouldValidate: false });
+    setValue("categoriesViewState", items, { shouldDirty: false, shouldTouch: false, shouldValidate: false });
   }, [items, setValue]);
 
   return (
     <div className="p-6 text-lg">
+      <div className="text-xs text-gray-500 mb-2">Fuente: {source === "form" ? "Formulario" : "Mock"}</div>
       {/* Metrics header */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <MetricCard
-          label="Total Categorías"
-          value={totals.total}
-          icon={<ChartBarIcon className="w-6 h-6 text-indigo-500" />}
-        />
-        <MetricCard
-          label="Categorías Activas"
-          value={totals.active}
-          icon={<EyeIcon className="w-6 h-6 text-emerald-600" />}
-        />
-        <MetricCard
-          label="Total Productos"
-          value={totals.products}
-          icon={<ChartBarIcon className="w-6 h-6 text-violet-600" />}
-        />
-      </div>
+      <CategoriesMetrics total={totals.total} active={totals.active} products={totals.products} />
 
       {/* Toolbar */}
       <CategoriesToolbar />
@@ -103,5 +112,21 @@ export default function CategoriesContainer({ store }: Props) {
         description="Esta acción eliminará la categoría seleccionada."
       />
     </div>
+  );
+}
+
+// Componente principal que provee el FormProvider
+export default function CategoriesContainer({ store }: Props) {
+  const methods = useForm<any>({
+    defaultValues: {
+      categoriesPayload: [],
+      categoriesViewState: mockCategories
+    }
+  });
+
+  return (
+    <FormProvider {...methods}>
+      <CategoriesContent store={store} />
+    </FormProvider>
   );
 }
