@@ -6,14 +6,13 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import {
-  CreateWarehouse,
   GetAllWarehouses,
-  UpdateWarehouse,
   Warehouse,
   WarehouseFilter,
 } from "@/types/warehouses";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
+import { WarehouseFormData } from "@/sections/warehouses/schemas/warehouse-schema";
 
 export async function getAllWarehouses(
   params: IQueryable & WarehouseFilter
@@ -34,19 +33,19 @@ export async function getAllWarehouses(
 
 export async function getWarehouseById(
   id: number
-): Promise<ApiResponse<Warehouse>> {
+): Promise<ApiResponse<WarehouseFormData>> {
   const res = await nextAuthFetch({
-    url: `${backendRoutes.warehouses.list}/${id}`,
+    url: backendRoutes.warehouses.edit(id),
     method: "GET",
     useAuth: true,
-    next: { tags: ["warehouses"] },
+    next: { tags: ["warehouses", String(id)] },
   });
   if (!res.ok) return handleApiServerError(res);
-  return buildApiResponseAsync<Warehouse>(res);
+  return buildApiResponseAsync<WarehouseFormData>(res);
 }
 
 export async function createWarehouse(
-  data: CreateWarehouse
+  data: WarehouseFormData
 ): Promise<ApiResponse<Warehouse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.warehouses.create,
@@ -61,7 +60,7 @@ export async function createWarehouse(
 
 export async function updateWarehouse(
   id: number,
-  data: UpdateWarehouse,
+  data: WarehouseFormData,
   audit: { reason?: string } = {}
 ): Promise<ApiResponse<Warehouse>> {
   const res = await nextAuthFetch({

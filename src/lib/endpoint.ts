@@ -88,6 +88,8 @@ export const backendRoutes = {
   warehouses: {
     create: `${process.env.NEXT_PUBLIC_API_URL}warehouses`,
     list: `${process.env.NEXT_PUBLIC_API_URL}warehouses`,
+    edit: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}`,
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}`,
     delete: (id: string | number) =>

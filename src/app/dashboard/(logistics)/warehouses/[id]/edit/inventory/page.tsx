@@ -1,4 +1,4 @@
-import EditWarehouseInventoryContent from "@/sections/warehouses/edit/inventory/edit-warehouse-content";
+import EditWarehouseInventoryContent from "@/sections/warehouses/components/inventory/edit-warehouse-content";
 
 export default async function EditWarehouseInventoryPage({
   params,
