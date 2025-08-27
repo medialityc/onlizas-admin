@@ -41,10 +41,10 @@ function UserListSkeleton() {
 async function UserListPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const usersPromise = getAllUsers(query);
+  const users = await getAllUsers(query);
   return (
     <Suspense fallback={<UserListSkeleton />}>
-      <UserListContainer usersPromise={usersPromise} query={params} />
+      <UserListContainer users={users} query={params} />
     </Suspense>
   );
 }

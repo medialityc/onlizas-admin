@@ -22,7 +22,7 @@ export default async function ProductsPage({
 }) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const productsPromise = getAllProducts(query);
+  const productsPromise = await getAllProducts(query);
 
   return (
     <Suspense fallback={<ProductsListFallback />}>

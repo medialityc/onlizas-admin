@@ -11,7 +11,6 @@ export const InventoryStoreSchema = z.object({
   storeId: z.number(),
   warehouseId: z.number(),
   parentProductId: z.number(),
-
   /* adapter data */
   products: productVariants,
 });

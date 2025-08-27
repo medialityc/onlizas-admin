@@ -41,7 +41,7 @@ function CategoriesListSkeleton() {
 async function CategoriesListPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const categoriesPromise = getAllCategories(query);
+  const categoriesPromise = await getAllCategories(query);
 
   return (
     <Suspense fallback={<CategoriesListSkeleton />}>

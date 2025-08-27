@@ -1,6 +1,6 @@
 "use client";
 import useFiltersUrl from "@/hooks/use-filters-url";
-import React, { use } from "react";
+import React from "react";
 import { ApiResponse } from "@/types/fetch/api";
 import { GetAllCurrenciesLogs } from "@/types/currencies";
 import { SearchParams } from "@/types/fetch/request";
@@ -12,9 +12,9 @@ function CurrenciesLogsContainer({
   searchParams,
 }: {
   searchParams: SearchParams;
-  currenciesLogsPromise: Promise<ApiResponse<GetAllCurrenciesLogs>>;
+  currenciesLogsPromise: ApiResponse<GetAllCurrenciesLogs>;
 }) {
-  const currenciesResponse = use(currenciesLogsPromise);
+  const currenciesResponse = currenciesLogsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(currenciesResponse);
 

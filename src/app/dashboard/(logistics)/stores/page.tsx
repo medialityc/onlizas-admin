@@ -60,7 +60,7 @@ function StoresListSkeleton() {
 async function StoresListPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const storesPromise = getAllStores(query);
+  const storesPromise = await getAllStores(query);
 
   return (
     <Suspense fallback={<StoresListSkeleton />}>

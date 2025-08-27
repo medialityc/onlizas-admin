@@ -3,14 +3,13 @@
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { use } from "react";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 import { GetAllCurrencies } from "@/services/currencies";
 import { CurrenciesList } from "./currencies-list";
 
 interface CurrenciesListPageProps {
-  currenciesPromise: Promise<ApiResponse<GetAllCurrencies>>;
+  currenciesPromise: ApiResponse<GetAllCurrencies>;
   query: SearchParams;
 }
 
@@ -18,7 +17,7 @@ export default function CurrenciesListContainer({
   currenciesPromise,
   query,
 }: CurrenciesListPageProps) {
-  const currenciesResponse = use(currenciesPromise);
+  const currenciesResponse = currenciesPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(currenciesResponse);
 

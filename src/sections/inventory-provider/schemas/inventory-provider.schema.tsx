@@ -8,7 +8,7 @@ export const productVariants = z
       .object({
         //only by adapter
         limitPurchaseLimit: z.number().optional(),
-
+        id: z.number(),
         details: z
           .union([
             // Acepta el array original

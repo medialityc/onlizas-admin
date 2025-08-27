@@ -10,7 +10,7 @@ interface PageProps {
 export default async function DepartmentLogsPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const departmentLogsPromise = getAllDepartmentLogs(query);
+  const departmentLogsPromise = await getAllDepartmentLogs(query);
   return (
     <DepartmentLogsContainer
       departmentLogsPromise={departmentLogsPromise}

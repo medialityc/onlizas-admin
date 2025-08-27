@@ -21,7 +21,7 @@ interface PageProps {
 async function UserProviderPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const supplierUsers = getAllSupplierUsers({ ...query, isActive: true });
+  const supplierUsers = await getAllSupplierUsers({ ...query, isActive: true });
 
   return (
     <Suspense fallback={<InventoryListSkeleton />}>

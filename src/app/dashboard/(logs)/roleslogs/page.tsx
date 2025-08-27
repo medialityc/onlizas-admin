@@ -10,7 +10,7 @@ interface PageProps {
 export default async function RolesLogsPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const rolesLogsPromise = getAllRolesLogs(query);
+  const rolesLogsPromise = await getAllRolesLogs(query);
   return (
     <RolesLogsContainer
       rolesLogsPromise={rolesLogsPromise}

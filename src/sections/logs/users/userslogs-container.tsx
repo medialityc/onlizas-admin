@@ -1,6 +1,6 @@
 "use client";
 import useFiltersUrl from "@/hooks/use-filters-url";
-import React, { use } from "react";
+import React from "react";
 import { ApiResponse } from "@/types/fetch/api";
 import { GetAllUsersLogsResponse } from "@/types/users";
 import { SearchParams } from "@/types/fetch/request";
@@ -12,9 +12,9 @@ function UsersLogsContainer({
   searchParams,
 }: {
   searchParams: SearchParams;
-  usersLogsPromise: Promise<ApiResponse<GetAllUsersLogsResponse>>;
+  usersLogsPromise: ApiResponse<GetAllUsersLogsResponse>;
 }) {
-  const usersResponse = use(usersLogsPromise);
+  const usersResponse = usersLogsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(usersResponse);
 

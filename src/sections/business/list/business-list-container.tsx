@@ -4,13 +4,12 @@ import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
 import { GetAllBusiness } from "@/types/business";
-import { use } from "react";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 import { BusinessList } from "./business-list";
 
 interface BusinessListPageProps {
-  businessPromise: Promise<ApiResponse<GetAllBusiness>>;
+  businessPromise: ApiResponse<GetAllBusiness>;
   query: SearchParams;
 }
 
@@ -18,7 +17,7 @@ export default function BusinessListContainer({
   businessPromise,
   query,
 }: BusinessListPageProps) {
-  const businessResponse = use(businessPromise);
+  const businessResponse = businessPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(businessResponse);
 

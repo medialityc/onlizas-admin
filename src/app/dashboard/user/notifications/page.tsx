@@ -1,8 +1,6 @@
 import { buildQueryParams } from "@/lib/request";
 import UserNotificationContainer from "@/sections/notifications/receipt/list/notifications-container";
-import UserListContainer from "@/sections/users/list/user-list-container";
 import { getNotificationsByUser } from "@/services/notifications/notification-service";
-import { getAllUsers } from "@/services/users";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
 import { Suspense } from "react";

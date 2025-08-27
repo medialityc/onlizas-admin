@@ -2,7 +2,6 @@ import { buildQueryParams } from "@/lib/request";
 import { InventoryListSkeleton } from "@/sections/inventory-provider/components/skeleton/inventory-list-skeleton";
 import InventoryProviderCardListContainer from "@/sections/inventory-provider/containers/inventory-provider-card-list-container";
 import { getAllInventoryByUserProvider } from "@/services/inventory-providers";
-
 import { getUserProviderById } from "@/services/users";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { IUserProvider } from "@/types/users";

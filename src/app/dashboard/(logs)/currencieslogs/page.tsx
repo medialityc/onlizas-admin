@@ -10,7 +10,7 @@ interface PageProps {
 export default async function CurrenciesLogsPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const currenciesLogsPromise = getAllCurrenciesLogs(query);
+  const currenciesLogsPromise = await getAllCurrenciesLogs(query);
   return (
     <CurrenciesLogsContainer
       currenciesLogsPromise={currenciesLogsPromise}
