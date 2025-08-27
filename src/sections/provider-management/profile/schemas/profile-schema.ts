@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { addressSchema } from "./edit/user-edit-schema";
+import { addressSchema } from "../components/edit/user-edit-schema";
 
 // Email and Phone schemas adapted from IUser types
 export const emailSchema = z.object({
