@@ -8,8 +8,9 @@ import { RHFInputWithLabel, RHFSelectWithLabel, RHFFileUpload } from "@/componen
 import RHFDatePickerBanner from "@/components/react-hook-form/rhf-date-picker-banner";
 import LoaderButton from "@/components/loaders/loader-button";
 import { BannerSchema, type BannerForm } from "./banner-schema";
-import { BannerItem } from "./banners-mock";
+import { BannerItem } from "@/types/stores";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
+
 
 type Props = {
 	open: boolean;
@@ -21,16 +22,16 @@ type Props = {
 
 export default function BannerCreateModal({ open, onClose, onCreate, onUpdate, editingBanner }: Props) {
 	const isEditing = !!editingBanner;
-	
+
 	const methods = useForm<BannerForm>({
-		resolver: zodResolver(BannerSchema) as any,
+		resolver: zodResolver(BannerSchema),
 		defaultValues: {
 			title: "",
 			urlDestinity: "",
 			position: 1,
 			initDate: new Date(), // Fecha de hoy por defecto
 			endDate: new Date(), // Fecha de hoy por defecto
-			image: null,
+			image: "",
 			isActive: true,
 		},
 		mode: "onBlur",
@@ -38,37 +39,46 @@ export default function BannerCreateModal({ open, onClose, onCreate, onUpdate, e
 
 	// Resetear el formulario cuando se abre el modal
 	useEffect(() => {
+		
 		if (open) {
-			if (isEditing && editingBanner) {
-				// Cargar datos del banner a editar
+			if (isEditing && editingBanner) {				
+				const initDate = editingBanner.initDate ? new Date(editingBanner.initDate) : new Date();
+				const endDate = editingBanner.endDate ? new Date(editingBanner.endDate) : new Date()
+
+				// parsear posición de forma segura
+				const parsedPos = Number(editingBanner.position ?? 1);
+				const position = Number.isFinite(parsedPos) ? parsedPos : 1;
+
+				// Cargar datos del banner a editar - convertir fechas string a Date correctamente
 				methods.reset({
-					title: editingBanner.title,
-					urlDestinity: editingBanner.urlDestinity,
-					position: Number(editingBanner.position),
-					initDate: editingBanner.initDate ? new Date(editingBanner.initDate) : new Date(),
-					endDate: editingBanner.endDate ? new Date(editingBanner.endDate) : new Date(),
-					image: editingBanner.image,
-					isActive: editingBanner.isActive,
+					title: editingBanner.title || "",
+					urlDestinity: editingBanner.urlDestinity || "",
+					position: position,
+					initDate: initDate,
+					endDate: endDate,
+					image: editingBanner.image ?? "",
+					isActive: editingBanner.isActive ?? true,
 				});
-			} else {
-				// Resetear para crear nuevo
+				
+			} else {				
 				methods.reset({
 					title: "",
 					urlDestinity: "",
 					position: 1,
 					initDate: new Date(),
 					endDate: new Date(),
-					image: null,
+					image: "",
 					isActive: true,
 				});
 			}
 		}
 	}, [open, isEditing, editingBanner, methods]);
 
-	const submitOnly = (data: BannerForm) => {
-		if (isEditing && editingBanner && onUpdate) {
+	const submitOnly = (data: BannerForm) => {		
+		if (isEditing && editingBanner && onUpdate) {			
 			onUpdate(editingBanner.id, data);
 		} else {
+			
 			onCreate(data);
 		}
 		onClose();
@@ -79,7 +89,7 @@ export default function BannerCreateModal({ open, onClose, onCreate, onUpdate, e
 		(data: BannerForm) => submitOnly(data),
 		(errors) => {
 			// Visible en consola para depurar rápidamente
-			try { console.warn("Errores Banner:", JSON.stringify(errors, null, 2)); } catch { }
+			try { console.warn("Errores Banner:", JSON.stringify(errors)); } catch { }
 		}
 	);
 
@@ -98,19 +108,19 @@ export default function BannerCreateModal({ open, onClose, onCreate, onUpdate, e
 						options={[
 							{ label: "Hero (Principal)", value: "1" },
 							{ label: "Sidebar", value: "2" },
-							{ label: "Slideshow", value: "3" },
+							{ label: "Footer", value: "3" },
 						]}
 					/>
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-						<RHFDatePickerBanner 
-							name="initDate" 
-							label="Fecha de Inicio"
-							minDate={new Date()}
+						<RHFDatePickerBanner
+							name="initDate"
+							label="Fecha de Inicio"							
+							minDate={isEditing ? undefined : new Date()}
 						/>
-						<RHFDatePickerBanner 
-							name="endDate" 
+						<RHFDatePickerBanner
+							name="endDate"
 							label="Fecha de Fin"
-							minDate={new Date()}
+							minDate={isEditing ? undefined : new Date()}
 						/>
 					</div>
 					<RHFImageUpload name="image" label="Imagen del Banner" variant="rounded" />

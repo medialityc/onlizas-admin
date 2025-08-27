@@ -21,7 +21,7 @@ export default function BannersTab() {
     position: string | number;
     initDate: string;
     endDate: string;
-    image: string;
+    image: File|string ;
   }
 
   // Solo usar datos del formulario (backend) o array vacío, NO usar mock
