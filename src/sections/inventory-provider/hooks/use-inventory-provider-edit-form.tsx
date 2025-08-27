@@ -20,6 +20,7 @@ const initValue: InventoryStoreFormData = {
   warehouseName: "",
   supplierName: "",
   storeName: "",
+  limitPurchaseLimit: 0,
 };
 
 export const useInventoryProviderEditForm = (

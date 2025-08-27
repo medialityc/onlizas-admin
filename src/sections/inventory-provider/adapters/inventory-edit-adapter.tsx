@@ -10,9 +10,9 @@ export const getInventoryEditAdapter = (
       ...prod,
       details: detailsObjectToArray(prod?.details),
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       purchaseLimit: prod?.limitPurchaseLimit,
+      isLimit:
+        prod?.limitPurchaseLimit && prod?.limitPurchaseLimit > 0 ? true : false,
     })),
   };
 };
