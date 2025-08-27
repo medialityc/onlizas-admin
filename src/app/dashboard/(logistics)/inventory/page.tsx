@@ -1,14 +1,14 @@
 import { buildQueryParams } from "@/lib/request";
 import { InventoryListSkeleton } from "@/sections/inventory-provider/components/skeleton/inventory-list-skeleton";
-import UserSupplierCardListContainer from "@/sections/inventory-provider/containers/user-supplier-card-list-container";
-import { getAllSupplierUsers } from "@/services/users";
+import InventoryCardListContainer from "@/sections/inventory-provider/containers/inventory-card-list-container";
+import { getAllInventoryProvider } from "@/services/inventory-providers";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Usuarios proveedores - ZAS Express",
-  description: "Listado de usuarios proveedores",
+  title: "Inventario General - ZAS Express",
+  description: "Gestión el inventarios",
   icons: {
     icon: "/assets/images/NEWZAS.svg",
   },
@@ -18,19 +18,17 @@ interface PageProps {
   searchParams: Promise<SearchParams>;
 }
 
-async function UserProviderPage({ searchParams }: PageProps) {
-  const params = await searchParams;
-  const query: IQueryable = buildQueryParams(params);
-  const supplierUsers = getAllSupplierUsers({ ...query, isActive: true });
+async function InventoryProviderPage({ searchParams }: PageProps) {
+  const search = await searchParams;
+  const query: IQueryable = buildQueryParams(search);
+
+  const inventories = getAllInventoryProvider(query);
 
   return (
     <Suspense fallback={<InventoryListSkeleton />}>
-      <UserSupplierCardListContainer
-        supplierUsers={supplierUsers}
-        query={params}
-      />
+      <InventoryCardListContainer inventories={inventories} query={search} />
     </Suspense>
   );
 }
 
-export default UserProviderPage;
+export default InventoryProviderPage;
