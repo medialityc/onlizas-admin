@@ -17,6 +17,7 @@ import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-aut
 import { getAllBusiness } from "@/services/business";
 import { FormProvider, RHFSelectWithLabel } from "@/components/react-hook-form";
 import { useProviderBusinessMutation } from "@/sections/provider-management/profile/hooks/use-provider-business-mutation";
+import { Label } from "@headlessui/react";
 
 interface ProviderBusinessModalProps {
   open: boolean;
@@ -300,7 +301,10 @@ export default function ProviderBusinessModal({
           </div>
 
           {/* Imágenes */}
-          <RHFMultiImageUpload name="photoObjectCodes" label="Fotos" />
+          <label className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+            Fotos
+          </label>
+          <RHFMultiImageUpload name="photoObjectCodes" />
 
           {/* Botones */}
           <div className="flex justify-end gap-3 pt-6">

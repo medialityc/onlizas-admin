@@ -386,10 +386,6 @@ export async function updateProviderPersonalInfo(
   formData.append("name", data.name);
   formData.append("isBlocked", data.isBlocked.toString());
   formData.append("isVerified", data.isVerified.toString());
-  formData.append("inaccessible", "false"); // Valor por defecto
-  formData.append("isActive", "true"); // Valor por defecto
-  formData.append("apiRole", "0"); // Valor por defecto
-
   // Manejo de la foto
   if (data.photoFile instanceof File) {
     formData.append("photoFile", data.photoFile);

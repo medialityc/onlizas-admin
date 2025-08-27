@@ -12,23 +12,21 @@ import {
   SparklesIcon,
 } from "@heroicons/react/24/outline";
 import { IUser, UserResponseMe } from "@/types/users";
-import ProviderBusinessModalContainer from "../business/provider-business-modal-container";
-import BeneficiaryModal from "../modal/beneficiary-modal";
+import ProviderBusinessModalContainer from "../../business/provider-business-modal-container";
+import BeneficiaryModal from "../../modal/beneficiary-modal";
 import { Business } from "@/types/business";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 import {
   AccountSettingsFormData,
   accountSettingsSchema,
-} from "../../schemas/account-settings-schema";
+} from "../../../schemas/account-settings-schema";
 import { useMemo, useState, useEffect } from "react";
 import { useModalState } from "@/hooks/use-modal-state";
-import { useBusiness } from "../edit/hook/use-business";
-import LoaderButton from "@/components/loaders/loader-button";
+import { useBusiness } from "../../edit/hook/use-business";
 import { Button } from "@/components/button/button";
-import { ProfileSkeleton } from "../profile-skeleton";
-import { AccountingBusinessSkeleton } from "../accounting-skeleton";
 import DeleteDialog from "@/components/modal/delete-modal";
-import { useProviderBusinessDeleteMutation } from "../../hooks/use-provider-business-delete-mutation";
+import { useProviderBusinessDeleteMutation } from "../../../hooks/use-provider-business-delete-mutation";
+import { AccountingBusinessSkeleton } from "./components/accounting-skeleton";
 
 interface AccountSettingsTabProps {
   user: UserResponseMe | null;
