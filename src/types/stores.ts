@@ -12,6 +12,18 @@ export type StoreAddress = {
   city?: string;
   country?: string;
 };
+
+export type BannerItem = {
+  id: number;
+  title: string;
+  urlDestinity: string;
+  position: number | string; // integer position
+  initDate?: string | null; // ISO date string - usar nombres del backend
+  endDate?: string | null;   // ISO date string - usar nombres del backend
+  image?: File | string | null;
+  isActive: boolean;
+};
+
 export type StorePolicy = {
   returnPolicy: string;
   shippingPolicy: string;

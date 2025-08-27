@@ -2,14 +2,14 @@ import { Store } from "@/types/stores";
 import type { StoreEditFormData } from "../../modals/store-edit-form.schema";
 
 type BuildStoreFormDataParams = {
-  store: Store;  
+  store: Store;
   data: Partial<StoreEditFormData>; // RHF values
 };
 
 // Construye el FormData plano que exige el backend para actualizar/crear una tienda
 export function buildStoreFormData({ store, data }: BuildStoreFormDataParams) {
   const formData = new FormData();
-  console.log("Estoy en tranforms",data)
+  console.log("Estoy en tranforms", data)
 
   // Apariencia (aplanado)
   const primaryColor = data?.primaryColor ?? store.primaryColor ?? "";
@@ -54,27 +54,33 @@ export function buildStoreFormData({ store, data }: BuildStoreFormDataParams) {
 
   // Arreglos como JSON
   formData.append("followers", JSON.stringify(Array.isArray(store.followers) ? store.followers : []));
-  
-  // Banners: aplanar array anidado antes de stringify
-  console.log("Raw banners from form:", banners);
-  
-  // Aplanar arrays anidados - el primer elemento es el array real
-  const flatBanners = Array.isArray(banners) && banners.length > 0 && Array.isArray(banners[0]) 
-    ? banners[0]  // Tomar el primer elemento que es el array real
-    : banners;
-    
-  console.log("Final banners payload:", flatBanners);
-  console.log("Banners JSON string:", JSON.stringify(flatBanners));
-  
-  formData.append("banners", JSON.stringify(flatBanners));
-  
-  // Log final FormData para debug
-  console.log("=== FormData Debug ===");
-  formData.forEach((value, key) => {
-    console.log(key + ":", value);
+
+  // Procesar banners con fechas en formato ISO correcto para el backend
+  const processedBanners = banners.map((banner: any) => {
+    // Función helper para convertir fecha a ISO string
+    const toISOString = (date: any): string => {
+      if (!date) return new Date().toISOString();
+      if (date instanceof Date) return date.toISOString();
+      if (typeof date === 'string') return new Date(date).toISOString();
+      return new Date().toISOString();
+    };
+
+    return {
+      id: banner.id || 0,
+      title: banner.title || "",
+      urlDestinity: banner.urlDestinity || "",
+      position: Number(banner.position) || 1,
+      initDate: toISOString(banner.initDate),
+      endDate: toISOString(banner.endDate),
+      image: (banner.image && typeof banner.image === 'object' && 'name' in banner.image) ? 
+             banner.image.name : (banner.image || "")
+    };
   });
-  console.log("=== End FormData Debug ===");
   
+  formData.append("banners", JSON.stringify(processedBanners));
+  console.log("Banners payload enviado:", JSON.stringify(processedBanners, null, 2));
+
+
   if (Array.isArray(data?.categoriesPayload)) {
     formData.append("categories", JSON.stringify(data.categoriesPayload));
   }

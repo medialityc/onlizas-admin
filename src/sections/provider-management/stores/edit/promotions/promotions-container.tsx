@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useForm, FormProvider } from "react-hook-form";
 import { Promotion, Store } from "@/types/stores";
-import { GiftIcon, UsersIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
-import StatCard from "./components/stat-card";
+import PromotionsMetrics from "./components/promotions-metrics";
 import PromotionsToolbar from "./components/toolbar";
 import PromotionRow from "./components/promotion-row";
 import { mockPromotions } from "./mock";
@@ -11,9 +11,31 @@ import CreatePromotionModal from "./components/create-promotion-modal";
 
 interface Props { store: Store }
 
-export default function PromotionsContainer({ store }: Props) {
-  const [items, setItems] = useState<Promotion[]>(mockPromotions);
+// Componente interno que usa el FormContext
+function PromotionsContent({ store }: Props) {
   const [open, setOpen] = useState(false);
+  const methods = useForm({
+    defaultValues: {
+      promotionsPayload: mockPromotions
+    }
+  });
+
+  const { register, setValue, getValues } = methods;
+  
+  const initial = (getValues("promotionsPayload") as any[])?.length
+    ? (getValues("promotionsPayload") as any[])
+    : mockPromotions;
+  const [items, setItems] = useState<Promotion[]>(initial);
+  const [source] = useState<string>((getValues("promotionsPayload") as any[])?.length ? "form" : "mock");
+
+  
+  useEffect(() => {
+    register("promotionsPayload");
+  }, [register]);
+
+  useEffect(() => {
+    setValue("promotionsPayload", items, { shouldDirty: true });
+  }, [items, setValue]);
 
   const stats = useMemo(() => {
     const total = items.length;
@@ -25,13 +47,9 @@ export default function PromotionsContainer({ store }: Props) {
 
   return (
     <div className="p-6">
+      <div className="text-xs text-gray-500 mb-2">Fuente: {source === "form" ? "Formulario" : "Mock"}</div>
       {/* Breadcrumb/title area could be outside - kept minimal here */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-        <StatCard label="Total Promociones" value={stats.total} icon={<GiftIcon className="text-indigo-600" />} />
-        <StatCard label="Promociones Activas" value={stats.active} icon={<GiftIcon className="text-emerald-600" />} />
-        <StatCard label="Usos Totales" value={stats.uses} icon={<UsersIcon className="text-violet-600" />} />
-        <StatCard label="Promociones Vencidas" value={stats.expired} icon={<CalendarDaysIcon className="text-rose-600" />} />
-      </div>
+      <PromotionsMetrics total={stats.total} active={stats.active} uses={stats.uses} expired={stats.expired} />
 
       <PromotionsToolbar onNew={() => setOpen(true)} />
 
@@ -61,5 +79,20 @@ export default function PromotionsContainer({ store }: Props) {
         onCreate={(p) => setItems((prev) => [p, ...prev])}
       />
     </div>
+  );
+}
+
+// Componente principal que provee el FormProvider
+export default function PromotionsContainer({ store }: Props) {
+  const methods = useForm({
+    defaultValues: {
+      promotionsPayload: mockPromotions
+    }
+  });
+
+  return (
+    <FormProvider {...methods}>
+      <PromotionsContent store={store} />
+    </FormProvider>
   );
 }
