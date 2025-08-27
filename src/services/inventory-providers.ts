@@ -81,6 +81,23 @@ export async function createInventoryProvider(
   return buildApiResponseAsync<InventoryProvider>(res);
 }
 
+export async function updateInventoryProvider(
+  parentProductId: number | string,
+  data: any
+): Promise<ApiResponse<InventoryProvider>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.inventoryProvider.updateById(parentProductId),
+    method: "PUT",
+    data,
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag(INVENTORY_TAG_KEY);
+
+  return buildApiResponseAsync<InventoryProvider>(res);
+}
+
 export async function getAllInventoryProvider(
   params: IQueryable
 ): Promise<ApiResponse<GetAllInventoryProviderResponse>> {
