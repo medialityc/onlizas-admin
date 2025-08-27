@@ -6,6 +6,9 @@ export const productVariants = z
   .array(
     z
       .object({
+        //only by adapter
+        limitPurchaseLimit: z.number().optional(),
+
         details: z
           .union([
             // Acepta el array original
@@ -43,7 +46,7 @@ export const productVariants = z
           .number({ required_error: "Requerido" })
           .min(1, "El precio es requerido")
           .default(0),
-        discountType: z.number({ required_error: "Requerido" }).default(0), //todo definir que es
+        discountType: z.number({ required_error: "Requerido" }).default(0),
         discountValue: z.number({ required_error: "Requerido" }).default(0),
         isLimit: z.boolean().default(false),
         purchaseLimit: z.number().default(0),
