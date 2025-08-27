@@ -4,13 +4,12 @@ import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
 import { GetAllRolesResponse } from "@/types/roles";
-import { use } from "react";
 import { RoleList } from "./role-list";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 
 interface RoleListPageProps {
-  rolesPromise: Promise<ApiResponse<GetAllRolesResponse>>;
+  rolesPromise: ApiResponse<GetAllRolesResponse>;
   query: SearchParams;
 }
 
@@ -18,10 +17,10 @@ export default function RoleListContainer({
   rolesPromise,
   query,
 }: RoleListPageProps) {
-  const roleResponse = use(rolesPromise);
+  const roleResponse = rolesPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
 
- useFetchError(roleResponse);
+  useFetchError(roleResponse);
 
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);

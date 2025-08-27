@@ -1,9 +1,9 @@
-import { buildQueryParams } from '@/lib/request';
-import { Suspense } from 'react';
-import { getAllWarehouses } from '@/services/warehouses-mock';
+import { buildQueryParams } from "@/lib/request";
+import { Suspense } from "react";
+import { getAllWarehouses } from "@/services/warehouses-mock";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
-import WarehousesListContainer from '@/sections/warehouses/list/warehouses-list-container';
+import WarehousesListContainer from "@/sections/warehouses/list/warehouses-list-container";
 
 export const metadata: Metadata = {
   title: "Almacenes Virtuales - Onlizas",
@@ -17,7 +17,7 @@ interface PageProps {
   searchParams: Promise<SearchParams>;
 }
 
-function WarehousesListSkeleton () {
+function WarehousesListSkeleton() {
   return (
     <div className="panel">
       <div className="mb-5">
@@ -37,19 +37,20 @@ function WarehousesListSkeleton () {
   );
 }
 
-async function WarehousesVirtualPage ({ searchParams }: PageProps) {
+async function WarehousesVirtualPage({ searchParams }: PageProps) {
   const params = await searchParams;
   // Aseguramos que el tipo sea "virtual" para esta página
-  const queryParams = { ...params, type: 'virtual' };
+  const queryParams = { ...params, type: "virtual" };
   const query: IQueryable = buildQueryParams(queryParams);
-  const warehousesPromise = getAllWarehouses(query);
+  const warehousesPromise = await getAllWarehouses(query);
 
   return (
     <Suspense fallback={<WarehousesListSkeleton />}>
       <WarehousesListContainer
         warehousesPromise={warehousesPromise}
         query={queryParams}
-      />    </Suspense>
+      />{" "}
+    </Suspense>
   );
 }
 

@@ -3,14 +3,13 @@
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { use } from "react";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 import { SuppliersList } from "./suppliers-list";
 import { GetAllSuppliers } from "@/types/suppliers";
 
 interface SuppliersListPageProps {
-  suppliersPromise: Promise<ApiResponse<GetAllSuppliers>>;
+  suppliersPromise: ApiResponse<GetAllSuppliers>;
   query: SearchParams;
 }
 
@@ -18,7 +17,7 @@ export default function SuppliersListContainer({
   suppliersPromise,
   query,
 }: SuppliersListPageProps) {
-  const suppliersResponse = use(suppliersPromise);
+  const suppliersResponse = suppliersPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(suppliersResponse);
 

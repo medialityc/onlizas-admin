@@ -9,7 +9,7 @@ export const getInventoryEditAdapter = (
     products: inventory?.products?.map((prod) => ({
       ...prod,
       details: detailsObjectToArray(prod?.details),
-
+      warranty: prod.warranty ? prod.warranty : undefined,
       purchaseLimit: prod?.limitPurchaseLimit,
       isLimit:
         prod?.limitPurchaseLimit && prod?.limitPurchaseLimit > 0 ? true : false,

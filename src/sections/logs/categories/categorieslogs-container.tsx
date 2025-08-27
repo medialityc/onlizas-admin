@@ -1,6 +1,6 @@
 "use client";
 import useFiltersUrl from "@/hooks/use-filters-url";
-import React, { use } from "react";
+import React from "react";
 import { ApiResponse } from "@/types/fetch/api";
 import { GetAllCategoriesLogs } from "@/types/categories";
 import { SearchParams } from "@/types/fetch/request";
@@ -12,9 +12,9 @@ function CategoriesLogsContainer({
   searchParams,
 }: {
   searchParams: SearchParams;
-  categoriesLogsPromise: Promise<ApiResponse<GetAllCategoriesLogs>>;
+  categoriesLogsPromise: ApiResponse<GetAllCategoriesLogs>;
 }) {
-  const categoriesResponse = use(categoriesLogsPromise);
+  const categoriesResponse = categoriesLogsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(categoriesResponse);
 

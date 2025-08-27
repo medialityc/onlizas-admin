@@ -13,7 +13,6 @@ export default async function Page({
   }>;
 }) {
   const { data: supplierDetails } = await getSupplierDetails((await params).id);
-  console.log(supplierDetails);
 
   return (
     <div className="space-y-8">

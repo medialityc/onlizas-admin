@@ -4,13 +4,12 @@ import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
 import { GetAllStores } from "@/types/stores";
-import { use } from "react";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 import { StoresList } from "./stores-list";
 
 interface StoresListPageProps {
-  storesPromise: Promise<ApiResponse<GetAllStores>>;
+  storesPromise: ApiResponse<GetAllStores>;
   query: SearchParams;
 }
 
@@ -18,7 +17,7 @@ export default function StoresListContainer({
   storesPromise,
   query,
 }: StoresListPageProps) {
-  const storesResponse = use(storesPromise);
+  const storesResponse = storesPromise;
 
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(storesResponse);

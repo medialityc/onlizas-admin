@@ -3,14 +3,13 @@
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { use } from "react";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 import { GetAllDepartments } from "@/types/departments";
 import { DepartmentsList } from "./departments-list";
 
 interface DepartmentsListPageProps {
-  departmentsPromise: Promise<ApiResponse<GetAllDepartments>>;
+  departmentsPromise: ApiResponse<GetAllDepartments>;
   query: SearchParams;
 }
 
@@ -18,7 +17,7 @@ export default function DepartmentsListContainer({
   departmentsPromise,
   query,
 }: DepartmentsListPageProps) {
-  const departmentsResponse = use(departmentsPromise);
+  const departmentsResponse = departmentsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(departmentsResponse);
 

@@ -10,7 +10,7 @@ interface PageProps {
 export default async function PermissionsLogsPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const permissionsLogsPromise = getAllPermissionsLogs(query);
+  const permissionsLogsPromise = await getAllPermissionsLogs(query);
   return (
     <PermissionsLogsContainer
       permissionsLogsPromise={permissionsLogsPromise}

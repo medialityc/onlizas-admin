@@ -40,7 +40,7 @@ function RoleListSkeleton() {
 async function RoleListPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const rolesPromise = getAllRoles(query);
+  const rolesPromise = await getAllRoles(query);
 
   return (
     <Suspense fallback={<RoleListSkeleton />}>
