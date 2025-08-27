@@ -2,6 +2,7 @@ import { Button } from "@/components/button/button";
 import {
   RHFCheckbox,
   RHFInputWithLabel,
+  RHFSelect,
   RHFSwitch,
 } from "@/components/react-hook-form";
 import { Separator } from "@/components/ui/separator";
@@ -16,6 +17,12 @@ type Props = {
   remove: UseFieldArrayRemove;
   variantName: string;
 };
+
+const DiscountOptions: { value: number; label: string }[] = [
+  { value: 0, label: "Porciento" },
+  { value: 1, label: "Fijo" },
+];
+
 const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
   const { watch } = useFormContext();
 
@@ -54,7 +61,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
       <div className="flex flex-col gap-2">
         <p className="text-sm font-bold">Información de Inventario</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
             <RHFInputWithLabel
               name={`${variantName}.quantity`}
@@ -85,6 +92,14 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
               step="0.1"
             />
           </div>
+          <RHFSelect
+            options={DiscountOptions}
+            name={`${variantName}.discountType`}
+            placeholder="Selecciona tipo de descuento"
+            label="Tipo de descuento"
+            required
+            defaultValue={0}
+          />
         </div>
       </div>
 
@@ -135,7 +150,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
           label="Tiene garantía?"
           className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {isWarranty && (
             <>
               <RHFInputWithLabel
