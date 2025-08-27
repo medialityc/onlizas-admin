@@ -1,7 +1,16 @@
 import { buildQueryParams } from "@/lib/request";
 import { Suspense } from "react";
 import { getAllWarehouses } from "@/services/warehouses";
-import WarehousesListContainer from "@/sections/warehouses/list/warehouses-list-container";
+import WarehouseListContainer from "@/sections/warehouses/containers/warehouse-list-container";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Almacenes General - ZAS Express",
+  description: "Gestión de almacenes del sistema",
+  icons: {
+    icon: "/assets/images/NEWZAS.svg",
+  },
+};
 
 function WarehousesListFallback() {
   return (
@@ -25,7 +34,7 @@ export default async function WarehousesPage({
 
   return (
     <Suspense fallback={<WarehousesListFallback />}>
-      <WarehousesListContainer
+      <WarehouseListContainer
         warehousesPromise={warehousesPromise}
         query={params}
       />

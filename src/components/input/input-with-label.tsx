@@ -84,9 +84,6 @@ const InputWithLabel = forwardRef<HTMLInputElement, Props>(
               {required && "*"}
             </label>
           )}
-          {underLabel && (
-            <p className="font-normal text-xs text-gray-600">{underLabel}</p>
-          )}
         </div>
         <div className="relative">
           <div
@@ -155,6 +152,9 @@ const InputWithLabel = forwardRef<HTMLInputElement, Props>(
               max={minMax?.max}
               {...rest}
             />
+            {underLabel && (
+              <p className="font-normal text-xs text-gray-600 mt-1">{underLabel}</p>
+            )}
           </div>
 
           {/* Botón para mostrar/ocultar contraseña */}

@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { getAllWarehouses } from "@/services/warehouses-mock";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
-import WarehousesListContainer from "@/sections/warehouses/list/warehouses-list-container";
+import WarehouseListContainer from "@/sections/warehouses/containers/warehouse-list-container";
 
 export const metadata: Metadata = {
   title: "Almacenes Virtuales - Onlizas",
@@ -46,10 +46,10 @@ async function WarehousesVirtualPage({ searchParams }: PageProps) {
 
   return (
     <Suspense fallback={<WarehousesListSkeleton />}>
-      <WarehousesListContainer
+      <WarehouseListContainer
         warehousesPromise={warehousesPromise}
-        query={queryParams}
-      />{" "}
+        query={params}
+      />
     </Suspense>
   );
 }

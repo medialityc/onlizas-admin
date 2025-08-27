@@ -1,4 +1,4 @@
-import EditWarehouseTransfersContent from "@/sections/warehouses/edit/transfer/edit-warehouse-transfer-content";
+import EditWarehouseTransfersContent from "@/sections/warehouses/components/transfer/edit-warehouse-transfer-content";
 
 export default async function EditWarehouseTransfersPage({
   params,

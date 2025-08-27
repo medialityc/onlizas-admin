@@ -22,6 +22,7 @@ export function Header({
   createText,
   rightActions,
 }: DataGridHeaderProps) {
+  const isActions = onCreate || rightActions;
   return (
     <div className="mb-5 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
       <div className="flex items-center gap-3 flex-1 !w-full">
@@ -35,26 +36,27 @@ export function Header({
         )}
       </div>
 
-      <div className="flex items-center gap-3">
-        {/* Componentes adicionales del lado derecho (antes de los botones predeterminados) */}
-        {rightActions}
-        {onCreate && (
-          <button
-            type="button"
-            className="btn btn-primary dark:text-textColor flex gap-2"
-            onClick={onCreate}
-          >
-            {createLoading ? (
-              <span className="animate-pulse">Creando ...</span>
-            ) : (
-              <>
-                <PlusIcon className="h-5 w-5" />
-                {createText || "Crear"}
-              </>
-            )}
-          </button>
-        )}
-      </div>
+      {isActions && (
+        <div className="flex items-center gap-3">
+          {rightActions}
+          {onCreate && (
+            <button
+              type="button"
+              className="btn btn-primary dark:text-textColor flex gap-2"
+              onClick={onCreate}
+            >
+              {createLoading ? (
+                <span className="animate-pulse">Creando ...</span>
+              ) : (
+                <>
+                  <PlusIcon className="h-5 w-5" />
+                  {createText || "Crear"}
+                </>
+              )}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
