@@ -4,6 +4,7 @@ import { Button } from "@/components/button/button";
 import {
   Card,
   CardContent,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/cards/card";
@@ -22,7 +23,7 @@ type Props = {
 
 const UserProviderCard = ({ item }: Props) => {
   return (
-    <Card key={item.id} className="hover:shadow-lg transition-shadow">
+    <Card key={item.id} className="hover:shadow-lg transition-shadow h-full">
       <CardHeader>
         <div className="flex items-start space-x-3">
           <div
@@ -96,29 +97,29 @@ const UserProviderCard = ({ item }: Props) => {
             </div>
           )}
         </div>
-
-        <div className="flex space-x-2 pt-3 border-t">
-          <Link
-            className="flex-1"
-            href={`/dashboard/inventory/${item?.supplierId}/list/${item?.parentProductId}`}
-          >
-            <Button variant="primary" outline size="sm" className="w-full ">
-              <EyeIcon className="h-4 w-4 mr-1" />
-              Ver
-            </Button>
-          </Link>
-          <Link
-            className="flex-1"
-            href={`/dashboard/inventory/${item?.supplierId}/list/${item?.parentProductId}/edit`}
-          >
-            <Button variant="secondary" outline size="sm" className="  w-full ">
-              <Edit className="h-4 w-4 mr-1" />
-              Editar
-            </Button>
-          </Link>
-        </div>
       </CardContent>
-      <pre> {JSON.stringify(item, null, 2)} </pre>
+
+      <CardFooter className="!mt-auto w-full flex flex-row gap-4">
+        <Link
+          className="flex-1"
+          href={`/dashboard/inventory/${item?.supplierId}/list/${item?.parentProductId}`}
+        >
+          <Button variant="primary" outline size="sm" className="w-full ">
+            <EyeIcon className="h-4 w-4 mr-1" />
+            Ver
+          </Button>
+        </Link>
+        <Link
+          className="flex-1"
+          href={`/dashboard/inventory/${item?.supplierId}/list/${item?.parentProductId}/edit`}
+        >
+          <Button variant="secondary" outline size="sm" className="  w-full ">
+            <Edit className="h-4 w-4 mr-1" />
+            Editar
+          </Button>
+        </Link>
+      </CardFooter>
+      {/* <pre> {JSON.stringify(item, null, 2)} </pre> */}
     </Card>
   );
 };
