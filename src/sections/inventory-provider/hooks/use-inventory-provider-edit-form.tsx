@@ -3,8 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-
-import { createInventoryProvider } from "@/services/inventory-providers";
+import { updateInventoryProvider } from "@/services/inventory-providers";
 import { setInventoryEditFormData } from "../constants/inventory-edit-data";
 import {
   InventoryStoreFormData,
@@ -12,9 +11,11 @@ import {
 } from "../schemas/inventory-edit.schema";
 
 const initValue: InventoryStoreFormData = {
+  products: [],
   storeId: 0,
   warehouseId: 0,
-  products: [],
+  supplierId: 0,
+  parentProductId: 0,
   parentProductName: "",
   warehouseName: "",
   supplierName: "",
@@ -33,7 +34,10 @@ export const useInventoryProviderEditForm = (
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: InventoryStoreFormData) => {
       const fromData = setInventoryEditFormData(payload);
-      const res = await createInventoryProvider(fromData);
+      const res = await updateInventoryProvider(
+        payload?.parentProductId,
+        fromData
+      );
 
       if (res.error) {
         throw res;

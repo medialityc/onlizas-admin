@@ -150,7 +150,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
                 name={`${variantName}.warranty.warrantyPrice`}
                 label="Precio de la garantía"
                 type="number"
-                placeholder="Ej: 12"
+                placeholder="Ej: 50"
                 min="0"
                 step="0"
               />
