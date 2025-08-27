@@ -5,7 +5,9 @@ export const setInventoryEditFormData = (
 ): FormData => {
   const formData = new FormData();
 
-  product.storesWarehouses.forEach((sw: any, i: number) => {
+  // todo aun no se serailza la data
+  console.log(product);
+  /*   product.storesWarehouses.forEach((sw: any, i: number) => {
     formData.append(`storesWarehouses[${i}].storeId`, String(sw.storeId));
 
     (sw.warehouseIds || []).forEach((wid: any, widIdx: number) => {
@@ -51,7 +53,7 @@ export const setInventoryEditFormData = (
 
   // campos de primer nivel
   formData.append("productId", String(product.productId));
-  formData.append("supplierId", String(product.supplierId));
+  formData.append("supplierId", String(product.supplierId)); */
 
   return formData;
 };
