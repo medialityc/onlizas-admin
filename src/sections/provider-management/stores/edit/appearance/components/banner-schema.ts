@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-const today = new Date();
-today.setHours(0, 0, 0, 0); // Start of today
+// Nota: Permitimos editar banners antiguos; solo validamos orden init<=end
 
 export const BannerSchema = z.object({
   title: z.string().min(1, "El título es requerido"),
@@ -10,21 +9,20 @@ export const BannerSchema = z.object({
   initDate: z.date({
     required_error: "La fecha de inicio es requerida",
     invalid_type_error: "La fecha de inicio debe ser válida"
-  }).refine((date) => date >= today, {
-    message: "La fecha de inicio no puede ser anterior a hoy"
   }),
   endDate: z.date({
     required_error: "La fecha de fin es requerida",
     invalid_type_error: "La fecha de fin debe ser válida"
-  }).refine((date) => date >= today, {
-    message: "La fecha de fin no puede ser anterior a hoy"
   }),
   image: z.union([
     z.instanceof(File),
-    z.string(),
-    z.null()
-  ]).optional(),
-  isActive: z.boolean().default(true),
+    z.string().min(1, "La imagen es obligatoria"),
+  ]).refine((val) => {
+    return (val instanceof File) || (typeof val === "string" && val.length > 0);
+  }, {
+    message: "La imagen es obligatoria"
+  }),
+  isActive: z.boolean()
 }).refine((data) => data.endDate >= data.initDate, {
   message: "La fecha de fin debe ser posterior o igual a la fecha de inicio",
   path: ["endDate"]

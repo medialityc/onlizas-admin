@@ -1,10 +1,9 @@
-"use client";
 
 import React from "react";
 import type { UseFormSetValue } from "react-hook-form";
 
 import { BannerForm } from "./banner-schema";
-import { toISOString } from "./banner-utils";
+
 import { BannerItem } from "@/types/stores";
 import type { StoreEditFormData } from "../../../modals/store-edit-form.schema";
 
@@ -14,9 +13,9 @@ export interface BackendBanner {
   title: string;
   urlDestinity: string;
   position: string | number;
-  initDate?: string | null;
-  endDate?: string | null;
-  image?: string | null;
+  initDate?: string;
+  endDate?: string;
+  image?: File | string;
 }
 
 interface UseBannersProps {
@@ -47,9 +46,9 @@ export function useBanners({ backendBanners, setValue }: UseBannersProps) {
         title: b.title,
         urlDestinity: b.urlDestinity ?? "",
         position: toNumberPosition(b.position),
-        initDate: b.initDate ?? null,
-        endDate: b.endDate ?? null,
-        image: b.image ?? null,
+        initDate: b.initDate,
+        endDate: b.endDate,
+        image: b.image,
         isActive: true,
       }));
       setItems(initial);
@@ -65,20 +64,24 @@ export function useBanners({ backendBanners, setValue }: UseBannersProps) {
       position: typeof b.position === "string" ? parseInt(b.position, 10) : b.position,
       initDate: b.initDate ?? "",
       endDate: b.endDate ?? "",
-      image: typeof b.image === "string" ? b.image : b.image ? (b.image as File).name : "",
+      
+      image: (b.image instanceof File || typeof b.image === "string") ? b.image : null,
       isActive: b.isActive,
     }));
     setValue("banners", payload, { shouldDirty: true });
   }, [items, setValue]);
 
   const handleNewBanner = () => {
+
     setEditingBanner(null);
     setOpen(true);
   };
 
   const handleEditBanner = (banner: BannerItem) => {
+
     setEditingBanner(banner);
     setOpen(true);
+
   };
 
   const handleCloseModal = () => {
@@ -87,36 +90,44 @@ export function useBanners({ backendBanners, setValue }: UseBannersProps) {
   };
 
   const handleCreateBanner = (banner: BannerForm) => {
-    setItems((prev) => [
-      {
-        id: Math.max(0, ...prev.map((x) => x.id)) + 1,
-        title: banner.title,
-        urlDestinity: banner.urlDestinity,
-        position: Number(banner.position),
-        initDate: toISOString(banner.initDate),
-        endDate: toISOString(banner.endDate),
-        image: banner.image ?? null,
-        isActive: banner.isActive ?? true,
-      },
-      ...prev,
-    ]);
+
+
+    const newBanner = {
+      id: Math.max(0, ...items.map((x) => x.id)) + 1,
+      title: banner.title,
+      urlDestinity: banner.urlDestinity,
+      position: Number(banner.position),
+      initDate: banner.initDate.toISOString().split('T')[0], // Solo la fecha YYYY-MM-DD
+      endDate: banner.endDate.toISOString().split('T')[0],   // Solo la fecha YYYY-MM-DD
+      image: banner.image,
+      isActive: banner.isActive ?? true,
+    };
+
+
+    setItems((prev) => [newBanner, ...prev]);
   };
 
   const handleUpdateBanner = (id: number, banner: BannerForm) => {
-    setItems((prev) => prev.map((item) =>
-      item.id === id
-        ? {
-          ...item,
-          title: banner.title,
-          urlDestinity: banner.urlDestinity,
-          position: Number(banner.position),
-          initDate: toISOString(banner.initDate),
-          endDate: toISOString(banner.endDate),
-          image: banner.image ?? null,
-          isActive: banner.isActive ?? true,
-        }
-        : item
-    ));
+
+    setItems((prev) => {
+      const updated = prev.map((item) =>
+        item.id === id
+          ? {
+            ...item,
+            title: banner.title,
+            urlDestinity: banner.urlDestinity,
+            position: Number(banner.position),
+            initDate: banner.initDate.toISOString().split('T')[0], // Solo la fecha YYYY-MM-DD
+            endDate: banner.endDate.toISOString().split('T')[0],   // Solo la fecha YYYY-MM-DD
+            // MANTENER imagen existente si no se cambió
+            image: banner.image || item.image,
+            isActive: banner.isActive ?? true,
+          }
+          : item
+      );
+      
+      return updated;
+    });
   };
 
   const handleToggleBanner = (id: number) => {

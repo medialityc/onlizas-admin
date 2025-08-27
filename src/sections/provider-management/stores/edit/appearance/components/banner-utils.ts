@@ -16,7 +16,7 @@ export const normalizePosition = (pos: unknown): number => {
     const normalized = pos.toLowerCase().trim();
     if (normalized === "hero" || normalized === "1") return 1;
     if (normalized === "sidebar" || normalized === "2") return 2;
-    if (normalized === "slideshow" || normalized === "3") return 3;
+    if (normalized === "footer" || normalized === "3") return 3;
   }
   return 1; // Default to Hero if can't parse
 };

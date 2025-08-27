@@ -29,26 +29,28 @@ const promotionSchema = z.object({
 
 // Banners en el formulario siguen el contrato del backend:
 // { title, urlDestinity, position:number, initDate, endDate, image }
-const bannerSchema = z.object({
+const bannerSchema = z.array(z.object({
   id: z.number().int().nonnegative().optional(),
   title: z.string().min(1, "El título es obligatorio"),
   urlDestinity: z.string().min(1, "La URL de destino es obligatoria"),
   position: z.coerce.number().int().nonnegative({ message: "La posición debe ser un número entero" }),
   initDate: z
     .string()
-    .optional()
     .refine((v) => !v || !Number.isNaN(Date.parse(v)), {
       message: "Fecha de inicio inválida",
     }),
   endDate: z
     .string()
-    .optional()
     .refine((v) => !v || !Number.isNaN(Date.parse(v)), {
       message: "Fecha de fin inválida",
     }),
-  image: z.string().optional().nullable(),
+  image: z.union([
+    z.instanceof(File, { message: "Debe ser un archivo válido." }),
+    z.string(),
+    z.null(),
+  ]).optional(),
   isActive: z.boolean().optional(),
-});
+}))
 
 const categoryItemSchema = z.object({
   id: z.number().int().positive(),
@@ -110,7 +112,7 @@ export const storeEditSchema = z.object({
   // Payloads y colecciones
   categoriesPayload: z.array(categoryItemSchema).optional(),
   promotionsPayload: z.array(promotionSchema).optional(),
-  banners: z.array(bannerSchema).optional(),
+  banners: bannerSchema,
 });
 
 export type StoreEditFormData = z.infer<typeof storeEditSchema>;
