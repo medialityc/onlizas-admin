@@ -19,6 +19,32 @@ interface UserAttributesSectionProps {
   approvalProcess: SupplierApprovalProcess | null;
 }
 
+// Función para formatear fechas correctamente
+const formatDate = (dateString: string | null | undefined): string => {
+  if (!dateString) return "No especificada";
+
+  try {
+    // Si viene con formato ISO (2025-08-31T04:00:00Z), extraer solo la fecha
+    const dateOnly = dateString.includes("T")
+      ? dateString.split("T")[0]
+      : dateString;
+
+    // Crear fecha local evitando problemas de zona horaria
+    const [year, month, day] = dateOnly.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+
+    // Formatear en español
+    return date.toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } catch (error) {
+    console.error("Error formateando fecha:", dateString, error);
+    return "Fecha inválida";
+  }
+};
+
 export function UserAttributesSection({
   approvalProcess,
 }: UserAttributesSectionProps) {
@@ -39,7 +65,7 @@ export function UserAttributesSection({
                 Fecha de Expiración
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-300 break-words">
-                {approvalProcess?.expirationDate || "No especificada"}
+                {formatDate(approvalProcess?.expirationDate)}
               </p>
             </div>
           </div>
