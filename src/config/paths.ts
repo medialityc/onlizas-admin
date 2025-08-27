@@ -57,6 +57,7 @@ export const paths = {
     },
     inventory: {
       list: `${DASHBOARD}/inventory`,
+      all: `${DASHBOARD}/all_inventory`,
     },
   },
   provider: {
