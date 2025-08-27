@@ -64,7 +64,8 @@ export function useBanners({ backendBanners, setValue }: UseBannersParams) {
       position: Number.isFinite(b.position) ? Number(b.position) : 1,
       initDate: b.initDate || "",
       endDate: b.endDate || "",
-      image: b.image instanceof File ? b.image.name : (b.image || "")
+      image: b.image instanceof File ? b.image.name : (b.image || ""),
+      isActive:b.isActive??true
     }));
     setValue("banners", payload, { shouldDirty: true });
   }, [items, setValue]);
@@ -104,14 +105,14 @@ export function useBanners({ backendBanners, setValue }: UseBannersParams) {
     ]);
   };
 
-  const handleUpdateBanner = (banner: BannerForm) => {
+  const handleUpdateBanner = (id:number,banner: BannerForm) => {
     if (!editingBanner) return;
     
     const toISO = (d?: Date | null) => (d ? new Date(d).toISOString().slice(0, 10) : null);
     
     setItems((prev) =>
       prev.map((item) =>
-        item.id === editingBanner.id
+        item.id === id
           ? {
               ...item,
               title: banner.title,

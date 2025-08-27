@@ -43,16 +43,7 @@ export default function BannerCard({
 }
 
 function BannerImage({ banner }: { banner: BannerItem }) {
-  const [imageError, setImageError] = React.useState(false);
-  
-  if (!banner.image || imageError) {
-    return (
-      <div className="w-12 h-12 rounded-md bg-gray-100 flex items-center justify-center">
-        <span className="text-gray-300 text-xl">🖼️</span>
-      </div>
-    );
-  }
-  
+
   if (typeof banner.image === 'string') {
     // Si es string, es una URL del backend
     return (
@@ -63,7 +54,7 @@ function BannerImage({ banner }: { banner: BannerItem }) {
           width={48}
           height={48}
           className="w-full h-full object-cover" 
-          onError={() => setImageError(true)}
+          
         />
       </div>
     );
@@ -72,7 +63,7 @@ function BannerImage({ banner }: { banner: BannerItem }) {
     return (
       <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100">
         <Image 
-          src={URL.createObjectURL(banner.image)} 
+          src={URL.createObjectURL(banner.image) ?? ""} 
           alt={banner.title}
           width={48}
           height={48}
@@ -106,8 +97,8 @@ function BannerInfo({ banner, positionLabel }: { banner: BannerItem; positionLab
       <div className="text-xs text-gray-500">{banner.urlDestinity}</div>
       {(banner.initDate || banner.endDate) && (
         <div className="text-xs text-gray-400 mt-0.5">
-          {banner.initDate ? new Date(banner.initDate).toLocaleDateString() : ""} 
-          {banner.endDate ? ` - ${new Date(banner.endDate).toLocaleDateString()}` : ""}
+          {banner.initDate ? banner.initDate : ""} 
+          {banner.endDate ? ` - ${banner.endDate}` : ""}
         </div>
       )}
     </div>
