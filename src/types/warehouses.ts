@@ -1,21 +1,21 @@
 import { PaginatedResponse } from "./common";
 
-export type WarehouseType = 'physical' | 'virtual';
+export type WarehouseType = "physical" | "virtual";
 
 // Subtipos específicos para almacenes virtuales (HU-005)
 export type VirtualWarehouseSubType =
-  | 'in_transit'        // En tránsito (HU-011, HU-013)
-  | 'inspection'        // En proceso de inspección  
-  | 'repair'           // En reparación
-  | 'customer_reserved' // Reservado para clientes específicos
-  | 'damaged_goods'    // Mercancía dañada
-  | 'quarantine'       // En cuarentena
-  | 'staging'          // Área de preparación/montaje
-  | 'returns'          // Devoluciones pendientes
-  | 'supplier_managed' // Gestionado por proveedor (HU-023)
-  | 'general';         // Propósito general
+  | "in_transit" // En tránsito (HU-011, HU-013)
+  | "inspection" // En proceso de inspección
+  | "repair" // En reparación
+  | "customer_reserved" // Reservado para clientes específicos
+  | "damaged_goods" // Mercancía dañada
+  | "quarantine" // En cuarentena
+  | "staging" // Área de preparación/montaje
+  | "returns" // Devoluciones pendientes
+  | "supplier_managed" // Gestionado por proveedor (HU-023)
+  | "general"; // Propósito general
 
-export type WarehouseStatus = 'active' | 'inactive' | 'maintenance';
+export type WarehouseStatus = "active" | "inactive" | "maintenance";
 
 export type Location = {
   id: number;
@@ -32,19 +32,19 @@ export type Location = {
 
 // Reglas de negocio específicas para almacenes virtuales (HU-005)
 export type VirtualWarehouseRules = {
-  allowsManualInventory: boolean;           // Permite gestión manual de inventario
-  autoTransferAfterDays?: number;           // Auto-transferir después de X días
-  requiresApprovalToExit: boolean;          // Requiere aprobación para sacar inventario (HU-012)
-  maxDaysInStorage?: number;                // Máximo días que puede estar el inventario
-  restrictedToSuppliers?: number[];         // Solo ciertos proveedores pueden usar (HU-023)
-  requiresInspection: boolean;              // Requiere inspección antes de mover
-  allowsCrossDocking: boolean;              // Permite cross-docking (entrada/salida directa)
-  priorityLevel: 'low' | 'medium' | 'high'; // Nivel de prioridad para transferencias
+  allowsManualInventory: boolean; // Permite gestión manual de inventario
+  autoTransferAfterDays?: number; // Auto-transferir después de X días
+  requiresApprovalToExit: boolean; // Requiere aprobación para sacar inventario (HU-012)
+  maxDaysInStorage?: number; // Máximo días que puede estar el inventario
+  restrictedToSuppliers?: number[]; // Solo ciertos proveedores pueden usar (HU-023)
+  requiresInspection: boolean; // Requiere inspección antes de mover
+  allowsCrossDocking: boolean; // Permite cross-docking (entrada/salida directa)
+  priorityLevel: "low" | "medium" | "high"; // Nivel de prioridad para transferencias
   notificationRules: {
-    notifyOnEntry: boolean;                 // Notificar al entrar inventario
-    notifyOnExit: boolean;                  // Notificar al salir inventario
-    notifyBeforeExpiry: boolean;            // Notificar antes de vencimiento
-    daysByforeExpiryAlert: number;          // Días antes del vencimiento para alertar
+    notifyOnEntry: boolean; // Notificar al entrar inventario
+    notifyOnExit: boolean; // Notificar al salir inventario
+    notifyBeforeExpiry: boolean; // Notificar antes de vencimiento
+    daysByforeExpiryAlert: number; // Días antes del vencimiento para alertar
   };
 };
 
@@ -68,10 +68,10 @@ export type Warehouse = {
   isDeleted?: boolean; // flag lógico
 
   // === CAMPOS ESPECÍFICOS PARA ALMACENES VIRTUALES (HU-005) ===
-  virtualSubType?: VirtualWarehouseSubType;     // Solo para type='virtual'
-  virtualRules?: VirtualWarehouseRules;         // Reglas específicas del subtipo
-  linkedPhysicalWarehouseId?: number;           // Almacén físico relacionado
-  linkedPhysicalWarehouse?: Warehouse;          // Datos del almacén físico (populate)
+  virtualSubType?: VirtualWarehouseSubType; // Solo para type='virtual'
+  virtualRules?: VirtualWarehouseRules; // Reglas específicas del subtipo
+  linkedPhysicalWarehouseId?: number; // Almacén físico relacionado
+  linkedPhysicalWarehouse?: Warehouse; // Datos del almacén físico (populate)
 
   // === CAMPOS CALCULADOS POR BACKEND (BFF) ===
   // Permisos y acciones disponibles determinadas por el backend
@@ -82,9 +82,9 @@ export type Warehouse = {
     canActivate: boolean;
     canViewDetails: boolean;
     // Permisos específicos para almacenes virtuales
-    canConfigureRules?: boolean;              // Puede configurar reglas de negocio
-    canLinkPhysical?: boolean;                // Puede vincular almacén físico
-    canManageTransfers?: boolean;             // Puede gestionar transferencias (HU-011)
+    canConfigureRules?: boolean; // Puede configurar reglas de negocio
+    canLinkPhysical?: boolean; // Puede vincular almacén físico
+    canManageTransfers?: boolean; // Puede gestionar transferencias (HU-011)
   };
   // Información adicional para reglas de negocio
   hasActiveInventory?: boolean; // Determina si tiene inventario activo
@@ -94,14 +94,17 @@ export type Warehouse = {
 
   // === MÉTRICAS Y ESTADÍSTICAS (para futuras HUs) ===
   metrics?: {
-    totalTransfersIn?: number;               // Total transferencias de entrada
-    totalTransfersOut?: number;              // Total transferencias de salida
-    averageStayDays?: number;                // Promedio días de permanencia
-    lastTransferDate?: string;               // Última transferencia realizada
+    totalTransfersIn?: number; // Total transferencias de entrada
+    totalTransfersOut?: number; // Total transferencias de salida
+    averageStayDays?: number; // Promedio días de permanencia
+    lastTransferDate?: string; // Última transferencia realizada
   };
 };
 
-export type CreateWarehouse = Omit<Warehouse, 'id' | 'createdAt' | 'updatedAt' | 'location'>;
+export type CreateWarehouse = Omit<
+  Warehouse,
+  "id" | "createdAt" | "updatedAt" | "location"
+>;
 
 export type UpdateWarehouse = Partial<CreateWarehouse>;
 
@@ -116,7 +119,12 @@ export type WarehouseFilter = {
 export type GetAllWarehouses = PaginatedResponse<Warehouse>;
 
 // Tipos para inventario
-export type InventoryStatus = 'available' | 'reserved' | 'damaged' | 'expired' | 'transferred';
+export type InventoryStatus =
+  | "available"
+  | "reserved"
+  | "damaged"
+  | "expired"
+  | "transferred";
 
 export type ProductBatch = {
   id: number;
@@ -159,7 +167,7 @@ export type InventoryFilter = {
   supplierId?: number;
   productId?: number;
   status?: InventoryStatus;
-  availability?: 'available' | 'low_stock' | 'out_of_stock';
+  availability?: "available" | "low_stock" | "out_of_stock";
   expirationDateFrom?: string;
   expirationDateTo?: string;
 };
@@ -167,7 +175,13 @@ export type InventoryFilter = {
 export type GetAllInventory = PaginatedResponse<InventoryItem>;
 
 // Tipos para transferencias
-export type TransferStatus = 'pending' | 'in_progress' | 'in_transit' | 'delivered' | 'cancelled' | 'failed';
+export type TransferStatus =
+  | "pending"
+  | "in_progress"
+  | "in_transit"
+  | "delivered"
+  | "cancelled"
+  | "failed";
 
 export type TransferItem = {
   productId: number;
@@ -179,7 +193,7 @@ export type TransferItem = {
 export type TransportationService = {
   id: number;
   name: string;
-  type: 'internal' | 'external';
+  type: "internal" | "external";
   estimatedTime?: string;
   cost?: number;
 };
@@ -212,7 +226,7 @@ export type Transfer = {
     id: number;
     name: string;
     url: string;
-    type: 'transfer_guide' | 'receipt' | 'evidence' | 'other';
+    type: "transfer_guide" | "receipt" | "evidence" | "other";
   }[];
   createdAt: string;
   updatedAt: string;
@@ -221,9 +235,20 @@ export type Transfer = {
   transportationService?: TransportationService;
 };
 
-export type CreateTransfer = Omit<Transfer, 'id' | 'transferNumber' | 'createdAt' | 'updatedAt' | 'sourceWarehouse' | 'destinationWarehouse' | 'transportationService'>;
+export type CreateTransfer = Omit<
+  Transfer,
+  | "id"
+  | "transferNumber"
+  | "createdAt"
+  | "updatedAt"
+  | "sourceWarehouse"
+  | "destinationWarehouse"
+  | "transportationService"
+>;
 
-export type UpdateTransfer = Partial<Omit<CreateTransfer, 'sourceWarehouseId' | 'destinationWarehouseId'>>;
+export type UpdateTransfer = Partial<
+  Omit<CreateTransfer, "sourceWarehouseId" | "destinationWarehouseId">
+>;
 
 export type TransferFilter = {
   search?: string;
@@ -238,7 +263,7 @@ export type TransferFilter = {
 export type GetAllTransfers = PaginatedResponse<Transfer>;
 
 // Tipos para localizaciones
-export type CreateLocation = Omit<Location, 'id'>;
+export type CreateLocation = Omit<Location, "id">;
 
 export type UpdateLocation = Partial<CreateLocation>;
 
@@ -254,7 +279,7 @@ export type GetAllLocations = PaginatedResponse<Location>;
 export type WarehouseAuditLog = {
   id: string;
   warehouseId: number;
-  action: 'DELETE' | 'DEACTIVATE' | 'ACTIVATE';
+  action: "DELETE" | "DEACTIVATE" | "ACTIVATE";
   at: string;
   by: string;
   reason?: string;

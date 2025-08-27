@@ -1,11 +1,18 @@
-import EditWarehouseContent from "@/sections/warehouses/edit/general-data/edit-warehouse-general-content";
+import WarehouseEditContainer from "@/sections/warehouses/containers/warehouse-edit-general-container";
+import { Metadata } from "next";
 
-export default async function EditWarehousePage({
-  params,
-}: {
+export const metadata: Metadata = {
+  title: "Editar almacén - ZAS Express",
+  icons: {
+    icon: "/assets/images/NEWZAS.svg",
+  },
+};
+
+type Props = {
   params: Promise<{ id: string }>;
-}) {
+};
+export default async function EditWarehousePage({ params }: Props) {
   const { id } = await params;
 
-  return <EditWarehouseContent id={id} />;
+  return <WarehouseEditContainer id={id} />;
 }

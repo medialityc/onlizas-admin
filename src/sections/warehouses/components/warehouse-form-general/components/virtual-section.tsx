@@ -1,0 +1,56 @@
+import { RHFInputWithLabel } from "@/components/react-hook-form";
+import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
+import { getAllSupplierUsers } from "@/services/users";
+import { WarehouseIcon } from "lucide-react";
+import React from "react";
+
+const VirtualSection = () => {
+  return (
+    <section className="rounded-lg border border-gray-100 dark:border-gray-700 p-4">
+      <div className="mb-4">
+        <div className="flex items-center gap-2">
+          <WarehouseIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+            Datos de almacén virtual
+          </h4>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <RHFAutocompleteFetcherInfinity
+            name="virtualTypeId"
+            label="Tipo de almacén virtual"
+            placeholder="Seleccionar un tipo de almacén"
+            onFetch={getAllSupplierUsers}
+            objectValueKey="id"
+            objectKeyLabel="name"
+            queryKey="suppliers"
+            multiple
+          />
+        </div>
+        <div>
+          <RHFAutocompleteFetcherInfinity
+            name="supplierId"
+            label="Proveedor asociado"
+            placeholder="Seleccionar proveedor asociado"
+            onFetch={getAllSupplierUsers}
+            objectValueKey="id"
+            objectKeyLabel="name"
+            queryKey="suppliers"
+            multiple
+          />
+        </div>
+        <div className="col-span-1 md:col-span-2">
+          <RHFInputWithLabel
+            name="rules"
+            label="Reglas"
+            placeholder="Regla"
+            required
+          />
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default VirtualSection;

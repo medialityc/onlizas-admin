@@ -54,7 +54,9 @@ export function DataGridCard<T extends Record<string, any>>({
       />
 
       {/* list card */}
-      {component}
+      <div className="h-auto min-h-80">
+        {component}
+      </div>
 
       {/* pagination */}
       {!hidePagination && (
