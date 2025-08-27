@@ -11,7 +11,7 @@ type Props = {
   inventory: InventoryStoreFormData;
 };
 const InventoryProviderEditContainer = ({ userProvider, inventory }: Props) => {
-  console.log(getInventoryEditAdapter(inventory), "inventory");
+  const adapted = getInventoryEditAdapter(inventory);
   return (
     <div className="panel">
       <div className="mb-5 flex items-center justify-start gap-2">
@@ -32,10 +32,7 @@ const InventoryProviderEditContainer = ({ userProvider, inventory }: Props) => {
         </div>
       </div>
 
-      <InventoryEditForm
-        userProvider={userProvider}
-        initValue={getInventoryEditAdapter(inventory)}
-      />
+      <InventoryEditForm userProvider={userProvider} initValue={adapted} />
     </div>
   );
 };

@@ -4,13 +4,12 @@ import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
 import { GetAllCategories } from "@/types/categories";
-import { use } from "react";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 import { CategoriesList } from "./categories-list";
 
 interface CategoriesListPageProps {
-  categoriesPromise: Promise<ApiResponse<GetAllCategories>>;
+  categoriesPromise: ApiResponse<GetAllCategories>;
   query: SearchParams;
 }
 
@@ -18,7 +17,7 @@ export default function CategoriesListContainer({
   categoriesPromise,
   query,
 }: CategoriesListPageProps) {
-  const categoriesResponse = use(categoriesPromise);
+  const categoriesResponse = categoriesPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(categoriesResponse);
 

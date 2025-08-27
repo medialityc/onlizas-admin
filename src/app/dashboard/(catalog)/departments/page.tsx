@@ -41,7 +41,7 @@ function ListSkeleton() {
 async function DepartmentListPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const departmentsPromise = getAllDepartments(query);
+  const departmentsPromise = await getAllDepartments(query);
 
   return (
     <Suspense fallback={<ListSkeleton />}>

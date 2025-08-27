@@ -21,12 +21,13 @@ interface PageProps {
 async function InventoryProviderPage({ searchParams }: PageProps) {
   const search = await searchParams;
   const query: IQueryable = buildQueryParams(search);
-
-  const inventories = getAllInventoryProvider(query);
+  const inventories = await getAllInventoryProvider(query);
 
   return (
     <Suspense fallback={<InventoryListSkeleton />}>
-      <InventoryCardListContainer inventories={inventories} query={search} />
+      {inventories && (
+        <InventoryCardListContainer inventories={inventories} query={search} />
+      )}
     </Suspense>
   );
 }

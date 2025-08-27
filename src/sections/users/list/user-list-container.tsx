@@ -2,7 +2,6 @@
 
 import { UserList } from "@/sections/users/list/user-list";
 import { GetAllUsersResponse } from "@/types/users";
-import { use } from "react";
 
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
@@ -12,15 +11,12 @@ import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert
 
 // TODO: Separa este tipo a otro lado
 interface UserListPageProps {
-  usersPromise: Promise<ApiResponse<GetAllUsersResponse>>;
+  users: ApiResponse<GetAllUsersResponse>;
   query: SearchParams;
 }
 
-export default function UserListContainer({
-  usersPromise,
-  query,
-}: UserListPageProps) {
-  const userResponse = use(usersPromise);
+export default function UserListContainer({ users, query }: UserListPageProps) {
+  const userResponse = users;
   const { updateFiltersInUrl } = useFiltersUrl();
   // TODO manejar correctamente el error
   useFetchError(userResponse);

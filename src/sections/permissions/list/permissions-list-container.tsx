@@ -4,13 +4,12 @@ import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
 import { GetAllPermissionsResponse } from "@/types/permissions";
-import { use } from "react";
 import { PermissionList } from "./permissions-list";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 
 interface PermissionListPageProps {
-  permissionsPromise: Promise<ApiResponse<GetAllPermissionsResponse>>;
+  permissionsPromise: ApiResponse<GetAllPermissionsResponse>;
   query: SearchParams;
 }
 
@@ -18,7 +17,7 @@ export default function PermissionListContainer({
   permissionsPromise,
   query,
 }: PermissionListPageProps) {
-  const permissionResponse = use(permissionsPromise);
+  const permissionResponse = permissionsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(permissionResponse);
 

@@ -41,7 +41,7 @@ function CurrenciesListSkeleton() {
 async function CurrenciesListPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const currenciesPromise = getAllCurrencies(query);
+  const currenciesPromise = await getAllCurrencies(query);
 
   return (
     <Suspense fallback={<CurrenciesListSkeleton />}>

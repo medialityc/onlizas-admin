@@ -41,7 +41,7 @@ function SuppliersListSkeleton() {
 async function SuppliersListPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const suppliersPromise = getValidSuppliers(query);
+  const suppliersPromise = await getValidSuppliers(query);
 
   return (
     <Suspense fallback={<SuppliersListSkeleton />}>

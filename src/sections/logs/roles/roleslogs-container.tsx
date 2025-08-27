@@ -1,6 +1,6 @@
 "use client";
 import useFiltersUrl from "@/hooks/use-filters-url";
-import React, { use } from "react";
+import React from "react";
 import { ApiResponse } from "@/types/fetch/api";
 import { GetAllRolesLogsResponse } from "@/types/roles";
 import { SearchParams } from "@/types/fetch/request";
@@ -12,9 +12,9 @@ function RolesLogsContainer({
   searchParams,
 }: {
   searchParams: SearchParams;
-  rolesLogsPromise: Promise<ApiResponse<GetAllRolesLogsResponse>>;
+  rolesLogsPromise: ApiResponse<GetAllRolesLogsResponse>;
 }) {
-  const rolesResponse = use(rolesLogsPromise);
+  const rolesResponse = rolesLogsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(rolesResponse);
 

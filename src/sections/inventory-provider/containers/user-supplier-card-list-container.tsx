@@ -1,6 +1,5 @@
 "use client";
 
-import { use } from "react";
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
@@ -10,7 +9,7 @@ import { GetAllUsersResponse } from "@/types/users";
 import { UserProviderCardGrid } from "../components/user-provider-card-grid/user-provider-card-grid";
 
 interface InventoryProviderListPageProps {
-  supplierUsers: Promise<ApiResponse<GetAllUsersResponse>>;
+  supplierUsers: ApiResponse<GetAllUsersResponse>;
   query: SearchParams;
 }
 
@@ -18,7 +17,7 @@ export default function UserSupplierCardListContainer({
   supplierUsers,
   query,
 }: InventoryProviderListPageProps) {
-  const supplierUsersResponse = use(supplierUsers);
+  const supplierUsersResponse = supplierUsers;
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(supplierUsersResponse);
 

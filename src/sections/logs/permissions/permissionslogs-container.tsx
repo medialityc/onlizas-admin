@@ -1,6 +1,6 @@
 "use client";
 import useFiltersUrl from "@/hooks/use-filters-url";
-import React, { use } from "react";
+import React from "react";
 import { ApiResponse } from "@/types/fetch/api";
 import { GetAllPermissionsLogsResponse } from "@/types/permissions";
 import { SearchParams } from "@/types/fetch/request";
@@ -12,9 +12,9 @@ function PermissionsLogsContainer({
   searchParams,
 }: {
   searchParams: SearchParams;
-  permissionsLogsPromise: Promise<ApiResponse<GetAllPermissionsLogsResponse>>;
+  permissionsLogsPromise: ApiResponse<GetAllPermissionsLogsResponse>;
 }) {
-  const permissionsResponse = use(permissionsLogsPromise);
+  const permissionsResponse = permissionsLogsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(permissionsResponse);
 

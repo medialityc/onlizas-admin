@@ -40,7 +40,7 @@ function PermissionListSkeleton() {
 async function PermissionListPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const permissionsPromise = getAllPermissions(query);
+  const permissionsPromise = await getAllPermissions(query);
 
   return (
     <Suspense fallback={<PermissionListSkeleton />}>

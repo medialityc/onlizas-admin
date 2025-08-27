@@ -3,13 +3,12 @@
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { use } from "react";
 import { ProductList } from "../components/product-list";
 import { GetAllProducts } from "@/types/products";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 
 interface ProductsListContainerProps {
-  productsPromise: Promise<ApiResponse<GetAllProducts>>;
+  productsPromise: ApiResponse<GetAllProducts>;
   query: SearchParams;
 }
 
@@ -17,7 +16,7 @@ export default function ProductsListContainer({
   productsPromise,
   query,
 }: ProductsListContainerProps) {
-  const productsResponse = use(productsPromise);
+  const productsResponse = productsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
 
   const handleSearchParamsChange = (params: SearchParams) => {

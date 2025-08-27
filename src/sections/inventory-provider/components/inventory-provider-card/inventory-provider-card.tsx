@@ -102,7 +102,7 @@ const UserProviderCard = ({ item }: Props) => {
       <CardFooter className="!mt-auto w-full flex flex-row gap-4">
         <Link
           className="flex-1"
-          href={`/dashboard/inventory/${item?.supplierId}/list/${item?.parentProductId}`}
+          href={`/dashboard/inventory/details/${item?.id}`}
         >
           <Button variant="primary" outline size="sm" className="w-full ">
             <EyeIcon className="h-4 w-4 mr-1" />
@@ -111,7 +111,7 @@ const UserProviderCard = ({ item }: Props) => {
         </Link>
         <Link
           className="flex-1"
-          href={`/dashboard/inventory/${item?.supplierId}/list/${item?.parentProductId}/edit`}
+          href={`/dashboard/inventory/${item?.supplierId}/list/${item?.id}`}
         >
           <Button variant="secondary" outline size="sm" className="  w-full ">
             <Edit className="h-4 w-4 mr-1" />
@@ -119,7 +119,6 @@ const UserProviderCard = ({ item }: Props) => {
           </Button>
         </Link>
       </CardFooter>
-      {/* <pre> {JSON.stringify(item, null, 2)} </pre> */}
     </Card>
   );
 };

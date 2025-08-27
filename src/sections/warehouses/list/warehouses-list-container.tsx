@@ -1,18 +1,20 @@
 "use client";
-import useFiltersUrl from '@/hooks/use-filters-url';
-import { ApiResponse } from '@/types/fetch/api';
-import { SearchParams } from '@/types/fetch/request';
-import { use } from 'react';
-import { GetAllWarehouses } from '@/types/warehouses';
-import { WarehouseList } from './warehouse-list';
+import useFiltersUrl from "@/hooks/use-filters-url";
+import { ApiResponse } from "@/types/fetch/api";
+import { SearchParams } from "@/types/fetch/request";
+import { GetAllWarehouses } from "@/types/warehouses";
+import { WarehouseList } from "./warehouse-list";
 
 interface WarehousesListContainerProps {
-  warehousesPromise: Promise<ApiResponse<GetAllWarehouses>>;
+  warehousesPromise: ApiResponse<GetAllWarehouses>;
   query: SearchParams;
 }
 
-export default function WarehousesListContainer ({ warehousesPromise, query }: WarehousesListContainerProps) {
-  const warehousesResponse = use(warehousesPromise);
+export default function WarehousesListContainer({
+  warehousesPromise,
+  query,
+}: WarehousesListContainerProps) {
+  const warehousesResponse = warehousesPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
 
   const handleSearchParamsChange = (params: SearchParams) => {

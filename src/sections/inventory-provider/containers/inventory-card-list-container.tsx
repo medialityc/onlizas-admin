@@ -3,22 +3,20 @@
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { use } from "react";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 import { GetAllInventoryProviderResponse } from "@/services/inventory-providers";
 import { InventoryCardGrid } from "../components/inventory-provider-card-grid/inventory-card-grid";
 
 interface Props {
-  inventories: Promise<ApiResponse<GetAllInventoryProviderResponse>>;
+  inventories: ApiResponse<GetAllInventoryProviderResponse>;
   query: SearchParams;
 }
 
 export default function InventoryCardListContainer({
-  inventories,
+  inventories: inventoriesResponse,
   query,
 }: Props) {
-  const inventoriesResponse = use(inventories);
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(inventoriesResponse);
 

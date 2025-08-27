@@ -8,7 +8,6 @@ export const setInventoryEditFormData = (
   (product.products || []).forEach((variant: any, vi: number) => {
     Object.entries(variant).forEach(([key, value]) => {
       if (key.toLowerCase() === "images" && Array.isArray(value)) {
-        // archivos: repetir la misma key por cada File
         value.forEach((file: File) => {
           formData.append(`products[${vi}].images`, file);
         });
