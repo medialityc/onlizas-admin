@@ -200,5 +200,8 @@ export const backendRoutes = {
 
     getById: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/${id}`,
+
+    updateById: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/${id}/edit`,
   },
 };
