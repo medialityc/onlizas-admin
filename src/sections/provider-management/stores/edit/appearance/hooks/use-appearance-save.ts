@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
-import { Store } from "@/types/stores";
+import { BannerItem, Store } from "@/types/stores";
 import { AppearanceSchema, type AppearanceFormData, DEFAULT_APPEARANCE } from "../schemas/appearance-schema";
 import { updateSupplierStore, createBannersStore, updateBannersStore } from "@/services/stores";
 import { buildThemeFormData, buildBannersFormData } from "../utils/appearance-form-data";
@@ -28,17 +28,7 @@ export function useAppearanceSave({ store }: UseAppearanceSaveProps) {
 
   const onSubmit = async (data: any) => {
     try {
-      console.log("🔄 Guardando apariencia completa");
-      console.log("📥 Data recibida en onSubmit:", data);
-      console.log("📥 data.banners type:", typeof data.banners);
-      console.log("📥 data.banners Array.isArray:", Array.isArray(data.banners));
-      console.log("📥 data.banners contenido:", data.banners);
-      
-      // Verificar si ya viene como array anidado
-      if (Array.isArray(data.banners) && data.banners.length > 0) {
-        console.log("🔍 Primer elemento de data.banners:", data.banners[0]);
-        console.log("🔍 ¿Primer elemento es array?:", Array.isArray(data.banners[0]));
-      }
+     
       
       // 1. Siempre guardar tema y colores (incluso si no hay banners)
       const themeFormData = buildThemeFormData({ store, data });
@@ -56,42 +46,24 @@ export function useAppearanceSave({ store }: UseAppearanceSaveProps) {
         const cleanBanners = Array.isArray(data.banners) 
           ? data.banners.map((b: any) => ({...b})) // Crear objetos limpios
           : [];
-        
-        console.log("🧹 Banners limpiados:", cleanBanners);
-        console.log("🧹 cleanBanners Array.isArray:", Array.isArray(cleanBanners));
-
-        // Diagnóstico: tipos de imagen e IDs
-        cleanBanners.forEach((b: any, i: number) => {
-          console.log(`🔎 Banner[${i}] id=${b.id} isNew=${!b.id || b.id < 0} imageType=${typeof b.image} isFile=${b.image instanceof File}`);
-        });
-        
+       
         // Filtrar banners válidos (con título y URL)
         const validBanners = cleanBanners.filter((b: any) => 
           b.title && b.title.trim() !== '' && 
           b.urlDestinity && b.urlDestinity.trim() !== ''
         );
-        
-        console.log("📋 validBanners después de filtrar:", validBanners);
-        console.log("📋 validBanners Array.isArray:", Array.isArray(validBanners));
-        
+       
         if (validBanners.length > 0) {
           // Separar banners nuevos y existentes
           const bannersToCreate = validBanners.filter((b: any) => !b.id || b.id < 0);
           const bannersToUpdate = validBanners.filter((b: any) => b.id && b.id > 0);
-          
-          console.log("🆕 bannersToCreate:", bannersToCreate);
-          console.log("📝 bannersToUpdate:", bannersToUpdate);
-          
-          // Crear nuevos banners (solo los que tienen imagen nueva)
+                   // Crear nuevos banners (solo los que tienen imagen nueva)
           if (bannersToCreate.length > 0) {
             // Heurística: si image es string, asumimos que proviene del backend (existente sin id)
-            const fromBackendNoId = bannersToCreate.filter((b: any) => typeof b.image === "string");
-            const toCreateWithImage = bannersToCreate.filter((b: any) => b.image instanceof File);
-            const trulyMissingImage = bannersToCreate.filter((b: any) => b.image == null);
+            const fromBackendNoId = bannersToCreate.filter((b: BannerItem) => typeof b.image === "string");
+            const toCreateWithImage = bannersToCreate.filter((b: BannerItem) => b.image instanceof File);
+            const trulyMissingImage = bannersToCreate.filter((b: BannerItem) => b.image == null);
 
-            if (fromBackendNoId.length > 0) {
-              console.log("ℹ️ Banners tratados como existentes sin id (image es string):", fromBackendNoId);
-            }
             if (trulyMissingImage.length > 0) {
               const list = trulyMissingImage.map((b: any) => b.title || `[pos ${b.position}]`).join(", ");
               console.warn("⏭️ Banners nuevos omitidos por no tener imagen:", trulyMissingImage);
