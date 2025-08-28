@@ -100,6 +100,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${supplierId}/warehouses`,
     listPhysical: `${process.env.NEXT_PUBLIC_API_URL}warehouses/physical`,
     listVirtual: `${process.env.NEXT_PUBLIC_API_URL}warehouses/virtual`,
+    listSupplier: `${process.env.NEXT_PUBLIC_API_URL}suppliers/warehouses`,
   },
   departments: {
     create: `${process.env.NEXT_PUBLIC_API_URL}departments`, // POST

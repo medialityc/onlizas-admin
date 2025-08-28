@@ -1,9 +1,9 @@
 import { buildQueryParams } from "@/lib/request";
 import { Suspense } from "react";
-import { getAllWarehouses } from "@/services/warehouses-mock";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
 import WarehouseListContainer from "@/sections/warehouses/containers/warehouse-list-container";
+import { getAllWarehouses } from "@/services/warehouses";
 
 export const metadata: Metadata = {
   title: "Almacenes Físicos - Onlizas",

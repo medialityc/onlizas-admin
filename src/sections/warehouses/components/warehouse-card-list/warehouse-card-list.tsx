@@ -1,10 +1,10 @@
 import { SearchParams } from "@/types/fetch/request";
 import React, { useId } from "react";
 import { WarehouseCard } from "./warehouse-card";
-import { Warehouse } from "@/types/warehouses";
+import { WarehouseFormData } from "../../schemas/warehouse-schema";
 
 type Props = {
-  data?: Warehouse[];
+  data?: WarehouseFormData[];
   searchParams: SearchParams;
 };
 const WarehouseCardList = ({ data, searchParams }: Props) => {
@@ -25,7 +25,7 @@ const WarehouseCardList = ({ data, searchParams }: Props) => {
   }
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 md:gap-6 mb-4">
-      {data?.map((warehouse: Warehouse) => (
+      {data?.map((warehouse: WarehouseFormData) => (
         <div className="col-span-1" key={`${id}-${warehouse?.id}`}>
           <WarehouseCard warehouse={warehouse} />
         </div>

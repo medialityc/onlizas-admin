@@ -232,4 +232,6 @@ export type WarehouseFormData = z.infer<typeof warehouseSchema> & {
   id?: number;
   createdAt?: Date;
   updatedAt?: Date;
+  locationName?: string;
+  supplierName?: string;
 };
