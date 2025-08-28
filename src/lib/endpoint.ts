@@ -86,8 +86,8 @@ export const backendRoutes = {
   warehouses: {
     create: `${process.env.NEXT_PUBLIC_API_URL}warehouses`,
     list: `${process.env.NEXT_PUBLIC_API_URL}warehouses`,
-    edit: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}`,
+    edit: (id: string | number, type: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}warehouses/${type}/${id}`,
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}`,
     delete: (id: string | number) =>
@@ -98,10 +98,29 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}warehouses/transfers/${id}`,
     listBySupplier: (supplierId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${supplierId}/warehouses`,
-    listPhysical: `${process.env.NEXT_PUBLIC_API_URL}warehouses/physical`,
-    listVirtual: `${process.env.NEXT_PUBLIC_API_URL}warehouses/virtual`,
+    listByType: (type: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}warehouses/${type}/all`,
     listSupplier: `${process.env.NEXT_PUBLIC_API_URL}suppliers/warehouses`,
+    inventoryList: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}/inventory`,
+    productList: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}/products`,
+    variantList: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}/variants`,
   },
+  warehouse_transfers: {
+    create: `${process.env.NEXT_PUBLIC_API_URL}admin/transfers`,
+    list: `${process.env.NEXT_PUBLIC_API_URL}admin/transfers`,
+    getById: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}admin/transfers/${id}`,
+    approve: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}admin/transfers/${id}/approve`,
+    cancel: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}admin/transfers/${id}/cancel`,
+    execute: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}admin/transfers/${id}/execute`,
+  },
+
   departments: {
     create: `${process.env.NEXT_PUBLIC_API_URL}departments`, // POST
     list: `${process.env.NEXT_PUBLIC_API_URL}admin/departments`, // GET

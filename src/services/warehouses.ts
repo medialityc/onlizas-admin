@@ -14,6 +14,8 @@ import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
 import { WarehouseFormData } from "@/sections/warehouses/schemas/warehouse-schema";
 import { GetAllUsersResponse } from "../types/users";
+import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
+import { InventoryProviderFormData } from "@/sections/inventory-provider/schemas/inventory-provider.schema";
 
 export async function getAllWarehouses(
   params: IQueryable & WarehouseFilter
@@ -30,6 +32,48 @@ export async function getAllWarehouses(
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<GetAllWarehouses>(res);
+}
+
+/*
+ * todos los almacenes por type
+ */
+export async function getAllWarehousesByType(
+  params: IQueryable & WarehouseFilter,
+  type: string
+): Promise<ApiResponse<GetAllWarehouses>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.warehouses.listByType(type)
+  ).build();
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["warehouses", type] },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<GetAllWarehouses>(res);
+}
+
+/*
+ * inventarios de un almacén
+ */
+export async function getWarehouseInventories(
+  warehouseId: string | number,
+  params?: IQueryable
+): Promise<ApiResponse<InventoryProviderFormData[]>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.warehouses.inventoryList(warehouseId)
+  ).build();
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["warehouses-inventories"] },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<InventoryProviderFormData[]>(res);
 }
 
 /*
@@ -56,13 +100,14 @@ export async function getAllSupplierWarehouses(
 }
 
 export async function getWarehouseById(
-  id: number
+  id: number,
+  type: string
 ): Promise<ApiResponse<WarehouseFormData>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.warehouses.edit(id),
+    url: backendRoutes.warehouses.edit(id, type),
     method: "GET",
     useAuth: true,
-    next: { tags: ["warehouses", String(id)] },
+    next: { tags: ["warehouses", String(id), type] },
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<WarehouseFormData>(res);
@@ -72,7 +117,7 @@ export async function createWarehouse(
   data: WarehouseFormData
 ): Promise<ApiResponse<Warehouse>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.warehouses.create,
+    url: `${backendRoutes.warehouses.create}/${data?.type ?? WAREHOUSE_TYPE_ENUM.physical}`,
     method: "POST",
     data,
     useAuth: true,
@@ -141,25 +186,6 @@ export async function getAllWarehousesBySupplier(
     url,
     useAuth: true,
     next: { tags: ["warehouses-supplier"] },
-  });
-
-  if (!res.ok) return handleApiServerError(res);
-
-  return buildApiResponseAsync<GetAllWarehouses>(res);
-}
-
-export async function getAllWarehousesPhysical(
-  params: IQueryable
-): Promise<ApiResponse<GetAllWarehouses>> {
-  const url = new QueryParamsURLFactory(
-    params,
-    backendRoutes.warehouses.listPhysical
-  ).build();
-
-  const res = await nextAuthFetch({
-    url,
-    useAuth: true,
-    next: { tags: ["warehouses-physical"] },
   });
 
   if (!res.ok) return handleApiServerError(res);

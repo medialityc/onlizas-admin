@@ -49,7 +49,7 @@ export default async function WarehouseDetails({ id }: { id: string }) {
           </div>
         </div>
         <div className="flex gap-2 flex-shrink-0">
-          <Link href={paths.dashboard.warehouses.edit(w.id!)}>
+          <Link href={paths.dashboard.warehouses.edit(w.type!, w.id!)}>
             <Button>Editar</Button>
           </Link>
           <Link href={paths.dashboard.warehouses.list}>

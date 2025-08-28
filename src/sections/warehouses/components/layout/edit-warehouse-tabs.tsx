@@ -20,22 +20,23 @@ export function EditWarehouseTabs({ warehouse }: EditWarehouseTabsProps) {
   const router = useRouter();
   const pathname = usePathname();
   const warehouseId = warehouse.id;
+  const warehouseType = warehouse.type.toLowerCase();
 
   const tabs: Tab[] = [
     {
       id: "general",
       label: "Datos Generales",
-      path: `/dashboard/warehouses/${warehouseId}/edit`,
+      path: `/dashboard/warehouses/${warehouseType}/${warehouseId}/edit`,
     },
     {
       id: "inventory",
       label: "Inventarios",
-      path: `/dashboard/warehouses/${warehouseId}/edit/inventory`,
+      path: `/dashboard/warehouses/${warehouseType}/${warehouseId}/edit/inventory`,
     },
     {
       id: "transfers",
       label: "Transferencias",
-      path: `/dashboard/warehouses/${warehouseId}/edit/transfers`,
+      path: `/dashboard/warehouses/${warehouseType}/${warehouseId}/edit/transfers`,
     },
   ];
 
@@ -47,7 +48,7 @@ export function EditWarehouseTabs({ warehouse }: EditWarehouseTabsProps) {
 
   return (
     <div className="border-b border-gray-200 dark:border-gray-700">
-      <nav className="-mb-px flex space-x-8">
+      <nav className="-mb-px flex space-x-4">
         {tabs.map((tab) => (
           <button
             key={tab.id}

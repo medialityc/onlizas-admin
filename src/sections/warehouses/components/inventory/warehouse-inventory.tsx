@@ -36,9 +36,6 @@ export function WarehouseInventory() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-          Inventarios del Almacén
-        </h2>
         <div className="flex items-center gap-2">
           <SearchInput
             value={searchQuery}

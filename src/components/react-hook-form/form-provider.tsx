@@ -13,6 +13,7 @@ type Props = {
   autocomplete?: string | undefined;
   className?: string;
   id?: string;
+  noValidate?: boolean;
 };
 
 export default function FormProvider({
@@ -22,6 +23,7 @@ export default function FormProvider({
   autocomplete,
   className,
   id,
+  noValidate = false,
 }: Props) {
   const handleFormSubmit = (data: any) => {
     console.log("📋 FormProvider handleSubmit called with:", data);
@@ -36,6 +38,7 @@ export default function FormProvider({
         onSubmit={methods.handleSubmit(handleFormSubmit)}
         autoComplete={autocomplete}
         className={className}
+        noValidate={noValidate}
         id={id ?? "form"}
       >
         {children}

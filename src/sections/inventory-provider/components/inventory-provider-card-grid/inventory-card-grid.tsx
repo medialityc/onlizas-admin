@@ -31,7 +31,7 @@ export function InventoryCardGrid({
         onCreate={onCreate}
         component={
           <InventoryProviderList
-            data={data?.data}
+            data={data?.data as any[]}
             searchParams={searchParams}
           />
         }
