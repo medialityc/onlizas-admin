@@ -34,9 +34,9 @@ export default function BannersList({
 
   return (
     <div className="space-y-3">
-      {banners.map((banner) => (
+      {banners.map((banner, index) => (
         <BannerCard
-          key={banner.id}
+          key={banner.id ?? `banner-${index}`}
           banner={banner}
           positionLabel={getPositionLabel(Number(banner.position))}
           onToggle={onToggle}

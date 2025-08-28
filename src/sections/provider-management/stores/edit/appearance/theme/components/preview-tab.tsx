@@ -4,7 +4,7 @@ import React, { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/cards/card";
 import { ComputerDesktopIcon, DevicePhoneMobileIcon, DeviceTabletIcon } from "@heroicons/react/24/outline";
-import { TemplateModern, TemplateClassic, TemplateMinimal, TemplateAudaz } from "./templates";
+import { TemplateModern, TemplateClassic, TemplateMinimal, TemplateAudaz } from "../templates";
 
 type Device = "desktop" | "tablet" | "mobile";
 

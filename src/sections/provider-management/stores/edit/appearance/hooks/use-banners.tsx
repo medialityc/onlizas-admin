@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-import { BannerForm } from "./banner-schema";
+import { BannerForm } from "../banners/banner-schema";
 import { BannerItem } from '../../../../../../types/stores';
 
 interface BackendBanner {
@@ -92,7 +92,7 @@ export function useBanners({ backendBanners, setValue }: UseBannersParams) {
     
     setItems((prev) => [
       {
-        id: Math.max(0, ...prev.map((x) => x.id)) + 1,
+        //id: Math.max(0, ...prev.map((x) => x.id)) + 1,
         title: banner.title,
         urlDestinity: banner.urlDestinity,
         position: Number(banner.position),

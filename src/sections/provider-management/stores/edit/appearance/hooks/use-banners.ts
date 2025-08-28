@@ -2,10 +2,10 @@
 import React from "react";
 import type { UseFormSetValue } from "react-hook-form";
 
-import { BannerForm } from "./banner-schema";
+import { BannerForm } from "../banners/banner-schema";
 
 import { BannerItem } from "@/types/stores";
-import type { StoreEditFormData } from "../../../modals/store-edit-form.schema";
+import type { AppearanceFormData } from "../schemas/appearance-schema";
 
 // Banner que llega desde el backend/form principal
 export interface BackendBanner {
@@ -15,12 +15,13 @@ export interface BackendBanner {
   position: string | number;
   initDate?: string;
   endDate?: string;
-  image?: File | string;
+  image?: File | string | null;
+  isActive?: boolean;
 }
 
 interface UseBannersProps {
   backendBanners?: BackendBanner[];
-  setValue: UseFormSetValue<StoreEditFormData>;
+  setValue: UseFormSetValue<AppearanceFormData>;
 }
 
 export function useBanners({ backendBanners, setValue }: UseBannersProps) {
@@ -42,7 +43,7 @@ export function useBanners({ backendBanners, setValue }: UseBannersProps) {
       };
 
       const initial = backendBanners.map((b, idx): BannerItem => ({
-        id: typeof b.id === "number" ? b.id : idx + 1,
+        id: typeof b.id === "number" ? b.id : undefined, // Solo ID del backend si existe
         title: b.title,
         urlDestinity: b.urlDestinity ?? "",
         position: toNumberPosition(b.position),
@@ -58,6 +59,7 @@ export function useBanners({ backendBanners, setValue }: UseBannersProps) {
   // Sincronizar con el formulario principal
   React.useEffect(() => {
     const payload = items.map((b) => ({
+
       id: b.id,
       title: b.title ?? "",
       urlDestinity: b.urlDestinity ?? "",
@@ -91,9 +93,9 @@ export function useBanners({ backendBanners, setValue }: UseBannersProps) {
 
   const handleCreateBanner = (banner: BannerForm) => {
 
-
     const newBanner = {
-      id: Math.max(0, ...items.map((x) => x.id)) + 1,
+      // ID temporal para identificar localmente, pero no se enviará al backend
+      id: -Date.now(), // ID temporal negativo único      
       title: banner.title,
       urlDestinity: banner.urlDestinity,
       position: Number(banner.position),
@@ -102,7 +104,6 @@ export function useBanners({ backendBanners, setValue }: UseBannersProps) {
       image: banner.image,
       isActive: banner.isActive ?? true,
     };
-
 
     setItems((prev) => [newBanner, ...prev]);
   };

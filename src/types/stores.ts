@@ -14,7 +14,7 @@ export type StoreAddress = {
 };
 
 export type BannerItem = {
-  id: number;
+  id?: number; // ID opcional - puede ser temporal local o del backend
   title: string;
   urlDestinity: string;
   position: number | string; // integer position

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useFormContext } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { Store } from "@/types/stores";
 import CategoriesToolbar from "./components/categories-toolbar";
 import { mockCategories, type StoreCategory } from "./mock";
@@ -14,8 +14,16 @@ interface Props {
   store: Store;
 }
 
-export default function CategoriesContainer({ store }: Props) {
-  const { register, setValue, getValues } = useFormContext();
+// Componente interno que usa el FormContext
+function CategoriesContent({ store }: Props) {
+  const methods = useForm<any>({
+    defaultValues: {
+      categoriesPayload: [],
+      categoriesViewState: mockCategories
+    }
+  });
+
+  const { register, setValue, getValues } = methods;
   // Rehidratar primero desde un estado "rico" guardado en RHF (no el payload plano)
   const viewState = getValues("categoriesViewState") as StoreCategory[] | undefined;
   const initial = viewState?.length
@@ -57,9 +65,9 @@ export default function CategoriesContainer({ store }: Props) {
 
   return (
     <div className="p-6 text-lg">
-  <div className="text-xs text-gray-500 mb-2">Fuente: {source === "form" ? "Formulario" : "Mock"}</div>
-  {/* Metrics header */}
-  <CategoriesMetrics total={totals.total} active={totals.active} products={totals.products} />
+      <div className="text-xs text-gray-500 mb-2">Fuente: {source === "form" ? "Formulario" : "Mock"}</div>
+      {/* Metrics header */}
+      <CategoriesMetrics total={totals.total} active={totals.active} products={totals.products} />
 
       {/* Toolbar */}
       <CategoriesToolbar />
@@ -83,5 +91,21 @@ export default function CategoriesContainer({ store }: Props) {
         description="Esta acción eliminará la categoría seleccionada."
       />
     </div>
+  );
+}
+
+// Componente principal que provee el FormProvider
+export default function CategoriesContainer({ store }: Props) {
+  const methods = useForm<any>({
+    defaultValues: {
+      categoriesPayload: [],
+      categoriesViewState: mockCategories
+    }
+  });
+
+  return (
+    <FormProvider {...methods}>
+      <CategoriesContent store={store} />
+    </FormProvider>
   );
 }
