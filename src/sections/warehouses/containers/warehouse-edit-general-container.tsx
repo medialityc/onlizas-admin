@@ -1,6 +1,6 @@
 import { getWarehouseById } from "@/services/warehouses";
 import { notFound } from "next/navigation";
-import { WarehouseGeneralData } from "../components/warehouse-form-general/warehouse-form-general";
+import { WarehouseForm } from "../components/warehouse-form/warehouse-form";
 import EditWarehouseLayout from "../components/layout/edit-warehouse-layout";
 import { Suspense } from "react";
 
@@ -14,7 +14,7 @@ export default async function EditWarehouseContainer({ id }: { id: string }) {
   return (
     <Suspense fallback={<></>}>
       <EditWarehouseLayout warehouse={response?.data}>
-        <WarehouseGeneralData warehouse={response?.data} />
+        <WarehouseForm warehouse={response?.data} />
       </EditWarehouseLayout>
     </Suspense>
   );
