@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createWarehouse, updateWarehouse } from "@/services/warehouses";
 import { toast } from "react-toastify";
+import { getCreateWarehouseAdapter } from "../adapter/warehouse-create.adapter";
 
 interface WarehouseFormProps {
   warehouse?: WarehouseFormData;
@@ -26,7 +27,7 @@ export const useWarehouseCreateForm = ({
     defaultValues: warehouse,
   });
 
-  console.log(form.formState.errors, 'ERRORS')
+  console.log(form.formState.errors, "ERRORS");
 
   const warehouseType = form?.watch("type");
 
@@ -34,7 +35,7 @@ export const useWarehouseCreateForm = ({
     mutationFn: async (payload: WarehouseFormData) => {
       const res = payload?.id
         ? await updateWarehouse(payload?.id, payload)
-        : await createWarehouse(payload);
+        : await createWarehouse(getCreateWarehouseAdapter(payload));
 
       if (res.error) {
         throw res;

@@ -9,8 +9,8 @@ const VirtualSection = () => {
     <section className="rounded-lg border border-gray-100 dark:border-gray-700 p-4">
       <div className="mb-4">
         <div className="flex items-center gap-2">
-          <WarehouseIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-          <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+          <WarehouseIcon className="w-5 h-5 text-gray-500 dark:text-gray-100" />
+          <h4 className="text-lg font-semibold text-gray-100 dark:text-gray-100 leading-none">
             Datos de almacén virtual
           </h4>
         </div>
@@ -41,12 +41,7 @@ const VirtualSection = () => {
           />
         </div>
         <div className="col-span-1 md:col-span-2">
-          <RHFInputWithLabel
-            name="rules"
-            label="Reglas"
-            placeholder="Regla"
-            required
-          />
+          <RHFInputWithLabel name="rules" label="Reglas" placeholder="Regla" />
         </div>
       </div>
     </section>
