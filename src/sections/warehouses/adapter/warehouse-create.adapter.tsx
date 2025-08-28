@@ -6,6 +6,9 @@ export const getCreateWarehouseAdapter = (warehouse: WarehouseFormData) => {
     ...warehouse,
     ...(warehouse?.type === WAREHOUSE_TYPE_ENUM.physical
       ? { isPhysical: true }
+      : { isPhysical: false }),
+    ...(warehouse?.type === WAREHOUSE_TYPE_ENUM.physical
+      ? { maxCapacity: warehouse?.capacity }
       : {}),
   };
 };

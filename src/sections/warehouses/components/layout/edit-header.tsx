@@ -1,9 +1,6 @@
 import {
   BuildingStorefrontIcon,
   BuildingOfficeIcon,
-  EnvelopeIcon,
-  PhoneIcon,
-  UserIcon,
 } from "@heroicons/react/24/solid";
 import React from "react";
 import BackButton from "./back-button";
@@ -11,20 +8,15 @@ import { WarehouseFormData } from "../../schemas/warehouse-schema";
 
 function EditHeader({ warehouse }: { warehouse: WarehouseFormData }) {
   const getStatusInfo = () => {
-    switch (warehouse.status) {
-      case "active":
+    switch (warehouse.isActive) {
+      case true:
         return {
           label: "Activo",
           class:
             "bg-emerald-100 text-emerald-800 ring-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-200 dark:ring-emerald-800/50",
         };
-      case "maintenance":
-        return {
-          label: "Mantenimiento",
-          class:
-            "bg-amber-100 text-amber-800 ring-amber-300 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800/50",
-        };
-      case "inactive":
+
+      case false:
         return {
           label: "Inactivo",
           class:
@@ -73,36 +65,6 @@ function EditHeader({ warehouse }: { warehouse: WarehouseFormData }) {
               <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium bg-gray-100 text-gray-700 ring-1 ring-inset ring-gray-300 dark:bg-gray-800/50 dark:text-gray-200 dark:ring-gray-700/50">
                 {warehouse.type === "physical" ? "Físico" : "Virtual"}
               </span>
-            </div>
-            <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-              {warehouse.managerEmail && (
-                <div className="flex items-center text-gray-600 dark:text-gray-400">
-                  <EnvelopeIcon className="w-4 h-4 mr-2" />
-                  <span className="text-sm">{warehouse.managerEmail}</span>
-                </div>
-              )}
-              {warehouse.managerPhone && (
-                <div className="flex items-center text-gray-600 dark:text-gray-400">
-                  <PhoneIcon className="w-4 h-4 mr-2" />
-                  <span className="text-sm">{warehouse.managerPhone}</span>
-                </div>
-              )}
-
-              {/* //todo ver como vienen en la peticion */}
-              {/* {warehouse.location?.address && (
-                <div className="flex items-center text-gray-600 dark:text-gray-400">
-                  <MapPinIcon className="w-4 h-4 mr-2" />
-                  <span className="text-sm">{warehouse.location.address}</span>
-                </div>
-              )} */}
-              {warehouse.managerName && (
-                <div className="flex items-center text-gray-600 dark:text-gray-400">
-                  <UserIcon className="w-4 h-4 mr-2" />
-                  <span className="text-sm">
-                    Gestor: {warehouse.managerName}
-                  </span>
-                </div>
-              )}
             </div>
           </div>
         </div>

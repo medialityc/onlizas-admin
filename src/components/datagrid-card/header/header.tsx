@@ -24,7 +24,7 @@ export function Header({
 }: DataGridHeaderProps) {
   const isActions = onCreate || rightActions;
   return (
-    <div className="mb-5 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+    <div className="mb-5 flex flex-col md:flex-row md:items-center md:justify-between">
       <div className="flex items-center gap-3 flex-1 !w-full">
         {enableSearch && (
           <FilterSearch
@@ -37,7 +37,7 @@ export function Header({
       </div>
 
       {isActions && (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 ml-4">
           {rightActions}
           {onCreate && (
             <button
