@@ -1,7 +1,7 @@
-import { getWarehouseById } from "@/services/warehouses-mock";
 import { notFound } from "next/navigation";
 import { WarehouseInventory } from "./warehouse-inventory";
 import EditWarehouseLayout from "../layout/edit-warehouse-layout";
+import { getWarehouseById } from "@/services/warehouses";
 
 export default async function EditWarehouseInventoryContent({
   id,

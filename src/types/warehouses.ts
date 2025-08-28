@@ -1,3 +1,4 @@
+import { WarehouseFormData } from "@/sections/warehouses/schemas/warehouse-schema";
 import { PaginatedResponse } from "./common";
 
 export type WarehouseType = "physical" | "virtual";
@@ -116,7 +117,7 @@ export type WarehouseFilter = {
   supplierId?: number;
 };
 
-export type GetAllWarehouses = PaginatedResponse<Warehouse>;
+export type GetAllWarehouses = PaginatedResponse<WarehouseFormData>;
 
 // Tipos para inventario
 export type InventoryStatus =

@@ -12,6 +12,7 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { backendRoutes } from "@/lib/endpoint";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
+import { WarehouseFormData } from "@/sections/warehouses/schemas/warehouse-schema";
 
 // Mock data - Inicialización de almacenes físicos
 const mockWarehouses: Warehouse[] = [
@@ -374,7 +375,7 @@ export async function getAllWarehouses(
  */
 export async function getWarehouseById(
   id: number
-): Promise<ApiResponse<Warehouse>> {
+): Promise<ApiResponse<WarehouseFormData>> {
   await delay(200);
   const warehouse = mockWarehouses.find((warehouse) => warehouse.id === id);
   if (!warehouse)
@@ -382,7 +383,7 @@ export async function getWarehouseById(
       error: true,
       status: 404,
       message: "Not found",
-    } as ApiResponse<Warehouse>;
+    } as ApiResponse<WarehouseFormData>;
 
   // Enriquecer con permisos calculados dinámicamente
   const enrichedWarehouse = enrichWarehouse(warehouse);
@@ -391,12 +392,12 @@ export async function getWarehouseById(
     data: enrichedWarehouse,
     status: 200,
     error: false,
-  } as ApiResponse<Warehouse>;
+  } as unknown as ApiResponse<WarehouseFormData>;
 }
 
 export async function createWarehouse(
   data: CreateWarehouse
-): Promise<ApiResponse<Warehouse>> {
+): Promise<ApiResponse<WarehouseFormData>> {
   await delay(300);
   const id = mockWarehouses.length
     ? Math.max(...mockWarehouses.map((warehouse) => warehouse.id)) + 1
@@ -417,7 +418,7 @@ export async function createWarehouse(
     data: enrichedWarehouse,
     status: 201,
     error: false,
-  } as ApiResponse<Warehouse>;
+  } as unknown as ApiResponse<WarehouseFormData>;
 }
 
 export async function updateWarehouse(

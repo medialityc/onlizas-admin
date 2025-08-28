@@ -13,6 +13,7 @@ import {
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
 import { WarehouseFormData } from "@/sections/warehouses/schemas/warehouse-schema";
+import { GetAllUsersResponse } from "../types/users";
 
 export async function getAllWarehouses(
   params: IQueryable & WarehouseFilter
@@ -29,6 +30,29 @@ export async function getAllWarehouses(
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<GetAllWarehouses>(res);
+}
+
+/*
+ * lista de proveedores asociados
+ */
+export async function getAllSupplierWarehouses(
+  params: IQueryable
+): Promise<ApiResponse<GetAllUsersResponse>> {
+  const url = new QueryParamsURLFactory(
+    { ...params, role: "ONL_SUPPLIER" },
+    backendRoutes.warehouses.listSupplier
+  ).build();
+  console.log(url);
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["associate-supplier"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<GetAllUsersResponse>(res);
 }
 
 export async function getWarehouseById(

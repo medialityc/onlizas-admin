@@ -1,19 +1,19 @@
 "use client";
 
-import { Warehouse } from "@/types/warehouses";
 import { Button } from "@/components/button/button";
 import { useEffect, useMemo, useState } from "react";
 import { mockTransferData } from "@/services/warehouses-mock";
 // icons now used inside components
 import { useQuery } from "@tanstack/react-query";
-import { getAllWarehouses } from "@/services/warehouses-mock";
 import { useForm } from "react-hook-form";
 import DestinationSelect from "./components/DestinationSelect";
 import TransferItemCard from "./components/TransferItemCard";
 import InventorySearch from "./components/InventorySearch";
+import { getAllWarehouses } from "@/services/warehouses";
+import { WarehouseFormData } from "../../schemas/warehouse-schema";
 
 interface WarehouseTransfersProps {
-  warehouse: Warehouse;
+  warehouse: WarehouseFormData;
 }
 
 export function WarehouseTransfers({ warehouse }: WarehouseTransfersProps) {
@@ -51,7 +51,7 @@ export function WarehouseTransfers({ warehouse }: WarehouseTransfersProps) {
   const availableWarehouses =
     warehousesResponse?.data?.data?.filter((w) => w.id !== warehouse.id) || [];
   const warehouseOptions = availableWarehouses.map((w) => ({
-    value: w.id.toString(),
+    value: w.id!.toString(),
     label: `${w.name} - ${w.type === "physical" ? "Físico" : "Virtual"}`,
   }));
 

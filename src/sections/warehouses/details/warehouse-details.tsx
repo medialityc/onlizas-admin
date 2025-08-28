@@ -19,9 +19,7 @@ export default async function WarehouseDetails({ id }: { id: string }) {
   const response = await getWarehouseById(Number(id));
   if (!response?.data) notFound();
   const w = response.data;
-  const occupancy = w.maxCapacity
-    ? Math.round(((w.currentCapacity || 0) / w.maxCapacity) * 100)
-    : undefined;
+
   const TypeIcon = getTypeIcon(w.type);
 
   return (
@@ -43,28 +41,15 @@ export default async function WarehouseDetails({ id }: { id: string }) {
               {w.name}
               <Badge
                 className="ml-2"
-                variant={
-                  w.status === "active"
-                    ? "success"
-                    : w.status === "maintenance"
-                      ? "warning"
-                      : "secondary"
-                }
+                variant={w.isActive ? "success" : "secondary"}
               >
-                {w.status === "active"
-                  ? "Activo"
-                  : w.status === "maintenance"
-                    ? "Mantenimiento"
-                    : "Inactivo"}
+                {w.isActive ? "Activo" : "Inactivo"}
               </Badge>
             </h1>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1 truncate">
-              {w.description}
-            </p>
           </div>
         </div>
         <div className="flex gap-2 flex-shrink-0">
-          <Link href={paths.dashboard.warehouses.edit(w.id)}>
+          <Link href={paths.dashboard.warehouses.edit(w.id!)}>
             <Button>Editar</Button>
           </Link>
           <Link href={paths.dashboard.warehouses.list}>
@@ -94,31 +79,8 @@ export default async function WarehouseDetails({ id }: { id: string }) {
                   Capacidad:
                 </span>
                 <span className="text-gray-600 dark:text-gray-300">
-                  {w.currentCapacity || 0} / {w.maxCapacity || 0}
+                  {w.capacity || 0}
                 </span>
-                {occupancy !== undefined && (
-                  <span className="text-xs text-gray-500">({occupancy}%)</span>
-                )}
-              </div>
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                <div
-                  className={
-                    (occupancy || 0) >= 90
-                      ? "bg-red-500"
-                      : (occupancy || 0) >= 70
-                        ? "bg-yellow-500"
-                        : "bg-green-500"
-                  }
-                  style={{
-                    width: `${Math.min(occupancy || 0, 100)}%`,
-                    height: "0.5rem",
-                    borderRadius: "9999px",
-                    transition: "width 0.3s",
-                  }}
-                ></div>
-              </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                {occupancy || 0}% ocupado
               </div>
             </div>
           )}
@@ -128,13 +90,13 @@ export default async function WarehouseDetails({ id }: { id: string }) {
               Gestor/Proveedor:
             </span>
             <span className="text-gray-600 dark:text-gray-300">
-              {w.managerName || "No asignado"}
+              {w.supplierName || "No asignado"}
             </span>
           </div>
         </div>
         {/* Columna derecha */}
         <div className="space-y-6">
-          {w.location?.address && (
+          {w.locationId && (
             <div className="flex items-start gap-2">
               <MapPinIcon className="h-5 w-5 mt-0.5 text-gray-400" />
               <div>
@@ -142,10 +104,7 @@ export default async function WarehouseDetails({ id }: { id: string }) {
                   Ubicación:
                 </div>
                 <div className="text-gray-600 dark:text-gray-300">
-                  {w.location.address}
-                </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">
-                  {w.location.region}, {w.location.country}
+                  {w.locationName}
                 </div>
               </div>
             </div>
@@ -155,7 +114,7 @@ export default async function WarehouseDetails({ id }: { id: string }) {
               Creado:
             </div>
             <div className="text-gray-600 dark:text-gray-300">
-              {new Date(w.createdAt).toLocaleDateString()}
+              {new Date(w.createdAt!).toLocaleDateString()}
             </div>
           </div>
           <div>
@@ -163,7 +122,7 @@ export default async function WarehouseDetails({ id }: { id: string }) {
               Actualizado:
             </div>
             <div className="text-gray-600 dark:text-gray-300">
-              {new Date(w.updatedAt).toLocaleDateString()}
+              {new Date(w.updatedAt!).toLocaleDateString()}
             </div>
           </div>
         </div>
