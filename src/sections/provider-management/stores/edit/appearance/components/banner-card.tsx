@@ -55,7 +55,7 @@ function BannerImage({ banner }: { banner: BannerItem }) {
           height={48}
           className="w-full h-full object-cover" 
           
-        />
+        /> 
       </div>
     );
   } else if (banner.image instanceof File) {
@@ -94,11 +94,11 @@ function BannerInfo({ banner, positionLabel }: { banner: BannerItem; positionLab
           {positionLabel}
         </span>
       </div>
-      <div className="text-xs text-gray-500">{banner.urlDestinity}</div>
+      <div className="text-xs text-gray-500"><a href={banner.urlDestinity}>{banner.urlDestinity.substring(0, 10)}</a> </div>
       {(banner.initDate || banner.endDate) && (
         <div className="text-xs text-gray-400 mt-0.5">
-          {banner.initDate ? banner.initDate : ""} 
-          {banner.endDate ? ` - ${banner.endDate}` : ""}
+          {banner.initDate ? banner.initDate.substring(0, 10) : ""} 
+          {banner.endDate ? ` - ${banner.endDate.substring(0, 10)}` : ""}
         </div>
       )}
     </div>
