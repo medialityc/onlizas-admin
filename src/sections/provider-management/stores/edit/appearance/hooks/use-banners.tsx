@@ -64,7 +64,7 @@ export function useBanners({ backendBanners, setValue }: UseBannersParams) {
       position: Number.isFinite(b.position) ? Number(b.position) : 1,
       initDate: b.initDate || "",
       endDate: b.endDate || "",
-      image: b.image instanceof File ? b.image.name : (b.image || ""),
+      image: b.image,
       isActive:b.isActive??true
     }));
     setValue("banners", payload, { shouldDirty: true });
