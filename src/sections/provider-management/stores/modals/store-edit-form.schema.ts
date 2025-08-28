@@ -58,6 +58,7 @@ const categoryItemSchema = z.object({
 });
 
 export const storeEditSchema = z.object({
+  id:z.number().optional(),
   isActive: z.boolean().optional(),
 
   // Datos básicos

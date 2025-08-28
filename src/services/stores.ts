@@ -151,7 +151,7 @@ export async function updateSupplierStore(
 
   if (!res.ok) return handleApiServerError(res);
   revalidateTag("stores");
-  revalidateTag("store-details");
+  revalidateTag("store-supplier-edit");
   return buildApiResponseAsync<Store>(res);
 }
 export async function updateAdminStore(
@@ -192,7 +192,7 @@ export async function createBannersStore(
 ): Promise<ApiResponse<Store | undefined>> {
   const res = await nextAuthFetch({
     url: backendRoutes.storeBanner.create,
-    method: "PUT",
+    method: "POST",
     data,
     useAuth: true,
   });
