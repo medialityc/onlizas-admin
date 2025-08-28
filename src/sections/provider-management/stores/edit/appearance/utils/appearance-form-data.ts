@@ -42,11 +42,7 @@ type BuildBannersFormDataParams = {
 
 // Construye el FormData para banners
 export function buildBannersFormData({ banners, storeId, filter }: BuildBannersFormDataParams) {
-  console.log("🏗️ buildBannersFormData - Banners recibidos:", banners);
-  console.log("🏗️ storeId recibido:", storeId);
-  console.log("🏗️ banners Array.isArray:", Array.isArray(banners));
-  console.log("🏗️ banners length:", banners?.length);
-
+  
   // Helper: asegura formato ISO-8601 con hora para el backend
   const toIsoOrUndefined = (value?: string | null): string | undefined => {
     if (!value) return undefined;
@@ -63,15 +59,13 @@ export function buildBannersFormData({ banners, storeId, filter }: BuildBannersF
     .map((b, idx) => ({ b, idx }))
     .filter(({ b, idx }) => (filter ? filter(b, idx) : true));
 
-  console.log("🏗️ entries después del filtro:", entries);
-
   const bannersData = entries.map(({ b }) => ({
     // Solo incluir ID si es positivo (del backend), ignorar IDs temporales negativos
     ...(b.id && b.id > 0 ? { id: b.id } : {}),
-    
+
     // 🔧 IMPORTANTE: Agregar storeId SOLO para banners nuevos (CREATE)
     ...(storeId && (!b.id || b.id < 0) ? { storeId } : {}),
-    
+
     title: b.title,
     urlDestinity: b.urlDestinity,
     position: typeof b.position === "number" ? b.position : Number(b.position ?? 0),
@@ -79,31 +73,30 @@ export function buildBannersFormData({ banners, storeId, filter }: BuildBannersF
     endDate: toIsoOrUndefined(b.endDate),
     isActive: b.isActive ?? true,
   }));
-
-  console.log("🏗️ bannersData construido:", bannersData);
-  console.log("🏗️ bannersData Array.isArray:", Array.isArray(bannersData));
-
   const formData = new FormData();
-
-  // 🔧 NO agregar storeId al FormData - va dentro de cada banner
-  // Importante: El backend (según prueba en Swagger) acepta un objeto simple.
-  // Para máxima compatibilidad, si solo hay 1 banner enviamos el objeto; si hay más, un array.
   const bannersPayload = bannersData.length === 1 ? bannersData[0] : bannersData;
   formData.append("banners", JSON.stringify(bannersPayload));
-
-  console.log("🏗️ Banners con storeId (si aplica):", bannersData);
-  console.log("🏗️ JSON.stringify(bannersPayload):", JSON.stringify(bannersPayload));
-
   // Agregar imágenes
   let appended = 0;
   entries.forEach(({ b }, i) => {
     const isFile = b.image instanceof File;
-    console.log(`🖼️ Image[${i}] isFile=${isFile} type=${typeof b.image}`);
+    
     if (isFile) {
       formData.append("images", b.image as File);
-      appended += 1;
-    }
+      console.log("es file en el fomrdata")
+      appended++;
+    } /* else if (b.image != null) {
+      // If image is a URL/base64 string, append as text
+      formData.append("images",b.image);
+      appended++;
+    } */
   });
+
+  // Use Array.from to avoid requiring --downlevelIteration or ES2015 target
+  Array.from(formData.entries()).forEach(([key, value]) => {
+    console.log(key, value);
+  });
+
   console.log("🖼️ Total images appended:", appended);
 
   return formData;

@@ -44,26 +44,12 @@ export default function BannerCard({
 
 function BannerImage({ banner }: { banner: BannerItem }) {
 
-  if (typeof banner.image === 'string') {
-    // Si es string, es una URL del backend
-    return (
-      <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100">
-        <Image 
-          src={banner.image} 
-          alt={banner.title}
-          width={48}
-          height={48}
-          className="w-full h-full object-cover" 
-          
-        /> 
-      </div>
-    );
-  } else if (banner.image instanceof File) {
+  if (banner.image) {  
     // Si es File, crear URL temporal
     return (
       <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100">
         <Image 
-          src={URL.createObjectURL(banner.image) ?? ""} 
+          src={banner.image instanceof File ? URL.createObjectURL(banner.image) :banner.image} 
           alt={banner.title}
           width={48}
           height={48}
