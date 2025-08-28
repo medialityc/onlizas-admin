@@ -43,11 +43,8 @@ export const warehouseSchema = z
     isActive: z.boolean().default(true),
 
     // physical
-    capacity: z
-      .number({ required_error: "Requerido" })
-      .positive("Es un número positivo")
-      .optional(),
-    capacityUnit: z.string({ required_error: "Requerido" }).optional(),
+    capacity: z.coerce.number().optional(),
+    capacityUnit: z.string().optional(),
 
     // virtual
     virtualTypeId: z.coerce.number().optional(),
@@ -56,7 +53,7 @@ export const warehouseSchema = z
   })
   .refine(
     (data) => {
-      if (data.type === "PHYSICAL") {
+      if (data.type === "physical") {
         return data.capacity !== undefined && data.capacityUnit !== undefined;
       }
       return true;
@@ -69,7 +66,7 @@ export const warehouseSchema = z
   )
   .refine(
     (data) => {
-      if (data.type === "PHYSICAL") {
+      if (data.type === "physical") {
         return data.capacity !== undefined && data.capacityUnit !== undefined;
       }
       return true;
@@ -80,9 +77,35 @@ export const warehouseSchema = z
       path: ["capacityUnit"],
     }
   )
+  // Validación adicional: capacidad debe ser un número positivo para almacenes físicos
   .refine(
     (data) => {
-      if (data.type === "VIRTUAL") {
+      if (data.type === "physical" && data.capacity !== undefined) {
+        return data.capacity > 0;
+      }
+      return true;
+    },
+    {
+      message: "La capacidad debe ser un número positivo",
+      path: ["capacity"],
+    }
+  )
+  // Validación adicional: unidad de capacidad no debe estar vacía para almacenes físicos
+  .refine(
+    (data) => {
+      if (data.type === "physical" && data.capacityUnit !== undefined) {
+        return data.capacityUnit.trim().length > 0;
+      }
+      return true;
+    },
+    {
+      message: "La unidad de capacidad no puede estar vacía",
+      path: ["capacityUnit"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.type === "virtual") {
         return (
           data.virtualTypeId !== undefined && data.supplierId !== undefined
         );
@@ -97,7 +120,7 @@ export const warehouseSchema = z
   )
   .refine(
     (data) => {
-      if (data.type === "VIRTUAL") {
+      if (data.type === "virtual") {
         return (
           data.virtualTypeId !== undefined && data.supplierId !== undefined
         );
@@ -109,7 +132,34 @@ export const warehouseSchema = z
         "Tipo virtual y proveedor son requeridos para almacenes virtuales",
       path: ["supplierId"],
     }
+  )
+  // Validación adicional: virtualTypeId debe ser un número positivo
+  .refine(
+    (data) => {
+      if (data.type === "virtual" && data.virtualTypeId !== undefined) {
+        return data.virtualTypeId > 0;
+      }
+      return true;
+    },
+    {
+      message: "El tipo virtual debe ser un número válido",
+      path: ["virtualTypeId"],
+    }
+  )
+  // Validación adicional: supplierId debe ser un número positivo
+  .refine(
+    (data) => {
+      if (data.type === "virtual" && data.supplierId !== undefined) {
+        return data.supplierId > 0;
+      }
+      return true;
+    },
+    {
+      message: "El proveedor debe ser un número válido",
+      path: ["supplierId"],
+    }
   );
+
 // Esquema principal del formulario de almacén
 export const warehouseFormSchema = z
   .object({
