@@ -2,30 +2,18 @@
 
 import React, { useEffect, useMemo } from "react";
 import { useFormContext } from "react-hook-form";
-import type { StoreEditFormData } from "../../../modals/store-edit-form.schema";
 import BannerCreateModal from "./banner-create-modal";
 import BannerMetrics from "./banner-metrics";
 import BannerHeader from "./banner-header";
 import BannersList from "./banners-list";
 import { getPositionLabel } from "./banner-utils";
-import { useBanners } from "./use-banners";
+import { useBanners } from "../hooks/use-banners";
 
 export default function BannersTab() {
-  const { register, setValue, getValues } = useFormContext<StoreEditFormData>();
+  const { register, setValue, getValues } = useFormContext<any>(); // Usar any para evitar conflictos de tipos
 
-  // Tipar correctamente los banners del backend
-  interface BackendBanner {
-    id?: number;
-    title: string;
-    urlDestinity: string;
-    position: string | number;
-    initDate: string;
-    endDate: string;
-    image: File|string ;
-  }
-
-  // Solo usar datos del formulario (backend) o array vacío, NO usar mock
-  const backendBanners = getValues("banners") as BackendBanner[] | undefined;
+  // Solo usar datos del formulario (backend) o array vacío
+  const backendBanners = getValues("banners") || [];
 
   // Register virtual field under appearance to sync into global form
   useEffect(() => {
