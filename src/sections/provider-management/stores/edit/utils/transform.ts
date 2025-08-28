@@ -9,7 +9,7 @@ type BuildStoreFormDataParams = {
 // Construye el FormData plano que exige el backend para actualizar/crear una tienda
 export function buildStoreFormData({ store, data }: BuildStoreFormDataParams) {
   const formData = new FormData();
-  console.log("Estoy en tranforms", data)
+  // console.debug("buildStoreFormData", data);
 
   // Apariencia (aplanado)
   const primaryColor = data?.primaryColor ?? store.primaryColor ?? "";
@@ -19,13 +19,12 @@ export function buildStoreFormData({ store, data }: BuildStoreFormDataParams) {
   const template = data?.template ?? store.template ?? "";
 
   // Banners desde el form (aplanado)
-  const banners = Array.isArray(data?.banners) ? data.banners : [];
-  console.log("Banners in transform:", banners); // Debug para ver la estructura
+//  const banners = Array.isArray(data?.banners) ? data.banners : [];
 
   // Logo: archivo si hay; si no, el string actual
-  const isFileLike = (v: any): v is { name: string; size: number; type: string } =>
-    typeof v === "object" && v !== null && typeof (v as any).name === "string" && typeof (v as any).size === "number";
-  const logoAsFile = isFileLike(data?.logoStyle) ? (data.logoStyle as any) : null;
+  const isFileLike = (v: unknown): v is File =>
+    typeof v === "object" && v !== null && "name" in (v as any) && "size" in (v as any) && "type" in (v as any);
+  const logoAsFile = isFileLike(data?.logoStyle as unknown) ? (data?.logoStyle as File) : null;
   const logoAsString = logoAsFile ? null : (typeof data?.logoStyle === "string" ? data.logoStyle : store.logoStyle ?? "");
   if (logoAsFile) formData.append("logoStyle", logoAsFile);
   //else formData.append("logoStyle", logoAsString ?? "");
@@ -54,39 +53,62 @@ export function buildStoreFormData({ store, data }: BuildStoreFormDataParams) {
 
   // Arreglos como JSON
   formData.append("followers", JSON.stringify(Array.isArray(store.followers) ? store.followers : []));
+  /* formData.append(
+    "banners",
+    JSON.stringify(data.banners)
+  ); */
 
-  // Procesar banners con fechas en formato ISO correcto para el backend
-  const processedBanners = banners.map((banner: any) => {
-    // Función helper para convertir fecha a ISO string
-    const toISOString = (date: any): string => {
-      if (!date) return new Date().toISOString();
-      if (date instanceof Date) return date.toISOString();
-      if (typeof date === 'string') return new Date(date).toISOString();
-      return new Date().toISOString();
-    };
 
-    return {
-      id: banner.id || 0,
-      title: banner.title || "",
-      urlDestinity: banner.urlDestinity || "",
-      position: Number(banner.position) || 1,
-      initDate: toISOString(banner.initDate),
-      endDate: toISOString(banner.endDate),
-      image: (banner.image && typeof banner.image === 'object' && 'name' in banner.image) ? 
-             banner.image.name : (banner.image || "")
-    };
+  /* // Procesar banners con fechas ISO y enviarlos como campos bracketed: banner[0][id], banner[0][title], ...
+  type BannerInput = NonNullable<StoreEditFormData["banners"]>[number] & {
+    image?: File | string | null | undefined;
+  };
+
+  const toISO = (value: unknown): string => {
+    if (!value) return new Date().toISOString();
+    if (value instanceof Date) return value.toISOString();
+    if (typeof value === "string") return new Date(value).toISOString();
+    return new Date().toISOString();
+  };
+
+  const BANNER_FIELD = "banners"; // Cambia a "banner" si el backend lo requiere en singular
+  const processedBanners: BannerInput[] = banners as BannerInput[];
+  processedBanners.forEach((b, idx) => {
+    const root = `${BANNER_FIELD}[${idx}]`;
+    const id = typeof b.id === "number" ? b.id : 0;
+    const position = typeof b.position === "string" ? parseInt(b.position, 10) : (b.position ?? 1);
+    // Dot notation: banner[0].id, banner[0].title, ...
+    formData.append(`${root}.id`, String(id));
+    formData.append(`${root}.title`, b.title ?? "");
+    formData.append(`${root}.urlDestinity`, b.urlDestinity ?? "");
+    formData.append(`${root}.position`, String(Number.isFinite(position as number) ? position : 1));
+    formData.append(`${root}.initDate`, toISO(b.initDate));
+    formData.append(`${root}.endDate`, toISO(b.endDate));
+    // Image: el backend espera un archivo. Solo enviar si el usuario seleccionó uno (File).
+    if (isFileLike(b.image)) {
+      formData.append(`${root}.image`, b.image as File);
+    }
   });
-  
-  formData.append("banners", JSON.stringify(processedBanners));
-  console.log("Banners payload enviado:", JSON.stringify(processedBanners, null, 2));
-
-
+ */
   if (Array.isArray(data?.categoriesPayload)) {
     formData.append("categories", JSON.stringify(data.categoriesPayload));
   }
   if (Array.isArray(data?.promotionsPayload)) {
     formData.append("promotions", JSON.stringify(data.promotionsPayload));
   }
+
+  // Debug legible del FormData (clave: valor)
+  try {
+    const lines: string[] = [];
+    for (const [key, value] of Array.from(formData.entries())) {
+      if (value instanceof File) {
+        lines.push(`${key}: [File name=${value.name} size=${value.size} type=${value.type}]`);
+      } else {
+        lines.push(`${key}: ${String(value)}`);
+      }
+    }
+    console.log("FormData (flattened):\n" + lines.join("\n"));
+  } catch {}
 
   return formData;
 }
