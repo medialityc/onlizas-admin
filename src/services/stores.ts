@@ -190,8 +190,40 @@ export async function updateAdminStore(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("stores");
+
   revalidateTag("store-details");
+  return buildApiResponseAsync<Store>(res);
+}
+export async function updateBannersStore(
+  //storeId: number,
+  data: FormData
+): Promise<ApiResponse<Store | undefined>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.storeBanner.update,
+    method: "PUT",
+    data,
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  revalidateTag("store-banner-update");
+  return buildApiResponseAsync<Store>(res);
+}
+export async function createBannersStore(
+  //storeId: number,
+  data: FormData
+): Promise<ApiResponse<Store | undefined>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.storeBanner.create,
+    method: "PUT",
+    data,
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  revalidateTag("store-banner-create");
   return buildApiResponseAsync<Store>(res);
 }
 
@@ -205,6 +237,7 @@ export async function getStoreDetails(
     useAuth: true,
     next: { tags: ["store-details"] },
   });
+  
 
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<Store>(res);

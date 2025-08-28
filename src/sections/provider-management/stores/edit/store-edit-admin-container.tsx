@@ -8,12 +8,13 @@ import { Store } from "@/types/stores";
 
 import StoreTabs from "./components/store-edit-tabs";
 import { FormProvider } from "@/components/react-hook-form";
-import { updateAdminStore } from "@/services/stores";
+import { updateAdminStore, updateBannersStore } from "@/services/stores";
 import { buildStoreFormData } from "./utils/transform";
 import storeEditSchema, {
   StoreEditFormData,
 } from "../modals/store-edit-form.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { buildBannersFormDataFromRHF } from "./utils/banners-form-data";
 
 interface Props {
   store: Store;
@@ -25,6 +26,7 @@ export default function StoreEditAdminContainer({ store }: Props) {
     mode: "onBlur",
     shouldUnregister: false,
     defaultValues: {
+      id: store.id,
       isActive: store.isActive,
       name: store.name ?? "",
       description: store.description ?? "",
@@ -80,7 +82,15 @@ export default function StoreEditAdminContainer({ store }: Props) {
 
     try {
       const formData = buildStoreFormData({ store, data });
-      const res = await updateAdminStore(store.id, formData);
+      // Build banners FormData only if there's at least one banner
+      const hasBanners = Array.isArray(data?.banners) && data.banners.length > 0;
+      let res = await updateAdminStore(store.id, formData);
+      // Send banners array to update endpoint (backend decides create vs update per item)
+      if (hasBanners) {
+        const bannersFD = buildBannersFormDataFromRHF({ data });
+        res = await updateBannersStore(bannersFD);
+      }
+
       if (!res.error) {
         toast.success("Tienda actualizada correctamente");
       } else {
