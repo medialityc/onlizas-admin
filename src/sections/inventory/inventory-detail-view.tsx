@@ -233,13 +233,13 @@ export default function InventoryDetailView({ inventory }: Props) {
                         </div>
                       )}
 
-                      {p.details && p.details.length > 0 && (
+                      {/*  {p.details && p.details.length > 0 && (
                         <ul className="mt-2 text-sm text-gray-600 list-disc list-inside">
                           {p.details.map((d, i) => (
                             <li key={i}>{d}</li>
                           ))}
                         </ul>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 ))}

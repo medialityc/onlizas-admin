@@ -8,10 +8,8 @@ import LocationSection from "./components/location-section";
 import { useWarehouseCreateForm } from "../../hooks/use-warehouse-create-form";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { getAdapterWarehouse } from "../../adapter/warehouse-edit.adapter";
-import WarehouseSummary from "./components/warehouse-summary";
 import VirtualSection from "./components/virtual-section";
 import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
-
 import { initValueWarehouse } from "../../constants/warehouse-initvalues";
 import Link from "next/link";
 
@@ -19,27 +17,25 @@ type Props = {
   warehouse?: WarehouseFormData;
 };
 export function WarehouseForm({ warehouse = initValueWarehouse }: Props) {
-  console.log(getAdapterWarehouse(warehouse));
-
   const { form, isPending, onSubmit, warehouseType } = useWarehouseCreateForm({
     warehouse: getAdapterWarehouse(warehouse),
   });
 
   return (
-    <FormProvider methods={form} onSubmit={onSubmit} id="warehouse-form">
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        <div className="col-span-1 md:col-span-2 space-y-4">
+    <FormProvider
+      methods={form}
+      onSubmit={onSubmit}
+      id="warehouse-form"
+      noValidate
+    >
+      <div className="grid grid-cols-1  gap-4">
+        <div className="col-span-1  space-y-4">
           <BasicInfoSection />
           {warehouseType === WAREHOUSE_TYPE_ENUM.physical && (
             <CapacitySection />
           )}
           {warehouseType === WAREHOUSE_TYPE_ENUM.virtual && <VirtualSection />}
           <LocationSection />
-        </div>
-
-        <div className="col-span-1 md:col-span-1  ">
-          {/* Aside resumen */}
-          <WarehouseSummary />
         </div>
       </div>
       {/* Actions stickies */}

@@ -41,7 +41,7 @@ export function InventoryProviderCardGrid({
         rightActions={<></>}
         component={
           <InventoryProviderCardList
-            data={data?.data}
+            data={data?.data as any[]}
             searchParams={searchParams}
             openModal={handleOpen}
           />

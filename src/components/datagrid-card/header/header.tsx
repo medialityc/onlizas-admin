@@ -23,6 +23,9 @@ export function Header({
   rightActions,
 }: DataGridHeaderProps) {
   const isActions = onCreate || rightActions;
+  const hideHeader = enableSearch || isActions;
+
+  if (!hideHeader) return null;
   return (
     <div className="mb-5 flex flex-col md:flex-row md:items-center md:justify-between">
       <div className="flex items-center gap-3 flex-1 !w-full">

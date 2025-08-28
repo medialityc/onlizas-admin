@@ -14,6 +14,7 @@ import {
   ClipboardDocumentIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "./types";
+import { WarehouseIcon } from "lucide-react";
 
 export const sidebarSections: SidebarSection[] = [
   {
@@ -86,7 +87,7 @@ export const sidebarSections: SidebarSection[] = [
         id: "warehouses",
         label: "Almacenes",
         path: paths.dashboard.warehouses.list,
-        icon: <ArchiveBoxIcon className="h-4 w-4" />,
+        icon: <WarehouseIcon className="h-4 w-4" />,
       },
       {
         id: "stores",

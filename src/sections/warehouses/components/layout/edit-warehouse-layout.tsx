@@ -18,7 +18,7 @@ function EditWarehouseLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header con información del almacén */}
       <EditHeader warehouse={warehouse} />
 

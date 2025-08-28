@@ -1,8 +1,8 @@
 "use client";
 import { SearchParams } from "@/types/fetch/request";
 import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
-import WarehouseCardList from "../warehouse-card-list/warehouse-card-list";
 import { GetAllWarehouses } from "@/types/warehouses";
+import WarehouseCardList from "./warehouse-card-list";
 
 interface Props {
   data?: GetAllWarehouses;

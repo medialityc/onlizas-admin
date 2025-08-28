@@ -1,7 +1,7 @@
 import { SearchParams } from "@/types/fetch/request";
 import React, { useId } from "react";
-import { WarehouseCard } from "./warehouse-card";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
+import { WarehouseCard } from "./warehouse-card";
 
 type Props = {
   data?: WarehouseFormData[];
@@ -9,8 +9,6 @@ type Props = {
 };
 const WarehouseCardList = ({ data, searchParams }: Props) => {
   const id = useId();
-
-  console.log(data, "WAREHOUSE");
 
   if (data?.length === 0) {
     return (

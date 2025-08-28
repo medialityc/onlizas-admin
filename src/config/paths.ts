@@ -43,8 +43,10 @@ export const paths = {
     },
     warehouses: {
       list: `${DASHBOARD}/warehouses`,
-      edit: (id: string | number) => `${DASHBOARD}/warehouses/${id}/edit`,
-      view: (id: string | number) => `${DASHBOARD}/warehouses/${id}`,
+      edit: (type: string, id: string | number) =>
+        `${DASHBOARD}/warehouses/${type}/${id}/edit`,
+      view: (type: string, id: string | number) =>
+        `${DASHBOARD}/warehouses/${type}/${id}`,
     },
     suppliers: {
       list: `${DASHBOARD}/suppliers`,

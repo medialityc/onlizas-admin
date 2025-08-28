@@ -1,32 +1,18 @@
-import { notFound } from "next/navigation";
-import { getWarehouseById } from "@/services/warehouses-mock";
 import Badge from "@/components/badge/badge";
 import { Button } from "@/components/button/button";
 import { paths } from "@/config/paths";
 import Link from "next/link";
-import {
-  BuildingStorefrontIcon,
-  BuildingOfficeIcon,
-  MapPinIcon,
-  UserIcon,
-} from "@heroicons/react/24/outline";
-
-function getTypeIcon(type: string) {
-  return type === "physical" ? BuildingStorefrontIcon : BuildingOfficeIcon;
-}
+import { MapPinIcon, UserIcon } from "@heroicons/react/24/outline";
+import { WarehouseFormData } from "../schemas/warehouse-schema";
+import { WarehouseIcon } from "lucide-react";
 
 interface WarehouseDetailsProps {
-  id: string;
+  warehouse: WarehouseFormData;
 }
 
-export async function WarehouseDetails({ id }: WarehouseDetailsProps) {
-  const response = await getWarehouseById(Number(id));
-  if (!response?.data) notFound();
-
-  const w = response.data;
-
-  const TypeIcon = getTypeIcon(w.type);
-
+export async function WarehouseDetails({
+  warehouse: w,
+}: WarehouseDetailsProps) {
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       {/* Header principal */}
@@ -39,7 +25,7 @@ export async function WarehouseDetails({ id }: WarehouseDetailsProps) {
                 : "p-3 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
             }
           >
-            <TypeIcon className="h-8 w-8" />
+            <WarehouseIcon className="h-8 w-8" />
           </div>
           <div className="min-w-0">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white truncate flex items-center gap-2">
@@ -54,7 +40,7 @@ export async function WarehouseDetails({ id }: WarehouseDetailsProps) {
           </div>
         </div>
         <div className="flex gap-2 flex-shrink-0">
-          <Link href={paths.dashboard.warehouses.edit(w.id!)}>
+          <Link href={paths.dashboard.warehouses.edit(w.type, w.id!)}>
             <Button>Editar</Button>
           </Link>
           <Link href={paths.dashboard.warehouses.list}>

@@ -26,10 +26,20 @@ export function WarehouseCard({ warehouse, onEdit }: WarehouseCardProps) {
 
   const router = useRouter();
   const handleView = () =>
-    router.push(paths.dashboard.warehouses.view(warehouse.id!));
+    router.push(
+      paths.dashboard.warehouses.view(
+        warehouse?.type.toLowerCase(),
+        warehouse.id!
+      )
+    );
   const handleEdit = () => {
     if (onEdit) return onEdit(warehouse);
-    router.push(paths.dashboard.warehouses.edit(warehouse.id!));
+    router.push(
+      paths.dashboard.warehouses.edit(
+        warehouse?.type.toLowerCase(),
+        warehouse.id!
+      )
+    );
   };
 
   return (
