@@ -151,3 +151,22 @@ export async function editVariantInventory(
 
   return buildApiResponseAsync<InventoryProvider>(res);
 }
+export async function getAllMyInventoryProvider(
+  params: IQueryable
+): Promise<ApiResponse<GetAllInventoryProviderResponse>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.inventoryProvider.listByProvider
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: [INVENTORY_TAG_KEY] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetAllInventoryProviderResponse>(res);
+}

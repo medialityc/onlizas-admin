@@ -1,11 +1,11 @@
 "use client";
 import { SearchParams } from "@/types/fetch/request";
 import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
-import InventoryProviderCardList from "../inventory-provider-card/inventory-provider-card-list";
 import { GetAllInventoryProviderResponse } from "@/types/inventory";
 import { useModalState } from "@/hooks/use-modal-state";
-import CreateInventoryModal from "../../modal/create-inventory-modal";
 import { IUser, IUserResponseMe } from "@/types/users";
+import CreateInventoryModal from "@/sections/inventory-provider/modal/create-inventory-modal";
+import InventoryProviderCardList from "./inventory-provider-card-list";
 
 interface Props {
   data?: GetAllInventoryProviderResponse;

@@ -186,6 +186,7 @@ export const backendRoutes = {
   inventoryProvider: {
     create: `${process.env.NEXT_PUBLIC_API_URL}inventories/admin`,
     list: `${process.env.NEXT_PUBLIC_API_URL}inventories/admin`,
+    listByProvider: `${process.env.NEXT_PUBLIC_API_URL}suppliers/inventories`,
     delete: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/${id}`,
     listByUserProvider: (supplierId: number | string) =>
