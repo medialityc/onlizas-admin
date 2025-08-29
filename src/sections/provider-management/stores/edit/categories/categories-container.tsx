@@ -3,12 +3,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Store } from "@/types/stores";
-import CategoriesToolbar from "./categories-toolbar";
+
 import { mockCategories, type StoreCategory } from "./mock";
 
 import DeleteDialog from "@/components/modal/delete-modal";
 import CategoriesMetrics from "./components/categories-metrics";
 import CategoryList from "./components/category-list";
+import CategoriesToolbar from "./components/categories-toolbar";
 
 interface Props {
   store: Store;
