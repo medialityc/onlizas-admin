@@ -180,6 +180,8 @@ export const backendRoutes = {
     storeById: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
     update: (id: number) => `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
+    updateAdminStore: (id: number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
   },
   inventoryProvider: {
     create: `${process.env.NEXT_PUBLIC_API_URL}inventories/admin`,

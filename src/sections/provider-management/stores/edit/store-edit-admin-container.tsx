@@ -114,7 +114,7 @@ export default function StoreEditAdminContainer({ store }: Props) {
       formData.append("font", font);
       formData.append("template", template);
       formData.append("businessName", store.businessName ?? "");
-      formData.append("supplierId", String(store.supplierId));
+      formData.append("supplierId", String(store.supplierId ?? ""));
       formData.append("supplierName", store.supplierName ?? "");
       formData.append("isActive", data.isActive ? "true" : "false");
 

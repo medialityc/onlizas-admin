@@ -3,7 +3,6 @@
 import React, { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { Store } from "@/types/stores";
-import { RHFInputWithLabel } from "@/components/react-hook-form";
 import GeneralStatusCard from "./components/general-status-card";
 import BasicInfoCard from "./components/basic-info-card";
 import ContactInfoCard from "./components/contact-info-card";

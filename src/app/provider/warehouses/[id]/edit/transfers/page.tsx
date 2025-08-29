@@ -1,5 +1,3 @@
-import EditWarehouseTransfersContent from "@/sections/warehouses/edit/transfer/edit-warehouse-transfer-content";
-
 export default async function EditWarehouseTransfersPage({
   params,
 }: {
@@ -7,5 +5,5 @@ export default async function EditWarehouseTransfersPage({
 }) {
   const { id } = await params;
 
-  return <EditWarehouseTransfersContent id={id} />;
+  return <>{id}</>;
 }

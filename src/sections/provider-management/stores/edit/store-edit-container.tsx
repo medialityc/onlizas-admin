@@ -11,11 +11,6 @@ import StoreTabs from "./components/store-edit-tabs";
 import { GeneralStoreSchema } from "./general/general-schema";
 import { updateStore } from "@/services/stores";
 import { FormProvider } from "@/components/react-hook-form";
-import { updateSupplierStore } from "@/services/stores";
-import { zodResolver } from "@hookform/resolvers/zod";
-import storeEditSchema, {
-  StoreEditFormData,
-} from "../modals/store-edit-form.schema";
 
 interface Props {
   store: Store;

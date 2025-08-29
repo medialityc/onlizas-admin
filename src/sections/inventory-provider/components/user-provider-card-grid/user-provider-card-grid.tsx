@@ -1,11 +1,11 @@
 "use client";
 import { SearchParams } from "@/types/fetch/request";
-import { GetAllUsersProviderResponse } from "@/types/users";
 import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
 import UserProviderCardList from "../user-provider-card/user-provider-card-list";
+import { GetAllUsersResponse } from "@/types/users";
 
 interface Props {
-  data?: GetAllUsersProviderResponse;
+  data?: GetAllUsersResponse;
   searchParams: SearchParams;
   onSearchParamsChange: (params: SearchParams) => void;
 }
