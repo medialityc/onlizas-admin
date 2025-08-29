@@ -23,8 +23,8 @@ export function buildThemeFormData({ store, data }: BuildAppearanceFormDataParam
   formData.append("font", data.font || "");
   formData.append("template", data.template || "");
 
-  // Solo agregar campos opcionales si existen
-  /* if (store.description) formData.append("description", store.description);
+  /* // Solo agregar campos opcionales si existen
+  if (store.description) formData.append("description", store.description);
   if (store.url) formData.append("url", store.url);
   if (store.email) formData.append("email", store.email);
   if (store.phoneNumber) formData.append("phoneNumber", store.phoneNumber);

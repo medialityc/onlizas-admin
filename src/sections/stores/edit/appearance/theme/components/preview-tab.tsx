@@ -4,7 +4,7 @@ import React, { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/cards/card";
 import { ComputerDesktopIcon, DevicePhoneMobileIcon, DeviceTabletIcon } from "@heroicons/react/24/outline";
-import { TemplateModern, TemplateClassic, TemplateMinimal, TemplateAudaz } from "./templates";
+import { TemplateModern, TemplateClassic, TemplateMinimal, TemplateAudaz } from "../templates";
 
 type Device = "desktop" | "tablet" | "mobile";
 
@@ -94,6 +94,7 @@ function PreviewSurface({
 }) {
   // Map selected font to a visible stack so changes are noticeable even if a webfont isn't loaded
   const fontStacks: Record<string, string> = {
+    // Map backend enums to visible font stacks
     ARIAL: 'Arial, Helvetica, sans-serif',
     ARGELIAN: '"Agency FB", "Georgia", serif',
   };
@@ -112,26 +113,26 @@ function PreviewSurface({
 
   // Template-specific tweaks to make the differences obvious
   const headerStyle: React.CSSProperties =
-  template === "MINIMALISTA"
+    template === "MINIMALISTA"
       ? { background: "#F3F4F6", color: "#111827", borderBottom: `1px solid ${accent}` }
       : { background: primary, color: "#ffffff" };
   const heroStyle: React.CSSProperties =
-  template === "CLASICO"
+    template === "CLASICO"
       ? { background: accent, borderRadius: 0 }
       : { background: accent, borderRadius: 8 };
   const cardClass =
-  template === "CLASICO"
+    template === "CLASICO"
       ? "border-gray-400 shadow-sm"
-  : template === "MINIMALISTA"
+      : template === "MINIMALISTA"
       ? "border-gray-200"
       : "border-gray-300 shadow-sm";
 
   const TemplateComponent =
-    template === "classic"
+    template === "CLASICO"
       ? TemplateClassic
-      : template === "minimal"
+      : template === "MINIMALISTA"
       ? TemplateMinimal
-  : template === "AUDAZ"
+  : (template === "AUDAZ")
       ? TemplateAudaz
       : TemplateModern;
 
