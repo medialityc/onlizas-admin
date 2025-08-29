@@ -47,7 +47,7 @@ export default function CategoryList({
         >
           <CategoryListItem
             category={c}
-            onToggleActive={(id, checked) =>
+            onToggleActive={(id: number, checked: boolean) =>
               onItemsChange(
                 items.map((x) =>
                   x.id === id ? { ...x, isActive: checked } : x
@@ -57,12 +57,12 @@ export default function CategoryList({
             onEdit={onEdit}
             onDelete={onDelete}
             draggable
-            onDragStart={(e) => {
+            onDragStart={(e: React.DragEvent<HTMLDivElement>) => {
               e.dataTransfer.setData("text/plain", String(idx));
               e.dataTransfer.effectAllowed = "move";
             }}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={async (e) => {
+            onDragOver={(e: React.DragEvent<HTMLDivElement>) => e.preventDefault()}
+            onDrop={async (e: React.DragEvent<HTMLDivElement>) => {
               e.preventDefault();
               const fromIndex = Number(e.dataTransfer.getData("text/plain"));
               const toIndex = idx;
