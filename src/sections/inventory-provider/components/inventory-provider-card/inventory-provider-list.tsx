@@ -1,10 +1,10 @@
 import { SearchParams } from "@/types/fetch/request";
 import React, { useId } from "react";
-import { InventoryProvider } from "@/services/inventory-providers";
 import InventoryProviderCard from "./inventory-provider-card";
 import { Button } from "@/components/button/button";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
+import { InventoryProvider } from "@/types/inventory";
+import { useModalState } from "@/hooks/use-modal-state";
 
 type Props = {
   data?: InventoryProvider[];
@@ -12,7 +12,12 @@ type Props = {
 };
 const InventoryProviderList = ({ data, searchParams }: Props) => {
   const id = useId();
+  const { openModal } = useModalState();
 
+  // Modal states controlled by URL
+  const handleOpen = () => {
+    openModal("create");
+  };
   if (data?.length === 0) {
     return (
       <div className="text-center py-12 flex flex-col justify-center">
@@ -22,14 +27,9 @@ const InventoryProviderList = ({ data, searchParams }: Props) => {
             : "No se encontraron inventarios"}
         </div>
         {!searchParams?.search && (
-          <Button variant="primary" className="mx-auto">
-            <Link
-              className="flex flex-row gap-2 items-center justify-center"
-              href={`/dashboard/inventory/list/new`}
-            >
-              <PlusIcon className="h-4 w-4 mr-2" />
-              Crear un inventario
-            </Link>
+          <Button variant="primary" className="mx-auto" onClick={handleOpen}>
+            <PlusIcon className="h-4 w-4 mr-2" />
+            Crear un inventario
           </Button>
         )}
       </div>

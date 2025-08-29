@@ -7,7 +7,7 @@ import {
 } from "@/components/react-hook-form";
 import { Separator } from "@/components/ui/separator";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import React, { useCallback } from "react";
+import React from "react";
 import { UseFieldArrayRemove, useFormContext } from "react-hook-form";
 import InventoryProviderDetailSection from "../inventory-provider-detail-section/inventory-provider-detail-section";
 import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
@@ -15,7 +15,6 @@ import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-imag
 type Props = {
   variantIndex: number;
   remove: UseFieldArrayRemove;
-  variantName: string;
 };
 
 const DiscountOptions: { value: number; label: string }[] = [
@@ -23,22 +22,17 @@ const DiscountOptions: { value: number; label: string }[] = [
   { value: 1, label: "Fijo" },
 ];
 
-const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
+const InventoryVariantFrom = ({ variantIndex, remove }: Props) => {
   const { watch } = useFormContext();
-
-  const onRemoveVariant = useCallback(() => {
-    remove(variantIndex);
-  }, [variantIndex, remove]);
-
-  const isWarranty = watch(`${variantName}.warranty.isWarranty`);
-  const isLimit = watch(`${variantName}.isLimit`);
+  const isWarranty = watch(`warranty.isWarranty`);
+  const isLimit = watch(`isLimit`);
 
   return (
     <div className="flex flex-col gap-2 mt-4 p-4 border dark:border-gray-600 border-dashed rounded-lg bg-slate-50 dark:bg-slate-900">
       <div className="flex flex-row gap-2 items-center justify-between col-span-2 mb-5">
         <h3 className="font-bold">Variante {variantIndex + 1}</h3>
         <Button
-          onClick={onRemoveVariant}
+          onClick={() => remove()}
           className="bg-transparent rounded-full text-black p-0 border-0 shadow-none"
           iconOnly
         >
@@ -47,14 +41,11 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
       </div>
 
       {/* details section */}
-      <InventoryProviderDetailSection variantName={variantName} />
+      <InventoryProviderDetailSection />
       <Separator className="my-2" />
 
       {/* Imágenes */}
-      <RHFMultiImageUpload
-        name={`${variantName}.images`}
-        label="Images de producto"
-      />
+      <RHFMultiImageUpload name={`images`} label="Images de producto" />
       <Separator className="my-2" />
 
       {/* inventory info */}
@@ -64,7 +55,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
             <RHFInputWithLabel
-              name={`${variantName}.quantity`}
+              name={`quantity`}
               label="Cantidad disponible"
               type="number"
               placeholder="0"
@@ -74,7 +65,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
           </div>
           <div>
             <RHFInputWithLabel
-              name={`${variantName}.price`}
+              name={`price`}
               label="Precio de la variante"
               type="number"
               placeholder="0"
@@ -84,7 +75,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
           </div>
           <div>
             <RHFInputWithLabel
-              name={`${variantName}.discountValue`}
+              name={`discountValue`}
               label="Descuento %"
               type="number"
               placeholder="0"
@@ -94,7 +85,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
           </div>
           <RHFSelect
             options={DiscountOptions}
-            name={`${variantName}.discountType`}
+            name={`discountType`}
             placeholder="Selecciona tipo de descuento"
             label="Tipo de descuento"
             required
@@ -110,7 +101,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
         <p className="text-sm font-bold">Restricciones y Límites</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <RHFSwitch name={`${variantName}.isPrime`} label="Entrega express" />
+          <RHFSwitch name={`isPrime`} label="Entrega express" />
         </div>
       </div>
 
@@ -121,14 +112,14 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
         <p className="text-sm font-bold">Restricciones y Límites</p>
 
         <RHFCheckbox
-          name={`${variantName}.isLimit`}
+          name={`isLimit`}
           label="Tiene límite de compras?"
           className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
         />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {isLimit && (
             <RHFInputWithLabel
-              name={`${variantName}.purchaseLimit`}
+              name={`purchaseLimit`}
               label="Límite de compras por usuario"
               type="number"
               placeholder="0"
@@ -146,7 +137,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
         <p className="text-sm font-bold">Garantía</p>
 
         <RHFCheckbox
-          name={`${variantName}.warranty.isWarranty`}
+          name={`warranty.isWarranty`}
           label="Tiene garantía?"
           className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
         />
@@ -154,7 +145,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
           {isWarranty && (
             <>
               <RHFInputWithLabel
-                name={`${variantName}.warranty.warrantyTime`}
+                name={`warranty.warrantyTime`}
                 label="Tiempo de garantía (meses)"
                 type="number"
                 placeholder="Ej: 12"
@@ -162,7 +153,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
                 step="0"
               />
               <RHFInputWithLabel
-                name={`${variantName}.warranty.warrantyPrice`}
+                name={`warranty.warrantyPrice`}
                 label="Precio de la garantía"
                 type="number"
                 placeholder="Ej: 50"
@@ -180,7 +171,7 @@ const InventoryVariantFrom = ({ variantIndex, variantName, remove }: Props) => {
       <div className="flex flex-col gap-2">
         <p className="text-sm font-bold">Producto por Paquetería</p>
         <RHFCheckbox
-          name={`${variantName}.packageDelivery`}
+          name={`packageDelivery`}
           label="Habilitar entrega por paquetería"
           className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
         />

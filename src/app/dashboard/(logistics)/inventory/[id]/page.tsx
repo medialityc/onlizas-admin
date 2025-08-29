@@ -6,21 +6,21 @@ import { InventoryDetailSkeleton } from "@/sections/inventory/inventory-detail-v
 
 import { getUserProviderById } from "@/services/users";
 import { InventoryStoreFormData } from "@/sections/inventory-provider/schemas/inventory-edit.schema";
+import { getCategoryFeatures } from "@/services/products";
 
 export const metadata = {
   title: "Editar Inventario - ZAS Express",
 };
 
-// fallback moved to shared InventoryDetailSkeleton
-
 interface EditPageProps {
-  params: Promise<{ id: string; provider: string }>;
+  params: Promise<{ id: string }>;
 }
 
 export default async function InventoryEditPage({ params }: EditPageProps) {
-  const { id, provider } = await params;
+  const { id } = await params;
   const res = await getInventoryById(id);
-  const resSupplier = await getUserProviderById(Number(provider));
+  const resSupplier = await getUserProviderById(Number(res.data?.supplierId));
+  const resFeatures = await getCategoryFeatures(res.data?.categoryIds ?? []);
 
   if (!res || res.error || !res.data) notFound();
   if (!resSupplier || resSupplier.error || !resSupplier.data) notFound();
@@ -30,6 +30,7 @@ export default async function InventoryEditPage({ params }: EditPageProps) {
       <InventoryProviderEditContainer
         inventory={res.data! as unknown as InventoryStoreFormData}
         userProvider={resSupplier?.data}
+        features={resFeatures?.data?.features ?? []}
       />
     </Suspense>
   );

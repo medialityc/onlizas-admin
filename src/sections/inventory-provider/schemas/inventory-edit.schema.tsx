@@ -3,6 +3,7 @@ import { productVariants } from "./inventory-provider.schema";
 
 export const InventoryStoreSchema = z.object({
   /* inmutable */
+  id: z.number().optional(),
   parentProductName: z.string(),
   warehouseName: z.string(),
   supplierName: z.string(),
@@ -12,7 +13,7 @@ export const InventoryStoreSchema = z.object({
   warehouseId: z.number(),
   parentProductId: z.number(),
   /* adapter data */
-  products: productVariants,
+  products: z.array(productVariants),
 });
 
 export type InventoryStoreFormData = z.infer<typeof InventoryStoreSchema>;

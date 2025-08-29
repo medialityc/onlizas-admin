@@ -284,14 +284,15 @@ export function fileToBase64(file: File): Promise<string> {
 }
 
 export function detailsArrayToObject(
-  arr: Array<{ key: string; value: string }>,
+  arr: Array<{ key: string; value: string; isRequired?: boolean }>,
   {
     trim = true,
     skipEmpty = true,
     max = 50,
   }: { trim?: boolean; skipEmpty?: boolean; max?: number } = {}
 ) {
-  const out: Record<string, string> = {};
+  const out: Record<string, string | { value: string; isRequired?: boolean }> =
+    {};
   for (const item of arr.slice(0, max)) {
     if (!item) continue;
     let k = item.key ?? "";
@@ -303,7 +304,11 @@ export function detailsArrayToObject(
     if (!k) continue;
     if (skipEmpty && !v) continue;
     // Último gana si hay duplicado
-    out[k] = v;
+    if (item.isRequired !== undefined) {
+      out[k] = { value: v, isRequired: !!item.isRequired };
+    } else {
+      out[k] = v;
+    }
   }
   return out;
 }
@@ -331,12 +336,22 @@ export function detailsObjectToArray(
   if (!obj || typeof obj !== "object") return [];
   let entries = Object.keys(obj).map((k) => {
     let key = k;
-    let value = obj[k];
+    const raw = obj[k];
+    let value = "";
+    let isRequired: boolean | undefined;
+
+    if (typeof raw === "object" && raw !== null && "value" in raw) {
+      value = raw.value == null ? "" : String(raw.value);
+      isRequired = raw.isRequired;
+    } else if (raw == null) {
+      value = "";
+    } else {
+      value = String(raw);
+    }
+
     if (trimKeys) key = key.trim();
-    if (value == null) value = "";
-    else if (typeof value !== "string") value = String(value);
     if (trimValues) value = value.trim();
-    return { key, value };
+    return { key, value, isRequired };
   });
 
   if (skipEmpty) {

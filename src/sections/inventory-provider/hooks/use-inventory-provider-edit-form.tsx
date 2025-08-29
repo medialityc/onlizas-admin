@@ -3,51 +3,61 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { updateInventoryProvider } from "@/services/inventory-providers";
-import { setInventoryEditFormData } from "../constants/inventory-edit-data";
 import {
-  InventoryStoreFormData,
-  InventoryStoreSchema,
-} from "../schemas/inventory-edit.schema";
+  ProductVariant,
+  productVariants,
+} from "../schemas/inventory-provider.schema";
+import { buildCreateProductVariantFormData } from "../constants/inventory-edit-data";
+import {
+  addVariantToInventory,
+  editVariantInventory,
+} from "@/services/inventory-providers";
 
-const initValue: InventoryStoreFormData = {
-  products: [],
-  storeId: 0,
-  warehouseId: 0,
-  supplierId: 0,
-  parentProductId: 0,
-  parentProductName: "",
-  warehouseName: "",
-  supplierName: "",
-  storeName: "",
+const initValue: ProductVariant = {
+  //Información de Inventario
+  quantity: 0,
+  price: 0,
+  discountType: 0,
+  discountValue: 0,
+
+  //Restricciones y Límites
+  purchaseLimit: 0,
+  isPrime: false,
+  // Garantía
+  warranty: {
+    isWarranty: false,
+    warrantyTime: 0,
+    warrantyPrice: 0,
+  },
+  packageDelivery: false,
+  images: [],
+  id: 0,
+  details: {},
+  isLimit: false,
 };
 
 export const useInventoryProviderEditForm = (
-  defaultValues: InventoryStoreFormData = initValue,
-  onRedirect: () => void
+  defaultValues: ProductVariant = initValue,
+  onRedirect: () => void,
+  inventoryId: number
 ) => {
   const form = useForm({
     defaultValues,
-    resolver: zodResolver(InventoryStoreSchema),
+    resolver: zodResolver(productVariants),
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (payload: InventoryStoreFormData) => {
-      const fromData = setInventoryEditFormData(payload);
-      const res = await updateInventoryProvider(
-        payload?.parentProductId,
-        fromData
-      );
-
-      if (res.error) {
-        throw res;
-      }
-
+    mutationFn: async (payload: ProductVariant) => {
+      const fromData = buildCreateProductVariantFormData(payload);
+      const res = await (payload.id
+        ? editVariantInventory(payload.id, fromData)
+        : addVariantToInventory(inventoryId, fromData));
+      console.log(res);
       return;
     },
     onSuccess() {
       toast.success(`Se editó el inventario correctamente`);
-      onRedirect?.();
+      // onRedirect?.();
     },
     onError: async (error: any) => {
       toast.error(error?.message);

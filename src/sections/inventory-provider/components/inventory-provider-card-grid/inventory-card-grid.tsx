@@ -1,19 +1,21 @@
 "use client";
 import { SearchParams } from "@/types/fetch/request";
 import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
-import { GetAllInventoryProviderResponse } from "@/services/inventory-providers";
 import InventoryProviderList from "../inventory-provider-card/inventory-provider-list";
+import { GetAllInventoryProviderResponse } from "@/types/inventory";
 
 interface Props {
   data?: GetAllInventoryProviderResponse;
   searchParams: SearchParams;
   onSearchParamsChange: (params: SearchParams) => void;
+  onCreate: VoidFunction;
 }
 
 export function InventoryCardGrid({
   data,
   searchParams,
   onSearchParamsChange,
+  onCreate,
 }: Props) {
   return (
     <>
@@ -26,6 +28,7 @@ export function InventoryCardGrid({
         createText="Crear inventario"
         enableColumnToggle={false}
         rightActions={<></>}
+        onCreate={onCreate}
         component={
           <InventoryProviderList
             data={data?.data}

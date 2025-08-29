@@ -206,5 +206,9 @@ export const backendRoutes = {
 
     updateById: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/${id}/variants`,
+    AddVariantToInventory: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}inventories/${id}/variants`,
+    editVariantInventory: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}variants/${id}`,
   },
 };
