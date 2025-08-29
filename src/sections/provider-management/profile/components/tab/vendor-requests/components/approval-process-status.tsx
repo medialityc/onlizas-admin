@@ -6,18 +6,14 @@ import {
   CardContent,
   CardTitle,
 } from "@/components/cards/card";
-import Badge from "@/components/badge/badge";
-import {
-  CheckCircleIcon,
-  ClockIcon,
-  XCircleIcon,
-} from "@heroicons/react/24/outline";
+import Badge, { Variant } from "@/components/badge/badge";
+import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { SupplierApprovalProcess } from "@/types/suppliers";
 
 interface ApprovalProcessStatusProps {
   approvalProcess: SupplierApprovalProcess | null;
   isLoadingApproval: boolean;
-  getStateColor: (state: string) => string;
+  getStateColor: (state: string) => Variant;
   getStateIcon: (state: string) => JSX.Element;
 }
 

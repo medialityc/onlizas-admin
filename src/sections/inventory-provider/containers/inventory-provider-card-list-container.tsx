@@ -10,13 +10,13 @@ import { InventoryProviderCardGrid } from "../components/inventory-provider-card
 import { Button } from "@/components/button/button";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
-import { IUserProvider } from "@/types/users";
+import { IUser } from "@/types/users";
 import { GetAllInventoryProviderResponse } from "@/types/inventory";
 
 interface Props {
   inventories: Promise<ApiResponse<GetAllInventoryProviderResponse>>;
   query: SearchParams;
-  provider: IUserProvider;
+  provider?: IUser;
 }
 
 export default function InventoryProviderCardListContainer({

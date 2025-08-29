@@ -1,7 +1,7 @@
 import React from "react";
 import clsx from "clsx";
 
-type Variant =
+export type Variant =
   | "primary"
   | "secondary"
   | "success"

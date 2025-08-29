@@ -1,5 +1,3 @@
-import EditWarehouseContent from "@/sections/provider-management/warehouses/edit/general-data/edit-warehouse-general-content";
-
 export default async function EditWarehousePage({
   params,
 }: {
@@ -7,5 +5,5 @@ export default async function EditWarehousePage({
 }) {
   const { id } = await params;
 
-  return <EditWarehouseContent id={id} />;
+  return <>New {id}</>;
 }

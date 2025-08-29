@@ -1,5 +1,3 @@
-import EditWarehouseInventoryContent from "@/sections/warehouses/edit/inventory/edit-warehouse-content";
-
 export default async function EditWarehouseInventoryPage({
   params,
 }: {
@@ -7,5 +5,5 @@ export default async function EditWarehouseInventoryPage({
 }) {
   const { id } = await params;
 
-  return <EditWarehouseInventoryContent id={id} />;
+  return <>{id}</>;
 }

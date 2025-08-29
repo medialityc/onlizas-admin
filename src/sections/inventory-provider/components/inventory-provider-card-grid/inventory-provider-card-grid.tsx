@@ -2,16 +2,16 @@
 import { SearchParams } from "@/types/fetch/request";
 import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
 import InventoryProviderCardList from "../inventory-provider-card/inventory-provider-card-list";
-import { IUserProvider } from "@/types/users";
 import { GetAllInventoryProviderResponse } from "@/types/inventory";
 import { useModalState } from "@/hooks/use-modal-state";
 import CreateInventoryModal from "../../modal/create-inventory-modal";
+import { IUser } from "@/types/users";
 
 interface Props {
   data?: GetAllInventoryProviderResponse;
   searchParams: SearchParams;
   onSearchParamsChange: (params: SearchParams) => void;
-  provider: IUserProvider;
+  provider?: IUser;
 }
 
 export function InventoryProviderCardGrid({
@@ -50,7 +50,7 @@ export function InventoryProviderCardGrid({
       <CreateInventoryModal
         open={createModal.open}
         onClose={handleClose}
-        provider={provider.id}
+        provider={provider?.id}
       />
     </>
   );

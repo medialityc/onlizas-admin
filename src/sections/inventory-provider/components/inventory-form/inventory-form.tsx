@@ -44,9 +44,7 @@ function InventoryForm({ provider }: Props) {
             label="Tienda"
             disabled={!supplierId}
             required
-            onFetch={(params) =>
-              getAllProviderStores(supplierId.toString(), params)
-            }
+            onFetch={(params) => getAllProviderStores(supplierId, params)}
           />
           <RHFCheckbox
             name="meWarehouse"

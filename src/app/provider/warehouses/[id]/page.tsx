@@ -1,5 +1,5 @@
+import { WarehouseDetails } from "@/sections/warehouses/view/warehouse-details";
 import { Suspense } from "react";
-import { WarehouseDetails } from "@/sections/provider-management/warehouses/view/warehouse-details";
 
 function WarehouseViewFallback() {
   return (

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import EditHeader from "../components/inventory-edit-from/edit-header";
-import { IUserProvider } from "@/types/users";
+import { IUser } from "@/types/users";
 import { InventoryStoreFormData } from "../schemas/inventory-edit.schema";
 import InventoryEditForm from "../components/inventory-edit-from/inventory-edit-from";
 import { CategoryFeature } from "@/types/products";
@@ -9,7 +9,7 @@ import { getCategoryFeature } from "../constants/category-feature";
 import { FeatureFormData } from "@/sections/categories/schemas/category-schema";
 
 type Props = {
-  userProvider: IUserProvider;
+  userProvider: IUser;
   inventory: InventoryStoreFormData;
   features: CategoryFeature[];
 };

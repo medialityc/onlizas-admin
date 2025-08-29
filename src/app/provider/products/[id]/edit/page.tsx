@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { getProductById } from "@/services/products";
 import { notFound } from "next/navigation";
-import ProductEditContainer from "@/sections/provider-management/products/containers/product-edit-container";
-import { productTransformData } from "@/sections/provider-management/products/utils/product-transform-data";
+import ProductEditContainer from "@/sections/products/containers/product-edit-container";
+import { productTransformData } from "@/sections/products/utils/product-transform-data";
 
 // Esqueleto de carga
 function ProductEditFallback() {

@@ -4,7 +4,6 @@ import InventoryProviderCardListContainer from "@/sections/inventory-provider/co
 import { getAllInventoryByUserProvider } from "@/services/inventory-providers";
 import { getUserProviderById } from "@/services/users";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
-import { IUserProvider } from "@/types/users";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -35,7 +34,7 @@ async function InventoryProviderPage({ searchParams, params }: PageProps) {
       <InventoryProviderCardListContainer
         inventories={inventories}
         query={search}
-        provider={provider?.data as IUserProvider}
+        provider={provider?.data}
       />
     </Suspense>
   );
