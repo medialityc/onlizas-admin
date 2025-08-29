@@ -75,7 +75,7 @@ export default function BannerCreateModal({ open, onClose, onCreate, onUpdate, e
 	}, [open, isEditing, editingBanner, methods]);
 
 	const submitOnly = (data: BannerForm) => {		
-		if (isEditing && editingBanner && onUpdate) {			
+		if (isEditing && editingBanner && onUpdate && typeof editingBanner.id === "number") {			
 			onUpdate(editingBanner.id, data);
 		} else {
 			
