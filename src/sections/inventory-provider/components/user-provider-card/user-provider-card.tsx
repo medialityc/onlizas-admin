@@ -9,14 +9,14 @@ import {
 } from "@/components/cards/card";
 import LongText from "@/components/long-text/long-text";
 import { cn } from "@/lib/utils";
-import { IUserProvider } from "@/types/users";
+import { IUser } from "@/types/users";
 import { ChevronDownIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import React, { useState } from "react";
 import AnimateHeight from "react-animate-height";
 
 type Props = {
-  item: IUserProvider;
+  item: IUser;
   className?: string;
 };
 

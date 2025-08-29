@@ -137,7 +137,7 @@ export async function createStore(data: FormData): Promise<ApiResponse<Store>> {
   return buildApiResponseAsync<Store>(res);
 }
 
-export async function updateStore(
+export async function updateSupplierStore(
   id: number,
   data: FormData
 ): Promise<ApiResponse<Store | undefined>> {

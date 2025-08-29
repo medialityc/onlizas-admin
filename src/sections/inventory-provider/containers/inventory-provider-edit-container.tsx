@@ -1,4 +1,4 @@
-import { IUserProvider } from "@/types/users";
+import { IUser } from "@/types/users";
 import { Button } from "@/components/button/button";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -9,7 +9,7 @@ import EditContainer from "./edit-container";
 import { CategoryFeature } from "@/types/products";
 
 type Props = {
-  userProvider: IUserProvider;
+  userProvider: IUser;
   inventory: InventoryStoreFormData;
   features: CategoryFeature[];
 };
