@@ -5,12 +5,9 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { Category as CategoryType } from "@/types/categories";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { UpdateSupplierFormData } from "./schema";
+import { SupplierState } from "@/types/suppliers";
 
-function SupplierCategories({
-  state,
-}: {
-  state: "Pending" | "WaitingLogin" | "Approved" | "Rejected";
-}) {
+function SupplierCategories({ state }: { state: SupplierState }) {
   const { control, getValues, setValue } =
     useFormContext<UpdateSupplierFormData>();
 

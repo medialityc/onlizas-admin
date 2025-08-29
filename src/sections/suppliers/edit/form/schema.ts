@@ -59,6 +59,8 @@ export const updateSupplierSchema = z.object({
     })
     .min(1),
   mincexCode: z.string().optional(),
+  // Expiration date of the supplier account (ISO date string)
+  expirationDate: z.date(),
 });
 
 export type UpdateSupplierFormData = z.infer<typeof updateSupplierSchema>;

@@ -175,7 +175,7 @@ export function SuppliersList({
         render: (supplier) => (
           <span
             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              supplier.isAproved
+              supplier.state === "Approved"
                 ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                 : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
             }`}

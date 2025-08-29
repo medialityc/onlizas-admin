@@ -16,6 +16,8 @@ function EditHeader({ supplierDetails }: { supplierDetails: SupplierDetails }) {
   const statusLabel = statusInfo?.name ?? supplierDetails.state;
   const statusClass =
     {
+      WaitingExtension:
+        "bg-purple-100 text-purple-800 ring-purple-300 dark:bg-purple-900/30 dark:text-purple-200 dark:ring-purple-800/50",
       Pending:
         "bg-amber-100 text-amber-800 ring-amber-300 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800/50",
       WaitingLogin:

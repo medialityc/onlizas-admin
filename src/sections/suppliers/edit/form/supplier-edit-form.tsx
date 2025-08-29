@@ -36,6 +36,9 @@ export default function SupplierEditForm({
       sellerType: supplierDetails.sellerType ?? "",
       nacionalityType: supplierDetails.nacionality ?? "",
       mincexCode: supplierDetails.mincexCode ?? "",
+      expirationDate: supplierDetails.expirationDate
+        ? new Date(supplierDetails.expirationDate)
+        : undefined,
       pendingCategories:
         supplierDetails.pendingCategories?.map((cat) => ({
           id: cat.id,
@@ -60,6 +63,7 @@ export default function SupplierEditForm({
     try {
       console.log(data, "Submit");
       const formData = new FormData();
+      formData.append("expirationDate", data.expirationDate.toISOString());
       formData.append("name", data.name);
       formData.append("email", data.email);
       formData.append("phone", data.phone);

@@ -11,7 +11,7 @@ export type Supplier = {
   lastEvaluationDate: string;
   isActive: boolean;
   isAproved: boolean;
-  state: "Pending" | "WaitingLogin" | "Approved" | "Rejected";
+  state: SupplierState;
   expirationDate: string;
   message: string;
   sellerType?: "Persona" | "Empresa" | "";
@@ -88,14 +88,22 @@ export const processesState = [
   },
   { id: 2, name: "Aprobado", value: "Approved" },
   { id: 3, name: "Rechazado", value: "Rejected" },
+  { id: 4, name: "Solicitud de revisión", value: "WaitingExtension" },
 ];
+
+export type SupplierState =
+  | "Pending"
+  | "WaitingLogin"
+  | "Approved"
+  | "Rejected"
+  | "WaitingExtension";
 
 export type SupplierDetails = Supplier & {
   phone: string;
   address: string;
   message: string;
   id: number;
-  state: "Pending" | "WaitingLogin" | "Approved" | "Rejected";
+  state: SupplierState;
   pendingDocuments: [
     {
       fileName: string;

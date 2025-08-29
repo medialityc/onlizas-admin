@@ -1,4 +1,5 @@
-import { Suspense } from "react";
+import React, { Suspense } from "react";
+import FloatingApprovalButton from "@/components/floating-approval-button";
 import ApprovalControls from "@/sections/suppliers/edit/approval-controls";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { getSupplierDetails } from "@/services/supplier";
@@ -13,6 +14,9 @@ export default async function Page({
   }>;
 }) {
   const { data: supplierDetails } = await getSupplierDetails((await params).id);
+  const showApprovalButton =
+    supplierDetails?.state === "Pending" ||
+    supplierDetails?.state === "WaitingExtension";
 
   return (
     <div className="space-y-8">
@@ -68,25 +72,35 @@ export default async function Page({
       </section>
 
       {/* Aprobación / Rechazo */}
-      {supplierDetails?.state === "Pending" && (
-        <section
-          className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-xl rounded-2xl border border-gray-200/50 dark:border-gray-700/50 animate-slideUp overflow-hidden"
-          style={{ animationDelay: "0.3s" }}
-        >
-          <div className="px-8 py-6 border-b border-gray-200/50 dark:border-gray-700/50">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Proceso de aprobación
-            </h2>
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-              Aprueba o rechaza esta solicitud e incluye comentarios.
-            </p>
-          </div>
-          <div className="p-8">
-            <ApprovalControls
-              approvalProcessId={supplierDetails.id.toString()}
-            />
-          </div>
-        </section>
+      {supplierDetails?.state === "Pending" ||
+        (supplierDetails?.state === "WaitingExtension" && (
+          <section
+            className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-xl rounded-2xl border border-gray-200/50 dark:border-gray-700/50 animate-slideUp overflow-hidden"
+            id="approval-controls"
+            style={{ animationDelay: "0.3s" }}
+          >
+            <div className="px-8 py-6 border-b border-gray-200/50 dark:border-gray-700/50">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Proceso de aprobación
+              </h2>
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                Aprueba o rechaza esta solicitud e incluye comentarios.
+              </p>
+            </div>
+            <div className="p-8">
+              <ApprovalControls
+                approvalProcessId={supplierDetails.id.toString()}
+              />
+            </div>
+          </section>
+        ))}
+      {/* Floating button to jump to approval controls (visible only when applicable) */}
+      {showApprovalButton && (
+        // Floating button is a client component that performs smooth scroll
+        <React.Suspense>
+          {/* eslint-disable-next-line @next/next/no-before-interactive-script-outside-document */}
+          <FloatingApprovalButton />
+        </React.Suspense>
       )}
     </div>
   );
