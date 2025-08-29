@@ -44,7 +44,7 @@ const UserProviderCard = ({ item, className }: Props) => {
             )} */}
           </div>
           <div>
-            <Link href={`/dashboard/inventory/${item?.id}/list`}>
+            <Link href={`/dashboard/inventory/list/${item?.id}`}>
               <CardTitle className="text-lg text-primary hover:underline font-bold leading-none mb-1">
                 <LongText text={item?.name} lineClamp={1} />
               </CardTitle>
@@ -104,7 +104,7 @@ const UserProviderCard = ({ item, className }: Props) => {
 
         {/* actions */}
         <div className="flex flex-1 w-full mt-4">
-          <Link href={`/dashboard/inventory/${item?.id}/list`}>
+          <Link href={`/dashboard/inventory/list/${item?.id}`}>
             <Button className="w-full" variant="secondary">
               Ver inventario
             </Button>

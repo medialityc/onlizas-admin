@@ -10,11 +10,11 @@ import {
 } from "@/components/cards/card";
 import LongText from "@/components/long-text/long-text";
 import { cn } from "@/lib/utils";
-import { InventoryProvider } from "@/services/inventory-providers";
 import { ClipboardDocumentIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { Edit, EyeIcon, Package, Store, Warehouse } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { InventoryProvider } from "@/types/inventory";
 
 type Props = {
   item: InventoryProvider;
@@ -109,10 +109,7 @@ const UserProviderCard = ({ item }: Props) => {
             Ver
           </Button>
         </Link>
-        <Link
-          className="flex-1"
-          href={`/dashboard/inventory/${item?.supplierId}/list/${item?.id}`}
-        >
+        <Link className="flex-1" href={`/dashboard/inventory/${item?.id}`}>
           <Button variant="secondary" outline size="sm" className="  w-full ">
             <Edit className="h-4 w-4 mr-1" />
             Editar

@@ -6,12 +6,12 @@ import { SearchParams } from "@/types/fetch/request";
 import { use, useCallback } from "react";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
-import { GetAllInventoryProviderResponse } from "@/services/inventory-providers";
 import { InventoryProviderCardGrid } from "../components/inventory-provider-card-grid/inventory-provider-card-grid";
 import { Button } from "@/components/button/button";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import { IUserProvider } from "@/types/users";
+import { GetAllInventoryProviderResponse } from "@/types/inventory";
 
 interface Props {
   inventories: Promise<ApiResponse<GetAllInventoryProviderResponse>>;

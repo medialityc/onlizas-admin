@@ -1,63 +1,48 @@
 "use client";
 import React, { useCallback } from "react";
 import { FormProvider } from "@/components/react-hook-form";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/button/button";
 import { useRouter } from "next/navigation";
-import LoaderButton from "@/components/loaders/loader-button";
-import { IUserProvider } from "@/types/users";
 import { useInventoryProviderEditForm } from "../../hooks/use-inventory-provider-edit-form";
-import InventoryHeader from "./inventory-info";
-import { InventoryStoreFormData } from "../../schemas/inventory-edit.schema";
 import InventoryEditVariantContent from "./inventory-edit-variant-content";
+import { ProductVariant } from "../../schemas/inventory-provider.schema";
 
 type Props = {
-  initValue?: InventoryStoreFormData;
-  userProvider?: IUserProvider;
+  initValue?: ProductVariant;
+  userProvider?: number;
+  inventoryId?: number;
+  index?: number;
+  onRemove: () => void;
 };
 
-const InventoryEditForm = ({ initValue, userProvider }: Props) => {
+const InventoryEditForm = ({
+  initValue,
+  userProvider,
+  inventoryId,
+  index,
+  onRemove,
+}: Props) => {
   const { push } = useRouter();
   const handleCancel = useCallback(
-    () => push(`/dashboard/inventory/${userProvider?.id}/list`),
-    [push, userProvider?.id]
+    () => push(`/dashboard/inventory/list/${userProvider}`),
+    [push, userProvider]
   );
 
   const { form, isPending, onSubmit } = useInventoryProviderEditForm(
     initValue,
-    handleCancel
+    handleCancel,
+    inventoryId ?? 0
   );
 
   return (
     <section>
       {/* details */}
-      <InventoryHeader inventory={initValue as InventoryStoreFormData} />
-      <FormProvider
-        methods={form}
-        onSubmit={onSubmit}
-        id="inventory-provider-edit-form"
-      >
-        <InventoryEditVariantContent />
+      <FormProvider methods={form} onSubmit={onSubmit}>
+        <InventoryEditVariantContent
+          onRemove={onRemove}
+          index={index}
+          isPending={isPending}
+        />
       </FormProvider>
-      {/* Botones de acción */}
-      <div className={cn("flex gap-4 pt-6 mt-6 border-t justify-end")}>
-        <Button
-          type="button"
-          variant="secondary"
-          outline
-          onClick={handleCancel}
-        >
-          Cancelar
-        </Button>
-        <LoaderButton
-          form="inventory-provider-edit-form"
-          type="submit"
-          loading={isPending}
-          disabled={isPending}
-        >
-          {"Editar Inventario"}
-        </LoaderButton>
-      </div>
     </section>
   );
 };

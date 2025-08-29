@@ -1,11 +1,11 @@
 "use client";
 import { SearchParams } from "@/types/fetch/request";
 import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
-import { GetAllInventoryProviderResponse } from "@/services/inventory-providers";
 import InventoryProviderCardList from "../inventory-provider-card/inventory-provider-card-list";
-import { useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { IUserProvider } from "@/types/users";
+import { GetAllInventoryProviderResponse } from "@/types/inventory";
+import { useModalState } from "@/hooks/use-modal-state";
+import CreateInventoryModal from "../../modal/create-inventory-modal";
 
 interface Props {
   data?: GetAllInventoryProviderResponse;
@@ -20,11 +20,14 @@ export function InventoryProviderCardGrid({
   provider,
   onSearchParamsChange,
 }: Props) {
-  const { push } = useRouter();
-  const handleInventoryProviderCreate = useCallback(
-    () => push(`/dashboard/inventory/${provider?.id}/list/new`),
-    [provider, push]
-  );
+  const { getModalState, openModal, closeModal } = useModalState();
+  const createModal = getModalState("create");
+  const handleOpen = () => {
+    openModal("create");
+  };
+  const handleClose = () => {
+    closeModal("create");
+  };
   return (
     <>
       <DataGridCard
@@ -32,7 +35,7 @@ export function InventoryProviderCardGrid({
         searchParams={searchParams}
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar inventario..."
-        onCreate={handleInventoryProviderCreate}
+        onCreate={handleOpen}
         createText="Crear inventario"
         enableColumnToggle={false}
         rightActions={<></>}
@@ -40,9 +43,14 @@ export function InventoryProviderCardGrid({
           <InventoryProviderCardList
             data={data?.data}
             searchParams={searchParams}
-            provider={provider}
+            openModal={handleOpen}
           />
         }
+      />
+      <CreateInventoryModal
+        open={createModal.open}
+        onClose={handleClose}
+        provider={provider.id}
       />
     </>
   );

@@ -1,9 +1,7 @@
-import {
-  getInventoryById,
-  InventoryProvider,
-} from "@/services/inventory-providers";
+import { getInventoryById } from "@/services/inventory-providers";
 import { notFound, redirect } from "next/navigation";
 import InventoryDetailView from "@/sections/inventory/inventory-detail-view";
+import { InventoryProvider } from "@/types/inventory";
 
 interface Props {
   params: Promise<{ id: string; provider: string }>;

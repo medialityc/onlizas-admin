@@ -5,8 +5,10 @@ import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
-import { GetAllInventoryProviderResponse } from "@/services/inventory-providers";
 import { InventoryCardGrid } from "../components/inventory-provider-card-grid/inventory-card-grid";
+import { useModalState } from "@/hooks/use-modal-state";
+import CreateInventoryModal from "../modal/create-inventory-modal";
+import { GetAllInventoryProviderResponse } from "@/types/inventory";
 
 interface Props {
   inventories: ApiResponse<GetAllInventoryProviderResponse>;
@@ -17,6 +19,16 @@ export default function InventoryCardListContainer({
   inventories: inventoriesResponse,
   query,
 }: Props) {
+  const { getModalState, openModal, closeModal } = useModalState();
+
+  // Modal states controlled by URL
+  const createPermissionModal = getModalState("create");
+  const handleOpen = () => {
+    openModal("create");
+  };
+  const onCloseModal = () => {
+    closeModal("create");
+  };
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(inventoriesResponse);
 
@@ -43,6 +55,11 @@ export default function InventoryCardListContainer({
           data={inventoriesResponse.data}
           searchParams={query}
           onSearchParamsChange={handleSearchParamsChange}
+          onCreate={handleOpen}
+        />
+        <CreateInventoryModal
+          open={createPermissionModal.open}
+          onClose={onCloseModal}
         />
       </div>
     </div>

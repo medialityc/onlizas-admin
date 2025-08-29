@@ -1,8 +1,5 @@
+import { InventoryProductItem, InventoryProvider } from "@/types/inventory";
 import React from "react";
-import {
-  InventoryProvider,
-  InventoryProductItem,
-} from "@/services/inventory-providers";
 
 export const InventoryDetailSkeleton: React.FC = () => {
   return (
