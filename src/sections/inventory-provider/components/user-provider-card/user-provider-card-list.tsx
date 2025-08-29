@@ -20,7 +20,7 @@ const UserProviderCardList = ({ data, searchParams }: Props) => {
   }
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 md:gap-6 mb-4">
-      {data?.map((provider: IUserProvider) => (
+      {data?.map((provider: IUser, idx: number) => (
         <UserProviderCard
           className="col-span-1"
           key={provider?.id}

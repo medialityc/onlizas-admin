@@ -199,7 +199,6 @@ export const backendRoutes = {
     update: (id: number) => `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
     updateAdminStore: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
-
   },
   storeBanner: {
     create: `${process.env.NEXT_PUBLIC_API_DEV_URL}banners`,
