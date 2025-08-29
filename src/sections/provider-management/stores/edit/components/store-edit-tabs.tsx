@@ -13,7 +13,7 @@ import AppearanceContainer from "../appearance/appearance-container";
 import CategoriesContainer from "../categories/categories-container";
 import GeneralContainer from "../general/general-container";
 import PromotionsContainer from "../promotions/promotions-container";
-import TabsWithErrorIndicators from "../../../../components/tab/tabs-with-error-indicators";
+import TabsWithErrorIndicators from "@/components/tab/tabs-with-error-indicators";
 import { Store } from "@/types/stores";
 import styles from "./store-edit-tabs.module.css";
 import FollowersContainer from "../followers/followers-container";

@@ -23,8 +23,8 @@ export const BannerSchema = z.object({
     message: "La imagen es obligatoria"
   }),
   isActive: z.boolean()
-}).refine((data) => data.endDate >= data.initDate, {
-  message: "La fecha de fin debe ser posterior o igual a la fecha de inicio",
+}).refine((data) => data.endDate > data.initDate, {
+  message: "La fecha de fin debe ser posterior a la fecha de inicio",
   path: ["endDate"]
 });
 

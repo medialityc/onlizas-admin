@@ -113,7 +113,8 @@ function BannerActions({
             ? "bg-gradient-to-r from-secondary to-indigo-600" 
             : "bg-gray-300"
         }`}
-        onClick={() => onToggle(banner.id)}
+        onClick={() => (banner.id != null ? onToggle(banner.id) : undefined)}
+
       >
         <span 
           className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
@@ -141,7 +142,8 @@ function BannerActions({
         type="button"
         className="text-gray-500 hover:text-red-600 transition-colors"
         aria-label="Eliminar"
-        onClick={() => onDelete(banner.id)}
+        onClick={() => (banner.id != null ? onDelete(banner.id) : undefined)}
+
       >
         <TrashIcon className="w-5 h-5" />
       </button>
