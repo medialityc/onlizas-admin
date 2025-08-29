@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 
 import { BannerForm } from "../banners/banner-schema";
+import { createTempBannerId } from "../banners/banner-utils";
 import { BannerItem } from '../../../../../../types/stores';
 
 interface BackendBanner {
@@ -89,10 +90,10 @@ export function useBanners({ backendBanners, setValue }: UseBannersParams) {
   // Funciones de CRUD
   const handleCreateBanner = (banner: BannerForm) => {
     const toISO = (d?: Date | null) => (d ? new Date(d).toISOString().slice(0, 10) : null);
-    
+    const tempId = createTempBannerId();
     setItems((prev) => [
       {
-        //id: Math.max(0, ...prev.map((x) => x.id)) + 1,
+        id: tempId,
         title: banner.title,
         urlDestinity: banner.urlDestinity,
         position: Number(banner.position),

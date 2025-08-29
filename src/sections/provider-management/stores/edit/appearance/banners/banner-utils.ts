@@ -29,3 +29,11 @@ export const toISOString = (d?: Date | null): string => {
   if (!d) return new Date().toISOString();
   return d instanceof Date ? d.toISOString() : new Date(d).toISOString();
 };
+
+// Genera un ID temporal negativo único para banners creados en UI
+export const createTempBannerId = (): number => {
+  // Combina timestamp y aleatorio para minimizar colisiones y siempre negativo
+  const base = Date.now() % 1_000_000_000;
+  const rnd = Math.floor(Math.random() * 10_000);
+  return -1 * (base * 10_000 + rnd);
+};

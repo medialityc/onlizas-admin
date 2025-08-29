@@ -203,16 +203,11 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
   },
   storeBanner: {
-    create: `${process.env.NEXT_PUBLIC_API_DEV_URL}banners`,
-    update: `${process.env.NEXT_PUBLIC_API_DEV_URL}banners`,
+    create: `${process.env.NEXT_PUBLIC_API_URL}banners`,
+    update: `${process.env.NEXT_PUBLIC_API_URL}banners`,
 
   },
-  storeBanner: {
-    create: `${process.env.NEXT_PUBLIC_API_DEV_URL}banners`,
-    update: `${process.env.NEXT_PUBLIC_API_DEV_URL}banners`,
-
-  },
-
+  
   inventoryProvider: {
     create: `${process.env.NEXT_PUBLIC_API_URL}inventories/admin`,
     list: `${process.env.NEXT_PUBLIC_API_URL}inventories/admin`,

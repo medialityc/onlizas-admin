@@ -22,6 +22,15 @@ type Props = {
 
 export default function BannerCreateModal({ open, onClose, onCreate, onUpdate, editingBanner }: Props) {
 	const isEditing = !!editingBanner;
+	const todayLocal = () => {
+		const t = new Date();
+		return new Date(t.getFullYear(), t.getMonth(), t.getDate());
+	};
+	const fixDate = (value: string | Date): Date => {
+		const d = new Date(value);
+		return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+	};
+
 
 	const methods = useForm<BannerForm>({
 		resolver: zodResolver(BannerSchema),
@@ -29,8 +38,8 @@ export default function BannerCreateModal({ open, onClose, onCreate, onUpdate, e
 			title: "",
 			urlDestinity: "",
 			position: 1,
-			initDate: new Date(), // Fecha de hoy por defecto
-			endDate: new Date(), // Fecha de hoy por defecto
+			initDate: todayLocal(),
+			endDate: todayLocal(),
 			image: "",
 			isActive: true,
 		},
@@ -39,9 +48,9 @@ export default function BannerCreateModal({ open, onClose, onCreate, onUpdate, e
 
 	// Resetear el formulario cuando se abre el modal
 	useEffect(() => {
-		
+
 		if (open) {
-			if (isEditing && editingBanner) {				
+			if (isEditing && editingBanner) {
 				const initDate = editingBanner.initDate ? new Date(editingBanner.initDate) : new Date();
 				const endDate = editingBanner.endDate ? new Date(editingBanner.endDate) : new Date()
 
@@ -54,13 +63,13 @@ export default function BannerCreateModal({ open, onClose, onCreate, onUpdate, e
 					title: editingBanner.title || "",
 					urlDestinity: editingBanner.urlDestinity || "",
 					position: position,
-					initDate: initDate,
-					endDate: endDate,
+					initDate: fixDate(editingBanner.initDate??todayLocal()),
+					endDate: fixDate(editingBanner.initDate??todayLocal()),
 					image: editingBanner.image ?? "",
 					isActive: editingBanner.isActive ?? true,
 				});
-				
-			} else {				
+
+			} else {
 				methods.reset({
 					title: "",
 					urlDestinity: "",
@@ -74,11 +83,11 @@ export default function BannerCreateModal({ open, onClose, onCreate, onUpdate, e
 		}
 	}, [open, isEditing, editingBanner, methods]);
 
-	const submitOnly = (data: BannerForm) => {		
-		if (isEditing && editingBanner && onUpdate) {			
+	const submitOnly = (data: BannerForm) => {
+		if (isEditing && editingBanner && onUpdate && typeof editingBanner.id === "number") {
 			onUpdate(editingBanner.id, data);
 		} else {
-			
+
 			onCreate(data);
 		}
 		onClose();
@@ -114,7 +123,7 @@ export default function BannerCreateModal({ open, onClose, onCreate, onUpdate, e
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 						<RHFDatePickerBanner
 							name="initDate"
-							label="Fecha de Inicio"							
+							label="Fecha de Inicio"
 							minDate={isEditing ? undefined : new Date()}
 						/>
 						<RHFDatePickerBanner
