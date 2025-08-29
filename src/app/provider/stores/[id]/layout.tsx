@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getStoreById } from "@/services/stores";
 import StoreBreadcrumb from "@/sections/provider-management/stores/edit/components/store-breadcrumb";
 import StoreEditHeader from "@/sections/provider-management/stores/edit/components/store-edit-header";
-import { Params } from "next/dist/server/request/params";
+
 
 type LayoutProps = {
   children: ReactNode;
