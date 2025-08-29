@@ -5,7 +5,7 @@ import WarehouseInventoryListContainer from "@/sections/warehouses/containers/wa
 
 import {
   getWarehouseById,
-  getWarehouseInventories,
+  getAllWarehouseInventories,
 } from "@/services/warehouses";
 
 import { SearchParams } from "@/types/fetch/request";
@@ -38,7 +38,7 @@ export default async function EditWarehouseInventoryPage({
   }
 
   /* services */
-  const inventory = await getWarehouseInventories(id, query);
+  const inventory = await getAllWarehouseInventories(id, query);
   const response = await getWarehouseById(Number(id), type);
 
   if (!response?.data || !inventory?.data) {

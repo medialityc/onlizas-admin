@@ -22,7 +22,7 @@ const WarehouseInventoryCardList = ({ data, searchParams }: Props) => {
     );
   }
   return (
-    <section className="grid grid-cols-1 gap-4   mb-4">
+    <section className="grid grid-cols-1 gap-4 mb-4">
       {data?.map((inventory: InventoryProvider) => (
         <div className="col-span-1" key={`${id}-${inventory?.id}`}>
           <WarehouseInventoryCard item={inventory} />

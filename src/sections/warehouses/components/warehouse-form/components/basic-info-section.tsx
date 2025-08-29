@@ -11,7 +11,7 @@ export default function BasicInfoSection() {
       <div className="mb-4">
         <div className="flex items-center gap-2">
           <Cog6ToothIcon className="w-5 h-5 text-gray-500 dark:text-gray-100" />
-          <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-100 leading-none">
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 leading-none">
             Información básica
           </h4>
         </div>
