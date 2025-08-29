@@ -16,6 +16,7 @@ import { WarehouseFormData } from "@/sections/warehouses/schemas/warehouse-schem
 import { GetAllUsersResponse } from "../types/users";
 import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 import { InventoryProviderFormData } from "@/sections/inventory-provider/schemas/inventory-provider.schema";
+import { InventoryProductItem } from "./inventory-providers";
 
 export async function getAllWarehouses(
   params: IQueryable & WarehouseFilter
@@ -58,7 +59,7 @@ export async function getAllWarehousesByType(
 /*
  * inventarios de un almacén
  */
-export async function getWarehouseInventories(
+export async function getAllWarehouseInventories(
   warehouseId: string | number,
   params?: IQueryable
 ): Promise<ApiResponse<InventoryProviderFormData[]>> {
@@ -74,6 +75,27 @@ export async function getWarehouseInventories(
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<InventoryProviderFormData[]>(res);
+}
+
+/*
+ * variantes de un almacén
+ */
+export async function getAllWarehouseProductVariants(
+  warehouseId: string | number,
+  params?: IQueryable
+): Promise<ApiResponse<InventoryProductItem[]>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.warehouses.variantList(warehouseId)
+  ).build();
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["warehouses-product-variants"] },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<InventoryProductItem[]>(res);
 }
 
 /*

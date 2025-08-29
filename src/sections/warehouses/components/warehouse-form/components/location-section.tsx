@@ -9,7 +9,7 @@ export default function LocationSection() {
       <div className="mb-4">
         <div className="flex items-center gap-2">
           <MapPinIcon className="w-5 h-5 text-gray-500 dark:text-gray-100" />
-          <h4 className="text-lg font-semibold text-gray-100 dark:text-gray-100 leading-none">
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 leading-none">
             Ubicación
           </h4>
         </div>
