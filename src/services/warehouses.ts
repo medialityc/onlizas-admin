@@ -17,6 +17,7 @@ import { GetAllUsersResponse } from "../types/users";
 import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 import { InventoryProviderFormData } from "@/sections/inventory-provider/schemas/inventory-provider.schema";
 import { InventoryProductItem } from "./inventory-providers";
+import { PaginatedResponse } from "@/types/common";
 
 export async function getAllWarehouses(
   params: IQueryable & WarehouseFilter
@@ -62,7 +63,7 @@ export async function getAllWarehousesByType(
 export async function getAllWarehouseInventories(
   warehouseId: string | number,
   params?: IQueryable
-): Promise<ApiResponse<InventoryProviderFormData[]>> {
+): Promise<ApiResponse<PaginatedResponse<InventoryProviderFormData>>> {
   const url = new QueryParamsURLFactory(
     { ...params },
     backendRoutes.warehouses.inventoryList(warehouseId)
@@ -74,7 +75,9 @@ export async function getAllWarehouseInventories(
     next: { tags: ["warehouses-inventories"] },
   });
   if (!res.ok) return handleApiServerError(res);
-  return buildApiResponseAsync<InventoryProviderFormData[]>(res);
+  return buildApiResponseAsync<PaginatedResponse<InventoryProviderFormData>>(
+    res
+  )
 }
 
 /*

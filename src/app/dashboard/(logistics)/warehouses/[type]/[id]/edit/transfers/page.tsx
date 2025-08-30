@@ -1,10 +1,8 @@
 import EditWarehouseLayout from "@/sections/warehouses/components/layout/edit-warehouse-layout";
+import { WarehouseTransfers } from "@/sections/warehouses/components/transfer/warehouse-transfers";
 import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 import WarehouseTransferContainer from "@/sections/warehouses/containers/warehouse-trasnfer-container";
-import {
-  getAllWarehouseProductVariants,
-  getWarehouseById,
-} from "@/services/warehouses";
+import { getWarehouseById } from "@/services/warehouses";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -30,18 +28,14 @@ export default async function EditWarehouseTransfersPage({
 
   const response = await getWarehouseById(Number(id), type);
 
-  const productVariants = await getAllWarehouseProductVariants(id);
-
-  if (!response?.data || !productVariants?.data) {
+  if (!response?.data) {
     notFound();
   }
 
   return (
     <EditWarehouseLayout warehouse={response.data}>
-      <WarehouseTransferContainer
-        warehouseId={response.data?.id as number}
-        productVariants={productVariants?.data || []}
-      />
+      <WarehouseTransferContainer warehouseId={response.data?.id as number} />
+      <WarehouseTransfers warehouse={response.data} />
     </EditWarehouseLayout>
   );
 }

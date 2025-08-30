@@ -8,9 +8,10 @@ import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert
 import { WarehouseInventoryCardGrid } from "../components/warehouse-inventory-card-grid/warehouse-inventory-card-grid";
 
 import { InventoryProviderFormData } from "@/sections/inventory-provider/schemas/inventory-provider.schema";
+import { PaginatedResponse } from "@/types/common";
 
 interface Props {
-  inventoryPromise: ApiResponse<InventoryProviderFormData[]>;
+  inventoryPromise: ApiResponse<PaginatedResponse<InventoryProviderFormData>>;
   query: SearchParams;
 }
 
@@ -36,7 +37,7 @@ export default function WarehouseInventoryListContainer({
         </div> */}
 
         <WarehouseInventoryCardGrid
-          data={inventoryPromise?.data}
+          data={inventoryPromise?.data?.data}
           searchParams={query}
           onSearchParamsChange={handleSearchParamsChange}
         />

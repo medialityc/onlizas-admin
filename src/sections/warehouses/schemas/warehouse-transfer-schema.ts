@@ -13,7 +13,7 @@ import { z } from "zod";
   ]
 } */
 
-export const warehouseVirtualTransferSchema = z.object({
+export const warehouseTransferSchema = z.object({
   originWarehouseId: z.number({ required_error: "Requerido" }),
   destinationWarehouseId: z.number({ required_error: "Requerido" }),
   transferNumber: z.coerce.number({ required_error: "Requerido" }),
@@ -26,8 +26,29 @@ export const warehouseVirtualTransferSchema = z.object({
       })
     )
     .min(1, "Debe seleccionar al menos un producto a transferir"),
+
+  inventories: z
+    .array(
+      z.object({
+        parentProductName: z.string({ required_error: "Requerido" }),
+        supplierName: z.string({ required_error: "Requerido" }),
+        totalQuantity: z.coerce.number({ required_error: "Requerido" }),
+        price: z.coerce.number({ required_error: "Requerido" }),
+        products: z.array(
+          z.object({
+            productName: z.string({ required_error: "Requerido" }),
+            details: z.array(z.object({ key: z.string(), value: z.string() })),
+            quantity: z.coerce
+              .number({ required_error: "Requerido" })
+              .positive("Es un número positivo"),
+            images: z.array(z.string()).optional(),
+          })
+        ),
+      })
+    )
+    .min(1, "Debe seleccionar al menos un inventario"),
 });
 
 export type WarehouseTransferFormData = z.infer<
-  typeof warehouseVirtualTransferSchema
+  typeof warehouseTransferSchema
 >;

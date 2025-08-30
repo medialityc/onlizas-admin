@@ -5,19 +5,19 @@ import { Button } from "@/components/button/button";
 import Link from "next/link";
 import { useWarehouseTransferForm } from "../../hooks/use-warehouse-transfer-form";
 import { WarehouseTransferFormData } from "../../schemas/warehouse-transfer-schema";
-import { InventoryProductItem } from "@/services/inventory-providers";
-import WarehouseVariantList from "./warehouse-variant-list";
+
+import WarehouseInventoryList from "./componnets/warehouse-inventory-list";
 import WarehouseTransferItemForm from "./warehouse-transfer-item-from";
 
 type Props = {
   warehouseId: number;
-  productVariants: InventoryProductItem[];
 };
-export function WarehouseTransferForm({ warehouseId, productVariants }: Props) {
+export function WarehouseTransferForm({ warehouseId }: Props) {
   const initValue: WarehouseTransferFormData = {
     destinationWarehouseId: 0,
     originWarehouseId: warehouseId,
     items: [],
+    inventories: [],
     transferNumber: 0,
   };
 
@@ -27,16 +27,16 @@ export function WarehouseTransferForm({ warehouseId, productVariants }: Props) {
     <FormProvider
       methods={form}
       onSubmit={onSubmit}
-      id="warehouse-form"
+      id="warehouse-transfer-form"
       noValidate
     >
       <div className="grid grid-cols-1  gap-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* variantes */}
-          <WarehouseVariantList products={productVariants} />
+          <WarehouseInventoryList warehouseId={warehouseId} />
 
           {/* form items */}
-          <WarehouseTransferItemForm />
+          <WarehouseTransferItemForm warehouseId={warehouseId} />
         </div>
         {/* <pre> {JSON.stringify(productVariants, null, 2)} </pre> */}
       </div>
@@ -48,7 +48,7 @@ export function WarehouseTransferForm({ warehouseId, productVariants }: Props) {
           </Button>
         </Link>
         <Button
-          form="warehouse-form"
+          form="warehouse-transfer-form"
           type="submit"
           variant="primary"
           disabled={isPending}
