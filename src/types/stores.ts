@@ -171,3 +171,12 @@ export type StoreMetricsResponse = {
   storeMetrics: StoreMetric[];
 };
 export type GetStoreMetrics = StoreMetricsResponse;
+
+// Categorías asociadas a una tienda (Store)
+export type StoreCategory = {
+  storeId: number;
+  categoryId: number; // ID de la categoría global
+  categoryName: string;
+  isActive: boolean;
+  order: number; // prioridad/posición
+};

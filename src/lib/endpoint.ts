@@ -204,7 +204,7 @@ export const backendRoutes = {
     list: `${process.env.NEXT_PUBLIC_API_URL}stores/metrics`,
     listAll: `${process.env.NEXT_PUBLIC_API_URL}stores`,
     listByProvider: (supplierId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${supplierId}/stores`,
+      `${process.env.NEXT_PUBLIC_API_URL}stores/supplier/${supplierId}`,
     listForProvider: `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores`,
     storeById: ( storeId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
@@ -234,6 +234,11 @@ export const backendRoutes = {
     create: `${process.env.NEXT_PUBLIC_API_URL}banners`,
     update: `${process.env.NEXT_PUBLIC_API_URL}banners`,
 
+  },
+  storeCategories: {
+    list: (storeId: number | string) => `${process.env.NEXT_PUBLIC_API_DEV_URL}storecategories/${storeId}`,
+    order: `${process.env.NEXT_PUBLIC_API_DEV_URL}storecategories/order`,
+    toggle: `${process.env.NEXT_PUBLIC_API_DEV_URL}storecategories/toggle-status`,
   },
   
   inventoryProvider: {
