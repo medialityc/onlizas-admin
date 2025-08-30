@@ -49,15 +49,7 @@ export default function CategoryListItem({ category: c, onToggleActive, onEdit, 
               />
             </button>
           </div>
-          <button className="text-gray-500 hover:text-gray-700" aria-label="Editar" onClick={() => onEdit(c.id)}>
-            <PencilSquareIcon className="w-5 h-5" />
-          </button>
-          <button className="text-gray-500 hover:text-gray-700" aria-label="Eliminar" onClick={() => onDelete(c.id)}>
-            <TrashIcon className="w-5 h-5" />
-          </button>
-          <button className="text-gray-500 hover:text-gray-700" aria-label="Más">
-            <EllipsisVerticalIcon className="w-5 h-5" />
-          </button>
+          
         </div>
       </div>
     </div>
