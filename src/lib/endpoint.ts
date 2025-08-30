@@ -107,7 +107,7 @@ export const backendRoutes = {
     listBySupplier: (supplierId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${supplierId}/warehouses`,
     listByType: (type: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}warehouses/${type}/all`,
+      `${process.env.NEXT_PUBLIC_API_URL}warehouses/${type}`,
     listSupplier: `${process.env.NEXT_PUBLIC_API_URL}suppliers/warehouses`,
     inventoryList: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}/inventory`,

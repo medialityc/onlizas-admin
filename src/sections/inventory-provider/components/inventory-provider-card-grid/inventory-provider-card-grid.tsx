@@ -38,7 +38,7 @@ export function InventoryProviderCardGrid({
         onCreate={handleOpen}
         createText="Crear inventario"
         enableColumnToggle={false}
-        rightActions={<></>}
+        
         component={
           <InventoryProviderCardList
             data={data?.data as any[]}

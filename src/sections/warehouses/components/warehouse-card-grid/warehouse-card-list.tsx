@@ -22,7 +22,7 @@ const WarehouseCardList = ({ data, searchParams }: Props) => {
     );
   }
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 md:gap-6 mb-4">
+    <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-2 md:gap-4 mb-4">
       {data?.map((warehouse: WarehouseFormData) => (
         <div className="col-span-1" key={`${id}-${warehouse?.id}`}>
           <WarehouseCard warehouse={warehouse} />

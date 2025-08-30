@@ -40,6 +40,8 @@ export default function WarehouseVirtualTypeContainer({
           </div>
         </div>
 
+        {/* <pre> {JSON.stringify(warehouseTypesResponse.data , null , 2 )} </pre> */}
+
         <WarehouseVirtualTypeList
           data={warehouseTypesResponse.data}
           searchParams={query}
