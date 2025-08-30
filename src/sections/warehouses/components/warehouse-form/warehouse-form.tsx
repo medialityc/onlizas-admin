@@ -54,7 +54,6 @@ export function WarehouseForm({ warehouse = initValueWarehouse }: Props) {
           {isPending ? "Guardando..." : "Guardar Cambios"}
         </Button>
       </div>
-      {/*  <pre> {JSON.stringify(warehouse, null, 2)} </pre> */}
     </FormProvider>
   );
 }

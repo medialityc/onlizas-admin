@@ -23,7 +23,6 @@ export function InventoryCardGrid({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar almacén..."
         enableColumnToggle={false}
-        rightActions={<></>}
         component={
           <WarehouseCardList data={data?.data} searchParams={searchParams} />
         }

@@ -1,6 +1,7 @@
 import { RHFInputWithLabel } from "@/components/react-hook-form";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAllSupplierUsers } from "@/services/users";
+import { getAllWarehousesVirtualType } from "@/services/warehouses-virtual-types";
 import { WarehouseIcon } from "lucide-react";
 import React from "react";
 
@@ -21,11 +22,12 @@ const VirtualSection = () => {
             name="virtualTypeId"
             label="Tipo de almacén virtual"
             placeholder="Seleccionar un tipo de almacén"
-            onFetch={getAllSupplierUsers}
+            onFetch={(params) =>
+              getAllWarehousesVirtualType({ ...params, isActive: true })
+            }
             objectValueKey="id"
             objectKeyLabel="name"
-            queryKey="suppliers"
-            multiple
+            queryKey="warehouse-virtual-types"
           />
         </div>
         <div>

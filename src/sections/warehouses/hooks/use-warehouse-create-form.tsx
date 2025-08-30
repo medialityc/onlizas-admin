@@ -26,8 +26,6 @@ export const useWarehouseCreateForm = ({
     defaultValues: warehouse,
   });
 
-  console.log(form.formState.errors, "ERRORS");
-
   const warehouseType = form?.watch("type");
 
   const { mutate, isPending } = useMutation({

@@ -1,21 +1,6 @@
 import { z } from "zod";
 import { WAREHOUSE_TYPE_ENUM } from "../constants/warehouse-type";
 
-/* export const warehousePhysicalSchema = z.object({
-  name: z.string().min(1, "El nombre del almacén es requerido"),
-  locationId: z.number({ required_error: "Requerido" }),
-  capacity: z.coerce.number({ required_error: "Requerido" }),
-  capacityUnit: z.string({ required_error: "Requerido" }).default("KG"),
-});
-
-export const warehouseVirtualSchema = z.object({
-  name: z.string().min(1, "El nombre del almacén es requerido"),
-  locationId: z.number({ required_error: "Requerido" }),
-  virtualTypeId: z.coerce.number().optional(),
-  supplierId: z.coerce.number().optional(),
-  rules: z.any().optional(),
-}); */
-
 export const warehouseSchema = z
   .object({
     name: z.string().min(1, "El nombre del almacén es requerido"),
