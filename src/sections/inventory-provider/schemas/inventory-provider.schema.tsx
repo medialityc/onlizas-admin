@@ -159,5 +159,10 @@ export type InventoryProviderStoreSettingItem = {
 };
 
 /* array */
-export type InventoryProviderFormData = z.infer<typeof inventoryProviderSchema>;
+export type InventoryProviderFormData = z.infer<
+  typeof inventoryProviderSchema
+> & {
+  id?: number;
+  parentProductName?: string;
+};
 export type ProductVariant = z.infer<typeof productVariants>;

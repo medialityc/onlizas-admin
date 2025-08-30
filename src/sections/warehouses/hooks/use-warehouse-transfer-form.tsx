@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import {
   WarehouseTransferFormData,
-  warehouseVirtualTransferSchema,
+  warehouseTransferSchema,
 } from "../schemas/warehouse-transfer-schema";
 import { createWarehouseTransfer } from "@/services/warehouses-transfers";
 
@@ -16,9 +16,11 @@ export const useWarehouseTransferForm = (
   const { push } = useRouter();
 
   const form = useForm({
-    resolver: zodResolver(warehouseVirtualTransferSchema),
+    resolver: zodResolver(warehouseTransferSchema),
     defaultValues,
   });
+
+  console.log(form.getValues(), "getValues");
 
   console.log(form.formState.errors, "ERRORS");
 
