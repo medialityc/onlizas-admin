@@ -16,8 +16,8 @@ import { WarehouseFormData } from "@/sections/warehouses/schemas/warehouse-schem
 import { GetAllUsersResponse } from "../types/users";
 import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 import { InventoryProviderFormData } from "@/sections/inventory-provider/schemas/inventory-provider.schema";
-import { InventoryProductItem } from "./inventory-providers";
 import { PaginatedResponse } from "@/types/common";
+import { InventoryProductItem } from "@/types/inventory";
 
 export async function getAllWarehouses(
   params: IQueryable & WarehouseFilter
@@ -41,7 +41,7 @@ export async function getAllWarehouses(
  */
 export async function getAllWarehousesByType(
   params: IQueryable & WarehouseFilter,
-  type: string
+  type: WAREHOUSE_TYPE_ENUM
 ): Promise<ApiResponse<GetAllWarehouses>> {
   const url = new QueryParamsURLFactory(
     { ...params },
@@ -77,7 +77,7 @@ export async function getAllWarehouseInventories(
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<PaginatedResponse<InventoryProviderFormData>>(
     res
-  )
+  );
 }
 
 /*

@@ -1,8 +1,8 @@
 import Badge from "@/components/badge/badge";
-import { InventoryProductItem } from "@/services/inventory-providers";
 import { detailsObjectToArray } from "@/utils/format";
 import React, { useMemo } from "react";
 import WarehouseImage from "../../../warehouse-image/warehouse-image";
+import { InventoryProductItem } from "@/types/inventory";
 
 type Props = {
   variant: InventoryProductItem;

@@ -1,9 +1,9 @@
 "use client";
 
 import Badge from "@/components/badge/badge";
-import { InventoryProvider } from "@/services/inventory-providers";
 import React from "react";
 import ProductVariantCard from "../warehouse-form/components/porduct-variant-card/porduct-variant-card";
+import { InventoryProvider } from "@/types/inventory";
 
 export function WarehouseInventoryCard({ item }: { item: InventoryProvider }) {
   return (

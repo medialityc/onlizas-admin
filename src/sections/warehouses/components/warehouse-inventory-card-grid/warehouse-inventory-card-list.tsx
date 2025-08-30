@@ -1,7 +1,7 @@
 import { SearchParams } from "@/types/fetch/request";
 import React, { useId } from "react";
 import WarehouseInventoryCard from "./warehouse-inventory-card";
-import { InventoryProvider } from "@/services/inventory-providers";
+import { InventoryProvider } from "@/types/inventory";
 
 type Props = {
   data?: InventoryProvider[];

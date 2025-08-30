@@ -3,7 +3,7 @@ import { SearchParams } from "@/types/fetch/request";
 import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
 import WarehouseInventoryCardList from "./warehouse-inventory-card-list";
 import { InventoryProviderFormData } from "@/sections/inventory-provider/schemas/inventory-provider.schema";
-import { InventoryProvider } from "@/services/inventory-providers";
+import { InventoryProvider } from "@/types/inventory";
 
 interface Props {
   data?: InventoryProviderFormData[];
