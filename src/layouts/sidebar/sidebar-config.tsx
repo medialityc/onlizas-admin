@@ -90,6 +90,12 @@ export const sidebarSections: SidebarSection[] = [
         icon: <WarehouseIcon className="h-4 w-4" />,
       },
       {
+        id: "virtual-warehouse-types",
+        label: "Tipos de almacenes virtuales",
+        path: paths.dashboard.virtualWarehouseTypes.list,
+        icon: <WarehouseIcon className="h-4 w-4" />,
+      },
+      {
         id: "stores",
         label: "Tiendas",
         path: paths.dashboard.stores.list,
