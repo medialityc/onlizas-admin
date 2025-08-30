@@ -48,6 +48,9 @@ export const paths = {
       view: (type: string, id: string | number) =>
         `${DASHBOARD}/warehouses/${type}/${id}`,
     },
+    virtualWarehouseTypes: {
+      list: `${DASHBOARD}/virtual-warehouse-types`,
+    },
     suppliers: {
       list: `${DASHBOARD}/suppliers`,
     },

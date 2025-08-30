@@ -1,0 +1,73 @@
+"use server";
+
+import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
+import { backendRoutes } from "@/lib/endpoint";
+import { QueryParamsURLFactory } from "@/lib/request";
+import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
+import { IQueryable } from "@/types/fetch/request";
+import { WarehouseFilter } from "@/types/warehouses";
+import { nextAuthFetch } from "./utils/next-auth-fetch";
+import { revalidateTag } from "next/cache";
+import { GetAllWarehousesVirtualType } from "@/sections/warehouse-virtual-type/interfaces/warehouse-virtual-type.interface";
+import { WarehouseVirtualTypeFormData } from "@/sections/warehouse-virtual-type/schemas/warehouse-virtual-type-schema";
+
+const WAREHOUSE_VIRTUAL_TYPE_TAG = "warehouse-virtual-types";
+
+export async function getAllWarehousesVirtualType(
+  params: IQueryable & WarehouseFilter
+): Promise<ApiResponse<GetAllWarehousesVirtualType>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.warehouseVirtualTypes.list
+  ).build();
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: [WAREHOUSE_VIRTUAL_TYPE_TAG] },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<GetAllWarehousesVirtualType>(res);
+}
+
+export async function createWarehouseVirtualType(
+  data: WarehouseVirtualTypeFormData
+): Promise<ApiResponse<WarehouseVirtualTypeFormData>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.warehouseVirtualTypes.create,
+    method: "POST",
+    data,
+    useAuth: true,
+  });
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag(WAREHOUSE_VIRTUAL_TYPE_TAG);
+  return buildApiResponseAsync<WarehouseVirtualTypeFormData>(res);
+}
+
+export async function updateWarehouseVirtualType(
+  typeId: number,
+  data: WarehouseVirtualTypeFormData
+): Promise<ApiResponse<WarehouseVirtualTypeFormData>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.warehouseVirtualTypes.update(typeId),
+    method: "POST",
+    data,
+    useAuth: true,
+  });
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag(WAREHOUSE_VIRTUAL_TYPE_TAG);
+  return buildApiResponseAsync<WarehouseVirtualTypeFormData>(res);
+}
+
+export async function toggleStatusWarehouseVirtualType(
+  typeId: number
+): Promise<ApiResponse<ApiStatusResponse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.warehouseVirtualTypes.toggleStatus(typeId),
+    method: "PATCH",
+    useAuth: true,
+  });
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag(WAREHOUSE_VIRTUAL_TYPE_TAG);
+  return buildApiResponseAsync<ApiStatusResponse>(res);
+}
