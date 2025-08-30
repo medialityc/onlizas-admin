@@ -13,6 +13,7 @@ export interface Product {
   images: string[];
   quantity: number;
   count: number;
+  allowPartialFulfillment: boolean;
 }
 
 export interface Inventory {
@@ -26,18 +27,21 @@ export interface Inventory {
 
 export interface RequestItem {
   productVariantId: number;
-  inventoryId: number; // Agregado el inventoryId
+  inventoryId: number;
+  parentProductName: string;
+  variantName: string;
   quantityRequested: number;
   unit: string;
+  allowPartialFulfillment: boolean;
 }
 
 interface InventoryStore {
   inventories: Inventory[];
   items: RequestItem[];
 
-  // Acciones
-  setInventories: (inventories: Inventory[]) => void;
+  // Acciones esenciales
   addInventory: (inventory: Inventory) => void;
+  removeInventory: (inventoryId: number) => void;
   updateProductCount: (
     inventoryId: number,
     productId: number,
@@ -45,45 +49,24 @@ interface InventoryStore {
   ) => void;
   selectAllProducts: (inventoryId?: number) => void;
   resetInventory: (inventoryId?: number) => void;
-  removeInventory: (inventoryId: number) => void;
-
-  // Acciones para items de solicitud
   addSelectedProductsToItems: () => void;
-  clearAllSelections: () => void;
-  selectAllAvailableProducts: () => void;
   removeItemsByInventory: (inventoryId: number) => void;
-  clearItems: () => void;
+  toggleAllowPartialFulfillment: (
+    inventoryId: number,
+    productId: number
+  ) => void;
 
-  // Getters computados
-  getTotalSelected: () => number;
+  // Getter esencial
   getInventoryTotalSelected: (inventoryId: number) => number;
-  getInventoryMaxTotal: (inventoryId: number) => number;
-  getSelectedInventories: () => Inventory[];
-  getSelectedProducts: () => {
-    inventory: Inventory;
-    product: Product;
-    selectedCount: number;
-  }[];
-  getAllInventories: () => Inventory[];
-  getInventoriesWithSelectedProducts: () => {
-    inventory: Inventory;
-    selectedProducts: { product: Product; selectedCount: number }[];
-    totalSelectedCount: number;
-    totalSelectedValue: number;
-  }[];
 }
 
 export const useInventoryStore = create<InventoryStore>((set, get) => ({
   inventories: [],
   items: [],
 
-  // Establecer inventarios iniciales
-  setInventories: (inventories) => set({ inventories }),
-
   // Agregar un nuevo inventario
   addInventory: (inventory) => {
     set((state) => {
-      // Asegurar que todos los productos tengan count inicializado en 0
       const inventoryWithDefaults = {
         ...inventory,
         products: inventory.products.map((product) => ({
@@ -98,14 +81,23 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     });
   },
 
-  // Actualizar la cantidad seleccionada de un producto específico usando su ID
+  // Eliminar un inventario completo y sus items relacionados
+  removeInventory: (inventoryId) => {
+    set((state) => ({
+      inventories: state.inventories.filter(
+        (inventory) => inventory.id !== inventoryId
+      ),
+      items: state.items.filter((item) => item.inventoryId !== inventoryId),
+    }));
+  },
+
+  // Actualizar la cantidad seleccionada de un producto específico
   updateProductCount: (inventoryId, productId, count) => {
     set((state) => ({
       inventories: state.inventories.map((inventory) => {
         if (inventory.id === inventoryId) {
           const updatedProducts = inventory.products.map((product) => {
             if (product.id === productId) {
-              // Asegurar que el count no exceda la quantity disponible y no sea negativo
               const newCount = Math.max(0, Math.min(count, product.quantity));
               return { ...product, count: newCount };
             }
@@ -119,7 +111,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     }));
   },
 
-  // Seleccionar todas las cantidades disponibles (de un inventario específico o todos)
+  // Seleccionar todas las cantidades disponibles
   selectAllProducts: (inventoryId) => {
     set((state) => ({
       inventories: state.inventories.map((inventory) => {
@@ -128,7 +120,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
             ...inventory,
             products: inventory.products.map((product) => ({
               ...product,
-              count: product.quantity, // Seleccionar toda la cantidad disponible
+              count: product.quantity,
             })),
           };
         }
@@ -137,7 +129,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     }));
   },
 
-  // Restablecer inventario (un inventario específico o todos) y eliminar items relacionados
+  // Restablecer inventario y eliminar items relacionados
   resetInventory: (inventoryId) => {
     set((state) => {
       const updatedInventories = state.inventories.map((inventory) => {
@@ -146,17 +138,16 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
             ...inventory,
             products: inventory.products.map((product) => ({
               ...product,
-              count: 0, // Restablecer a 0
+              count: 0,
             })),
           };
         }
         return inventory;
       });
 
-      // Filtrar items según el inventoryId
       const updatedItems = inventoryId
         ? state.items.filter((item) => item.inventoryId !== inventoryId)
-        : []; // Si no se especifica inventoryId, limpiar todos los items
+        : [];
 
       return {
         inventories: updatedInventories,
@@ -165,102 +156,86 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     });
   },
 
-  // Eliminar un inventario completo y sus items relacionados
-  removeInventory: (inventoryId) => {
-    set((state) => ({
-      inventories: state.inventories.filter(
-        (inventory) => inventory.id !== inventoryId
-      ),
-      items: state.items.filter((item) => item.inventoryId !== inventoryId),
-    }));
-  },
-
   // Agregar productos seleccionados al array de items
   addSelectedProductsToItems: () => {
     const { inventories, items } = get();
 
     inventories.forEach((inventory) => {
       inventory.products.forEach((product) => {
-        if (product.count > 0) {
-          const existingItemIndex = items.findIndex(
-            (item) =>
-              item.productVariantId === product.id &&
-              item.inventoryId === inventory.id
-          );
+        const existingItemIndex = items.findIndex(
+          (item) =>
+            item.productVariantId === product.id &&
+            item.inventoryId === inventory.id
+        );
 
+        if (product.count > 0) {
           if (existingItemIndex >= 0) {
-            // Si el item ya existe, actualizar la cantidad
             set((state) => ({
               items: state.items.map((item, index) =>
                 index === existingItemIndex
                   ? {
                       ...item,
                       quantityRequested: product.count,
+                      allowPartialFulfillment: product.allowPartialFulfillment,
                     }
                   : item
               ),
             }));
           } else {
-            // Si el item no existe, agregarlo al array
             set((state) => ({
               items: [
                 ...state.items,
                 {
                   productVariantId: product.id,
-                  inventoryId: inventory.id, // Agregado el inventoryId
+                  parentProductName: inventory.parentProductName,
+                  variantName: product?.productName,
+                  inventoryId: inventory.id,
                   quantityRequested: product.count,
+                  allowPartialFulfillment: product.allowPartialFulfillment,
                   unit: "UM",
                 },
               ],
             }));
           }
+        } else if (product.count === 0 && existingItemIndex >= 0) {
+          set((state) => ({
+            items: state.items.filter(
+              (_, index) => index !== existingItemIndex
+            ),
+          }));
         }
       });
     });
   },
 
-  // Limpiar todas las selecciones de productos
-  clearAllSelections: () => {
+  // Eliminar items por inventario
+  removeItemsByInventory: (inventoryId) => {
     set((state) => ({
-      inventories: state.inventories.map((inventory) => ({
-        ...inventory,
-        products: inventory.products.map((product) => ({
-          ...product,
-          count: 0,
-        })),
-      })),
+      items: state.items.filter((item) => item.inventoryId !== inventoryId),
     }));
   },
 
-  // Seleccionar todos los productos disponibles
-  selectAllAvailableProducts: () => {
+  // Toggle allowPartialFulfillment para un producto específico
+  toggleAllowPartialFulfillment: (inventoryId, productId) => {
     set((state) => ({
-      inventories: state.inventories.map((inventory) => ({
-        ...inventory,
-        products: inventory.products.map((product) => ({
-          ...product,
-          count: product.quantity,
-        })),
-      })),
+      inventories: state.inventories.map((inventory) => {
+        if (inventory.id === inventoryId) {
+          return {
+            ...inventory,
+            products: inventory.products.map((product) => {
+              if (product.id === productId) {
+                return {
+                  ...product,
+                  allowPartialFulfillment: !product.allowPartialFulfillment,
+                };
+              }
+              return product;
+            }),
+          };
+        }
+        return inventory;
+      }),
     }));
-  },
-
-  // Limpiar el array de items
-  clearItems: () => {
-    set({ items: [] });
-  },
-
-  // Obtener el total de productos seleccionados en todos los inventarios
-  getTotalSelected: () => {
-    const { inventories } = get();
-    return inventories.reduce((total, inventory) => {
-      return (
-        total +
-        inventory.products.reduce((invTotal, product) => {
-          return invTotal + product.count;
-        }, 0)
-      );
-    }, 0);
   },
 
   // Obtener el total de productos seleccionados en un inventario específico
@@ -274,126 +249,31 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
       0
     );
   },
-
-  // Obtener el total máximo de productos disponibles en un inventario
-  getInventoryMaxTotal: (inventoryId) => {
-    const { inventories } = get();
-    const inventory = inventories.find((inv) => inv.id === inventoryId);
-    if (!inventory) return 0;
-
-    return inventory.products.reduce(
-      (total, product) => total + product.quantity,
-      0
-    );
-  },
-
-  // Obtener inventarios que tienen productos seleccionados
-  getSelectedInventories: () => {
-    const { inventories } = get();
-    return inventories.filter((inventory) => {
-      return inventory.products.some((product) => product.count > 0);
-    });
-  },
-
-  // Obtener lista detallada de productos seleccionados con su inventario
-  getSelectedProducts: () => {
-    const { inventories } = get();
-    const selectedProducts: {
-      inventory: Inventory;
-      product: Product;
-      selectedCount: number;
-    }[] = [];
-
-    inventories.forEach((inventory) => {
-      inventory.products.forEach((product) => {
-        if (product.count > 0) {
-          selectedProducts.push({
-            inventory,
-            product,
-            selectedCount: product.count,
-          });
-        }
-      });
-    });
-
-    return selectedProducts;
-  },
-
-  // Obtener todos los inventarios
-  getAllInventories: () => {
-    const { inventories } = get();
-    return inventories;
-  },
-
-  // Obtener inventarios con sus productos seleccionados y cantidades
-  getInventoriesWithSelectedProducts: () => {
-    const { inventories } = get();
-
-    return inventories
-      .filter((inventory) => {
-        // Solo incluir inventarios que tienen productos seleccionados
-        return inventory.products.some((product) => product.count > 0);
-      })
-      .map((inventory) => {
-        const selectedProducts = inventory.products
-          .filter((product) => product.count > 0)
-          .map((product) => ({
-            product,
-            selectedCount: product.count,
-          }));
-
-        const totalSelectedCount = selectedProducts.reduce(
-          (total, item) => total + item.selectedCount,
-          0
-        );
-
-        const totalSelectedValue = totalSelectedCount * inventory.price;
-
-        return {
-          inventory,
-          selectedProducts,
-          totalSelectedCount,
-          totalSelectedValue,
-        };
-      });
-  },
-
-  removeItemsByInventory: (inventoryId: number) => {
-    set((state) => ({
-      items: state.items.filter((item) => item.inventoryId !== inventoryId),
-    }));
-  },
 }));
 
-// Hook personalizado para operaciones específicas de inventario
+// Hook personalizado optimizado con solo las funciones necesarias
 export const useWarehouseInventoryActions = () => {
   const store = useInventoryStore();
 
   return {
-    // Funciones del store
+    // Estado
     inventories: store.inventories,
     items: store.items,
+
+    // Acciones principales
+    addNewInventory: store.addInventory,
     remove: store.removeInventory,
+    updateProductCount: store.updateProductCount,
     selectAllProducts: store.selectAllProducts,
     resetInventory: store.resetInventory,
-    updateProductCount: store.updateProductCount,
-    addInventory: store.addInventory,
-    setInventories: store.setInventories,
     addSelectedProductsToItems: store.addSelectedProductsToItems,
-    clearAllSelections: store.clearAllSelections,
-    selectAllAvailableProducts: store.selectAllAvailableProducts,
-    clearItems: store.clearItems,
+    removeItemsByInventory: store.removeItemsByInventory,
+    toggleAllowPartialFulfillment: store.toggleAllowPartialFulfillment,
 
-    // Getters
-    getTotalSelected: store.getTotalSelected,
+    // Getter
     getInventoryTotalSelected: store.getInventoryTotalSelected,
-    getInventoryMaxTotal: store.getInventoryMaxTotal,
-    getSelectedInventories: store.getSelectedInventories,
-    getSelectedProducts: store.getSelectedProducts,
-    getInventoriesWithSelectedProducts:
-      store.getInventoriesWithSelectedProducts,
 
-    // Incrementar producto usando productId
+    // Helpers para incrementar/decrementar
     incrementProduct: (inventoryId: number, productId: number) => {
       const inventory = store.inventories.find((inv) => inv.id === inventoryId);
       if (inventory) {
@@ -404,7 +284,6 @@ export const useWarehouseInventoryActions = () => {
       }
     },
 
-    // Decrementar producto usando productId
     decrementProduct: (inventoryId: number, productId: number) => {
       const inventory = store.inventories.find((inv) => inv.id === inventoryId);
       if (inventory) {
@@ -414,67 +293,5 @@ export const useWarehouseInventoryActions = () => {
         }
       }
     },
-
-    // Verificar si un inventario está completamente seleccionado
-    isInventoryFullySelected: (inventoryId: number) => {
-      const selected = store.getInventoryTotalSelected(inventoryId);
-      const max = store.getInventoryMaxTotal(inventoryId);
-      return selected === max && max > 0;
-    },
-
-    // Verificar si un inventario está vacío (sin selecciones)
-    isInventoryEmpty: (inventoryId: number) => {
-      return store.getInventoryTotalSelected(inventoryId) === 0;
-    },
-
-    // Obtener progreso de selección de un inventario (0-100)
-    getInventoryProgress: (inventoryId: number) => {
-      const selected = store.getInventoryTotalSelected(inventoryId);
-      const max = store.getInventoryMaxTotal(inventoryId);
-      return max > 0 ? (selected / max) * 100 : 0;
-    },
-
-    // Agregar un nuevo inventario con helper method
-    addNewInventory: (inventoryData: Inventory) => {
-      store.addInventory(inventoryData);
-    },
-
-    // Helper para obtener el count total de items en el array
-    getTotalItemsRequested: () => {
-      return store.items.reduce(
-        (total, item) => total + item.quantityRequested,
-        0
-      );
-    },
-
-    // Helper para obtener un producto específico
-    getProduct: (inventoryId: number, productId: number) => {
-      const inventory = store.inventories.find((inv) => inv.id === inventoryId);
-      return inventory?.products.find((p) => p.id === productId);
-    },
-
-    // Helper para verificar si un producto específico está seleccionado
-    isProductSelected: (inventoryId: number, productId: number) => {
-      const product = store.inventories
-        .find((inv) => inv.id === inventoryId)
-        ?.products.find((p) => p.id === productId);
-      return product ? product.count > 0 : false;
-    },
-
-    // Helper para obtener el count de un producto específico
-    getProductCount: (inventoryId: number, productId: number) => {
-      const product = store.inventories
-        .find((inv) => inv.id === inventoryId)
-        ?.products.find((p) => p.id === productId);
-      return product ? product.count : 0;
-    },
-
-    // Nuevo helper para obtener items de un inventario específico
-    getItemsByInventory: (inventoryId: number) => {
-      return store.items.filter((item) => item.inventoryId === inventoryId);
-    },
-
-    removeItemsByInventory: (inventoryId: number) =>
-      store.removeItemsByInventory(inventoryId),
   };
 };

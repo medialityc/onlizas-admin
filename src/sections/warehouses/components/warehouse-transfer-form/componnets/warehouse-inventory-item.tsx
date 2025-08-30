@@ -3,7 +3,6 @@ import Badge from "@/components/badge/badge";
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/cards/card";
@@ -14,29 +13,33 @@ import InventoryActon from "./inventory-action";
 import {
   Inventory,
   Product,
+  useWarehouseInventoryActions,
 } from "@/sections/warehouses/contexts/warehouse-inventory-transfer.stote";
+import { Switch } from "@/components/switch";
 
 type Props = {
   inventory: Inventory;
 };
+
 export const WarehouseInventoryItem = ({ inventory }: Props) => {
   return (
-    <Card className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+    <Card className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 py-4">
       <CardHeader className="px-4 flex flex-row gap-2 justify-between">
-        <CardTitle className="dark:text-white flex flex-col gap-2">
-          <p> {inventory.parentProductName}</p>
-          <p className="font-light"> Proveedor: {inventory.supplierName}</p>
+        <CardTitle className="dark:text-white flex flex-col gap-1">
+          <p>{inventory.parentProductName}</p>
+          <p className="font-light text-sm text-gray-600 dark:text-gray-400">
+            Proveedor: {inventory.supplierName}
+          </p>
         </CardTitle>
-
-        {/* general actions  */}
         <InventoryActon inventoryId={inventory?.id} />
       </CardHeader>
-      <CardContent className="flex flex-col gap-2 px-4">
-        {inventory?.products?.map((p) => (
+      <CardContent className="px-4 space-y-3">
+        {inventory?.products?.map((product, index) => (
           <InventoryVariantItem
-            key={p?.id}
-            product={p}
+            key={product?.id}
+            product={product}
             inventoryId={inventory?.id}
+            isLast={index === inventory.products.length - 1}
           />
         ))}
       </CardContent>
@@ -47,45 +50,109 @@ export const WarehouseInventoryItem = ({ inventory }: Props) => {
 type ProductProps = {
   product: Product;
   inventoryId: number;
+  isLast?: boolean;
 };
 
-const InventoryVariantItem = ({ product, inventoryId }: ProductProps) => {
+const InventoryVariantItem = ({
+  product,
+  inventoryId,
+  isLast = false,
+}: ProductProps) => {
+  const { toggleAllowPartialFulfillment, addSelectedProductsToItems } =
+    useWarehouseInventoryActions();
+
+  const isLowStock =
+    (product?.quantity || 0) <= 5 && (product?.quantity || 0) > 0;
+  const isOutOfStock = (product?.quantity || 0) === 0;
+
   return (
-    <Card className="dark:bg-gray-700 border-0 bg-gray-100   py-2 gap-2">
-      <CardContent className="px-2 flex flex-col-reverse xl:flex-row gap-2 items-end xl:items-center justify-between">
-        <div className="flex w-full flex-row gap-2 items-start">
-          {/* images */}
+    <div
+      className={`${!isLast ? "border-b border-gray-100 dark:border-gray-700 pb-3" : ""}`}
+    >
+      <div className="flex gap-3">
+        {/* Imagen */}
+        <div className="relative flex-shrink-0">
           <WarehouseImage
             alt={product?.productName}
-            src={"/assets/images/placeholder-product.webp"}
-            className="w-12 h-12"
+            src={product?.images?.[0]}
+            className="w-20 h-20 rounded-lg object-cover"
           />
-          <div className="leading-normal">
-            <h3 className="dark:text-white text-[1rem] font-bold">
+          <div
+            className={`absolute -top-1 -right-1 w-3 h-3 rounded-full ${
+              isOutOfStock
+                ? "bg-red-500"
+                : isLowStock
+                  ? "bg-yellow-500"
+                  : "bg-green-500"
+            }`}
+          />
+        </div>
+
+        {/* Contenido principal */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2 mb-2">
+            <h3 className="font-medium text-gray-900 dark:text-white line-clamp-1">
               {product?.productName}
             </h3>
+            <div className="flex flex-row gap-2 items-center">
+              Disponibilidad:
+              <span
+                className={`text-lg font-medium flex-shrink-0 ${
+                  isOutOfStock
+                    ? "text-red-600 dark:text-red-400"
+                    : isLowStock
+                      ? "text-yellow-600 dark:text-yellow-400"
+                      : "text-green-600 dark:text-green-400"
+                }`}
+              >
+                {product?.quantity || 0}
+              </span>
+            </div>
+          </div>
 
-            <p className="dark:text-white text-sm">
-              Disponible: <span>{product?.quantity}</span>
-            </p>
+          {/* Detalles */}
+          <div className="flex flex-wrap gap-1 mb-2">
+            {(product?.details as unknown as any[])
+              ?.slice(0, 4)
+              .map((detail: any, idx: number) => (
+                <Badge
+                  className="bg-gray-100 dark:bg-gray-700 border-0 text-xs text-gray-600 dark:text-gray-300 px-2 py-0.5"
+                  key={`${detail?.key}-${idx}`}
+                >
+                  {detail?.key}: {detail?.value}
+                </Badge>
+              ))}
+            {(product?.details as unknown as any[])?.length > 4 && (
+              <Badge className="bg-gray-100 dark:bg-gray-700 border-0 text-xs text-gray-500 px-2 py-0.5">
+                +{(product?.details as unknown as any[]).length - 4}
+              </Badge>
+            )}
+          </div>
+
+          {/* Controles */}
+          <div className="flex items-center justify-between gap-3">
+            <ProductCount
+              inventoryId={inventoryId}
+              productId={product?.id}
+              allowPartialFulfillment={product?.allowPartialFulfillment}
+            />
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                Parcial
+              </span>
+              <Switch
+                checked={product?.allowPartialFulfillment || false}
+                onChange={() => {
+                  toggleAllowPartialFulfillment(inventoryId, product?.id);
+                  addSelectedProductsToItems();
+                }}
+                label=""
+              />
+            </div>
           </div>
         </div>
-
-        {/* quantity */}
-        <ProductCount inventoryId={inventoryId} productId={product?.id} />
-      </CardContent>
-      <CardFooter className="px-2 ">
-        <div className="flex flex-row gap-1 items-center flex-wrap text-sm">
-          {(product?.details as unknown as any[])?.map((detail: any) => (
-            <Badge
-              className="bg-transparent border font-normal dark:!text-gray-100 border-slate-300 dark:border-gray-600 px-2 py-0.5 text-sm !text-gray-600  "
-              key={detail?.key}
-            >
-              {detail?.key} : {detail?.value}
-            </Badge>
-          ))}
-        </div>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 };

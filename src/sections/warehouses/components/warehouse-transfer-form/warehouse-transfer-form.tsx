@@ -4,22 +4,30 @@ import { FormProvider } from "@/components/react-hook-form";
 import { Button } from "@/components/button/button";
 import Link from "next/link";
 import { useWarehouseTransferForm } from "../../hooks/use-warehouse-transfer-form";
-import { WarehouseTransferFormData } from "../../schemas/warehouse-transfer-schema";
-
 import WarehouseInventoryList from "./componnets/warehouse-inventory-list";
 import WarehouseTransferItemForm from "./warehouse-transfer-item-from";
+import { WarehouseFormData } from "../../schemas/warehouse-schema";
+import { useMemo } from "react";
+import { WarehouseTransferFormData } from "../../schemas/warehouse-transfer-schema";
+import { AlertBox } from "@/components/alert/alert-box";
+import { CircleAlertIcon } from "lucide-react";
+import { useWarehouseInventoryActions } from "../../contexts/warehouse-inventory-transfer.stote";
 
 type Props = {
-  warehouseId: number;
+  warehouse: WarehouseFormData;
 };
-export function WarehouseTransferForm({ warehouseId }: Props) {
-  const initValue: WarehouseTransferFormData = {
-    destinationWarehouseId: 0,
-    originWarehouseId: warehouseId,
-    items: [],
-    inventories: [],
-    transferNumber: 0,
-  };
+export function WarehouseTransferForm({ warehouse }: Props) {
+  const warehouseId = warehouse?.id as number;
+  const { items } = useWarehouseInventoryActions();
+  const initValue = useMemo(
+    (): WarehouseTransferFormData => ({
+      originWarehouseId: warehouseId,
+      destinationWarehouseId: 0,
+      items: [],
+      transferNumber: "string", //todo
+    }),
+    [warehouseId]
+  );
 
   const { form, isPending, onSubmit } = useWarehouseTransferForm(initValue);
 
@@ -30,15 +38,23 @@ export function WarehouseTransferForm({ warehouseId }: Props) {
       id="warehouse-transfer-form"
       noValidate
     >
-      <div className="grid grid-cols-1  gap-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
           {/* variantes */}
-          <WarehouseInventoryList warehouseId={warehouseId} />
+          <WarehouseInventoryList warehouse={warehouse} />
+
+          {form?.formState?.errors?.items?.message && items?.length === 0 && (
+            <AlertBox
+              message={form?.formState?.errors?.items?.message}
+              variant={"danger"}
+              title={"Error"}
+              icon={<CircleAlertIcon />}
+            />
+          )}
 
           {/* form items */}
-          <WarehouseTransferItemForm warehouseId={warehouseId} />
+          <WarehouseTransferItemForm />
         </div>
-        {/* <pre> {JSON.stringify(productVariants, null, 2)} </pre> */}
       </div>
       {/* Actions stickies */}
       <div className="sticky bottom-0 mt-6 -mx-6 px-6 py-4 bg-white/80 dark:bg-gray-900/60 backdrop-blur border-t border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row justify-end gap-3">
