@@ -1,5 +1,7 @@
-import { WarehouseDetails } from "@/sections/warehouses/view/warehouse-details";
 import { Suspense } from "react";
+import { WarehouseDetails } from "@/sections/warehouses/view/warehouse-details";
+import { getWarehouseById } from "@/services/warehouses";
+import { notFound } from "next/navigation";
 
 function WarehouseViewFallback() {
   return (
@@ -21,15 +23,19 @@ function WarehouseViewFallback() {
   );
 }
 
-export default async function ViewWarehousePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+type PageProps = {
+  params: Promise<{ id: string; type: string }>;
+};
+
+export default async function ViewWarehousePage({ params }: PageProps) {
+  const { id, type } = await params;
+
+  const response = await getWarehouseById(Number(id), type);
+  if (!response?.data) notFound();
+
   return (
     <Suspense fallback={<WarehouseViewFallback />}>
-      <WarehouseDetails id={id} />
+      <WarehouseDetails warehouse={response.data} />
     </Suspense>
   );
 }

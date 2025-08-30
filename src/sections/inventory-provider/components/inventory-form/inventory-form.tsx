@@ -7,10 +7,11 @@ import { getAllProductsBySupplier } from "@/services/products";
 import { getAllProviderStores } from "@/services/stores";
 import {
   getAllWarehousesBySupplier,
-  getAllWarehousesPhysical,
+  getAllWarehousesByType,
 } from "@/services/warehouses";
 import { RHFCheckbox } from "@/components/react-hook-form";
 import { getAllSupplierUsers } from "@/services/users";
+import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 type Props = {
   provider?: number;
 };
@@ -55,7 +56,9 @@ function InventoryForm({ provider }: Props) {
               name={`physicalWarehouseId`}
               label="Almacenes físicos"
               placeholder="Seleccionar almacenes físicos"
-              onFetch={getAllWarehousesPhysical}
+              onFetch={(params) =>
+                getAllWarehousesByType(params, WAREHOUSE_TYPE_ENUM.physical)
+              }
               objectValueKey="id"
               objectKeyLabel="name"
               queryKey="warehouses-physical"

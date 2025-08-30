@@ -1,5 +1,4 @@
 "use client";
-import { InventoryProductItem } from "@/services/inventory-providers";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { detailsObjectToArray } from "../../../../../utils/format";
 
@@ -16,6 +15,7 @@ import {
   useWarehouseInventoryActions,
 } from "@/sections/warehouses/contexts/warehouse-inventory-transfer.stote";
 import { WarehouseFormData } from "@/sections/warehouses/schemas/warehouse-schema";
+import { InventoryProductItem } from "@/types/inventory";
 
 // Componente principal del selector de productos
 type Props = {
