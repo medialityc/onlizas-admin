@@ -20,7 +20,7 @@ export const generateMetadata = async ({
     type === WAREHOUSE_TYPE_ENUM.physical ? "Físicos" : "Virtual";
   return {
     title: `Almacenes ${typeName} - Onlizas`,
-    description: "Gestión de almacenes físicos del sistema",
+    description: "Gestión de almacenes físicos del sistema.",
     icons: {
       icon: "/assets/images/NEWZAS.svg",
     },
