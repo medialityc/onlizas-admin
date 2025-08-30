@@ -3,7 +3,7 @@ import { Button } from "@/components/button/button";
 import { useWarehouseInventoryActions } from "@/sections/warehouses/contexts/warehouse-inventory-transfer.stote";
 import Tippy from "@tippyjs/react";
 
-import { ChevronsUp, PlusIcon, XIcon } from "lucide-react";
+import { ChevronsUp, RefreshCcwIcon } from "lucide-react";
 
 type Props = {
   inventoryId: number;
@@ -19,18 +19,13 @@ const InventoryActon = ({ inventoryId }: Props) => {
   return (
     <div className="flex items-center flex-row gap-2 [&>button]:rounded-full">
       <h2> Sel..: {getInventoryTotalSelected(inventoryId) || 0}</h2>
-      <Tippy trigger="mouseenter focus" content="Transferir">
+
+      <Tippy trigger="mouseenter focus" content="Transferir todos">
         <Button
-          onClick={() => addSelectedProductsToItems()}
-          outline
-          className="px-2  bg-transparent "
-        >
-          <PlusIcon className="h-4 w-4 " />
-        </Button>
-      </Tippy>
-      <Tippy trigger="mouseenter focus" content="Seleccionar todos">
-        <Button
-          onClick={() => selectAllProducts(inventoryId)}
+          onClick={() => {
+            selectAllProducts(inventoryId);
+            addSelectedProductsToItems();
+          }}
           outline
           className="px-2   bg-transparent  "
         >
@@ -47,7 +42,7 @@ const InventoryActon = ({ inventoryId }: Props) => {
           outline
           className="px-2   bg-transparent  "
         >
-          <XIcon className="h-4 w-4" />
+          <RefreshCcwIcon className="h-4 w-4" />
         </Button>
       </Tippy>
     </div>

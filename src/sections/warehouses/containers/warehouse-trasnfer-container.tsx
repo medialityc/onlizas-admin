@@ -1,13 +1,14 @@
 import React from "react";
 import { WarehouseTransferForm } from "../components/warehouse-transfer-form/warehouse-transfer-form";
+import { WarehouseFormData } from "../schemas/warehouse-schema";
 
 type Props = {
-  warehouseId: number;
+  warehouse: WarehouseFormData;
 };
-const WarehouseTransferContainer = ({ warehouseId }: Props) => {
+const WarehouseTransferContainer = ({ warehouse }: Props) => {
   return (
     <div className="panel">
-      <WarehouseTransferForm warehouseId={warehouseId} />
+      <WarehouseTransferForm warehouse={warehouse} />
     </div>
   );
 };

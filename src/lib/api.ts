@@ -19,6 +19,14 @@ export const handleApiServerError = async <T>(
         message: "No autorizado. Por favor, inicia sesión nuevamente.",
       };
     }
+    if (response.status === 403) {
+      // await refreshServerSession();
+      return {
+        error: true,
+        status: response.status,
+        message: "No autorizado. No cumples con los permisos necesarios.",
+      };
+    }
 
     if (contentType?.includes("application/json")) {
       const error = await response.json();

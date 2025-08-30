@@ -9,15 +9,32 @@ import {
   warehouseTransferSchema,
 } from "../schemas/warehouse-transfer-schema";
 import { createWarehouseTransfer } from "@/services/warehouses-transfers";
+import { useWarehouseInventoryActions } from "../contexts/warehouse-inventory-transfer.stote";
+import { useEffect } from "react";
 
 export const useWarehouseTransferForm = (
   defaultValues: WarehouseTransferFormData
 ) => {
   const { push } = useRouter();
+  const { items } = useWarehouseInventoryActions();
 
   const form = useForm({
     resolver: zodResolver(warehouseTransferSchema),
     defaultValues,
+  });
+
+  useEffect(() => {
+    if (items) {
+      form.setValue(
+        "items",
+        items?.map((item) => ({
+          productVariantId: item?.productVariantId,
+          quantityRequested: item?.quantityRequested,
+          unit: item?.unit,
+          allowPartialFulfillment: true,
+        }))
+      );
+    }
   });
 
   console.log(form.getValues(), "getValues");

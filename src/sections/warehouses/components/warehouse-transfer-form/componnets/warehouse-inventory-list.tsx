@@ -4,30 +4,36 @@ import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-aut
 import { detailsObjectToArray } from "../../../../../utils/format";
 
 import { Button } from "@/components/button/button";
-import { XCircleIcon } from "lucide-react";
+import { ArrowRightLeft, XCircleIcon } from "lucide-react";
 import Badge from "@/components/badge/badge";
 import { WarehouseInventoryItem } from "./warehouse-inventory-item";
-import { getAllWarehouseInventories } from "@/services/warehouses";
+import {
+  getAllWarehouseInventories,
+  getAllWarehouses,
+} from "@/services/warehouses";
 import {
   Inventory,
   useWarehouseInventoryActions,
 } from "@/sections/warehouses/contexts/warehouse-inventory-transfer.stote";
+import { WarehouseFormData } from "@/sections/warehouses/schemas/warehouse-schema";
 
 // Componente principal del selector de productos
 type Props = {
-  warehouseId: number;
+  warehouse: WarehouseFormData;
 };
 
-const WarehouseInventoryList = ({ warehouseId }: Props) => {
+const WarehouseInventoryList = ({ warehouse }: Props) => {
+  const warehouseId = warehouse?.id as number;
   const { addNewInventory, remove, inventories } =
     useWarehouseInventoryActions();
 
   const onOptionSelected = (option: any) => {
     const exist = inventories?.find((o) => o.id === option.id);
     if (exist) {
+      // Si ya existe, solo lo eliminamos
       remove(exist?.id);
-    }
-    {
+    } else {
+      // Si no existe, lo agregamos
       addNewInventory({
         id: option?.id,
         parentProductName: option?.parentProductName,
@@ -42,6 +48,7 @@ const WarehouseInventoryList = ({ warehouseId }: Props) => {
             images: product?.images || [],
             quantity: product?.quantity || 0,
             count: 0,
+            allowPartialFulfillment: false,
           })) || [],
       });
     }
@@ -49,47 +56,69 @@ const WarehouseInventoryList = ({ warehouseId }: Props) => {
 
   return (
     <div className="w-full space-y-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-        <div>
+      <div className="bg-white items-start dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 flex flex-col md:flex-row gap-4">
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-[13px]">
+            Almacén Actual
+          </label>
+          <div className="h-9 px-4 py-2 form-input">{warehouse?.name}</div>
+        </div>
+
+        <ArrowRightLeft className="w-5 h-5 mx-4  mt-10" />
+
+        <div className="flex-1">
           <RHFAutocompleteFetcherInfinity
-            name="virtualTypeId"
-            label="Inventario del almacén actual"
-            placeholder="Seleccionar un inventario"
-            onFetch={(params) =>
-              getAllWarehouseInventories(warehouseId, params)
-            }
+            name="destinationWarehouseId"
+            label="Almacén de Destino"
+            placeholder="Selecciona el almacén destino..."
+            onFetch={getAllWarehouses}
+            exclude={[String(warehouseId)]}
             objectValueKey="id"
-            objectKeyLabel="parentProductName"
-            queryKey="inventory-warehouse"
-            multiple
-            onOptionSelected={onOptionSelected}
-            renderMultiplesValues={(selectedOptions, removeSelected) => (
-              <div className="flex flex-row gap-2 flex-wrap">
-                {selectedOptions.map((option) => (
-                  <Badge
-                    className="dark:bg-slate-700 bg-slate-200 rounded-full text-gray-400 flex flex-row gap-2 p-1"
-                    key={option.id}
-                  >
-                    {option.parentProductName}
-                    <Button
-                      className="p-0 m-0 !bg-transparent border-0 [&>svg]:text-gray-400 [&>svg]:hover:text-gray-100"
-                      onClick={() => {
-                        removeSelected(option);
-                        remove(option.id as number);
-                      }}
-                    >
-                      <XCircleIcon className="h-4 w-4" />
-                    </Button>
-                  </Badge>
-                ))}
-              </div>
-            )}
+            objectKeyLabel="name"
+            queryKey="destination-warehouse"
+            required
           />
         </div>
       </div>
 
+      {/* inventories */}
+      <div className="bg-white items-center dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 flex flex-col md:flex-row gap-4">
+        <RHFAutocompleteFetcherInfinity
+          name="virtualTypeId"
+          label="Inventario del almacén actual"
+          placeholder="Seleccionar un inventario"
+          onFetch={(params) => getAllWarehouseInventories(warehouseId, params)}
+          objectValueKey="id"
+          objectKeyLabel="parentProductName"
+          queryKey="inventory-warehouse"
+          multiple
+          onOptionSelected={onOptionSelected}
+          renderMultiplesValues={(selectedOptions, removeSelected) => (
+            <div className="flex flex-row gap-2 flex-wrap">
+              {selectedOptions.map((option) => (
+                <Badge
+                  className="dark:bg-slate-700 bg-slate-200 rounded-full text-gray-400 flex flex-row gap-2 p-1"
+                  key={option.id}
+                >
+                  {option.parentProductName}
+                  <Button
+                    className="p-0 m-0 !bg-transparent border-0 [&>svg]:text-gray-400 [&>svg]:hover:text-gray-100"
+                    onClick={() => {
+                      removeSelected(option);
+                      remove(option.id as number);
+                    }}
+                  >
+                    <XCircleIcon className="h-4 w-4" />
+                  </Button>
+                </Badge>
+              ))}
+            </div>
+          )}
+        />
+      </div>
+
       {/* lista de inventarios */}
-      <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         {inventories?.map((inventory: Inventory) => (
           <div key={inventory.id}>
             <WarehouseInventoryItem inventory={inventory} />

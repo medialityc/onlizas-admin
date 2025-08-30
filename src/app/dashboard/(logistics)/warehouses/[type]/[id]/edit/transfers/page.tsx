@@ -1,5 +1,4 @@
 import EditWarehouseLayout from "@/sections/warehouses/components/layout/edit-warehouse-layout";
-import { WarehouseTransfers } from "@/sections/warehouses/components/transfer/warehouse-transfers";
 import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 import WarehouseTransferContainer from "@/sections/warehouses/containers/warehouse-trasnfer-container";
 import { getWarehouseById } from "@/services/warehouses";
@@ -34,8 +33,8 @@ export default async function EditWarehouseTransfersPage({
 
   return (
     <EditWarehouseLayout warehouse={response.data}>
-      <WarehouseTransferContainer warehouseId={response.data?.id as number} />
-      <WarehouseTransfers warehouse={response.data} />
+      <WarehouseTransferContainer warehouse={response.data} />
+      {/*  <WarehouseTransfers warehouse={response.data} /> */}
     </EditWarehouseLayout>
   );
 }

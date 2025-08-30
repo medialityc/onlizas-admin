@@ -13,6 +13,7 @@ type Props = {
   className?: string;
   inventoryId: number;
   productId: number;
+  allowPartialFulfillment: boolean;
 };
 
 const ProductCount = ({
@@ -22,8 +23,12 @@ const ProductCount = ({
   inventoryId,
   productId,
 }: Props) => {
-  const { incrementProduct, decrementProduct, updateProductCount } =
-    useWarehouseInventoryActions();
+  const {
+    incrementProduct,
+    decrementProduct,
+    updateProductCount,
+    addSelectedProductsToItems,
+  } = useWarehouseInventoryActions();
 
   // Obtener el count actual directamente del store
   const count = useInventoryStore((state) => {
@@ -45,12 +50,14 @@ const ProductCount = ({
   const handleIncrement = () => {
     if (count < actualMax) {
       incrementProduct(inventoryId, productId);
+      addSelectedProductsToItems();
     }
   };
 
   const handleDecrement = () => {
-    if (count > min) {
+    if (count >= min) {
       decrementProduct(inventoryId, productId);
+      addSelectedProductsToItems();
     }
   };
 
@@ -58,14 +65,17 @@ const ProductCount = ({
     const value = parseInt(e.target.value) || min;
     const clampedValue = Math.min(Math.max(value, min), actualMax);
     updateProductCount(inventoryId, productId, clampedValue);
+    addSelectedProductsToItems();
   };
 
   const handleInputBlur = () => {
     // Asegurar que el valor esté dentro de los límites
-    if (count < min) {
+    if (count <= min) {
       updateProductCount(inventoryId, productId, min);
+      addSelectedProductsToItems();
     } else if (count > actualMax) {
       updateProductCount(inventoryId, productId, actualMax);
+      addSelectedProductsToItems();
     }
   };
 
