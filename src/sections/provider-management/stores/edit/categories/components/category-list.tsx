@@ -2,24 +2,29 @@
 
 import React, { useRef } from "react";
 import type { StoreCategory } from "../mock";
-
-import { persistCategoryOrder } from "../mock";
 import CategoryListItem from "./category-list-item";
+import CategoryListSkeleton from "./category-list-skeleton";
 
 type Props = {
   items: StoreCategory[];
   onItemsChange: (next: StoreCategory[]) => void;
+  onToggle?: (id: number, checked: boolean) => void;
   onEdit: (id: number) => void;
   onDelete: (id: number) => void;
+  loading: boolean;
 };
 
 export default function CategoryList({
   items,
   onItemsChange,
+  onToggle,
   onEdit,
   onDelete,
+  loading,
 }: Props) {
-  // refs to DOM nodes for FLIP animation
+ 
+  if (loading) return <CategoryListSkeleton />;
+
   const nodeRefs = useRef<Map<number, HTMLDivElement | null>>(new Map());
 
   const measureRects = () => {
@@ -29,6 +34,14 @@ export default function CategoryList({
     });
     return map;
   };
+
+  if (!items || items.length === 0) {
+    return (
+      <div className="p-6 border rounded-md bg-white text-center text-sm text-gray-500">
+        No hay categorías para mostrar.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">
@@ -48,13 +61,11 @@ export default function CategoryList({
         >
           <CategoryListItem
             category={c}
-            onToggleActive={(id: number, checked: boolean) =>
-              onItemsChange(
-                items.map((x) =>
-                  x.id === id ? { ...x, isActive: checked } : x
-                )
-              )
-            }
+            onToggleActive={(id: number, checked: boolean) => {
+              // Optimistic local change
+              onItemsChange(items.map((x) => (x.id === id ? { ...x, isActive: checked } : x)));
+              onToggle?.(id, checked);
+            }}
             onEdit={onEdit}
             onDelete={onDelete}
             draggable
@@ -109,9 +120,7 @@ export default function CategoryList({
                 });
               });
 
-              // persist tentative order (idx + 1)
-              const ordered = next.map((c, i) => ({ ...c, order: i + 1 }));
-              await persistCategoryOrder(ordered);
+              // No persist here; parent must click "Guardar orden"
             }}
           />
         </div>
@@ -119,3 +128,5 @@ export default function CategoryList({
     </div>
   );
 }
+
+// Skeleton moved to a shared component

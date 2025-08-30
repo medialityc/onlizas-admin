@@ -1,108 +1,141 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { Store } from "@/types/stores";
-
-import { mockCategories, type StoreCategory } from "./mock";
+import type { StoreCategory } from "./mock";
 
 import DeleteDialog from "@/components/modal/delete-modal";
 import CategoriesMetrics from "./components/categories-metrics";
 import CategoryList from "./components/category-list";
 import CategoriesToolbar from "./components/categories-toolbar";
+import { getStoreCategories, toggleStoreCategoryStatus, updateStoreCategoriesOrder } from "@/services/stores";
+import { toast } from "react-toastify";
 
-interface Props {
-  store: Store;
-}
+interface Props { store: Store }
 
-// Componente interno que usa el FormContext
 function CategoriesContent({ store }: Props) {
-  const methods = useForm<any>({
-    defaultValues: {
-      categoriesPayload: [],
-      categoriesViewState: mockCategories
-    }
-  });
-
-  const { register, setValue, getValues } = methods;
-  // Rehidratar primero desde un estado "rico" guardado en RHF (no el payload plano)
-  const viewState = getValues("categoriesViewState") as StoreCategory[] | undefined;
-  const initial = viewState?.length
-    ? viewState
-    : ((getValues("categoriesPayload") as any[])?.length
-      ? (getValues("categoriesPayload") as any[]).map((c: any, idx) => ({
-          id: c.id ?? idx + 1,
-          name: c.name ?? `Cat ${idx + 1}`,
-          productCount: c.productCount ?? 0,
-          views: c.views ?? 0,
-          isActive: Boolean(c.isActive ?? true),
-          order: c.order ?? idx + 1,
-        }))
-      : mockCategories);
-  const [items, setItems] = useState<StoreCategory[]>(initial);
-  const [source] = useState<string>(viewState?.length ? "form-view" : (getValues("categoriesPayload") as any[])?.length ? "form" : "mock");
-  // const [openNew, setOpenNew] = useState(false); // NOTE: Crear categoría deshabilitado por ahora
-  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [items, setItems] = useState<StoreCategory[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const totals = useMemo(() => {
     const total = items.length;
     const active = items.filter((c) => c.isActive).length;
-    const products = items.reduce((acc, c) => acc + c.productCount, 0);
+    const products = items.reduce((acc, c) => acc + (c.productCount ?? 0), 0);
     return { total, active, products };
   }, [items]);
 
-  // Register virtual fields: payload (plano para el back) y viewState (rico para rehidratación UI)
-  useEffect(() => {
-    register("categoriesPayload");
-    register("categoriesViewState");
-  }, [register]);
+  // Refrescar solo la lista (con opción de skeleton)
+  const refreshList = useCallback(async (showSkeleton: boolean = true) => {
+    let mounted = true;
+    if (showSkeleton) setLoading(true);
+    try {
+      const res = await getStoreCategories(store.id);
+      // backend puede responder como array directo o como { data: [] }
+      const raw: any[] = Array.isArray(res?.data)
+        ? (res.data as any[])
+        : Array.isArray((res?.data as any)?.data)
+          ? ((res?.data as any).data as any[])
+          : [];
 
-  // Sincronizar ambos: payload minimal para el envío y viewState rico para restaurar al volver al tab
+      if (mounted && res && !res.error && Array.isArray(raw)) {
+        const adapted: StoreCategory[] = raw
+          .map((c: any, idx: number) => ({
+            id: Number(c.categoryId ?? idx + 1),
+            name: c.categoryName ?? `Cat ${idx + 1}`,
+            productCount: Number(c.productCount ?? 0),
+            views: Number(c.views ?? 0),
+            isActive: Boolean(c.isActive ?? true),
+            order: Number(c.order ?? idx + 1),
+          }))
+          // visualiza según order ascendente
+          .sort((a, b) => a.order - b.order);
+        setItems(adapted);
+      } else if (res?.error) {
+        toast.error(res?.message || "Error al cargar categorías");
+        setItems([]);
+      }
+    } finally {
+      if (showSkeleton) setLoading(false);
+    }
+    return () => { mounted = false; };
+  }, [store.id]);
+
+  // Carga inicial
   useEffect(() => {
-    const payload = items.map((c, i) => ({ id: c.id, isActive: c.isActive, order: i + 1 }));
-    setValue("categoriesPayload", payload, { shouldDirty: true, shouldTouch: false, shouldValidate: false });
-    setValue("categoriesViewState", items, { shouldDirty: false, shouldTouch: false, shouldValidate: false });
-  }, [items, setValue]);
+    void refreshList(true);
+  }, [refreshList]);
+
+  // Guardar orden actual (PUT JSON)
+  const handleSaveOrder = useCallback(async () => {
+    try {
+      setSaving(true);
+      const orders = items.map((c, idx) => ({ categoryId: Number(c.id), order: idx + 1 })); // base 1
+      const res = await updateStoreCategoriesOrder(store.id, orders);
+      console.log(orders)
+      if (res?.error) {
+        toast.error(res?.message || "No se pudo organizar sus categorías");
+        return res;
+      }
+      toast.success("Orden guardado correctamente");
+    // Refrescar solo la lista (con skeleton)
+    await refreshList(true);
+      return res;
+    } catch (e) {
+      toast.error("Ocurrió un error al guardar el orden");
+    } finally {
+      setSaving(false);
+    }
+  }, [items, store.id, refreshList]);
+
+  // Toggle activo/inactivo
+  const handleToggle = useCallback(async (id: number, checked: boolean) => {
+    // Optimista
+    setItems(prev => prev.map(x => x.id === id ? { ...x, isActive: checked } : x));
+    const res = await toggleStoreCategoryStatus(id);
+    console.log(res,"toggle")
+    if (res?.error) {
+      setItems(prev => prev.map(x => x.id === id ? { ...x, isActive: !checked } : x));
+      toast.error(res?.message || "No se pudo actualizar el estado");
+    } else {
+      toast.success(checked ? "Categoría activada" : "Categoría desactivada");
+    // Refrescar en segundo plano (sin skeleton) para traer el order real
+    void refreshList(false);
+    }
+  }, [refreshList]);
 
   return (
     <div className="p-6 text-lg">
-      <div className="text-xs text-gray-500 mb-2">Fuente: {source === "form" ? "Formulario" : "Mock"}</div>
       {/* Metrics header */}
       <CategoriesMetrics total={totals.total} active={totals.active} products={totals.products} />
 
       {/* Toolbar */}
-      <CategoriesToolbar />
+      <div className="flex items-center justify-between mb-3">
+        <CategoriesToolbar />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="px-3 py-1.5 rounded-md bg-primary text-white disabled:opacity-50"
+            disabled={loading || saving || items.length === 0}
+            onClick={() => { void handleSaveOrder(); }}
+          >
+            {saving ? "Guardando..." : "Guardar"}
+          </button>
+        </div>
+      </div>
 
       {/* List */}
       <CategoryList
         items={items}
         onItemsChange={setItems}
+        onToggle={handleToggle}
         onEdit={() => { /* TODO */ }}
-        onDelete={(id) => setDeleteId(id)}
+        onDelete={(id) => {return}}
+        loading={loading}
       />
 
-      {/* Modals */}
-      {/**
-       * Crear categoría deshabilitado por ahora
-       *
-       * <CategoryModal
-       *   open={openNew}
-       *   onClose={() => setOpenNew(false)}
-       *   onSubmit={(data) =>
-       *     setItems((prev) => [
-       *       {
-       *         id: Math.max(0, ...prev.map((x) => x.id)) + 1,
-       *         productCount: 0,
-       *         views: 0,
-       *         ...data,
-       *       },
-       *       ...prev,
-       *     ])
-       *   }
-       * />
-       */}
 
-      <DeleteDialog
+      {/*  <DeleteDialog
         open={deleteId !== null}
         onClose={() => setDeleteId(null)}
         onConfirm={() => {
@@ -111,23 +144,12 @@ function CategoriesContent({ store }: Props) {
         }}
         title="Eliminar categoría"
         description="Esta acción eliminará la categoría seleccionada."
-      />
+      /> */}
     </div>
   );
 }
 
 // Componente principal que provee el FormProvider
 export default function CategoriesContainer({ store }: Props) {
-  const methods = useForm<any>({
-    defaultValues: {
-      categoriesPayload: [],
-      categoriesViewState: mockCategories
-    }
-  });
-
-  return (
-    <FormProvider {...methods}>
-      <CategoriesContent store={store} />
-    </FormProvider>
-  );
+  return <CategoriesContent store={store} />;
 }
