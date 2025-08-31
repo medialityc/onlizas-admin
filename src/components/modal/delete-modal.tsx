@@ -1,6 +1,5 @@
 import SimpleModal from "./modal";
 
-
 interface DeleteDialogProps {
   open: boolean;
   onClose: () => void;
@@ -20,7 +19,6 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
   warningMessage,
   loading,
 }) => {
-    
   return (
     <SimpleModal onClose={onClose} open={open} title={title}>
       <div className="space-y-4">

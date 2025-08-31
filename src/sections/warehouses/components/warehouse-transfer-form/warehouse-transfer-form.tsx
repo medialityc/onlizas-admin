@@ -12,6 +12,7 @@ import { WarehouseTransferFormData } from "../../schemas/warehouse-transfer-sche
 import { AlertBox } from "@/components/alert/alert-box";
 import { CircleAlertIcon } from "lucide-react";
 import { useWarehouseInventoryActions } from "../../contexts/warehouse-inventory-transfer.stote";
+import { generateWarehouseTransferNumber } from "../../utils/warehouse";
 
 type Props = {
   warehouse: WarehouseFormData;
@@ -24,7 +25,7 @@ export function WarehouseTransferForm({ warehouse }: Props) {
       originWarehouseId: warehouseId,
       destinationWarehouseId: 0,
       items: [],
-      transferNumber: "string", //todo
+      transferNumber: generateWarehouseTransferNumber(),
     }),
     [warehouseId]
   );

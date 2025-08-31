@@ -34,7 +34,6 @@ export default async function EditWarehouseTransfersPage({
   return (
     <EditWarehouseLayout warehouse={response.data}>
       <WarehouseTransferContainer warehouse={response.data} />
-      {/*  <WarehouseTransfers warehouse={response.data} /> */}
     </EditWarehouseLayout>
   );
 }

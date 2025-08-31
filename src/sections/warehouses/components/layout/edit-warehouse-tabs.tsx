@@ -38,6 +38,11 @@ export function EditWarehouseTabs({ warehouse }: EditWarehouseTabsProps) {
       label: "Transferencias",
       path: `/dashboard/warehouses/${warehouseType}/${warehouseId}/edit/transfers`,
     },
+    {
+      id: "history",
+      label: "Historial de trasferencia",
+      path: `/dashboard/warehouses/${warehouseType}/${warehouseId}/edit/transfers/list`,
+    },
   ];
 
   const handleTabChange = (tab: Tab) => {
