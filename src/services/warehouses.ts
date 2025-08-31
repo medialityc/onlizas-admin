@@ -7,6 +7,7 @@ import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import {
   GetAllWarehouses,
+  IWarehouseMetric,
   Warehouse,
   WarehouseFilter,
 } from "@/types/warehouses";
@@ -154,13 +155,13 @@ export async function createWarehouse(
 
 export async function updateWarehouse(
   id: number,
-  data: WarehouseFormData,
-  audit: { reason?: string } = {}
+  type: WAREHOUSE_TYPE_ENUM,
+  data: WarehouseFormData
 ): Promise<ApiResponse<Warehouse>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.warehouses.update(id),
+    url: backendRoutes.warehouses.updateByType(id, type),
     method: "PUT",
-    data: { ...data, audit },
+    data,
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
@@ -183,21 +184,6 @@ export async function deleteWarehouse(
   return buildApiResponseAsync<{ success: boolean }>(res);
 }
 
-export async function deactivateWarehouse(
-  id: number,
-  audit: { reason?: string } = {}
-): Promise<ApiResponse<Warehouse>> {
-  const res = await nextAuthFetch({
-    url: backendRoutes.warehouses.update(id),
-    method: "PUT",
-    data: { status: "inactive", audit },
-    useAuth: true,
-  });
-  if (!res.ok) return handleApiServerError(res);
-  revalidateTag("warehouses");
-  return buildApiResponseAsync<Warehouse>(res);
-}
-
 export async function getAllWarehousesBySupplier(
   supplierId: number,
   params: IQueryable
@@ -216,4 +202,24 @@ export async function getAllWarehousesBySupplier(
   if (!res.ok) return handleApiServerError(res);
 
   return buildApiResponseAsync<GetAllWarehouses>(res);
+}
+
+/*
+ * summary warehouse
+ */
+export async function warehouseMetric(): Promise<
+  ApiResponse<IWarehouseMetric>
+> {
+  const url = new QueryParamsURLFactory(
+    {},
+    backendRoutes.warehouses.metrics
+  ).build();
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["warehouses"] },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<IWarehouseMetric>(res);
 }

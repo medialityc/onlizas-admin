@@ -39,7 +39,6 @@ const VirtualSection = () => {
             objectValueKey="id"
             objectKeyLabel="name"
             queryKey="suppliers"
-            multiple
           />
         </div>
         <div className="col-span-1 md:col-span-2">

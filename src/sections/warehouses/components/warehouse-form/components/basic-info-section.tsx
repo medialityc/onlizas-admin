@@ -5,7 +5,10 @@ import RHFInput from "@/components/react-hook-form/rhf-input";
 import RHFSelect from "@/components/react-hook-form/rhf-select";
 import { WAREHOUSE_TYPE_OPTIONS } from "../../../constants/warehouse-type";
 
-export default function BasicInfoSection() {
+type Props = {
+  warehouseId?: number;
+};
+export default function BasicInfoSection({ warehouseId }: Props) {
   return (
     <section className="rounded-lg border border-gray-100 dark:border-gray-700 p-4 bg-slate-100 dark:bg-slate-900">
       <div className="mb-4">
@@ -25,7 +28,12 @@ export default function BasicInfoSection() {
             required
           />
         </div>
-        <RHFSelect name="type" label="Tipo" options={WAREHOUSE_TYPE_OPTIONS} />
+        <RHFSelect
+          disabled={!!warehouseId}
+          name="type"
+          label="Tipo"
+          options={WAREHOUSE_TYPE_OPTIONS}
+        />
       </div>
     </section>
   );

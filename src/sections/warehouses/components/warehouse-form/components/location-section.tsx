@@ -1,7 +1,9 @@
 "use client";
 
 import { MapPinIcon } from "@heroicons/react/24/outline";
-import RHFInput from "@/components/react-hook-form/rhf-input";
+import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
+
+import { getAllLocations } from "@/services/locations";
 
 export default function LocationSection() {
   return (
@@ -14,11 +16,15 @@ export default function LocationSection() {
           </h4>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <RHFInput
+      <div className="grid grid-cols-1   gap-6">
+        <RHFAutocompleteFetcherInfinity
           name="locationId"
-          label="Dirección (// todo)"
-          placeholder="Ej: Av. Industrial 123, Col. Centro"
+          label="Selecciona la Dirección "
+          placeholder="Dirección..."
+          onFetch={getAllLocations}
+          objectValueKey="id"
+          objectKeyLabel="name"
+          queryKey="location"
         />
       </div>
     </section>

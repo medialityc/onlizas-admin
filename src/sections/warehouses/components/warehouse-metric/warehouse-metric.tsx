@@ -1,3 +1,4 @@
+"use clients";
 import {
   ArchiveBoxIcon,
   ArrowTrendingUpIcon,
@@ -5,10 +6,32 @@ import {
   BuildingStorefrontIcon,
 } from "@heroicons/react/24/outline";
 import React from "react";
+import { useWarehouseMetric } from "../../hooks/use-warehouse-metric";
+
+const ValueBySkeleton = ({
+  value,
+  isLoading,
+}: {
+  value?: number;
+  isLoading: boolean;
+}) => {
+  if (isLoading) {
+    return (
+      <div className="h-4 mt-2 w-10 rounded-xl bg-gray-200 dark:bg-gray-400" />
+    );
+  }
+
+  return <>{value || 0}</>;
+};
 
 const WarehouseMetric = () => {
+  const { data, isLoading } = useWarehouseMetric();
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {/* error */}
+      {/*  <AlertBox message={error?.message} title="Error" variant="danger" /> */}
+
+      {/* metrics */}
       <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
@@ -19,7 +42,10 @@ const WarehouseMetric = () => {
               Almacenes Físicos
             </p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              3
+              <ValueBySkeleton
+                isLoading={isLoading}
+                value={data?.data?.totalPhysicalWarehouses}
+              />
             </p>
           </div>
         </div>
@@ -35,7 +61,10 @@ const WarehouseMetric = () => {
               Almacenes Virtuales
             </p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              3
+              <ValueBySkeleton
+                isLoading={isLoading}
+                value={data?.data?.totalVirtualWarehouses}
+              />
             </p>
           </div>
         </div>
@@ -51,7 +80,10 @@ const WarehouseMetric = () => {
               Capacidad Total
             </p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              25.000
+              <ValueBySkeleton
+                isLoading={isLoading}
+                value={data?.data?.totalStockValue}
+              />
             </p>
           </div>
         </div>
@@ -67,7 +99,10 @@ const WarehouseMetric = () => {
               Stock Actual
             </p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              17.000
+              <ValueBySkeleton
+                isLoading={isLoading}
+                value={data?.data?.totalCurrentStock}
+              />
             </p>
           </div>
         </div>
