@@ -61,3 +61,42 @@ export async function createWarehouseTransfer(
   revalidateTag(WAREHOUSE_TRANSFER_TAG);
   return buildApiResponseAsync<WarehouseTransfer>(res);
 }
+
+
+export async function approveWarehouseTransfer(
+  transferId: number | string
+): Promise<ApiResponse<WarehouseTransfer>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.warehouse_transfers.approve(transferId),
+    method: "PUT",
+    useAuth: true,
+  });
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag(WAREHOUSE_TRANSFER_TAG);
+  return buildApiResponseAsync<WarehouseTransfer>(res);
+}
+
+export async function cancelWarehouseTransfer(
+  transferId: number | string
+): Promise<ApiResponse<WarehouseTransfer>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.warehouse_transfers.cancel(transferId),
+    method: "PUT",
+    useAuth: true,
+  });
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag(WAREHOUSE_TRANSFER_TAG);
+  return buildApiResponseAsync<WarehouseTransfer>(res);
+}
+export async function executeWarehouseTransfer(
+  transferId: number | string
+): Promise<ApiResponse<WarehouseTransfer>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.warehouse_transfers.execute(transferId),
+    method: "PUT",
+    useAuth: true,
+  });
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag(WAREHOUSE_TRANSFER_TAG);
+  return buildApiResponseAsync<WarehouseTransfer>(res);
+}

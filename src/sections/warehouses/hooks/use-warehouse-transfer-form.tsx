@@ -37,10 +37,6 @@ export const useWarehouseTransferForm = (
     }
   });
 
-  console.log(form.getValues(), "getValues");
-
-  console.log(form.formState.errors, "ERRORS");
-
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: WarehouseTransferFormData) => {
       const res = await createWarehouseTransfer(payload);
@@ -53,7 +49,7 @@ export const useWarehouseTransferForm = (
     },
     onSuccess() {
       toast.success(`Transferencia entre almacenes completada`);
-      push("/dashboard/warehouses");
+      push("transfers/list"); // navegación relativa
     },
     onError: async (error: any) => {
       toast.error(error?.message);
