@@ -9,29 +9,33 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createWarehouse, updateWarehouse } from "@/services/warehouses";
 import { toast } from "react-toastify";
+import { WAREHOUSE_TYPE_ENUM } from "../constants/warehouse-type";
 
-interface WarehouseFormProps {
-  warehouse?: WarehouseFormData;
-  onSuccess?: () => void;
-}
+import { initValueWarehouse } from "../constants/warehouse-initvalues";
 
-export const useWarehouseCreateForm = ({
-  onSuccess,
-  warehouse,
-}: WarehouseFormProps) => {
+export const useWarehouseCreateForm = (
+  defaultValues: WarehouseFormData = initValueWarehouse
+) => {
   const { push } = useRouter();
 
-  const form = useForm({
+  const { ...form } = useForm({
     resolver: zodResolver(warehouseSchema),
-    defaultValues: warehouse,
+    defaultValues,
   });
+
+  console.log(form.formState.errors);
 
   const warehouseType = form?.watch("type");
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: WarehouseFormData) => {
+      console.log(payload, "EDTIT");
       const res = payload?.id
-        ? await updateWarehouse(payload?.id, payload)
+        ? await updateWarehouse(
+            payload?.id,
+            payload?.type as WAREHOUSE_TYPE_ENUM,
+            payload
+          )
         : await createWarehouse(payload);
 
       if (res.error) {
@@ -42,9 +46,8 @@ export const useWarehouseCreateForm = ({
     },
     onSuccess() {
       toast.success(
-        `Se ${warehouse?.id ? "editó" : "creó"} correctamente el almacén`
+        `Se ${defaultValues?.id ? "editó" : "creó"} correctamente el almacén`
       );
-      onSuccess?.();
       push("/dashboard/warehouses");
     },
     onError: async (error: any) => {

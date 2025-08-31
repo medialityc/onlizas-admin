@@ -6,13 +6,16 @@ import { paths } from "@/config/paths";
 import {
   MapPinIcon,
   PencilSquareIcon,
-  EyeIcon,
+  BuildingOfficeIcon,
+  BuildingStorefrontIcon,
 } from "@heroicons/react/24/outline";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
-import { PackageIcon, Users2Icon, WarehouseIcon } from "lucide-react";
+import { PackageIcon, Users2Icon } from "lucide-react";
 import Badge from "@/components/badge/badge";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/button/button";
+import { Separator } from "@/components/ui/separator";
 
 interface WarehouseCardProps {
   warehouse: WarehouseFormData;
@@ -44,19 +47,22 @@ export function WarehouseCard({ warehouse, onEdit }: WarehouseCardProps) {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 flex gap-4 flex-col shadow-sm hover:shadow-md dark:hover:shadow-gray-900/20 transition-shadow h-full min-h-72">
-      {/*  <pre> {JSON.stringify(warehouse, null, 2)} </pre> */}
-      {/* Header con icono y estado */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3 min-w-0">
           <div
             className={cn(
               "p-4 rounded-lg",
-              warehouse.type === "physical"
+              warehouse?.type?.toLocaleLowerCase()
                 ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
                 : "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
             )}
           >
-            <WarehouseIcon className="h-6 w-6" />
+            {warehouse?.type?.toLocaleLowerCase() ===
+            WAREHOUSE_TYPE_ENUM.physical ? (
+              <BuildingStorefrontIcon className="h-6 w-6" />
+            ) : (
+              <BuildingOfficeIcon className="h-6 w-6" />
+            )}
           </div>
           <div className="min-w-0">
             <h3
@@ -110,22 +116,14 @@ export function WarehouseCard({ warehouse, onEdit }: WarehouseCardProps) {
           </div>
         )}
       </div>
+
+      <Separator className=" mt-auto  " />
       {/* Botones de acción - siempre al final */}
-      <div className="flex flex-wrap gap-2  pt-4 border-t border-gray-100 dark:border-gray-700 mt-auto">
-        <button
-          className="flex-1 min-w-[120px] py-2 px-3 rounded border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition inline-flex items-center justify-center gap-2"
-          onClick={handleEdit}
-        >
+      <div className="flex flex-wrap gap-2  justify-end  ">
+        <Button outline variant="secondary" onClick={handleEdit}>
           <PencilSquareIcon className="h-4 w-4" />
           Editar
-        </button>
-        <button
-          className="flex-1 min-w-[120px] py-2 px-3 rounded border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition inline-flex items-center justify-center gap-2"
-          onClick={handleView}
-        >
-          <EyeIcon className="h-4 w-4" />
-          Detalles
-        </button>
+        </Button>
       </div>
     </div>
   );

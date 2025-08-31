@@ -96,8 +96,8 @@ export const backendRoutes = {
     list: `${process.env.NEXT_PUBLIC_API_URL}warehouses`,
     edit: (id: string | number, type: string) =>
       `${process.env.NEXT_PUBLIC_API_URL}warehouses/${type}/${id}`,
-    update: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}`,
+    updateByType: (id: string | number, type: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}warehouses/${type}/${id}`,
     delete: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}`,
     locations: `${process.env.NEXT_PUBLIC_API_URL}warehouses/locations`,
@@ -115,6 +115,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}/products`,
     variantList: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}warehouses/${id}/variants`,
+    metrics: `${process.env.NEXT_PUBLIC_API_URL}warehouses/metrics`,
   },
   warehouse_transfers: {
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/transfers`,
@@ -228,5 +229,9 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}inventories/${id}/variants`,
     editVariantInventory: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}variants/${id}`,
+  },
+
+  locations: {
+    list: `${process.env.NEXT_PUBLIC_API_URL}locations`,
   },
 };

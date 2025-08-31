@@ -285,3 +285,11 @@ export type WarehouseAuditLog = {
   by: string;
   reason?: string;
 };
+
+export interface IWarehouseMetric {
+  totalPhysicalWarehouses: number;
+  totalVirtualWarehouses: number;
+  totalCurrentStock: number;
+  totalStockValue: number;
+  calculatedAt: Date;
+}

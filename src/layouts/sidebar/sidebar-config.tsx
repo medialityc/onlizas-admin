@@ -84,15 +84,15 @@ export const sidebarSections: SidebarSection[] = [
         icon: <DocumentChartBarIcon className="h-4 w-4" />,
       },
       {
-        id: "warehouses",
-        label: "Almacenes",
-        path: paths.dashboard.warehouses.list,
-        icon: <WarehouseIcon className="h-4 w-4" />,
-      },
-      {
         id: "virtual-warehouse-types",
         label: "Tipos de almacenes virtuales",
         path: paths.dashboard.virtualWarehouseTypes.list,
+        icon: <WarehouseIcon className="h-4 w-4" />,
+      },
+      {
+        id: "warehouses",
+        label: "Almacenes",
+        path: paths.dashboard.warehouses.list,
         icon: <WarehouseIcon className="h-4 w-4" />,
       },
       {

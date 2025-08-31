@@ -10,16 +10,15 @@ import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { getAdapterWarehouse } from "../../adapter/warehouse-edit.adapter";
 import VirtualSection from "./components/virtual-section";
 import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
-import { initValueWarehouse } from "../../constants/warehouse-initvalues";
 import Link from "next/link";
 
 type Props = {
   warehouse?: WarehouseFormData;
 };
-export function WarehouseForm({ warehouse = initValueWarehouse }: Props) {
-  const { form, isPending, onSubmit, warehouseType } = useWarehouseCreateForm({
-    warehouse: getAdapterWarehouse(warehouse),
-  });
+export function WarehouseForm({ warehouse }: Props) {
+  const { form, isPending, onSubmit, warehouseType } = useWarehouseCreateForm(
+    warehouse && getAdapterWarehouse(warehouse)
+  );
 
   return (
     <FormProvider
@@ -30,7 +29,7 @@ export function WarehouseForm({ warehouse = initValueWarehouse }: Props) {
     >
       <div className="grid grid-cols-1  gap-4">
         <div className="col-span-1  space-y-4">
-          <BasicInfoSection />
+          <BasicInfoSection warehouseId={warehouse?.id} />
           {warehouseType === WAREHOUSE_TYPE_ENUM.physical && (
             <CapacitySection />
           )}
