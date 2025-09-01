@@ -49,21 +49,6 @@ export type StoreBanner = {
   isActive: boolean;
 };
 
-export type Promotion = {
-  id: number;
-  name: string;
-  description?: string;
-  type: "percent" | "amount";
-  value: number; // 0-100 for percent, currency otherwise
-  code?: string;
-  usageLimit?: number;
-  usedCount?: number;
-  startDate?: string; // ISO
-  endDate?: string; // ISO
-  isActive: boolean;
-  badge?: string; // e.g., "Envío Gratis"
-};
-
 type StoreMetrics = {
   totalProducts: number;
   views: number;
@@ -171,12 +156,3 @@ export type StoreMetricsResponse = {
   storeMetrics: StoreMetric[];
 };
 export type GetStoreMetrics = StoreMetricsResponse;
-
-// Categorías asociadas a una tienda (Store)
-export type StoreCategory = {
-  storeId: number;
-  categoryId: number; // ID de la categoría global
-  categoryName: string;
-  isActive: boolean;
-  order: number; // prioridad/posición
-};

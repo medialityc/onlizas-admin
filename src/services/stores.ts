@@ -9,7 +9,6 @@ import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { revalidateTag } from "next/cache";
 import { PaginatedResponse } from "@/types/common";
-import { StoreCategory } from "@/types/stores";
 
 
 export async function getAllStores(
@@ -258,51 +257,4 @@ export async function getStoreFollowers(
 
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<PaginatedResponse<StoreFollower>>(res);
-}
-
-// Store Categories services
-export async function getStoreCategories(
-  storeId: number
-): Promise<ApiResponse<StoreCategory[]>> {
-  const url = backendRoutes.storeCategories.list(storeId);
-  const res = await nextAuthFetch({
-    url,
-    method: "GET",
-    useAuth: true,
-    next: { tags: ["store-categories", `store-categories-${storeId}`] },
-  });
-  if (!res.ok) return handleApiServerError(res);
-  return buildApiResponseAsync<StoreCategory[]>(res);
-}
-
-export async function toggleStoreCategoryStatus(
-  storeCategoryId: number
-): Promise<ApiResponse<ApiStatusResponse>> {
-  const res = await nextAuthFetch({
-    url: backendRoutes.storeCategories.toggle,
-    method: "PATCH",
-    data: JSON.stringify({ storeCategoryId }),
-    contentType: "application/json",
-    useAuth: true,
-  });
-  if (!res.ok) return handleApiServerError(res);
-  revalidateTag("store-categories");
-  return buildApiResponseAsync<ApiStatusResponse>(res);
-}
-
-export async function updateStoreCategoriesOrder(
-  storeId: number,
-  orders: Array<{ categoryId: number; order: number }>
-): Promise<ApiResponse<ApiStatusResponse>> {
-  const res = await nextAuthFetch({
-    url: backendRoutes.storeCategories.order,
-    method: "PUT",
-    data: JSON.stringify({ storeId, orders }),
-  contentType: "application/json",
-    useAuth: true,
-  });
-  if (!res.ok) return handleApiServerError(res);
-  revalidateTag("store-categories");
-  revalidateTag(`store-categories-${storeId}`);
-  return buildApiResponseAsync<ApiStatusResponse>(res);
 }

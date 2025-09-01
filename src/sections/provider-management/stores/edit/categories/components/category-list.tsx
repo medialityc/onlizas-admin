@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useRef } from "react";
-import type { StoreCategory } from "../mock";
 import CategoryListItem from "./category-list-item";
 import CategoryListSkeleton from "./category-list-skeleton";
+import { StoreCategory } from "@/types/store-categories";
 
 type Props = {
   items: StoreCategory[];
@@ -22,7 +22,7 @@ export default function CategoryList({
   onDelete,
   loading,
 }: Props) {
- 
+
   if (loading) return <CategoryListSkeleton />;
 
   const nodeRefs = useRef<Map<number, HTMLDivElement | null>>(new Map());
@@ -47,10 +47,10 @@ export default function CategoryList({
     <div className="space-y-3">
       {items.map((c, idx) => (
         <div
-          key={c.id}
+          key={c.categoryId}
           ref={(el) => {
             // store ref without returning the Map (avoid non-void return type)
-            nodeRefs.current.set(c.id, el ?? null);
+            nodeRefs.current.set(c.categoryId, el ?? null);
             return;
           }}
           // keep transform transitions inline to avoid adding global css
@@ -63,7 +63,7 @@ export default function CategoryList({
             category={c}
             onToggleActive={(id: number, checked: boolean) => {
               // Optimistic local change
-              onItemsChange(items.map((x) => (x.id === id ? { ...x, isActive: checked } : x)));
+              onItemsChange(items.map((x) => (x.categoryId === id ? { ...x, isActive: checked } : x)));
               onToggle?.(id, checked);
             }}
             onEdit={onEdit}
@@ -94,12 +94,12 @@ export default function CategoryList({
               requestAnimationFrame(() => {
                 const nextRects = measureRects();
                 next.forEach((item) => {
-                  const el = nodeRefs.current.get(item.id) as
+                  const el = nodeRefs.current.get(item.categoryId) as
                     | HTMLDivElement
                     | undefined
                     | null;
-                  const prev = prevRects.get(item.id);
-                  const after = nextRects.get(item.id);
+                  const prev = prevRects.get(item.categoryId);
+                  const after = nextRects.get(item.categoryId);
                   if (el && prev && after) {
                     const deltaY = prev.top - after.top;
                     if (deltaY) {

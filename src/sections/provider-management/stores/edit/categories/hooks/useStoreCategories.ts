@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { StoreCategory } from "../mock";
-import { getStoreCategories, toggleStoreCategoryStatus, updateStoreCategoriesOrder } from "@/services/stores";
+
+import { getStoreCategories, toggleStoreCategoryStatus, updateStoreCategoriesOrder } from "@/services/store-categories";
 import { adaptStoreCategories } from "../utils/adapter";
 import { toast } from "react-toastify";
+import { StoreCategory } from "@/types/store-categories";
 
 export function useStoreCategories(storeId: number, initialItems?: StoreCategory[]) {
 	const [items, setItems] = useState<StoreCategory[]>(initialItems ?? []);
@@ -14,8 +15,8 @@ export function useStoreCategories(storeId: number, initialItems?: StoreCategory
 	const totals = useMemo(() => {
 		const total = items.length;
 		const active = items.filter((c) => c.isActive).length;
-		const products = items.reduce((acc, c) => acc + (c.productCount ?? 0), 0);
-		return { total, active, products };
+		const products = 100/* items.reduce((acc, c) => acc + (c.productCount ?? 0), 0); */
+		return { total, active, products  };
 	}, [items]);
 
 	// Carga inicial simple (si no vienen initialItems desde el server)
@@ -42,7 +43,7 @@ export function useStoreCategories(storeId: number, initialItems?: StoreCategory
 			}
 		})();
 		return () => { mounted = false; };
-	}, [storeId, initialItems]);
+	}, [storeId,  initialItems]);
 
 	// Si el server nos manda nuevos initialItems tras un router.refresh, sincronizar el estado local
 	useEffect(() => {
@@ -56,7 +57,7 @@ export function useStoreCategories(storeId: number, initialItems?: StoreCategory
 	const handleSaveOrder = useCallback(async () => {
 		try {
 			setSaving(true);
-			const orders = items.map((c, idx) => ({ categoryId: Number(c.id), order: idx + 1 })); // base 1
+			const orders = items.map((c, idx) => ({ categoryId: Number(c.categoryId), order: idx + 1 })); // base 1
 			const res = await updateStoreCategoriesOrder(storeId, orders);
 			if (res?.error) {
 				toast.error(res?.message || "No se pudo organizar sus categorías");
@@ -75,14 +76,22 @@ export function useStoreCategories(storeId: number, initialItems?: StoreCategory
 
 	// Toggle activo/inactivo
 	const handleToggle = useCallback(async (id: number, checked: boolean) => {
-		// Optimista
+		// Optimistic update
 		setItems(prev => prev.map(x => x.id === id ? { ...x, isActive: checked } : x));
-		const res = await toggleStoreCategoryStatus(id);
-		if (res?.error) {
+		
+		try {
+			const res = await toggleStoreCategoryStatus(id);
+			if (res?.error) {
+				// Revertir cambio optimista si hay error
+				setItems(prev => prev.map(x => x.id === id ? { ...x, isActive: !checked } : x));
+				toast.error(res?.message || "No se pudo actualizar el estado");
+			} else {
+				toast.success(checked ? "Categoría activada" : "Categoría desactivada");
+			}
+		} catch (error) {
+			// Revertir cambio optimista si hay excepción
 			setItems(prev => prev.map(x => x.id === id ? { ...x, isActive: !checked } : x));
-			toast.error(res?.message || "No se pudo actualizar el estado");
-		} else {
-			toast.success(checked ? "Categoría activada" : "Categoría desactivada");
+			toast.error("Error al actualizar el estado de la categoría");
 		}
 	}, []);
 
