@@ -1,9 +1,9 @@
 import { detailsArrayToObject } from "@/utils/format";
 import { toast } from "react-toastify";
-import { ProductFormData } from "../schema/product-schema";
+import { SupplierProductFormData } from "../schema/supplier-product-schema";
 
-export const setProductFormData = async (
-  product: ProductFormData
+export const setSupplierProductFormData = async (
+  product: SupplierProductFormData
 ): Promise<FormData> => {
   const formData = new FormData();
   const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
@@ -14,18 +14,16 @@ export const setProductFormData = async (
       if (image.size > MAX_IMAGE_SIZE) {
         toast.error(`La imagen ${image.name} excede el tamaño máximo de 5MB`);
       } else {
-        formData.append("image", image);
+        formData.append("mainImage", image);
       }
     } else if (typeof image === "string") {
-      // if the UI may pass existing image URLs as strings, consider sending them as text fields
-      formData.append("image", image); // optional: backend must accept this
+      formData.append("mainImage", image);
     }
   }
 
   formData.append("name", product.name);
   formData.append("description", product.description);
   formData.append("isActive", String(product.isActive));
-  formData.append("supplierUserIds", JSON.stringify(product.supplierUserIds));
   formData.append("categoryIds", JSON.stringify(product.categoryIds));
   /* dimensions */
   formData.append("width", String(product.width));
@@ -34,11 +32,11 @@ export const setProductFormData = async (
   formData.append("weight", String(product.weight));
 
   formData.append("aboutThis", JSON.stringify(product.aboutThis));
-  // Details: enviar como pares details[clave]
-  if (product.detailsArray) {
+
+  if (product.details) {
     formData.append(
       "details",
-      JSON.stringify(detailsArrayToObject(product.detailsArray))
+      JSON.stringify(detailsArrayToObject(product.details as any[]))
     );
   }
 

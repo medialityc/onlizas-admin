@@ -19,9 +19,9 @@ function AboutProductSection() {
   });
 
   return (
-    <div className="bg-white rounded-lg border p-6">
+    <div className="bg-blur-card">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
           <IconInfoCircle className="mr-2 w-5 h-5" /> Acerca del Producto
         </h3>
         <Button
@@ -59,7 +59,7 @@ function AboutProductSection() {
         ))}
       </div>
       {aboutFields.length > 0 && (
-        <div className="mt-3 text-xs text-gray-500">Máximo 10 líneas.</div>
+        <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">Máximo 10 líneas.</div>
       )}
     </div>
   );

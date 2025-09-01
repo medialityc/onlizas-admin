@@ -5,10 +5,14 @@ import { getAllCategories } from "@/services/categories";
 import IconBox from "@/components/icon/icon-box";
 import { getAllSupplierUsers } from "@/services/users";
 
-function CategoriesAndSuppliersSection() {
+function CategoriesAndSuppliersSection({
+  hideSupplier,
+}: {
+  hideSupplier: boolean;
+}) {
   return (
-    <div className="bg-white rounded-lg border p-6 h-full">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+    <div className="bg-blur-card">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
         <IconBox className="mr-2 w-5 h-5" /> Categorías
       </h3>
       <div className="space-y-6">
@@ -25,18 +29,20 @@ function CategoriesAndSuppliersSection() {
             multiple
           />
         </div>
-        <div>
-          <RHFAutocompleteFetcherInfinity
-            name="supplierUserIds"
-            label="Usuarios proveedores"
-            placeholder="Seleccionar usuarios proveedores..."
-            onFetch={getAllSupplierUsers}
-            objectValueKey="id"
-            objectKeyLabel="name"
-            queryKey="users-suppliers"
-            multiple
-          />
-        </div>
+        {!hideSupplier && (
+          <div>
+            <RHFAutocompleteFetcherInfinity
+              name="supplierUserIds"
+              label="Usuarios proveedores"
+              placeholder="Seleccionar usuarios proveedores..."
+              onFetch={getAllSupplierUsers}
+              objectValueKey="id"
+              objectKeyLabel="name"
+              queryKey="users-suppliers"
+              multiple
+            />
+          </div>
+        )}
       </div>
     </div>
   );

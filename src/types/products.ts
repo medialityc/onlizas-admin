@@ -49,6 +49,7 @@ export type Product = {
   details: ProductDetail[];
   features: ProductFeatureResponse[];
   images: ProductImage[];
+  image: string
 };
 
 // Para crear producto según la API

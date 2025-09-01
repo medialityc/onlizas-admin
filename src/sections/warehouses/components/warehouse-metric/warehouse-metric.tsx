@@ -12,7 +12,7 @@ const ValueBySkeleton = ({
   value,
   isLoading,
 }: {
-  value?: number;
+  value?: number | string;
   isLoading: boolean;
 }) => {
   if (isLoading) {
@@ -78,12 +78,12 @@ const WarehouseMetric = () => {
           </div>
           <div>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Capacidad Total
+              Monto Total
             </p>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
               <ValueBySkeleton
                 isLoading={isLoading}
-                value={data?.data?.totalStockValue}
+                value={`$ ${data?.data?.totalStockValue || 0}`}
               />
             </div>
           </div>

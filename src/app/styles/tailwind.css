@@ -810,6 +810,10 @@ img.dark-img {
   scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
 }
 
+.bg-blur-card {
+  @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-gray-200/60 dark:border-slate-700/60 p-6 transition-all duration-200 hover:shadow-lg hover:shadow-gray-100/50 dark:hover:shadow-slate-900/20;
+}
+
 /* Custom animations for supplier edit page */
 @keyframes fadeIn {
   from {
