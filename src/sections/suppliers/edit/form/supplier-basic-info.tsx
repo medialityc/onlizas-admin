@@ -1,7 +1,7 @@
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import RHFSelectWithLabel from "@/components/react-hook-form/rhf-select";
-import RHFDatePicker from "@/components/react-hook-form/rhf-date-picker";
 import { useFormContext } from "react-hook-form";
+import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
 
 export default function SupplierBasicInfo() {
   const {
@@ -57,7 +57,12 @@ export default function SupplierBasicInfo() {
         required
         variant="custom"
       />
-      <RHFDatePicker name="expirationDate" label="Fecha de Expiración" />
+      <RHFDateInput
+        minDate={new Date()}
+        maxDate={new Date("2100-12-31")}
+        name="expirationDate"
+        label="Fecha de Expiración"
+      />
       <RHFInputWithLabel
         name="address"
         label="Dirección"

@@ -101,8 +101,8 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                     {selectedUser.name}
                   </div>
                   <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                    {selectedUser.emails[0].address ??
-                      selectedUser.phones[0].number ??
+                    {selectedUser.emails[0]?.address ??
+                      selectedUser.phones[0]?.number ??
                       ""}
                   </div>
                 </div>

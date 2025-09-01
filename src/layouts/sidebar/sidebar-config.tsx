@@ -32,14 +32,20 @@ export const sidebarSections: SidebarSection[] = [
   },
 
   {
-    id: "financial",
-    label: "Gestión Financiera",
+    id: "nomenclators",
+    label: "Nomencladores",
     items: [
       {
         id: "currencies",
         label: "Monedas",
         path: paths.dashboard.currencies.list,
         icon: <CurrencyDollarIcon className="h-4 w-4" />,
+      },
+      {
+        id: "virtual-warehouse-types",
+        label: "Tipos de almacenes virtuales",
+        path: paths.dashboard.virtualWarehouseTypes.list,
+        icon: <WarehouseIcon className="h-4 w-4" />,
       },
     ],
   },
@@ -83,12 +89,7 @@ export const sidebarSections: SidebarSection[] = [
         path: paths.dashboard.suppliers.list,
         icon: <DocumentChartBarIcon className="h-4 w-4" />,
       },
-      {
-        id: "virtual-warehouse-types",
-        label: "Tipos de almacenes virtuales",
-        path: paths.dashboard.virtualWarehouseTypes.list,
-        icon: <WarehouseIcon className="h-4 w-4" />,
-      },
+
       {
         id: "warehouses",
         label: "Almacenes",
