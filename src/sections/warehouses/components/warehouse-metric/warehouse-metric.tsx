@@ -26,6 +26,7 @@ const ValueBySkeleton = ({
 
 const WarehouseMetric = () => {
   const { data, isLoading } = useWarehouseMetric();
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
       {/* error */}

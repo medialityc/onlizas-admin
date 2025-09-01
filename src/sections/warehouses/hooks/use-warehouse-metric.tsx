@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 export const useWarehouseMetric = () => {
   return useQuery<ApiResponse<IWarehouseMetric>>({
     queryKey: ["WAREHOUSE_METRICS"],
-    queryFn: () => warehouseMetric(),
-    refetchInterval: 5000, // 5 segundos en milisegundos
+    queryFn: async () => await warehouseMetric(),
+    refetchInterval: 15 * 60 * 1000, // 1m en milisegundos
   });
 };

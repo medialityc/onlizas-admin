@@ -75,7 +75,7 @@ const InventoryVariantItem = ({
           <WarehouseImage
             alt={product?.productName}
             src={product?.images?.[0]}
-            className="w-20 h-20 rounded-lg object-cover"
+            className="w-16 h-16 md:w-24 md:h-24 rounded-lg object-cover"
           />
           <div
             className={`absolute -top-1 -right-1 w-3 h-3 rounded-full ${
@@ -90,8 +90,8 @@ const InventoryVariantItem = ({
 
         {/* Contenido principal */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2 mb-2">
-            <h3 className="font-medium text-gray-900 dark:text-white line-clamp-1">
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="font-medium text-gray-900 dark:text-white line-clamp-1 leading-none">
               {product?.productName}
             </h3>
             <div className="flex flex-row gap-2 items-center">
@@ -111,7 +111,7 @@ const InventoryVariantItem = ({
           </div>
 
           {/* Detalles */}
-          <div className="flex flex-wrap gap-1 mb-2">
+          <div className="flex flex-wrap gap-1 mb-1">
             {(product?.details as unknown as any[])
               ?.slice(0, 4)
               .map((detail: any, idx: number) => (

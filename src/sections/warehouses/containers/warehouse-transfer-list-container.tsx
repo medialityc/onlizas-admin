@@ -25,8 +25,6 @@ export default function WarehouseTransferListContainer({
     updateFiltersInUrl(params);
   };
 
-  console.log(warehousesTransferPromise.data, "T");
-
   return (
     <div className="space-y-6">
       {warehousesTransferPromise.status == 401 && <SessionExpiredAlert />}

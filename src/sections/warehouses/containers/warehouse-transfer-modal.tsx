@@ -30,13 +30,13 @@ export default function WarehouseSelectedModal({ open, onClose }: Props) {
 
   return (
     <SimpleModal open={open} onClose={onClose} title={"Transferencia"}>
-      <div className="p-5 ">
+      <div className="p-5">
         <FormProvider
           methods={form}
           onSubmit={onSubmit}
           id="warehouse-origin-selected-form"
         >
-          <div className="min-h-80 justify-between flex flex-col">
+          <div className="justify-between flex flex-col">
             <div className="grid grid-cols-1 flex-1 gap-4">
               <RHFAutocompleteFetcherInfinity
                 name="warehouseOriginId"
