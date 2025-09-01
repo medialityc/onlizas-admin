@@ -41,12 +41,12 @@ const WarehouseMetric = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Almacenes Físicos
             </p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">
               <ValueBySkeleton
                 isLoading={isLoading}
                 value={data?.data?.totalPhysicalWarehouses}
               />
-            </p>
+            </div>
           </div>
         </div>
       </div>
@@ -60,12 +60,12 @@ const WarehouseMetric = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Almacenes Virtuales
             </p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">
               <ValueBySkeleton
                 isLoading={isLoading}
                 value={data?.data?.totalVirtualWarehouses}
               />
-            </p>
+            </div>
           </div>
         </div>
       </div>
@@ -79,12 +79,12 @@ const WarehouseMetric = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Capacidad Total
             </p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">
               <ValueBySkeleton
                 isLoading={isLoading}
                 value={data?.data?.totalStockValue}
               />
-            </p>
+            </div>
           </div>
         </div>
       </div>
@@ -98,12 +98,12 @@ const WarehouseMetric = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Stock Actual
             </p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">
               <ValueBySkeleton
                 isLoading={isLoading}
                 value={data?.data?.totalCurrentStock}
               />
-            </p>
+            </div>
           </div>
         </div>
       </div>
