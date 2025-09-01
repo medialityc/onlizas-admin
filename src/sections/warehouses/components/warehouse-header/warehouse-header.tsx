@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { Button } from "@/components/button/button";
 import { useModalState } from "@/hooks/use-modal-state";
 import { PlusIcon, ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
@@ -38,7 +38,10 @@ const WarehouseHeader = () => {
         </div>
       </div>
 
-      <WarehouseSelectedModal onClose={closeModal} open={transferModal.open} />
+      <WarehouseSelectedModal
+        onClose={() => closeModal("transfer")}
+        open={transferModal.open}
+      />
     </>
   );
 };

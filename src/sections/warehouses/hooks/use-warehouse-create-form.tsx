@@ -23,13 +23,10 @@ export const useWarehouseCreateForm = (
     defaultValues,
   });
 
-  console.log(form.formState.errors);
-
   const warehouseType = form?.watch("type");
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: WarehouseFormData) => {
-      console.log(payload, "EDTIT");
       const res = payload?.id
         ? await updateWarehouse(
             payload?.id,

@@ -30,12 +30,6 @@ export default function WarehouseInventoryListContainer({
     <div className="space-y-6">
       {inventoryPromise.status == 401 && <SessionExpiredAlert />}
       <div className="panel flex flex-col gap-4">
-        {/* <div>
-          <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-            Inventarios del Almacén
-          </h2>
-        </div> */}
-
         <WarehouseInventoryCardGrid
           data={inventoryPromise?.data?.data}
           searchParams={query}

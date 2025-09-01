@@ -210,15 +210,11 @@ export async function getAllWarehousesBySupplier(
 export async function warehouseMetric(): Promise<
   ApiResponse<IWarehouseMetric>
 > {
-  const url = new QueryParamsURLFactory(
-    {},
-    backendRoutes.warehouses.metrics
-  ).build();
   const res = await nextAuthFetch({
-    url,
+    url: backendRoutes.warehouses.metrics,
     method: "GET",
     useAuth: true,
-    next: { tags: ["warehouses"] },
+    next: { tags: ["warehouses-metrics"] },
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<IWarehouseMetric>(res);
