@@ -1,3 +1,4 @@
+"use server";
 import { backendRoutes } from "@/lib/endpoint";
 import { QueryParamsURLFactory } from "@/lib/request";
 import { ApiResponse } from "@/types/fetch/api";
