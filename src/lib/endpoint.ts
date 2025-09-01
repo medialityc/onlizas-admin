@@ -1,5 +1,3 @@
-
-
 export const backendRoutes = {
   countries: { get: `${process.env.NEXT_PUBLIC_API_URL}countries` },
   users: {
@@ -199,14 +197,14 @@ export const backendRoutes = {
     extend: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${id}/extend`, // POST
   },
- store: {
+  store: {
     create: `${process.env.NEXT_PUBLIC_API_URL}stores/admin`,
     list: `${process.env.NEXT_PUBLIC_API_URL}stores/metrics`,
     listAll: `${process.env.NEXT_PUBLIC_API_URL}stores`,
     listByProvider: (supplierId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/supplier/${supplierId}`,
     listForProvider: `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores`,
-    storeById: ( storeId: string | number) =>
+    storeById: (storeId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
     storeDetails: (storeId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
@@ -214,7 +212,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
     /* updateAdminStore: (storeId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}`,
- */    createSupplier: (supplierId: string | number) =>
+ */ createSupplier: (supplierId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/stores`,
     delete: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
@@ -233,14 +231,14 @@ export const backendRoutes = {
   storeBanner: {
     create: `${process.env.NEXT_PUBLIC_API_URL}banners`,
     update: `${process.env.NEXT_PUBLIC_API_URL}banners`,
-
   },
   storeCategories: {
-    list: (storeId: number | string) => `${process.env.NEXT_PUBLIC_API_DEV_URL}storecategories/${storeId}`,
-    order: `${process.env.NEXT_PUBLIC_API_DEV_URL}storecategories/order`,
-    toggle: `${process.env.NEXT_PUBLIC_API_DEV_URL}storecategories/toggle-status`,
+    list: (storeId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}storecategories/${storeId}`,
+    order: `${process.env.NEXT_PUBLIC_API_URL}storecategories/order`,
+    toggle: `${process.env.NEXT_PUBLIC_API_URL}storecategories/toggle-status`,
   },
-  
+
   inventoryProvider: {
     create: `${process.env.NEXT_PUBLIC_API_URL}inventories/admin`,
     list: `${process.env.NEXT_PUBLIC_API_URL}inventories/admin`,
