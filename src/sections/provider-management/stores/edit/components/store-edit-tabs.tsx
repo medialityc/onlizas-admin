@@ -40,7 +40,7 @@ const StoreTabs = ({ store }: TabsProps) => {
             {
               label: "Categorías",
               icon: <BookOpenIcon className="w-6 h-6" />,
-              content: <CategoriesContainer store={store} />,
+              content: <CategoriesContainer storeId={store.id} />,
             },
             {
               label: "Apariencia",

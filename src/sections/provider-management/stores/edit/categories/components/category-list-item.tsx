@@ -1,7 +1,8 @@
 import React, { HTMLAttributes } from "react";
-import { EllipsisVerticalIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+
 import Badge from "@/components/badge/badge";
-import type { StoreCategory } from "../mock";
+import { StoreCategory } from "@/types/store-categories";
+
 
 type Props = {
   category: StoreCategory;
@@ -21,19 +22,19 @@ export default function CategoryListItem({ category: c, onToggleActive, onEdit, 
           <div className="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center text-gray-300 font-bold text-lg cursor-grab active:cursor-grabbing select-none">≡</div>
           <div>
             <div className="flex items-center gap-2">
-              <h4 className="text-medium font-semibold text-gray-900">{c.name}</h4>
+              <h4 className="text-medium font-semibold text-gray-900">{c.categoryName}</h4>
               {c.isActive && (
                 <Badge variant="outline-primary" className="!text-[11px] !px-2 !py-0.5" rounded>
                   Activa
                 </Badge>
               )}
             </div>
-            {c.description && (
+            {/* {c.description && (
               <p className="text-sm text-gray-500">{c.description}</p>
             )}
             <div className="text-xs text-gray-500 mt-1">
               {c.productCount} productos · {c.views} visitas
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="flex items-center gap-3">

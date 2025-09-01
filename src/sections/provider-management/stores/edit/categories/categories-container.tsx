@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import { Store } from "@/types/stores";
-import type { StoreCategory } from "./mock";
+import { StoreCategory } from "@/types/store-categories";
 import CategoriesMetrics from "./components/categories-metrics";
 import CategoryList from "./components/category-list";
 import CategoriesToolbar from "./components/categories-toolbar";
@@ -11,11 +10,11 @@ import { useRouter } from "next/navigation";
 import LoaderButton from "@/components/loaders/loader-button";
 import { toast } from "react-toastify";
 
-interface Props { store: Store; initialItems?: StoreCategory[] }
+interface Props { storeId: number; initialItems?: StoreCategory[] }
 
-function CategoriesContent({ store, initialItems }: Props) {
+function CategoriesContent({ storeId, initialItems }: Props) {
   const router = useRouter();
-  const { items, setItems, loading, saving, totals, handleSaveOrder, handleToggle } = useStoreCategories(store.id, initialItems);
+  const { items, setItems, loading, saving, totals, handleSaveOrder, handleToggle } = useStoreCategories(storeId, initialItems);
 
   // Handlers (avoid inline logic in JSX)
   const onSaveClick = async () => {
@@ -73,6 +72,6 @@ function CategoriesContent({ store, initialItems }: Props) {
 }
 
 
-export default function CategoriesContainer({ store, initialItems }: Props) {
-  return <CategoriesContent store={store} initialItems={initialItems} />;
+export default function CategoriesContainer({ storeId, initialItems }: Props) {
+  return <CategoriesContent storeId={storeId} initialItems={initialItems} />;
 }

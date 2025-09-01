@@ -75,7 +75,7 @@ export function DatePickerBanner({
 
     const currentYear = new Date().getFullYear();
     const minYear = minDate ? minDate.getFullYear() : currentYear;
-    const maxYear = currentYear + 10; // Hasta 10 años en el futuro
+    const maxYear = currentYear + 30; // Hasta 10 años en el futuro
     
     if (yyyy < minYear || yyyy > maxYear) {
       setError(`El año debe estar entre ${minYear} y ${maxYear}`);
@@ -85,7 +85,10 @@ export function DatePickerBanner({
     // Validar que no sea anterior a la fecha mínima si está especificada
     if (minDate) {
       const inputDate = new Date(yyyy, mm - 1, dd);
-      if (inputDate < minDate) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      inputDate.setHours(0, 0, 0, 0);
+      if (inputDate < today) {
         setError("No se pueden seleccionar fechas anteriores al día actual");
         return false;
       }
