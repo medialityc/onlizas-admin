@@ -1,25 +1,56 @@
+import { buildQueryParams } from "@/lib/request";
+import SupplierProductsListContainer from "@/sections/products/containers/supplier-products-list-container";
+
+import { getAllMyProducts } from "@/services/products";
+import { IQueryable, SearchParams } from "@/types/fetch/request";
+import { Metadata } from "next";
 import { Suspense } from "react";
 
-function ProductsListFallback() {
+export const metadata: Metadata = {
+  title: "Mis productos - ZAS Express",
+  description: "Administra tus productos",
+  icons: {
+    icon: "/assets/images/NEWZAS.svg",
+  },
+};
+
+interface PageProps {
+  searchParams: Promise<SearchParams>;
+}
+
+function ProductsListSkeleton() {
   return (
-    <div className="space-y-4 animate-pulse">
-      <div className="h-8 bg-gray-200 rounded w-1/4" />
-      <div className="h-6 bg-gray-200 rounded w-full" />
-      <div className="h-6 bg-gray-200 rounded w-5/6" />
-      <div className="h-6 bg-gray-200 rounded w-2/3" />
+    <div className="panel">
+      <div className="mb-5">
+        <div className="h-8 bg-gray-200 rounded animate-pulse mb-4"></div>
+        <div className="flex gap-4 mb-4">
+          <div className="h-10 bg-gray-200 rounded animate-pulse w-64"></div>
+          <div className="h-10 bg-gray-200 rounded animate-pulse w-32"></div>
+          <div className="h-10 bg-gray-200 rounded animate-pulse w-32"></div>
+        </div>
+      </div>
+      <div className="space-y-3">
+        {[...Array(10)].map((_, i) => (
+          <div key={i} className="h-16 bg-gray-200 rounded animate-pulse"></div>
+        ))}
+      </div>
     </div>
   );
 }
 
-export default async function ProductsPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[]>>;
-}) {
-  console.log(searchParams);
+async function CategoriesListPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const query: IQueryable = buildQueryParams(params);
+  const productsPromise = await getAllMyProducts(query);
 
-  // Server-side: fetch current user and load products for that supplier.
-  // Avoid using client hooks (useQuery) in this server component.
-
-  return <Suspense fallback={<ProductsListFallback />}>New</Suspense>;
+  return (
+    <Suspense fallback={<ProductsListSkeleton />}>
+      <SupplierProductsListContainer
+        productsPromise={productsPromise}
+        query={params}
+      />
+    </Suspense>
+  );
 }
+
+export default CategoriesListPage;

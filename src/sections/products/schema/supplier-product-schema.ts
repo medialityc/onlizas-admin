@@ -1,8 +1,9 @@
 import { z } from "zod";
 
 // Schema completo que coincide con la API real según product-apis.md
-export const productSchema = z.object({
+export const supplierProductSchema = z.object({
   id: z.number().optional(),
+  isDraft: z.boolean().optional(),
   name: z
     .string({ required_error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")
@@ -13,9 +14,6 @@ export const productSchema = z.object({
     .default(""),
   isActive: z.boolean().default(false).optional(),
 
-  supplierUserIds: z
-    .array(z.number())
-    .min(1, "Debe seleccionar al menos un proveedor."),
   categoryIds: z
     .array(z.number())
     .min(1, "Debe seleccionar al menos una categoría."),
@@ -55,27 +53,32 @@ export const productSchema = z.object({
     ),
   // details dinámicos (objeto de claves arbitrarias string -> string)
   details: z
-    .record(
-      z.string(),
-      z.string().trim().min(1, "Valor requerido para el detalle")
-    )
+    .union([
+      z.array(
+        z.object({
+          key: z.string().trim().min(1, "Clave requerida"),
+          value: z.string().trim().min(1, "Valor requerido para el detalle"),
+        })
+      ),
+      z.record(z.string(), z.string()),
+    ])
     .default({})
-    .refine((obj) => Object.keys(obj).length <= 50, "Máximo 50 detalles"),
-  // soporte interno para UI (array de pares) no enviado directo a la API
-  detailsArray: z
-    .array(
-      z.object({
-        key: z.string().trim().min(1, "Clave requerida").max(50),
-        value: z
-          .string()
-          .trim()
-          .min(1, "Valor requerido")
-          .max(100, "Máximo 100 caracteres"),
-      })
+    .refine(
+      (obj) => Object.keys(obj).length <= 50,
+      "Máximo 50 detalles (no se permiten duplicados)"
     )
-    .max(50, "Máximo 50 detalles")
-    .optional()
-    .default([]),
+    .refine(
+      (obj) => {
+        const uniqueKeys = new Set(
+          Object.keys(obj).map((key) => key.toLowerCase().trim())
+        );
+        return uniqueKeys.size === Object.keys(obj).length;
+      },
+      {
+        message:
+          "Las claves de detalles deben ser únicas (no se permiten duplicados).",
+      }
+    ),
 
   image: z
     .union([
@@ -85,8 +88,8 @@ export const productSchema = z.object({
     .optional(),
 });
 
-export type ProductFormData = z.infer<typeof productSchema> & {
-  supplierId?: number; // todo
+export type SupplierProductFormData = z.infer<typeof supplierProductSchema> & {
+  supplierId?: number;
   suppliers?: {
     id: number;
     name: string;

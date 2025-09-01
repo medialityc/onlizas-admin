@@ -17,10 +17,12 @@ import {
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
 import { IQueryable } from "@/types/fetch/request";
+import { PaginatedResponse } from "@/types/common";
+import { ProductFormData } from "@/sections/products/schema/product-schema";
 
 export async function getAllProducts(
   params: IQueryable
-): Promise<ApiResponse<GetAllProducts>> {
+): Promise<ApiResponse<PaginatedResponse<ProductFormData>>> {
   const url = new QueryParamsURLFactory(
     params,
     backendRoutes.products.list
@@ -34,7 +36,7 @@ export async function getAllProducts(
 
   if (!res.ok) return handleApiServerError(res);
 
-  return buildApiResponseAsync<GetAllProducts>(res);
+  return buildApiResponseAsync<PaginatedResponse<ProductFormData>>(res);
 }
 
 export async function getAllProductsBySupplier(
@@ -238,4 +240,79 @@ export async function getCategoryFeatures(
   if (!res.ok) return handleApiServerError(res);
 
   return buildApiResponseAsync<CategoryFeaturesResponse>(res);
+}
+
+/* MY PRODUCTS */
+
+export async function getAllMyProducts(
+  params: IQueryable
+): Promise<ApiResponse<GetAllProducts>> {
+  const url = new QueryParamsURLFactory(
+    params,
+    backendRoutes.products.listMyProducts()
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    useAuth: true,
+    next: { tags: ["my-products-supplier"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetAllProducts>(res);
+}
+
+export async function createSupplierProductLink(
+  supplierId: number | string,
+  productId: number | string
+): Promise<ApiResponse<Product>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.products.createSupplierProductByLink(supplierId),
+    method: "POST",
+    data: {
+      productId,
+    },
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("products-supplier");
+
+  return buildApiResponseAsync<Product>(res);
+}
+
+export async function createSupplierProduct(
+  supplierId: number | string,
+  data: FormData
+): Promise<ApiResponse<Product>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.products.createSupplierProduct(supplierId),
+    method: "POST",
+    data,
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("products-supplier");
+
+  return buildApiResponseAsync<Product>(res);
+}
+
+export async function updateSupplierProduct(
+  supplierId: number,
+  productId: number,
+  data: FormData
+): Promise<ApiResponse<Product>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.products.updateSupplierProduct(supplierId, productId),
+    method: "PUT",
+    data,
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  revalidateTag("products-supplier");
+  return buildApiResponseAsync<Product>(res);
 }

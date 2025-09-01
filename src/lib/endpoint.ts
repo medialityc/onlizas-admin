@@ -82,6 +82,24 @@ export const backendRoutes = {
     simpleCategories: `${process.env.NEXT_PUBLIC_API_URL}admin/products/categories/simple`, // GET
     simpleSuppliers: `${process.env.NEXT_PUBLIC_API_URL}admin/products/suppliers/simple`, // GET
     categoryFeatures: `${process.env.NEXT_PUBLIC_API_URL}categories/features`, // GET
+
+    /* space SUPPLIER */
+    listMyProducts: () =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/products`,
+    createSupplierProductByLink: (supplierId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/products/link`,
+    createSupplierProduct: (supplierId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/products`,
+    updateSupplierProduct: (
+      supplierId: number | string,
+      productId: number | string
+    ) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/products/${productId}`,
+    deleteSupplierProduct: (
+      supplierId: number | string,
+      productId: number | string
+    ) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/products/${productId}`,
   },
   warehouseVirtualTypes: {
     create: `${process.env.NEXT_PUBLIC_API_URL}virtual-warehouse-types`,

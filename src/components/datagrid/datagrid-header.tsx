@@ -75,7 +75,7 @@ export function DataGridHeader<T extends Record<string, any>>({
         {onCreate && (
           <button
             type="button"
-            className="btn btn-primary dark:text-textColor flex gap-2"
+            className="btn btn-primary text-white dark:text-white flex gap-2"
             onClick={onCreate}
           >
             {createLoading ? (

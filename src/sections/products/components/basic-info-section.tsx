@@ -7,8 +7,8 @@ import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 
 function BasicInfoSection() {
   return (
-    <div className="bg-white rounded-lg border p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+    <div className="bg-blur-card">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
         <IconBox className="mr-2 w-5 h-5" /> Información Básica
       </h3>
       <div className="flex flex-col w-full  gap-2 md:gap-4">
@@ -40,3 +40,4 @@ function BasicInfoSection() {
 }
 
 export default BasicInfoSection;
+
