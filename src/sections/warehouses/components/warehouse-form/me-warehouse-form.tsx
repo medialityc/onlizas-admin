@@ -12,7 +12,7 @@ import { MeWarehouseFormData } from "../../schemas/me-warehouse-schema";
 
 type Props = {
   warehouse?: MeWarehouseFormData;
-  onClose: () => void;
+  onClose?: () => void;
 };
 export function MeWarehouseForm({ warehouse, onClose }: Props) {
   const { form, isPending, onSubmit } = useMeWarehouseCreateForm(
@@ -21,7 +21,7 @@ export function MeWarehouseForm({ warehouse, onClose }: Props) {
   );
 
   const handleClose = useCallback(() => {
-    onClose();
+    onClose?.();
     form.reset();
   }, [form, onClose]);
 

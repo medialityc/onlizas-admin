@@ -17,12 +17,10 @@ import {
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
 import { IQueryable } from "@/types/fetch/request";
-import { PaginatedResponse } from "@/types/common";
-import { ProductFormData } from "@/sections/products/schema/product-schema";
 
 export async function getAllProducts(
   params: IQueryable
-): Promise<ApiResponse<PaginatedResponse<ProductFormData>>> {
+): Promise<ApiResponse<GetAllProducts>> {
   const url = new QueryParamsURLFactory(
     params,
     backendRoutes.products.list
@@ -36,7 +34,7 @@ export async function getAllProducts(
 
   if (!res.ok) return handleApiServerError(res);
 
-  return buildApiResponseAsync<PaginatedResponse<ProductFormData>>(res);
+  return buildApiResponseAsync<GetAllProducts>(res);
 }
 
 export async function getAllProductsBySupplier(

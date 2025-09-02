@@ -23,24 +23,23 @@ export const metadata: Metadata = {
 
 type PageProps = {
   searchParams: Promise<SearchParams>;
-  params: Promise<{ id: string; type: string }>;
+  params: Promise<{ id: string }>;
 };
 
 export default async function EditWarehouseInventoryPage({
   params,
   searchParams,
 }: PageProps) {
-  const { id, type } = await params;
+  const { id } = await params;
   const search = await searchParams;
   const query = buildQueryParams(search);
 
-  if (!Object.keys(WAREHOUSE_TYPE_ENUM).includes(type)) {
-    notFound();
-  }
-
   /* services */
   const inventory = await getAllWarehouseInventories(id, query);
-  const response = await getWarehouseById(Number(id), type);
+  const response = await getWarehouseById(
+    Number(id),
+    WAREHOUSE_TYPE_ENUM.virtual
+  );
 
   if (!response?.data || !inventory?.data) {
     notFound();

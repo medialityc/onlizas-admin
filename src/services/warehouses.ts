@@ -269,3 +269,16 @@ export async function updateMeWarehouse(
   revalidateTag("supplier-warehouses");
   return buildApiResponseAsync<Warehouse>(res);
 }
+
+export async function getMeWarehouseById(
+  id: number
+): Promise<ApiResponse<WarehouseFormData>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.warehouse_me.byId(id),
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["supplier-warehouses", String(id)] },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<WarehouseFormData>(res);
+}
