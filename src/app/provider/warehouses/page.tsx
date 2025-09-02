@@ -24,7 +24,7 @@ function WarehousesListFallback() {
 }
 
 type Props = {
-  params: Promise<{ type: string }>;
+  // params: Promise<{ type: string }>;
   searchParams: Promise<Record<string, string | string[]>>;
 };
 

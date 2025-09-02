@@ -30,7 +30,7 @@ const WarehouseHeader = () => {
           <Button onClick={handleInitTransfer} variant="secondary" outline>
             <ArrowsRightLeftIcon className="h-4 w-4 mr-2" /> Transferencias
           </Button>
-          <Link href={"/dashboard/warehouses/new"}>
+          <Link href={"warehouses/new"}>
             <Button>
               <PlusIcon className="h-4 w-4 mr-2" /> Nuevo almacén
             </Button>

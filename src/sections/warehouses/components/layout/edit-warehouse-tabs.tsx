@@ -3,47 +3,25 @@
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
-
-interface Tab {
-  id: string;
-  label: string;
-  path: string;
-  icon?: React.ReactNode;
-  disabled?: boolean;
-}
+import { Tab } from "@/types/tabs";
+import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
+import { warehouseTabs } from "../../constants/warehouse-tabs";
 
 interface EditWarehouseTabsProps {
   warehouse: WarehouseFormData;
+  onTabs?: (warehouseId: number, type: WAREHOUSE_TYPE_ENUM) => Tab[];
 }
 
-export function EditWarehouseTabs({ warehouse }: EditWarehouseTabsProps) {
+export function EditWarehouseTabs({
+  warehouse,
+  onTabs = warehouseTabs,
+}: EditWarehouseTabsProps) {
   const router = useRouter();
   const pathname = usePathname();
   const warehouseId = warehouse.id;
   const warehouseType = warehouse.type.toLowerCase();
 
-  const tabs: Tab[] = [
-    {
-      id: "general",
-      label: "Datos Generales",
-      path: `/dashboard/warehouses/${warehouseType}/${warehouseId}/edit`,
-    },
-    {
-      id: "inventory",
-      label: "Inventarios",
-      path: `/dashboard/warehouses/${warehouseType}/${warehouseId}/edit/inventory`,
-    },
-    {
-      id: "transfers",
-      label: "Transferencias",
-      path: `/dashboard/warehouses/${warehouseType}/${warehouseId}/edit/transfers`,
-    },
-    {
-      id: "history",
-      label: "Historial de trasferencia",
-      path: `/dashboard/warehouses/${warehouseType}/${warehouseId}/edit/transfers/list`,
-    },
-  ];
+  const tabs = onTabs(warehouseId!, warehouseType as WAREHOUSE_TYPE_ENUM);
 
   const handleTabChange = (tab: Tab) => {
     if (!tab.disabled) {

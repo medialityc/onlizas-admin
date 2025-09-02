@@ -45,7 +45,7 @@ export const useWarehouseCreateForm = (
       toast.success(
         `Se ${defaultValues?.id ? "editó" : "creó"} correctamente el almacén`
       );
-      push("/dashboard/warehouses");
+      push("warehouses");
     },
     onError: async (error: any) => {
       toast.error(error?.message);

@@ -1,15 +1,25 @@
+"use client";
 import { SearchParams } from "@/types/fetch/request";
-import React, { useId } from "react";
+import React, { useCallback, useId } from "react";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { WarehouseCard } from "./warehouse-card";
+import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
+import { useModalState } from "@/hooks/use-modal-state";
 
 type Props = {
   data?: WarehouseFormData[];
   searchParams: SearchParams;
-  baseRoute: string;
+  forceType?: WAREHOUSE_TYPE_ENUM;
 };
-const WarehouseCardList = ({ data, searchParams, baseRoute }: Props) => {
+const WarehouseCardList = ({ data, searchParams, forceType }: Props) => {
   const id = useId();
+  const { openModal } = useModalState();
+  const handleEditWarehouse = useCallback(
+    (warehouse: WarehouseFormData) => {
+      openModal<number>("edit", warehouse.id);
+    },
+    [openModal]
+  );
 
   if (data?.length === 0) {
     return (
@@ -26,10 +36,11 @@ const WarehouseCardList = ({ data, searchParams, baseRoute }: Props) => {
     <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-2 md:gap-4 mb-4">
       {data?.map((warehouse: WarehouseFormData) => (
         <div className="col-span-1" key={`${id}-${warehouse?.id}`}>
-          <>
-            <pre> {JSON.stringify(warehouse, null, 2)} </pre>
-          </>
-          <WarehouseCard warehouse={warehouse} />
+          <WarehouseCard
+            warehouse={warehouse}
+            type={forceType || (warehouse.type as WAREHOUSE_TYPE_ENUM)}
+            onEdit={forceType && (() => handleEditWarehouse(warehouse))}
+          />
         </div>
       ))}
     </section>

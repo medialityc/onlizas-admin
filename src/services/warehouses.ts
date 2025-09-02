@@ -19,6 +19,7 @@ import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-t
 import { InventoryProviderFormData } from "@/sections/inventory-provider/schemas/inventory-provider.schema";
 import { PaginatedResponse } from "@/types/common";
 import { InventoryProductItem } from "@/types/inventory";
+import { MeWarehouseFormData } from "@/sections/warehouses/schemas/me-warehouse-schema";
 
 export async function getAllWarehouses(
   params: IQueryable & WarehouseFilter
@@ -236,4 +237,35 @@ export async function getAllMeWarehouses(
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<GetAllWarehouses>(res);
+}
+
+// me supplier warehouse
+
+export async function createMeWarehouse(
+  data: MeWarehouseFormData
+): Promise<ApiResponse<Warehouse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.warehouse_me.create,
+    method: "POST",
+    data,
+    useAuth: true,
+  });
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("supplier-warehouses");
+  return buildApiResponseAsync<Warehouse>(res);
+}
+
+export async function updateMeWarehouse(
+  id: number,
+  data: MeWarehouseFormData
+): Promise<ApiResponse<Warehouse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.warehouse_me.update(id),
+    method: "PUT",
+    data,
+    useAuth: true,
+  });
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("supplier-warehouses");
+  return buildApiResponseAsync<Warehouse>(res);
 }

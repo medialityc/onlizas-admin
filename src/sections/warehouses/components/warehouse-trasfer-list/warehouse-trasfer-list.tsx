@@ -34,11 +34,10 @@ export function WarehouseTransferList({
   onSearchParamsChange,
 }: Props) {
   const { push } = useRouter();
-
-  const handleCreateTransfer = useCallback(
-    () => push("/transfers/list"),
-    [push]
-  );
+  const handleCreateTransfer = useCallback(() => {
+    const newPath = window.location.pathname.replace(/\/list$/, "");
+    push(newPath);
+  }, [push]);
 
   const handleCanceledTransfer = useCallback(async (transferId: number) => {
     try {

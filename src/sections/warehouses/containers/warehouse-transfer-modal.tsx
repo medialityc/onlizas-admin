@@ -12,15 +12,23 @@ import { WarehouseFormData } from "../schemas/warehouse-schema";
 interface Props {
   open: boolean;
   onClose: () => void;
+  getWarehouse?: any;
 }
 
-export default function WarehouseSelectedModal({ open, onClose }: Props) {
+export default function WarehouseSelectedModal({
+  open,
+  onClose,
+  getWarehouse = getAllWarehouses,
+}: Props) {
   const { form, onSubmit } = useWarehouseSelectForm();
 
   const handleOption = useCallback(
     (option: WarehouseFormData) => {
+      console.log(option, "WWW");
       if (option) {
-        form.setValue("type", option?.type?.toLowerCase());
+        form.setValue("type", option?.type?.toLowerCase(), {
+          shouldDirty: true,
+        });
       }
     },
     [form]
@@ -45,7 +53,7 @@ export default function WarehouseSelectedModal({ open, onClose }: Props) {
                 objectValueKey="id"
                 objectKeyLabel="name"
                 queryKey="warehouse"
-                onFetch={getAllWarehouses}
+                onFetch={getWarehouse}
                 onOptionSelected={handleOption}
               />
             </div>

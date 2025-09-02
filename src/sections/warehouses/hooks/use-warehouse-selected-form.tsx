@@ -10,15 +10,16 @@ export const useWarehouseSelectForm = () => {
     resolver: zodResolver(warehouseOriginSelectedSchema),
     defaultValues: {
       warehouseOriginId: 0,
+      type: "",
     },
   });
+
+  const type = form.watch("type");
 
   return {
     form: form,
     onSubmit: form.handleSubmit((values) => {
-      push(
-        `/dashboard/warehouses/physical/${values?.warehouseOriginId}/edit/transfers`
-      );
+      push(`warehouses/${type}/${values?.warehouseOriginId}/edit/transfers`);
     }),
   };
 };
