@@ -17,8 +17,6 @@ const initValue: ProductVariant = {
   //Información de Inventario
   quantity: 0,
   price: 0,
-  discountType: 0,
-  discountValue: 0,
 
   //Restricciones y Límites
   purchaseLimit: 0,

@@ -37,8 +37,6 @@ function EditContainer({ userProvider, inventory, features }: Props) {
         details: featuresNormalized,
         quantity: 0,
         price: 0,
-        discountType: 0,
-        discountValue: 0,
         purchaseLimit: 0,
         isPrime: false,
         warranty: {

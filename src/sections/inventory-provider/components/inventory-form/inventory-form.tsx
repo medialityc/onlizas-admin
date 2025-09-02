@@ -39,6 +39,7 @@ function InventoryForm({ provider }: Props) {
             onFetch={(params) => getAllProductsBySupplier(supplierId, params)}
             disabled={!supplierId}
             required
+            queryKey={`products-${supplierId}`}
           />
           <RHFAutocompleteFetcherInfinity
             name="storeId"
@@ -46,6 +47,7 @@ function InventoryForm({ provider }: Props) {
             disabled={!supplierId}
             required
             onFetch={(params) => getAllProviderStores(supplierId, params)}
+            queryKey={`stores-${supplierId}`}
           />
           <RHFCheckbox
             name="meWarehouse"
@@ -61,7 +63,7 @@ function InventoryForm({ provider }: Props) {
               }
               objectValueKey="id"
               objectKeyLabel="name"
-              queryKey="warehouses-physical"
+              queryKey={`warehouses-physical-${supplierId}`}
               disabled={!supplierId}
               required
             />
@@ -75,7 +77,7 @@ function InventoryForm({ provider }: Props) {
               }
               objectValueKey="id"
               objectKeyLabel="name"
-              queryKey="warehouses"
+              queryKey={`warehouses-virtual-${supplierId}`}
               required
             />
           )}

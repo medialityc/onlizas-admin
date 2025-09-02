@@ -2,7 +2,6 @@ import { Button } from "@/components/button/button";
 import {
   RHFCheckbox,
   RHFInputWithLabel,
-  RHFSelect,
   RHFSwitch,
 } from "@/components/react-hook-form";
 import { Separator } from "@/components/ui/separator";
@@ -16,11 +15,6 @@ type Props = {
   variantIndex: number;
   remove: UseFieldArrayRemove;
 };
-
-const DiscountOptions: { value: number; label: string }[] = [
-  { value: 0, label: "Porciento" },
-  { value: 1, label: "Fijo" },
-];
 
 const InventoryVariantFrom = ({ variantIndex, remove }: Props) => {
   const { watch } = useFormContext();
@@ -73,24 +67,6 @@ const InventoryVariantFrom = ({ variantIndex, remove }: Props) => {
               step="0.1"
             />
           </div>
-          <div>
-            <RHFInputWithLabel
-              name={`discountValue`}
-              label="Descuento %"
-              type="number"
-              placeholder="0"
-              min="0"
-              step="0.1"
-            />
-          </div>
-          <RHFSelect
-            options={DiscountOptions}
-            name={`discountType`}
-            placeholder="Selecciona tipo de descuento"
-            label="Tipo de descuento"
-            required
-            defaultValue={0}
-          />
         </div>
       </div>
 

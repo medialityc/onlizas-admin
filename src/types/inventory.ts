@@ -6,8 +6,6 @@ export type InventoryProductItem = {
   productName: string;
   price: number;
   discountedPrice: number;
-  discountType: number;
-  discountValue: number;
   limitPurchaseLimit: number;
   warranty?: {
     isWarranty: boolean;

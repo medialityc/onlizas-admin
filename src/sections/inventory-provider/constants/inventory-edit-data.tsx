@@ -22,10 +22,6 @@ export function buildCreateProductVariantFormData(
   if (input.quantity !== undefined)
     fd.append("Quantity", String(input.quantity));
   if (input.price !== undefined) fd.append("Price", String(input.price));
-  if (input.discountType !== undefined)
-    fd.append("DiscountType", String(input.discountType));
-  if (input.discountValue !== undefined)
-    fd.append("DiscountValue", String(input.discountValue));
   if (input.purchaseLimit !== undefined)
     fd.append("PurchaseLimit", String(input.purchaseLimit));
   if (input.isPrime !== undefined) fd.append("IsPrime", String(input.isPrime));

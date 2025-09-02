@@ -35,12 +35,6 @@ const ProductVariantCard = ({ variant }: Props) => {
           </div>
           <div className="flex flex-row gap-1 items-center mb-auto">
             <span className="font-bold">Precio:</span> ${variant.price}
-            {variant.discountedPrice && (
-              <Badge variant="danger" className="m-0">
-                {variant.discountedPrice || 0}
-                {variant?.discountType === 0 ? "%" : "$"}
-              </Badge>
-            )}
           </div>
         </div>
       </div>

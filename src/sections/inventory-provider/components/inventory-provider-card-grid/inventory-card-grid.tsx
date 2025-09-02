@@ -24,7 +24,7 @@ export function InventoryCardGrid({
         searchParams={searchParams}
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar inventario..."
-        // onCreate={handleInventoryProviderCreate}
+        onCreate={onCreate}
         createText="Crear inventario"
         enableColumnToggle={false}
         component={
