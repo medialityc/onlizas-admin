@@ -17,7 +17,7 @@ type Props = {
   className?: string;
 };
 
-const ProviderCard = ({ item }: Props) => {
+const InventoryProviderCard = ({ item }: Props) => {
   return (
     <Card className="group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full dark:border-slate-700">
       <CardHeader className="space-y-0 pb-4">
@@ -89,4 +89,4 @@ const ProviderCard = ({ item }: Props) => {
   );
 };
 
-export default ProviderCard;
+export default InventoryProviderCard;

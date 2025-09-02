@@ -8,11 +8,13 @@ interface Props {
   data?: GetAllWarehouses;
   searchParams: SearchParams;
   onSearchParamsChange: (params: SearchParams) => void;
+  baseRoute: string;
 }
 
 export function InventoryCardGrid({
   data,
   searchParams,
+  baseRoute,
   onSearchParamsChange,
 }: Props) {
   return (
@@ -24,7 +26,11 @@ export function InventoryCardGrid({
         searchPlaceholder="Buscar almacén..."
         enableColumnToggle={false}
         component={
-          <WarehouseCardList data={data?.data} searchParams={searchParams} />
+          <WarehouseCardList
+            data={data?.data}
+            searchParams={searchParams}
+            baseRoute={baseRoute}
+          />
         }
       />
     </>

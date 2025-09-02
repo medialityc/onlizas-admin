@@ -97,6 +97,7 @@ export const productSchema = z.object({
 });
 
 export type ProductFormData = z.infer<typeof productSchema> & {
+  state?: boolean,
   suppliers?: {
     id: number;
     name: string;

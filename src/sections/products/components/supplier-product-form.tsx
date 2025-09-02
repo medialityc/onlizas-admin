@@ -14,6 +14,8 @@ import SupplierSelectProductDraft from "./supplier-select-product-draft";
 import { useSupplierProductCreateForm } from "../hooks/use-supplier-product-create-form";
 import SupplierProductSummary from "./supplier-product-summary";
 import { SupplierProductFormData } from "../schema/supplier-product-schema";
+import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
+import { ImagesIcon } from "lucide-react";
 
 type Props = {
   initValue?: SupplierProductFormData;
@@ -23,8 +25,6 @@ type Props = {
 const SupplierProductForm = ({ initValue, isEdit }: Props) => {
   const { form, isPending, onSubmit, onSubmitLink, isDraft } =
     useSupplierProductCreateForm(initValue, isEdit);
-
-  console.log("edit", initValue);
 
   const { push } = useRouter();
 
@@ -57,9 +57,22 @@ const SupplierProductForm = ({ initValue, isEdit }: Props) => {
                 <BasicInfoSection />
               </div>
 
+              <div className="col-span-1 lg:col-span-2">
+                <div className="bg-blur-card flex-1 h-full">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                    <ImagesIcon className="mr-2 w-5 h-5" /> Imágenes
+                  </h3>
+                  <RHFMultiImageUpload
+                    name="additionalImages"
+                    label="Imágenes del producto"
+                  />
+                </div>
+              </div>
+
               <div className="col-span-1 lg:col-span-1">
                 <CategoriesAndSuppliersSection hideSupplier />
               </div>
+
               <div className="col-span-1 lg:col-span-1">
                 <ProductDimensionSection />
               </div>

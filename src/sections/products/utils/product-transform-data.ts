@@ -1,4 +1,4 @@
-import { isValidUrl } from "@/utils/format";
+import { detailsObjectToArray, isValidUrl } from "@/utils/format";
 import { ProductFormData } from "../schema/product-schema";
 import { Product } from "@/types/products";
 
@@ -17,5 +17,6 @@ export const productTransformData = (
     //@ts-expect-error
     supplierUserIds: product.suppliers.map((s) => s.id),
     image: isValidUrl(product.image as string) ? product?.image : "",
+    details: detailsObjectToArray(product.details),
   };
 };

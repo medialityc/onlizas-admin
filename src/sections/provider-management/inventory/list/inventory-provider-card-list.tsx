@@ -3,7 +3,7 @@ import React, { useId } from "react";
 import { Button } from "@/components/button/button";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { InventoryProvider } from "@/types/inventory";
-import ProviderCard from "./inventory-provider-card";
+import InventoryProviderCard from "./inventory-provider-card";
 
 type Props = {
   data?: InventoryProvider[];
@@ -38,7 +38,7 @@ const InventoryProviderCardList = ({
     <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 md:gap-6 mb-4">
       {data?.map((provider: InventoryProvider) => (
         <div className="col-span-1" key={`${id}-${provider?.id}`}>
-          <ProviderCard item={provider} />
+          <InventoryProviderCard item={provider} />
         </div>
       ))}
     </section>

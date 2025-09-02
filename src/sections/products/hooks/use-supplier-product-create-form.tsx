@@ -14,6 +14,7 @@ import {
   supplierProductSchema,
 } from "../schema/supplier-product-schema";
 import { setSupplierProductFormData } from "../constants/supplier-product-data";
+import { focusFirstError } from "@/utils/focust";
 
 const initValues: SupplierProductFormData = {
   isDraft: false,
@@ -30,7 +31,7 @@ const initValues: SupplierProductFormData = {
   categoryIds: [],
   aboutThis: [],
   details: [],
-  image: "",
+  image: null,
 };
 
 export const useSupplierProductCreateForm = (
@@ -46,14 +47,13 @@ export const useSupplierProductCreateForm = (
   const isDraft = form.watch("isDraft");
 
   console.log(form.formState.errors);
+  console.log(form.getValues(), 'getValues');
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (
       payload: SupplierProductFormData & { isLink?: boolean }
     ) => {
       const fromData = await setSupplierProductFormData(payload);
-
-      console.log(fromData, "fromData", payload);
 
       let res = undefined;
       if (!payload?.isDraft) {
@@ -85,9 +85,15 @@ export const useSupplierProductCreateForm = (
     form: form,
     isPending,
     isDraft,
-    onSubmit: form.handleSubmit((values) => {
-      mutate(values);
-    }),
+
+    onSubmit: form.handleSubmit(
+      (values) => {
+        mutate(values);
+      },
+      (errors) => {
+        focusFirstError(errors, form.setFocus);
+      }
+    ),
 
     onSubmitLink: form.handleSubmit((values) => {
       mutate({ ...values, isLink: true });

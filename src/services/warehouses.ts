@@ -219,3 +219,21 @@ export async function warehouseMetric(): Promise<
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<IWarehouseMetric>(res);
 }
+
+// ME WAREHOUSE
+export async function getAllMeWarehouses(
+  params: IQueryable & WarehouseFilter
+): Promise<ApiResponse<GetAllWarehouses>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.warehouse_me.list
+  ).build();
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["warehouses-supplier"] },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<GetAllWarehouses>(res);
+}

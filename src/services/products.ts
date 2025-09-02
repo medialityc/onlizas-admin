@@ -249,7 +249,7 @@ export async function getAllMyProducts(
 ): Promise<ApiResponse<GetAllProducts>> {
   const url = new QueryParamsURLFactory(
     params,
-    backendRoutes.products.listMyProducts()
+    backendRoutes.products.listMyProducts
   ).build();
 
   const res = await nextAuthFetch({
@@ -267,7 +267,7 @@ export async function createSupplierProductLink(
   productId: number | string
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.products.createSupplierProductByLink(1), //todo
+    url: backendRoutes.products.createSupplierProductByLink,
     method: "POST",
     data: {
       productId,
@@ -285,7 +285,7 @@ export async function createSupplierProduct(
   data: FormData
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.products.createSupplierProduct(1), // todo
+    url: backendRoutes.products.createSupplierProduct,
     method: "POST",
     data,
     useAuth: true,
@@ -302,7 +302,7 @@ export async function updateSupplierProduct(
   data: FormData
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.products.updateSupplierProduct(1, productId), //todo
+    url: backendRoutes.products.updateSupplierProduct(productId),
     method: "PUT",
     data,
     useAuth: true,
@@ -314,7 +314,6 @@ export async function updateSupplierProduct(
   return buildApiResponseAsync<Product>(res);
 }
 
-
 export async function getSupplierProductById(
   id: number
 ): Promise<ApiResponse<Product>> {
@@ -322,10 +321,25 @@ export async function getSupplierProductById(
     url: backendRoutes.products.byId(id),
     method: "GET",
     useAuth: true,
-    next: { tags: ["products"] },
+    next: { tags: ["products-supplier"] },
   });
 
   if (!res.ok) return handleApiServerError(res);
 
   return buildApiResponseAsync<Product>(res);
+}
+
+export async function deleteSupplierProduct(
+  productId: number
+): Promise<ApiResponse<ApiStatusResponse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.products.deleteSupplierProduct(productId),
+    method: "DELETE",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("products-supplier");
+
+  return buildApiResponseAsync<ApiStatusResponse>(res);
 }

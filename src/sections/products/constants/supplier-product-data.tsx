@@ -7,7 +7,7 @@ export const setSupplierProductFormData = async (
 ): Promise<FormData> => {
   const formData = new FormData();
   const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
-  // Procesar imagen
+  // Procesar imagen principal
   if (product.image) {
     const image = product.image;
     if (image instanceof File) {
@@ -15,11 +15,28 @@ export const setSupplierProductFormData = async (
         toast.error(`La imagen ${image.name} excede el tamaño máximo de 5MB`);
       } else {
         formData.append("mainImage", image);
-        formData.append("additionalImages.0", image);
       }
     } else if (typeof image === "string") {
       formData.append("mainImage", image);
-      formData.append("additionalImages.0", image);
+    }
+  }
+
+  if (product.additionalImages) {
+    const additionalImages = product.additionalImages;
+    if (Array.isArray(additionalImages)) {
+      additionalImages.forEach((image) => {
+        if (image instanceof File) {
+          if (image.size > MAX_IMAGE_SIZE) {
+            toast.error(
+              `La imagen ${image.name} excede el tama o m ximo de 5MB`
+            );
+          } else {
+            formData.append("additionalImages", image);
+          }
+        } else if (typeof image === "string") {
+          formData.append("additionalImages", image);
+        }
+      });
     }
   }
 

@@ -29,8 +29,6 @@ const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
     setValue("isDraft", true, { shouldDirty: true });
   }, [setValue]);
 
-  console.log(isDraft, "isDraft");
-
   if (!product?.id) {
     return (
       <div className="bg-blur-card flex flex-col gap-2 justify-center items-center">

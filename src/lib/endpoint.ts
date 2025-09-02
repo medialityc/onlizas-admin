@@ -84,22 +84,13 @@ export const backendRoutes = {
     categoryFeatures: `${process.env.NEXT_PUBLIC_API_URL}categories/features`, // GET
 
     /* space SUPPLIER */
-    listMyProducts: () =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/products`,
-    createSupplierProductByLink: (supplierId: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/products/link`,
-    createSupplierProduct: (supplierId: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/products`,
-    updateSupplierProduct: (
-      supplierId: number | string,
-      productId: number | string
-    ) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/products/${productId}`,
-    deleteSupplierProduct: (
-      supplierId: number | string,
-      productId: number | string
-    ) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/products/${productId}`,
+    listMyProducts: `${process.env.NEXT_PUBLIC_API_URL}suppliers/products`,
+    createSupplierProductByLink: `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/products/link`,
+    createSupplierProduct: `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/products`,
+    updateSupplierProduct: (productId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/products/${productId}`,
+    deleteSupplierProduct: (productId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/products/${productId}`,
   },
   warehouseVirtualTypes: {
     create: `${process.env.NEXT_PUBLIC_API_URL}virtual-warehouse-types`,
@@ -146,6 +137,10 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}admin/transfers/${id}/cancel`,
     execute: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/transfers/${id}/execute`,
+  },
+  warehouse_me: {
+    create: `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/virtual-warehouses`,
+    list: `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/virtual-warehouses`,
   },
 
   departments: {

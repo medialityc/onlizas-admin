@@ -6,8 +6,9 @@ import { WarehouseCard } from "./warehouse-card";
 type Props = {
   data?: WarehouseFormData[];
   searchParams: SearchParams;
+  baseRoute: string;
 };
-const WarehouseCardList = ({ data, searchParams }: Props) => {
+const WarehouseCardList = ({ data, searchParams, baseRoute }: Props) => {
   const id = useId();
 
   if (data?.length === 0) {
@@ -25,6 +26,9 @@ const WarehouseCardList = ({ data, searchParams }: Props) => {
     <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-2 md:gap-4 mb-4">
       {data?.map((warehouse: WarehouseFormData) => (
         <div className="col-span-1" key={`${id}-${warehouse?.id}`}>
+          <>
+            <pre> {JSON.stringify(warehouse, null, 2)} </pre>
+          </>
           <WarehouseCard warehouse={warehouse} />
         </div>
       ))}
