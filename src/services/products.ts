@@ -264,11 +264,10 @@ export async function getAllMyProducts(
 }
 
 export async function createSupplierProductLink(
-  supplierId: number | string,
   productId: number | string
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.products.createSupplierProductByLink(supplierId),
+    url: backendRoutes.products.createSupplierProductByLink(1), //todo
     method: "POST",
     data: {
       productId,
@@ -283,11 +282,10 @@ export async function createSupplierProductLink(
 }
 
 export async function createSupplierProduct(
-  supplierId: number | string,
   data: FormData
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.products.createSupplierProduct(supplierId),
+    url: backendRoutes.products.createSupplierProduct(1), // todo
     method: "POST",
     data,
     useAuth: true,
@@ -300,12 +298,11 @@ export async function createSupplierProduct(
 }
 
 export async function updateSupplierProduct(
-  supplierId: number,
   productId: number,
   data: FormData
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.products.updateSupplierProduct(supplierId, productId),
+    url: backendRoutes.products.updateSupplierProduct(1, productId), //todo
     method: "PUT",
     data,
     useAuth: true,

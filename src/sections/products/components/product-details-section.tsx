@@ -2,58 +2,18 @@
 
 import IconClipboardText from "@/components/icon/icon-clipboard-text";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { useEffect, useMemo, useRef } from "react";
 import { RHFInputWithLabel } from "@/components/react-hook-form";
 import { Button } from "@/components/button/button";
 import IconTrash from "@/components/icon/icon-trash";
-
-interface DetailEntry {
-  key: string;
-  value: string;
-}
+import { AlertBox } from "@/components/alert/alert-box";
 
 function ProductDetailsSection() {
-  const { control, setValue, getValues, watch } = useFormContext();
+  const { control, formState } = useFormContext();
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "detailsArray" as const,
+    name: "details",
   });
-
-  const detailsArray: DetailEntry[] = watch("detailsArray");
-  const lastSerializedRef = useRef<string>("__init__");
-
-  useEffect(() => {
-    const obj: Record<string, string> = {};
-    for (const item of detailsArray) {
-      const k = item?.key?.trim();
-      if (k) obj[k] = item.value ?? "";
-    }
-    const serialized = JSON.stringify(obj);
-    if (serialized === lastSerializedRef.current) {
-      return;
-    }
-    const currentDetails = getValues("details") as
-      | Record<string, string>
-      | undefined;
-    const currentSerialized = JSON.stringify(currentDetails || {});
-    if (currentSerialized === serialized) {
-      lastSerializedRef.current = serialized;
-      return;
-    }
-    lastSerializedRef.current = serialized;
-    setValue("details", obj, { shouldDirty: true, shouldTouch: false });
-  }, [detailsArray, getValues, setValue]);
-
-  const duplicateKeys = useMemo(() => {
-    const counts: Record<string, number> = {};
-    detailsArray.forEach((d) => {
-      const k = d.key?.trim();
-      if (!k) return;
-      counts[k] = (counts[k] || 0) + 1;
-    });
-    return Object.keys(counts).filter((k) => counts[k] > 1);
-  }, [detailsArray]);
 
   const addRow = () => {
     if (fields.length >= 50) return;
@@ -98,23 +58,15 @@ function ProductDetailsSection() {
         </div>
       </div>
 
-      {/* Duplicate Keys Warning */}
-      {duplicateKeys.length > 0 && (
-        <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-lg">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-            <span className="text-sm font-medium text-amber-800 dark:text-amber-200">
-              Claves duplicadas detectadas
-            </span>
-          </div>
-          <p className="text-xs text-amber-700 dark:text-amber-300 mt-1 ml-4">
-            {duplicateKeys.join(", ")} - Asegúrate de que cada clave sea única
-          </p>
-        </div>
-      )}
-
       {/* Content Section */}
       <div className="space-y-3">
+        {formState?.errors?.details?.message && (
+          <AlertBox
+            message={formState?.errors?.details?.message as string}
+            title="Error"
+            variant="danger"
+          />
+        )}
         {fields.length === 0 ? (
           <div className="py-12 text-center">
             <div className="w-12 h-12 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -137,7 +89,7 @@ function ProductDetailsSection() {
                 <div className="flex-1 min-w-0">
                   <RHFInputWithLabel
                     label="Clave"
-                    name={`detailsArray[${index}].key`}
+                    name={`details[${index}].key`}
                     placeholder="Ej: Color, Tamaño, Material..."
                     className="w-full"
                   />
@@ -145,7 +97,7 @@ function ProductDetailsSection() {
                 <div className="flex-1 min-w-0">
                   <RHFInputWithLabel
                     label="Valor"
-                    name={`detailsArray[${index}].value`}
+                    name={`details[${index}].value`}
                     placeholder="Ej: Azul, Grande, Algodón..."
                     className="w-full"
                   />

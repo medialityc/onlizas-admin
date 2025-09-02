@@ -12,7 +12,8 @@ import LoaderButton from "@/components/loaders/loader-button";
 import Badge from "@/components/badge/badge";
 import { Separator } from "@/components/ui/separator";
 import { RHFSwitch } from "@/components/react-hook-form";
-import { CopyIcon } from "lucide-react";
+import { CopyIcon, PackageIcon } from "lucide-react";
+import { useCallback } from "react";
 
 type Props = {
   onSubmitLink: any;
@@ -20,13 +21,28 @@ type Props = {
 };
 
 const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
-  const { watch } = useFormContext();
+  const { watch, setValue } = useFormContext();
   const product = watch("selectedProduct");
   const isDraft = watch("isDraft");
 
+  const handleCreate = useCallback(() => {
+    setValue("isDraft", true, { shouldDirty: true });
+  }, [setValue]);
+
   console.log(isDraft, "isDraft");
 
-  if (!product) return null;
+  if (!product?.id) {
+    return (
+      <div className="bg-blur-card flex flex-col gap-2 justify-center items-center">
+        <PackageIcon className="w-10 h-10" />
+        <h2 className="text-lg">¿No encuentras lo que buscas?</h2>
+        <p>Crea un producto completamente nuevo desde cero</p>
+        <Button onClick={handleCreate}>
+          <PlusIcon className="h-4 w-4 mr-2" /> Crear producto nuevo
+        </Button>
+      </div>
+    );
+  }
 
   const defaultImage = "/assets/images/placeholder-product.webp";
   const imageUrl =
@@ -41,7 +57,7 @@ const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
     product.length || product.width || product.height || product.weight;
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden  ">
+    <div className="bg-blur-card">
       {/* Header compacto */}
       <div className="p-4 border-b border-gray-100 dark:border-slate-700">
         <div className="flex items-center gap-3">
