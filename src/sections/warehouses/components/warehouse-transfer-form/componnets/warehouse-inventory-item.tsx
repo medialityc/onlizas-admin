@@ -140,15 +140,15 @@ const InventoryVariantItem = ({
             />
 
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500 dark:text-gray-400">
+              <span className="text-xs flex flex-row gap-1 items-center text-gray-500 dark:text-gray-400">
                 Parcial
                 <Tippy
                   trigger="mouseenter focus"
-                  content="Transferir todos. Si se habilita la transferencia parcial, se transferir 
-                  la cantidad disponible en el inventario, si no se habilita, se transferir 
-                  la cantidad completa del producto."
+                  content="Transferir todos. Si se habilita la transferencia parcial, se transfiere
+                  la cantidad disponible en el inventario, si no se habilita, se intenta transferir
+                  la cantidad definida."
                 >
-                  <InfoIcon className="h-4 w-4" />
+                  <InfoIcon className="h-4 w-4 text-primary" />
                 </Tippy>
               </span>
               <Switch

@@ -8,7 +8,7 @@ export const supplierProductSchema = z.object({
   name: z
     .string({ required_error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")
-    .max(100, "El nombre no puede tener más de 100 caracteres."),
+    .max(250, "El nombre no puede tener más de 250 caracteres."),
   description: z
     .string()
     .max(500, "La descripción no puede tener más de 500 caracteres.")

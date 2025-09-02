@@ -24,8 +24,7 @@ const initValues: ProductFormData = {
   categoryIds: [],
   supplierUserIds: [],
   aboutThis: [],
-  details: {},
-  detailsArray: [],
+  details: [],
   image: "",
 };
 
