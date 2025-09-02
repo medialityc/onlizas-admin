@@ -18,11 +18,17 @@ import AnimateHeight from "react-animate-height";
 
 type Props = {
   item: IUser;
+  className?: string;
 };
 
-const UserProviderCard = ({ item }: Props) => {
+const UserProviderCard = ({ item, className }: Props) => {
   return (
-    <Card className="group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full dark:border-slate-700">
+    <Card
+      className={cn(
+        "group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full dark:border-slate-700",
+        className
+      )}
+    >
       <CardHeader className="flex flex-row gap-2 items-start justify-between">
         <div className="flex flex-row gap-2 items-center ">
           <div

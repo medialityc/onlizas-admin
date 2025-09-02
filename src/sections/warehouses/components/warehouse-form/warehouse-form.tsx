@@ -14,9 +14,8 @@ import Link from "next/link";
 
 type Props = {
   warehouse?: WarehouseFormData;
-  isMe?: boolean;
 };
-export function WarehouseForm({ warehouse, isMe }: Props) {
+export function WarehouseForm({ warehouse }: Props) {
   const { form, isPending, onSubmit, warehouseType } = useWarehouseCreateForm(
     warehouse && getAdapterWarehouse(warehouse)
   );
@@ -30,7 +29,7 @@ export function WarehouseForm({ warehouse, isMe }: Props) {
     >
       <div className="grid grid-cols-1  gap-4">
         <div className="col-span-1  space-y-4">
-          <BasicInfoSection warehouseId={warehouse?.id} isMe={isMe} />
+          <BasicInfoSection warehouseId={warehouse?.id} />
           {warehouseType === WAREHOUSE_TYPE_ENUM.physical && (
             <CapacitySection />
           )}

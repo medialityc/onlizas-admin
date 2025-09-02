@@ -14,19 +14,18 @@ export const metadata: Metadata = {
 };
 
 type PageProps = {
-  params: Promise<{ id: string; type: string }>;
+  params: Promise<{ id: string }>;
 };
 
 export default async function EditWarehouseTransfersPage({
   params,
 }: PageProps) {
-  const { id, type } = await params;
+  const { id } = await params;
 
-  if (!Object.keys(WAREHOUSE_TYPE_ENUM).includes(type)) {
-    notFound();
-  }
-
-  const response = await getWarehouseById(Number(id), type);
+  const response = await getWarehouseById(
+    Number(id),
+    WAREHOUSE_TYPE_ENUM.virtual
+  );
 
   if (!response?.data) {
     notFound();

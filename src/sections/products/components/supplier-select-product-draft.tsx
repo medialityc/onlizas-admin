@@ -85,7 +85,7 @@ const SupplierSelectProductDraft = () => {
         name="productId"
         label="Seleccionar Producto"
         placeholder="Buscar producto..."
-        onFetch={getAllProducts}
+        onFetch={getAllProducts as any}
         objectValueKey="id"
         objectKeyLabel="name"
         queryKey="products-draft"

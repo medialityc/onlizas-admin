@@ -7,6 +7,7 @@ import EditWarehouseLayout from "@/sections/warehouses/components/layout/edit-wa
 import { getWarehouseById } from "@/services/warehouses";
 import { notFound } from "next/navigation";
 import { meWarehouseTabs } from "@/sections/warehouses/constants/warehouse-tabs";
+import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 
 export const metadata: Metadata = {
   title: "Transferencias del almacén - ZAS Express",
@@ -28,20 +29,23 @@ function WarehousesListFallback() {
 }
 
 type Props = {
-  params: Promise<{ type: string; id: string }>;
+  params: Promise<{ id: string }>;
   searchParams: Promise<Record<string, string | string[]>>;
 };
 
 export default async function WarehousesPage({ searchParams, params }: Props) {
   const search = await searchParams;
-  const { id: warehouseId, type } = await params;
+  const { id: warehouseId } = await params;
   const query = buildQueryParams(search);
   const warehousesTransferPromise = await getAllTransfers({
     ...query,
     warehouseId,
   });
 
-  const response = await getWarehouseById(Number(warehouseId), type);
+  const response = await getWarehouseById(
+    Number(warehouseId),
+    WAREHOUSE_TYPE_ENUM.virtual
+  );
 
   if (!response?.data) {
     notFound();
