@@ -1,10 +1,9 @@
 "use client";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { FormProvider } from "@/components/react-hook-form";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/button/button";
 import { useRouter } from "next/navigation";
-import { ProductFormData } from "../schema/product-schema";
 import LoaderButton from "@/components/loaders/loader-button";
 import BasicInfoSection from "./basic-info-section";
 import CategoriesAndSuppliersSection from "./categories-suppliers-section";
@@ -14,36 +13,44 @@ import ProductDetailsSection from "./product-details-section";
 import SupplierSelectProductDraft from "./supplier-select-product-draft";
 import { useSupplierProductCreateForm } from "../hooks/use-supplier-product-create-form";
 import SupplierProductSummary from "./supplier-product-summary";
+import { SupplierProductFormData } from "../schema/supplier-product-schema";
 
 type Props = {
-  initValue?: ProductFormData;
+  initValue?: SupplierProductFormData;
+  isEdit?: boolean;
 };
 
-const SupplierProductForm = ({ initValue }: Props) => {
+const SupplierProductForm = ({ initValue, isEdit }: Props) => {
   const { form, isPending, onSubmit, onSubmitLink, isDraft } =
-    useSupplierProductCreateForm(initValue);
+    useSupplierProductCreateForm(initValue, isEdit);
+
+  console.log("edit", initValue);
 
   const { push } = useRouter();
 
-  const isEdit = useMemo(() => !!initValue?.id, [initValue?.id]);
-
   const handleCancel = useCallback(() => push("/provider/products"), [push]);
+
+  const isProductDraft = [isDraft, isEdit].some(Boolean);
 
   return (
     <section>
       <FormProvider methods={form} onSubmit={onSubmit} id="product-form">
         <div className="grid grid-cols-1 lg:grid-cols-2  gap-2 md:gap-4">
-          <div className="col-span-1 lg:col-span-2">
-            <SupplierSelectProductDraft />
-          </div>
-          <div className="col-span-1 lg:col-span-2">
-            <SupplierProductSummary
-              onSubmitLink={onSubmitLink}
-              isLoading={isPending}
-            />
-          </div>
+          {!isEdit && (
+            <>
+              <div className="col-span-1 lg:col-span-2">
+                <SupplierSelectProductDraft />
+              </div>
+              <div className="col-span-1 lg:col-span-2">
+                <SupplierProductSummary
+                  onSubmitLink={onSubmitLink}
+                  isLoading={isPending}
+                />
+              </div>
+            </>
+          )}
 
-          {isDraft && (
+          {isProductDraft && (
             <>
               {/* product form */}
               <div className="col-span-1 lg:col-span-2">
@@ -68,7 +75,7 @@ const SupplierProductForm = ({ initValue }: Props) => {
         </div>
       </FormProvider>
       {/* Botones de acción */}
-      {isDraft && (
+      {isProductDraft && (
         <div
           className={cn(
             "flex gap-4 pt-6 mt-6 border-t dark:border-slate-700 justify-end"

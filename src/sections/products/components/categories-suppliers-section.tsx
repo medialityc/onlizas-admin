@@ -8,7 +8,7 @@ import { getAllSupplierUsers } from "@/services/users";
 function CategoriesAndSuppliersSection({
   hideSupplier,
 }: {
-  hideSupplier: boolean;
+  hideSupplier?: boolean;
 }) {
   return (
     <div className="bg-blur-card">

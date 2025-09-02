@@ -34,7 +34,8 @@ const initValues: SupplierProductFormData = {
 };
 
 export const useSupplierProductCreateForm = (
-  defaultValues: SupplierProductFormData = initValues
+  defaultValues: SupplierProductFormData = initValues,
+  isEdit: boolean = false
 ) => {
   const { push } = useRouter();
   const form = useForm({
@@ -58,8 +59,8 @@ export const useSupplierProductCreateForm = (
       if (!payload?.isDraft) {
         res = await createSupplierProductLink(payload?.id as number);
       } else {
-        res = payload?.id
-          ? await updateSupplierProduct(payload?.id, fromData)
+        res = isEdit
+          ? await updateSupplierProduct(payload?.id as number, fromData)
           : await createSupplierProduct(fromData);
       }
 
