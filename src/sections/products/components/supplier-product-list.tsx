@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { DataTableColumn } from "mantine-datatable";
 import Link from "next/link";
 import useFiltersUrl from "@/hooks/use-filters-url";
+import ImagePreview from "@/components/image/image-preview";
+import { isValidUrl } from "@/utils/format";
 
 interface ProductListProps {
   data?: GetAllProducts;
@@ -41,6 +43,25 @@ export function SupplierProductList({
   };
 
   const columns: DataTableColumn<Product>[] = [
+    {
+      accessor: "image",
+      title: "Imagen",
+      sortable: true,
+      render: (product, index) => (
+        <div className="font-medium" key={`image-${index}`}>
+          <ImagePreview
+            className="w-10 h-10"
+            alt={"product"}
+            images={
+              isValidUrl(product?.image as string)
+                ? [product?.image as string]
+                : []
+            }
+          />
+        </div>
+      ),
+    },
+
     {
       accessor: "name",
       title: "Nombre",
