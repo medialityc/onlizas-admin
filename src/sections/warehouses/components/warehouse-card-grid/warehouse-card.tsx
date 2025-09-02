@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { paths } from "@/config/paths";
 
 import {
   MapPinIcon,
@@ -20,28 +19,24 @@ import { Separator } from "@/components/ui/separator";
 
 interface WarehouseCardProps {
   warehouse: WarehouseFormData;
-  onEdit?: (warehouse: WarehouseFormData) => void;
-  onDelete?: (warehouse: WarehouseFormData) => void;
+  type: WAREHOUSE_TYPE_ENUM;
+  onEdit?: () => void;
 }
 
-export function WarehouseCard({ warehouse, onEdit }: WarehouseCardProps) {
-  const isPhysical = warehouse?.type === WAREHOUSE_TYPE_ENUM.physical;
+export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
+  const isPhysical = type === WAREHOUSE_TYPE_ENUM.physical;
 
   const router = useRouter();
-  const handleView = () =>
-    router.push(
-      paths.dashboard.warehouses.view(warehouse?.type, warehouse.id!)
-    );
+  const handleView = () => router.push(`warehouses/${type}/${warehouse.id!}`);
   const handleEdit = () => {
-    if (onEdit) return onEdit(warehouse);
-    router.push(
-      paths.dashboard.warehouses.edit(warehouse?.type, warehouse.id!)
-    );
+    if (onEdit) {
+      onEdit();
+      return;
+    }
+    router.push(`warehouses/${type}/${warehouse.id!}/edit`);
   };
   const handleTransfer = () => {
-    router.push(
-      paths.dashboard.warehouses.transfer(warehouse?.type, warehouse.id!)
-    );
+    router.push(`warehouses/${type}/${warehouse.id!}/edit/transfers`);
   };
 
   return (
@@ -51,13 +46,12 @@ export function WarehouseCard({ warehouse, onEdit }: WarehouseCardProps) {
           <div
             className={cn(
               "p-4 rounded-lg",
-              warehouse?.type?.toLocaleLowerCase()
+              type === WAREHOUSE_TYPE_ENUM.physical
                 ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
                 : "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
             )}
           >
-            {warehouse?.type?.toLocaleLowerCase() ===
-            WAREHOUSE_TYPE_ENUM.physical ? (
+            {type === WAREHOUSE_TYPE_ENUM.physical ? (
               <BuildingStorefrontIcon className="h-6 w-6" />
             ) : (
               <BuildingOfficeIcon className="h-6 w-6" />

@@ -1,5 +1,6 @@
 import { buildQueryParams } from "@/lib/request";
 import EditWarehouseLayout from "@/sections/warehouses/components/layout/edit-warehouse-layout";
+import { meWarehouseTabs } from "@/sections/warehouses/constants/warehouse-tabs";
 import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 import WarehouseInventoryListContainer from "@/sections/warehouses/containers/warehouse-inventory-container";
 
@@ -48,7 +49,7 @@ export default async function EditWarehouseInventoryPage({
   const warehouse = response.data;
 
   return (
-    <EditWarehouseLayout warehouse={warehouse}>
+    <EditWarehouseLayout warehouse={warehouse} onTabs={meWarehouseTabs}>
       <WarehouseInventoryListContainer
         inventoryPromise={inventory}
         query={query}

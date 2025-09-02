@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronDown, X, Search } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // Tipos para las opciones del filtro
 interface FilterOption {
@@ -149,7 +150,7 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
               className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
               title="Clear filters"
               type="button"
-              aria-label="Clear all selections"
+              aria-label="Limpiar selecciones"
             >
               <X
                 size={12}
@@ -216,20 +217,16 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
               <>
                 {/* Header con contador */}
                 {allowMultiple && selectedStatuses.length > 0 && (
-                  <div
-                    className="px-3 py-2 bg-gray-50 dark:bg-gray-700 border-b border-gray-100 dark:border-gray-600 
-                                  flex items-center justify-between"
-                  >
+                  <div className="px-3 py-2 bg-gray-50 dark:bg-gray-700 border-b border-gray-100 dark:border-gray-600 flex items-center justify-between">
                     <span className="text-xs text-gray-600 dark:text-gray-400">
-                      {selectedStatuses.length} of {options.length} selected
+                      {selectedStatuses.length} de {options.length}
                     </span>
                     <button
                       onClick={clearAll}
-                      className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 
-                               font-medium transition-colors"
+                      className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors"
                       type="button"
                     >
-                      Clear all
+                      Limpiar todo
                     </button>
                   </div>
                 )}
@@ -243,14 +240,16 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
                       <button
                         key={option.value}
                         onClick={() => handleStatusToggle(option.value)}
-                        className={`w-full px-3 py-2 text-left text-sm
-                                   hover:bg-gray-50 dark:hover:bg-gray-700 
-                                   transition-colors duration-150
-                                   flex items-center justify-between group ${
-                                     isSelected
-                                       ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300"
-                                       : "text-gray-900 dark:text-gray-100"
-                                   }`}
+                        className={cn(
+                          "w-full px-3 py-2 text-left text-sm",
+                          {
+                            "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300":
+                              isSelected,
+                          },
+                          "hover:bg-gray-50 dark:hover:bg-gray-700",
+                          "transition-colors duration-150",
+                          "flex items-center justify-between group"
+                        )}
                         type="button"
                         role="option"
                         aria-selected={isSelected}

@@ -140,6 +140,8 @@ export const backendRoutes = {
   },
   warehouse_me: {
     create: `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/virtual-warehouses`,
+    update: (warehouseId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/virtual-warehouses/${warehouseId}`,
     list: `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/virtual-warehouses`,
   },
 

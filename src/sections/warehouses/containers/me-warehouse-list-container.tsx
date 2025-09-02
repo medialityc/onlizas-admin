@@ -7,7 +7,8 @@ import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 import { GetAllWarehouses } from "@/types/warehouses";
 import { InventoryCardGrid } from "../components/warehouse-card-grid/warehouse-card-grid";
-import WarehouseHeader from "../components/warehouse-header/warehouse-header";
+import { WAREHOUSE_TYPE_ENUM } from "../constants/warehouse-type";
+import MeWarehouseHeader from "../components/warehouse-header/me-warehouse-header";
 
 interface Props {
   warehousesPromise: ApiResponse<GetAllWarehouses>;
@@ -18,7 +19,6 @@ interface Props {
 export default function MeWarehouseListContainer({
   warehousesPromise,
   query,
-  baseRoute = "/dashboard/warehouses",
 }: Props) {
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(warehousesPromise);
@@ -32,13 +32,13 @@ export default function MeWarehouseListContainer({
       {warehousesPromise.status == 401 && <SessionExpiredAlert />}
       <div className="panel flex flex-col gap-4">
         {/* header */}
-        <WarehouseHeader />
+        <MeWarehouseHeader data={warehousesPromise.data?.data as any} />
 
         <InventoryCardGrid
           data={warehousesPromise.data}
           searchParams={query}
           onSearchParamsChange={handleSearchParamsChange}
-          baseRoute={baseRoute}
+          forceType={WAREHOUSE_TYPE_ENUM.virtual}
         />
       </div>
     </div>
