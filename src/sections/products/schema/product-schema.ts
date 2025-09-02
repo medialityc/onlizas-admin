@@ -1,3 +1,4 @@
+import { detailsObjectToArray } from "@/utils/format";
 import { z } from "zod";
 
 // Schema completo que coincide con la API real según product-apis.md
@@ -53,29 +54,39 @@ export const productSchema = z.object({
           "Las sugerencias deben ser únicas (no se permiten duplicados).",
       }
     ),
-  // details dinámicos (objeto de claves arbitrarias string -> string)
+
   details: z
-    .record(
-      z.string(),
-      z.string().trim().min(1, "Valor requerido para el detalle")
-    )
-    .default({})
-    .refine((obj) => Object.keys(obj).length <= 50, "Máximo 50 detalles"),
-  // soporte interno para UI (array de pares) no enviado directo a la API
-  detailsArray: z
-    .array(
-      z.object({
-        key: z.string().trim().min(1, "Clave requerida").max(50),
-        value: z
-          .string()
-          .trim()
-          .min(1, "Valor requerido")
-          .max(100, "Máximo 100 caracteres"),
-      })
-    )
-    .max(50, "Máximo 50 detalles")
-    .optional()
-    .default([]),
+    .union([
+      z.array(
+        z.object({
+          key: z.string().trim().min(1, "Clave requerida"),
+          value: z.string().trim().min(1, "Valor requerido para el detalle"),
+        })
+      ),
+      z.record(z.string(), z.string()),
+    ])
+    .default([])
+    .transform((details) => {
+      if (Array.isArray(details)) {
+        return details;
+      }
+      return detailsObjectToArray(details);
+    })
+    .refine(
+      (arrayDetails) => {
+        if (arrayDetails.length === 0) {
+          return false;
+        }
+        const uniqueKeys = new Set(
+          arrayDetails.map((d) => d.key.toLowerCase().trim())
+        );
+        return uniqueKeys.size === arrayDetails.length;
+      },
+      {
+        message:
+          "Las claves de detalles deben ser únicas (no se permiten duplicados).",
+      }
+    ),
 
   image: z
     .union([
@@ -86,7 +97,6 @@ export const productSchema = z.object({
 });
 
 export type ProductFormData = z.infer<typeof productSchema> & {
-  supplierId?: number; // todo
   suppliers?: {
     id: number;
     name: string;

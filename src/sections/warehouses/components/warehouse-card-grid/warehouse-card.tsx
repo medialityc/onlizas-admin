@@ -8,6 +8,7 @@ import {
   PencilSquareIcon,
   BuildingOfficeIcon,
   BuildingStorefrontIcon,
+  ArrowsRightLeftIcon,
 } from "@heroicons/react/24/outline";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
@@ -39,6 +40,14 @@ export function WarehouseCard({ warehouse, onEdit }: WarehouseCardProps) {
     if (onEdit) return onEdit(warehouse);
     router.push(
       paths.dashboard.warehouses.edit(
+        warehouse?.type.toLowerCase(),
+        warehouse.id!
+      )
+    );
+  };
+  const handleTransfer = () => {
+    router.push(
+      paths.dashboard.warehouses.transfer(
         warehouse?.type.toLowerCase(),
         warehouse.id!
       )
@@ -120,7 +129,11 @@ export function WarehouseCard({ warehouse, onEdit }: WarehouseCardProps) {
       <Separator className=" mt-auto  " />
       {/* Botones de acción - siempre al final */}
       <div className="flex flex-wrap gap-2  justify-end  ">
-        <Button outline variant="secondary" onClick={handleEdit}>
+        <Button outline variant="secondary" onClick={handleTransfer}>
+          <ArrowsRightLeftIcon className="h-4 w-4  mr-2" />
+          Transferir
+        </Button>
+        <Button variant="primary" onClick={handleEdit}>
           <PencilSquareIcon className="h-4 w-4" />
           Editar
         </Button>

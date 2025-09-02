@@ -15,9 +15,11 @@ export const setSupplierProductFormData = async (
         toast.error(`La imagen ${image.name} excede el tamaño máximo de 5MB`);
       } else {
         formData.append("mainImage", image);
+        formData.append("additionalImages.0", image);
       }
     } else if (typeof image === "string") {
       formData.append("mainImage", image);
+      formData.append("additionalImages.0", image);
     }
   }
 

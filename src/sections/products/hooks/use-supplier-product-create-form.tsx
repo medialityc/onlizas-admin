@@ -29,7 +29,7 @@ const initValues: SupplierProductFormData = {
   isActive: false,
   categoryIds: [],
   aboutThis: [],
-  details: {},
+  details: [],
   image: "",
 };
 
@@ -44,7 +44,7 @@ export const useSupplierProductCreateForm = (
 
   const isDraft = form.watch("isDraft");
 
-  console.log(form.formState.errors)
+  console.log(form.formState.errors);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (
@@ -52,20 +52,16 @@ export const useSupplierProductCreateForm = (
     ) => {
       const fromData = await setSupplierProductFormData(payload);
 
+      console.log(fromData, "fromData", payload);
+
       let res = undefined;
-      if (payload?.isLink) {
-        res = createSupplierProductLink(
-          payload?.supplierId as number,
-          payload?.id as number
-        );
+      if (!payload?.isDraft) {
+        res = await createSupplierProductLink(payload?.id as number);
+      } else {
+        res = payload?.id
+          ? await updateSupplierProduct(payload?.id, fromData)
+          : await createSupplierProduct(fromData);
       }
-      res = payload?.id
-        ? await updateSupplierProduct(
-            payload?.supplierId as number,
-            payload?.id,
-            fromData
-          )
-        : await createSupplierProduct(payload?.supplierId as number, fromData);
 
       if (res.error) {
         throw res;

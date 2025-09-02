@@ -16,6 +16,8 @@ import {
   useWarehouseInventoryActions,
 } from "@/sections/warehouses/contexts/warehouse-inventory-transfer.stote";
 import { Switch } from "@/components/switch";
+import { InfoIcon } from "lucide-react";
+import Tippy from "@tippyjs/react";
 
 type Props = {
   inventory: Inventory;
@@ -140,6 +142,14 @@ const InventoryVariantItem = ({
             <div className="flex items-center gap-2">
               <span className="text-xs text-gray-500 dark:text-gray-400">
                 Parcial
+                <Tippy
+                  trigger="mouseenter focus"
+                  content="Transferir todos. Si se habilita la transferencia parcial, se transferir 
+                  la cantidad disponible en el inventario, si no se habilita, se transferir 
+                  la cantidad completa del producto."
+                >
+                  <InfoIcon className="h-4 w-4" />
+                </Tippy>
               </span>
               <Switch
                 checked={product?.allowPartialFulfillment || false}

@@ -1,3 +1,4 @@
+import { detailsObjectToArray } from "@/utils/format";
 import { z } from "zod";
 
 // Schema completo que coincide con la API real según product-apis.md
@@ -62,17 +63,22 @@ export const supplierProductSchema = z.object({
       ),
       z.record(z.string(), z.string()),
     ])
-    .default({})
+    .default([])
+    .transform((details) => {
+      if (Array.isArray(details)) {
+        return details;
+      }
+      return detailsObjectToArray(details);
+    })
     .refine(
-      (obj) => Object.keys(obj).length <= 50,
-      "Máximo 50 detalles (no se permiten duplicados)"
-    )
-    .refine(
-      (obj) => {
+      (arrayDetails) => {
+        if (arrayDetails.length === 0) {
+          return false;
+        }
         const uniqueKeys = new Set(
-          Object.keys(obj).map((key) => key.toLowerCase().trim())
+          arrayDetails.map((d) => d.key.toLowerCase().trim())
         );
-        return uniqueKeys.size === Object.keys(obj).length;
+        return uniqueKeys.size === arrayDetails.length;
       },
       {
         message:
@@ -81,19 +87,29 @@ export const supplierProductSchema = z.object({
     ),
 
   image: z
-    .union([
-      z.string().url("Debe ser una URL válida para la imagen."),
-      z.instanceof(File, { message: "Debe ser un archivo válido." }),
-    ])
-    .optional(),
+    .union([z.string(), z.instanceof(File)])
+    .nullable()
+    .optional()
+    .superRefine((val, ctx) => {
+      const data = ctx.path[0] as { isDraft?: boolean };
+      if (data?.isDraft) {
+        return;
+      }
+      if (val === undefined || val === null) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "La imagen es obligatoria.",
+        });
+      } else if (typeof val !== "string" && !(val instanceof File)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "La imagen debe ser una URL válida o un archivo.",
+        });
+      }
+    }),
 });
 
 export type SupplierProductFormData = z.infer<typeof supplierProductSchema> & {
-  supplierId?: number;
-  suppliers?: {
-    id: number;
-    name: string;
-  }[];
   categories?: {
     id: number;
     name: string;

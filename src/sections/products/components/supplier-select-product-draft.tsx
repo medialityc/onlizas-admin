@@ -55,9 +55,10 @@ const SupplierSelectProductDraft = () => {
   const handleProductSelected = (product: ProductFormData) => {
     if (!product) return;
 
+    console.log(product, "Producto seleccionado");
+
     // Actualizar los campos del formulario con la información del producto
-    setValue("productId", product?.id);
-    setValue("supplierId", product?.suppliers?.[0]?.id);
+    setValue("id", product?.id);
     setValue("selectedProduct", product); // Guardar el producto completo para el resumen
     setValue("name", product.name);
     setValue("description", product.description || "");
@@ -81,12 +82,9 @@ const SupplierSelectProductDraft = () => {
 
   return (
     <div className="space-y-2">
-      <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-        Seleccionar Producto
-      </h3>
       <RHFAutocompleteFetcherInfinity
         name="productId"
-        label="Productos"
+        label="Seleccionar Producto"
         placeholder="Buscar producto..."
         onFetch={getAllProducts}
         objectValueKey="id"
