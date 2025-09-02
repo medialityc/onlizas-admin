@@ -55,10 +55,9 @@ const SupplierSelectProductDraft = () => {
   const handleProductSelected = (product: ProductFormData) => {
     if (!product) return;
 
-    console.log(product, "Producto seleccionado");
-
     // Actualizar los campos del formulario con la información del producto
     setValue("id", product?.id);
+    setValue("isDraft", false);
     setValue("selectedProduct", product); // Guardar el producto completo para el resumen
     setValue("name", product.name);
     setValue("description", product.description || "");
@@ -76,7 +75,7 @@ const SupplierSelectProductDraft = () => {
     setValue("detailsArray", detailsObjectToArray(product?.details));
     setValue(
       "image",
-      isValidUrl(product?.image as string) ? product?.image : ""
+      isValidUrl(product?.image as string) ? product?.image : null
     );
   };
 

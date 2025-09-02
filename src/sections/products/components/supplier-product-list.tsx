@@ -12,6 +12,8 @@ import Link from "next/link";
 import useFiltersUrl from "@/hooks/use-filters-url";
 import ImagePreview from "@/components/image/image-preview";
 import { isValidUrl } from "@/utils/format";
+import { deleteSupplierProduct } from "@/services/products";
+import showToast from "@/config/toast/toastConfig";
 
 interface ProductListProps {
   data?: GetAllProducts;
@@ -41,6 +43,21 @@ export function SupplierProductList({
   const handleEdit = (product: Product) => {
     router.push(paths.provider.products.edit(product.id));
   };
+
+  const handleDeleteSupplierProduct = useCallback(async (product: Product) => {
+    try {
+      const res = await deleteSupplierProduct(product?.id as number);
+      if (res?.error && res.message) {
+        console.error(res);
+        showToast(res.message, "error");
+      } else {
+        showToast("Product eliminado exitosamente", "success");
+      }
+    } catch (error) {
+      console.error(error);
+      showToast("Ocurrió un error, por favor intenta de nuevo", "error");
+    }
+  }, []);
 
   const columns: DataTableColumn<Product>[] = [
     {
@@ -101,6 +118,14 @@ export function SupplierProductList({
         </Badge>
       ),
     },
+    /* {
+      accessor: "createdAt",
+      title: "Fecha de creación",
+      sortable: true,
+      render: (product) => (
+         <DateValue value={product?.c} />
+      ),
+    }, */
     {
       accessor: "actions",
       title: "Acciones",
@@ -111,6 +136,7 @@ export function SupplierProductList({
           onViewDetails={() => handleView(product)}
           onEdit={() => handleEdit(product)}
           isActive={product.state}
+          onDelete={() => handleDeleteSupplierProduct(product)}
         />
       ),
     },

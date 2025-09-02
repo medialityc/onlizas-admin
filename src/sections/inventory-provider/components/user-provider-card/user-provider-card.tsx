@@ -4,6 +4,7 @@ import { Button } from "@/components/button/button";
 import {
   Card,
   CardContent,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/cards/card";
@@ -17,12 +18,11 @@ import AnimateHeight from "react-animate-height";
 
 type Props = {
   item: IUser;
-  className?: string;
 };
 
-const UserProviderCard = ({ item, className }: Props) => {
+const UserProviderCard = ({ item }: Props) => {
   return (
-    <Card className={cn(className)}>
+    <Card className="group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full dark:border-slate-700">
       <CardHeader className="flex flex-row gap-2 items-start justify-between">
         <div className="flex flex-row gap-2 items-center ">
           <div
@@ -50,7 +50,6 @@ const UserProviderCard = ({ item, className }: Props) => {
               </CardTitle>
             </Link>
             <Badge
-              className="bg-white"
               variant={item?.isActive ? "outline-success" : "outline-danger"}
             >
               {item?.isActive ? "Activo" : "Inactivo"}
@@ -58,8 +57,8 @@ const UserProviderCard = ({ item, className }: Props) => {
           </div>
         </div>
         <Badge
-          className="bg-white"
-          variant={item?.isVerified ? "outline-success" : "outline-danger"}
+          className="flex-nowrap text-nowrap"
+          variant={item?.isVerified ? "outline-secondary" : "outline-danger"}
         >
           {item?.isVerified ? "Verificado" : "Sin verificar"}
         </Badge>
@@ -98,20 +97,17 @@ const UserProviderCard = ({ item, className }: Props) => {
             ))}
           </div>
         </FlexItems>
-
-        {/* stores and products */}
-        <div></div>
-
+      </CardContent>
+      <CardFooter className=" mt-auto">
         {/* actions */}
-        <div className="flex flex-1 w-full mt-4">
+        <div className="flex justify-end w-full">
           <Link href={`/dashboard/inventory/list/${item?.id}`}>
-            <Button className="w-full" variant="secondary">
+            <Button outline className="w-full" variant="secondary">
               Ver inventario
             </Button>
           </Link>
         </div>
-      </CardContent>
-      {/*  <pre> {JSON.stringify(item, null, 2)} </pre> */}
+      </CardFooter>
     </Card>
   );
 };

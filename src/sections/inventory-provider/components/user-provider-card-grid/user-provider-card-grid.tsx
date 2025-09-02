@@ -24,7 +24,6 @@ export function UserProviderCardGrid({
         searchPlaceholder="Buscar proveedor..."
         emptyText="No se encontraron proveedor"
         enableColumnToggle={false}
-        
         component={
           <UserProviderCardList data={data?.data} searchParams={searchParams} />
         }

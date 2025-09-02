@@ -25,32 +25,22 @@ interface WarehouseCardProps {
 }
 
 export function WarehouseCard({ warehouse, onEdit }: WarehouseCardProps) {
-  const isPhysical =
-    warehouse?.type?.toLowerCase() === WAREHOUSE_TYPE_ENUM.physical;
+  const isPhysical = warehouse?.type === WAREHOUSE_TYPE_ENUM.physical;
 
   const router = useRouter();
   const handleView = () =>
     router.push(
-      paths.dashboard.warehouses.view(
-        warehouse?.type.toLowerCase(),
-        warehouse.id!
-      )
+      paths.dashboard.warehouses.view(warehouse?.type, warehouse.id!)
     );
   const handleEdit = () => {
     if (onEdit) return onEdit(warehouse);
     router.push(
-      paths.dashboard.warehouses.edit(
-        warehouse?.type.toLowerCase(),
-        warehouse.id!
-      )
+      paths.dashboard.warehouses.edit(warehouse?.type, warehouse.id!)
     );
   };
   const handleTransfer = () => {
     router.push(
-      paths.dashboard.warehouses.transfer(
-        warehouse?.type.toLowerCase(),
-        warehouse.id!
-      )
+      paths.dashboard.warehouses.transfer(warehouse?.type, warehouse.id!)
     );
   };
 
