@@ -313,3 +313,19 @@ export async function updateSupplierProduct(
   revalidateTag("products-supplier");
   return buildApiResponseAsync<Product>(res);
 }
+
+
+export async function getSupplierProductById(
+  id: number
+): Promise<ApiResponse<Product>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.products.byId(id),
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["products"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<Product>(res);
+}

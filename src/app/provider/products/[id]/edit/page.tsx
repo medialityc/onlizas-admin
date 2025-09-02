@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { getProductById } from "@/services/products";
 import { notFound } from "next/navigation";
-import ProductEditContainer from "@/sections/products/containers/product-edit-container";
-import { productTransformData } from "@/sections/products/utils/product-transform-data";
+import SupplierProductEditContainer from "@/sections/products/containers/supplier-product-edit-container";
+import { supplierProductTransformData } from "@/sections/products/utils/supplier-product-transform-data";
 
 // Esqueleto de carga
 function ProductEditFallback() {
@@ -46,7 +46,9 @@ export default async function EditProductPage({
 
   return (
     <Suspense fallback={<ProductEditFallback />}>
-      <ProductEditContainer product={productTransformData(product)} />
+      <SupplierProductEditContainer
+        product={supplierProductTransformData(product)}
+      />
     </Suspense>
   );
 }

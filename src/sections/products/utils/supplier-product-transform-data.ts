@@ -1,21 +1,22 @@
 import { isValidUrl } from "@/utils/format";
-import { ProductFormData } from "../schema/product-schema";
 import { Product } from "@/types/products";
+import { SupplierProductFormData } from "../schema/supplier-product-schema";
+import { ProductFormData } from "../schema/product-schema";
 
-export const productTransformData = (
+export const supplierProductTransformData = (
   product: ProductFormData | Product
-): ProductFormData => {
+): SupplierProductFormData => {
+  console.log(product, "SIN EDITAR");
   return {
     ...product,
+
+    isDraft: false, // define si es un formulario common y no link
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-expect-error
     about: product?.about?.map((a) => ({ value: a })),
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-expect-error
     categoryIds: product.categories.map((c) => c.id),
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-expect-error
-    supplierUserIds: product.suppliers.map((s) => s.id),
-    image: isValidUrl(product.image as string) ? product?.image : "",
+    image: isValidUrl(product.image as string) ? product?.image : undefined,
   };
 };
