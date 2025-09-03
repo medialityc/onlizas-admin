@@ -91,4 +91,24 @@ export async function getCategoryById(
   return buildApiResponseAsync<Category>(res);
 }
 
+// Me supplier
 
+export async function getAllMeApprovedCategories(
+  params: IQueryable
+): Promise<ApiResponse<GetAllCategories>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.categories.list
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["supplier-approved-categories"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetAllCategories>(res);
+}

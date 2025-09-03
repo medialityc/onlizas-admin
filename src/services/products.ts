@@ -354,3 +354,35 @@ export async function deleteSupplierProduct(
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
+
+export async function getAllMyApprovedProducts(
+  params: IQueryable
+): Promise<ApiResponse<GetAllProducts>> {
+  const url = new QueryParamsURLFactory(
+    params,
+    backendRoutes.products.meApprovedProducts
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    useAuth: true,
+    next: { tags: ["approved-supplier-products"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetAllProducts>(res);
+}
+
+export async function meToggleActiveProduct(
+  productId: number | string
+): Promise<ApiResponse<ApiStatusResponse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.products.meToggleActive(productId),
+    method: "PATCH",
+    useAuth: true,
+  });
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("supplier-products");
+  return buildApiResponseAsync<ApiStatusResponse>(res);
+}

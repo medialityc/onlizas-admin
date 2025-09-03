@@ -1,6 +1,6 @@
 "use client";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import { getAllProducts } from "@/services/products";
+import { getAllMyApprovedProducts } from "@/services/products";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import { cn } from "@/lib/utils";
@@ -8,6 +8,7 @@ import ImagePreview from "@/components/image/image-preview";
 import { detailsObjectToArray, isValidUrl } from "@/utils/format";
 import { SupplierProductFormData } from "../schema/supplier-product-schema";
 import { ProductFormData } from "../schema/product-schema";
+import Badge from "@/components/badge/badge";
 
 const ProductOptionRender = ({
   option,
@@ -20,9 +21,7 @@ const ProductOptionRender = ({
 
   return (
     <div
-      className={cn(
-        "flex items-center gap-3 p-2 rounded-lg transition-all hover:bg-gray-50 dark:hover:bg-slate-700"
-      )}
+      className={cn("flex items-center gap-3 p-2 rounded-lg transition-all ")}
     >
       <ImagePreview
         className="w-10 h-10"
@@ -40,6 +39,14 @@ const ProductOptionRender = ({
           </p>
         )}
       </div>
+      {option.isOwned && (
+        <Badge
+          className="text-xs font-medium text-white bg-green-600 dark:bg-green-500"
+          variant="info"
+        >
+          Propio
+        </Badge>
+      )}
       {option.details && Object.keys(option.details).length > 0 && (
         <span className="text-xs text-gray-500 dark:text-gray-400 shrink-0">
           {Object.keys(option.details).length} detalles
@@ -52,12 +59,15 @@ const ProductOptionRender = ({
 const SupplierSelectProductDraft = () => {
   const { setValue } = useFormContext();
 
-  const handleProductSelected = (product: ProductFormData) => {
+  const handleProductSelected = (
+    product: ProductFormData & { isOwned?: boolean }
+  ) => {
     if (!product) return;
 
     // Actualizar los campos del formulario con la información del producto
     setValue("id", product?.id);
     setValue("isDraft", false);
+    setValue("isOwned", product?.isOwned);
     setValue("selectedProduct", product); // Guardar el producto completo para el resumen
     setValue("name", product.name);
     setValue("description", product.description || "");
@@ -85,7 +95,7 @@ const SupplierSelectProductDraft = () => {
         name="productId"
         label="Seleccionar Producto"
         placeholder="Buscar producto..."
-        onFetch={getAllProducts as any}
+        onFetch={getAllMyApprovedProducts as any}
         objectValueKey="id"
         objectKeyLabel="name"
         queryKey="products-draft"
