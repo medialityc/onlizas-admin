@@ -1,16 +1,9 @@
 "use client";
-
-import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
-import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { DataGrid } from "@/components/datagrid/datagrid";
-import ActionsMenu from "@/components/menu/actions-menu";
-import showToast from "@/config/toast/toastConfig";
-import { downloadUserDocument } from "@/services/users";
-import { ApiResponse } from "@/types/fetch/api";
 import { IDocument } from "@/types/users";
 import { DataTableColumn } from "mantine-datatable";
-import { useRouter, useSearchParams } from "next/navigation";
-import { use, useCallback, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
 import { DocumentModal } from "../edit/document-modal";
 import { EnhancedDocument } from "@/types/suppliers";
 import Link from "next/link";
@@ -55,7 +48,7 @@ export function ProviderDocumentsList({ documents, userId }: Props) {
         sortable: true,
         render: (document) => (
           <p className="text-sm text-gray-600 dark:text-gray-300 truncate max-w-[200px] block">
-            {document.rejectionReason || "En revisión"}
+            {document.rejectionReason || "Aprobados"}
           </p>
         ),
       },
@@ -90,6 +83,7 @@ export function ProviderDocumentsList({ documents, userId }: Props) {
   return (
     <>
       <div className="panel">
+        <pre> {JSON.stringify(documents, null, 2)} </pre>
         <div className="mb-5 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-semibold text-dark dark:text-white-light">

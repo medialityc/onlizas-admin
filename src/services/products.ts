@@ -240,6 +240,19 @@ export async function getCategoryFeatures(
   return buildApiResponseAsync<CategoryFeaturesResponse>(res);
 }
 
+export async function toggleActiveProduct(
+  typeId: number
+): Promise<ApiResponse<ApiStatusResponse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.products.toggleActive(typeId),
+    method: "PATCH",
+    useAuth: true,
+  });
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("products");
+  return buildApiResponseAsync<ApiStatusResponse>(res);
+}
+
 /* MY PRODUCTS */
 
 export async function getAllMyProducts(

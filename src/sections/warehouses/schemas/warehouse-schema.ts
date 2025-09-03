@@ -145,8 +145,10 @@ export const warehouseSchema = z
 
 export type WarehouseFormData = z.infer<typeof warehouseSchema> & {
   id?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
   locationName?: string;
   supplierName?: string;
+  virtualTypeName?: string;
+  isDeleted?: boolean;
 };

@@ -73,13 +73,13 @@ const InventoryProviderCard = ({ item }: Props) => {
 
       <CardFooter className="grid grid-cols-2 gap-2 pt-2">
         <Link href={`/provider/inventory/${item?.id}/details`}>
-          <Button variant="primary" outline size="sm" className="w-full">
+          <Button variant="secondary" outline size="sm" className="w-full">
             <EyeIcon className="mr-2 h-4 w-4" />
             Ver
           </Button>
         </Link>
         <Link href={`/provider/inventory/${item?.id}/edit`}>
-          <Button variant="secondary" outline size="sm" className="w-full">
+          <Button variant="primary" size="sm" className="w-full">
             <Edit className="mr-2 h-4 w-4" />
             Editar
           </Button>

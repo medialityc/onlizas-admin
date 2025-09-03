@@ -24,7 +24,6 @@ export default function ProfileContainer() {
 
   return (
     <div className="space-y-6">
-      <pre> {JSON.stringify(user, null, 2)} </pre>
       <div className="">
         <div className="mb-5 flex items-center justify-between">
           <div>

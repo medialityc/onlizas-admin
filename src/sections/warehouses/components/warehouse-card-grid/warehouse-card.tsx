@@ -11,11 +11,16 @@ import {
 } from "@heroicons/react/24/outline";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
-import { PackageIcon, Users2Icon } from "lucide-react";
+import { CalendarIcon, PackageIcon, Users2Icon } from "lucide-react";
 import Badge from "@/components/badge/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/button/button";
-import { Separator } from "@/components/ui/separator";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/cards/card";
 
 interface WarehouseCardProps {
   warehouse: WarehouseFormData;
@@ -40,32 +45,32 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 flex gap-4 flex-col shadow-sm hover:shadow-md dark:hover:shadow-gray-900/20 transition-shadow h-full min-h-72">
-      <div className="flex items-start justify-between">
+    <Card className="group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full dark:border-slate-700">
+      <CardHeader className="space-y-0 ">
         <div className="flex items-center gap-3 min-w-0">
           <div
             className={cn(
-              "p-4 rounded-lg",
+              "p-2 rounded-md w-16 h-16 flex flex-row items-center justify-center",
               type === WAREHOUSE_TYPE_ENUM.physical
-                ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
-                : "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
+                : "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
             )}
           >
             {type === WAREHOUSE_TYPE_ENUM.physical ? (
-              <BuildingStorefrontIcon className="h-6 w-6" />
+              <BuildingStorefrontIcon className="h-10 w-10" />
             ) : (
-              <BuildingOfficeIcon className="h-6 w-6" />
+              <BuildingOfficeIcon className="h-10 w-10" />
             )}
           </div>
           <div className="min-w-0">
             <h3
-              className="text-lg font-semibold text-gray-900 dark:text-white hover:text-primary dark:hover:text-primary cursor-pointer truncate"
+              className="text-base font-medium text-gray-900 dark:text-white hover:text-primary dark:hover:text-primary cursor-pointer truncate"
               onClick={handleView}
               title={warehouse.name}
             >
               {warehouse.name}
             </h3>
-            <div className="flex flex-row gap-1">
+            <div className="flex flex-wrap gap-1 mt-1">
               <Badge variant={isPhysical ? "info" : "success"}>
                 {isPhysical ? "Físico" : "Virtual"}
               </Badge>
@@ -76,52 +81,95 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
               >
                 {warehouse?.isActive ? "Activo" : "Inactivo"}
               </Badge>
+              {warehouse?.isDeleted && (
+                <Badge variant="danger">Eliminado</Badge>
+              )}
             </div>
           </div>
         </div>
-      </div>
+      </CardHeader>
+
       {/* Body - contenido que crece */}
-      <div className="flex flex-col gap-2">
-        {/* Dirección */}
-        {warehouse.locationId && (
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <MapPinIcon className="h-4 w-4 mt-0.5 flex-shrink-0" />
+      <CardContent className="flex flex-col gap-2 flex-grow">
+        {/* Tipo Virtual */}
+        {warehouse.virtualTypeId && (
+          <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <BuildingOfficeIcon className="h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
             <div>
-              <p>{warehouse.locationName}</p>
+              <p className="truncate">{warehouse.virtualTypeName}</p>
             </div>
           </div>
         )}
+
+        {/* Proveedor */}
         {warehouse.supplierId && (
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <Users2Icon className="h-4 w-4 mt-0.5 flex-shrink-0" />
+          <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <Users2Icon className="h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
             <div>
-              <p>{warehouse.supplierName ?? "Proveedor"}</p>
+              <p className="truncate">
+                {warehouse.supplierName ?? "Proveedor"}
+              </p>
             </div>
           </div>
         )}
+        {/* Ubicación */}
+        <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+          <MapPinIcon className="h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
+          <div>
+            <p className="truncate">
+              {warehouse?.locationName || "Sin localización"}
+            </p>
+          </div>
+        </div>
+
+        {/* Capacidad */}
         {warehouse.capacity && (
-          <div className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <PackageIcon className="h-4 w-4 mt-0.5 flex-shrink-0" />
+          <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <PackageIcon className="h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
             <div className="flex flex-row gap-1 items-center">
               <p>{warehouse.capacity}</p>
-              <p>({warehouse.capacityUnit})</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                ({warehouse.capacityUnit})
+              </p>
             </div>
           </div>
         )}
-      </div>
+        {/* Fecha de actualización */}
+        {warehouse.updatedAt && (
+          <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <CalendarIcon className="h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
+            <div>
+              <p className="truncate">
+                Actualizado:{" "}
+                {new Date(warehouse.updatedAt).toLocaleDateString("es-ES")}
+              </p>
+            </div>
+          </div>
+        )}
+      </CardContent>
 
-      <Separator className=" mt-auto  " />
       {/* Botones de acción - siempre al final */}
-      <div className="flex flex-wrap gap-2  justify-end  ">
-        <Button outline variant="secondary" onClick={handleTransfer}>
-          <ArrowsRightLeftIcon className="h-4 w-4  mr-2" />
+      <CardFooter className="grid grid-cols-1 sm:grid-cols-2 gap-2 ">
+        <Button
+          outline
+          variant="secondary"
+          onClick={handleTransfer}
+          className="w-full justify-center py-1.5 px-3 text-sm"
+          size="sm"
+        >
+          <ArrowsRightLeftIcon className="h-3.5 w-3.5 mr-1.5" />
           Transferir
         </Button>
-        <Button variant="primary" onClick={handleEdit}>
-          <PencilSquareIcon className="h-4 w-4" />
+        <Button
+          variant="primary"
+          onClick={handleEdit}
+          className="w-full justify-center py-1.5 px-3 text-sm"
+          size="sm"
+        >
+          <PencilSquareIcon className="h-3.5 w-3.5 mr-1.5" />
           Editar
         </Button>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 }

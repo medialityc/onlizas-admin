@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { DataTableColumn } from "mantine-datatable";
 import Link from "next/link";
 import useFiltersUrl from "@/hooks/use-filters-url";
+import { toggleActiveProduct } from "@/services/products";
+import showToast from "@/config/toast/toastConfig";
 
 interface ProductListProps {
   data?: GetAllProducts;
@@ -39,6 +41,24 @@ export function ProductList({
   const handleEdit = (product: Product) => {
     router.push(paths.dashboard.products.edit(product.id));
   };
+
+  const handleToggleActiveProduct = useCallback(async (product: Product) => {
+    try {
+      const res = await toggleActiveProduct(product?.id as number);
+      if (res?.error && res.message) {
+        console.error(res);
+        showToast(res.message, "error");
+      } else {
+        showToast(
+          `Producto ${(res.data as unknown as Product)?.isActive ? "activado" : "desactivado"}  correctamente`,
+          "success"
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      showToast("Ocurrió un error, intente nuevamente", "error");
+    }
+  }, []);
 
   const columns: DataTableColumn<Product>[] = [
     {
@@ -102,6 +122,7 @@ export function ProductList({
           onViewDetails={() => handleView(product)}
           onEdit={() => handleEdit(product)}
           isActive={product.state}
+          onActive={() => handleToggleActiveProduct(product)}
         />
       ),
     },

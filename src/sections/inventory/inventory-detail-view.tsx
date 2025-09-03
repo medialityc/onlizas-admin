@@ -3,32 +3,32 @@ import React from "react";
 
 export const InventoryDetailSkeleton: React.FC = () => {
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-pulse">
-      <div className="bg-white rounded-lg border p-6">
-        <div className="flex items-start gap-6">
-          <div className="w-48 h-48 bg-gray-200 rounded-lg flex-shrink-0" />
-          <div className="flex-1 space-y-4">
-            <div className="h-8 bg-gray-200 rounded w-1/2" />
-            <div className="h-4 bg-gray-200 rounded w-3/4" />
-            <div className="grid grid-cols-2 gap-4">
+    <div className="max-w-4xl mx-auto space-y-6 animate-pulse px-4 sm:px-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row items-start gap-6">
+          <div className="w-full sm:w-48 h-48 bg-gray-200 dark:bg-gray-700 rounded-lg flex-shrink-0" />
+          <div className="flex-1 space-y-4 w-full mt-4 sm:mt-0">
+            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-24" />
-                <div className="h-6 bg-gray-200 rounded w-16" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24" />
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-16" />
               </div>
               <div className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-20" />
-                <div className="h-6 bg-gray-200 rounded w-16" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20" />
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-16" />
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="bg-white rounded-lg border p-6">
-        <div className="h-6 bg-gray-200 rounded w-1/3 mb-4" />
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm">
+        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-4" />
         <div className="space-y-3">
-          <div className="h-4 bg-gray-200 rounded" />
-          <div className="h-4 bg-gray-200 rounded" />
-          <div className="h-4 bg-gray-200 rounded" />
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded" />
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded" />
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded" />
         </div>
       </div>
     </div>
@@ -41,15 +41,15 @@ interface Props {
 
 export default function InventoryDetailView({ inventory }: Props) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-4 sm:px-6 py-4">
       {/* Top header card with location + summary */}
-      <div className="bg-gradient-to-r from-indigo-50 to-white dark:from-indigo-900/10 dark:to-black/20 p-6 rounded-lg border">
-        <div className="flex items-center gap-6">
-          <div className="w-20 h-20 bg-white/60 dark:bg-black/30 rounded-lg flex items-center justify-center shadow">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+          <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
             {/* simple store icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-10 h-10 text-indigo-600"
+              className="w-8 h-8 text-blue-600 dark:text-blue-400"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -63,31 +63,31 @@ export default function InventoryDetailView({ inventory }: Props) {
             </svg>
           </div>
 
-          <div className="flex-1">
-            <div className="flex items-start justify-between">
+          <div className="flex-1 w-full">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start sm:justify-between text-center sm:text-left">
               <div>
-                <h2 className="text-2xl font-bold text-dark dark:text-white-light">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
                   {inventory.parentProductName}
                 </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
+                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                   Inventario en{" "}
                   <span className="font-semibold">{inventory.storeName}</span>
                 </p>
               </div>
 
-              <div className="text-right">
-                <div className="text-sm text-gray-500">Total items</div>
-                <div className="text-2xl font-semibold">
+              <div className="mt-3 sm:mt-0 sm:text-right">
+                <div className="text-sm text-gray-500 dark:text-gray-400">Total items</div>
+                <div className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
                   {inventory.totalQuantity}
                 </div>
               </div>
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center gap-2 bg-white/80 dark:bg-black/30 border px-3 py-1 rounded-full text-sm">
+            <div className="mt-4 flex flex-wrap justify-center sm:justify-start items-center gap-2 sm:gap-3">
+              <span className="inline-flex items-center gap-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 px-3 py-1 rounded-md text-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4 text-gray-500"
+                  className="w-4 h-4 text-gray-500 dark:text-gray-400"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -100,16 +100,16 @@ export default function InventoryDetailView({ inventory }: Props) {
                   />
                   <circle cx="12" cy="7" r="4" strokeWidth="1.5" />
                 </svg>
-                Proveedor:{" "}
-                <span className="font-medium ml-1">
+                <span className="text-gray-600 dark:text-gray-300">Proveedor:</span>{" "}
+                <span className="font-medium text-gray-900 dark:text-white">
                   {inventory.supplierName}
                 </span>
               </span>
 
-              <span className="inline-flex items-center gap-2 bg-white/80 dark:bg-black/30 border px-3 py-1 rounded-full text-sm">
+              <span className="inline-flex items-center gap-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 px-3 py-1 rounded-md text-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4 text-gray-500"
+                  className="w-4 h-4 text-gray-500 dark:text-gray-400"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -121,16 +121,16 @@ export default function InventoryDetailView({ inventory }: Props) {
                     d="M12 21l-8-5V6a2 2 0 012-2h12a2 2 0 012 2v10l-8 5z"
                   />
                 </svg>
-                Almacén:{" "}
-                <span className="font-medium ml-1">
+                <span className="text-gray-600 dark:text-gray-300">Almacén:</span>{" "}
+                <span className="font-medium text-gray-900 dark:text-white">
                   {inventory.warehouseName}
                 </span>
               </span>
 
-              <span className="inline-flex items-center gap-2 bg-white/80 dark:bg-black/30 border px-3 py-1 rounded-full text-sm">
+              <span className="inline-flex items-center gap-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 px-3 py-1 rounded-md text-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4 text-gray-500"
+                  className="w-4 h-4 text-gray-500 dark:text-gray-400"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -143,8 +143,8 @@ export default function InventoryDetailView({ inventory }: Props) {
                   />
                   <circle cx="12" cy="12" r="3" strokeWidth="1.5" />
                 </svg>
-                Ubicación:{" "}
-                <span className="font-medium ml-1">
+                <span className="text-gray-600 dark:text-gray-300">Ubicación:</span>{" "}
+                <span className="font-medium text-gray-900 dark:text-white">
                   {inventory.storeName} · {inventory.warehouseName}
                 </span>
               </span>
@@ -153,10 +153,10 @@ export default function InventoryDetailView({ inventory }: Props) {
         </div>
       </div>
 
-      <div className="panel">
-        <div className="mb-5 flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-semibold text-dark dark:text-white-light">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm">
+        <div className="mb-5 flex flex-col sm:flex-row items-center sm:items-start justify-between">
+          <div className="text-center sm:text-left">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Detalle del Inventario
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -167,17 +167,17 @@ export default function InventoryDetailView({ inventory }: Props) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-4">
-            <div className="bg-white rounded-lg border p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-medium">Productos</h3>
-                  <p className="text-sm text-gray-500">
+            <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between">
+                <div className="text-center sm:text-left mb-2 sm:mb-0">
+                  <h3 className="text-base font-medium text-gray-900 dark:text-white">Productos</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     {inventory.products.length} items
                   </p>
                 </div>
-                <div className="text-right">
-                  <div className="text-sm text-gray-500">Cantidad total</div>
-                  <div className="font-semibold">{inventory.totalQuantity}</div>
+                <div className="text-center sm:text-right">
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Cantidad total</div>
+                  <div className="font-semibold text-gray-900 dark:text-white">{inventory.totalQuantity}</div>
                 </div>
               </div>
 
@@ -185,9 +185,9 @@ export default function InventoryDetailView({ inventory }: Props) {
                 {inventory.products.map((p: InventoryProductItem) => (
                   <div
                     key={p.id}
-                    className="flex items-start gap-4 p-3 border rounded"
+                    className="flex flex-col sm:flex-row items-center sm:items-start gap-4 p-3 border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800"
                   >
-                    <div className="w-20 h-20 bg-gray-100 rounded overflow-hidden flex-shrink-0">
+                    <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-md overflow-hidden flex-shrink-0">
                       {p.images && p.images.length > 0 ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -196,50 +196,44 @@ export default function InventoryDetailView({ inventory }: Props) {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
                           No image
                         </div>
                       )}
                     </div>
 
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-medium">{p.productName}</div>
-                          <div className="text-sm text-gray-500">
+                    <div className="flex-1 w-full">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+                        <div className="text-center sm:text-left mb-2 sm:mb-0">
+                          <div className="font-medium text-gray-900 dark:text-white">{p.productName}</div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
                             SKU: {p.productId}
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-sm text-gray-500">Precio</div>
-                          <div className="font-semibold">
-                            {p.price.toFixed(2)}
+                        <div className="text-center sm:text-right">
+                          <div className="text-sm text-gray-500 dark:text-gray-400">Precio</div>
+                          <div className="font-semibold text-gray-900 dark:text-white">
+                            ${p.price.toFixed(2)}
                           </div>
                         </div>
                       </div>
 
-                      <div className="mt-2 flex items-center justify-between">
-                        <div className="text-sm text-gray-600">
-                          Cantidad: {p.quantity}
+                      <div className="mt-2 flex flex-col sm:flex-row sm:items-center justify-between">
+                        <div className="text-sm text-gray-600 dark:text-gray-300 text-center sm:text-left">
+                          <span className="inline-block px-2 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-md">
+                            Cantidad: {p.quantity}
+                          </span>
                         </div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-gray-600 dark:text-gray-300 mt-2 sm:mt-0 text-center sm:text-right">
                           Tienda: {p.storeName}
                         </div>
                       </div>
 
                       {p.warranty && p.warranty.isWarranty && (
-                        <div className="mt-2 text-sm text-green-600">
+                        <div className="mt-2 text-sm text-green-600 dark:text-green-400 text-center sm:text-left">
                           Garantía: {p.warranty.warrantyTime} días
                         </div>
                       )}
-
-                      {/*  {p.details && p.details.length > 0 && (
-                        <ul className="mt-2 text-sm text-gray-600 list-disc list-inside">
-                          {p.details.map((d, i) => (
-                            <li key={i}>{d}</li>
-                          ))}
-                        </ul>
-                      )} */}
                     </div>
                   </div>
                 ))}
@@ -248,27 +242,29 @@ export default function InventoryDetailView({ inventory }: Props) {
           </div>
 
           <aside className="space-y-4">
-            <div className="bg-white rounded-lg border p-4">
-              <h4 className="text-sm text-gray-500">Proveedor</h4>
-              <div className="font-medium">{inventory.supplierName}</div>
+            <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+              <h4 className="text-sm text-gray-500 dark:text-gray-400 mb-1">Proveedor</h4>
+              <div className="font-medium text-gray-900 dark:text-white">{inventory.supplierName}</div>
             </div>
 
-            <div className="bg-white rounded-lg border p-4">
-              <h4 className="text-sm text-gray-500">Almacén</h4>
-              <div className="font-medium">{inventory.warehouseName}</div>
+            <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+              <h4 className="text-sm text-gray-500 dark:text-gray-400 mb-1">Almacén</h4>
+              <div className="font-medium text-gray-900 dark:text-white">{inventory.warehouseName}</div>
             </div>
 
-            <div className="bg-white rounded-lg border p-4">
-              <h4 className="text-sm text-gray-500">Totales</h4>
-              <div className="mt-2 text-sm text-gray-600">
-                Precio total:{" "}
-                <span className="font-semibold">
-                  {inventory.totalPrice.toFixed(2)}
+            <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+              <h4 className="text-sm text-gray-500 dark:text-gray-400 mb-2">Totales</h4>
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-sm text-gray-600 dark:text-gray-300">Precio total:</span>
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  ${inventory.totalPrice.toFixed(2)}
                 </span>
               </div>
-              <div className="text-sm text-gray-600">
-                Cantidad total:{" "}
-                <span className="font-semibold">{inventory.totalQuantity}</span>
+              <div className="flex items-center justify-between mt-1">
+                <span className="text-sm text-gray-600 dark:text-gray-300">Cantidad total:</span>
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  {inventory.totalQuantity}
+                </span>
               </div>
             </div>
           </aside>

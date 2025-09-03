@@ -16,7 +16,7 @@ import { initValueWarehouse } from "../constants/warehouse-initvalues";
 export const useWarehouseCreateForm = (
   defaultValues: WarehouseFormData = initValueWarehouse
 ) => {
-  const { push } = useRouter();
+  const { back } = useRouter();
 
   const { ...form } = useForm({
     resolver: zodResolver(warehouseSchema),
@@ -45,7 +45,7 @@ export const useWarehouseCreateForm = (
       toast.success(
         `Se ${defaultValues?.id ? "editó" : "creó"} correctamente el almacén`
       );
-      push("warehouses");
+      back();
     },
     onError: async (error: any) => {
       toast.error(error?.message);

@@ -12,7 +12,7 @@ import Link from "next/link";
 import useFiltersUrl from "@/hooks/use-filters-url";
 import ImagePreview from "@/components/image/image-preview";
 import { isValidUrl } from "@/utils/format";
-import { deleteSupplierProduct } from "@/services/products";
+import { toggleActiveProduct } from "@/services/products";
 import showToast from "@/config/toast/toastConfig";
 
 interface ProductListProps {
@@ -30,8 +30,6 @@ export function SupplierProductList({
 
   const { updateFiltersInUrl } = useFiltersUrl();
 
-  // const createModal = getModalState("create");
-
   const handleCreateProduct = useCallback(() => {
     router.push("/provider/products/new");
   }, [router]);
@@ -44,7 +42,7 @@ export function SupplierProductList({
     router.push(paths.provider.products.edit(product.id));
   };
 
-  const handleDeleteSupplierProduct = useCallback(async (product: Product) => {
+  /* const handleDeleteSupplierProduct = useCallback(async (product: Product) => {
     try {
       const res = await deleteSupplierProduct(product?.id as number);
       if (res?.error && res.message) {
@@ -56,6 +54,24 @@ export function SupplierProductList({
     } catch (error) {
       console.error(error);
       showToast("Ocurrió un error, por favor intenta de nuevo", "error");
+    }
+  }, []); */
+
+  const handleToggleActiveProduct = useCallback(async (product: Product) => {
+    try {
+      const res = await toggleActiveProduct(product?.id as number);
+      if (res?.error && res.message) {
+        console.error(res);
+        showToast(res.message, "error");
+      } else {
+        showToast(
+          `Producto ${(res.data as unknown as Product)?.isActive ? "activado" : "desactivado"}  correctamente`,
+          "success"
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      showToast("Ocurrió un error, intente nuevamente", "error");
     }
   }, []);
 
@@ -118,14 +134,7 @@ export function SupplierProductList({
         </Badge>
       ),
     },
-    /* {
-      accessor: "createdAt",
-      title: "Fecha de creación",
-      sortable: true,
-      render: (product) => (
-         <DateValue value={product?.c} />
-      ),
-    }, */
+
     {
       accessor: "actions",
       title: "Acciones",
@@ -136,7 +145,8 @@ export function SupplierProductList({
           onViewDetails={() => handleView(product)}
           onEdit={() => handleEdit(product)}
           isActive={product.state}
-          onDelete={() => handleDeleteSupplierProduct(product)}
+          // onDelete={() => handleDeleteSupplierProduct(product)}
+          onActive={() => handleToggleActiveProduct(product)}
         />
       ),
     },
@@ -160,10 +170,6 @@ export function SupplierProductList({
           className="mt-6"
         />
       </div>
-      {/* <ProductCreateModal
-        open={createModal.open}
-        onClose={() => closeModal("create")}
-      /> */}
     </>
   );
 }
