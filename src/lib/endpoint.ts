@@ -59,6 +59,9 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}categories/${id}`, // PUT
     detail: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}categories/admin/${id}`, // GET
+
+    //me
+    meApprovedCategories: `${process.env.NEXT_PUBLIC_API_URL}supplier/me/approved-categories`,
   },
   products: {
     create: `${process.env.NEXT_PUBLIC_API_URL}products`, // POST
@@ -94,6 +97,9 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/products/${productId}`,
     deleteSupplierProduct: (productId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/products/${productId}`,
+    meApprovedProducts: `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/products-by-approved-categories`,
+    meToggleActive: (productId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/products/${productId}/toggle-active`,
   },
   warehouseVirtualTypes: {
     create: `${process.env.NEXT_PUBLIC_API_URL}virtual-warehouse-types`,

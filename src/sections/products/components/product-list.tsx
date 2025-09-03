@@ -28,8 +28,6 @@ export function ProductList({
 
   const { updateFiltersInUrl } = useFiltersUrl();
 
-  // const createModal = getModalState("create");
-
   const handleCreateProduct = useCallback(() => {
     router.push("/dashboard/products/new");
   }, [router]);

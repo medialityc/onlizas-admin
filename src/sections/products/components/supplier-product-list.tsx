@@ -12,7 +12,7 @@ import Link from "next/link";
 import useFiltersUrl from "@/hooks/use-filters-url";
 import ImagePreview from "@/components/image/image-preview";
 import { isValidUrl } from "@/utils/format";
-import { toggleActiveProduct } from "@/services/products";
+import { meToggleActiveProduct } from "@/services/products";
 import showToast from "@/config/toast/toastConfig";
 
 interface ProductListProps {
@@ -42,24 +42,9 @@ export function SupplierProductList({
     router.push(paths.provider.products.edit(product.id));
   };
 
-  /* const handleDeleteSupplierProduct = useCallback(async (product: Product) => {
-    try {
-      const res = await deleteSupplierProduct(product?.id as number);
-      if (res?.error && res.message) {
-        console.error(res);
-        showToast(res.message, "error");
-      } else {
-        showToast("Product eliminado exitosamente", "success");
-      }
-    } catch (error) {
-      console.error(error);
-      showToast("Ocurrió un error, por favor intenta de nuevo", "error");
-    }
-  }, []); */
-
   const handleToggleActiveProduct = useCallback(async (product: Product) => {
     try {
-      const res = await toggleActiveProduct(product?.id as number);
+      const res = await meToggleActiveProduct(product?.id as number);
       if (res?.error && res.message) {
         console.error(res);
         showToast(res.message, "error");

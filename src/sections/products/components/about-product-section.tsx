@@ -6,9 +6,10 @@ import { Button } from "@/components/button/button";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import IconTrash from "@/components/icon/icon-trash";
 import IconInfoCircle from "@/components/icon/icon-info-circle";
+import { AlertBox } from "@/components/alert/alert-box";
 
 function AboutProductSection() {
-  const { control } = useFormContext();
+  const { control, formState } = useFormContext();
   const {
     fields: aboutFields,
     append: appendAbout,
@@ -38,6 +39,13 @@ function AboutProductSection() {
       </div>
 
       <div className="space-y-3">
+        {formState?.errors?.aboutThis?.root?.message && (
+          <AlertBox
+            variant="danger"
+            message={formState.errors.aboutThis.root.message as string}
+            title="Error"
+          />
+        )}
         {aboutFields.map((field, index) => (
           <div key={field.id} className="flex items-start gap-3">
             <div className="flex-1">
@@ -59,7 +67,9 @@ function AboutProductSection() {
         ))}
       </div>
       {aboutFields.length > 0 && (
-        <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">Máximo 10 líneas.</div>
+        <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+          Máximo 10 líneas.
+        </div>
       )}
     </div>
   );

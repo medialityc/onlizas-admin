@@ -24,6 +24,7 @@ const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
   const { watch, setValue } = useFormContext();
   const product = watch("selectedProduct");
   const isDraft = watch("isDraft");
+  const isOwned = watch("isOwned");
 
   const handleCreate = useCallback(() => {
     setValue("isDraft", true, { shouldDirty: true });
@@ -219,7 +220,7 @@ const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
             <RHFSwitch name="isDraft" />
           </Button>
           <LoaderButton
-            disabled={isDraft}
+            disabled={isDraft || isOwned}
             loading={isLoading}
             onClick={onSubmitLink}
             className="flex-1 px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors flex items-center justify-center gap-1.5"

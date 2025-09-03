@@ -6,6 +6,7 @@ export const supplierProductSchema = z
   .object({
     id: z.number().optional(),
     isDraft: z.boolean().default(false).optional(),
+    isOwned: z.boolean().default(false).optional(), // define si es un producto del proveedor
     name: z
       .string({ required_error: "El nombre es obligatorio." })
       .min(1, "El nombre no puede estar vacío.")
