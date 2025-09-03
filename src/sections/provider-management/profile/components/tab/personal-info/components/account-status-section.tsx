@@ -9,6 +9,39 @@ interface AccountStatusSectionProps {
 }
 
 export function AccountStatusSection({ user }: AccountStatusSectionProps) {
+  // Determinamos qué estado mostrar según la prioridad
+  const renderStatusBadge = () => {
+    if (user?.isBlocked) {
+      return (
+        <StatusBadge
+          isActive={false}
+          activeText=""
+          inactiveText="Bloqueado"
+          className="bg-red-100 text-red-800"
+        />
+      );
+    }
+
+    if (user?.isVerified === false) {
+      return (
+        <StatusBadge
+          isActive={false}
+          activeText=""
+          inactiveText="Requiere verificación"
+          className="bg-yellow-100 text-yellow-800"
+        />
+      );
+    }
+
+    return (
+      <StatusBadge
+        isActive={user?.isActive ?? false}
+        activeText="Activo"
+        inactiveText="Inactivo"
+      />
+    );
+  };
+
   return (
     <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
       <div className="flex items-center gap-3 mb-3">
@@ -19,18 +52,7 @@ export function AccountStatusSection({ user }: AccountStatusSectionProps) {
           Estado de la cuenta
         </h3>
       </div>
-      <div className="flex gap-2">
-        <StatusBadge
-          isActive={user?.isActive ?? false}
-          activeText="Activo"
-          inactiveText="Inactivo"
-        />
-        <StatusBadge
-          isActive={user?.isBlocked ?? false}
-          activeText="Desbloqueado"
-          inactiveText="Bloqueado"
-        />
-      </div>
+      <div className="flex gap-2">{renderStatusBadge()}</div>
     </div>
   );
 }

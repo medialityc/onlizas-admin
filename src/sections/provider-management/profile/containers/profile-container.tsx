@@ -9,19 +9,13 @@ import IconSettings from "@/components/icon/icon-settings";
 import { PersonalInfoTab } from "../components/tab/personal-info/personal-info-tab";
 import { AccountSettingsTab } from "../components/tab/comercial-info/account-settings-tab";
 import VendorRequestsTab from "../components/tab/vendor-requests/vendor-requests-tab";
-import { SearchParams } from "@/types/fetch/request";
+
 import { useUserProfile } from "@/hooks/react-query/use-user-profile";
 import { ProfileSkeleton } from "@/sections/provider-management/profile/components/tab/personal-info/components/profile-skeleton";
-import { useAuth } from "@/auth-sso/hooks/use-auth";
 import { useSupplierApprovalProcess } from "../hooks/use-supplier-approval-process";
-import { EnhancedDocument } from "@/types/suppliers";
 
-interface ProfileContainerProps {
-  query: SearchParams;
-}
-
-export default function ProfileContainer({ query }: ProfileContainerProps) {
-  const { data: user, isLoading, error } = useUserProfile();
+export default function ProfileContainer() {
+  const { data: user, isLoading } = useUserProfile();
   const { data: approvalProcess, isLoading: isLoadingApproval } =
     useSupplierApprovalProcess();
   if (isLoading) {
@@ -30,6 +24,7 @@ export default function ProfileContainer({ query }: ProfileContainerProps) {
 
   return (
     <div className="space-y-6">
+      <pre> {JSON.stringify(user, null, 2)} </pre>
       <div className="">
         <div className="mb-5 flex items-center justify-between">
           <div>

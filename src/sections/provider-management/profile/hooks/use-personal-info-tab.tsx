@@ -1,5 +1,5 @@
 import showToast from "@/config/toast/toastConfig";
-import { getUserDocuments, resendEmail, resendPhone } from "@/services/users";
+import { resendEmail, resendPhone } from "@/services/users";
 import { useMemo } from "react";
 import {
   PersonalInfoFormData,
