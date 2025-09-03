@@ -30,7 +30,7 @@ export default function CreateMeWarehouseModal({
     <SimpleModal
       open={open}
       onClose={handleClose}
-      title={"Crear nuevo inventario"}
+      title={warehouse?.id ? "Editar Almacén" : "Crear nuevo almacén"}
     >
       <div className="p-5">
         {error && (
