@@ -66,7 +66,6 @@ export default function VendorRequestsTab({
   };
 
   const getStateColor = (state: string) => {
-    console.log("Getting state color for:", state);
     switch (state?.toLowerCase()) {
       case "approved":
         return "success";
@@ -100,6 +99,19 @@ export default function VendorRequestsTab({
     }
   };
 
+  const getStateName = (state: string) => {
+    switch (state?.toLowerCase()) {
+      case "approved":
+        return "Aprobado";
+      case "pending":
+        return "Pendiente";
+      case "rejected":
+        return "Rechazado";
+      default:
+        return "En proceso";
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Approval Process Status */}
@@ -108,6 +120,7 @@ export default function VendorRequestsTab({
         isLoadingApproval={isLoadingApproval}
         getStateColor={getStateColor}
         getStateIcon={getStateIcon}
+        getStateName={getStateName}
       />
 
       {/* User Attributes Section */}

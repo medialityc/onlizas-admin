@@ -1,7 +1,12 @@
 "use client";
 import Badge from "@/components/badge/badge";
 import { Button } from "@/components/button/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/cards/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/cards/card";
 import ImagePreview from "@/components/image/image-preview";
 import { InventoryProvider } from "@/types/inventory";
 import { Edit, EyeIcon, Package } from "lucide-react";
@@ -67,14 +72,19 @@ const InventoryProviderCard = ({ item }: Props) => {
       </CardContent>
 
       <CardFooter className="grid grid-cols-2 gap-2 pt-2">
-        <Link href={`/provider/inventory/${item?.id}/details`}>
-          <Button variant="primary" outline size="sm" className="w-full">
+        <Link href={`inventory/${item?.id}/details`}>
+          <Button
+            outline
+            variant="secondary"
+            className="w-full justify-center py-1.5 px-3 text-sm"
+            size="sm"
+          >
             <EyeIcon className="mr-2 h-4 w-4" />
             Ver
           </Button>
         </Link>
-        <Link href={`/provider/inventory/${item?.id}/edit`}>
-          <Button variant="secondary" outline size="sm" className="w-full">
+        <Link href={`inventory/${item?.id}/edit`}>
+          <Button   variant="primary" size="sm" className="w-full">
             <Edit className="mr-2 h-4 w-4" />
             Editar
           </Button>
@@ -85,4 +95,3 @@ const InventoryProviderCard = ({ item }: Props) => {
 };
 
 export default InventoryProviderCard;
-

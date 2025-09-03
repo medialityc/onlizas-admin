@@ -14,6 +14,7 @@ import ProviderComponent from "@/layouts/provider-component";
 import { ThemeProvider } from "next-themes";
 import { ToastContainer } from "react-toastify";
 import "./styles/tailwind.css";
+import "./styles/custom-scrollbar.css";
 import "react-phone-number-input/style.css";
 import { mantineHtmlProps } from "@mantine/core";
 

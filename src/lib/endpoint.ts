@@ -83,6 +83,9 @@ export const backendRoutes = {
     simpleSuppliers: `${process.env.NEXT_PUBLIC_API_URL}admin/products/suppliers/simple`, // GET
     categoryFeatures: `${process.env.NEXT_PUBLIC_API_URL}categories/features`, // GET
 
+    toggleActive: (productId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}products/${productId}/toggle-active`,
+
     /* space SUPPLIER */
     listMyProducts: `${process.env.NEXT_PUBLIC_API_URL}suppliers/products`,
     createSupplierProductByLink: `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/products/link`,

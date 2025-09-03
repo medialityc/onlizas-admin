@@ -42,6 +42,7 @@ export type Product = {
   name: string;
   description: string;
   state: boolean;
+  isActive: boolean;
   suppliers: ProductSupplier[];
   categories: ProductCategory[];
   dimensions?: ProductDimensions;

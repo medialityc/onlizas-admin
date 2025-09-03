@@ -73,26 +73,6 @@ const Header = () => {
               >
                 <IconMenu className="h-5 w-5" />
               </button>
-              <Link href="/" className="main-logo flex shrink-0 items-center">
-                <div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <Image
-                        className="ml-[5px] w-8 flex-none pt-3"
-                        src="/assets/images/ZAS.svg"
-                        alt="logo"
-                        width={32}
-                        height={32}
-                      />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                        Panel de Control Onlizas
-                      </h3>
-                    </div>
-                  </div>
-                </div>
-              </Link>
             </div>
           </div>
 
@@ -136,9 +116,11 @@ const Header = () => {
                           <div className="group flex items-center px-4 py-2">
                             <div className="grid place-content-center rounded">
                               <div className="relative h-12 w-12">
-                                <img
+                                <Image
                                   className="h-12 w-12 rounded-full object-cover"
                                   alt="profile"
+                                  width={40}
+                                  height={40}
                                   src={`/assets/images/${notification.profile}`}
                                 />
                                 <span className="absolute bottom-0 right-[6px] block h-2 w-2 rounded-full bg-success"></span>
