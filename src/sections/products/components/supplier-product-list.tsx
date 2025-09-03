@@ -46,7 +46,6 @@ export function SupplierProductList({
     try {
       const res = await meToggleActiveProduct(product?.id as number);
       if (res?.error && res.message) {
-        console.error(res);
         showToast(res.message, "error");
       } else {
         showToast(
