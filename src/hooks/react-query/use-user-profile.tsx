@@ -1,7 +1,7 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { ApiResponse } from "@/types/fetch/api";
-import { IUser, UserResponseMe } from "@/types/users";
-import { fetchUserMe, getUserById } from "@/services/users";
+import { UserResponseMe } from "@/types/users";
+import { fetchUserMe } from "@/services/users";
 
 // Hook para obtener el perfil del usuario actual
 export function useUserProfile(): UseQueryResult<UserResponseMe, Error> {
@@ -9,9 +9,6 @@ export function useUserProfile(): UseQueryResult<UserResponseMe, Error> {
     queryKey: ["user", "profile", "me"],
     queryFn: async () => {
       const response: ApiResponse<UserResponseMe> = await fetchUserMe();
-      /*       const response: ApiResponse<IUser> = await fetchUserMe();
-       */
-      console.log(response.data);
 
       if (response.error || !response.data) {
         throw new Error(

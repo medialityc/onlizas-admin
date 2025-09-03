@@ -296,15 +296,11 @@ export async function toggleBlockUser(data: { userId: number }): Promise<
 }
 
 // - [ ] GET CURRENT USER (ME)
-export async function fetchUserMe(
-  token?: string
-): Promise<ApiResponse<UserResponseMe>> {
+export async function fetchUserMe(): Promise<ApiResponse<UserResponseMe>> {
   const res = await nextAuthFetch({
     url: backendRoutes.users.me,
     method: "GET",
     useAuth: true,
-    //   token: token,
-    // token,
   });
 
   if (!res.ok) return handleApiServerError(res);
