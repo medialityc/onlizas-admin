@@ -44,7 +44,6 @@ export function ProductList({
     try {
       const res = await toggleActiveProduct(product?.id as number);
       if (res?.error && res.message) {
-        console.error(res);
         showToast(res.message, "error");
       } else {
         showToast(
@@ -144,10 +143,6 @@ export function ProductList({
           className="mt-6"
         />
       </div>
-      {/* <ProductCreateModal
-        open={createModal.open}
-        onClose={() => closeModal("create")}
-      /> */}
     </>
   );
 }
