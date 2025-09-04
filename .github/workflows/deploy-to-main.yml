@@ -20,9 +20,9 @@ jobs:
         run: npm run build
 
   deploy:
+    needs: build
     environment: dev
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env
           echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" >> .env
-          echo "NEXT_PUBLIC_APP_URL=${{secrets.NEXT_PUBLIC_APP_URL}}"
+          echo "NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }}" >> .env
           echo "NEXT_PUBLIC_SSO_URL=${{ secrets.NEXT_PUBLIC_SSO_URL }}" >> .env
           echo "ENCRYPTION_SECRET=${{ secrets.ENCRYPTION_SECRET }}" >> .env
           echo "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}" >> .env
