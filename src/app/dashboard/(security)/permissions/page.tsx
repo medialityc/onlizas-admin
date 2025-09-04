@@ -53,4 +53,3 @@ async function PermissionListPage({ searchParams }: PageProps) {
 }
 
 export default PermissionListPage;
-export default PermissionListPage;
