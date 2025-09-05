@@ -89,7 +89,13 @@ export default function PromotionsContainer({ store }: Props) {
         <PromotionList
           promotions={data.promotions}
           isLoading={loading.isRefetching}
-          onEdit={(p) => router.push(`/stores/${store.id}/promotions/${p.id}/edit`)}
+          onEdit={(p) => {
+            // Guardar path actual antes de navegar
+            if (typeof window !== "undefined") {
+              localStorage.setItem('promotionFormBackPath', window.location.pathname + window.location.search);
+            }
+            router.push(`/stores/${store.id}/promotions/${p.id}/edit`);
+          }}
           onDelete={modals.openDeleteModal}
           onViewDetails={modals.openDetailsModal}
         />

@@ -20,6 +20,7 @@ import { getCommonDefaultValues } from "../utils/default-values";
 import { togglePromotionStatus } from "@/services/promotions";
 import { usePromotionsMutations } from "../index-refactored";
 import { GetyFormData, getySchema } from "../schemas/gety-schema";
+import { navigateAfterSave } from "../utils/promotion-helpers";
 import { usePromotionXGetYMutations } from '../hooks/mutations/usePromotionXGetYMutations';
 import ProductSelect from "../components/form-fields/product-multi-select";
 import { RHFInputWithLabel } from "@/components/react-hook-form";
@@ -85,10 +86,10 @@ export default function GetYForm({
 
         if (mode === "create") {
           await mutations.createAsync ? await mutations.createAsync(formData) : await mutations.create(formData);
-          router.push(`/provider/stores/${storeId}?tab=promotions`);
+          navigateAfterSave(router);
         } else {
           await mutations.updateAsync ? await mutations.updateAsync({ promotionId: promotionData?.id!, data: formData }) : await mutations.update({ promotionId: promotionData?.id!, data: formData });
-          router.push(`/provider/stores/${storeId}?tab=promotions`);
+          navigateAfterSave(router);
         }
     } catch (error) {
       console.error("Error al guardar promoción:", error);

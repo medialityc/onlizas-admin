@@ -28,6 +28,10 @@ export default function PromotionTypeSelectorModal({
     
     // Pequeño delay para feedback visual
       setTimeout(() => {
+        // Guardar path actual antes de navegar
+        if (typeof window !== "undefined") {
+          localStorage.setItem('promotionFormBackPath', window.location.pathname + window.location.search);
+        }
         onClose();
         router.push(`/stores/${storeId}/promotions/new?type=${config.value}`);
       }, 150);

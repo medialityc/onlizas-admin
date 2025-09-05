@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 // Hooks y servicios (create/update handled by type-specific hooks inside each form)
@@ -17,6 +17,9 @@ import { Promotion } from "@/types/promotions";
 import AutomaticForm from "../forms/promotion-automatic";
 import PackageForm from "../forms/promotion-package";
 import GetYForm from "../forms/promotion-x-get-y";
+
+// Utilidades centralizadas
+import { mapBackendPromotionType, navigateAfterSave } from "../utils/promotion-helpers";
 
 interface PromotionFormContainerProps {
   storeId: number;
@@ -39,10 +42,33 @@ export default function PromotionFormContainer({
   promotionData
 }: PromotionFormContainerProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  
+  
   // create/update are handled by type-specific hooks inside each form
 
   // En modo creación, usar el tipo proporcionado
-  const currentType = mode === "create" ? promotionType : (promotionType || undefined);
+  // En modo edición, mapear el promotionType del backend
+  const currentType = mode === "create" 
+    ? promotionType 
+    : (promotionData?.promotionType ? mapBackendPromotionType(promotionData.promotionType) : promotionType);
+
+  // Debug: mostrar información del tipo detectado
+  useEffect(() => {
+    if (mode === "edit" && promotionData) {
+      console.log("🎯 Edit Mode Debug:", {
+        mode,
+        promotionData: {
+          id: promotionData.id,
+          name: promotionData.name,
+          promotionType: promotionData.promotionType,
+          discountType: promotionData.discountType
+        },
+        mappedType: currentType,
+        originalPromotionType: promotionType
+      });
+    }
+  }, [mode, promotionData, currentType, promotionType]);
 
   // Buscar configuración del tipo
   const typeConfig = PROMOTION_TYPES.find(t => t.value === currentType);
@@ -60,8 +86,11 @@ export default function PromotionFormContainer({
     }
   }, [mode, promotionType, promotionData, router]);
 
+
+
+
   const handleCancel = () => {
-    router.push(`/provider/stores/${storeId}?tab=promotions`);
+    navigateAfterSave(router);
   };
 
   // Validar que tenemos la configuración del tipo
@@ -106,29 +135,30 @@ export default function PromotionFormContainer({
       return <div>Tipo de promoción no especificado</div>;
     }
 
+    // Switch simplificado - solo los tipos principales
     switch (currentType) {
       case "free-delivery":
         return (
           <FreeDeliveryForm
             storeId={storeId}
             promotionData={promotionData}
-            //onSubmit={handleSubmit}
             mode={mode}
             onCancel={handleCancel}
             isLoading={false}
           />
         );
+      
       case "code":
         return (
           <PromotionCode
             storeId={storeId}
             promotionData={promotionData}
-            //onSubmit={handleSubmit}
             mode={mode}
             onCancel={handleCancel}
             isLoading={false}
           />
         );
+      
       case "order-value":
         return (
           <OrderValueForm
@@ -139,7 +169,8 @@ export default function PromotionFormContainer({
             isLoading={false}
           />
         );
-         case "automatic":
+      
+      case "automatic":
         return (
           <AutomaticForm
             storeId={storeId}
@@ -149,7 +180,8 @@ export default function PromotionFormContainer({
             isLoading={false}
           />
         );
-        case "package":
+      
+      case "package":
         return (
           <PackageForm
             storeId={storeId}
@@ -159,20 +191,17 @@ export default function PromotionFormContainer({
             isLoading={false}
           />
         );
-        case "buy-x-get-y":
-        case "buy_x_get_y":
-        case "getY":
-        case "get-y":
-        case "gety":
-          return (
-            <GetYForm
-              storeId={storeId}
-              promotionData={promotionData}
-              mode={mode}
-              onCancel={handleCancel}
-              isLoading={false}
-            />
-          );
+      
+      case "buy-x-get-y":
+        return (
+          <GetYForm
+            storeId={storeId}
+            promotionData={promotionData}
+            mode={mode}
+            onCancel={handleCancel}
+            isLoading={false}
+          />
+        );
 
       default:
         return (

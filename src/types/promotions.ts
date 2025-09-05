@@ -8,6 +8,7 @@ export type Promotion = {
   isActive: boolean;
   name: string;
   description: string;
+  promotionType?: number; // Campo del backend que indica el tipo de promoción (0-5)
   startDate?: string; // Opcional si no siempre viene
   endDate?: string;   // Opcional si no siempre viene
   discountValue: number;

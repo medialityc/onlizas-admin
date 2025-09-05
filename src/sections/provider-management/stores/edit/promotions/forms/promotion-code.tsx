@@ -14,6 +14,7 @@ import { codeSchema, type CodeFormData } from "../schemas/code-schema";
 import type { Promotion } from "@/types/promotions";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { navigateAfterSave } from "../utils/promotion-helpers";
 import LoaderButton from "@/components/loaders/loader-button";
 import { Button } from "@/components/button/button";
 import { Label } from "@/components/label/label";
@@ -88,11 +89,11 @@ export default function PromotionCode({
       if (mode === "create") {
         if (mutations.createAsync) await mutations.createAsync(formData);
         else await mutations.create(formData);
-        router.push(`/provider/stores/${storeId}?tab=promotions`);
+        navigateAfterSave(router);
       } else {
         if (mutations.updateAsync) await mutations.updateAsync({ promotionId: promotionData?.id!, data: formData });
         else await mutations.update({ promotionId: promotionData?.id!, data: formData });
-        router.push(`/provider/stores/${storeId}?tab=promotions`);
+        navigateAfterSave(router);
       }
     } catch (error) {
       console.error("Error al guardar promoción:", error);
