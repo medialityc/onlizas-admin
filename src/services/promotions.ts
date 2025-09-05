@@ -146,22 +146,6 @@ export async function createPromotionPackage(
 
   return buildApiResponseAsync<Promotion>(res);
 }
-export async function createPromotionPercentage(
-  formData: FormData
-): Promise<ApiResponse<Promotion>> {
-  const res = await nextAuthFetch({
-    url: backendRoutes.storePromotions.createPercentage(),
-    method: "POST",
-    data: formData,
-    useAuth: true,
-
-  });
-  if (!res.ok) return handleApiServerError(res);
-
-  revalidateTag(`store-promotions-Percentage-${formData}`);
-
-  return buildApiResponseAsync<Promotion>(res);
-}
 
 export async function updatePromotionGetY(
   promotionId: number,
@@ -288,26 +272,7 @@ export async function updatePromotionPackage(
 
   return buildApiResponseAsync<Promotion>(res);
 }
-export async function updatePromotionPercentage(
-  promotionId: number,
-  data: FormData
-): Promise<ApiResponse<Promotion>> {
-  // Agregar el promotionId al FormData
-  data.append("promotionId", promotionId.toString());
 
-  const res = await nextAuthFetch({
-    url: backendRoutes.storePromotions.updatePercentage(promotionId),
-    method: "PUT",
-    data: data,
-    useAuth: true,
-  });
-
-  if (!res.ok) return handleApiServerError(res);
-
-  revalidateTag(`store-promotions-update-percentage-${data}`);
-
-  return buildApiResponseAsync<Promotion>(res);
-}
 
 export async function deletePromotion(
   promotionId: number

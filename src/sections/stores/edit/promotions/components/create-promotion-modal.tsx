@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import type { Promotion } from "@/types/stores";
+
 import SimpleModal from "@/components/modal/modal";
 import { FormProvider as RHFFormProvider, useForm } from "react-hook-form";
 import { RHFInputWithLabel, RHFSelectWithLabel } from "@/components/react-hook-form";
@@ -11,6 +11,7 @@ import { promotionFormSchema, PromotionFormValues } from "../schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/cards/card";
 import { Button } from "@/components/button/button";
 import LoaderButton from "@/components/loaders/loader-button";
+import { Promotion } from "@/types/promotions";
 
 const defaultValues: Partial<PromotionFormValues> = {
   type: "percent",
@@ -32,15 +33,22 @@ export default function CreatePromotionModal({ open, onClose, onCreate }: { open
     onCreate({
       id: Date.now(),
       name: data.name,
-      description: data.description,
-      type: data.type,
-      value: Number(data.value),
-      code: data.code,
-      usageLimit: data.usageLimit !== undefined && data.usageLimit !== "" ? Number(data.usageLimit) : undefined,
+      description: data.description ?? "",
+      discountType: data.type === "percent" ? 0 : 1, // Mapear string a número
+      discountValue: Number(data.value),
+      code: data.code ?? "",
+      usageLimit: data.usageLimit ?? 0,
       usedCount: 0,
       startDate: toYMD(data.startDate),
       endDate: toYMD(data.endDate),
       isActive: true,
+
+      // Propiedades adicionales requeridas por la interfaz Promotion
+      storeId: 0,
+      storeName: "",
+      mediaFile: "",
+      promotionCategoriesDTOs: [],
+      promotionProductsDTOs: [],
     });
 
     methods.reset(defaultValues);

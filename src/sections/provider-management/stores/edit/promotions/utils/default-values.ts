@@ -1,5 +1,4 @@
 import type { Promotion } from "@/types/promotions";
-import { PromotionType } from "../index-refactored";
 
 /**
  * Función para obtener defaultValues comunes a todos los formularios de promociones.

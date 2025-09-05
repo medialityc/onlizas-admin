@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Store } from "@/types/stores";
 import { toast } from "react-toastify";
 
