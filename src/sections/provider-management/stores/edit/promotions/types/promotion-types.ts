@@ -3,12 +3,49 @@
 // Tipos de promociones disponibles (basados en la imagen del modal)
 export enum PromotionType {
   CODE = 'code',
-  ORDER_VALUE = 'order_value', 
+  ORDER_VALUE = 'order-value', // Unificado con guión
   AUTOMATIC = 'automatic',
   PACKAGE = 'package',
-  BUY_X_GET_Y = 'buy_x_get_y',
+  BUY_X_GET_Y = 'buy-x-get-y', // Unificado con guión
   FREE_DELIVERY = 'free-delivery'
 }
+
+// Mapeo ÚNICO del backend numérico (0-5) a nuestros tipos
+export const BACKEND_TYPE_MAP: { [key: number]: PromotionType } = {
+  0: PromotionType.CODE,
+  1: PromotionType.ORDER_VALUE,
+  2: PromotionType.AUTOMATIC,
+  3: PromotionType.PACKAGE,
+  4: PromotionType.BUY_X_GET_Y,
+  5: PromotionType.FREE_DELIVERY
+};
+
+// Función ÚNICA para convertir tipos del backend
+export const mapBackendPromotionType = (backendType: number | string): string => {
+  if (typeof backendType === 'number') {
+    return BACKEND_TYPE_MAP[backendType] || PromotionType.CODE;
+  }
+  
+  // Si viene como string, intentar parsear como número primero
+  const numType = parseInt(String(backendType));
+  if (!isNaN(numType) && BACKEND_TYPE_MAP[numType]) {
+    return BACKEND_TYPE_MAP[numType];
+  }
+  
+  // Fallback: devolver el string tal como viene (ya debería estar correcto)
+  return String(backendType);
+};
+
+// Función ÚNICA para obtener nombres legibles
+export const getPromotionTypeName = (promotionType?: number | string): string => {
+  if (promotionType === undefined || promotionType === null) {
+    return 'No especificado';
+  }
+  
+  const mappedType = mapBackendPromotionType(promotionType);
+  const config = PROMOTION_TYPES.find(t => t.value === mappedType);
+  return config?.name || 'Tipo desconocido';
+};
 
 // Configuración de cada tipo de promoción
 export interface PromotionTypeConfig {

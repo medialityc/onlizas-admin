@@ -1,4 +1,5 @@
 import type { Promotion } from "@/types/promotions";
+import { PromotionType } from "../index-refactored";
 
 /**
  * Función para obtener defaultValues comunes a todos los formularios de promociones.
@@ -10,6 +11,7 @@ export function getCommonDefaultValues(promotionData?: Promotion) {
     name: promotionData?.name ?? "",
     description: promotionData?.description ?? "",
     mediaFile: promotionData?.mediaFile ?? "",
+    //promotionType:promotionData?.promotionType??'',
 
     // Fechas simples (extraer de dateRangesDTOs si existen rangos de un solo día)
     simpleDates: (() => {

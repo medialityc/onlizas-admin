@@ -20,6 +20,8 @@ import { buildPromotionFormData } from "../form/promotion-form-builder";
 import { getCommonDefaultValues } from "../utils/default-values";
 import { togglePromotionStatus } from "@/services/promotions";
 import { RHFInputWithLabel } from "@/components/react-hook-form";
+import { usePromotionsMutations } from "../index-refactored";
+import { navigateAfterSave } from "../utils/promotion-helpers";
 
 interface OrderValueFormProps {
     storeId: number;
@@ -83,11 +85,11 @@ export default function OrderValueForm({
             if (mode === "create") {
                 if (mutations.createAsync) await mutations.createAsync(formData);
                 else await mutations.create(formData);
-                router.push(`/provider/stores/${storeId}?tab=promotions`);
+                navigateAfterSave(router);
             } else {
                 if (mutations.updateAsync) await mutations.updateAsync({ promotionId: promotionData?.id!, data: formData });
                 else await mutations.update({ promotionId: promotionData?.id!, data: formData });
-                router.push(`/provider/stores/${storeId}?tab=promotions`);
+                navigateAfterSave(router);
             }
         } catch (error) {
             console.error("Error al guardar promoción:", error);

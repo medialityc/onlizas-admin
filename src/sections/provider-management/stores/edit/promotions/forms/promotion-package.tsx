@@ -20,6 +20,7 @@ import { getCommonDefaultValues } from "../utils/default-values";
 import { togglePromotionStatus } from "@/services/promotions";
 import { usePromotionsMutations } from "../index-refactored";
 import { PackageFormData, packageSchema } from "../schemas/package-schema";
+import { navigateAfterSave } from "../utils/promotion-helpers";
 import { usePromotionPackageMutations } from "../hooks/mutations/usePromotionPackageMutations";
 import ProductSelect from "../components/form-fields/product-multi-select";
 
@@ -82,10 +83,10 @@ export default function PackageForm({
 
             if (mode === "create") {
                 await mutations.createAsync ? await mutations.createAsync(formData) : await mutations.create(formData);
-                router.push(`/provider/stores/${storeId}?tab=promotions`);
+                navigateAfterSave(router);
             } else {
                 await mutations.updateAsync ? await mutations.updateAsync({ promotionId: promotionData?.id!, data: formData }) : await mutations.update({ promotionId: promotionData?.id!, data: formData });
-                router.push(`/provider/stores/${storeId}?tab=promotions`);
+                navigateAfterSave(router);
             }
         } catch (error) {
             console.error("Error al guardar promoción:", error);

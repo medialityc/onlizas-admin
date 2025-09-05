@@ -265,33 +265,33 @@ export const backendRoutes = {
     toggle: `${process.env.NEXT_PUBLIC_API_URL}storecategories/toggle-status`,
   },
   storePromotions: {
-    list: () => `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions`,
-    createGetY: () => `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/buyxgety`,
+    list: () => `${process.env.NEXT_PUBLIC_API_URL}promotions`,
+    createGetY: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/buyxgety`,
     updateGetY: (promotionId: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/buyxgety/${promotionId}`,
-    createFreeDelivery: () => `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/freedelivery`,
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/buyxgety/${promotionId}`,
+    createFreeDelivery: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/freedelivery`,
     updateFreeDelivery: (promotionId: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/freedelivery/${promotionId}`,
-    createAutomatic: () => `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/general`,
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/freedelivery/${promotionId}`,
+    createAutomatic: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/general`,
     updateAutomatic: (promotionId: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/general/${promotionId}`,
-    createPackage: () => `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/package`,
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/general/${promotionId}`,
+    createPackage: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/package`,
     updatePackage: (promotionId: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/package/${promotionId}`,
-    createOvervalue: () => `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/ordervalue`,
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/package/${promotionId}`,
+    createOvervalue: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/ordervalue`,
     updateOvervalue: (promotionId: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/ordervalue/${promotionId}`,
-    createCode: () => `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/code`,
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/ordervalue/${promotionId}`,
+    createCode: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/code`,
     updateCode: (promotionId: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/code/${promotionId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/code/${promotionId}`,
     delete: (promotionId: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/${promotionId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/${promotionId}`,
     toggle: () =>
-      `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/toggle-state`,
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/toggle-state`,
     code: () =>
-      `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/code/generate`,
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/code/generate`,
     getPromotionById: (promotionId: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_DEV_URL}promotions/${promotionId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/${promotionId}`,
 
   },
 

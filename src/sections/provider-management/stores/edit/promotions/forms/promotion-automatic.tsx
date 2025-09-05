@@ -22,6 +22,7 @@ import { togglePromotionStatus } from "@/services/promotions";
 import { RHFInputWithLabel } from "@/components/react-hook-form";
 import { usePromotionsMutations } from "../index-refactored";
 import { AutomaticFormData, automaticSchema } from "../schemas/automatic-schema";
+import { navigateAfterSave } from "../utils/promotion-helpers";
 
 interface OrderValueFormProps {
     storeId: number;
@@ -82,11 +83,11 @@ export default function AutomaticForm({
             if (mode === "create") {
                 if (mutations.createPromotionAsync) await mutations.createPromotionAsync(formData);
                 else await mutations.createPromotion(formData);
-                router.push(`/provider/stores/${storeId}?tab=promotions`);
+                navigateAfterSave(router);
             } else {
                 if (mutations.updatePromotionAsync) await mutations.updatePromotionAsync({ promotionId: promotionData?.id!, data: formData });
                 else await mutations.updatePromotion({ promotionId: promotionData?.id!, data: formData });
-                router.push(`/provider/stores/${storeId}?tab=promotions`);
+                navigateAfterSave(router);
             }
         } catch (error) {
             console.error("Error al guardar promoción:", error);

@@ -9,6 +9,7 @@ import PromotionBasicInfo from "../components/form-fields/promotion-basic-info";
 import PurchaseRequirements from "../components/form-fields/purchase-requirements";
 import { usePromotionFreeMutations } from "../hooks/mutations/usePromotionFreeMutations";
 import { togglePromotionStatus } from "@/services/promotions";
+import { navigateAfterSave } from "../utils/promotion-helpers";
 import { buildPromotionFormData } from "../form/promotion-form-builder";
 // Esquema específico para free delivery
 import { freeDeliverySchema, type FreeDeliveryFormData } from "../schemas/free-delivery-schema";
@@ -88,10 +89,10 @@ export default function FreeDeliveryForm({
 
       if (mode === "create") {
         await mutations.create(formData);
-        router.push(`/provider/stores/${storeId}?tab=promotions`);
+        navigateAfterSave(router);
       } else {
         await mutations.update({ promotionId: promotionData?.id!, data: formData });
-        router.push(`/provider/stores/${storeId}?tab=promotions`);
+        navigateAfterSave(router);
       }
     } catch (error) {
       console.error("Error al guardar promoción:", error);
