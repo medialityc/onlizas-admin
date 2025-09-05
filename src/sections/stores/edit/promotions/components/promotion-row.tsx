@@ -1,5 +1,5 @@
 import React from "react";
-import type { Promotion } from "@/types/stores";
+import type { Promotion } from "@/types/promotions";
 import Badge from "@/components/badge/badge";
 import { useForm, FormProvider as RHFFormProvider, useWatch } from "react-hook-form";
 import { RHFSwitch } from "@/components/react-hook-form";
@@ -34,7 +34,7 @@ export default function PromotionRow({ p, onToggle }: { p: Promotion; onToggle: 
           <div className="flex items-center gap-2">
             <h4 className="text-sm font-semibold text-gray-900">{p.name}</h4>
             {p.isActive && <Badge variant="outline-primary" className="!text-[11px] !px-2 !py-0.5" rounded>Activa</Badge>}
-            {p.badge && <Badge variant="outline-secondary" className="!text-[11px] !px-2 !py-0.5" rounded>{p.badge}</Badge>}
+            
           </div>
           {p.description && <p className="text-xs text-gray-500">{p.description}</p>}
           <div className="text-[11px] text-gray-500 mt-1">
@@ -47,7 +47,7 @@ export default function PromotionRow({ p, onToggle }: { p: Promotion; onToggle: 
         <div className="flex items-center gap-4">
           <div className="text-right">
             <div className="text-indigo-600 font-semibold">
-              {p.type === "percent" ? `${p.value}%` : `>$${p.value}`}
+              {p.discountType === 0 ? `${p.discountValue}%` : `$${p.discountValue}`}
             </div>
             <div className="text-[11px] text-gray-500">{p.usedCount ?? 0} usos</div>
           </div>

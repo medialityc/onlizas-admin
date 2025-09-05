@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import  { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { Promotion, Store } from "@/types/stores";
+import { Promotion } from "@/types/promotions";
+import { Store } from "@/types/stores";
 import { GiftIcon, UsersIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
 
-import MetricStatCard from "../components/metric-stat-card";
 import PromotionsToolbar from "./components/toolbar";
 import PromotionRow from "./components/promotion-row";
 import { mockPromotions } from "./mock";
 import CreatePromotionModal from "./components/create-promotion-modal";
+import StatCard from "./components/stat-card";
 
 interface Props { store: Store }
 
@@ -44,10 +45,10 @@ export default function PromotionsContainer({ store }: Props) {
   <div className="text-xs text-gray-500 mb-2">Fuente: {source === "form" ? "Formulario" : "Mock"}</div>
       {/* Breadcrumb/title area could be outside - kept minimal here */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-        <MetricStatCard label="Total Promociones" value={stats.total} icon={<GiftIcon className="text-indigo-600" />} />
-        <MetricStatCard label="Promociones Activas" value={stats.active} icon={<GiftIcon className="text-emerald-600" />} />
-        <MetricStatCard label="Usos Totales" value={stats.uses} icon={<UsersIcon className="text-violet-600" />} />
-        <MetricStatCard label="Promociones Vencidas" value={stats.expired} icon={<CalendarDaysIcon className="text-rose-600" />} />
+        <StatCard label="Total Promociones" value={stats.total} icon={<GiftIcon className="text-indigo-600" />} />
+        <StatCard label="Promociones Activas" value={stats.active} icon={<GiftIcon className="text-emerald-600" />} />
+        <StatCard label="Usos Totales" value={stats.uses} icon={<UsersIcon className="text-violet-600" />} />
+        <StatCard label="Promociones Vencidas" value={stats.expired} icon={<CalendarDaysIcon className="text-rose-600" />} />
       </div>
 
       <PromotionsToolbar onNew={() => setOpen(true)} />
