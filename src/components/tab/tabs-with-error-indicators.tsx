@@ -18,6 +18,8 @@ type TabsWithIconsProps = {
   activeColorClass?: string;
   handleChange?: (index: number) => void;
   readonly?: boolean;
+  selectedIndex?: number;
+  onChange?: (index: number) => void;
 };
 
 const TabsWithErrorIndicators: React.FC<TabsWithIconsProps> = ({
@@ -25,6 +27,8 @@ const TabsWithErrorIndicators: React.FC<TabsWithIconsProps> = ({
   activeColorClass = "bg-primary text-white",
   handleChange,
   readonly = false,
+  selectedIndex,
+  onChange,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -36,7 +40,13 @@ const TabsWithErrorIndicators: React.FC<TabsWithIconsProps> = ({
 
   return (
     <div className="mb-5">
-      <TabGroup onChange={handleChange}>
+      <TabGroup
+        selectedIndex={selectedIndex}
+        onChange={(index) => {
+          onChange?.(index);
+          handleChange?.(index);
+        }}
+      >
         <TabList className="mt-3 flex flex-wrap gap-2">
           {tabs.map((tab, index) =>
             tab.disabled ? (

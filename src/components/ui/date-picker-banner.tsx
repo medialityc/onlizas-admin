@@ -15,7 +15,7 @@ import MaskedInput from "react-text-mask";
 import { Calendar } from "../input/calendar";
 
 interface DatePickerBannerProps {
-  date: Date;
+  date?: Date;
   handleSelectDate: (date?: Date) => void;
   containerClassname?: string;
   buttonClassname?: string;
@@ -32,7 +32,7 @@ export function DatePickerBanner({
   minDate,
 }: DatePickerBannerProps) {
   const [open, setOpen] = React.useState(false);
-  const isValidDate = (d: any) => d instanceof Date && !isNaN(d.getTime());
+  const isValidDate = (d: any): d is Date => d instanceof Date && !isNaN(d.getTime());
   const [currentMonth, setCurrentMonth] = React.useState<Date>(
     isValidDate(date) ? date : new Date()
   );

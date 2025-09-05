@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import MetricStatCard from "../../components/metric-stat-card";
 import { GiftIcon, UsersIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
 
