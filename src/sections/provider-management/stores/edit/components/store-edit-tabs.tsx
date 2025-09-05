@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import  { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Cog6ToothIcon,
   BookOpenIcon,
@@ -18,19 +19,37 @@ import { Store } from "@/types/stores";
 import styles from "./store-edit-tabs.module.css";
 import FollowersContainer from "../followers/followers-container";
 
-
 interface TabsProps {
   store: Store;
 }
 
 const StoreTabs = ({ store }: TabsProps) => {
-  
+  const searchParams = useSearchParams();
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  // Mapear nombres de tabs a índices
+  const tabMap = {
+    general: 0,
+    categories: 1,
+    appearance: 2,
+    promotions: 3,
+    followers: 4,
+  };
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab && tabMap[tab as keyof typeof tabMap] !== undefined) {
+      setSelectedIndex(tabMap[tab as keyof typeof tabMap]);
+    }
+  }, [searchParams]);
+
   return (
-    <div className={`store-edit-tabs ${styles.tabsUnderline}`}>      
-      
+    <div className={`store-edit-tabs ${styles.tabsUnderline}`}>
       <div className="border-b border-gray-200 dark:border-gray-800">
         <TabsWithErrorIndicators
           activeColorClass="text-primary"
+          selectedIndex={selectedIndex}
+          onChange={setSelectedIndex}
           tabs={[
             {
               label: "Información General",

@@ -30,45 +30,34 @@ export async function getStoreCategories(
 // Para autocomplete infinito - adaptador que simula paginación
 export async function getStoreCategoriesForSelect(
   storeId: number,
-  params: IQueryable
+  params?: IQueryable
 ): Promise<ApiResponse<PaginatedResponse<StoreCategory>>> {
   const res = await getStoreCategories(storeId);
   if (res?.error) return res as any;
-  
+
   const allCategories = res.data || [];
-  const search = params.search?.toLowerCase() || '';
-  
+  const search = params?.search?.toLowerCase() || "";
+
   // Filtrar por búsqueda si existe
-  const filtered = search 
-    ? allCategories.filter(cat => 
-        cat.categoryName.toLowerCase().includes(search)
-      )
+  const filtered = search
+    ? allCategories.filter((cat) => cat.categoryName.toLowerCase().includes(search))
     : allCategories;
-  
-  // Simular paginación
-  const page = Number(params.page) || 1;
-  const pageSize = Number(params.pageSize) || 35;
-  const startIndex = (page - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const paginatedData = filtered.slice(startIndex, endIndex);
-  
-  const totalPages = Math.ceil(filtered.length / pageSize);
-  const hasNext = page < totalPages;
-  
+
+  // Return all filtered results as a single page (no real backend pagination)
   const paginatedResponse: PaginatedResponse<StoreCategory> = {
-    data: paginatedData,
+    data: filtered,
     totalCount: filtered.length,
-    page,
-    pageSize,
-    hasNext,
-    hasPrevious: page > 1
+    page: 1,
+    pageSize: filtered.length,
+    hasNext: false,
+    hasPrevious: false,
   };
-  console.log(res.data,"en get catgeroy")
+
   return {
     data: paginatedResponse,
     error: false,
     status: 200,
-    message: "Success"
+    message: "Success",
   };
 }
 

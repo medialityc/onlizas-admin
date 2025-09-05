@@ -29,6 +29,7 @@ interface Props
   showError?: boolean;
   containerClassname?: string;
   rows?: number;
+  maskValue?: string;
 }
 
 export default function RHFInputWithLabel({
@@ -219,6 +220,7 @@ export default function RHFInputWithLabel({
             placeholder={placeholder}
             underLabel={underLabel}
             label={label}
+            maskValue={rest.maskValue as any}
             onBlur={onBlur}
             onChange={handleChange(onChange)}
             value={value}
