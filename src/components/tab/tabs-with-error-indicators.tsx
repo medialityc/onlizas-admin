@@ -52,7 +52,7 @@ const TabsWithErrorIndicators: React.FC<TabsWithIconsProps> = ({
             tab.disabled ? (
               <Tab
                 key={index}
-                className="pointer-events-none -mb-[1px] flex items-center p-3.5 py-2 dark:text-textColor text-textColor"
+                className="pointer-events-none -mb-[1px] flex items-center p-3.5 py-2 text-gray-400 dark:text-gray-500 opacity-60"
               >
                 {tab.icon && tab.icon}
                 {tab.label}
@@ -63,17 +63,17 @@ const TabsWithErrorIndicators: React.FC<TabsWithIconsProps> = ({
                   <button
                     className={`${
                       selected
-                        ? `${activeColorClass} !outline-none text-textColor dark:text-textColor`
+                        ? `${activeColorClass} !outline-none text-white`
                         : tab.hasErrors && !readonly
-                          ? "border-red-300 text-red-700 "
-                          : "text-textColor dark:text-textColor"
-                    } -mb-[1px] flex items-center rounded p-3.5 py-2 transition-colors duration-700 relative`}
+                          ? "border border-red-300 text-red-700 dark:border-rose-600 dark:text-rose-300 bg-transparent"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 bg-transparent"
+                    } -mb-[1px] flex items-center rounded p-3.5 py-2 transition-colors duration-200 relative`}
                   >
                     <span className="ltr:mr-2 rtl:ml-2">{tab.icon}</span>
                     {tab.label}
                     {tab.hasErrors && !readonly && (
                       <div className="flex items-center ml-2 gap-1">
-                        <ExclamationCircleIcon className="h-4 w-4 text-red-500" />
+                        <ExclamationCircleIcon className="h-4 w-4 text-red-500 dark:text-rose-300" />
                         {tab.errorCount && tab.errorCount > 0 && (
                           <span className="bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] h-5 flex items-center justify-center">
                             {tab.errorCount}

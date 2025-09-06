@@ -31,9 +31,9 @@ export default function PreviewTab() {
 
   return (
     <div className="space-y-4">
-      <Card>
+      <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
         <CardHeader className="flex items-start justify-between">
-          <CardTitle>Vista Previa de la Tienda</CardTitle>
+          <CardTitle className="text-gray-900 dark:text-gray-100">Vista Previa de la Tienda</CardTitle>
           <DeviceToggle device={device} onChange={setDevice} />
         </CardHeader>
         <CardContent>
@@ -55,8 +55,8 @@ export default function PreviewTab() {
 function DeviceToggle({ device, onChange }: { device: Device; onChange: (d: Device) => void }) {
   const base =
     "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium transition-colors";
-  const active = "bg-gray-900 text-white border-gray-900";
-  const idle = "bg-white text-gray-700 border-gray-200 hover:bg-gray-50";
+  const active = "bg-gray-900 dark:bg-gray-600 text-white border-gray-900 dark:border-gray-600";
+  const idle = "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600";
   return (
     <div className="flex items-center gap-2">
       <button type="button" className={`${base} ${device === "desktop" ? active : idle}`} onClick={() => onChange("desktop")}
@@ -102,7 +102,7 @@ function PreviewSurface({
 
   // Frame sizes to emulate devices
   const frameStyle: React.CSSProperties = useMemo(() => {
-    const common: React.CSSProperties = { fontFamily, background: "#ffffff" };
+    const common: React.CSSProperties = { fontFamily, background: "#ffffff", color: "#000000" };
     if (device === "mobile") return { ...common, width: 384, borderRadius: 12 };
     if (device === "tablet") return { ...common, width: 768, borderRadius: 14 };
     return { ...common, width: "100%", maxWidth: 1024, borderRadius: 16 };
@@ -138,7 +138,7 @@ function PreviewSurface({
 
   return (
     <div className="w-full overflow-x-auto">
-      <div style={frameStyle} className="mx-auto border border-gray-200 shadow-sm">
+      <div style={frameStyle} className="mx-auto border border-gray-200 dark:border-gray-600 shadow-sm dark:shadow-gray-700/50">
         <TemplateComponent
           primary={primary}
           secondary={secondary}

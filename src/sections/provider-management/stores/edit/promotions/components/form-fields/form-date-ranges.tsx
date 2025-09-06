@@ -26,7 +26,7 @@ export default function FormDateRanges({ name = "dateRanges" }: { name?: string 
 	return (
 		<div className="space-y-4">
 			<div className="flex items-start justify-between gap-1">
-				<label className="mb-0 text-sm font-semibold text-gray-900">Rangos de fechas</label>
+				<label className="mb-0 text-sm font-semibold text-gray-900  dark:text-gray-100">Rangos de fechas</label>
 				<Button type="button" size="sm" className="ml-2" variant="secondary" onClick={addNewRange}>
 					<PlusIcon className="w-4 h-4" />
 					<span className="sr-only">Agregar rango</span>
@@ -41,7 +41,7 @@ export default function FormDateRanges({ name = "dateRanges" }: { name?: string 
 				{fields.map((field, idx) => (
 					<div key={field.id} className="border border-gray-200 rounded-lg p-4 space-y-4">
 						<div className="flex items-center justify-between">
-							<span className="text-sm font-medium text-gray-700">Rango {idx + 1}</span>
+							<span className="text-sm  dark:text-gray-100 font-medium text-gray-700">Rango {idx + 1}</span>
 							<Button
 								type="button"
 								iconOnly

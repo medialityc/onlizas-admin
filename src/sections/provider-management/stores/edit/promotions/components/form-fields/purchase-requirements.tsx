@@ -30,17 +30,17 @@ export default function PurchaseRequirements({ amountName = "minimumAmount", ite
   };
 
   return (
-    <div className="space-y-3 bg-white rounded border p-4">
-      <RadioGroup value={mode} onValueChange={(v: any) => handleModeChange(v)}>
+    <div className="space-y-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded border border-gray-200 dark:border-gray-700 p-4">
+      <RadioGroup value={mode} onValueChange={(v: any) => handleModeChange(v)} className="text-gray-900 dark:text-gray-100" >
         <div className="py-1">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
             <RadioGroupItem value="none" />
             <span className="text-sm">Ningún requisito</span>
           </div>
         </div>
 
         <div className="py-1">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
             <RadioGroupItem value="minAmount" />
             <span className="text-sm">Cantidad mínima de compra</span>
           </div>
@@ -53,7 +53,7 @@ export default function PurchaseRequirements({ amountName = "minimumAmount", ite
         </div>
 
         <div className="py-1">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
             <RadioGroupItem value="minItems" />
             <span className="text-sm">Mínimo de artículos totales en el pedido</span>
           </div>

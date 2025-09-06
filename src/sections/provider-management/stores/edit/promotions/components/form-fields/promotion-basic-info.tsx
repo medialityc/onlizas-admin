@@ -44,8 +44,9 @@ export default function PromotionBasicInfo({
     };
 
     return (
-        <div className="space-y-4">
-            <h3 className="text-md font-semibold text-gray-900">Información básica</h3>
+        <div className="space-y-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+            
+                <h3 className="text-md font-semibold text-gray-900 dark:text-gray-100">Información básica</h3>
             <div className="mt-4">
                 <FormToggle name="isActive" label="Activo" />
             </div>
@@ -71,11 +72,11 @@ export default function PromotionBasicInfo({
                         <div className="flex-1 md:pr-2">
                             <FormInput name="code" required label={codeLabel} placeholder="Ej: CODIGO2025" />
                         </div>
-                        <div className="flex-shrink-0">
-                            <Button type="button" size="md" variant="secondary" onClick={handleGenerate} disabled={generating}>
-                                {generating ? "Generando..." : "Generar"}
-                            </Button>
-                        </div>
+                            <div className="flex-shrink-0">
+                                <Button type="button" size="md" variant="secondary" onClick={handleGenerate} disabled={generating} className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600">
+                                    {generating ? "Generando..." : "Generar"}
+                                </Button>
+                            </div>
                     </div>
                 </div>
             )}

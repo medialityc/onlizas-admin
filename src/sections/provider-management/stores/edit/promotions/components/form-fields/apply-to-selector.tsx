@@ -17,9 +17,9 @@ export function ApplyToSelector({ name = "appliesTo", label = "Aplica a", storeI
   const { formState, setValue } = useFormContext();
   const error = (formState.errors as any)?.[name]?.message;
 
-  return (
-    <div className="space-y-3 bg-white rounded border p-4">
-      <div className="text-sm font-medium text-gray-700">{label}</div>
+    return (
+    <div className="space-y-3 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 p-4">
+      <div className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</div>
 
       <Controller
         name={name}
@@ -68,7 +68,7 @@ export function ApplyToSelector({ name = "appliesTo", label = "Aplica a", storeI
         )}
       />
 
-      {error && <p className="text-xs text-red-600 mt-1">{String(error)}</p>}
+  {error && <p className="text-xs text-red-600 mt-1">{String(error)}</p>}
     </div>
   );
 }

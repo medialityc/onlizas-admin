@@ -60,7 +60,7 @@ export default function ValueSelector({
 
   const pillClass = (active: boolean) =>
     `px-3 py-1.5 rounded-full text-sm font-medium transition ${
-      active ? "bg-violet-600 text-white shadow-sm" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+      active ? "bg-violet-600 text-white shadow-sm" : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
     }`;
 
   return (
@@ -123,13 +123,13 @@ export default function ValueSelector({
                 return (
                   <>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">{symbol}</span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300 pointer-events-none">{symbol}</span>
                       <input
                         {...field}
                         type="text"
                         onChange={handleChange}
                         placeholder={effective === 0 ? "0" : "0.00"}
-                        className="form-input pl-10 w-full"
+                        className="form-input pl-10 w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                       />
                     </div>
                     {fieldState.error && (fieldState.isTouched || fieldState.isDirty || formState.isSubmitted) && (

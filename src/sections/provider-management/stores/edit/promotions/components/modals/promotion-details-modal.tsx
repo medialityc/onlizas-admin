@@ -47,12 +47,12 @@ export default function PromotionDetailsModal({ open, onClose, promotion }: Prom
     <SimpleModal open={open} onClose={onClose} title="Detalles de la Promoción" className="max-w-4xl">
       <div className="space-y-6 max-h-[80vh] overflow-y-auto p-2">
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-transparent dark:to-transparent p-6 rounded-lg border border-transparent dark:border-gray-700">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div className="flex-1">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">{promotion.name}</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{promotion.name}</h2>
               {promotion.description && (
-                <p className="text-gray-600 text-sm leading-relaxed">{promotion.description}</p>
+                <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{promotion.description}</p>
               )}
             </div>
             <div className="flex flex-wrap gap-2">
@@ -78,44 +78,44 @@ export default function PromotionDetailsModal({ open, onClose, promotion }: Prom
         {/* Main Information Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* General Information */}
-          <div className="bg-white p-6 rounded-lg border shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border shadow-sm border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
               <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
               Información General
             </h3>
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-gray-50 p-3 rounded">
-                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Tipo de Promoción</span>
-                  <p className="text-sm font-semibold text-gray-900 mt-1">
-                    {getPromotionTypeName(promotion.promotionType)}
-                  </p>
+                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wide">Tipo de Promoción</span>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-1">
+                      {getPromotionTypeName(promotion.promotionType)}
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wide">Código</span>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-1">
+                      {promotion.code || 'Sin código'}
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wide">Descuento</span>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-1">
+                      {getDiscountText(promotion.discountType, promotion.discountValue)}
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wide">Límite de uso</span>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-1">
+                      {promotion.usageLimit ? promotion.usageLimit.toLocaleString() : 'Sin límite'}
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wide">Usos actuales</span>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-1">
+                      {promotion.usedCount?.toLocaleString() || 0}
+                    </p>
+                  </div>
                 </div>
-                <div className="bg-gray-50 p-3 rounded">
-                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Código</span>
-                  <p className="text-sm font-semibold text-gray-900 mt-1">
-                    {promotion.code || 'Sin código'}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-3 rounded">
-                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Descuento</span>
-                  <p className="text-sm font-semibold text-gray-900 mt-1">
-                    {getDiscountText(promotion.discountType, promotion.discountValue)}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-3 rounded">
-                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Límite de uso</span>
-                  <p className="text-sm font-semibold text-gray-900 mt-1">
-                    {promotion.usageLimit ? promotion.usageLimit.toLocaleString() : 'Sin límite'}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-3 rounded">
-                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Usos actuales</span>
-                  <p className="text-sm font-semibold text-gray-900 mt-1">
-                    {promotion.usedCount?.toLocaleString() || 0}
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
 

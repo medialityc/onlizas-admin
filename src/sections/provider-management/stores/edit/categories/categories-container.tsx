@@ -36,7 +36,7 @@ function CategoriesContent({ storeId, initialItems }: Props) {
   };
 
   return (
-    <div className="p-6 text-lg">
+    <div className="p-6 text-lg bg-white dark:bg-gray-900">
       {/* Metrics header */}
       <CategoriesMetrics total={totals.total} active={totals.active} products={totals.products} />
 

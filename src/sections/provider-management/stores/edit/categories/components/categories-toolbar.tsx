@@ -11,8 +11,8 @@ export default function CategoriesToolbar({ onNew }: Props) {
   return (
     <div className="flex items-center justify-between mb-4">
       <div>
-        <h3 className="text-medium font-semibold text-gray-900">Categorías de Productos</h3>
-        <p className="text-sm text-gray-500">Organiza tus productos en categorías para facilitar la navegación</p>
+        <h3 className="text-medium font-semibold text-gray-900 dark:text-gray-100">Categorías de Productos</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Organiza tus productos en categorías para facilitar la navegación</p>
       </div>
       {/* <button
         type="button"

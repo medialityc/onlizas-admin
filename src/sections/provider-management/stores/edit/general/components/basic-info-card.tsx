@@ -7,15 +7,15 @@ import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 
 export default function BasicInfoCard() {
   return (
-    <div className="bg-white border rounded-lg shadow-lg p-5 space-y-4">
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-5 space-y-4">
       <div className="mb-2">
-        <div className="flex items-center gap-3 text-gray-900">
-          <span className="inline-flex items-center justify-center h-10 w-10 rounded-md bg-blue-600/10 shadow">
-            <InformationCircleIcon className="w-6 h-6 text-blue-700" />
+        <div className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+          <span className="inline-flex items-center justify-center h-10 w-10 rounded-md bg-blue-600/10 dark:bg-blue-500/20 shadow">
+            <InformationCircleIcon className="w-6 h-6 text-blue-700 dark:text-blue-400" />
           </span>
           <div className="font-semibold text-base">Información Básica</div>
         </div>
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
           Nombre, descripción, URL y logo que se mostrarán a tus clientes.
         </p>
       </div>

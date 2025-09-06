@@ -23,9 +23,9 @@ export default function BannersList({
   if (banners.length === 0) {
     return (
       <div className="text-center py-8">
-        <div className="text-gray-400 text-4xl mb-2">📢</div>
-        <h3 className="text-sm font-medium text-gray-900 mb-1">No hay banners</h3>
-        <p className="text-xs text-gray-500">
+        <div className="text-gray-400 dark:text-gray-500 text-4xl mb-2">📢</div>
+        <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">No hay banners</h3>
+        <p className="text-xs text-gray-500 dark:text-gray-400">
           Comienza creando tu primer banner promocional
         </p>
       </div>

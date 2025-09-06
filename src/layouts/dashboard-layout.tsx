@@ -20,7 +20,7 @@ export default function DefaultLayout({
           {/* BEGIN SIDEBAR */}
           <Sidebar />
           {/* END SIDEBAR */}
-          <div className="main-content bg-white dark:bg-black flex min-h-screen flex-col">
+          <div className="main-content bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex min-h-screen flex-col">
             {/* BEGIN TOP NAVBAR */}
             <Header />
             {/* END TOP NAVBAR */}

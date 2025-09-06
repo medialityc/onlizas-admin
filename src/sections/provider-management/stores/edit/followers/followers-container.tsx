@@ -79,7 +79,7 @@ export default function FollowersContainer({ store }: Props) {
     ]), []);
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 bg-white dark:bg-gray-900 p-6">
             <DataGrid<StoreFollower>
                 data={response}
                 columns={columns}

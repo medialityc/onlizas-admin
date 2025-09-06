@@ -57,13 +57,14 @@ export default function PromotionsContainer({ store }: Props) {
   if (loading.isInitialLoad) {
     return (
       <div className="p-6 flex justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 dark:border-blue-300" />
       </div>
     );
   }
 
+  // wrapper class 'store-promotions-inner' para estilos específicos de la vista
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 text-gray-900 dark:text-gray-100 store-promotions-inner">
       {/* Métricas globales */}
       <PromotionsMetrics
         total={data.metrics.total}

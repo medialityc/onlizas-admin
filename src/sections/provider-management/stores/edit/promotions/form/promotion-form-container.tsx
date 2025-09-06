@@ -96,8 +96,8 @@ export default function PromotionFormContainer({
   // Validar que tenemos la configuración del tipo
   if (mode === "create" && !typeConfig) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="text-center py-8 text-red-600">
+      <div className="max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 min-h-screen">
+        <div className="text-center py-8 text-red-600 dark:text-red-400">
           Tipo de promoción no válido: {promotionType}
         </div>
       </div>
@@ -106,25 +106,25 @@ export default function PromotionFormContainer({
 
   // Layout básico para el formulario
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 min-h-screen">
       {/* Header */}
       <div className="mb-8">
         <button
           onClick={handleCancel}
-          className="text-blue-600 hover:text-blue-800 text-sm font-medium mb-4 flex items-center gap-1"
+          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium mb-4 flex items-center gap-1"
         >
           ← Volver a promociones
         </button>
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
           {mode === "create" ? "Crear promoción" : "Editar promoción"}
         </h1>
         {typeConfig && (
-          <p className="text-gray-600 mt-1">{typeConfig.description}</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">{typeConfig.description}</p>
         )}
       </div>
 
       {/* Formulario específico por tipo */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
         {renderFormByType()}
       </div>
     </div>
@@ -205,7 +205,7 @@ export default function PromotionFormContainer({
 
       default:
         return (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
             Formulario para tipo "{currentType}" no implementado aún
           </div>
         );
