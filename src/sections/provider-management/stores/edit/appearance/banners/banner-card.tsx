@@ -47,7 +47,7 @@ function BannerImage({ banner }: { banner: BannerItem }) {
   if (banner.image) {  
     // Si es File, crear URL temporal
     return (
-      <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100">
+      <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
         <Image 
           src={banner.image instanceof File ? URL.createObjectURL(banner.image) :banner.image} 
           alt={banner.title}
@@ -60,8 +60,8 @@ function BannerImage({ banner }: { banner: BannerItem }) {
   }
   
   return (
-    <div className="w-12 h-12 rounded-md bg-gray-100 flex items-center justify-center">
-      <span className="text-gray-300 text-xl">🖼️</span>
+    <div className="w-12 h-12 rounded-md bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+      <span className="text-gray-300 dark:text-gray-500 text-xl">🖼️</span>
     </div>
   );
 }
@@ -70,19 +70,19 @@ function BannerInfo({ banner, positionLabel }: { banner: BannerItem; positionLab
   return (
     <div>
       <div className="flex items-center gap-2">
-        <div className="text-sm font-medium text-gray-900">{banner.title}</div>
+        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{banner.title}</div>
         {banner.isActive && (
-          <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+          <span className="inline-flex items-center rounded-md bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-300 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-600/30">
             Activo
           </span>
         )}
-        <span className="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700 ring-1 ring-inset ring-gray-600/10">
+        <span className="inline-flex items-center rounded-md bg-gray-100 dark:bg-gray-700 px-2 py-0.5 text-[11px] font-medium text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-600/10 dark:ring-gray-600/20">
           {positionLabel}
         </span>
       </div>
-      <div className="text-xs text-gray-500"><a href={banner.urlDestinity}>{banner.urlDestinity.substring(0, 10)}</a> </div>
+      <div className="text-xs text-gray-500 dark:text-gray-400"><a href={banner.urlDestinity}>{banner.urlDestinity.substring(0, 10)}</a> </div>
       {(banner.initDate || banner.endDate) && (
-        <div className="text-xs text-gray-400 mt-0.5">
+        <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
           {banner.initDate ? banner.initDate.substring(0, 10) : ""} 
           {banner.endDate ? ` - ${banner.endDate.substring(0, 10)}` : ""}
         </div>
@@ -111,7 +111,7 @@ function BannerActions({
         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
           banner.isActive 
             ? "bg-gradient-to-r from-secondary to-indigo-600" 
-            : "bg-gray-300"
+            : "bg-gray-300 dark:bg-gray-600"
         }`}
         onClick={() => (banner.id != null ? onToggle(banner.id) : undefined)}
 
@@ -126,7 +126,7 @@ function BannerActions({
       {/* Edit Button */}
       <button
         type="button"
-        className="text-gray-500 hover:text-gray-700 transition-colors"
+        className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
         aria-label="Editar"
         onClick={(e) => {
           e.preventDefault();
@@ -140,7 +140,7 @@ function BannerActions({
       {/* Delete Button */}
       <button
         type="button"
-        className="text-gray-500 hover:text-red-600 transition-colors"
+        className="text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
         aria-label="Eliminar"
         onClick={() => (banner.id != null ? onDelete(banner.id) : undefined)}
 

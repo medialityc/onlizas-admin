@@ -63,7 +63,7 @@ export default function GeneralContainer({ store }: Props) {
 
   return (
     <FormProvider id="general-form" methods={methods} onSubmit={onSubmit}>
-      <div className="space-y-6">
+      <div className="space-y-6 bg-white dark:bg-gray-900 p-6">
         <GeneralStatusCard />
 
         {/* Información básica y contacto */}
@@ -79,7 +79,7 @@ export default function GeneralContainer({ store }: Props) {
         <PoliciesCard />
         
         {/* Botón de guardar */}
-        <div className="flex justify-end pt-6 border-t border-gray-200 bg-gray-50 -mx-6 px-6 py-4 mt-8">
+        <div className="flex justify-end pt-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 -mx-6 px-6 py-4 mt-8">
           <LoaderButton
             form="general-form"
             type="submit"

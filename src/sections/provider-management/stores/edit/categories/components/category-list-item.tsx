@@ -14,15 +14,15 @@ type Props = {
 export default function CategoryListItem({ category: c, onToggleActive, onEdit, onDelete, ...dndProps }: Props) {
   return (
     <div
-      className="bg-white border rounded-xl p-4 shadow-sm hover:shadow-md transition-all select-none hover:bg-gray-50/60 cursor-grab active:cursor-grabbing"
+      className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-sm hover:shadow-md transition-all select-none hover:bg-gray-50/60 dark:hover:bg-gray-700/60 cursor-grab active:cursor-grabbing"
       {...dndProps}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center text-gray-300 font-bold text-lg cursor-grab active:cursor-grabbing select-none">≡</div>
+          <div className="w-9 h-9 rounded-lg bg-gray-50 dark:bg-gray-700 flex items-center justify-center text-gray-300 dark:text-gray-500 font-bold text-lg cursor-grab active:cursor-grabbing select-none">≡</div>
           <div>
             <div className="flex items-center gap-2">
-              <h4 className="text-medium font-semibold text-gray-900">{c.categoryName}</h4>
+              <h4 className="text-medium font-semibold text-gray-900 dark:text-gray-100">{c.categoryName}</h4>
               {c.isActive && (
                 <Badge variant="outline-primary" className="!text-[11px] !px-2 !py-0.5" rounded>
                   Activa
@@ -42,7 +42,7 @@ export default function CategoryListItem({ category: c, onToggleActive, onEdit, 
             <button
               type="button"
               aria-label="Cambiar estado"
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${c.isActive ? "bg-gradient-to-r from-secondary to-indigo-600" : "bg-gray-300"}`}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${c.isActive ? "bg-gradient-to-r from-secondary to-indigo-600" : "bg-gray-300 dark:bg-gray-600"}`}
               onClick={() => onToggleActive(c.id, !c.isActive)}
             >
               <span

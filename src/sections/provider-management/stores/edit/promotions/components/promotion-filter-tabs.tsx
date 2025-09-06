@@ -17,12 +17,12 @@ export default function PromotionFilterTabs({ filterStatus, onFilterChange }: Pr
   ];
 
   return (
-    <div className="flex gap-3 text-xs text-gray-600">
+    <div className="flex gap-3 text-xs">
       {tabs.map(tab => (
         <button
           key={tab.key}
-          className={`px-2 py-1 rounded transition-colors ${
-            filterStatus === tab.key ? "bg-gray-100 text-gray-900" : "hover:bg-gray-50"
+          className={`px-2 py-1 rounded transition-colors text-gray-700 dark:text-gray-300 ${
+            filterStatus === tab.key ? "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100" : "hover:bg-gray-50 dark:hover:bg-gray-800"
           }`}
           onClick={() => onFilterChange(tab.key)}
         >

@@ -46,7 +46,7 @@ export default function PromotionTypeSelectorModal({
     >
       <div className="space-y-6">
         {/* Descripción */}
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-300">
           Selecciona el tipo de descuento que deseas crear para tu tienda.
         </p>
         

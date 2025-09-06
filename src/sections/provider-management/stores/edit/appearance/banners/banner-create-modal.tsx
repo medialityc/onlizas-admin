@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import SimpleModal from "@/components/modal/modal";
 import { FormProvider as RHFFormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -120,7 +120,7 @@ export default function BannerCreateModal({ open, onClose, onCreate, onUpdate, e
 							{ label: "Footer", value: "3" },
 						]}
 					/>
-					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					<div className="grid grid-cols-1  dark:text-gray-100 sm:grid-cols-2 gap-4">
 						<RHFDatePickerBanner
 							name="initDate"
 							label="Fecha de Inicio"
@@ -132,7 +132,7 @@ export default function BannerCreateModal({ open, onClose, onCreate, onUpdate, e
 							minDate={isEditing ? undefined : new Date()}
 						/>
 					</div>
-					<RHFImageUpload name="image" label="Imagen del Banner" variant="rounded" />
+					<RHFImageUpload name="image" label="Imagen del Banner" variant="rounded" className=" dark:text-gray-100"/>
 				</div>
 				<div className="mt-6 flex justify-end gap-3">
 					<button type="button" className="btn btn-outline" onClick={onClose}>

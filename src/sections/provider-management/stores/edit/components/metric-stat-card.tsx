@@ -5,6 +5,8 @@ export type MetricStatCardProps = {
   label: string;
   value: React.ReactNode;
   icon?: React.ReactNode;
+  // extra class to apply to the icon wrapper (use to set color class like 'text-indigo-600')
+  iconWrapperClassName?: string;
   // style variants for subtle differences across tabs
   variant?: "default" | "compact" | "plain";
   // optional classes passthrough
@@ -33,10 +35,10 @@ export default function MetricStatCard({
           <div className="flex items-center justify-between gap-3">
             <div>
               <div className="text-sm font-medium text-gray-500 tracking-wide">{label}</div>
-              <div className={`text-3xl font-semibold text-gray-900 mt-1 ${valueClassName}`}>{value}</div>
+              <div className={`text-3xl font-semibold text-gray-900 dark:text-gray-100 mt-1 ${valueClassName}`}>{value}</div>
             </div>
             {icon && (
-              <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 [&>svg]:w-6 [&>svg]:h-6">
+              <div className={`w-10 h-10 rounded-lg metric-icon bg-gray-50 dark:bg-gray-700 flex items-center justify-center text-gray-400 [&>svg]:w-6 [&>svg]:h-6`}>
                 {icon}
               </div>
             )}
@@ -53,9 +55,7 @@ export default function MetricStatCard({
           <div className="flex items-center justify-between">
             <span className="text-medium font-semibold text-gray-500 tracking-wide">{label}</span>
             {icon && (
-              <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400">
-                <div className="[&>svg]:w-7 [&>svg]:h-7">{icon}</div>
-              </div>
+              <div className={`w-10 h-10 rounded-lg metric-icon bg-gray-50 dark:bg-gray-700 flex items-center justify-center text-gray-400 [&>svg]:w-7 [&>svg]:h-7`}>{icon}</div>
             )}
           </div>
           <div className={`text-3xl font-semibold text-gray-900 mt-1 ${valueClassName}`}>{value}</div>
@@ -70,13 +70,13 @@ export default function MetricStatCard({
       <CardHeader className={`flex flex-row items-center justify-between gap-3 ${headerClassName}`}>
         <CardTitle className="text-sm font-medium text-gray-500 tracking-wide">{label}</CardTitle>
         {icon && (
-          <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 [&>svg]:w-6 [&>svg]:h-6">
+          <div className={`w-10 h-10 rounded-lg metric-icon bg-gray-50 dark:bg-gray-700 flex items-center justify-center text-gray-400 [&>svg]:w-6 [&>svg]:h-6`}>
             {icon}
           </div>
         )}
       </CardHeader>
       <CardContent className="pt-0 pb-6">
-        <div className={`text-3xl font-semibold text-gray-900 ${valueClassName}`}>{value}</div>
+        <div className={`text-3xl font-semibold text-gray-900 dark:text-gray-100 ${valueClassName}`}>{value}</div>
       </CardContent>
     </Card>
   );

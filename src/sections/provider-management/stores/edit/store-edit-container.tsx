@@ -10,7 +10,7 @@ interface Props {
 
 export default function StoreEditAdminContainer({ store }: Props) {
   return (
-    <div className="p-6">
+    <div className="p-6 bg-white dark:bg-gray-900 min-h-screen">
       <StoreTabs store={store} />
     </div>
   );

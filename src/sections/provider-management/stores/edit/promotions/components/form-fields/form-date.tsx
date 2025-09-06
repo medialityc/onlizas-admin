@@ -18,7 +18,7 @@ export default function FormDate({ name = "simpleDates" }: { name?: string }) {
 	return (
 		<div className="space-y-0">
 			<div className="flex items-start justify-between gap-1">
-				<label className="mb-0 text-sm font-semibold text-gray-900">Días específicos</label>
+				<label className="mb-0 text-sm font-semibold  dark:text-gray-100 text-gray-900">Días específicos</label>
 					<Button type="button" size="sm" className="ml-2" variant="secondary" onClick={() => append(today)}>
 					<PlusIcon className="w-4 h-4" />
 					<span className="sr-only">Agregar fecha</span>

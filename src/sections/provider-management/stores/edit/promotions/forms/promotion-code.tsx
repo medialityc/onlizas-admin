@@ -104,7 +104,7 @@ export default function PromotionCode({
     <FormProvider methods={methods} onSubmit={onFormSubmit}>
       <div className="space-y-6">
         <PromotionTypeHeader title="Código de descuento" description="Establecer condiciones para descuento mediante un cóodigo" icon={<span>🏷️</span>} />
-        <Card>
+        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardContent>
             <PromotionBasicInfo showCode={true} typeLabel="Código de descuento" />
 
@@ -114,9 +114,9 @@ export default function PromotionCode({
           </CardContent>
         </Card>
 
-        <Card className="gap-2">
+        <Card className="gap-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardHeader className="pb-0">
-            <CardTitle>Valor</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-gray-100">Valor</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="grid grid-cols-1 gap-3">
@@ -131,18 +131,18 @@ export default function PromotionCode({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardHeader>
-            <CardTitle>Requisitos de compra mínima</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-gray-100">Requisitos de compra mínima</CardTitle>
           </CardHeader>
           <CardContent>
             <PurchaseRequirements />
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardHeader>
-            <CardTitle> <Label >Usos máximos de descuento</Label></CardTitle>
+            <CardTitle className="text-gray-900 dark:text-gray-100"> <Label >Usos máximos de descuento</Label></CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -152,9 +152,9 @@ export default function PromotionCode({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardHeader>
-            <CardTitle>Vigencia</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-gray-100">Vigencia</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
