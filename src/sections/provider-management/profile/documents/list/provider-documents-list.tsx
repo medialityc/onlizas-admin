@@ -48,7 +48,7 @@ export function ProviderDocumentsList({ documents, userId }: Props) {
         sortable: true,
         render: (document) => (
           <p className="text-sm text-gray-600 dark:text-gray-300 truncate max-w-[200px] block">
-            {document.rejectionReason || "Aprobados"}
+            {document.rejectionReason || "-"}
           </p>
         ),
       },
@@ -83,7 +83,6 @@ export function ProviderDocumentsList({ documents, userId }: Props) {
   return (
     <>
       <div className="panel">
-        <pre> {JSON.stringify(documents, null, 2)} </pre>
         <div className="mb-5 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-semibold text-dark dark:text-white-light">
