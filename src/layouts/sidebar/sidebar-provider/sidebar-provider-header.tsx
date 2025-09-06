@@ -1,5 +1,4 @@
 "use client";
-import { useAuth } from "@/auth-sso/hooks/use-auth";
 import { toggleSidebar } from "@/store/themeConfigSlice";
 import { ChevronLeftIcon } from "lucide-react";
 
@@ -8,14 +7,10 @@ import SidebarDropdown from "../sidebar-dropdown";
 
 const SidebarProviderHeader = () => {
   const dispatch = useDispatch();
-  const { user } = useAuth();
 
   return (
     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-      <SidebarDropdown
-        title={user?.name || "Proveedor"}
-        subtitle={user?.emails?.[0].address}
-      />
+      <SidebarDropdown title={"Onlizas"} subtitle={"Panel de proveedor"} />
 
       <button
         type="button"

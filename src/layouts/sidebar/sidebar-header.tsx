@@ -10,7 +10,7 @@ const SidebarHeader = () => {
 
   return (
     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-      <SidebarDropdown title="Admin" subtitle="Panel de Control" />
+      <SidebarDropdown title="Onlizas" subtitle="Panel de Control" />
 
       <button
         type="button"

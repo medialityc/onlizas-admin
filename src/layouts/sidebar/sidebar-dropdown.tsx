@@ -19,7 +19,7 @@ const SidebarDropdown = ({ title = "Panel de Control", subtitle }: Props) => {
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
                 <Image
-                  className="w-5 h-5"
+                  className="w-8 h-8"
                   src="/assets/images/ZAS.svg"
                   alt="logo"
                   width={20}
@@ -28,7 +28,9 @@ const SidebarDropdown = ({ title = "Panel de Control", subtitle }: Props) => {
               </div>
               <div className="flex flex-col gap-1 justify-start items-start">
                 <p className="text-sm font-bold">{title}</p>
-                <p className="text-xs text-gray-500 line-clamp-1 overflow-hidden text-ellipsis">{subtitle}</p>
+                <p className="text-xs text-gray-500 line-clamp-1 overflow-hidden text-ellipsis">
+                  {subtitle}
+                </p>
               </div>
             </div>
             <ChevronDown className="h-4 w-4 text-gray-400" />
