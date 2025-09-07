@@ -62,7 +62,7 @@ export function useModalState() {
       const value = id?.toString() ?? "true";
 
       // Actualizar estado local inmediatamente
-      setLocalState(prev => ({ ...prev, [key]: value }));
+      setLocalState((prev) => ({ ...prev, [key]: value }));
 
       // Actualizar URL de forma asíncrona
       isUpdatingFromURL.current = true;
@@ -76,16 +76,16 @@ export function useModalState() {
   const closeModal = useCallback(
     (...keys: string[]) => {
       // Actualizar estado local inmediatamente
-      setLocalState(prev => {
+      setLocalState((prev) => {
         const newState = { ...prev };
-        keys.forEach(key => delete newState[key]);
+        keys.forEach((key) => delete newState[key]);
         return newState;
       });
 
       // Actualizar URL de forma asíncrona
       isUpdatingFromURL.current = true;
       const params = new URLSearchParams(searchParams);
-      keys.forEach(key => params.delete(key));
+      keys.forEach((key) => params.delete(key));
       router.replace(`?${params.toString()}`, { scroll: false });
     },
     [router, searchParams]
@@ -94,9 +94,9 @@ export function useModalState() {
   const closeAllModals = useCallback(
     (keepParams: string[] = []) => {
       // Actualizar estado local inmediatamente
-      setLocalState(prev => {
+      setLocalState((prev) => {
         const newState: Record<string, string | undefined> = {};
-        keepParams.forEach(key => {
+        keepParams.forEach((key) => {
           if (prev[key] !== undefined) {
             newState[key] = prev[key];
           }
@@ -109,7 +109,7 @@ export function useModalState() {
       const params = new URLSearchParams();
 
       // Mantener solo los parámetros especificados
-      keepParams.forEach(key => {
+      keepParams.forEach((key) => {
         const value = searchParams.get(key);
         if (value) params.set(key, value);
       });
@@ -121,7 +121,7 @@ export function useModalState() {
 
   // Función para verificar si algún modal está abierto
   const hasOpenModals = useCallback(() => {
-    return Object.values(localState).some(value => !!value);
+    return Object.values(localState).some((value) => !!value);
   }, [localState]);
 
   return {

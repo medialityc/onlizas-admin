@@ -97,10 +97,10 @@ export default async function Page({
       {/* Floating button to jump to approval controls (visible only when applicable) */}
       {showApprovalButton && (
         // Floating button is a client component that performs smooth scroll
-        <React.Suspense>
+        <Suspense>
           {/* eslint-disable-next-line @next/next/no-before-interactive-script-outside-document */}
           <FloatingApprovalButton />
-        </React.Suspense>
+        </Suspense>
       )}
     </div>
   );
