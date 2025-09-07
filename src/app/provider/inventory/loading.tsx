@@ -4,10 +4,10 @@ export default function Loading() {
       <div className="panel space-y-3">
         <div>
           <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-            Gestión de almacenes
+            Inventario - Admin
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Administra almacenes físicos y virtuales
+            Gestione el inventario de sus productos - Admin
           </p>
         </div>
 
