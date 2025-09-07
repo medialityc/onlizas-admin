@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import Badge from "@/components/badge/badge";
 import { Button } from "@/components/button/button";
 import { paths } from "@/config/paths";
@@ -6,41 +5,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getProductById } from "@/services/products";
-
-// Esqueleto de carga
-function ProductViewFallback() {
-  return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-pulse">
-      <div className="bg-white rounded-lg border p-6">
-        <div className="flex items-start gap-6">
-          <div className="w-48 h-48 bg-gray-200 rounded-lg flex-shrink-0" />
-          <div className="flex-1 space-y-4">
-            <div className="h-8 bg-gray-200 rounded w-1/2" />
-            <div className="h-4 bg-gray-200 rounded w-3/4" />
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-24" />
-                <div className="h-6 bg-gray-200 rounded w-16" />
-              </div>
-              <div className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-20" />
-                <div className="h-6 bg-gray-200 rounded w-16" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white rounded-lg border p-6">
-        <div className="h-6 bg-gray-200 rounded w-1/3 mb-4" />
-        <div className="space-y-3">
-          <div className="h-4 bg-gray-200 rounded" />
-          <div className="h-4 bg-gray-200 rounded" />
-          <div className="h-4 bg-gray-200 rounded" />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 async function ProductDetails({ id }: { id: string }) {
   const response = await getProductById(Number(id));
@@ -227,9 +191,5 @@ export default async function ViewProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params; // Next 15 params es una Promesa
-  return (
-    <Suspense fallback={<ProductViewFallback />}>
-      <ProductDetails id={id} />
-    </Suspense>
-  );
+  return <ProductDetails id={id} />;
 }

@@ -1,10 +1,9 @@
 import { buildQueryParams } from "@/lib/request";
-import { InventoryListSkeleton } from "@/sections/inventory-provider/components/skeleton/inventory-list-skeleton";
+
 import UserSupplierCardListContainer from "@/sections/inventory-provider/containers/user-supplier-card-list-container";
 import { getAllSupplierUsers } from "@/services/users";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
-import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Usuarios proveedores - ZAS Express",
@@ -24,12 +23,10 @@ async function UserProviderPage({ searchParams }: PageProps) {
   const supplierUsers = await getAllSupplierUsers({ ...query, isActive: true });
 
   return (
-    <Suspense fallback={<InventoryListSkeleton />}>
-      <UserSupplierCardListContainer
-        supplierUsers={supplierUsers}
-        query={params}
-      />
-    </Suspense>
+    <UserSupplierCardListContainer
+      supplierUsers={supplierUsers}
+      query={params}
+    />
   );
 }
 

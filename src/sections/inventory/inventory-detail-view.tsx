@@ -1,40 +1,6 @@
 import { InventoryProductItem, InventoryProvider } from "@/types/inventory";
 import React from "react";
 
-export const InventoryDetailSkeleton: React.FC = () => {
-  return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-pulse px-4 sm:px-6">
-      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row items-start gap-6">
-          <div className="w-full sm:w-48 h-48 bg-gray-200 dark:bg-gray-700 rounded-lg flex-shrink-0" />
-          <div className="flex-1 space-y-4 w-full mt-4 sm:mt-0">
-            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24" />
-                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-16" />
-              </div>
-              <div className="space-y-2">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20" />
-                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-16" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm">
-        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-4" />
-        <div className="space-y-3">
-          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded" />
-          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded" />
-          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded" />
-        </div>
-      </div>
-    </div>
-  );
-};
-
 interface Props {
   inventory: InventoryProvider;
 }
@@ -76,7 +42,9 @@ export default function InventoryDetailView({ inventory }: Props) {
               </div>
 
               <div className="mt-3 sm:mt-0 sm:text-right">
-                <div className="text-sm text-gray-500 dark:text-gray-400">Total items</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  Total items
+                </div>
                 <div className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
                   {inventory.totalQuantity}
                 </div>
@@ -100,7 +68,9 @@ export default function InventoryDetailView({ inventory }: Props) {
                   />
                   <circle cx="12" cy="7" r="4" strokeWidth="1.5" />
                 </svg>
-                <span className="text-gray-600 dark:text-gray-300">Proveedor:</span>{" "}
+                <span className="text-gray-600 dark:text-gray-300">
+                  Proveedor:
+                </span>{" "}
                 <span className="font-medium text-gray-900 dark:text-white">
                   {inventory.supplierName}
                 </span>
@@ -121,7 +91,9 @@ export default function InventoryDetailView({ inventory }: Props) {
                     d="M12 21l-8-5V6a2 2 0 012-2h12a2 2 0 012 2v10l-8 5z"
                   />
                 </svg>
-                <span className="text-gray-600 dark:text-gray-300">Almacén:</span>{" "}
+                <span className="text-gray-600 dark:text-gray-300">
+                  Almacén:
+                </span>{" "}
                 <span className="font-medium text-gray-900 dark:text-white">
                   {inventory.warehouseName}
                 </span>
@@ -143,7 +115,9 @@ export default function InventoryDetailView({ inventory }: Props) {
                   />
                   <circle cx="12" cy="12" r="3" strokeWidth="1.5" />
                 </svg>
-                <span className="text-gray-600 dark:text-gray-300">Ubicación:</span>{" "}
+                <span className="text-gray-600 dark:text-gray-300">
+                  Ubicación:
+                </span>{" "}
                 <span className="font-medium text-gray-900 dark:text-white">
                   {inventory.storeName} · {inventory.warehouseName}
                 </span>
@@ -170,14 +144,20 @@ export default function InventoryDetailView({ inventory }: Props) {
             <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
               <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between">
                 <div className="text-center sm:text-left mb-2 sm:mb-0">
-                  <h3 className="text-base font-medium text-gray-900 dark:text-white">Productos</h3>
+                  <h3 className="text-base font-medium text-gray-900 dark:text-white">
+                    Productos
+                  </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     {inventory.products.length} items
                   </p>
                 </div>
                 <div className="text-center sm:text-right">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Cantidad total</div>
-                  <div className="font-semibold text-gray-900 dark:text-white">{inventory.totalQuantity}</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    Cantidad total
+                  </div>
+                  <div className="font-semibold text-gray-900 dark:text-white">
+                    {inventory.totalQuantity}
+                  </div>
                 </div>
               </div>
 
@@ -205,13 +185,17 @@ export default function InventoryDetailView({ inventory }: Props) {
                     <div className="flex-1 w-full">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between">
                         <div className="text-center sm:text-left mb-2 sm:mb-0">
-                          <div className="font-medium text-gray-900 dark:text-white">{p.productName}</div>
+                          <div className="font-medium text-gray-900 dark:text-white">
+                            {p.productName}
+                          </div>
                           <div className="text-sm text-gray-500 dark:text-gray-400">
                             SKU: {p.productId}
                           </div>
                         </div>
                         <div className="text-center sm:text-right">
-                          <div className="text-sm text-gray-500 dark:text-gray-400">Precio</div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                            Precio
+                          </div>
                           <div className="font-semibold text-gray-900 dark:text-white">
                             ${p.price.toFixed(2)}
                           </div>
@@ -243,25 +227,39 @@ export default function InventoryDetailView({ inventory }: Props) {
 
           <aside className="space-y-4">
             <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-              <h4 className="text-sm text-gray-500 dark:text-gray-400 mb-1">Proveedor</h4>
-              <div className="font-medium text-gray-900 dark:text-white">{inventory.supplierName}</div>
+              <h4 className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                Proveedor
+              </h4>
+              <div className="font-medium text-gray-900 dark:text-white">
+                {inventory.supplierName}
+              </div>
             </div>
 
             <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-              <h4 className="text-sm text-gray-500 dark:text-gray-400 mb-1">Almacén</h4>
-              <div className="font-medium text-gray-900 dark:text-white">{inventory.warehouseName}</div>
+              <h4 className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                Almacén
+              </h4>
+              <div className="font-medium text-gray-900 dark:text-white">
+                {inventory.warehouseName}
+              </div>
             </div>
 
             <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-              <h4 className="text-sm text-gray-500 dark:text-gray-400 mb-2">Totales</h4>
+              <h4 className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                Totales
+              </h4>
               <div className="flex items-center justify-between mt-2">
-                <span className="text-sm text-gray-600 dark:text-gray-300">Precio total:</span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">
+                  Precio total:
+                </span>
                 <span className="font-semibold text-gray-900 dark:text-white">
                   ${inventory.totalPrice.toFixed(2)}
                 </span>
               </div>
               <div className="flex items-center justify-between mt-1">
-                <span className="text-sm text-gray-600 dark:text-gray-300">Cantidad total:</span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">
+                  Cantidad total:
+                </span>
                 <span className="font-semibold text-gray-900 dark:text-white">
                   {inventory.totalQuantity}
                 </span>
