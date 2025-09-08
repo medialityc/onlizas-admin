@@ -17,6 +17,11 @@ import {
   createCurrency,
   updateCurrency,
 } from "@/services/currencies";
+import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
+import { PaginatedResponse } from "@/types/common";
+import { ApiResponse } from "@/types/fetch/api";
+import { IQueryable } from "@/types/fetch/request";
+import { getRegions } from "@/services/regions";
 
 interface CurrenciesModalProps {
   open: boolean;
@@ -43,6 +48,7 @@ export default function CurrenciesModal({
       codIso: currency?.codIso ?? "",
       symbol: "", // Nuevo campo que no existe en Currency base
       rate: currency?.rate ?? 1,
+  regionsId: currency?.regions?.map(r => r.id) ?? [],
     },
   });
 
@@ -66,6 +72,7 @@ export default function CurrenciesModal({
           name: data.name,
           symbol: data.symbol,
           rate: data.rate,
+          regionsId: data.regionsId,
         });
       } else {
         response = await createCurrency(data);
@@ -94,6 +101,54 @@ export default function CurrenciesModal({
       setError(errorMessage);
       toast.error(errorMessage);
     }
+  };
+  // Función para obtener regiones paginadas (devuelve ApiResponse<PaginatedResponse<T>>
+  // porque `RHFAutocompleteFetcherInfinity` espera esa firma).
+  const fetchRegions = async (
+    params: IQueryable
+  ): Promise<ApiResponse<PaginatedResponse<any>>> => {
+    // The mock `getRegions` accepts filters like { search, status }.
+    // Pagination is handled by this wrapper for the autocomplete component.
+    const response = await getRegions({
+      search: params.search,
+    });
+
+    // Build a safe paginated payload (ensure page/pageSize are numbers)
+    const page = Number(params.page ?? 1) || 1;
+    const pageSize = Number(params.pageSize ?? 20) || 20;
+
+    if (response.error) {
+      return {
+        data: {
+          data: [],
+          totalCount: 0,
+          page,
+          pageSize,
+          hasNext: false,
+          hasPrevious: page > 1,
+        },
+        error: true,
+        status: response.status ?? 500,
+        message: response.message,
+      };
+    }
+
+    const items = response.data ?? [];
+
+    const paginated: PaginatedResponse<any> = {
+      data: items,
+      totalCount: items.length,
+      page,
+      pageSize,
+      hasNext: false,
+      hasPrevious: page > 1,
+    };
+
+    return {
+      data: paginated,
+      error: false,
+      status: response.status ?? 200,
+    };
   };
 
   return (
@@ -147,6 +202,23 @@ export default function CurrenciesModal({
               step="0.01"
               min="0.01"
               max="999999.99"
+            />
+            {/* Regions Selector */}
+            <RHFAutocompleteFetcherInfinity
+              name="regionsId"
+              label="Regiones Asociadas"
+              placeholder="Selecciona las regiones donde se usa esta moneda"
+              multiple
+              onFetch={fetchRegions}
+              objectValueKey="id"
+              objectKeyLabel="name"
+              renderOption={(region) => (
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">{region.name}</span>
+                  <span className="text-xs text-gray-500">({region.code})</span>
+                </div>
+              )}
+              
             />
           </div>
 

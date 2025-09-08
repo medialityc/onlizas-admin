@@ -1,0 +1,61 @@
+"use client";
+
+import useFiltersUrl from "@/hooks/use-filters-url";
+import { ApiResponse } from "@/types/fetch/api";
+import { SearchParams } from "@/types/fetch/request";
+import { Region } from "@/types/regions";
+import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
+import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
+import { RegionList } from "./components/region-list";
+
+interface RegionListContainerProps {
+  regionsPromise: ApiResponse<Region[]>;
+  query: SearchParams;
+}
+
+export default function RegionListContainer({
+  regionsPromise,
+  query,
+}: RegionListContainerProps) {
+  const regionsResponse = regionsPromise;
+  const { updateFiltersInUrl } = useFiltersUrl();
+  useFetchError(regionsResponse);
+
+  const handleSearchParamsChange = (params: SearchParams) => {
+    updateFiltersInUrl(params);
+  };
+
+  // Convert ApiResponse to PaginatedResponse format expected by DataGrid
+  const paginatedData = regionsResponse.data ? {
+    data: regionsResponse.data,
+    totalCount: regionsResponse.data.length,
+    page: 1,
+    pageSize: regionsResponse.data.length,
+    hasNext: false,
+    hasPrevious: false,
+  } : undefined;
+
+  return (
+    <div className="space-y-6">
+      {regionsResponse.status == 401 && <SessionExpiredAlert />}
+      <div className="panel">
+        <div className="mb-5 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold text-dark dark:text-white-light">
+              Gestión de Regiones
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Maneja las regiones y sus configuraciones asociadas
+            </p>
+          </div>
+        </div>
+
+        <RegionList
+          data={paginatedData}
+          searchParams={query}
+          onSearchParamsChange={handleSearchParamsChange}
+        />
+      </div>
+    </div>
+  );
+}
