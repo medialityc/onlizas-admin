@@ -26,17 +26,17 @@ export const createRoleSchema = (existingRoles: IRole[]) =>
         .min(1, "Debe seleccionar un subsistema"),
     })
     .refine(
-      data =>
+      (data) =>
         !existingRoles.some(
-          role =>
+          (role) =>
             role.name.trim().toLowerCase() === data.name.trim().toLowerCase()
         ),
       { message: "El nombre ya existe", path: ["name"] }
     )
     .refine(
-      data =>
+      (data) =>
         !existingRoles.some(
-          role =>
+          (role) =>
             role.code.trim().toUpperCase() === data.code.trim().toUpperCase()
         ),
       { message: "El código ya existe", path: ["code"] }
@@ -69,17 +69,17 @@ export const updateRoleSchema = (existingRoles: IRole[]) =>
         .min(1, "Debe seleccionar un subsistema"),
     })
     .refine(
-      data =>
+      (data) =>
         !existingRoles.some(
-          role =>
+          (role) =>
             role.name.trim().toLowerCase() === data.name.trim().toLowerCase()
         ),
       { message: "El nombre ya existe", path: ["name"] }
     )
     .refine(
-      data =>
+      (data) =>
         !existingRoles.some(
-          role =>
+          (role) =>
             role.code.trim().toUpperCase() === data.code.trim().toUpperCase()
         ),
       { message: "El código ya existe", path: ["code"] }
@@ -103,6 +103,5 @@ export const defaultRoleForm: Partial<CreateRoleSchema> = {
   name: "",
   code: "",
   description: "",
-  // TODO: Definir id del subsistema por defecto
   subSystemId: 1,
 };

@@ -1,20 +1,18 @@
 "use client";
+import { AlertBox } from "@/components/alert/alert-box";
 import IconInfoTriangle from "@/components/icon/icon-info-triangle";
-import { zodResolver } from "@hookform/resolvers/zod";
-
 import IconMail from "@/components/icon/icon-mail";
 import IconPhoneCall from "@/components/icon/icon-phone-call";
-import showToast from "@/config/toast/toastConfig";
-import { useMemo, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-
-import { createUser } from "@/services/users";
-import { CreateUserSchema, createUserSchema } from "./create-user-schema";
-import TabsWithIcons from "@/components/tab/tabs";
-import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
-import { AlertBox } from "@/components/alert/alert-box";
 import LoaderButton from "@/components/loaders/loader-button";
 import { RHFCountrySelect } from "@/components/react-hook-form/rhf-country-code-select";
+import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
+import TabsWithIcons from "@/components/tab/tabs";
+import showToast from "@/config/toast/toastConfig";
+import { createUser } from "@/services/users";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMemo, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { CreateUserSchema, createUserSchema } from "./create-user-schema";
 
 interface Props {
   onSuccess?: () => void;
@@ -73,7 +71,6 @@ const UserCreateForm = ({ onSuccess }: Props) => {
       const res = await createUser(requestPayload);
 
       if (res?.status === 200) {
-        // TODO: Actualizar los parametros de la url
         onSuccess?.();
         showToast("Usuario creado exitosamente", "success");
       } else if (res?.status === 409) {

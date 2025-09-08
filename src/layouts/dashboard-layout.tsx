@@ -1,6 +1,6 @@
 import ContentAnimation from "./content-animation";
 import Footer from "./footer";
-import Header from "./header";
+import Header from "./header/header";
 import MainContainer from "./main-container";
 import ScrollToTop from "./scroll-to-top";
 import Sidebar from "./sidebar/sidebar";
@@ -15,7 +15,7 @@ export default function DefaultLayout({
     <>
       {/* BEGIN MAIN CONTAINER */}
       <div className="relative">
-        <ScrollToTop /> 
+        <ScrollToTop />
         <MainContainer>
           {/* BEGIN SIDEBAR */}
           <Sidebar />

@@ -29,7 +29,6 @@ export interface DataGridProps<T> {
   //pagination
   hidePagination?: boolean;
 }
-
 export interface ColumnSelectorProps<T> {
   columns: DataTableColumn<T>[];
   hiddenColumns: string[];

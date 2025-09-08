@@ -1,9 +1,8 @@
 "use client";
 
 import { UserList } from "@/sections/users/list/user-list";
-import { GetAllUsersResponse } from "@/types/users";
+import type { GetAllUsersResponse } from "@/types/users";
 import { use } from "react";
-
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
@@ -12,22 +11,20 @@ import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert
 import { UserNotificationsList } from "./notifications-list";
 import { GetAllNotificationByUserResponse } from "@/types/notifications";
 
-// TODO: Separa este tipo a otro lado
 interface UserListPageProps {
   usersNotificationsPromise: Promise<
     ApiResponse<GetAllNotificationByUserResponse>
   >;
   query: SearchParams;
 }
-
 export default function UserNotificationContainer({
   usersNotificationsPromise,
   query,
 }: UserListPageProps) {
   const userNotificationsResponse = use(usersNotificationsPromise);
   const { updateFiltersInUrl } = useFiltersUrl();
-  // TODO manejar correctamente el error
-  useFetchError(userNotificationsResponse);
+
+  const { hasError, status } = useFetchError(userNotificationsResponse);
 
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
@@ -35,7 +32,13 @@ export default function UserNotificationContainer({
 
   return (
     <div className="space-y-6">
-      {userNotificationsResponse.status == 401 && <SessionExpiredAlert />}
+      {status === 401 && <SessionExpiredAlert />}
+      {hasError && status !== 401 && (
+        <div className="alert alert-error">
+          Ocurrió un error al cargar las notificaciones.
+        </div>
+      )}
+
       <div className="panel">
         <div className="mb-5 flex items-center justify-between">
           <div>
@@ -51,11 +54,13 @@ export default function UserNotificationContainer({
           </div>
         </div>
 
-        <UserNotificationsList
-          data={userNotificationsResponse?.data}
-          searchParams={query}
-          onSearchParamsChange={handleSearchParamsChange}
-        />
+        {!hasError && (
+          <UserNotificationsList
+            data={userNotificationsResponse?.data}
+            searchParams={query}
+            onSearchParamsChange={handleSearchParamsChange}
+          />
+        )}
       </div>
     </div>
   );
