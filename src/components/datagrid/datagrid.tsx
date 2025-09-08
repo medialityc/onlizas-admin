@@ -30,7 +30,7 @@ export function DataGrid<T extends Record<string, any>>({
   customActions,
 }: DataGridProps<T>) {
   const [searchValue, setSearchValue] = useState(searchParams.search || "");
-  const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
+  const [sortStatus, setSortStatus] = useState<DataTableSortStatus<T>>({
     columnAccessor: searchParams.sortBy || "",
     direction: searchParams.isDescending ? "desc" : "asc",
   });
@@ -57,7 +57,7 @@ export function DataGrid<T extends Record<string, any>>({
   };
 
   // Handle sorting with state update
-  const handleSortWithState = (sortStatus: DataTableSortStatus) => {
+  const handleSortWithState = (sortStatus: DataTableSortStatus<T>) => {
     setSortStatus(sortStatus);
     handleSortStatusChange({
       columnAccessor: sortStatus.columnAccessor as string,
@@ -99,26 +99,27 @@ export function DataGrid<T extends Record<string, any>>({
 
       {/* Data Table */}
       <div className="datatables">
-        <DataTable
-          // TODO: ARREGLAR PROBLEMA DE TIPADO
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
+        <DataTable<T>
+          withTableBorder={false}
           columns={visibleColumns}
           records={data?.data || simpleData || []}
           // Agregar el loading
           // fetching={loading}
+
           minHeight={minHeight}
-          sortStatus={enableSorting ? sortStatus : undefined}
-          onSortStatusChange={enableSorting ? handleSortWithState : undefined}
+          sortStatus={
+            enableSorting ? sortStatus : ({} as DataTableSortStatus<T>)
+          }
+          onSortStatusChange={() => enableSorting && handleSortWithState}
           pinLastColumn
           className="table-hover whitespace-nowrap"
           totalRecords={data?.totalCount || simpleData?.length || 0}
           recordsPerPage={searchParams.pageSize || 10}
           page={searchParams.page || 1}
-          onPageChange={enablePagination ? handlePageChange : undefined}
-          recordsPerPageOptions={enablePagination ? PAGE_SIZES : undefined}
+          onPageChange={enablePagination ? handlePageChange : () => {}}
+          recordsPerPageOptions={enablePagination ? PAGE_SIZES : []}
           onRecordsPerPageChange={
-            enablePagination ? handlePageSizeChange : undefined
+            enablePagination ? handlePageSizeChange : () => {}
           }
           paginationText={({ from, to, totalRecords }) =>
             `Mostrando ${from} - ${to} ${"de"} ${totalRecords}`

@@ -1,6 +1,6 @@
 import ContentAnimation from "./content-animation";
 import Footer from "./footer";
-import Header from "./header";
+import Header from "./header/header";
 import MainContainer from "./main-container";
 import ScrollToTop from "./scroll-to-top";
 import Portals from "./portals";

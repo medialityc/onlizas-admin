@@ -1,4 +1,4 @@
-import { CurrenciesDetailsModal } from "./currencies-details-modal"; // TODO: Crear este componente
+import { CurrenciesDetailsModal } from "./currencies-details-modal";
 import { Currency } from "@/services/currencies";
 import CurrenciesModal from "./currencies-modal";
 

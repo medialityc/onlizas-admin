@@ -75,7 +75,10 @@ const ImagePreview = ({
       <div
         className={cn(
           "object-contain w-14 h-14 flex-shrink-0 bg-slate-100 border dark:border-slate-700 dark:bg-slate-700 rounded-md overflow-hidden relative",
-          previewEnabled && !showIcon && !isDefaultImage && "cursor-pointer hover:opacity-90",
+          previewEnabled &&
+            !showIcon &&
+            !isDefaultImage &&
+            "cursor-pointer hover:opacity-90",
           className
         )}
         onClick={
