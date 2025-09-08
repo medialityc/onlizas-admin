@@ -8,6 +8,8 @@ import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
 import { backendRoutes } from "@/lib/endpoint";
+import { Region } from "@/types/regions";
+
 
 // Tipos para Currency
 export type Currency = {
@@ -17,6 +19,8 @@ export type Currency = {
   rate: number;
   default: boolean;
   isActive: boolean;
+
+  regions?: Region[];
 };
 
 export type CreateCurrency = {
@@ -24,12 +28,14 @@ export type CreateCurrency = {
   codIso: string;
   symbol: string;
   rate: number;
+  regionsId: number[];
 };
 
 export type UpdateCurrency = {
   name: string;
   symbol: string;
   rate: number;
+  regionsId: number[];
 };
 
 export type GetAllCurrencies = {

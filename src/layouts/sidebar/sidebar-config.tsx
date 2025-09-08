@@ -12,6 +12,7 @@ import {
   BellIcon,
   DocumentChartBarIcon,
   ClipboardDocumentIcon,
+  GlobeAltIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "./types";
 
@@ -90,6 +91,12 @@ export const sidebarSections: SidebarSection[] = [
         label: "Inventario",
         path: paths.dashboard.inventory.all,
         icon: <ClipboardDocumentIcon className="h-4 w-4" />,
+      },
+      {
+        id: "regions",
+        label: "Regiones",
+        path: paths.dashboard.regions.list,
+        icon: <GlobeAltIcon className="h-4 w-4" />,
       },
       {
         id: "suppliers",

@@ -1,7 +1,5 @@
 "use client";
 
-import * as React from "react";
-
 import {
   Popover,
   PopoverContent,
@@ -13,9 +11,10 @@ import { format, parse } from "date-fns";
 import { es } from "date-fns/locale";
 import MaskedInput from "react-text-mask";
 import { Calendar } from "../input/calendar";
+import { ChangeEvent, useEffect, useState } from "react";
 
 interface DatePickerBannerProps {
-  date?: Date;
+  date: Date;
   handleSelectDate: (date?: Date) => void;
   containerClassname?: string;
   buttonClassname?: string;
@@ -31,18 +30,18 @@ export function DatePickerBanner({
   calendarClassname,
   minDate,
 }: DatePickerBannerProps) {
-  const [open, setOpen] = React.useState(false);
-  const isValidDate = (d: any): d is Date => d instanceof Date && !isNaN(d.getTime());
-  const [currentMonth, setCurrentMonth] = React.useState<Date>(
+  const [open, setOpen] = useState(false);
+  const isValidDate = (d: any) => d instanceof Date && !isNaN(d.getTime());
+  const [currentMonth, setCurrentMonth] = useState<Date>(
     isValidDate(date) ? date : new Date()
   );
-  const [inputValue, setInputValue] = React.useState<string>(
+  const [inputValue, setInputValue] = useState<string>(
     isValidDate(date) ? format(date, "dd/MM/yyyy") : ""
   );
-  const [error, setError] = React.useState<string>("");
+  const [error, setError] = useState<string>("");
 
   // Si cambia la fecha seleccionada desde fuera, actualiza el mes mostrado y el input
-  React.useEffect(() => {
+  useEffect(() => {
     if (isValidDate(date)) {
       setCurrentMonth(date);
       setInputValue(format(date, "dd/MM/yyyy"));
@@ -75,7 +74,7 @@ export function DatePickerBanner({
 
     const currentYear = new Date().getFullYear();
     const minYear = minDate ? minDate.getFullYear() : currentYear;
-    const maxYear = currentYear + 30; // Hasta 10 años en el futuro
+    const maxYear = currentYear + 10; // Hasta 10 años en el futuro
     
     if (yyyy < minYear || yyyy > maxYear) {
       setError(`El año debe estar entre ${minYear} y ${maxYear}`);
@@ -85,10 +84,7 @@ export function DatePickerBanner({
     // Validar que no sea anterior a la fecha mínima si está especificada
     if (minDate) {
       const inputDate = new Date(yyyy, mm - 1, dd);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      inputDate.setHours(0, 0, 0, 0);
-      if (inputDate < today) {
+      if (inputDate < minDate) {
         setError("No se pueden seleccionar fechas anteriores al día actual");
         return false;
       }
@@ -114,9 +110,9 @@ export function DatePickerBanner({
     setCurrentMonth(month);
   };
 
-  const [touched, setTouched] = React.useState(false);
+  const [touched, setTouched] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(value);
     if (value.length === 10) {
