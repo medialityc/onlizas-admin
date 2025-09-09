@@ -1,35 +1,30 @@
 import { Suspense } from "react";
 import PromotionFormSkeleton from "@/sections/provider-management/stores/edit/promotions/components/skeletons/promotion-form-skeleton";
-import ProviderLayout from "@/layouts/dashboard-layout-provider";
-import DefaultLayout from "@/layouts/dashboard-layout";
-
+import DashboardGeneric from "@/layouts/dashboard-generic";
+import SidebarProvider from "@/layouts/sidebar/sidebar-provider/sidebar-provider";
+import Sidebar from "@/layouts/sidebar/sidebar";
 
 export default function PromotionFormLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-
-  let provider = false
+  let provider = false;
   if (typeof window !== "undefined") {
-
     const saved = localStorage.getItem("promotionFormBackPath");
     if (saved) {
-      if (saved.includes("/provider"))
-        provider = true
+      if (saved.includes("/provider")) provider = true;
     }
   }
-  const Layout = provider ? ProviderLayout : DefaultLayout;
+
+  const SidebarNew = provider ? SidebarProvider : Sidebar;
 
   return (
-    <Layout>
+    <DashboardGeneric sidebar={<SidebarNew />}>
       {/* wrapper class store-promotions-view permite apuntar facilmente a hijos (modals, tabs, cards) */}
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 store-promotions-view">
-        <Suspense fallback={<PromotionFormSkeleton />}>
-          {children}
-        </Suspense>
+        <Suspense fallback={<PromotionFormSkeleton />}>{children}</Suspense>
       </div>
-    </Layout>
-
+    </DashboardGeneric>
   );
 }
