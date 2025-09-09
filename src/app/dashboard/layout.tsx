@@ -1,7 +1,9 @@
-import { ReactNode } from 'react';
-import DashboardLayout from '@/layouts/dashboard-layout';
-import AuthGuard from '@/auth-sso/providers/auth-guard';
-import 'tippy.js/dist/tippy.css';
+import { ReactNode } from "react";
+
+import AuthGuard from "@/auth-sso/providers/auth-guard";
+import "tippy.js/dist/tippy.css";
+import DashboardGeneric from "@/layouts/dashboard-generic";
+import Sidebar from "@/layouts/sidebar/sidebar";
 
 interface LayoutProps {
   children: ReactNode;
@@ -9,8 +11,8 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <DashboardLayout>
+    <DashboardGeneric sidebar={<Sidebar />}>
       <AuthGuard>{children}</AuthGuard>
-    </DashboardLayout>
+    </DashboardGeneric>
   );
 }

@@ -4,12 +4,13 @@ import Header from "./header/header";
 import MainContainer from "./main-container";
 import ScrollToTop from "./scroll-to-top";
 import Portals from "./portals";
-import SidebarProvider from "./sidebar/sidebar-provider/sidebar-provider";
 
-export default function DashboardProviderLayout({
+export default function DashboardGeneric({
   children,
+  sidebar,
 }: {
   children: React.ReactNode;
+  sidebar: React.ReactNode | null;
 }) {
   return (
     <>
@@ -18,7 +19,7 @@ export default function DashboardProviderLayout({
         <ScrollToTop />
         <MainContainer>
           {/* BEGIN SIDEBAR */}
-          <SidebarProvider />
+          {sidebar}
           {/* END SIDEBAR */}
           <div className="main-content bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex min-h-screen flex-col">
             {/* BEGIN TOP NAVBAR */}
