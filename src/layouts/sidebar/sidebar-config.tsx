@@ -12,6 +12,7 @@ import {
   BellIcon,
   DocumentChartBarIcon,
   ClipboardDocumentIcon,
+  MapPinIcon,
   GlobeAltIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "./types";
@@ -55,6 +56,12 @@ export const sidebarSections: SidebarSection[] = [
         label: "Tipos de almacenes virtuales",
         path: paths.dashboard.virtualWarehouseTypes.list,
         icon: <WarehouseIcon className="h-4 w-4" />,
+      },
+      {
+        id: "locations",
+        label: "Localizaciones",
+        path: paths.dashboard.locations.list,
+        icon: <MapPinIcon className="h-4 w-4" />,
       },
     ],
   },

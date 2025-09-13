@@ -231,17 +231,17 @@ export const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> =
       />
       {showDropdown && (
         <ul
-          className={`absolute left-0 right-0 z-10 mt-1 max-h-56 overflow-y-auto ${dropdownClassName}`}
+          className={`absolute left-0 right-0 z-10 mt-1 max-h-56 overflow-y-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg ${dropdownClassName}`}
         >
           {loading && (
-            <li className={`${optionClassName} text-gray-400`}>Cargando...</li>
+            <li className={`px-4 py-2 text-gray-400 bg-white dark:bg-gray-900 ${optionClassName}`}>Cargando...</li>
           )}
           {!loading &&
             options.map((option, idx) => (
               <li
                 key={option.place_id}
-                className={`${optionClassName} cursor-pointer ${
-                  idx === activeIndex ? "bg-blue-100" : ""
+                className={`px-4 py-2 cursor-pointer bg-white dark:bg-gray-900 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-gray-700 dark:text-gray-200 ${optionClassName} ${
+                  idx === activeIndex ? "bg-blue-100 dark:bg-blue-900/50" : ""
                 }`}
                 onMouseDown={() => handleSelect(option)}
                 onMouseEnter={() => setActiveIndex(idx)}
@@ -250,7 +250,7 @@ export const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> =
               </li>
             ))}
           {!loading && options.length === 0 && (
-            <li className={`${optionClassName} text-gray-400`}>
+            <li className={`px-4 py-2 text-gray-400 bg-white dark:bg-gray-900 ${optionClassName}`}>
               Sin resultados
             </li>
           )}

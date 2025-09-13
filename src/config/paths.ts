@@ -66,6 +66,9 @@ export const paths = {
       list: `${DASHBOARD}/inventory/provider`,
       all: `${DASHBOARD}/inventory`,
     },
+    locations: {
+      list: `${DASHBOARD}/locations`,
+    },
     regions: {
       list: `${DASHBOARD}/regions`,
     },
