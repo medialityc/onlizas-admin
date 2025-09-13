@@ -42,13 +42,11 @@ export default function LocationsModal({
   const queryClient = useQueryClient();
 
   // Control de permisos
-      const { data: permissions = [] } = usePermissions();
-      const hasPermission = (requiredPerms: string[]) => {
-        return requiredPerms.every(perm => permissions.some(p => p.code === perm));
-      };
-      const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
-    
-
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   const methods = useForm<LocationFormData>({
     resolver: zodResolver(locationSchema),
@@ -80,7 +78,6 @@ export default function LocationsModal({
     onClose();
   };
 
- 
   const handlePlaceSelected = (place: google.maps.places.PlaceResult) => {
     const addressComponents = place.address_components || [];
     const geometry = place.geometry;
@@ -117,7 +114,7 @@ console.log(place)
       };
 
       let response;
-      
+
       if (location) {
         // Update existing location
         response = await updateLocation(location.id, parsedData);
@@ -257,8 +254,8 @@ console.log(place)
                 />
               </div>
             </div>
-            
-            
+
+
           </div>
 
           <div className="flex justify-end gap-3 pt-6">
@@ -270,7 +267,7 @@ console.log(place)
             >
               Cancelar
             </button>
-            {hasUpdatePermission&&
+            {hasUpdatePermission &&
             <LoaderButton
               type="submit"
               loading={isSubmitting}
