@@ -13,8 +13,15 @@ import {
   DocumentChartBarIcon,
   ClipboardDocumentIcon,
 } from "@heroicons/react/24/solid";
-import { SidebarSection } from "./types";
-import { WarehouseIcon } from "lucide-react";
+import { SidebarMenuItem, SidebarSection } from "./types";
+import {
+  CreditCard,
+  History,
+  LayoutDashboard,
+  ShieldCheck,
+  Wallet,
+  WarehouseIcon,
+} from "lucide-react";
 
 export const sidebarSections: SidebarSection[] = [
   {
@@ -190,3 +197,36 @@ export const defaultExpandedItems = {
   security: true,
   logistics: true,
 };
+
+export const paymentSections: SidebarMenuItem[] = [
+  {
+    id: "overview",
+    label: "Overview",
+    path: paths.payment.root,
+    icon: <LayoutDashboard className="h-5 w-5" />,
+  },
+  {
+    id: "payment-gateway",
+    label: "Payment Gateway",
+    path: paths.payment.paymentGateway,
+    icon: <CreditCard className="h-5 w-5" />,
+  },
+  {
+    id: "payment-methods",
+    label: "Payment Methods",
+    path: paths.payment.paymentMethods,
+    icon: <Wallet className="h-5 w-5" />,
+  },
+  {
+    id: "testing-validation",
+    label: "Testing & Validation",
+    path: paths.payment.testingValidation,
+    icon: <ShieldCheck className="h-5 w-5" />,
+  },
+  {
+    id: "audit-history",
+    label: "Audit & History",
+    path: paths.payment.auditHistory,
+    icon: <History className="h-5 w-5" />,
+  },
+];
