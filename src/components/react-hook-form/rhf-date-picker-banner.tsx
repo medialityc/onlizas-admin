@@ -36,7 +36,7 @@ export default function RHFDatePickerBanner({ name, label, containerClassName, m
               </label>
             )}
             <DatePickerBanner
-              date={valueDate}
+              date={valueDate??new Date()}
               handleSelectDate={onChange}
               minDate={minDate}
             />
