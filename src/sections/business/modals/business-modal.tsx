@@ -12,6 +12,7 @@ import SimpleModal from "@/components/modal/modal";
 import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAllBusiness, updateBusinessData } from "@/services/business";
+import { getAllLocations } from "@/services/locations";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import { isValidUrl, urlToFile } from "@/utils/format";
@@ -163,18 +164,8 @@ export default function BusinessModal({
   if (!open) return null;
   console.log(methods.formState.errors);
 
-  const locationOptions = [
-    { value: 1, label: "La Habana" },
-    { value: 2, label: "Santiago de Cuba" },
-    { value: 3, label: "Camagüey" },
-    { value: 4, label: "Holguín" },
-    { value: 5, label: "Santa Clara" },
-    { value: 6, label: "Cienfuegos" },
-    { value: 7, label: "Matanzas" },
-    { value: 8, label: "Pinar del Río" },
-    { value: 9, label: "Sancti Spíritus" },
-    { value: 10, label: "Guantánamo" },
-  ];
+  // Use locations fetcher to select a Location (integrates with RHF and backend)
+  const isLocationAssigned = !!business?.locationId && business.locationId > 0;
   return (
     <SimpleModal
       open={open}
@@ -211,14 +202,13 @@ export default function BusinessModal({
 
             {/* Segunda fila: ID Ubicación y HBL */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <RHFSelectWithLabel
+              <RHFAutocompleteFetcherInfinity
                 name="locationId"
-                options={locationOptions}
-                label="ID de Ubicación"
-                placeholder="Ej: 12"
-                required
-                disabled={isDetailsView}
-                size="small"
+                label="Ubicación"
+                multiple
+                placeholder="Selecciona una ubicación"
+                onFetch={getAllLocations}
+                disabled={isDetailsView || isLocationAssigned}
               />
               <RHFInputWithLabel
                 name="initialHbl"
