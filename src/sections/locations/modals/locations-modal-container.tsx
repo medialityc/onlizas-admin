@@ -1,5 +1,5 @@
 import { ILocation } from "@/types/locations";
-import LocationForm from "../LocationForm";
+
 import { LocationsDetailsModal } from "./locations-details-modal";
 import LocationsModal from "./locations-modal";
 
