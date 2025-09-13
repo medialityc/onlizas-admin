@@ -1,6 +1,6 @@
 const DASHBOARD = "/dashboard";
 const PROVIDER = "/provider";
-
+const PAYMENT = "/payment";
 export const paths = {
   dashboard: {
     root: DASHBOARD,
@@ -86,5 +86,12 @@ export const paths = {
     stores: {
       list: `${PROVIDER}/stores`,
     },
+  },
+  payment: {
+    root: PAYMENT,
+    auditHistory: `${PAYMENT}/audit-history`,
+    paymentGateway: `${PAYMENT}/payment-gateways`,
+    paymentMethods: `${PAYMENT}/payment-methods`,
+    testingValidation: `${PAYMENT}/testing-validation`,
   },
 };
