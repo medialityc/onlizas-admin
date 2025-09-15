@@ -5,9 +5,11 @@ import { SearchParams } from "@/types/fetch/request";
 import { formatDate, formatDateTime } from "@/utils/format";
 import { DataTableColumn } from "mantine-datatable";
 import React, { useMemo, useState, useCallback } from "react";
+
 import SimpleModal from "@/components/modal/modal";
 import BusinessLogDetail from "./businesslog-detail";
 import { InformationCircleIcon, EyeIcon } from "@heroicons/react/24/outline";
+import { extractRecord } from "../utils";
 
 function BusinessLogsContent({
   data,
@@ -21,7 +23,8 @@ function BusinessLogsContent({
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<BusinessLogs | null>(null);
 
-  const handleRowClick = useCallback((row: BusinessLogs) => {
+  const handleRowClick = useCallback((rowOrWrapper: any) => {
+    const row = extractRecord<BusinessLogs>(rowOrWrapper);
     setSelected(row);
     setOpen(true);
   }, []);

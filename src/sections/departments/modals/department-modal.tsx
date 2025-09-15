@@ -41,7 +41,7 @@ export default function DepartmentModal({
     resolver: zodResolver(departmentSchema),
     defaultValues: {
       description: department?.description ?? "",
-      image: undefined,
+      image: department?.image,
       isActive: department?.isActive ?? true,
       name: department?.name ?? "",
     },

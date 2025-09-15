@@ -63,7 +63,7 @@ export async function deleteCurrency(
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.currencies.delete(id),
-    method: "DELETE",
+    method: "PATCH",
     useAuth: true,
   });
 
