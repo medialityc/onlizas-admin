@@ -8,9 +8,11 @@ import { SearchParams } from "@/types/fetch/request";
 import { formatDate, formatDateTime } from "@/utils/format";
 import { DataTableColumn } from "mantine-datatable";
 import React, { useMemo, useState, useCallback } from "react";
+
 import SimpleModal from "@/components/modal/modal";
 import DescriptionViewer from "@/components/logs/description-viewer";
 import { InformationCircleIcon, EyeIcon } from "@heroicons/react/24/outline";
+import { extractRecord } from "../utils";
 
 function PermissionsLogsContent({
   data,
@@ -24,7 +26,8 @@ function PermissionsLogsContent({
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<PermissionsLogs | null>(null);
 
-  const handleRowClick = useCallback((row: PermissionsLogs) => {
+  const handleRowClick = useCallback((rowOrWrapper: any) => {
+    const row = extractRecord<PermissionsLogs>(rowOrWrapper);
     setSelected(row);
     setOpen(true);
   }, []);

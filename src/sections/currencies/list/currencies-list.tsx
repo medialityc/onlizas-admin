@@ -202,7 +202,8 @@ export function CurrenciesList({
                   ? () => handleSetAsDefault(currency)
                   : undefined
               }
-              onDelete={
+              isActive={currency.isActive}
+              onActive={
                 !currency.default
                   ? () => handleDeleteCurrency(currency)
                   : undefined

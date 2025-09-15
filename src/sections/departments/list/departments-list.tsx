@@ -9,10 +9,9 @@ import { DataTableColumn } from "mantine-datatable";
 import { useCallback, useMemo } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
-// import DepartmentsModalContainer from "../modals/departments-modal-container";
-// import { deleteDepartment } from "@/services/departments";
 import { Department, GetAllDepartments } from "@/types/departments";
 import DepartmentsModalContainer from "../modals/department-modal-container";
+import { deleteDepartment } from "@/services/department";
 
 interface Props {
   data?: GetAllDepartments;
@@ -65,10 +64,9 @@ export function DepartmentsList({
       }
 
       try {
-        // Simular llamada a deleteDepartment cuando esté disponible
-        // const res = await deleteDepartment(department.id);
-        const res = { error: false }; // Temporal
-
+       
+        const res = await deleteDepartment(department.id);
+        
         if (res?.error) {
           showToast("Error al eliminar departamento", "error");
         } else {
