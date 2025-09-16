@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 
 import { useDataGridHandlers } from "../datagrid/hooks";
 import { DataGridCardProps } from "../datagrid/types";
-import { Header } from "./header/header";
+
 import TablePagination from "./footer/table-pagination";
 import { PAGE_SIZES } from "../datagrid/constants";
+import { Header } from "./header/header";
 
 export function DataGridCard<T extends Record<string, any>>({
   searchParams = {},
@@ -20,7 +21,7 @@ export function DataGridCard<T extends Record<string, any>>({
   rightActions,
   component,
   hidePagination = false,
-  data
+  data,
 }: DataGridCardProps<T>) {
   const [searchValue, setSearchValue] = useState(searchParams.search || "");
 
@@ -54,9 +55,7 @@ export function DataGridCard<T extends Record<string, any>>({
       />
 
       {/* list card */}
-      <div className="h-auto min-h-80">
-        {component}
-      </div>
+      <div className="h-auto min-h-80">{component}</div>
 
       {/* pagination */}
       {!hidePagination && (

@@ -47,6 +47,7 @@ export const useWarehouseVirtualTypeCreateForm = (
       );
       onSuccess?.();
       queryClient.invalidateQueries({ queryKey: ["warehouse-virtual-types"] });
+      form.reset();
     },
     onError: async (error: any) => {
       toast.error(error?.message);

@@ -3,7 +3,6 @@
 import FormProvider from "@/components/react-hook-form/form-provider";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import RHFCheckbox from "@/components/react-hook-form/rhf-checkbox";
 import LoaderButton from "@/components/loaders/loader-button";
 import { CategoryFormData } from "../schemas/category-schema";
@@ -13,6 +12,7 @@ import CategoryFeatureSection from "./category-features.section";
 import { Button } from "@/components/button/button";
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 
 interface CategoryFormProps {
   initValue?: CategoryFormData;

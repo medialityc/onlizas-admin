@@ -1,4 +1,4 @@
-import { isValidUrl, urlToFile } from "@/utils/format";
+import { processImageFile } from "@/utils/image-helpers";
 import { CategoryFormData } from "../schemas/category-schema";
 import { toast } from "react-toastify";
 
@@ -18,15 +18,11 @@ export const setCategoryFormData = async (
 
   // Procesar imagen
   if (category.image) {
-    if (typeof category.image === "string" && isValidUrl(category.image)) {
-      try {
-        const imageFile = await urlToFile(category.image);
-        formData.append("image", imageFile);
-      } catch {
-        toast.error("Error al procesar la imagen desde URL");
-      }
-    } else if (category.image instanceof File) {
-      formData.append("image", category.image);
+    const processedImage = await processImageFile(category.image);
+    if (processedImage) {
+      formData.append("image", processedImage);
+    } else {
+      toast.error("Error al procesar la imagen");
     }
   }
 
