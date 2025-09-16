@@ -2,7 +2,7 @@
 
 import sharp from "sharp";
 
-export async function convertImageAction(file: File): Promise<File | null> {
+export async function imageConvertWebp(file: File): Promise<File | null> {
   try {
     if (!file) {
       throw new Error("No se ha seleccionado ningún archivo");
