@@ -1,10 +1,5 @@
 import Dropdown from "@/components/ui/dropdown";
-import {
-  ChevronDown,
-  CreditCard,
-  LayoutPanelLeft,
-  UsersIcon,
-} from "lucide-react";
+import { ChevronDown, LayoutPanelLeft, UsersIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -62,17 +57,6 @@ const SidebarDropdown = ({ title = "Panel de Control", subtitle }: Props) => {
               >
                 <UsersIcon className="mr-2 w-5 h-5" />
                 Proveedor
-              </button>
-            </Link>
-          </li>
-          <li>
-            <Link href="/payment" className="block w-full">
-              <button
-                type="button"
-                className="flex items-center gap-2 w-full text-left text-sm "
-              >
-                <CreditCard className="mr-2 w-5 h-5" />
-                Payment
               </button>
             </Link>
           </li>

@@ -124,7 +124,7 @@ const FlexItems = ({
   children,
   total,
   title,
-}: ChildrenProps & { total?: number; title: string }) => {
+}: React.PropsWithChildren & { total?: number; title: string }) => {
   const [active, setActive] = useState(false);
   return (
     <div className="flex flex-col gap-2">

@@ -13,7 +13,8 @@ import {
   DocumentChartBarIcon,
   ClipboardDocumentIcon,
 } from "@heroicons/react/24/solid";
-import { SidebarMenuItem, SidebarSection } from "./types";
+import { SidebarSection } from "./types";
+
 import {
   CreditCard,
   History,
@@ -178,6 +179,42 @@ export const sidebarSections: SidebarSection[] = [
   //     },
   //   ],
   // },
+  {
+    id: "gatewaySettings",
+    label: "Configuraciones de Pasarelas de Pago",
+    items: [
+      {
+        id: "overview",
+        label: "Overview",
+        path: paths.dashboard.gateways.overview,
+        icon: <LayoutDashboard className="size-4" />,
+      },
+      {
+        id: "payment-gateway",
+        label: "Payment Gateway",
+        path: paths.dashboard.gateways.paymentGateway,
+        icon: <CreditCard className="size-4" />,
+      },
+      {
+        id: "payment-methods",
+        label: "Payment Methods",
+        path: paths.dashboard.gateways.paymentMethods,
+        icon: <Wallet className="size-4" />,
+      },
+      {
+        id: "testing-validation",
+        label: "Testing & Validation",
+        path: paths.dashboard.gateways.testingValidation,
+        icon: <ShieldCheck className="size-4" />,
+      },
+      {
+        id: "audit-history",
+        label: "Audit & History",
+        path: paths.dashboard.gateways.auditHistory,
+        icon: <History className="size-4" />,
+      },
+    ],
+  },
 ];
 
 export const defaultExpandedSections = {
@@ -197,36 +234,3 @@ export const defaultExpandedItems = {
   security: true,
   logistics: true,
 };
-
-export const paymentSections: SidebarMenuItem[] = [
-  {
-    id: "overview",
-    label: "Overview",
-    path: paths.payment.root,
-    icon: <LayoutDashboard className="h-5 w-5" />,
-  },
-  {
-    id: "payment-gateway",
-    label: "Payment Gateway",
-    path: paths.payment.paymentGateway,
-    icon: <CreditCard className="h-5 w-5" />,
-  },
-  {
-    id: "payment-methods",
-    label: "Payment Methods",
-    path: paths.payment.paymentMethods,
-    icon: <Wallet className="h-5 w-5" />,
-  },
-  {
-    id: "testing-validation",
-    label: "Testing & Validation",
-    path: paths.payment.testingValidation,
-    icon: <ShieldCheck className="h-5 w-5" />,
-  },
-  {
-    id: "audit-history",
-    label: "Audit & History",
-    path: paths.payment.auditHistory,
-    icon: <History className="h-5 w-5" />,
-  },
-];

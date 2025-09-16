@@ -1,9 +1,9 @@
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon, ShoppingBagIcon } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import AnimateHeight from "react-animate-height";
 
-type StoreAccordionProps = ChildrenProps & {
+type StoreAccordionProps = React.PropsWithChildren & {
   title: string;
 };
 export const StoreAccordion = ({ children, title }: StoreAccordionProps) => {
