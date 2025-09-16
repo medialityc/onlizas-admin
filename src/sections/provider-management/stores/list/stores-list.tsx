@@ -28,7 +28,7 @@ export function StoresList({
 }: StoresListProps) {
   const { getModalState, openModal, closeModal } = useModalState();
 
-  console.log(data)
+  console.log(data);
 
   const createStoreModal = getModalState("create");
 
