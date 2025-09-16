@@ -28,15 +28,13 @@ export function GatewayForm({
   buttonText,
   name,
 }: GatewayFormProps & { name: GatewayType }) {
-  const defaultValues: Record<string, any> = fields.reduce(
-    (acc, f) => {
-      acc[f.id] = "";
-      return acc;
-    },
-    {} as Record<string, any>
-  );
+  const defaultValues: Record<string, any> = {};
 
-  if (selectField) defaultValues[selectField.id] = "";
+  fields.forEach((f) => {
+    defaultValues[f.id] = ""; // texto y textarea siempre ""
+  });
+
+  if (selectField) defaultValues[selectField.id] = "sandbox";
   if (switchField) defaultValues[switchField.id] = false;
 
   const schema = gatewaysSchemas[name] as ZodTypeAny;
@@ -99,6 +97,7 @@ export function GatewayForm({
                     type={f.type || "text"}
                     placeholder={f.placeholder || ""}
                     {...field}
+                    value={field.value ?? ""}
                     className="dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:border-gray-700 px-3 py-2"
                   />
                   {errors[f.id] && (
@@ -123,7 +122,10 @@ export function GatewayForm({
               <Label htmlFor={selectField.id} className="dark:text-gray-200">
                 {selectField.label}
               </Label>
-              <Select value={field.value} onValueChange={field.onChange}>
+              <Select
+                value={field.value ?? "sandbox"}
+                onValueChange={field.onChange}
+              >
                 <SelectTrigger className="dark:text-white">
                   <SelectValue placeholder="Select..." />
                 </SelectTrigger>
