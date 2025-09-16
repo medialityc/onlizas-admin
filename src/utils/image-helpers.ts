@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { convertImageAction } from "@/app/actions/convert-image";
+import { imageConvertWebp } from "@/utils/image-convert";
 
 /**
  * Procesa una imagen, convirtiéndola a WebP si es un archivo, o devolviendo la URL si es un string.
@@ -9,7 +9,7 @@ import { convertImageAction } from "@/app/actions/convert-image";
 export async function processImageFile(image: File | string): Promise<File | string | null> {
   if (image instanceof File) {
     try {
-      const processedImage = await convertImageAction(image);
+      const processedImage = await imageConvertWebp(image);
       if (processedImage) {
         return processedImage;
       } else {
