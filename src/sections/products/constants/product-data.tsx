@@ -1,24 +1,20 @@
 import { detailsArrayToObject } from "@/utils/format";
 import { toast } from "react-toastify";
 import { ProductFormData } from "../schema/product-schema";
+import { processImageFile } from "@/utils/image-helpers";
 
 export const setProductFormData = async (
   product: ProductFormData
 ): Promise<FormData> => {
   const formData = new FormData();
-  const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
+
   // Procesar imagen
   if (product.image) {
-    const image = product.image;
-    if (image instanceof File) {
-      if (image.size > MAX_IMAGE_SIZE) {
-        toast.error(`La imagen ${image.name} excede el tamaño máximo de 5MB`);
-      } else {
-        formData.append("image", image);
-      }
-    } else if (typeof image === "string") {
-      // if the UI may pass existing image URLs as strings, consider sending them as text fields
-      formData.append("image", image); // optional: backend must accept this
+    const processedImage = await processImageFile(product.image);
+    if (processedImage) {
+      formData.append("image", processedImage);
+    } else {
+      toast.error("Error al procesar la imagen");
     }
   }
 
