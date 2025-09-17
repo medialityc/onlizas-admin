@@ -1,42 +1,37 @@
 import { detailsArrayToObject } from "@/utils/format";
 import { toast } from "react-toastify";
 import { SupplierProductFormData } from "../schema/supplier-product-schema";
+import { processImageFile } from "@/utils/image-helpers";
 
 export const setSupplierProductFormData = async (
   product: SupplierProductFormData
 ): Promise<FormData> => {
   const formData = new FormData();
-  const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
   // Procesar imagen principal
-  if (product.image) {
-    const image = product.image;
-    if (image instanceof File) {
-      if (image.size > MAX_IMAGE_SIZE) {
-        toast.error(`La imagen ${image.name} excede el tamaño máximo de 5MB`);
-      } else {
-        formData.append("mainImage", image);
-      }
-    } else if (typeof image === "string") {
-      formData.append("mainImage", image);
+  if (product?.image) {
+    const processedImage = await processImageFile(product.image);
+    if (processedImage) {
+      formData.append("image", processedImage);
+    } else {
+      toast.error(`Error al procesar la imagen desde URL (${product.image})`);
     }
   }
 
   if (product.additionalImages) {
     const additionalImages = product.additionalImages;
     if (Array.isArray(additionalImages)) {
-      additionalImages.forEach((image) => {
-        if (image instanceof File) {
-          if (image.size > MAX_IMAGE_SIZE) {
-            toast.error(
-              `La imagen ${image.name} excede el tama o m ximo de 5MB`
-            );
-          } else {
-            formData.append("additionalImages", image);
+      await Promise.all(
+        additionalImages.map(async (image, index) => {
+          if (image) {
+            const processedImage = await processImageFile(image);
+            if (processedImage) {
+              formData.append(`additionalImages[${index}]`, processedImage);
+            } else {
+              toast.error(`Error al procesar la imagen desde URL (${image})`);
+            }
           }
-        } else if (typeof image === "string") {
-          formData.append("additionalImages", image);
-        }
-      });
+        })
+      );
     }
   }
 

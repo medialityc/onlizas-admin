@@ -15,8 +15,7 @@ import { getAllBusiness, updateBusinessData } from "@/services/business";
 import { getAllLocations } from "@/services/locations";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
-import { isValidUrl, urlToFile } from "@/utils/format";
-import { RHFSelectWithLabel } from "@/components/react-hook-form";
+import { processImageFile } from "@/utils/image-helpers";
 
 interface BusinessModalProps {
   open: boolean;
@@ -93,8 +92,6 @@ export default function BusinessModal({
 
   const onSubmit = async (data: CreateSchemaBusiness) => {
     setError(null);
-    console.log(data.parentId);
-    console.log(data.locationId);
     try {
       let response;
       const formData = new FormData();
@@ -122,19 +119,18 @@ export default function BusinessModal({
       if (data.photoObjectCodes && data.photoObjectCodes.length > 0) {
         await Promise.all(
           data.photoObjectCodes.map(async (photo, index) => {
-            if (typeof photo === "string" && isValidUrl(photo)) {
-              try {
-                const imageFile = await urlToFile(photo);
-                formData.append(`photoObjectCodes[${index}]`, imageFile);
-              } catch {
+            if (photo) {
+              const processedImage = await processImageFile(photo);
+              if (processedImage) {
+                formData.append(`photoObjectCodes[${index}]`, processedImage);
+              } else {
                 toast.error(`Error al procesar la imagen desde URL (${photo})`);
               }
-            } else if (photo instanceof File) {
-              formData.append(`photoObjectCodes[${index}]`, photo);
             }
           })
         );
       }
+
       if (business) {
         response = await updateBusinessData(business.id, formData);
 
@@ -168,6 +164,7 @@ export default function BusinessModal({
   const isLocationAssigned = !!business?.locationId && business.locationId > 0;
   return (
     <SimpleModal
+      className="w-full max-w-2xl"
       open={open}
       onClose={handleClose}
       loading={loading || loadingImage}

@@ -46,9 +46,6 @@ export const useSupplierProductCreateForm = (
 
   const isDraft = form.watch("isDraft");
 
-  console.log(form.formState.errors);
-  console.log(form.getValues(), 'getValues');
-
   const { mutate, isPending } = useMutation({
     mutationFn: async (
       payload: SupplierProductFormData & { isLink?: boolean }

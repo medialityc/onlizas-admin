@@ -18,6 +18,7 @@ interface Props {
   subtitle?: string | React.ReactNode;
   loading?: boolean;
   className?: string;
+  footer?: React.ReactNode;
 }
 
 const SimpleModal = ({
@@ -27,7 +28,8 @@ const SimpleModal = ({
   title,
   loading,
   subtitle,
-  className
+  className,
+  footer,
 }: Props) => {
 
 
@@ -51,7 +53,7 @@ const SimpleModal = ({
           >
             <div className="fixed inset-0" />
           </TransitionChild>
-          <div className="fixed inset-0 z-[60] overflow-y-auto bg-[black]/60">
+          <div className="fixed inset-0 z-[60] overflow-hidden bg-[black]/60">
             <div className="flex min-h-screen items-start justify-center px-4">
               <TransitionChild
                 as={Fragment}
@@ -64,24 +66,29 @@ const SimpleModal = ({
               >
                 <DialogPanel
                   as="div"
-                  className={cn("panel my-8 w-full max-w-lg overflow-auto rounded-md border-0 p-0 max-h-[90vh]", className)}
+                  className={cn("panel my-8 w-full max-w-lg rounded-md border-0 p-0 max-h-[90vh] overflow-hidden", className)}
                 >
-                  <div className="flex items-center justify-between px-5 py-3 dark:bg-[#121c2c]">
-                    {title && <div className="text-lg font-bold dark:text-white-light ">{title}</div>}
-                    <button
-                      type="button"
-                      className="text-white-dark hover:text-dark ml-auto"
-                      onClick={onClose}
-                    >
-                      <IconX />
-                    </button>
-                  </div>
-                  {subtitle && (
-                    <div className="text-sm font-medium text-white-dark px-5">
-                      {subtitle}
+                  {/* Header sticky */}
+                  <div className="sticky top-0 z-10 bg-white dark:bg-[#121c2c]">
+                    <div className="flex items-center justify-between px-5 py-3">
+                      {title && <div className="text-lg font-bold dark:text-white-light ">{title}</div>}
+                      <button
+                        type="button"
+                        className="text-white-dark hover:text-dark ml-auto"
+                        onClick={onClose}
+                      >
+                        <IconX />
+                      </button>
                     </div>
-                  )}
-                  <div className="px-5 py-3">
+                    {subtitle && (
+                      <div className="text-sm font-medium text-white-dark px-5 pb-2">
+                        {subtitle}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content scrollable */}
+                  <div className="px-5 py-3 overflow-auto max-h-[calc(90vh-8rem)] pb-4">
                     {loading ? (
                       <div className="w-full, h-96 flex justify-center items-center">
                         <div className="flex gap-2 items-center text-primary animate-pulse duration-1000 ease-in-out">
@@ -92,6 +99,15 @@ const SimpleModal = ({
                       children
                     )}
                   </div>
+
+                  {/* Footer sticky */}
+                  {footer && (
+                    <div className="sticky bottom-0 z-10 bg-white dark:bg-[#121c2c] border-t">
+                      <div className="px-5 py-3">
+                        {footer}
+                      </div>
+                    </div>
+                  )}
                 </DialogPanel>
               </TransitionChild>
             </div>
