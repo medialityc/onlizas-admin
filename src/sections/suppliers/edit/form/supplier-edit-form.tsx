@@ -82,8 +82,12 @@ export default function SupplierEditForm({
       data.approvedCategories?.forEach((cat) => {
         formData.append("approvedCategoryIds", cat.id.toString());
       });
+      formData.append("approvalProcessId", supplierDetails.id.toString());
 
-      const response = await updateSupplierData(supplierDetails.id, formData);
+      const response = await updateSupplierData(
+        supplierDetails.userId,
+        formData
+      );
       if (response.error)
         throw new Error(response.message || "Error al actualizar proveedor");
       toast.success("Solicitud actualizada correctamente");

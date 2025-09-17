@@ -104,6 +104,7 @@ export type SupplierDetails = Supplier & {
   message: string;
   id: number;
   state: SupplierState;
+  userId: number;
   pendingDocuments: [
     {
       fileName: string;
