@@ -97,7 +97,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/products/${productId}`,
     deleteSupplierProduct: (productId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/products/${productId}`,
-    meApprovedProducts: `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/products-by-approved-categories`,
+    meApprovedProducts: `${process.env.NEXT_PUBLIC_API_URL}products/suppliers/me/products-by-approved-categories`,
     meToggleActive: (productId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/products/${productId}/toggle-active`,
   },
@@ -269,16 +269,19 @@ export const backendRoutes = {
     createGetY: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/buyxgety`,
     updateGetY: (promotionId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}promotions/buyxgety/${promotionId}`,
-    createFreeDelivery: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/freedelivery`,
+    createFreeDelivery: () =>
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/freedelivery`,
     updateFreeDelivery: (promotionId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}promotions/freedelivery/${promotionId}`,
-    createAutomatic: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/general`,
+    createAutomatic: () =>
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/general`,
     updateAutomatic: (promotionId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}promotions/general/${promotionId}`,
     createPackage: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/package`,
     updatePackage: (promotionId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}promotions/package/${promotionId}`,
-    createOvervalue: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/ordervalue`,
+    createOvervalue: () =>
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/ordervalue`,
     updateOvervalue: (promotionId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}promotions/ordervalue/${promotionId}`,
     createCode: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/code`,
@@ -286,13 +289,10 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}promotions/code/${promotionId}`,
     delete: (promotionId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}promotions/${promotionId}`,
-    toggle: () =>
-      `${process.env.NEXT_PUBLIC_API_URL}promotions/toggle-state`,
-    code: () =>
-      `${process.env.NEXT_PUBLIC_API_URL}promotions/code/generate`,
+    toggle: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/toggle-state`,
+    code: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/code/generate`,
     getPromotionById: (promotionId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}promotions/${promotionId}`,
-
   },
 
   inventoryProvider: {
