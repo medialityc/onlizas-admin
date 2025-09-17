@@ -338,9 +338,13 @@ export function RHFMultiImageUpload({
               className="relative w-24 h-24 shrink-0 rounded-md overflow-hidden border"
             >
               {src.startsWith("blob:") ? (
-                // Use native img for blob: URLs to avoid next/image optimizations which can interfere with objectURLs
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={src} alt={`Preview ${index}`} className="w-full h-full object-cover" />
+                <Image
+                  src={src}
+                  alt={`Preview ${index}`}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
               ) : (
                 <Image src={src} alt={`Preview ${index}`} fill className="object-cover" />
               )}
