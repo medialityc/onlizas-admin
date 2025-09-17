@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 interface RHFMultiImageUploadProps extends UseControllerProps {
   label?: string;
   className?: string;
-  defaultImages?: string[]; // 👈 nuevas imágenes preexistentes
+  defaultImages?: string[];
 }
 
 type UploadValue = (File | string)[];
@@ -23,6 +23,7 @@ export function RHFMultiImageUpload({
   const { field, fieldState } = useController(props);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [validationError, setValidationError] = useState<string>("");
 
   // Sincroniza las imágenes: nuevas y por defecto
   useEffect(() => {
@@ -42,19 +43,78 @@ export function RHFMultiImageUpload({
 
     return () => {
       previewUrls.forEach((url) => {
-        URL.revokeObjectURL(url);
+        if (url.startsWith("blob:")) {
+          URL.revokeObjectURL(url);
+        }
       });
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(field.value), JSON.stringify(defaultImages)]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
-    const validImages = files.filter((file) => file.type.startsWith("image/"));
+  // Función para validar dimensiones de imagen
+  const validateImageDimensions = (file: File): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const isValid = img.width === 1024 && img.height === 1024;
+        resolve(isValid);
+      };
+      img.onerror = () => resolve(false);
+      img.src = URL.createObjectURL(file);
+    });
+  };
 
-    if (validImages.length > 0) {
+  // Función para validar tamaño de archivo (5MB máximo)
+  const validateFileSize = (file: File): boolean => {
+    const maxSize = 5 * 1024 * 1024; // 5MB en bytes
+    return file.size <= maxSize;
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+
+    setValidationError(""); // Limpiar errores previos
+
+    if (imageFiles.length === 0) {
+      setValidationError("Por favor selecciona archivos de imagen válidos.");
+      return;
+    }
+
+    const validFiles: File[] = [];
+    const errors: string[] = [];
+
+    for (const file of imageFiles) {
+      // Validar tamaño del archivo
+      if (!validateFileSize(file)) {
+        errors.push(`${file.name}: El archivo excede el límite de 5MB`);
+        continue;
+      }
+
+      // Validar dimensiones
+      const hasValidDimensions = await validateImageDimensions(file);
+      if (!hasValidDimensions) {
+        errors.push(`${file.name}: La imagen debe ser de 1024x1024 píxeles`);
+        continue;
+      }
+
+      validFiles.push(file);
+    }
+
+    // Mostrar errores si los hay
+    if (errors.length > 0) {
+      setValidationError(errors.join(". "));
+    }
+
+    // Agregar archivos válidos
+    if (validFiles.length > 0) {
       const current = (field.value as UploadValue) || [];
-      field.onChange([...current, ...validImages]);
+      field.onChange([...current, ...validFiles]);
+    }
+
+    // Limpiar el input para permitir seleccionar los mismos archivos nuevamente
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -62,6 +122,9 @@ export function RHFMultiImageUpload({
     const current = [...((field.value as UploadValue) || [])];
     current.splice(index, 1);
     field.onChange(current);
+
+    // Limpiar error de validación si se remueve una imagen
+    setValidationError("");
   };
 
   return (
@@ -75,6 +138,9 @@ export function RHFMultiImageUpload({
         <ArrowUpTrayIcon className="mx-auto text-gray-400 mb-2 size-5" />
         <p className="text-sm text-gray-500 font-medium">
           Haz clic o arrastra imágenes para subir
+        </p>
+        <p className="text-xs text-gray-400 mt-1">
+          Solo imágenes 1024x1024px, máximo 5MB cada una
         </p>
       </div>
 
@@ -112,6 +178,12 @@ export function RHFMultiImageUpload({
         </div>
       )}
 
+      {/* Error de validación personalizada */}
+      {validationError && (
+        <p className="text-xs text-red-500">{validationError}</p>
+      )}
+
+      {/* Error del campo (react-hook-form) */}
       {fieldState.error && (
         <p className="text-xs text-red-500">{fieldState.error.message}</p>
       )}
