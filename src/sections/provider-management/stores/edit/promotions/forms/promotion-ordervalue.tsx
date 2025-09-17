@@ -109,14 +109,18 @@ export default function OrderValueForm({
         else await mutations.create(formData);
         navigateAfterSave(router);
       } else {
+        if (!promotionData?.id) {
+          toast.error("No se encontró el ID de la promoción para actualizar.");
+          return;
+        }
         if (mutations.updateAsync)
           await mutations.updateAsync({
-            promotionId: promotionData?.id as number,
+            promotionId: promotionData.id,
             data: formData,
           });
         else
           await mutations.update({
-            promotionId: promotionData?.id as number,
+            promotionId: promotionData.id,
             data: formData,
           });
         navigateAfterSave(router);
