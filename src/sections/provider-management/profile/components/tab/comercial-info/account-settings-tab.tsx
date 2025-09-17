@@ -11,7 +11,7 @@ import {
   IdentificationIcon,
   SparklesIcon,
 } from "@heroicons/react/24/outline";
-import { IUser, UserResponseMe } from "@/types/users";
+import { UserResponseMe } from "@/types/users";
 import ProviderBusinessModalContainer from "../../business/provider-business-modal-container";
 import BeneficiaryModal from "../../modal/beneficiary-modal";
 import { Business } from "@/types/business";
@@ -274,7 +274,7 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
         }}
         business={selectedBusiness}
         userId={user?.id}
-        onSuccess={(data?: Business) => {
+        onSuccess={() => {
           if (editBusinessModal.open) closeModal("editBusiness");
           if (createBusinessModal.open) closeModal("createBusiness");
         }}

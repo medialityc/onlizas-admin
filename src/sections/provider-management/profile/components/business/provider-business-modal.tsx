@@ -17,7 +17,6 @@ import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-aut
 import { getAllBusiness } from "@/services/business";
 import { FormProvider, RHFSelectWithLabel } from "@/components/react-hook-form";
 import { useProviderBusinessMutation } from "@/sections/provider-management/profile/hooks/use-provider-business-mutation";
-import { Label } from "@headlessui/react";
 
 interface ProviderBusinessModalProps {
   open: boolean;
@@ -46,7 +45,6 @@ export default function ProviderBusinessModal({
       onSuccess,
       // onClose: handleClose,
     });
-  console.log(business);
 
   const methods = useForm<CreateSchemaBusiness>({
     resolver: zodResolver(businessSchema),
@@ -67,7 +65,7 @@ export default function ProviderBusinessModal({
     },
   });
 
-  const { reset, handleSubmit, setValue } = methods;
+  const { reset, setValue } = methods;
 
   useEffect(() => {
     const loadImagesAsFiles = async () => {
