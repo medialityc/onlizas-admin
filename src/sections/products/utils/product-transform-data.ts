@@ -7,6 +7,7 @@ export const productTransformData = (
 ): ProductFormData => {
   return {
     ...product,
+    isActive: product.state || product.isActive,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-expect-error
     about: product?.about?.map((a) => ({ value: a })),
