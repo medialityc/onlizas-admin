@@ -130,7 +130,7 @@ export async function getSupplierDetails(
   id: string
 ): Promise<ApiResponse<SupplierDetails>> {
   const res = await nextAuthFetch({
-    url: `${process.env.NEXT_PUBLIC_API_URL}admin/approval-process/${id}`,
+    url: `${process.env.NEXT_PUBLIC_API_URL}admin/approval-process?approvalProcessId=${id}`,
     method: "GET",
     cache: "no-store",
     next: { tags: ["supplier"] },
