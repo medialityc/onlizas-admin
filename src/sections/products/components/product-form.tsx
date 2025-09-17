@@ -32,9 +32,6 @@ const ProductForm = ({ initValue }: Props) => {
           <div className="col-span-1 lg:col-span-2">
             <BasicInfoSection />
           </div>
-          {/*  <div className="col-span-1 lg:col-span-2">
-            <ProductImageSection />
-          </div> */}
           <div className="col-span-1 lg:col-span-1 z-10">
             <CategoriesAndSuppliersSection />
           </div>

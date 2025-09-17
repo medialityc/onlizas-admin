@@ -5,21 +5,19 @@ import LoaderButton from "@/components/loaders/loader-button";
 import SimpleModal from "@/components/modal/modal";
 import FormProvider from "@/components/react-hook-form/form-provider";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-
 import { StoreFormData, storeSchema } from "./stores-schema";
 import { CreateStore } from "@/types/stores";
 import { createStore } from "@/services/stores";
-import { isValidUrl, urlToFile } from "@/utils/format";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { useRouter } from "next/navigation";
 import { getAllUserBusiness } from "@/services/business";
 import { useAuth } from "@/auth-sso/hooks/use-auth";
+import { processImageFile } from "@/utils/image-helpers";
 
 interface StoresModalProps {
   open: boolean;
@@ -85,18 +83,13 @@ export default function StoresCreateModal({
     try {
       const formData = new FormData();
 
+      //procesar imagen
       if (data.logoStyle) {
-        if (typeof data.logoStyle === "string" && isValidUrl(data.logoStyle)) {
-          try {
-            const imageFile = await urlToFile(data.logoStyle);
-            formData.append("logoStyle", imageFile);
-          } catch {
-            toast.error("Error al procesar la imagen desde URL");
-            return;
-          }
-        } else if (data.logoStyle instanceof File) {
-          // Already a File object
-          formData.append("logoStyle", data.logoStyle);
+        const processedImage = await processImageFile(data.logoStyle);
+        if (processedImage) {
+          formData.append("logoStyle", processedImage);
+        } else {
+          toast.error("Error al procesar la imagen desde URL");
         }
       }
 

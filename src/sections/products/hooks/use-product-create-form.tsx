@@ -5,8 +5,6 @@ import { ProductFormData, productSchema } from "../schema/product-schema";
 import { useMutation } from "@tanstack/react-query";
 import { createProduct, updateProduct } from "@/services/products";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
-import { urlToFile } from "@/utils/format";
 import { useRouter } from "next/navigation";
 import { setProductFormData } from "../constants/product-data";
 
@@ -31,32 +29,11 @@ const initValues: ProductFormData = {
 export const useProductCreateForm = (
   defaultValues: ProductFormData = initValues
 ) => {
-  const [loadingImage, setLoadingImage] = useState(true);
   const { push } = useRouter();
   const form = useForm({
     defaultValues,
     resolver: zodResolver(productSchema),
   });
-
-  useEffect(() => {
-    const loadImageAsFile = async () => {
-      if (defaultValues?.image) {
-        try {
-          setLoadingImage(true);
-          const file = await urlToFile(
-            defaultValues?.image as string,
-            "product-image.jpg"
-          );
-          form.setValue("image", file);
-        } catch {
-          form.setValue("image", defaultValues.image);
-        } finally {
-          setLoadingImage(false);
-        }
-      }
-    };
-    loadImageAsFile();
-  }, [defaultValues.image, form]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: ProductFormData) => {
@@ -85,7 +62,6 @@ export const useProductCreateForm = (
   return {
     form: form,
     isPending,
-    loadingImage,
     onSubmit: form.handleSubmit((values) => {
       mutate(values);
     }),

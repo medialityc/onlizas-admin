@@ -17,6 +17,7 @@ import { createDepartment, updateDepartment } from "@/services/department";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import RHFCheckbox from "@/components/react-hook-form/rhf-checkbox";
 import { urlToFile, isValidUrl } from "@/utils/format";
+import { processImageFile } from "@/utils/image-helpers";
 
 interface ModalProps {
   open: boolean;
@@ -88,18 +89,13 @@ export default function DepartmentModal({
       formData.append("description", data.description);
       formData.append("isActive", String(data.isActive));
 
+      // Procesar imagen
       if (data.image) {
-        if (typeof data.image === "string" && isValidUrl(data.image)) {
-          try {
-            const imageFile = await urlToFile(data.image);
-            formData.append("image", imageFile);
-          } catch {
-            toast.error("Error al procesar la imagen desde URL");
-            return;
-          }
-        } else if (data.image instanceof File) {
-          // Already a File object
-          formData.append("image", data.image);
+        const processedImage = await processImageFile(data.image);
+        if (processedImage) {
+          formData.append("image", processedImage);
+        } else {
+          toast.error("Error al procesar la imagen");
         }
       }
 
