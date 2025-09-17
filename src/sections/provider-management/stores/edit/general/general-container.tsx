@@ -26,7 +26,7 @@ export default function GeneralContainer({ store }: Props) {
     resolver: zodResolver(GeneralStoreSchema),
     mode: "onBlur",
     defaultValues: {
-      isActive: store.isActive??true,
+      isActive: store.isActive ?? true,
       name: store.name ?? "",
       description: store.description ?? "",
       url: store.url ?? "",
@@ -41,25 +41,25 @@ export default function GeneralContainer({ store }: Props) {
   });
 
   const onSubmit = async (data: GeneralStoreForm) => {
-   try {
-         const formData = buildStoreFormData({
-           store,
-           data,
-         });
-         const plainObject = Object.fromEntries(formData.entries());
-         console.log("FormData como objeto:", plainObject);   
-   
-         const res = await updateSupplierStore(store.id, formData);
-         if (!res.error) {
-           toast.success("Tienda actualizada correctamente");
-         } else {
-           toast.error(res.message || "No se pudo actualizar la tienda");
-         }
-       } catch (err) {
-         const msg = err instanceof Error ? err.message : "Error al guardar";
-         toast.error(msg);
-       }
-     };
+    try {
+      const formData = buildStoreFormData({
+        store,
+        data,
+      });
+      const plainObject = Object.fromEntries(formData.entries());
+      console.log("FormData como objeto:", plainObject);
+
+      const res = await updateSupplierStore(store.id, formData);
+      if (!res.error) {
+        toast.success("Tienda actualizada correctamente");
+      } else {
+        toast.error(res.message || "No se pudo actualizar la tienda");
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Error al guardar";
+      toast.error(msg);
+    }
+  };
 
   return (
     <FormProvider id="general-form" methods={methods} onSubmit={onSubmit}>
@@ -77,7 +77,7 @@ export default function GeneralContainer({ store }: Props) {
 
         {/* Políticas de la tienda */}
         <PoliciesCard />
-        
+
         {/* Botón de guardar */}
         <div className="flex justify-end pt-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 -mx-6 px-6 py-4 mt-8">
           <LoaderButton

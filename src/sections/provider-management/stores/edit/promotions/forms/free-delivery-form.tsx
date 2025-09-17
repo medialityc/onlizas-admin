@@ -1,8 +1,19 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/cards/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/cards/card";
 
-import { FormInput, ProductMultiSelect, FormDate, FormDateRanges, ValueSelector } from "../components/form-fields";
+import {
+  FormInput,
+  ProductMultiSelect,
+  FormDate,
+  FormDateRanges,
+  ValueSelector,
+} from "../components/form-fields";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import PromotionTypeHeader from "../components/form-fields/promotion-type-header";
 import PromotionBasicInfo from "../components/form-fields/promotion-basic-info";
@@ -12,7 +23,10 @@ import { togglePromotionStatus } from "@/services/promotions";
 import { navigateAfterSave } from "../utils/promotion-helpers";
 import { buildPromotionFormData } from "../form/promotion-form-builder";
 // Esquema específico para free delivery
-import { freeDeliverySchema, type FreeDeliveryFormData } from "../schemas/free-delivery-schema";
+import {
+  freeDeliverySchema,
+  type FreeDeliveryFormData,
+} from "../schemas/free-delivery-schema";
 import type { Promotion } from "@/types/promotions";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -24,10 +38,9 @@ import { getCommonDefaultValues } from "../utils/default-values";
 interface FreeDeliveryFormProps {
   storeId: number;
   mode: string;
-  promotionData?: Promotion //& { simpleDates: [] }; // Cambiado a Promotion para usar el objeto del backend directamente
+  promotionData?: Promotion; //& { simpleDates: [] }; // Cambiado a Promotion para usar el objeto del backend directamente
   onCancel: () => void;
   isLoading?: boolean;
-
 }
 
 // Form values specific for Free Delivery form. Keep fields optional because different promotion types may omit some.
@@ -40,12 +53,11 @@ interface FreeDeliveryFormProps {
  */
 export default function FreeDeliveryForm({
   storeId,
-  //onSubmit, 
+  //onSubmit,
   promotionData,
   mode,
   onCancel,
   isLoading = false,
-
 }: FreeDeliveryFormProps) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -59,39 +71,51 @@ export default function FreeDeliveryForm({
       // Campos específicos de free-delivery
       discountType: 3,
       discountValue: 0,
-      dateRanges: mode === "create" ? [{ startDate: today, endDate: tomorrow }] : getCommonDefaultValues(promotionData).dateRanges || [],
-
+      dateRanges:
+        mode === "create"
+          ? [{ startDate: today, endDate: tomorrow }]
+          : getCommonDefaultValues(promotionData).dateRanges || [],
     },
   });
   const mutations = usePromotionFreeMutations(storeId);
   const loading = mutations.isCreating || mutations.isUpdating || isLoading;
   const router = useRouter();
-  const { handleSubmit, register, formState: { errors } } = methods;
-  console.log(methods.formState.errors)
+  const { handleSubmit } = methods;
 
   const onFormSubmit = handleSubmit(async (data) => {
     // Usar la función reutilizable para construir FormData
-    const formData = buildPromotionFormData(data, storeId, "free-delivery", promotionData);
+    const formData = buildPromotionFormData(
+      data,
+      storeId,
+      "free-delivery",
+      promotionData
+    );
     await onSubmit(formData, data);
   });
   const onSubmit = async (formData: FormData, data: FreeDeliveryFormData) => {
     try {
       // Si es edit y el estado cambió, actualizar el estado primero
-      if (mode === "edit" && promotionData && data.isActive !== promotionData.isActive) {
+      if (
+        mode === "edit" &&
+        promotionData &&
+        data.isActive !== promotionData.isActive
+      ) {
         const statusRes = await togglePromotionStatus(promotionData.id);
         if (statusRes.error) {
           toast.error("Error al actualizar el estado");
           return;
         }
         toast.success("Estado actualizado exitosamente");
-
       }
 
       if (mode === "create") {
         await mutations.create(formData);
         navigateAfterSave(router);
       } else {
-        await mutations.update({ promotionId: promotionData?.id!, data: formData });
+        await mutations.update({
+          promotionId: promotionData?.id as number,
+          data: formData,
+        });
         navigateAfterSave(router);
       }
     } catch (error) {
@@ -102,20 +126,31 @@ export default function FreeDeliveryForm({
   return (
     <FormProvider {...methods}>
       <form onSubmit={onFormSubmit} className="space-y-6">
-        <PromotionTypeHeader title="Entrega gratuita" description="Establecer condiciones para envío y entrega gratuitos" icon={<span>🚚</span>} />
+        <PromotionTypeHeader
+          title="Entrega gratuita"
+          description="Establecer condiciones para envío y entrega gratuitos"
+          icon={<span>🚚</span>}
+        />
         <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardContent>
             <PromotionBasicInfo typeLabel="Entrega gratuita" />
 
             <div className="mt-4">
-              <RHFImageUpload name="mediaFile" variant="rounded" label="Imagen de Promoción" size="full" />
+              <RHFImageUpload
+                name="mediaFile"
+                variant="rounded"
+                label="Imagen de Promoción"
+                size="full"
+              />
             </div>
           </CardContent>
         </Card>
 
         <Card className="gap-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardHeader className="pb-0">
-            <CardTitle className="text-gray-900 dark:text-gray-100">Valor</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-gray-100">
+              Valor
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="grid grid-cols-1 gap-3">
@@ -129,10 +164,16 @@ export default function FreeDeliveryForm({
                   defaultType={3}
                   freeDeliveryLabel="Entrega Gratuita"
                   typeName="discountType"
-                  valueName="discountValue" />
+                  valueName="discountValue"
+                />
               </div>
               <div>
-                <ProductMultiSelect multiple={true} name="productVariantsIds" storeId={storeId} label="Productos aplicables" />
+                <ProductMultiSelect
+                  multiple={true}
+                  name="productVariantsIds"
+                  storeId={storeId}
+                  label="Productos aplicables"
+                />
               </div>
             </div>
           </CardContent>
@@ -140,7 +181,9 @@ export default function FreeDeliveryForm({
 
         <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardHeader>
-            <CardTitle className="text-gray-900 dark:text-gray-100">Requisitos de compra mínima</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-gray-100">
+              Requisitos de compra mínima
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <PurchaseRequirements />
@@ -149,18 +192,31 @@ export default function FreeDeliveryForm({
 
         <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardHeader>
-            <CardTitle className="text-gray-900 dark:text-gray-100"> <Label >Usos máximos de descuento *</Label></CardTitle>
+            <CardTitle className="text-gray-900 dark:text-gray-100">
+              {" "}
+              <Label>Usos máximos de descuento *</Label>
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormInput name="usageLimit" label="Límite de veces que se puede usar en total" type="spinner" />
-              <FormInput name="usageLimitPerUser" label="Límite de veces que se puede usar por cliente" type="number" />
+              <FormInput
+                name="usageLimit"
+                label="Límite de veces que se puede usar en total"
+                type="spinner"
+              />
+              <FormInput
+                name="usageLimitPerUser"
+                label="Límite de veces que se puede usar por cliente"
+                type="number"
+              />
             </div>
           </CardContent>
         </Card>
         <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardHeader>
-            <CardTitle className="text-gray-900 dark:text-gray-100">Vigencia</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-gray-100">
+              Vigencia
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
@@ -178,8 +234,27 @@ export default function FreeDeliveryForm({
         </Card>
 
         <div className="flex items-center justify-end gap-3 pt-6">
-          <Button type="button" variant="secondary" onClick={onCancel} disabled={loading}>Cancelar</Button>
-          <LoaderButton color="primary" type="submit" loading={loading} disabled={loading} className="min-w-[140px]">{loading ? "Guardando..." : mode === "create" ? "Crear promoción" : "Guardar cambios"}</LoaderButton>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={onCancel}
+            disabled={loading}
+          >
+            Cancelar
+          </Button>
+          <LoaderButton
+            color="primary"
+            type="submit"
+            loading={loading}
+            disabled={loading}
+            className="min-w-[140px]"
+          >
+            {loading
+              ? "Guardando..."
+              : mode === "create"
+                ? "Crear promoción"
+                : "Guardar cambios"}
+          </LoaderButton>
         </div>
       </form>
     </FormProvider>
