@@ -83,10 +83,10 @@ export function RHFMultiImageUpload({
     }
 
     // Si no hay índice objetivo, añadimos al final (caso de cola)
-    field.onChange([...current, croppedFile]);
-  // Forzar actualización inmediata de previews
-  const after = [...current, croppedFile];
-  setPreviews(after.map((item) => (typeof item === "string" ? item : URL.createObjectURL(item as File))));
+    const after = [...current, croppedFile];
+    field.onChange(after);
+    // Forzar actualización inmediata de previews
+    setPreviews(after.map((item) => (typeof item === "string" ? item : URL.createObjectURL(item as File))));
 
     // Si venimos de la cola, limpiar el primer elemento en pendings
     if (pendingCropQueue.length > 0) {
