@@ -10,10 +10,7 @@ async function ProductDetails({ id }: { id: string }) {
   const response = await getProductById(Number(id));
   if (!response?.data) notFound();
 
-  const product = response.data;
-  const productImage =
-    product.images?.find((img) => img.order === 1)?.image ||
-    "/placeholder-product.jpg";
+  const { image: productImage, ...product } = response.data;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
