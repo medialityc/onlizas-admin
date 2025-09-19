@@ -37,6 +37,7 @@ export const sidebarSections: SidebarSection[] = [
         label: "Dashboard",
         path: paths.dashboard.root,
         icon: <CubeIcon className="h-4 w-4" />,
+        // Dashboard siempre visible para todos
       },
     ],
   },
@@ -44,6 +45,7 @@ export const sidebarSections: SidebarSection[] = [
   {
     id: "nomenclators",
     label: "Nomencladores",
+    adminOnly: true, // Solo admin
     items: [
       {
         id: "currencies",
@@ -74,18 +76,21 @@ export const sidebarSections: SidebarSection[] = [
         label: "Departamentos",
         path: paths.dashboard.departments.list,
         icon: <ArchiveBoxIcon className="h-4 w-4" />,
+        adminOnly: true, // Solo admin
       },
       {
         id: "categories",
         label: "Categorías",
         path: paths.dashboard.categories.list,
         icon: <BookOpenIcon className="h-4 w-4" />,
+        adminOnly: true, // Solo admin
       },
       {
         id: "products",
         label: "Productos",
         path: paths.dashboard.products.list,
         icon: <ShoppingBagIcon className="h-4 w-4" />,
+        adminOnly: true,
       },
     ],
   },
@@ -98,31 +103,35 @@ export const sidebarSections: SidebarSection[] = [
         label: "Inventario",
         path: paths.dashboard.inventory.all,
         icon: <ClipboardDocumentIcon className="h-4 w-4" />,
+        adminOnly: true,
       },
       {
         id: "regions",
         label: "Regiones",
         path: paths.dashboard.regions.list,
         icon: <GlobeAltIcon className="h-4 w-4" />,
+        adminOnly: true,
       },
       {
         id: "suppliers",
         label: "Solicitud de Proveedores",
         path: paths.dashboard.suppliers.list,
         icon: <DocumentChartBarIcon className="h-4 w-4" />,
+        adminOnly: true,
       },
-
       {
         id: "warehouses",
         label: "Almacenes",
         path: paths.dashboard.warehouses.list,
         icon: <WarehouseIcon className="h-4 w-4" />,
+       adminOnly: true,
       },
       {
         id: "stores",
         label: "Tiendas",
         path: paths.dashboard.stores.list,
         icon: <ShoppingBagIcon className="h-4 w-4" />,
+        adminOnly: true,
       },
     ],
   },
@@ -130,6 +139,7 @@ export const sidebarSections: SidebarSection[] = [
   {
     id: "security",
     label: "Seguridad",
+    adminOnly: true, // Toda la sección solo para admin
     items: [
       {
         id: "logs",
@@ -169,33 +179,10 @@ export const sidebarSections: SidebarSection[] = [
       },
     ],
   },
-  // {
-  //   id: "administration",
-  //   label: "Administración",
-  //   items: [
-  //     {
-  //       id: "users",
-  //       label: "Usuarios",
-  //       path: paths.dashboard.users.list,
-  //       icon: <UserCircleIcon className="h-4 w-4" />,
-  //     },
-  //     {
-  //       id: "roles",
-  //       label: "Roles",
-  //       path: paths.dashboard.roles.list,
-  //       icon: <ShieldCheckIcon className="h-4 w-4" />,
-  //     },
-  //     {
-  //       id: "permissions",
-  //       label: "Permisos",
-  //       path: paths.dashboard.permissions.list,
-  //       icon: <LockClosedIcon className="h-4 w-4" />,
-  //     },
-  //   ],
-  // },
   {
     id: "gatewaySettings",
     label: "Configuraciones de Pasarelas de Pago",
+    adminOnly: true, // Solo admin
     items: [
       {
         id: "overview",
