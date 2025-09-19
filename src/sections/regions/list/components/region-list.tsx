@@ -6,7 +6,8 @@ import showToast from "@/config/toast/toastConfig";
 import { useRegionModalState } from "../../hooks/use-region-modal-state";
 import { SearchParams } from "@/types/fetch/request";
 import { DataTableColumn } from "mantine-datatable";
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Region } from "@/types/regions";
 import { deleteRegion } from "@/services/regions";
@@ -26,13 +27,7 @@ export function RegionList({
   onSearchParamsChange,
 }: RegionListProps) {
   const { getModalState, openModal, closeModal } = useRegionModalState();
-
-  // Keep a client-side copy of the paginated data so UI updates after mutations
-  const [localData, setLocalData] = useState(data);
-
-  useEffect(() => {
-    setLocalData(data);
-  }, [data]);
+  const queryClient = useQueryClient();
 
   const createModal = getModalState("create");
   const editModal = getModalState("edit");
@@ -41,7 +36,7 @@ export function RegionList({
   const selectedRegion = useMemo(() => {
     const id = editModal.id || viewModal.id;
     if (!id || !data?.data) return null;
-  return localData?.data?.find((region) => region.id === id) ?? null;
+    return data.data.find((region) => region.id === id) ?? null;
   }, [editModal, viewModal, data?.data]);
 
   const handleCreateRegion = useCallback(() => {
@@ -70,20 +65,24 @@ export function RegionList({
         showToast(res.message, "error");
       } else {
         showToast("Región eliminada exitosamente", "success");
-        // reflect deletion in local data: mark as deleted
-        setLocalData(prev => {
-          if (!prev) return prev;
-          return {
-            ...prev,
-            data: prev.data.map(r => r.id === region.id ? { ...r, status: 'deleted' } : r)
-          };
-        });
+        // Invalidar queries para refrescar desde el backend
+        queryClient.invalidateQueries({ queryKey: ["regions"] });
       }
     } catch (error) {
       console.error(error);
       showToast("Ocurrió un error, por favor intenta de nuevo", "error");
     }
-  }, []);
+  }, [queryClient]);
+
+  // Helper function to get status text
+  const getStatusText = (status: Region['status']) => {
+    switch (status) {
+      case 0: return "Activa";
+      case 1: return "Inactiva";
+      case 2: return "Eliminada";
+      default: return "Desconocido";
+    }
+  };
 
   const columns = useMemo<DataTableColumn<Region>[]>(
     () => [
@@ -136,9 +135,9 @@ export function RegionList({
         title: "Estado",
         render: (region) => (
           <StatusBadge
-            isActive={region.status === "active"}
+            isActive={region.status === 0}
             activeText="Activa"
-            inactiveText={region.status === "inactive" ? "Inactiva" : "Eliminada"}
+            inactiveText={getStatusText(region.status)}
           />
         ),
       },
@@ -159,22 +158,21 @@ export function RegionList({
         render: (region) => (
           <div className="flex justify-center">
             <ActionsMenu
-              isActive={region.status === "active"}
               onViewDetails={() => handleViewRegion(region)}
               onEdit={() => handleEditRegion(region)}
-              onActive={() => handleDeleteRegion(region)}
+              onDelete={region.status === 1 ? () => handleDeleteRegion(region) : undefined}
             />
           </div>
         ),
       },
     ],
-    [handleViewRegion, handleEditRegion, handleDeleteRegion]
+    [handleViewRegion, handleEditRegion, handleDeleteRegion, getStatusText]
   );
 
   return (
     <>
       <DataGrid
-        data={localData}
+        data={data}
         columns={columns}
         searchParams={searchParams}
         onSearchParamsChange={onSearchParamsChange}
@@ -188,25 +186,9 @@ export function RegionList({
         <RegionModalContainer
           onClose={() => closeModal("create")}
           open={createModal.open}
-          onSuccess={(newRegion?: Region) => {
-            if (!newRegion) return;
-            setLocalData(prev => {
-              if (!prev) {
-                return {
-                  data: [newRegion],
-                  totalCount: 1,
-                  page: 1,
-                  pageSize: 1,
-                  hasNext: false,
-                  hasPrevious: false,
-                } as any;
-              }
-              return {
-                ...prev,
-                data: [newRegion, ...prev.data],
-                totalCount: (prev.totalCount || prev.data.length) + 1,
-              };
-            });
+          onSuccess={() => {
+            // Invalidar queries para refrescar desde el backend
+            queryClient.invalidateQueries({ queryKey: ["regions"] });
           }}
         />
       )}
@@ -217,24 +199,9 @@ export function RegionList({
           onClose={() => closeModal("edit")}
           open={editModal.open}
           region={selectedRegion}
-          onSuccess={(updated?: Region) => {
-            if (!updated) return;
-            setLocalData(prev => {
-              if (!prev) {
-                return {
-                  data: [updated],
-                  totalCount: 1,
-                  page: 1,
-                  pageSize: 1,
-                  hasNext: false,
-                  hasPrevious: false,
-                } as any;
-              }
-              return {
-                ...prev,
-                data: prev.data.map(r => (r.id === updated.id ? updated : r)),
-              };
-            });
+          onSuccess={() => {
+            // Invalidar queries para refrescar desde el backend
+            queryClient.invalidateQueries({ queryKey: ["regions"] });
           }}
         />
       )}

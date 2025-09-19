@@ -3,13 +3,13 @@
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { Region } from "@/types/regions";
+import { GetAllRegions } from "@/types/regions";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 import { RegionList } from "./components/region-list";
 
 interface RegionListContainerProps {
-  regionsPromise: ApiResponse<Region[]>;
+  regionsPromise: ApiResponse<GetAllRegions>;
   query: SearchParams;
 }
 
@@ -26,14 +26,7 @@ export default function RegionListContainer({
   };
 
   // Convert ApiResponse to PaginatedResponse format expected by DataGrid
-  const paginatedData = regionsResponse.data ? {
-    data: regionsResponse.data,
-    totalCount: regionsResponse.data.length,
-    page: 1,
-    pageSize: regionsResponse.data.length,
-    hasNext: false,
-    hasPrevious: false,
-  } : undefined;
+  const paginatedData = regionsResponse.data || undefined;
 
   return (
     <div className="space-y-6">

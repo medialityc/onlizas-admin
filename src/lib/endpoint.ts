@@ -314,6 +314,16 @@ export const backendRoutes = {
     editVariantInventory: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}variants/${id}`,
   },
+  regions: {
+    listById: (regionId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/config`,
+    delete: (regionId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}`,
+    update: (regionId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}`,
+    get: `${process.env.NEXT_PUBLIC_API_URL}regions`,
+    create: `${process.env.NEXT_PUBLIC_API_URL}regions`,
+  },
 
   locations: {
     list: `${process.env.NEXT_PUBLIC_API_URL}locations`,
