@@ -14,13 +14,11 @@ export const regionSchema = z.object({
 
   description: z.string().max(500).optional(),
 
-  status: z
-    .enum(["active", "inactive"], {
-      required_error: "El estado es obligatorio.",
-    }),
+  status: z.boolean(),
+  moveCountries: z.boolean(),
 
   countryIds: z.array(z.number()),
-  
+
 });
 
 export type CreateRegionSchema = z.infer<typeof regionSchema>;
