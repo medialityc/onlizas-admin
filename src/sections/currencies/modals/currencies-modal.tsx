@@ -107,25 +107,23 @@ export default function CurrenciesModal({
   const fetchRegions = async (
     params: IQueryable
   ): Promise<ApiResponse<PaginatedResponse<any>>> => {
-    // The mock `getRegions` accepts filters like { search, status }.
-    // Pagination is handled by this wrapper for the autocomplete component.
+    // getRegions ya devuelve ApiResponse<PaginatedResponse<Region>>, así que lo usamos directamente
     const response = await getRegions({
       search: params.search,
+      page: params.page,
+      pageSize: params.pageSize,
     });
 
-    // Build a safe paginated payload (ensure page/pageSize are numbers)
-    const page = Number(params.page ?? 1) || 1;
-    const pageSize = Number(params.pageSize ?? 20) || 20;
-
+    // Si hay error, devolver respuesta de error
     if (response.error) {
       return {
         data: {
           data: [],
           totalCount: 0,
-          page,
-          pageSize,
+          page: Number(params.page ?? 1) || 1,
+          pageSize: Number(params.pageSize ?? 20) || 20,
           hasNext: false,
-          hasPrevious: page > 1,
+          hasPrevious: false,
         },
         error: true,
         status: response.status ?? 500,
@@ -133,22 +131,8 @@ export default function CurrenciesModal({
       };
     }
 
-    const items = response.data ?? [];
-
-    const paginated: PaginatedResponse<any> = {
-      data: items,
-      totalCount: items.length,
-      page,
-      pageSize,
-      hasNext: false,
-      hasPrevious: page > 1,
-    };
-
-    return {
-      data: paginated,
-      error: false,
-      status: response.status ?? 200,
-    };
+    // getRegions ya devuelve el formato correcto, así que lo retornamos directamente
+    return response;
   };
 
   return (

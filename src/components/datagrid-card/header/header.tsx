@@ -1,5 +1,6 @@
 import { PlusIcon } from "@heroicons/react/24/solid";
 import FilterSearch from "./header-search";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface DataGridHeaderProps {
   enableSearch: boolean;
@@ -10,6 +11,7 @@ interface DataGridHeaderProps {
   createLoading?: boolean;
   createText?: string;
   rightActions?: React.ReactNode;
+  createPermissions?: string[];
 }
 
 export function Header({
@@ -21,9 +23,13 @@ export function Header({
   createLoading,
   createText,
   rightActions,
+  createPermissions,
 }: DataGridHeaderProps) {
   const isActions = onCreate || rightActions;
   const hideHeader = enableSearch || isActions;
+
+  // Control de permisos
+  const hasCreatePermission = useHasPermissions(createPermissions || ["CREATE_ALL"]);
 
   if (!hideHeader) return null;
   return (
@@ -42,7 +48,7 @@ export function Header({
       {isActions && (
         <div className="flex items-center gap-3 ml-4">
           {rightActions}
-          {onCreate && (
+          {onCreate && hasCreatePermission && (
             <button
               type="button"
               className="btn btn-primary dark:text-textColor flex gap-2"

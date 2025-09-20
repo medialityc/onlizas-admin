@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useMultiCountrySelect } from "@/sections/regions/hooks/use-multi-country-select";
 
-
 interface CountryFlagProps {
   code: string;
   className?: string;
@@ -12,7 +11,7 @@ interface CountryFlagProps {
 
 function CountryFlag({ code, className, height = 20, width = 30 }: CountryFlagProps) {
   const [src, setSrc] = useState(`/assets/images/flags/${String(code || "").toUpperCase()}.svg`);
-  
+
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
@@ -50,6 +49,7 @@ export default function MultiCountrySelect({
   error,
 }: MultiCountrySelectProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showExpandedView, setShowExpandedView] = useState(false);
 
   const {
     selectedCountries,
@@ -61,6 +61,7 @@ export default function MultiCountrySelect({
     toggleCountry,
     removeCountry,
     selectedCountryIds: hookSelectedIds,
+    setSelectedCountryIds,
   } = useMultiCountrySelect({
     initialCountryIds: selectedCountryIds,
   });
@@ -74,6 +75,18 @@ export default function MultiCountrySelect({
       prevHookSelectedIds.current = [...hookSelectedIds];
     }
   }, [hookSelectedIds, onSelectionChange]);
+
+  // Sync external changes with hook state - use ref to avoid infinite loop
+  const prevSelectedCountryIds = useRef<number[]>([]);
+  useEffect(() => {
+    if (!arraysEqual(selectedCountryIds, prevSelectedCountryIds.current)) {
+      // Only update if external prop actually changed
+      if (!arraysEqual(selectedCountryIds, hookSelectedIds)) {
+        setSelectedCountryIds(selectedCountryIds);
+      }
+      prevSelectedCountryIds.current = [...selectedCountryIds];
+    }
+  }, [selectedCountryIds, setSelectedCountryIds]);
 
   // Helper function to compare arrays
   function arraysEqual(a: number[], b: number[]): boolean {
@@ -103,6 +116,18 @@ export default function MultiCountrySelect({
     removeCountry(countryId);
   }, [removeCountry]);
 
+  // Determinar si mostrar modo compacto (más de 3 países para testing)
+  const shouldShowCompactMode = selectedCountries.length > 3;
+  const maxVisibleTags = 2;
+
+  // Debug logs
+  console.log('MultiCountrySelect Debug:', {
+    selectedCountriesCount: selectedCountries.length,
+    shouldShowCompactMode,
+    selectedCountryIds,
+    hookSelectedIds,
+  });
+
   return (
     <div className="w-full">
       {label && (
@@ -123,7 +148,55 @@ export default function MultiCountrySelect({
             <div className="flex-1">
               {selectedCountries.length === 0 ? (
                 <span className="text-gray-500">{placeholder}</span>
+              ) : shouldShowCompactMode ? (
+                // Modo compacto para muchas selecciones
+                <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap gap-1">
+                    {selectedCountries.slice(0, maxVisibleTags).map((country) => (
+                      <div
+                        key={country.id}
+                        className="flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm"
+                      >
+                        <CountryFlag
+                          code={country.code}
+                          className="h-3 w-4 object-cover rounded-sm"
+                          height={12}
+                          width={16}
+                        />
+                        <span>{country.name}</span>
+                        {!disabled && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveCountry(country.id);
+                            }}
+                            className="ml-1 text-blue-600 hover:text-blue-800"
+                          >
+                            <XMarkIcon className="h-3 w-3" />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-500">
+                      +{selectedCountries.length - maxVisibleTags} más
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowExpandedView(true);
+                      }}
+                      className="text-blue-600 hover:text-blue-800 text-sm underline"
+                    >
+                      Ver todos
+                    </button>
+                  </div>
+                </div>
               ) : (
+                // Modo normal para pocas selecciones
                 <div className="flex flex-wrap gap-1">
                   {selectedCountries.map((country) => (
                     <div
@@ -217,6 +290,98 @@ export default function MultiCountrySelect({
 
       {displayError && (
         <p className="mt-1 text-sm text-red-600">{displayError}</p>
+      )}
+
+      {/* Modal de vista expandida para muchas selecciones */}
+      {showExpandedView && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[80vh] overflow-hidden">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                  Países seleccionados ({selectedCountries.length})
+                </h3>
+                <button
+                  onClick={() => setShowExpandedView(false)}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  <XMarkIcon className="h-6 w-6" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6">
+              {/* Barra de búsqueda dentro del modal */}
+              <div className="mb-4">
+                <input
+                  type="text"
+                  placeholder="Buscar en países seleccionados..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {/* Lista de países seleccionados */}
+              <div className="max-h-96 overflow-y-auto">
+                {selectedCountries.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    No hay países seleccionados
+                  </div>
+                ) : (
+                  <div className="grid gap-2">
+                    {selectedCountries
+                      .filter(country =>
+                        !searchTerm ||
+                        country.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        country.code.toLowerCase().includes(searchTerm.toLowerCase())
+                      )
+                      .map((country) => (
+                        <div
+                          key={country.id}
+                          className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                        >
+                          <div className="flex items-center gap-3">
+                            <CountryFlag
+                              code={country.code}
+                              className="h-6 w-8 object-cover rounded-sm"
+                              height={24}
+                              width={32}
+                            />
+                            <div>
+                              <div className="font-medium text-gray-900 dark:text-white">
+                                {country.name}
+                              </div>
+                              <div className="text-sm text-gray-500 dark:text-gray-400">
+                                {country.code}
+                              </div>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => handleRemoveCountry(country.id)}
+                            className="text-red-600 hover:text-red-800 p-1"
+                            title="Quitar país"
+                          >
+                            <XMarkIcon className="h-5 w-5" />
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Acciones del modal */}
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <button
+                  onClick={() => setShowExpandedView(false)}
+                  className="px-4 py-2 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -2,12 +2,16 @@
 
 import React from "react";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface BannerHeaderProps {
   onNew: () => void;
 }
 
 export default function BannerHeader({ onNew }: BannerHeaderProps) {
+  // Control de permisos
+  const hasCreatePermission = useHasPermissions(["CREATE_ALL"]);
+
   return (
     <div className="flex items-center justify-between mt-2">
       <div>
@@ -16,14 +20,16 @@ export default function BannerHeader({ onNew }: BannerHeaderProps) {
           Crea y gestiona banners promocionales para tu tienda
         </p>
       </div>
-      <button
-        type="button"
-        onClick={onNew}
-        className="inline-flex items-center gap-2 rounded-md bg-gray-900 dark:bg-gray-700 text-white text-xs font-medium px-3 py-2 hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:focus:ring-gray-700"
-      >
-        <PlusIcon className="w-4 h-4" />
-        Nuevo Banner
-      </button>
+      {hasCreatePermission && (
+        <button
+          type="button"
+          onClick={onNew}
+          className="inline-flex items-center gap-2 rounded-md bg-gray-900 dark:bg-gray-700 text-white text-xs font-medium px-3 py-2 hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:focus:ring-gray-700"
+        >
+          <PlusIcon className="w-4 h-4" />
+          Nuevo Banner
+        </button>
+      )}
     </div>
   );
 }

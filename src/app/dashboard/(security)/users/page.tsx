@@ -20,6 +20,7 @@ async function UserListPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
   const users = await getAllUsers(query);
+  console.log(users)
   return <UserListContainer users={users} query={params} />;
 }
 

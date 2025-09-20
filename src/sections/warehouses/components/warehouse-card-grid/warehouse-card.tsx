@@ -13,8 +13,9 @@ import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
 import { CalendarIcon, PackageIcon, Users2Icon } from "lucide-react";
 import Badge from "@/components/badge/badge";
-import { cn } from "@/lib/utils";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 import { Button } from "@/components/button/button";
+import { cn } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -32,6 +33,11 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
   const isPhysical = type === WAREHOUSE_TYPE_ENUM.physical;
 
   const router = useRouter();
+
+  // Control de permisos
+  const hasEditPermission = useHasPermissions(["UPDATE_ALL"]);
+  const hasTransferPermission = useHasPermissions(["UPDATE_ALL"]);
+
   const handleView = () => router.push(`warehouses/${type}/${warehouse.id!}`);
   const handleEdit = () => {
     if (onEdit) {
@@ -150,25 +156,29 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
 
       {/* Botones de acción - siempre al final */}
       <CardFooter className="grid grid-cols-1 sm:grid-cols-2 gap-2 ">
-        <Button
-          outline
-          variant="secondary"
-          onClick={handleTransfer}
-          className="w-full justify-center py-1.5 px-3 text-sm"
-          size="sm"
-        >
-          <ArrowsRightLeftIcon className="h-3.5 w-3.5 mr-1.5" />
-          Transferir
-        </Button>
-        <Button
-          variant="primary"
-          onClick={handleEdit}
-          className="w-full justify-center py-1.5 px-3 text-sm"
-          size="sm"
-        >
-          <PencilSquareIcon className="h-3.5 w-3.5 mr-1.5" />
-          Editar
-        </Button>
+        {hasTransferPermission && (
+          <Button
+            outline
+            variant="secondary"
+            onClick={handleTransfer}
+            className="w-full justify-center py-1.5 px-3 text-sm"
+            size="sm"
+          >
+            <ArrowsRightLeftIcon className="h-3.5 w-3.5 mr-1.5" />
+            Transferir
+          </Button>
+        )}
+        {hasEditPermission && (
+          <Button
+            variant="primary"
+            onClick={handleEdit}
+            className="w-full justify-center py-1.5 px-3 text-sm"
+            size="sm"
+          >
+            <PencilSquareIcon className="h-3.5 w-3.5 mr-1.5" />
+            Editar
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

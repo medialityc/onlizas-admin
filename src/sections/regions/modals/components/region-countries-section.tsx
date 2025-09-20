@@ -1,7 +1,7 @@
 "use client";
 import { Region } from "@/types/regions";
 import { GlobeAltIcon } from "@heroicons/react/24/solid";
-import CountryCard from "./country-card";
+import OptimizedCountryCard from "./optimized-country-card";
 
 export default function RegionCountriesSection({ region }: { region: Region }) {
   // The modal now expects the parent to provide associated countries in region.countries
@@ -32,8 +32,8 @@ export default function RegionCountriesSection({ region }: { region: Region }) {
       </h2>
       <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {countries.map((c) => (
-            <CountryCard key={c.id} countryId={c.id} />
+          {countries.map((country) => (
+            <OptimizedCountryCard key={country.id} country={country} />
           ))}
         </div>
       </div>

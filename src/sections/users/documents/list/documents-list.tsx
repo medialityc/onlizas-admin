@@ -111,6 +111,8 @@ export function UserDocumentsList({ documentsPromise, userId }: Props) {
           <ActionsMenu
             onEdit={() => handleEdit(document)}
             onDownload={() => handleDownload(document)}
+            editPermissions={["DOCUMENT_VALIDATE"]}
+            downloadPermissions={["READ_ALL"]}
           />
         ),
       },

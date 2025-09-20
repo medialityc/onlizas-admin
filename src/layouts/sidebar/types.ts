@@ -12,12 +12,14 @@ export interface SidebarMenuItem {
   disabled?: boolean;
   subsections?: SidebarSubsection[];
   isCollapsible?: boolean;
+  adminOnly?: boolean; // Solo para admin
 }
 
 export interface SidebarSubsection {
   id: string;
   label: string;
   items: SidebarSubItem[];
+  adminOnly?: boolean;
 }
 
 export interface SidebarSubItem {
@@ -25,6 +27,7 @@ export interface SidebarSubItem {
   label: string;
   path: string;
   disabled?: boolean;
+  adminOnly?: boolean;
 }
 
 export interface SidebarSection {
@@ -33,6 +36,7 @@ export interface SidebarSection {
   items: SidebarMenuItem[];
   icon?: ReactNode;
   noSection?: boolean;
+  adminOnly?: boolean; // Solo para admin
 }
 
 export interface SidebarProps {
