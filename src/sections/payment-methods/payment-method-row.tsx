@@ -5,6 +5,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Badge, Button, Switch } from "@mantine/core";
 import { GripVertical, Settings } from "lucide-react";
 import type { PaymentMethod } from "@/types";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 type Props = {
   method: PaymentMethod;
@@ -20,6 +21,9 @@ export function PaymentMethodRow({ method, onToggleEnabled }: Props) {
     transition,
     isDragging,
   } = useSortable({ id: method.id });
+
+  // Control de permisos
+  const hasUpdatePermission = useHasPermissions(["UPDATE_ALL"]);
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -64,13 +68,15 @@ export function PaymentMethodRow({ method, onToggleEnabled }: Props) {
               Primary
             </Badge>
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0 sm:h-auto sm:w-auto sm:p-2"
-          >
-            <Settings className="size-4" />
-          </Button>
+          {hasUpdatePermission && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 sm:h-auto sm:w-auto sm:p-2"
+            >
+              <Settings className="size-4" />
+            </Button>
+          )}
         </div>
       </div>
     </div>

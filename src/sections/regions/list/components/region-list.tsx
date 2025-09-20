@@ -14,6 +14,7 @@ import { deleteRegion } from "@/services/regions";
 import StatusBadge from "@/components/badge/status-badge";
 import { PaginatedResponse } from "@/types/common";
 import RegionModalContainer from "../../modals/region-modal-container";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface RegionListProps {
   data?: PaginatedResponse<Region>;
@@ -29,15 +30,19 @@ export function RegionList({
   const { getModalState, openModal, closeModal } = useRegionModalState();
   const queryClient = useQueryClient();
 
+  // Control de permisos
+  const hasCreatePermission = useHasPermissions(["CREATE_ALL"]);
+
   const createModal = getModalState("create");
   const editModal = getModalState("edit");
   const viewModal = getModalState("view");
+  const configureModal = getModalState("configure");
 
   const selectedRegion = useMemo(() => {
-    const id = editModal.id || viewModal.id;
+    const id = editModal.id || viewModal.id || configureModal.id;
     if (!id || !data?.data) return null;
     return data.data.find((region) => region.id === id) ?? null;
-  }, [editModal, viewModal, data?.data]);
+  }, [editModal, viewModal, configureModal, data?.data]);
 
   const handleCreateRegion = useCallback(() => {
     openModal("create");
@@ -53,6 +58,13 @@ export function RegionList({
   const handleViewRegion = useCallback(
     (region: Region) => {
       openModal("view", region.id);
+    },
+    [openModal]
+  );
+
+  const handleConfigureRegion = useCallback(
+    (region: Region) => {
+      openModal("edit", region.id);
     },
     [openModal]
   );
@@ -156,12 +168,24 @@ export function RegionList({
         title: "Acciones",
         textAlign: "center",
         render: (region) => (
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-2">
             <ActionsMenu
               onViewDetails={() => handleViewRegion(region)}
               onEdit={() => handleEditRegion(region)}
               onDelete={region.status === 1 ? () => handleDeleteRegion(region) : undefined}
+              viewPermissions={["READ_ALL"]}
+              editPermissions={["UPDATE_ALL"]}
+              deletePermissions={["DELETE_ALL"]}
             />
+            {region.status === 0 && (
+              <button
+                onClick={() => handleConfigureRegion(region)}
+                className="btn btn-sm btn-outline-primary"
+                title="Configurar monedas, pagos y envío"
+              >
+                ⚙️
+              </button>
+            )}
           </div>
         ),
       },
@@ -179,6 +203,7 @@ export function RegionList({
         searchPlaceholder="Buscar regiones..."
         emptyText="No se encontraron regiones"
         onCreate={handleCreateRegion}
+        createPermissions={["CREATE_ALL"]}
       />
 
       {/* Create Modal */}
@@ -215,6 +240,16 @@ export function RegionList({
           isDetailsView
         />
       )}
+
+      {/* Configure Modal */}
+      {/* {selectedRegion && (
+        <RegionModalContainer
+          onClose={() => closeModal("configure")}
+          open={configureModal.open}
+          region={selectedRegion}
+          isConfigureView
+        />
+      )} */}
     </>
   );
 }

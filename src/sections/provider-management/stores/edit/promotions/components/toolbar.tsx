@@ -1,12 +1,16 @@
 
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { Button } from "@/components/button/button";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface PromotionsToolbarProps {
   onNew: () => void;
 }
 
 export default function PromotionsToolbar({ onNew }: PromotionsToolbarProps) {
+  // Control de permisos
+  const hasCreatePermission = useHasPermissions(["CREATE_ALL"]);
+
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
       <div>
@@ -15,14 +19,16 @@ export default function PromotionsToolbar({ onNew }: PromotionsToolbarProps) {
       </div>
       
       <div className="flex items-center gap-3">        
-        <Button onClick={onNew} className="inline-flex border-none items-center gap-2 rounded-md px-3 py-1.5 text-sm whitespace-nowrap flex-shrink-0
-                                               bg-gradient-to-br from-indigo-600 to-indigo-500 text-white shadow-md hover:from-indigo-500 hover:to-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/30">
-          <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-white/10">
-            <PlusIcon className="h-4 w-4"/>
-          </span>
-          <span className="hidden sm:inline">Nueva Promoción</span>
-          <span className="sm:hidden">Nueva</span>
-        </Button>
+        {hasCreatePermission && (
+          <Button onClick={onNew} className="inline-flex border-none items-center gap-2 rounded-md px-3 py-1.5 text-sm whitespace-nowrap flex-shrink-0
+                                                 bg-gradient-to-br from-indigo-600 to-indigo-500 text-white shadow-md hover:from-indigo-500 hover:to-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/30">
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-white/10">
+              <PlusIcon className="h-4 w-4"/>
+            </span>
+            <span className="hidden sm:inline">Nueva Promoción</span>
+            <span className="sm:hidden">Nueva</span>
+          </Button>
+        )}
       </div>
     </div>
   );

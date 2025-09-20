@@ -22,6 +22,7 @@ export function DataGridCard<T extends Record<string, any>>({
   component,
   hidePagination = false,
   data,
+  createPermissions,
 }: DataGridCardProps<T>) {
   const [searchValue, setSearchValue] = useState(searchParams.search || "");
 
@@ -52,6 +53,7 @@ export function DataGridCard<T extends Record<string, any>>({
         createLoading={createLoading}
         createText={createText}
         rightActions={rightActions}
+        createPermissions={createPermissions}
       />
 
       {/* list card */}

@@ -10,6 +10,7 @@ import React from "react";
 import { UseFieldArrayRemove, useFormContext } from "react-hook-form";
 import InventoryProviderDetailSection from "../inventory-provider-detail-section/inventory-provider-detail-section";
 import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 type Props = {
   variantIndex: number;
@@ -20,18 +21,21 @@ const InventoryVariantFrom = ({ variantIndex, remove }: Props) => {
   const { watch } = useFormContext();
   const isWarranty = watch(`warranty.isWarranty`);
   const isLimit = watch(`isLimit`);
+  const hasDeletePermission = useHasPermissions(["DELETE_ALL"]);
 
   return (
     <div className="flex flex-col gap-2 mt-4 p-4 border dark:border-gray-600 border-dashed rounded-lg bg-slate-50 dark:bg-slate-900">
       <div className="flex flex-row gap-2 items-center justify-between col-span-2 mb-5">
         <h3 className="font-bold">Variante {variantIndex + 1}</h3>
-        <Button
-          onClick={() => remove()}
-          className="bg-transparent rounded-full text-black p-0 border-0 shadow-none"
-          iconOnly
-        >
-          <XMarkIcon className={"h-4 w-4 text-black"} />
-        </Button>
+        {hasDeletePermission && (
+          <Button
+            onClick={() => remove()}
+            className="bg-transparent rounded-full text-black p-0 border-0 shadow-none"
+            iconOnly
+          >
+            <XMarkIcon className={"h-4 w-4 text-black"} />
+          </Button>
+        )}
       </div>
 
       {/* details section */}

@@ -191,6 +191,7 @@ export function WarehouseTransferList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar transferencia..."
         onCreate={handleCreateTransfer}
+        createPermissions={["CREATE_ALL"]}
         emptyText="No se encontraron transferencias del almacén"
         createText="Crear Transferencia"
         enableColumnToggle={false}

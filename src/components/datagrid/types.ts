@@ -26,6 +26,9 @@ export interface DataGridProps<T> {
   rightActions?: React.ReactNode;
   customActions?: React.ReactNode;
 
+  // Permissions
+  createPermissions?: string[]; // Permissions required to show create button
+
   //pagination
   hidePagination?: boolean;
 }

@@ -11,6 +11,7 @@ import BusinessModalContainer from "../modals/business-modal-container";
 import { Business, GetAllBusiness } from "@/types/business";
 import { deleteBusiness } from "@/services/business";
 import StatusBadge from "@/components/badge/status-badge";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface BusinessListProps {
   data?: GetAllBusiness;
@@ -153,6 +154,9 @@ export function BusinessList({
               onViewDetails={() => handleViewBusiness(business)}
               onEdit={() => handleEditBusiness(business)}
               onActive={() => handleDeleteBusiness(business)}
+              viewPermissions={["READ_ALL"]}
+              editPermissions={["UPDATE_ALL"]}
+              activePermissions={["DELETE_ALL", "BUSINESS_DEACTIVATE"]}
             />
           </div>
         ),

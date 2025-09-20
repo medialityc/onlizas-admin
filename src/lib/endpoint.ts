@@ -231,7 +231,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}stores/supplier/${supplierId}`,
     listForProvider: `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores`,
     storeById: (storeId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${storeId}`,
     storeDetails: (storeId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/stores/${storeId}`,
     updateSupplierStore: (storeId: string | number) =>
@@ -323,6 +323,34 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}`,
     get: `${process.env.NEXT_PUBLIC_API_URL}regions`,
     create: `${process.env.NEXT_PUBLIC_API_URL}regions`,
+    
+    // Currency configuration endpoints
+    currencies: {
+      add: (regionId: number | string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/currencies`,
+      remove: (regionId: number | string, currencyId: number | string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/currencies/${currencyId}`,
+      setPrimary: (regionId: number | string, currencyId: number | string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/currencies/${currencyId}/primary`,
+    },
+    
+    // Payment configuration endpoints  
+    payments: {
+      add: (regionId: number | string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/payment-gateways`,
+      remove: (regionId: number | string, gatewayId: number | string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/payment-gateways/${gatewayId}`,
+      updatePriority: (regionId: number | string, gatewayId: number | string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/payment-gateways/${gatewayId}/priority`,
+    },
+    
+    // Shipping configuration endpoints
+    shipping: {
+      add: (regionId: number | string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/shipping-methods`,
+      get: (regionId: number | string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/shipping-methods`,
+    },
   },
 
   locations: {

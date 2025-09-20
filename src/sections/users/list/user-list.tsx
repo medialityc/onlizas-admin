@@ -84,8 +84,7 @@ export function UserList({
     [openModal]
   );
 
-  // Log en el handler de editar atributos
-
+ 
   const columns = useMemo<DataTableColumn<IUser>[]>(
     () => [
       {
@@ -246,8 +245,12 @@ export function UserList({
               router.push(paths.dashboard.users.documents.list(user.id))
             }
             isActive={user.isActive}
-            onActive={() => toggleActive(user)}
-          />
+            onActive={() => toggleActive(user)}           
+            viewPermissions={["READ_ALL"]}
+            editPermissions={["UPDATE_ALL"]}            
+            activePermissions={["UPDATE_ALL"]}
+            documentsPermissions={["READ_ALL", "DOCUMENT_VALIDATE"]}
+                      />
         ),
       },
     ],
@@ -265,6 +268,7 @@ export function UserList({
         searchPlaceholder="Buscar..."
         emptyText="No se encontraron usuarios"
         className="mt-6"
+        createPermissions={["CREATE_ALL"]}
       />
       <UserCreateModal
         open={createModal.open}

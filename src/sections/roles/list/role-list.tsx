@@ -14,6 +14,7 @@ import { useCallback, useMemo } from "react";
 import RoleCreateModal from "../create/role-create-modal";
 import { RoleDetailsModal } from "../details/role-details-modal";
 import { RoleEditModal } from "../edit/role-edit-modal";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface RoleListProps {
   data?: GetAllRolesResponse;
@@ -141,6 +142,9 @@ export function RoleList({
               onViewDetails={() => handleViewRole(role)}
               onEdit={() => handleEditRole(role)}
               onDelete={() => handleDeleteRole(role)}
+              viewPermissions={["READ_ROLES",]}
+              editPermissions={["UPDATE_ROLES"]}
+              deletePermissions={["DELETE_ALL", "DELETE_ROLES"]}
             />
           </div>
         ),
@@ -158,6 +162,7 @@ export function RoleList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar roles..."
         onCreate={handleCreateRole}
+        createPermissions={["CREATE_ROLES"]}
         emptyText="No se encontraron roles"
       />
       {/* Create Modal */}

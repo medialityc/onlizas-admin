@@ -11,7 +11,6 @@ export async function getUserPermissions(): Promise<string[]> {
     const session = await getSession();
     
     if (!session.tokens?.accessToken) {
-      console.log("❌ No access token");
       return [];
     }
 
@@ -31,7 +30,6 @@ export async function getUserPermissions(): Promise<string[]> {
     const userData = await response.json();
     
     if (!userData.roles || !Array.isArray(userData.roles)) {
-      console.log("❌ No roles in user");
       return [];
     }
 
@@ -47,8 +45,23 @@ export async function getUserPermissions(): Promise<string[]> {
       }
     });
 
-    console.log("✅ User permissions:", permissions);
-    console.log("🔍 ALL permissions found:", permissions.filter(p => p.includes("_ALL")));
+    console.log("✅ User permissions:", {
+      CREATE_ALL: permissions.includes("CREATE_ALL"),
+      READ_ALL: permissions.includes("READ_ALL"),
+      UPDATE_ALL: permissions.includes("UPDATE_ALL"),
+      DELETE_ALL: permissions.includes("DELETE_ALL"),
+      DOCUMENT_VALIDATE: permissions.includes("DOCUMENT_VALIDATE"),
+      CURRENCY_SET_DEFAULT: permissions.includes("CURRENCY_SET_DEFAULT"),
+      BUSINESS_DEACTIVATE: permissions.includes("BUSINESS_DEACTIVATE"),
+      APPROVALPROCESS_APPROVE_REJECT: permissions.includes("APPROVALPROCESS_APPROVE_REJECT"),
+      APPROVAL_EXTEND_REQUEST: permissions.includes("APPROVAL_EXTEND_REQUEST"),
+      CREATE_PERMISSION: permissions.includes("CREATE_PERMISSION"),
+      READ_PERMISSIONS: permissions.includes("READ_PERMISSIONS"),
+      UPDATE_PERMISSION: permissions.includes("UPDATE_PERMISSION"),
+      CREATE_ROLES: permissions.includes("CREATE_ROLES"),
+      READ_ROLES: permissions.includes("READ_ROLES"),
+      UPDATE_ROLES: permissions.includes("UPDATE_ROLES")
+    });
     return permissions;
   } catch (error) {
     console.error("❌ Error getting permissions:", error);
@@ -73,12 +86,6 @@ export async function isAdmin(): Promise<boolean> {
   const hasAllAdminPermissions = requiredAdminPermissions.every(perm => 
     permissions.includes(perm)
   );
-  
-  console.log("🔐 Admin check:", {
-    permissions: permissions.filter(p => p.includes("_ALL")),
-    requiredAdminPermissions,
-    hasAllAdminPermissions
-  });
   
   return hasAllAdminPermissions;
 }

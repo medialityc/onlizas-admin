@@ -11,6 +11,7 @@ import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import SuppliersModalContainer from "../modals/suppliers-modal-container";
 import { deleteSuppliers } from "@/services/supplier";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface SuppliersListProps {
   data?: GetAllSuppliers;
@@ -198,6 +199,9 @@ export function SuppliersList({
               onActive={() => handleToggleActiveSupplier(supplier)}
               onViewDetails={() => handleViewSupplier(supplier)}
               onEdit={() => handleEditFullSupplier(supplier)}
+              viewPermissions={["READ_ALL"]}
+              editPermissions={["UPDATE_ALL"]}
+              activePermissions={["UPDATE_ALL"]}
             />
           </div>
         ),
@@ -216,6 +220,7 @@ export function SuppliersList({
         searchPlaceholder="Buscar solicitudes..."
         onCreate={handleCreateSupplier}
         emptyText="No se encontraron solicitudes"
+        createPermissions={["CREATE_ALL"]}
       />
 
       {/* Create Modal */}

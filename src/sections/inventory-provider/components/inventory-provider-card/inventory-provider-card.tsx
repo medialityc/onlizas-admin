@@ -11,6 +11,7 @@ import ImagePreview from "@/components/image/image-preview";
 import { InventoryProvider } from "@/types/inventory";
 import { Edit, EyeIcon, Package } from "lucide-react";
 import Link from "next/link";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 type Props = {
   item: InventoryProvider;
@@ -18,6 +19,9 @@ type Props = {
 };
 
 const InventoryProviderCard = ({ item }: Props) => {
+  const hasReadPermission = useHasPermissions(["READ_ALL"]);
+  const hasUpdatePermission = useHasPermissions(["UPDATE_ALL"]);
+
   return (
     <Card className="group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full dark:border-slate-700">
       <CardHeader className="space-y-0 pb-4">
@@ -72,23 +76,27 @@ const InventoryProviderCard = ({ item }: Props) => {
       </CardContent>
 
       <CardFooter className="grid grid-cols-2 gap-2 pt-2">
-        <Link href={`inventory/${item?.id}/details`}>
-          <Button
-            outline
-            variant="secondary"
-            className="w-full justify-center py-1.5 px-3 text-sm"
-            size="sm"
-          >
-            <EyeIcon className="mr-2 h-4 w-4" />
-            Ver
-          </Button>
-        </Link>
-        <Link href={`inventory/${item?.id}/edit`}>
-          <Button   variant="primary" size="sm" className="w-full">
-            <Edit className="mr-2 h-4 w-4" />
-            Editar
-          </Button>
-        </Link>
+        {hasReadPermission && (
+          <Link href={`inventory/${item?.id}/details`}>
+            <Button
+              outline
+              variant="secondary"
+              className="w-full justify-center py-1.5 px-3 text-sm"
+              size="sm"
+            >
+              <EyeIcon className="mr-2 h-4 w-4" />
+              Ver
+            </Button>
+          </Link>
+        )}
+        {hasUpdatePermission && (
+          <Link href={`inventory/${item?.id}/edit`}>
+            <Button   variant="primary" size="sm" className="w-full">
+              <Edit className="mr-2 h-4 w-4" />
+              Editar
+            </Button>
+          </Link>
+        )}
       </CardFooter>
     </Card>
   );
