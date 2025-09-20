@@ -3,6 +3,7 @@ import { useCountry } from "@/hooks/use-country";
 import { MapPinIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { AddressFormData } from "./user-schema";
 import { Button } from "@/components/button/button";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 interface AdressFieldProps {
   field: AddressFormData;
   index: number;
@@ -21,6 +22,11 @@ const AdressField = ({
     loading: loadingCountry,
     flag,
   } = useCountry(field.countryId);
+
+  // Control de permisos
+  const hasUpdatePermission = useHasPermissions(["UPDATE_ALL"]);
+  const hasDeletePermission = useHasPermissions(["DELETE_ALL"]);
+
   return (
     <Card
       key={field.id}
@@ -35,23 +41,27 @@ const AdressField = ({
             </h4>
           </div>
           <div className="flex gap-1">
-            <Button
-              type="button"
-              outline
-              size="sm"
-              onClick={() => handleEditAddress(field)}
-            >
-              <PencilIcon className="h-3 w-3" />
-            </Button>
-            <Button
-              type="button"
-              outline
-              size="sm"
-              onClick={() => removeAddress(index)}
-              className="text-red-600 hover:text-red-700"
-            >
-              <TrashIcon className="h-3 w-3" />
-            </Button>
+            {hasUpdatePermission && (
+              <Button
+                type="button"
+                outline
+                size="sm"
+                onClick={() => handleEditAddress(field)}
+              >
+                <PencilIcon className="h-3 w-3" />
+              </Button>
+            )}
+            {hasDeletePermission && (
+              <Button
+                type="button"
+                outline
+                size="sm"
+                onClick={() => removeAddress(index)}
+                className="text-red-600 hover:text-red-700"
+              >
+                <TrashIcon className="h-3 w-3" />
+              </Button>
+            )}
           </div>
         </div>
         <div className="space-y-1 text-sm text-muted-foreground">

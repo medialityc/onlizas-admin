@@ -8,6 +8,7 @@ import {
   EllipsisHorizontalIcon,
 } from "@heroicons/react/24/solid";
 import ConfirmationDialog from "@/components/modal/confirm-modal";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface MenuProps {
   onApproveTransfer?: () => void;
@@ -30,6 +31,11 @@ const TransferActionsMenu = ({
   const [approveDialogOpen, setApproveDialogOpen] = useState(false);
   const [executeDialogOpen, setExecuteDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Control de permisos
+  const hasApprovePermission = useHasPermissions(["UPDATE_ALL"]);
+  const hasExecutePermission = useHasPermissions(["UPDATE_ALL"]);
+  const hasCancelPermission = useHasPermissions(["UPDATE_ALL"]);
 
   const handleCancelTransfer = async () => {
     if (onCancelTransfer) {
@@ -74,9 +80,9 @@ const TransferActionsMenu = ({
   };
 
   // Verificar si hay al menos una acción disponible
-  const hasActions = (onApproveTransfer && isApproveActive) || 
-                    (onCancelTransfer && isCancelActive) || 
-                    (onExecuteTransfer && isExecuteActive);
+  const hasActions = ((onApproveTransfer && isApproveActive && hasApprovePermission) || 
+                    (onCancelTransfer && isCancelActive && hasCancelPermission) || 
+                    (onExecuteTransfer && isExecuteActive && hasExecutePermission));
 
   // Si no hay acciones disponibles, no renderizar el menú
   if (!hasActions) {
@@ -95,7 +101,7 @@ const TransferActionsMenu = ({
         <Menu.Dropdown className="bg-white text-gray-700 space-y-2 border border-gray-200 px-1 dark:bg-black">
           <Menu.Label>Acciones</Menu.Label>
 
-          {onApproveTransfer && isApproveActive && (
+          {onApproveTransfer && isApproveActive && hasApprovePermission && (
             <Menu.Item
               className="p-1 text-sm hover:text-white hover:bg-green-500"
               leftSection={<CheckIcon className="h-4 w-4" />}
@@ -105,7 +111,7 @@ const TransferActionsMenu = ({
             </Menu.Item>
           )}
 
-          {onExecuteTransfer && isExecuteActive && (
+          {onExecuteTransfer && isExecuteActive && hasExecutePermission && (
             <Menu.Item
               className="p-1 text-sm hover:text-white hover:bg-blue-500"
               leftSection={<PlayIcon className="h-4 w-4" />}
@@ -115,7 +121,7 @@ const TransferActionsMenu = ({
             </Menu.Item>
           )}
 
-          {onCancelTransfer && isCancelActive && (
+          {onCancelTransfer && isCancelActive && hasCancelPermission && (
             <>
               <Menu.Divider />
               <Menu.Label>Zona de peligro</Menu.Label>
@@ -131,7 +137,7 @@ const TransferActionsMenu = ({
         </Menu.Dropdown>
       </Menu>
 
-      {onCancelTransfer && isCancelActive && (
+      {onCancelTransfer && isCancelActive && hasCancelPermission && (
         <ConfirmationDialog
           onClose={() => setDeleteDialogOpen(false)}
           onConfirm={handleCancelTransfer}
@@ -142,7 +148,7 @@ const TransferActionsMenu = ({
           actionType="canceled"
         />
       )}
-      {onApproveTransfer && isApproveActive && (
+      {onApproveTransfer && isApproveActive && hasApprovePermission && (
         <ConfirmationDialog
           onClose={() => setApproveDialogOpen(false)}
           onConfirm={handleApproveTransfer}
@@ -153,7 +159,7 @@ const TransferActionsMenu = ({
           actionType="approve"
         />
       )}
-      {onExecuteTransfer && isExecuteActive && (
+      {onExecuteTransfer && isExecuteActive && hasExecutePermission && (
         <ConfirmationDialog
           onClose={() => setExecuteDialogOpen(false)}
           onConfirm={handleExecuteTransfer}

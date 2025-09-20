@@ -10,6 +10,7 @@ import SimpleModal from "@/components/modal/modal";
 import BusinessLogDetail from "./businesslog-detail";
 import { InformationCircleIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { extractRecord } from "../utils";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 function BusinessLogsContent({
   data,
@@ -22,6 +23,9 @@ function BusinessLogsContent({
 }) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<BusinessLogs | null>(null);
+
+  // Control de permisos
+  const hasReadPermission = useHasPermissions(["READ_ALL"]);
 
   const handleRowClick = useCallback((rowOrWrapper: any) => {
     const row = extractRecord<BusinessLogs>(rowOrWrapper);
@@ -56,15 +60,17 @@ function BusinessLogsContent({
       accessor: "actions",
       title: "",
       render: (row) => (
-        <button
-          type="button"
-          onClick={() => handleRowClick(row)}
-          className="p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:border-primary/60 hover:text-primary"
-          aria-label="Ver detalles"
-          title="Ver detalles"
-        >
-          <EyeIcon className="h-4 w-4" />
-        </button>
+        hasReadPermission ? (
+          <button
+            type="button"
+            onClick={() => handleRowClick(row)}
+            className="p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:border-primary/60 hover:text-primary"
+            aria-label="Ver detalles"
+            title="Ver detalles"
+          >
+            <EyeIcon className="h-4 w-4" />
+          </button>
+        ) : null
       ),
     },
   ];
@@ -93,7 +99,7 @@ function BusinessLogsContent({
                 searchPlaceholder="Buscar negocios..."
                 emptyText="No se encontraron negocios"
                 enablePagination={false}
-                onRowClick={handleRowClick}
+                onRowClick={hasReadPermission ? handleRowClick : undefined}
               />
             </div>
           ))}

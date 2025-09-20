@@ -12,6 +12,7 @@ import { useCallback, useMemo } from "react";
 import PermissionCreateModal from "../create/permissions-create-modal";
 import { PermissionDetailsModal } from "../details/permissions-details-modal";
 import { PermissionEditModal } from "../edit/permissions-edit-modal";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface PermissionListProps {
   data?: GetAllPermissionsResponse;
@@ -126,6 +127,9 @@ export function PermissionList({
               onViewDetails={() => handleViewPermission(permission)}
               onEdit={() => handleEditPermission(permission)}
               onDelete={() => handleDeletePermission(permission)}
+              viewPermissions={["READ_PERMISSIONS"]}
+              editPermissions={["UPDATE_PERMISSION"]}
+              deletePermissions={["DELETE_ALL", "DELETE_PERMISSION"]}
             />
           </div>
         ),
@@ -143,6 +147,7 @@ export function PermissionList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar permisos..."
         onCreate={handleCreatePermission}
+        createPermissions={["CREATE_PERMISSION"]}
         emptyText="No se encontraron permisos"
       />
       {/* Create Modal */}

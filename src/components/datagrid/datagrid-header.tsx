@@ -1,6 +1,7 @@
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { ColumnSelector } from "./column-selector";
 import { DataTableColumn } from "mantine-datatable";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface DataGridHeaderProps<T> {
   enableSearch: boolean;
@@ -20,6 +21,8 @@ interface DataGridHeaderProps<T> {
   leftActions?: React.ReactNode;
   rightActions?: React.ReactNode;
   customActions?: React.ReactNode;
+  // Permissions
+  createPermissions?: string[];
 }
 
 export function DataGridHeader<T extends Record<string, any>>({
@@ -39,7 +42,10 @@ export function DataGridHeader<T extends Record<string, any>>({
   leftActions,
   rightActions,
   customActions,
+  createPermissions,
 }: DataGridHeaderProps<T>) {
+  const hasCreatePermission = useHasPermissions(createPermissions || ["CREATE_ALL"]);
+
   return (
     <div className="mb-5 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
       <div className="flex items-center gap-3">
@@ -72,7 +78,7 @@ export function DataGridHeader<T extends Record<string, any>>({
             onToggle={onToggleColumnSelector}
           />
         )}
-        {onCreate && (
+        {onCreate && hasCreatePermission && (
           <button
             type="button"
             className="btn btn-primary text-white dark:text-white flex gap-2"

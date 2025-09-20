@@ -15,6 +15,7 @@ import { ChevronDownIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import React, { useState } from "react";
 import AnimateHeight from "react-animate-height";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 type Props = {
   item: IUser;
@@ -22,6 +23,8 @@ type Props = {
 };
 
 const UserProviderCard = ({ item, className }: Props) => {
+  const hasReadPermission = useHasPermissions(["READ_ALL"]);
+
   return (
     <Card
       className={cn(
@@ -107,11 +110,13 @@ const UserProviderCard = ({ item, className }: Props) => {
       <CardFooter className=" mt-auto">
         {/* actions */}
         <div className="flex justify-end w-full">
-          <Link href={`/dashboard/inventory/list/${item?.id}`}>
-            <Button outline className="w-full" variant="secondary">
-              Ver inventario
-            </Button>
-          </Link>
+          {hasReadPermission && (
+            <Link href={`/dashboard/inventory/list/${item?.id}`}>
+              <Button outline className="w-full" variant="secondary">
+                Ver inventario
+              </Button>
+            </Link>
+          )}
         </div>
       </CardFooter>
     </Card>

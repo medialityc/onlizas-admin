@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { Category, GetAllCategories } from "@/types/categories";
 import { toggleStatusCategory } from "@/services/categories";
 import { paths } from "@/config/paths";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface CategoriesListProps {
   data?: GetAllCategories;
@@ -23,6 +24,9 @@ export function CategoriesList({
   onSearchParamsChange,
 }: CategoriesListProps) {
   const router = useRouter();
+
+  // Control de permisos
+  const hasCreatePermission = useHasPermissions(["CREATE_ALL"]);
 
   const handleCreateCategory = useCallback(() => {
     router.push("/dashboard/categories/new");
@@ -145,7 +149,9 @@ export function CategoriesList({
               onActive={() => handleToggleActiveCategory(category)}
               onViewDetails={() => handleViewCategory(category)}
               onEdit={() => handleEditCategory(category)}
-              //  onDelete={() => handleDeleteCategory(category)}
+              viewPermissions={["READ_ALL"]}
+              editPermissions={["UPDATE_ALL"]}
+              activePermissions={["UPDATE_ALL"]}
             />
           </div>
         ),
@@ -163,6 +169,7 @@ export function CategoriesList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar categorías..."
         onCreate={handleCreateCategory}
+        createPermissions={["CREATE_ALL"]}
         emptyText="No se encontraron categorías"
         createText="Crear categoría"
       />

@@ -26,6 +26,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatNumber, formatPercentage, isValidUrl } from "@/utils/format";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 type DataCardProps = {
   store: Store;
@@ -35,6 +36,10 @@ export const SoreCard = ({ store }: DataCardProps) => {
   const [hasImageError, setHasImageError] = useState(false);
   const [hasBannerError, setHasBannerError] = useState(false);
   const router = useRouter();
+
+  // Control de permisos
+  const hasReadPermission = useHasPermissions(["READ_ALL"]);
+  const hasUpdatePermission = useHasPermissions(["UPDATE_ALL"]);
 
   // Prefer https:// if not present
   const viewUrl = (() => {
@@ -299,7 +304,7 @@ export const SoreCard = ({ store }: DataCardProps) => {
         )}
         {/* Footer actions */}
         <div className="flex w-full items-center gap-2 mt-4 pb-4">
-          {store.url && (
+          {store.url && hasReadPermission && (
             <a
               href={viewUrl}
               target="_blank"
@@ -310,13 +315,15 @@ export const SoreCard = ({ store }: DataCardProps) => {
               <EyeIcon className="w-4 h-4 mr-1" /> Ver
             </a>
           )}
-          <Button
-            onClick={() => router.push(`/dashboard/stores/${store.id}`)}
-            className="flex-1"
-            size="sm"
-          >
-            <Cog6ToothIcon className="w-4 h-4 mr-1" /> Configurar
-          </Button>
+          {hasUpdatePermission && (
+            <Button
+              onClick={() => router.push(`/dashboard/stores/${store.id}`)}
+              className="flex-1"
+              size="sm"
+            >
+              <Cog6ToothIcon className="w-4 h-4 mr-1" /> Configurar
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

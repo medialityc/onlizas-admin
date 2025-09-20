@@ -28,6 +28,7 @@ export function DataGrid<T extends Record<string, any>>({
   leftActions,
   rightActions,
   customActions,
+  createPermissions,
 }: DataGridProps<T>) {
   const [searchValue, setSearchValue] = useState(searchParams.search || "");
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<T>>({
@@ -95,6 +96,7 @@ export function DataGrid<T extends Record<string, any>>({
         leftActions={leftActions}
         rightActions={rightActions}
         customActions={customActions}
+        createPermissions={createPermissions}
       />
 
       {/* Data Table */}

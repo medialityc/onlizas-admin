@@ -26,6 +26,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatNumber, formatPercentage, isValidUrl } from "@/utils/format";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 type DataCardProps = {
   store: Store;
@@ -35,6 +36,9 @@ export const DataCard = ({ store }: DataCardProps) => {
   const [hasImageError, setHasImageError] = useState(false);
   const [hasBannerError, setHasBannerError] = useState(false);
   const router = useRouter();
+
+  // Control de permisos
+  const hasUpdatePermission = useHasPermissions(["UPDATE_ALL"]);
 
   // Prefer https:// if not present
   const viewUrl = (() => {
@@ -305,13 +309,15 @@ export const DataCard = ({ store }: DataCardProps) => {
               <EyeIcon className="w-4 h-4 mr-1" /> Ver
             </a>
           )}
-          <Button
-            onClick={() => router.push(`/provider/stores/${store.id}`)}
-            className="flex-1"
-            size="sm"
-          >
-            <Cog6ToothIcon className="w-4 h-4 mr-1" /> Configurar
-          </Button>
+          {hasUpdatePermission && (
+            <Button
+              onClick={() => router.push(`/provider/stores/${store.id}`)}
+              className="flex-1"
+              size="sm"
+            >
+              <Cog6ToothIcon className="w-4 h-4 mr-1" /> Configurar
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
