@@ -5,6 +5,7 @@ import { PlusIcon, ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import WarehouseSelectedModal from "../../containers/warehouse-transfer-modal";
 import { useCallback } from "react";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 const WarehouseHeader = () => {
   const { getModalState, openModal, closeModal } = useModalState();
@@ -15,6 +16,11 @@ const WarehouseHeader = () => {
   );
 
   const transferModal = getModalState<number>("transfer");
+
+  // Control de permisos
+  const hasCreatePermission = useHasPermissions(["CREATE_ALL"]);
+  const hasTransferPermission = useHasPermissions(["UPDATE_ALL"]);
+
   return (
     <>
       <div className="flex items-center justify-between gap-2 w-full">
@@ -27,14 +33,18 @@ const WarehouseHeader = () => {
           </p>
         </div>
         <div className="flex flex-row gap-2">
-          <Button onClick={handleInitTransfer} variant="secondary" outline>
-            <ArrowsRightLeftIcon className="h-4 w-4 mr-2" /> Transferencias
-          </Button>
-          <Link href={"warehouses/new"}>
-            <Button>
-              <PlusIcon className="h-4 w-4 mr-2" /> Nuevo almacén
+          {hasTransferPermission && (
+            <Button onClick={handleInitTransfer} variant="secondary" outline>
+              <ArrowsRightLeftIcon className="h-4 w-4 mr-2" /> Transferencias
             </Button>
-          </Link>
+          )}
+          {hasCreatePermission && (
+            <Link href={"warehouses/new"}>
+              <Button>
+                <PlusIcon className="h-4 w-4 mr-2" /> Nuevo almacén
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
 

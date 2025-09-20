@@ -2,6 +2,7 @@ import type { Promotion } from "@/types/promotions";
 import Badge from "@/components/badge/badge";
 import { PencilIcon, TrashIcon, EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { getPromotionTypeName } from "../index-refactored";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface PromotionRowProps {
   p: Promotion;
@@ -12,6 +13,11 @@ interface PromotionRowProps {
 
 export default function PromotionRow({ p, onEdit, onDelete, onViewDetails }: PromotionRowProps) {
   const isExpired = p.endDate && new Date(p.endDate) < new Date();
+
+  // Control de permisos
+  const hasReadPermission = useHasPermissions(["READ_ALL"]);
+  const hasUpdatePermission = useHasPermissions(["UPDATE_ALL"]);
+  const hasDeletePermission = useHasPermissions(["DELETE_ALL"]);
 
   const getDiscountText = (type: number, value: number) => {
     return type === 0 ? `-${value}%` : `-$${value}`;
@@ -61,7 +67,7 @@ export default function PromotionRow({ p, onEdit, onDelete, onViewDetails }: Pro
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            {onEdit && (
+            {onEdit && hasUpdatePermission && (
               <button
                 onClick={() => onEdit(p)}
                 className="p-1 text-gray-500 dark:text-gray-300 hover:text-blue-600 transition-colors"
@@ -71,7 +77,7 @@ export default function PromotionRow({ p, onEdit, onDelete, onViewDetails }: Pro
               </button>
             )}
 
-            {onDelete && (
+            {onDelete && hasDeletePermission && (
               <button
                 onClick={() => onDelete(p.id)}
                 className="p-1 text-gray-400 dark:text-gray-400 hover:text-red-600 transition-colors"
@@ -81,7 +87,7 @@ export default function PromotionRow({ p, onEdit, onDelete, onViewDetails }: Pro
               </button>
             )}
 
-            {onViewDetails && (
+            {onViewDetails && hasReadPermission && (
               <button
                 onClick={() => onViewDetails(p)}
                 className="p-1 text-gray-500 dark:text-gray-300 hover:text-indigo-600 transition-colors"

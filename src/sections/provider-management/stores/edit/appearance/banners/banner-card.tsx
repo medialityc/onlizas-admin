@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/cards/card";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { BannerItem } from "@/types/stores";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 
 interface BannerCardProps {
@@ -102,51 +103,61 @@ function BannerActions({
   onDelete: (id: number) => void;
   onEdit: (banner: BannerItem) => void;
 }) {
+  // Control de permisos
+  const hasUpdatePermission = useHasPermissions(["UPDATE_ALL"]);
+  const hasDeletePermission = useHasPermissions(["DELETE_ALL"]);
+
   return (
     <div className="flex items-center gap-3">
       {/* Toggle Switch */}
-      <button
-        type="button"
-        aria-label="Cambiar estado"
-        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-          banner.isActive 
-            ? "bg-gradient-to-r from-secondary to-indigo-600" 
-            : "bg-gray-300 dark:bg-gray-600"
-        }`}
-        onClick={() => (banner.id != null ? onToggle(banner.id) : undefined)}
+      {hasUpdatePermission && (
+        <button
+          type="button"
+          aria-label="Cambiar estado"
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+            banner.isActive 
+              ? "bg-gradient-to-r from-secondary to-indigo-600" 
+              : "bg-gray-300 dark:bg-gray-600"
+          }`}
+          onClick={() => (banner.id != null ? onToggle(banner.id) : undefined)}
 
-      >
-        <span 
-          className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
-            banner.isActive ? "translate-x-5" : "translate-x-1"
-          }`} 
-        />
-      </button>
+        >
+          <span 
+            className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+              banner.isActive ? "translate-x-5" : "translate-x-1"
+            }`} 
+          />
+        </button>
+      )}
       
       {/* Edit Button */}
-      <button
-        type="button"
-        className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
-        aria-label="Editar"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          onEdit(banner);
-        }}
-      >
-        <PencilSquareIcon className="w-5 h-5" />
-      </button>
+      {hasUpdatePermission && (
+        <button
+          type="button"
+          className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+          aria-label="Editar"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onEdit(banner);
+          }}
+        >
+          <PencilSquareIcon className="w-5 h-5" />
+        </button>
+      )}
       
       {/* Delete Button */}
-      <button
-        type="button"
-        className="text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-        aria-label="Eliminar"
-        onClick={() => (banner.id != null ? onDelete(banner.id) : undefined)}
+      {hasDeletePermission && (
+        <button
+          type="button"
+          className="text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+          aria-label="Eliminar"
+          onClick={() => (banner.id != null ? onDelete(banner.id) : undefined)}
 
-      >
-        <TrashIcon className="w-5 h-5" />
-      </button>
+        >
+          <TrashIcon className="w-5 h-5" />
+        </button>
+      )}
     </div>
   );
 }

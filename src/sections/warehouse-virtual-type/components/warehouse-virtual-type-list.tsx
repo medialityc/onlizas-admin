@@ -11,6 +11,7 @@ import { WarehouseVirtualTypeFormData } from "../schemas/warehouse-virtual-type-
 import WarehouseVirtualTypeModal from "../containers/warehouse-virtual-create-modal";
 import { useModalState } from "@/hooks/use-modal-state";
 import { toggleStatusWarehouseVirtualType } from "@/services/warehouses-virtual-types";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface Props {
   data?: GetAllWarehousesVirtualType;
@@ -118,6 +119,7 @@ export function WarehouseVirtualTypeList({
               isActive={type.isActive}
               onActive={() => handleToggleActiveWarehouseType(type)}
               // onEdit={() => handleEditCategory(type)}
+              activePermissions={["UPDATE_ALL"]}
             />
           </div>
         ),
@@ -137,6 +139,7 @@ export function WarehouseVirtualTypeList({
         onCreate={handleCreateType}
         emptyText="No se encontraron tipos de almacén virtual"
         createText="Crear Tipo"
+        createPermissions={["CREATE_ALL"]}
       />
 
       <WarehouseVirtualTypeModal

@@ -22,6 +22,7 @@ import ActionsMenu from "@/components/menu/actions-menu";
 import { Notification } from "../../../../types/notifications";
 import showToast from "@/config/toast/toastConfig";
 import NotificationCreateModal from "../create/notification-create-modal";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface NotificationsListProps {
   data?: GetAllNotificationByUserResponse;
@@ -39,6 +40,12 @@ export function UserNotificationsList({
   const viewModal = getModalState<number>("view");
   const createModal = getModalState("create");
   const handleCreateUser = useCallback(() => openModal("create"), [openModal]);
+
+  // Permission hooks
+  const hasCreatePermission = useHasPermissions(["CREATE_ALL"]);
+  const hasReadPermission = useHasPermissions(["READ_ALL"]);
+  const hasDeletePermission = useHasPermissions(["DELETE_ALL"]);
+
   const selectedNotificationUser = useMemo(() => {
     console.log(data);
 
@@ -169,6 +176,9 @@ export function UserNotificationsList({
               handleViewNotification(notification);
             }}
             onDelete={() => handleDeleteNotification(notification)}
+            viewPermissions={["READ_ALL"]}
+
+            deletePermissions={["DELETE_ALL"]}
           />
         ),
       },
@@ -182,7 +192,7 @@ export function UserNotificationsList({
         data={data}
         columns={columns}
         searchParams={searchParams}
-        onCreate={handleCreateUser}
+        onCreate={hasCreatePermission ? handleCreateUser : undefined}
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar notificaciones..."
         emptyText="No hay notificaciones"

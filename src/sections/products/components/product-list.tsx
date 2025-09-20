@@ -12,6 +12,7 @@ import Link from "next/link";
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { toggleActiveProduct } from "@/services/products";
 import showToast from "@/config/toast/toastConfig";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface ProductListProps {
   data?: GetAllProducts;
@@ -120,6 +121,9 @@ export function ProductList({
           onEdit={() => handleEdit(product)}
           isActive={product.state}
           onActive={() => handleToggleActiveProduct(product)}
+          viewPermissions={["READ_ALL"]}
+          editPermissions={["UPDATE_ALL"]}
+          activePermissions={["UPDATE_ALL"]}
         />
       ),
     },
@@ -141,6 +145,7 @@ export function ProductList({
           emptyText="No se encontraron productos"
           createText="Nuevo Producto"
           className="mt-6"
+          createPermissions={["CREATE_ALL"]}
         />
       </div>
     </>

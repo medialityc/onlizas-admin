@@ -1,6 +1,7 @@
 import type { gateways } from "@/services/data-for-gateway-settings/mock-datas";
 import { Badge, Button, Card, Group, Text } from "@mantine/core";
 import { CreditCard, Edit, Eye, EyeOff, Trash2 } from "lucide-react";
+import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 export const GatewayCard = ({
   gateway,
@@ -11,6 +12,11 @@ export const GatewayCard = ({
   showCredentials: boolean;
   toggleCredentialVisibility: () => void;
 }) => {
+  // Control de permisos
+  const hasReadPermission = useHasPermissions(["READ_ALL"]);
+  const hasUpdatePermission = useHasPermissions(["UPDATE_ALL"]);
+  const hasDeletePermission = useHasPermissions(["DELETE_ALL"]);
+
   return (
     <Card
       padding="md"
@@ -48,19 +54,24 @@ export const GatewayCard = ({
             variant="subtle"
             size="xs"
             onClick={toggleCredentialVisibility}
+            disabled={!hasReadPermission}
           >
             {showCredentials ? <EyeOff size={14} /> : <Eye size={14} />}
           </Button>
-          <Button variant="subtle" size="xs">
-            <Edit size={14} />
-          </Button>
-          <Button variant="subtle" size="xs" color="red">
-            <Trash2 size={14} />
-          </Button>
+          {hasUpdatePermission && (
+            <Button variant="subtle" size="xs">
+              <Edit size={14} />
+            </Button>
+          )}
+          {hasDeletePermission && (
+            <Button variant="subtle" size="xs" color="red">
+              <Trash2 size={14} />
+            </Button>
+          )}
         </Group>
       </Group>
 
-      {showCredentials && (
+      {showCredentials && hasReadPermission && (
         <Card
           padding="sm"
           radius="sm"
