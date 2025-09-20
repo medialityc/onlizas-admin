@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { DataGrid } from "@/components/datagrid/datagrid";
 import ActionsMenu from "@/components/menu/actions-menu";
@@ -155,6 +155,9 @@ export function LocationsList({
             onViewDetails={() => handleViewLocation(location)}
             onEdit={() => handleEditLocation(location)}
             onDelete={() => handleDeleteLocation(location)}
+            viewPermissions={["READ_ALL"]}
+            editPermissions={["UPDATE_ALL"]}
+            deletePermissions={["DELETE_ALL"]}
           />
         </div>
       ),
@@ -171,6 +174,7 @@ export function LocationsList({
         searchPlaceholder="Buscar localizaciones..."
         emptyText="No se encontraron localizaciones"
         onCreate={handleCreateLocation}
+        createPermissions={["CREATE_ALL"]}
         rightActions={
           <button
             onClick={() => setShowExportModal(true)}

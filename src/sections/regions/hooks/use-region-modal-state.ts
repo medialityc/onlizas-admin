@@ -22,25 +22,26 @@ export function useRegionModalState<T = any>(options?: UseRegionModalOptions<T>)
     create: { open: false },
     edit: { open: false },
     view: { open: false },
+    configure: { open: false },
   });
 
   const [submitting, setSubmitting] = useState(false);
 
-  const openModal = (type: "create" | "edit" | "view", id?: number) => {
+  const openModal = (type: "create" | "edit" | "view" | "configure", id?: number) => {
     setModals(prev => ({
       ...prev,
       [type]: { open: true, id }
     }));
   };
 
-  const closeModal = (type: "create" | "edit" | "view") => {
+  const closeModal = (type: "create" | "edit" | "view" | "configure") => {
     setModals(prev => ({
       ...prev,
       [type]: { open: false, id: undefined }
     }));
   };
 
-  const getModalState = (type: "create" | "edit" | "view") => modals[type];
+  const getModalState = (type: "create" | "edit" | "view" | "configure") => modals[type];
 
   async function submitCreate(data: T) {
     if (!options?.onCreate) return null;
