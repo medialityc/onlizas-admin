@@ -21,6 +21,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/cards/card";
+import Link from "next/link";
 
 interface WarehouseCardProps {
   warehouse: WarehouseFormData;
@@ -32,16 +33,18 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
   const isPhysical = type === WAREHOUSE_TYPE_ENUM.physical;
 
   const router = useRouter();
-  const handleView = () => router.push(`warehouses/${type}/${warehouse.id!}`);
+
   const handleEdit = () => {
     if (onEdit) {
       onEdit();
       return;
     }
-    router.push(`warehouses/${type}/${warehouse.id!}/edit`);
+    router.replace(`/dashboard/warehouses/${type}/${warehouse.id!}/edit`);
   };
   const handleTransfer = () => {
-    router.push(`warehouses/${type}/${warehouse.id!}/edit/transfers`);
+    router.replace(
+      `/dashboard/warehouses/${type}/${warehouse.id!}/edit/transfers`
+    );
   };
 
   return (
@@ -63,13 +66,13 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
             )}
           </div>
           <div className="min-w-0">
-            <h3
+            <Link
+              href={`/dashboard/warehouses/${type}/${warehouse.id!}`}
               className="text-base font-medium text-gray-900 dark:text-white hover:text-primary dark:hover:text-primary cursor-pointer truncate"
-              onClick={handleView}
               title={warehouse.name}
             >
               {warehouse.name}
-            </h3>
+            </Link>
             <div className="flex flex-wrap gap-1 mt-1">
               <Badge variant={isPhysical ? "info" : "success"}>
                 {isPhysical ? "Físico" : "Virtual"}
