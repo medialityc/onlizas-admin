@@ -3,10 +3,14 @@
 import { GatewayTest } from "@/types";
 import { Badge, Button } from "@mantine/core";
 import { CreditCard } from "lucide-react";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 export const GatewayTestCard = ({ test }: { test: GatewayTest }) => {
-  const hasUpdatePermission = useHasPermissions(["UPDATE_ALL"]);
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border rounded-lg bg-slate-200/70 dark:bg-slate-950/50 dark:text-slate-100 space-y-3 sm:space-y-0">

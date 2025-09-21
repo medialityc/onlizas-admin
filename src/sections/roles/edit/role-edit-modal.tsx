@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { RoleUpdateData, roleUpdateSchema } from "./role-update-schema";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface RoleEditModalProps {
   role: IRole;
@@ -45,6 +46,13 @@ export function RoleEditModal({
     reset,
     formState: { isSubmitting },
   } = methods;
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   useEffect(() => {
     if (role && open) {
@@ -120,14 +128,16 @@ export function RoleEditModal({
             >
               Cancelar
             </button>
-            <LoaderButton
-              type="submit"
-              className="btn "
-              loading={isSubmitting}
-              disabled={isSubmitting}
-            >
-              Actualizar
-            </LoaderButton>
+            {hasUpdatePermission && (
+              <LoaderButton
+                type="submit"
+                className="btn "
+                loading={isSubmitting}
+                disabled={isSubmitting}
+              >
+                Actualizar
+              </LoaderButton>
+            )}
           </div>
         </FormProvider>
       </div>

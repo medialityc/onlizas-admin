@@ -14,7 +14,6 @@ import { useCallback, useMemo } from "react";
 import RoleCreateModal from "../create/role-create-modal";
 import { RoleDetailsModal } from "../details/role-details-modal";
 import { RoleEditModal } from "../edit/role-edit-modal";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface RoleListProps {
   data?: GetAllRolesResponse;

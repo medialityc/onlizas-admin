@@ -1,7 +1,7 @@
 import type { gateways } from "@/services/data-for-gateway-settings/mock-datas";
 import { Badge, Button, Card, Group, Text } from "@mantine/core";
 import { CreditCard, Edit, Eye, EyeOff, Trash2 } from "lucide-react";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 export const GatewayCard = ({
   gateway,
@@ -13,9 +13,13 @@ export const GatewayCard = ({
   toggleCredentialVisibility: () => void;
 }) => {
   // Control de permisos
-  const hasReadPermission = useHasPermissions(["READ_ALL"]);
-  const hasUpdatePermission = useHasPermissions(["UPDATE_ALL"]);
-  const hasDeletePermission = useHasPermissions(["DELETE_ALL"]);
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasReadPermission = hasPermission(["READ_ALL"]);
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const hasDeletePermission = hasPermission(["DELETE_ALL"]);
 
   return (
     <Card

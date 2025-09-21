@@ -14,7 +14,6 @@ import { deleteRegion } from "@/services/regions";
 import StatusBadge from "@/components/badge/status-badge";
 import { PaginatedResponse } from "@/types/common";
 import RegionModalContainer from "../../modals/region-modal-container";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface RegionListProps {
   data?: PaginatedResponse<Region>;
@@ -29,9 +28,6 @@ export function RegionList({
 }: RegionListProps) {
   const { getModalState, openModal, closeModal } = useRegionModalState();
   const queryClient = useQueryClient();
-
-  // Control de permisos
-  const hasCreatePermission = useHasPermissions(["CREATE_ALL"]);
 
   const createModal = getModalState("create");
   const editModal = getModalState("edit");

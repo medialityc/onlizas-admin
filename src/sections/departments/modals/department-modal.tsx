@@ -1,4 +1,5 @@
 "use client";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 import { AlertBox } from "@/components/alert/alert-box";
 import LoaderButton from "@/components/loaders/loader-button";
@@ -79,6 +80,14 @@ export default function DepartmentModal({
     setError(null);
     onClose();
   };
+
+  // Control de permisos
+      const { data: permissions = [] } = usePermissions();
+      const hasPermission = (requiredPerms: string[]) => {
+        return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+      };
+      const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+    
 
   const onSubmit = async (data: DepartmentFormData) => {
     setError(null);
@@ -217,13 +226,14 @@ export default function DepartmentModal({
             >
               Cancelar
             </button>
+            {hasUpdatePermission&&
             <LoaderButton
               type="submit"
               loading={isSubmitting}
               className="btn btn-primary"
             >
               {department ? "Editar" : "Crear"} Departamento
-            </LoaderButton>
+            </LoaderButton>}
           </div>
         </FormProvider>
       </div>

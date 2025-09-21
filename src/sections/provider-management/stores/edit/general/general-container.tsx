@@ -16,6 +16,7 @@ import { Store } from "@/types/stores";
 import { GeneralStoreSchema, type GeneralStoreForm } from "./general-schema";
 import { updateSupplierStore } from "@/services/stores";
 import { buildStoreFormData } from "../utils/transform";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface Props {
   store: Store;
@@ -60,6 +61,13 @@ export default function GeneralContainer({ store }: Props) {
       toast.error(msg);
     }
   };
+  // Control de permisos
+      const { data: permissions = [] } = usePermissions();
+      const hasPermission = (requiredPerms: string[]) => {
+        return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+      };
+      const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+    
 
   return (
     <FormProvider id="general-form" methods={methods} onSubmit={onSubmit}>
@@ -80,6 +88,7 @@ export default function GeneralContainer({ store }: Props) {
 
         {/* Botón de guardar */}
         <div className="flex justify-end pt-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 -mx-6 px-6 py-4 mt-8">
+          {hasUpdatePermission&&
           <LoaderButton
             form="general-form"
             type="submit"
@@ -91,7 +100,7 @@ export default function GeneralContainer({ store }: Props) {
               <ClipboardDocumentCheckIcon className="w-4 h-4" />
               <span>Guardar Información General</span>
             </span>
-          </LoaderButton>
+          </LoaderButton>}
         </div>
       </div>
     </FormProvider>

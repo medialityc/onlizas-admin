@@ -11,6 +11,7 @@ import { Button } from "@/components/button/button";
 import LoaderButton from "@/components/loaders/loader-button";
 import FormProvider from "@/components/react-hook-form/form-provider";
 import { addressSchema } from "./user-schema";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 type AddressFormData = z.infer<typeof addressSchema>;
 
@@ -51,6 +52,14 @@ export function AddressModal({
     reset,
     formState: { isSubmitting },
   } = methods;
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+
   const onSubmit = async (data: AddressFormData) => {
     onSave(data);
     reset();
@@ -222,17 +231,19 @@ export function AddressModal({
           <Button type="button" outline onClick={() => onClose()}>
             Cancelar
           </Button>
-          <LoaderButton
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            {isSubmitting
-              ? "Guardando..."
-              : editingAddress
-                ? "Actualizar"
-                : "Guardar"}
-          </LoaderButton>
+          {hasUpdatePermission && (
+            <LoaderButton
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              {isSubmitting
+                ? "Guardando..."
+                : editingAddress
+                  ? "Actualizar"
+                  : "Guardar"}
+            </LoaderButton>
+          )}
         </div>
       </FormProvider>
     </SimpleModal>

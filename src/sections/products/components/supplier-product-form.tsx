@@ -18,6 +18,7 @@ import { ImagesIcon } from "lucide-react";
 import IconBox from "@/components/icon/icon-box";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAllMeApprovedCategories } from "@/services/categories";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 type Props = {
   initValue?: SupplierProductFormData;
@@ -33,6 +34,13 @@ const SupplierProductForm = ({ initValue, isEdit }: Props) => {
   const handleCancel = useCallback(() => push("/provider/products"), [push]);
 
   const isProductDraft = [isDraft, isEdit].some(Boolean);
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   return (
     <section>
@@ -123,14 +131,16 @@ const SupplierProductForm = ({ initValue, isEdit }: Props) => {
           >
             Cancelar
           </Button>
-          <LoaderButton
-            form="product-form"
-            type="submit"
-            loading={isPending}
-            disabled={isPending}
-          >
-            {isEdit ? "Actualizar Producto" : "Crear Producto"}
-          </LoaderButton>
+          {hasUpdatePermission && (
+            <LoaderButton
+              form="product-form"
+              type="submit"
+              loading={isPending}
+              disabled={isPending}
+            >
+              {isEdit ? "Actualizar Producto" : "Crear Producto"}
+            </LoaderButton>
+          )}
         </div>
       )}
     </section>

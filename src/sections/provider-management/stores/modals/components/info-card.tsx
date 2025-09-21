@@ -26,7 +26,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatNumber, formatPercentage, isValidUrl } from "@/utils/format";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 type DataCardProps = {
   store: Store;
@@ -38,7 +38,11 @@ export const DataCard = ({ store }: DataCardProps) => {
   const router = useRouter();
 
   // Control de permisos
-  const hasUpdatePermission = useHasPermissions(["UPDATE_ALL"]);
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   // Prefer https:// if not present
   const viewUrl = (() => {

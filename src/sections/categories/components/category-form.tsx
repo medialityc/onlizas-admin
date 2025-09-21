@@ -13,6 +13,7 @@ import { Button } from "@/components/button/button";
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface CategoryFormProps {
   initValue?: CategoryFormData;
@@ -22,6 +23,13 @@ export default function CategoryForm({ initValue }: CategoryFormProps) {
   const { form, isPending, onSubmit } = useCategoryCreateForm(initValue);
   const { push } = useRouter();
   const handleCancel = useCallback(() => push("/dashboard/categories"), [push]);
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   return (
     <section>
@@ -74,15 +82,17 @@ export default function CategoryForm({ initValue }: CategoryFormProps) {
         >
           Cancelar
         </Button>
-        <LoaderButton
-          type="submit"
-          form="category-from"
-          loading={isPending}
-          disabled={isPending}
-          className="btn btn-primary "
-        >
-          Guardar
-        </LoaderButton>
+        {hasUpdatePermission && (
+          <LoaderButton
+            type="submit"
+            form="category-from"
+            loading={isPending}
+            disabled={isPending}
+            className="btn btn-primary "
+          >
+            Guardar
+          </LoaderButton>
+        )}
       </div>
     </section>
   );

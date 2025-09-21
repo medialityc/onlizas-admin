@@ -13,6 +13,7 @@ import { AlertBox } from "@/components/alert/alert-box";
 import { CircleAlertIcon } from "lucide-react";
 import { useWarehouseInventoryActions } from "../../contexts/warehouse-inventory-transfer.stote";
 import { generateWarehouseTransferNumber } from "../../utils/warehouse";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 type Props = {
   warehouse: WarehouseFormData;
@@ -31,6 +32,13 @@ export function WarehouseTransferForm({ warehouse }: Props) {
   );
 
   const { form, isPending, onSubmit } = useWarehouseTransferForm(initValue);
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   return (
     <FormProvider
@@ -64,14 +72,16 @@ export function WarehouseTransferForm({ warehouse }: Props) {
             Cancelar
           </Button>
         </Link>
-        <Button
-          form="warehouse-transfer-form"
-          type="submit"
-          variant="primary"
-          disabled={isPending}
-        >
-          {isPending ? "Transfiriendo..." : "Transferir productos"}
-        </Button>
+        {hasUpdatePermission && (
+          <Button
+            form="warehouse-transfer-form"
+            type="submit"
+            variant="primary"
+            disabled={isPending}
+          >
+            {isPending ? "Transfiriendo..." : "Transferir productos"}
+          </Button>
+        )}
       </div>
     </FormProvider>
   );

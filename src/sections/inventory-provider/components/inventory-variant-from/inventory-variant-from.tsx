@@ -10,7 +10,7 @@ import React from "react";
 import { UseFieldArrayRemove, useFormContext } from "react-hook-form";
 import InventoryProviderDetailSection from "../inventory-provider-detail-section/inventory-provider-detail-section";
 import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 type Props = {
   variantIndex: number;
@@ -21,7 +21,11 @@ const InventoryVariantFrom = ({ variantIndex, remove }: Props) => {
   const { watch } = useFormContext();
   const isWarranty = watch(`warranty.isWarranty`);
   const isLimit = watch(`isLimit`);
-  const hasDeletePermission = useHasPermissions(["DELETE_ALL"]);
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasDeletePermission = hasPermission(["DELETE_ALL"]);
 
   return (
     <div className="flex flex-col gap-2 mt-4 p-4 border dark:border-gray-600 border-dashed rounded-lg bg-slate-50 dark:bg-slate-900">

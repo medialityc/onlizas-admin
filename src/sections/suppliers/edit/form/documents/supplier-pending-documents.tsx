@@ -19,6 +19,7 @@ import {
   PendingDocumentsForm,
   pendingDocumentsFormSchema,
 } from "./pending-docs-schema";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 export default function SupplierPendingDocuments({
   approvalProcessId,
@@ -61,6 +62,13 @@ export default function SupplierPendingDocuments({
   const [rejectReason, setRejectReason] = useState("");
   const [rejectLoading, setRejectLoading] = useState(false);
   const [viewReasonIdx, setViewReasonIdx] = useState<number | null>(null);
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const canValidateDocuments = hasPermission(["DOCUMENT_VALIDATE"]);
 
   const onAdd = () => append({ fileName: "", content: undefined });
   const onRemove = (index: number) => remove(index);
@@ -347,7 +355,7 @@ export default function SupplierPendingDocuments({
                                 }
                               | undefined;
                             const canValidate =
-                              typeof item?.id === "number" && item!.id > 0;
+                              typeof item?.id === "number" && item!.id > 0 && canValidateDocuments;
                             return (
                               <>
                                 <button
@@ -420,8 +428,9 @@ export default function SupplierPendingDocuments({
                                   </>
                                 ) : (
                                   <span className="text-xs text-gray-500 dark:text-gray-400">
-                                    Sube el archivo para habilitar
-                                    aprobación/rechazo
+                                    {typeof item?.id === "number" && item!.id > 0
+                                      ? "No tienes permisos para validar documentos"
+                                      : "Sube el archivo para habilitar aprobación/rechazo"}
                                   </span>
                                 )}
                               </>

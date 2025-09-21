@@ -11,6 +11,7 @@ import { getAdapterWarehouse } from "../../adapter/warehouse-edit.adapter";
 import VirtualSection from "./components/virtual-section";
 import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
 import Link from "next/link";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 type Props = {
   warehouse?: WarehouseFormData;
@@ -19,6 +20,13 @@ export function WarehouseForm({ warehouse }: Props) {
   const { form, isPending, onSubmit, warehouseType } = useWarehouseCreateForm(
     warehouse && getAdapterWarehouse(warehouse)
   );
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   return (
     <FormProvider
@@ -44,14 +52,16 @@ export function WarehouseForm({ warehouse }: Props) {
             Cancelar
           </Button>
         </Link>
-        <Button
-          form="warehouse-form"
-          type="submit"
-          variant="primary"
-          disabled={isPending}
-        >
-          {isPending ? "Guardando..." : "Guardar Cambios"}
-        </Button>
+        {hasUpdatePermission && (
+          <Button
+            form="warehouse-form"
+            type="submit"
+            variant="primary"
+            disabled={isPending}
+          >
+            {isPending ? "Guardando..." : "Guardar Cambios"}
+          </Button>
+        )}
       </div>
     </FormProvider>
   );

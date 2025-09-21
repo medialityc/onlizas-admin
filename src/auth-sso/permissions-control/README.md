@@ -167,4 +167,103 @@ function CanEditProduct({ children }: { children: React.ReactNode }) {
 
 ---
 
-Última actualización: (auto-documentado)
+## 🔗 **Integración en Componentes UI**
+
+El sistema de permisos está completamente integrado en los componentes principales de la aplicación. A continuación se detalla cómo usar los permisos en diferentes contextos:
+
+### 📋 **DataGrid con Control de Creación**
+
+```tsx
+import { DataGrid } from '@/components/datagrid/datagrid';
+
+// En tu componente de lista
+function ProductList() {
+  return (
+    <DataGrid
+      onCreate={handleCreateProduct}
+      createPermissions={['CREATE_PRODUCTS']} // Controla visibilidad del botón
+      // ... otras props
+    />
+  );
+}
+```
+
+### 🎛️ **ActionsMenu con Control de Acciones**
+
+```tsx
+import { ActionsMenu } from '@/components/menu/actions-menu';
+
+// En tu componente de lista o detalle
+function ProductActions({ product }: { product: Product }) {
+  return (
+    <ActionsMenu
+      onViewDetails={() => navigateToDetails(product.id)}
+      onEdit={() => navigateToEdit(product.id)}
+      onActive={() => toggleActive(product.id)}
+      onDelete={() => deleteProduct(product.id)}
+      viewPermissions={['READ_PRODUCTS']}
+      editPermissions={['UPDATE_PRODUCTS']}
+      activePermissions={['UPDATE_PRODUCTS']}
+      deletePermissions={['DELETE_PRODUCTS']}
+    />
+  );
+}
+```
+
+### 🧭 **Sidebar con Control de Navegación**
+
+```tsx
+// En /layouts/sidebar/sidebar-config.tsx
+export const sidebarConfig = [
+  {
+    id: "products",
+    label: "Productos",
+    path: paths.dashboard.products.list,
+    permissions: ['READ_PRODUCTS'] // Se oculta si no tiene permiso
+  },
+  {
+    id: "users", 
+    label: "Usuarios",
+    path: paths.dashboard.users.list,
+    permissions: ['READ_USERS']
+  },
+  // ... más items
+];
+```
+
+### 🔍 **Verificación Directa en Componentes**
+
+```tsx
+import { usePermissionCheck } from '@/auth-sso/permissions-control/hooks';
+
+function AdminPanel() {
+  const { data: canManageUsers, isLoading } = usePermissionCheck('MANAGE_USERS');
+  
+  if (isLoading) return <LoadingSpinner />;
+  if (!canManageUsers) return <AccessDenied />;
+  
+  return <UserManagementInterface />;
+}
+```
+
+### 📊 **Verificación Múltiple con usePermissions**
+
+```tsx
+import { usePermissions } from '@/auth-sso/permissions-control/hooks';
+
+function Dashboard() {
+  const { data: permissions, isLoading } = usePermissions();
+  
+  if (isLoading) return <LoadingSpinner />;
+  
+  const canReadProducts = permissions?.some(p => p.code === 'READ_PRODUCTS');
+  const canCreateUsers = permissions?.some(p => p.code === 'CREATE_USERS');
+  
+  return (
+    <div>
+      {canReadProducts && <ProductsSection />}
+      {canCreateUsers && <UserCreationForm />}
+    </div>
+  );
+}
+```

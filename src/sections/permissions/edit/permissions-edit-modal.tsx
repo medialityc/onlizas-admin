@@ -15,6 +15,7 @@ import {
   PermissionUpdateData,
   permissionUpdateSchema,
 } from "./permissions-update-schema";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface PermissionEditModalProps {
   permission: IPermission;
@@ -30,6 +31,11 @@ export function PermissionEditModal({
   permissions = [],
 }: PermissionEditModalProps) {
   const queryClient = useQueryClient();
+  const { data: userPermissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => userPermissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
   const methods = useForm<PermissionUpdateData>({
     resolver: zodResolver(permissionUpdateSchema(permissions)),
     mode: "onChange",
@@ -130,14 +136,16 @@ export function PermissionEditModal({
             >
               Cancelar
             </button>
-            <LoaderButton
-              type="submit"
-              className="btn btn-primary"
-              loading={isSubmitting}
-              disabled={isSubmitting || !isValid}
-            >
-              Actualizar
-            </LoaderButton>
+            {hasUpdatePermission && (
+              <LoaderButton
+                type="submit"
+                className="btn btn-primary"
+                loading={isSubmitting}
+                disabled={isSubmitting || !isValid}
+              >
+                Actualizar
+              </LoaderButton>
+            )}
           </div>
         </FormProvider>
       </div>

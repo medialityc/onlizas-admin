@@ -9,6 +9,7 @@ import RHFInput from "@/components/react-hook-form/rhf-input";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAllWarehousesVirtualType } from "@/services/warehouses-virtual-types";
 import { MeWarehouseFormData } from "../../schemas/me-warehouse-schema";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 type Props = {
   warehouse?: MeWarehouseFormData;
@@ -24,6 +25,13 @@ export function MeWarehouseForm({ warehouse, onClose }: Props) {
     onClose?.();
     form.reset();
   }, [form, onClose]);
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   return (
     <FormProvider
@@ -72,14 +80,16 @@ export function MeWarehouseForm({ warehouse, onClose }: Props) {
           Cancelar
         </Button>
 
-        <Button
-          form="me-warehouse-form"
-          type="submit"
-          variant="primary"
-          disabled={isPending}
-        >
-          {isPending ? "Guardando..." : "Guardar Cambios"}
-        </Button>
+        {hasUpdatePermission && (
+          <Button
+            form="me-warehouse-form"
+            type="submit"
+            variant="primary"
+            disabled={isPending}
+          >
+            {isPending ? "Guardando..." : "Guardar Cambios"}
+          </Button>
+        )}
       </div>
     </FormProvider>
   );

@@ -15,7 +15,7 @@ import {
 } from "@heroicons/react/24/solid";
 import DeleteDialog from "../modal/delete-modal";
 import ToggleStatusDialog from "../modal/toggle-status-modal";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface MenuProps {
   onAddUsers?: () => void;
@@ -80,18 +80,14 @@ const ActionsMenu = ({
   const [toggleStatusDialogOpen, setToggleStatusDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Verificar permisos
-  const hasViewPermission = useHasPermissions(viewPermissions);
-  const hasEditPermission = useHasPermissions(editPermissions);
-  const hasDeletePermission = useHasPermissions(deletePermissions);
-  const hasActivePermission = useHasPermissions(activePermissions);
-  const hasDocumentsPermission = useHasPermissions(documentsPermissions);
-  const hasAddUsersPermission = useHasPermissions(addUsersPermissions);
-  const hasPayPermission = useHasPermissions(payPermissions);
-  const hasDownloadPermission = useHasPermissions(downloadPermissions);
-  const hasBlockedPermission = useHasPermissions(blockedPermissions);
-  const hasVerifyPermission = useHasPermissions(verifyPermissions);
-  const hasModifyAttributesPermission = useHasPermissions(modifyAttributesPermissions);
+  // Obtener permisos del usuario
+  const { data: permissions = [] } = usePermissions();
+
+  // Función helper para verificar permisos
+  const hasPermission = (requiredPermissions?: string[]) => {
+    if (!requiredPermissions || requiredPermissions.length === 0) return true;
+    return requiredPermissions.every(perm => permissions.some(p => p.code === perm));
+  };
 
   const handleDelete = async () => {
     if (onDelete) {
@@ -131,7 +127,7 @@ const ActionsMenu = ({
 
         <Menu.Dropdown className="bg-white text-gray-700 space-y-2 border border-gray-200 px-1 dark:bg-black">
           <Menu.Label>Opciones</Menu.Label>
-          {onViewDetails && hasViewPermission && (
+          {onViewDetails && hasPermission(viewPermissions) && (
             <Menu.Item
               className="p-1 text-sm  hover:text-white"
               leftSection={<EyeIcon className="h-4 w-4" />}
@@ -141,7 +137,7 @@ const ActionsMenu = ({
             </Menu.Item>
           )}
 
-          {onDownload && hasDownloadPermission && (
+          {onDownload && hasPermission(downloadPermissions) && (
             <Menu.Item
               className="p-1 text-sm  hover:text-white"
               leftSection={<ArrowDownTrayIcon className="h-4 w-4 " />}
@@ -151,7 +147,7 @@ const ActionsMenu = ({
             </Menu.Item>
           )}
 
-          {onEdit && hasEditPermission && (
+          {onEdit && hasPermission(editPermissions) && (
             <Menu.Item
               className="p-1 text-sm hover:text-white"
               leftSection={<PencilIcon className="h-4 w-4 " />}
@@ -161,7 +157,7 @@ const ActionsMenu = ({
             </Menu.Item>
           )}
 
-          {onEditFull && hasEditPermission && (
+          {onEditFull && hasPermission(editPermissions) && (
             <Menu.Item
               className="p-1 text-sm hover:text-white"
               leftSection={<Cog6ToothIcon className="h-4 w-4 " />}
@@ -171,7 +167,7 @@ const ActionsMenu = ({
             </Menu.Item>
           )}
 
-          {onModifyAttributes && hasModifyAttributesPermission && (
+          {onModifyAttributes && hasPermission(modifyAttributesPermissions) && (
             <Menu.Item
               className="p-1 text-sm hover:text-white"
               leftSection={<Cog6ToothIcon className="h-4 w-4 " />}
@@ -181,7 +177,7 @@ const ActionsMenu = ({
             </Menu.Item>
           )}
 
-          {onPay && hasPayPermission && (
+          {onPay && hasPermission(payPermissions) && (
             <Menu.Item
               className="p-1 text-sm hover:text-white"
               leftSection={<CurrencyDollarIcon className="h-4 w-4 " />}
@@ -191,7 +187,7 @@ const ActionsMenu = ({
             </Menu.Item>
           )}
 
-          {onVerify && hasVerifyPermission && (
+          {onVerify && hasPermission(verifyPermissions) && (
             <Menu.Item
               className="p-1 text-sm hover:text-white"
               leftSection={<CheckIcon className="h-4 w-4 " />}
@@ -201,7 +197,7 @@ const ActionsMenu = ({
             </Menu.Item>
           )}
 
-          {onBlocked && hasBlockedPermission && (
+          {onBlocked && hasPermission(blockedPermissions) && (
             <Menu.Item
               className="p-1 text-sm hover:text-white"
               leftSection={<LockClosedIcon className="h-4 w-4 " />}
@@ -211,7 +207,7 @@ const ActionsMenu = ({
             </Menu.Item>
           )}
 
-          {onViewDocuments && hasDocumentsPermission && (
+          {onViewDocuments && hasPermission(documentsPermissions) && (
             <Menu.Item
               className="p-1 text-sm"
               leftSection={<DocumentIcon className="h-4 w-4 " />}
@@ -220,7 +216,7 @@ const ActionsMenu = ({
               Ver Documentos
             </Menu.Item>
           )}
-          {onAddUsers && hasAddUsersPermission && (
+          {onAddUsers && hasPermission(addUsersPermissions) && (
             <Menu.Item
               className="p-1 text-sm hover:text-white"
               leftSection={<UserPlusIcon className="h-4 w-4 " />}
@@ -230,13 +226,13 @@ const ActionsMenu = ({
             </Menu.Item>
           )}
 
-          {((onDelete && hasDeletePermission) || (onVerify && hasVerifyPermission) || (onBlocked && hasBlockedPermission) || (onActive && hasActivePermission)) && (
+          {((onDelete && hasPermission(deletePermissions)) || (onVerify && hasPermission(verifyPermissions)) || (onBlocked && hasPermission(blockedPermissions)) || (onActive && hasPermission(activePermissions))) && (
             <>
               <Menu.Divider />
               <Menu.Label>Zona de peligro</Menu.Label>
             </>
           )}
-          {onActive && hasActivePermission && (
+          {onActive && hasPermission(activePermissions) && (
             <>
               <Menu.Item
                 className={`p-1 text-sm ${isActive ? "hover:bg-red-500" : "hover:bg-green-500"}`}
@@ -248,7 +244,7 @@ const ActionsMenu = ({
             </>
           )}
 
-          {onDelete && hasDeletePermission && (
+          {onDelete && hasPermission(deletePermissions) && (
             <>
               <Menu.Item
                 className="p-1 text-sm hover:bg-red-500"
@@ -262,7 +258,7 @@ const ActionsMenu = ({
         </Menu.Dropdown>
       </Menu>
 
-      {onDelete && (
+      {onDelete && hasPermission(deletePermissions) && (
         <DeleteDialog
           onClose={() => setDeleteDialogOpen(false)}
           onConfirm={handleDelete}
@@ -270,7 +266,7 @@ const ActionsMenu = ({
           open={deleteDialogOpen}
         />
       )}
-      {onActive && (
+      {onActive && hasPermission(activePermissions) && (
         <ToggleStatusDialog
           isActive={isActive}
           onClose={() => setToggleStatusDialogOpen(false)}

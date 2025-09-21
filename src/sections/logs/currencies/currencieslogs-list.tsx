@@ -10,6 +10,7 @@ import SimpleModal from "@/components/modal/modal";
 import DescriptionViewer from "@/components/logs/description-viewer";
 import { InformationCircleIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { extractRecord } from "../utils";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 function CurrenciesLogsContent({
   data,
@@ -22,6 +23,13 @@ function CurrenciesLogsContent({
 }) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<CurrenciesLogs | null>(null);
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) => permissions.some((p) => p.code === perm));
+  };
+  const hasReadPermission = hasPermission(["READ_ALL"]);
 
   const handleRowClick = useCallback((rowOrWrapper: any) => {
     const row = extractRecord<CurrenciesLogs>(rowOrWrapper);
@@ -57,15 +65,17 @@ function CurrenciesLogsContent({
       accessor: "actions",
       title: "",
       render: (row) => (
-        <button
-          type="button"
-          onClick={() => handleRowClick(row)}
-          className="p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:border-primary/60 hover:text-primary"
-          aria-label="Ver detalles"
-          title="Ver detalles"
-        >
-          <EyeIcon className="h-4 w-4" />
-        </button>
+        hasReadPermission ? (
+          <button
+            type="button"
+            onClick={() => handleRowClick(row)}
+            className="p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:border-primary/60 hover:text-primary"
+            aria-label="Ver detalles"
+            title="Ver detalles"
+          >
+            <EyeIcon className="h-4 w-4" />
+          </button>
+        ) : null
       ),
     },
   ];
@@ -93,7 +103,7 @@ function CurrenciesLogsContent({
                 searchPlaceholder="Buscar monedas..."
                 emptyText="No se encontraron logs de monedas"
                 enablePagination={false}
-                onRowClick={handleRowClick}
+                onRowClick={hasReadPermission ? handleRowClick : undefined}
               />
             </div>
           ))}

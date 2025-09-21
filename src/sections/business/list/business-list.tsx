@@ -11,7 +11,6 @@ import BusinessModalContainer from "../modals/business-modal-container";
 import { Business, GetAllBusiness } from "@/types/business";
 import { deleteBusiness } from "@/services/business";
 import StatusBadge from "@/components/badge/status-badge";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface BusinessListProps {
   data?: GetAllBusiness;

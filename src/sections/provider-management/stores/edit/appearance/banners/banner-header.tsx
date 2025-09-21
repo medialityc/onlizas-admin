@@ -2,7 +2,7 @@
 
 import React from "react";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface BannerHeaderProps {
   onNew: () => void;
@@ -10,7 +10,11 @@ interface BannerHeaderProps {
 
 export default function BannerHeader({ onNew }: BannerHeaderProps) {
   // Control de permisos
-  const hasCreatePermission = useHasPermissions(["CREATE_ALL"]);
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasCreatePermission = hasPermission(["CREATE_ALL"]);
 
   return (
     <div className="flex items-center justify-between mt-2">

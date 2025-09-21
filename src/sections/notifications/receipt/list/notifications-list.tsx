@@ -4,7 +4,6 @@ import { DataGrid } from "@/components/datagrid/datagrid";
 import { cn } from "@/lib/utils";
 import {
   GetAllNotificationByUserResponse,
-  UserNotification,
 } from "@/types/notifications";
 import { DataTableColumn } from "mantine-datatable";
 import { format } from "date-fns";
@@ -13,16 +12,13 @@ import { SearchParams } from "@/types/fetch/request";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import { deleteNotification } from "@/services/notifications/notification-service";
-import { toast } from "react-toastify";
-import IconEye from "@/components/icon/icon-eye";
-import IconCheck from "@/components/icon/icon-checks";
 import { useModalState } from "@/hooks/use-modal-state";
 import NotificationDetailModal from "../notification-detail-modal";
 import ActionsMenu from "@/components/menu/actions-menu";
 import { Notification } from "../../../../types/notifications";
 import showToast from "@/config/toast/toastConfig";
 import NotificationCreateModal from "../create/notification-create-modal";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface NotificationsListProps {
   data?: GetAllNotificationByUserResponse;
@@ -42,10 +38,12 @@ export function UserNotificationsList({
   const handleCreateUser = useCallback(() => openModal("create"), [openModal]);
 
   // Permission hooks
-  const hasCreatePermission = useHasPermissions(["CREATE_ALL"]);
-  const hasReadPermission = useHasPermissions(["READ_ALL"]);
-  const hasDeletePermission = useHasPermissions(["DELETE_ALL"]);
-
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasCreatePermission = hasPermission(["CREATE_ALL"]);
+  
   const selectedNotificationUser = useMemo(() => {
     console.log(data);
 

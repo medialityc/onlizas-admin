@@ -8,6 +8,13 @@ import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-aut
 import { getAllWarehouses } from "@/services/warehouses";
 import { useCallback } from "react";
 import { WarehouseFormData } from "../schemas/warehouse-schema";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+
+interface Props {
+  open: boolean;
+  onClose: () => void;
+  getWarehouse?: any;
+}
 
 interface Props {
   open: boolean;
@@ -33,6 +40,13 @@ export default function WarehouseSelectedModal({
     },
     [form]
   );
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   if (!open) return null;
 
@@ -67,9 +81,11 @@ export default function WarehouseSelectedModal({
               >
                 Cancelar
               </button>
-              <Button type="submit" className="btn btn-primary ">
-                Iniciar transferencia
-              </Button>
+              {hasUpdatePermission && (
+                <Button type="submit" className="btn btn-primary ">
+                  Iniciar transferencia
+                </Button>
+              )}
             </div>
           </div>
         </FormProvider>

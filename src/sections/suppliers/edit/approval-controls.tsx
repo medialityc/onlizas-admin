@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { toast } from "react-toastify";
 import { answerApprovalProcess } from "@/services/supplier";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface ApprovalControlsProps {
   approvalProcessId: string;
@@ -15,6 +16,13 @@ export default function ApprovalControls({
 }: ApprovalControlsProps) {
   const [comments, setComments] = useState("");
   const [isPending, startTransition] = useTransition();
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const canApproveReject = hasPermission(["APPROVALPROCESS_APPROVE_REJECT"]);
 
   const submit = (isApproved: boolean) => {
     const data = { approvalProcessId, isApproved, comments };
@@ -48,22 +56,30 @@ export default function ApprovalControls({
       />
 
       <div className="mt-3 flex gap-2">
-        <button
-          type="button"
-          onClick={() => submit(true)}
-          disabled={isPending}
-          className="inline-flex items-center px-3 py-2 rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
-        >
-          Aprobar
-        </button>
-        <button
-          type="button"
-          onClick={() => submit(false)}
-          disabled={isPending}
-          className="inline-flex items-center px-3 py-2 rounded-md text-sm font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50"
-        >
-          Rechazar
-        </button>
+        {canApproveReject ? (
+          <>
+            <button
+              type="button"
+              onClick={() => submit(true)}
+              disabled={isPending}
+              className="inline-flex items-center px-3 py-2 rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
+            >
+              Aprobar
+            </button>
+            <button
+              type="button"
+              onClick={() => submit(false)}
+              disabled={isPending}
+              className="inline-flex items-center px-3 py-2 rounded-md text-sm font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50"
+            >
+              Rechazar
+            </button>
+          </>
+        ) : (
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            No tienes permisos para aprobar o rechazar esta solicitud
+          </p>
+        )}
       </div>
     </div>
   );
