@@ -7,6 +7,7 @@ import React, { useEffect } from "react";
 import { StoreFormData } from "./stores-schema";
 import { useFormContext } from "react-hook-form";
 import { getAllSupplierUsers } from "@/services/users";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 type Props = {
   isSubmitting: boolean;
   handleClose: VoidFunction;
@@ -14,6 +15,13 @@ type Props = {
 function StoreCreateForm({ handleClose, isSubmitting }: Props) {
   const { watch, resetField } = useFormContext<StoreFormData>();
   const ownerId = watch("ownerId");
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasCreatePermission = hasPermission(["CREATE_ALL"]);
 
   // Clear business when owner changes
   useEffect(() => {
@@ -154,13 +162,15 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
         >
           Cancelar
         </button>
-        <LoaderButton
-          type="submit"
-          loading={isSubmitting}
-          className="btn btn-primary"
-        >
-          Crear Tienda
-        </LoaderButton>
+        {hasCreatePermission && (
+          <LoaderButton
+            type="submit"
+            loading={isSubmitting}
+            className="btn btn-primary"
+          >
+            Crear Tienda
+          </LoaderButton>
+        )}
       </div>
     </>
   );

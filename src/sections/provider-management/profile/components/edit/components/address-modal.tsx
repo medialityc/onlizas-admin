@@ -12,6 +12,7 @@ import { Label } from "@/components/label/label";
 import LoaderButton from "@/components/loaders/loader-button";
 import { Button } from "@/components/button/button";
 import { MapPinIcon } from "@heroicons/react/24/outline";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface AddressModalProps {
   open: boolean;
@@ -26,6 +27,11 @@ export function AddressModal({
   onSave,
   editingAddress,
 }: AddressModalProps) {
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
   const methods = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
     defaultValues: editingAddress || {
@@ -221,17 +227,19 @@ export function AddressModal({
           <Button type="button" outline onClick={onClose}>
             Cancelar
           </Button>
-          <LoaderButton
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            {isSubmitting
-              ? "Guardando..."
-              : editingAddress
-                ? "Actualizar"
-                : "Guardar"}
-          </LoaderButton>
+          {hasUpdatePermission && (
+            <LoaderButton
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              {isSubmitting
+                ? "Guardando..."
+                : editingAddress
+                  ? "Actualizar"
+                  : "Guardar"}
+            </LoaderButton>
+          )}
         </div>
       </FormProvider>
     </SimpleModal>

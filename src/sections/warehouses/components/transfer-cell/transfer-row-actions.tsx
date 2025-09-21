@@ -8,7 +8,7 @@ import {
   EllipsisHorizontalIcon,
 } from "@heroicons/react/24/solid";
 import ConfirmationDialog from "@/components/modal/confirm-modal";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface MenuProps {
   onApproveTransfer?: () => void;
@@ -33,9 +33,13 @@ const TransferActionsMenu = ({
   const [loading, setLoading] = useState(false);
 
   // Control de permisos
-  const hasApprovePermission = useHasPermissions(["UPDATE_ALL"]);
-  const hasExecutePermission = useHasPermissions(["UPDATE_ALL"]);
-  const hasCancelPermission = useHasPermissions(["UPDATE_ALL"]);
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasApprovePermission = hasPermission(["UPDATE_ALL"]);
+  const hasExecutePermission = hasPermission(["UPDATE_ALL"]);
+  const hasCancelPermission = hasPermission(["UPDATE_ALL"]);
 
   const handleCancelTransfer = async () => {
     if (onCancelTransfer) {

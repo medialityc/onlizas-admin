@@ -26,16 +26,21 @@ function authHeaders(token?: string): Record<string, string> {
 export async function fetchMyPermissions(): Promise<Permission[]> {
   const session = await getSession();
   if (!session?.tokens?.accessToken) throw new Error("No session");
-
+  
   const res = await fetch(ENDPOINTS.permissions, {
     method: "GET",
     headers: { ...authHeaders(session.tokens.accessToken) },
     cache: "no-store",
   });
   if (!res.ok) {
+    console.log(res.text())
     if (res.status === 401) throw new Error("Unauthorized");
     throw new Error(`Failed to load permissions (${res.status})`);
   }
+  const permissions: Permission[] = await res.json();
+
+  // 👇 Aquí puedes ver qué devuelve el backend
+  console.log("🔐 Permisos recibidos:", permissions);
   return res.json();
 }
 

@@ -11,7 +11,7 @@ import ImagePreview from "@/components/image/image-preview";
 import { InventoryProvider } from "@/types/inventory";
 import { Edit, EyeIcon, Package } from "lucide-react";
 import Link from "next/link";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 type Props = {
   item: InventoryProvider;
@@ -19,8 +19,14 @@ type Props = {
 };
 
 const InventoryProviderCard = ({ item }: Props) => {
-  const hasReadPermission = useHasPermissions(["READ_ALL"]);
-  const hasUpdatePermission = useHasPermissions(["UPDATE_ALL"]);
+  const { data: permissions = [] } = usePermissions();
+
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+
+  const hasReadPermission = hasPermission(["READ_ALL"]);
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   return (
     <Card className="group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full dark:border-slate-700">

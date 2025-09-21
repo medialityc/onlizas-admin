@@ -1,66 +1,33 @@
 "use client";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { SidebarSection } from "./types";
 
-import { SidebarSection } from './types';
-import { useIsAdmin } from '@/auth-sso/permissions/hooks';
+export const useFilteredSidebar = (sections: SidebarSection[]): SidebarSection[] => {
+  // Obtener permisos del usuario
+  const { data: permissions = [] } = usePermissions();
 
-/**
- * Hook súper simple que filtra el sidebar basado en si es admin o no
- */
-export function useFilteredSidebar(sections: SidebarSection[]): SidebarSection[] {
-  const { data: isAdminUser = false, isLoading } = useIsAdmin();
-
-  if (isLoading) {
-    console.log("⏳ Cargando permisos...");
-    return []; // Mientras carga, no mostrar nada
-  }
-
-  console.log("🎭 Filtering sidebar:", { isAdminUser, totalSections: sections.length });
-
-  const filteredSections = sections.map(section => {
-    console.log(`📁 Processing section: ${section.label}`, { 
-      adminOnly: section.adminOnly, 
-      isAdminUser,
-      willShow: !section.adminOnly || isAdminUser 
-    });
-
-    // Si la sección requiere admin y el usuario no es admin, ocultarla
-    if (section.adminOnly && !isAdminUser) {
-      console.log(`❌ Hiding section: ${section.label} (admin only)`);
-      return null;
-    }
-
-    // Filtrar items dentro de la sección (crear nueva copia)
+  // Función para filtrar items dentro de una sección
+  const filterSectionItems = (section: SidebarSection): SidebarSection | null => {
     const filteredItems = section.items.filter(item => {
-      console.log(`  📄 Processing item: ${item.label}`, { 
-        adminOnly: item.adminOnly, 
-        isAdminUser,
-        willShow: !item.adminOnly || isAdminUser 
-      });
-
-      // Si el item requiere admin y el usuario no es admin, ocultarlo
-      if (item.adminOnly && !isAdminUser) {
-        console.log(`  ❌ Hiding item: ${item.label} (admin only)`);
-        return false;
-      }
-      return true;
+      const hasAccess = item.permissions?.every(perm => permissions.some(p => p.code === perm)) ?? true;
+      return hasAccess;
     });
 
-    console.log(`✅ Section ${section.label}: ${filteredItems.length}/${section.items.length} items visible`);
-
-    // Si no hay items visibles después del filtro, ocultar toda la sección
+    // Si no hay items visibles en la sección, no mostrar la sección
     if (filteredItems.length === 0) {
-      console.log(`❌ Hiding section: ${section.label} (no visible items)`);
       return null;
     }
 
-    // Retornar una nueva copia de la sección con los items filtrados
     return {
       ...section,
       items: filteredItems
     };
-  }).filter(Boolean) as SidebarSection[]; // Eliminar secciones null
+  };
 
-  console.log("🎯 Final filtered sections:", filteredSections.map(s => s.label));
+  // Filtrar secciones
+  const filteredSections = sections
+    .map(filterSectionItems)
+    .filter((section): section is SidebarSection => section !== null);
 
   return filteredSections;
-}
+};

@@ -11,7 +11,6 @@ import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import SuppliersModalContainer from "../modals/suppliers-modal-container";
 import { deleteSuppliers } from "@/services/supplier";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface SuppliersListProps {
   data?: GetAllSuppliers;
@@ -201,7 +200,7 @@ export function SuppliersList({
               onEdit={() => handleEditFullSupplier(supplier)}
               viewPermissions={["READ_ALL"]}
               editPermissions={["UPDATE_ALL"]}
-              activePermissions={["UPDATE_ALL"]}
+              activePermissions={["UPDATE_ALL","DELETE_ALL"]}
             />
           </div>
         ),

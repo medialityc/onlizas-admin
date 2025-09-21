@@ -2,6 +2,7 @@ import React, { HTMLAttributes } from "react";
 
 import Badge from "@/components/badge/badge";
 import { StoreCategory } from "@/types/store-categories";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 
 type Props = {
@@ -12,6 +13,13 @@ type Props = {
 } & HTMLAttributes<HTMLDivElement>;
 
 export default function CategoryListItem({ category: c, onToggleActive, onEdit, onDelete, ...dndProps }: Props) {
+  // Control de permisos
+      const { data: permissions = [] } = usePermissions();
+      const hasPermission = (requiredPerms: string[]) => {
+        return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+      };
+      const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+    
   return (
     <div
       className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-sm hover:shadow-md transition-all select-none hover:bg-gray-50/60 dark:hover:bg-gray-700/60 cursor-grab active:cursor-grabbing"
@@ -39,6 +47,7 @@ export default function CategoryListItem({ category: c, onToggleActive, onEdit, 
         </div>
         <div className="flex items-center gap-3">
           <div className="min-w-[3rem]">
+            {hasUpdatePermission&&
             <button
               type="button"
               aria-label="Cambiar estado"
@@ -48,7 +57,7 @@ export default function CategoryListItem({ category: c, onToggleActive, onEdit, 
               <span
                 className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${c.isActive ? "translate-x-5" : "translate-x-1"}`}
               />
-            </button>
+            </button>}
           </div>
           
         </div>

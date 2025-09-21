@@ -3,6 +3,7 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import AnimateHeight from "react-animate-height";
 import { SidebarItemProps } from "./types";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 const SidebarItem = ({
   item,
@@ -11,6 +12,19 @@ const SidebarItem = ({
   onToggle,
   isActiveLink,
 }: SidebarItemProps) => {
+  // Obtener permisos del usuario
+  const { data: permissions = [] } = usePermissions();
+
+  // Función helper para verificar permisos
+  const hasPermission = (requiredPermissions?: string[]) => {
+    if (!requiredPermissions || requiredPermissions.length === 0) return true;
+    return requiredPermissions.every(perm => permissions.some(p => p.code === perm));
+  };
+
+  // Si no tiene permisos, no renderizar el item
+  if (!hasPermission(item.permissions)) {
+    return null;
+  }
   const badgeColors = {
     primary: "bg-blue-500 text-white",
     success: "bg-green-500 text-white",
@@ -146,7 +160,9 @@ const SidebarItem = ({
                   {subsection.label}
                 </h4>
                 <ul className="space-y-1">
-                  {subsection.items.map((subItem) => (
+                  {subsection.items
+                    .filter((subItem) => hasPermission(subItem.permissions))
+                    .map((subItem) => (
                     <li key={subItem.id}>
                       <Link
                         href={subItem.path}

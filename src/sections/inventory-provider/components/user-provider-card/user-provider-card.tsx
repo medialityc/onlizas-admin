@@ -15,7 +15,7 @@ import { ChevronDownIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import React, { useState } from "react";
 import AnimateHeight from "react-animate-height";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 type Props = {
   item: IUser;
@@ -23,7 +23,11 @@ type Props = {
 };
 
 const UserProviderCard = ({ item, className }: Props) => {
-  const hasReadPermission = useHasPermissions(["READ_ALL"]);
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasReadPermission = hasPermission(["READ_ALL"]);
 
   return (
     <Card

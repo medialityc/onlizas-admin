@@ -3,7 +3,8 @@ import { useCountry } from "@/hooks/use-country";
 import { MapPinIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { AddressFormData } from "./user-schema";
 import { Button } from "@/components/button/button";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+
 interface AdressFieldProps {
   field: AddressFormData;
   index: number;
@@ -24,8 +25,12 @@ const AdressField = ({
   } = useCountry(field.countryId);
 
   // Control de permisos
-  const hasUpdatePermission = useHasPermissions(["UPDATE_ALL"]);
-  const hasDeletePermission = useHasPermissions(["DELETE_ALL"]);
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const hasDeletePermission = hasPermission(["DELETE_ALL"]);
 
   return (
     <Card

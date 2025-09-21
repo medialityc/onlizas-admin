@@ -1,7 +1,7 @@
 
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { Button } from "@/components/button/button";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface PromotionsToolbarProps {
   onNew: () => void;
@@ -9,7 +9,11 @@ interface PromotionsToolbarProps {
 
 export default function PromotionsToolbar({ onNew }: PromotionsToolbarProps) {
   // Control de permisos
-  const hasCreatePermission = useHasPermissions(["CREATE_ALL"]);
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasCreatePermission = hasPermission(["CREATE_ALL"]);
 
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">

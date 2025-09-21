@@ -11,7 +11,6 @@ import { WarehouseVirtualTypeFormData } from "../schemas/warehouse-virtual-type-
 import WarehouseVirtualTypeModal from "../containers/warehouse-virtual-create-modal";
 import { useModalState } from "@/hooks/use-modal-state";
 import { toggleStatusWarehouseVirtualType } from "@/services/warehouses-virtual-types";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface Props {
   data?: GetAllWarehousesVirtualType;

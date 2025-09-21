@@ -9,6 +9,7 @@ import { useStoreCategories } from "./hooks/useStoreCategories";
 import { useRouter } from "next/navigation";
 import LoaderButton from "@/components/loaders/loader-button";
 import { toast } from "react-toastify";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface Props { storeId: number; initialItems?: StoreCategory[] }
 
@@ -34,6 +35,13 @@ function CategoriesContent({ storeId, initialItems }: Props) {
       toast.error("Ocurrió un error al actualizar el estado");
     }
   };
+  // Control de permisos
+      const { data: permissions = [] } = usePermissions();
+      const hasPermission = (requiredPerms: string[]) => {
+        return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+      };
+      const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+    
 
   return (
     <div className="p-6 text-lg bg-white dark:bg-gray-900">
@@ -44,6 +52,7 @@ function CategoriesContent({ storeId, initialItems }: Props) {
       <div className="flex items-center justify-between mb-3">
         <CategoriesToolbar />
         <div className="flex items-center gap-2">
+          {hasUpdatePermission&&
           <LoaderButton
             type="button"
             className="px-3 py-1.5 rounded-md bg-primary text-white disabled:opacity-50"
@@ -52,7 +61,7 @@ function CategoriesContent({ storeId, initialItems }: Props) {
             loading={saving}
           >
             Guardar cambios
-          </LoaderButton>
+          </LoaderButton>}
         </div>
       </div>
 

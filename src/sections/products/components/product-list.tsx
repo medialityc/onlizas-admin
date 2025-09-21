@@ -12,7 +12,7 @@ import Link from "next/link";
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { toggleActiveProduct } from "@/services/products";
 import showToast from "@/config/toast/toastConfig";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
+
 
 interface ProductListProps {
   data?: GetAllProducts;
@@ -135,7 +135,7 @@ export function ProductList({
         <DataGrid
           data={data}
           columns={columns}
-          onCreate={handleCreateProduct}
+          onCreate={handleCreateProduct}          
           searchParams={searchParams}
           onSearchParamsChange={(p: ProductSearchParams) => {
             updateFiltersInUrl(p);

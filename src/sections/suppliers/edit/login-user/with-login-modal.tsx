@@ -6,6 +6,7 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { WithLoginForm, withLoginSchema } from "./whitloginSchema";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface WithLoginModalProps {
   open: boolean;
@@ -25,6 +26,13 @@ export default function WithLoginModal({
     defaultValues: { changePassword: true, password: "", confirmPassword: "" },
   });
   const { reset } = methods;
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   if (!open) return null;
 
@@ -73,14 +81,16 @@ export default function WithLoginModal({
             >
               Cancelar
             </button>
-            <LoaderButton
-              type="submit"
-              loading={isLoading}
-              disabled={isLoading}
-              className="px-3 py-2 rounded-md text-sm bg-blue-600 text-white hover:bg-blue-700"
-            >
-              Crear usuario
-            </LoaderButton>
+            {hasUpdatePermission && (
+              <LoaderButton
+                type="submit"
+                loading={isLoading}
+                disabled={isLoading}
+                className="px-3 py-2 rounded-md text-sm bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Crear usuario
+              </LoaderButton>
+            )}
           </div>
         </FormProvider>
       </div>

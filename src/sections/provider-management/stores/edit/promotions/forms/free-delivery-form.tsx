@@ -34,6 +34,7 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { Button } from "@/components/button/button";
 import { Label } from "@/components/label/label";
 import { getCommonDefaultValues } from "../utils/default-values";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface FreeDeliveryFormProps {
   storeId: number;
@@ -81,6 +82,14 @@ export default function FreeDeliveryForm({
   const loading = mutations.isCreating || mutations.isUpdating || isLoading;
   const router = useRouter();
   const { handleSubmit } = methods;
+
+  // Control de permisos
+    const { data: permissions = [] } = usePermissions();
+    const hasPermission = (requiredPerms: string[]) => {
+      return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    };
+    const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  
 
   const onFormSubmit = handleSubmit(async (data) => {
     // Usar la función reutilizable para construir FormData
@@ -242,6 +251,7 @@ export default function FreeDeliveryForm({
           >
             Cancelar
           </Button>
+          {hasUpdatePermission&&
           <LoaderButton
             color="primary"
             type="submit"
@@ -255,6 +265,7 @@ export default function FreeDeliveryForm({
                 ? "Crear promoción"
                 : "Guardar cambios"}
           </LoaderButton>
+          }
         </div>
       </form>
     </FormProvider>

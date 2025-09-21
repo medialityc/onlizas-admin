@@ -9,7 +9,8 @@ import {
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+
 const modules = [
   {
     name: "Negocios",
@@ -17,6 +18,7 @@ const modules = [
     icon: BuildingOfficeIcon,
     color: "text-blue-600 dark:text-blue-400",
     bg: "bg-blue-50 dark:bg-blue-900/20",
+    permissions: ["READ_ALL"], // Admin puede ver todos los logs
   },
   {
     name: "Categorías",
@@ -24,6 +26,7 @@ const modules = [
     icon: TagIcon,
     color: "text-purple-600 dark:text-purple-400",
     bg: "bg-purple-50 dark:bg-purple-900/20",
+    permissions: ["READ_ALL"],
   },
   {
     name: "Monedas",
@@ -31,6 +34,7 @@ const modules = [
     icon: CurrencyDollarIcon,
     color: "text-emerald-600 dark:text-emerald-400",
     bg: "bg-emerald-50 dark:bg-emerald-900/20",
+    permissions: ["READ_ALL"],
   },
   {
     name: "Departamento",
@@ -38,6 +42,7 @@ const modules = [
     icon: BuildingOffice2Icon,
     color: "text-orange-600 dark:text-orange-400",
     bg: "bg-orange-50 dark:bg-orange-900/20",
+    permissions: ["READ_ALL"],
   },
   {
     name: "Usuarios",
@@ -45,6 +50,7 @@ const modules = [
     icon: UserGroupIcon,
     color: "text-pink-600 dark:text-pink-400",
     bg: "bg-pink-50 dark:bg-pink-900/20",
+    permissions: ["READ_ALL"],
   },
   {
     name: "Permisos",
@@ -52,6 +58,7 @@ const modules = [
     icon: KeyIcon,
     color: "text-amber-600 dark:text-amber-400",
     bg: "bg-amber-50 dark:bg-amber-900/20",
+    permissions: ["READ_ALL"],
   },
   {
     name: "Roles",
@@ -59,15 +66,29 @@ const modules = [
     icon: UserGroupIcon,
     color: "text-indigo-600 dark:text-indigo-400",
     bg: "bg-indigo-50 dark:bg-indigo-900/20",
+    permissions: ["READ_ALL"],
   },
   // Agrega más módulos aquí cuando estén disponibles
 ];
+
 function NavigationLogs() {
   const pathname = usePathname();
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+
+  // Filtrar módulos basados en permisos
+  const accessibleModules = modules.filter(module =>
+    hasPermission(module.permissions)
+  );
+
   return (
     <nav className="relative">
       <div className="flex items-center gap-2 overflow-x-auto py-1 -mx-2 px-2">
-        {modules.map((m) => {
+        {accessibleModules.map((m) => {
           const Icon = m.icon;
           const isActive = pathname === m.href;
           return (

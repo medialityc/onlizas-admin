@@ -7,11 +7,19 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
 import AppearanceTabs from "./appearance-tabs";
 import { useAppearanceSave } from "./hooks/use-appearance-save";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface Props { store: Store }
 
 export default function AppearanceContainer({ store }: Props) {
   const { methods, onSubmit, isLoading, isDirty } = useAppearanceSave({ store });
+  // Control de permisos
+      const { data: permissions = [] } = usePermissions();
+      const hasPermission = (requiredPerms: string[]) => {
+        return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+      };
+      const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+    
 
   return (
     <FormProvider id="appearance-form" methods={methods} onSubmit={onSubmit}>
@@ -27,6 +35,7 @@ export default function AppearanceContainer({ store }: Props) {
           
           {/* Botón de guardar para toda la apariencia */}
           <div className="flex justify-end pt-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 -mx-5 px-5 py-4 mt-6">
+            {hasUpdatePermission&&
             <LoaderButton
               form="appearance-form"
               type="submit"
@@ -38,7 +47,7 @@ export default function AppearanceContainer({ store }: Props) {
                 <ClipboardDocumentCheckIcon className="w-4 h-4" />
                 <span>Guardar Apariencia</span>
               </span>
-            </LoaderButton>
+            </LoaderButton>}
           </div>
         </div>
       </div>

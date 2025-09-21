@@ -2,7 +2,7 @@ import type { Promotion } from "@/types/promotions";
 import Badge from "@/components/badge/badge";
 import { PencilIcon, TrashIcon, EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { getPromotionTypeName } from "../index-refactored";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface PromotionRowProps {
   p: Promotion;
@@ -15,9 +15,13 @@ export default function PromotionRow({ p, onEdit, onDelete, onViewDetails }: Pro
   const isExpired = p.endDate && new Date(p.endDate) < new Date();
 
   // Control de permisos
-  const hasReadPermission = useHasPermissions(["READ_ALL"]);
-  const hasUpdatePermission = useHasPermissions(["UPDATE_ALL"]);
-  const hasDeletePermission = useHasPermissions(["DELETE_ALL"]);
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasReadPermission = hasPermission(["READ_ALL"]);
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const hasDeletePermission = hasPermission(["DELETE_ALL"]);
 
   const getDiscountText = (type: number, value: number) => {
     return type === 0 ? `-${value}%` : `-$${value}`;

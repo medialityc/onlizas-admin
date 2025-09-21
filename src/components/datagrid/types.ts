@@ -21,14 +21,11 @@ export interface DataGridProps<T> {
   onCreate?: () => void;
   createLoading?: boolean; // Optional prop for create button loading state
   createText?: string; // Optional prop for create button text
+  createPermissions?: string[]; // Permisos requeridos para crear
   // Props for additional components
   leftActions?: React.ReactNode;
   rightActions?: React.ReactNode;
   customActions?: React.ReactNode;
-
-  // Permissions
-  createPermissions?: string[]; // Permissions required to show create button
-
   //pagination
   hidePagination?: boolean;
 }

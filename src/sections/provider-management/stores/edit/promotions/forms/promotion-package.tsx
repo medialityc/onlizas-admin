@@ -32,6 +32,7 @@ import { PackageFormData, packageSchema } from "../schemas/package-schema";
 import { navigateAfterSave } from "../utils/promotion-helpers";
 import { usePromotionPackageMutations } from "../hooks/mutations/usePromotionPackageMutations";
 import ProductSelect from "../components/form-fields/product-multi-select";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface OrderValueFormProps {
   storeId: number;
@@ -71,6 +72,13 @@ export default function PackageForm({
   const loading = mutations.isCreating || mutations.isUpdating || isLoading;
   const router = useRouter();
   const { handleSubmit } = methods;
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   const onFormSubmit = handleSubmit(async (data) => {
     // Usar la función reutilizable para construir FormData
@@ -232,19 +240,21 @@ export default function PackageForm({
           >
             Cancelar
           </Button>
-          <LoaderButton
-            color="primary"
-            type="submit"
-            loading={loading}
-            disabled={loading}
-            className="min-w-[140px]"
-          >
-            {loading
-              ? "Guardando..."
-              : mode === "create"
-                ? "Crear promoción"
-                : "Guardar cambios"}
-          </LoaderButton>
+          {hasUpdatePermission && (
+            <LoaderButton
+              color="primary"
+              type="submit"
+              loading={loading}
+              disabled={loading}
+              className="min-w-[140px]"
+            >
+              {loading
+                ? "Guardando..."
+                : mode === "create"
+                  ? "Crear promoción"
+                  : "Guardar cambios"}
+            </LoaderButton>
+          )}
         </div>
       </form>
     </FormProvider>

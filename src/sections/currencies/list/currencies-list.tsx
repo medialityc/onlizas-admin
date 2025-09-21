@@ -16,7 +16,6 @@ import {
   setAsDefaultCurrency,
 } from "@/services/currencies";
 import CurrenciesModalContainer from "../modals/currencies-modal-container";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface CurrenciesListProps {
   data?: GetAllCurrencies;

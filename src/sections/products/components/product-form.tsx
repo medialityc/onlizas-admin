@@ -12,6 +12,7 @@ import CategoriesAndSuppliersSection from "./categories-suppliers-section";
 import ProductDimensionSection from "./product-dimension-section";
 import AboutProductSection from "./about-product-section";
 import ProductDetailsSection from "./product-details-section";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 type Props = {
   initValue?: ProductFormData;
@@ -24,6 +25,13 @@ const ProductForm = ({ initValue }: Props) => {
   const isEdit = useMemo(() => !!initValue?.id, [initValue?.id]);
 
   const handleCancel = useCallback(() => push("/dashboard/products"), [push]);
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   return (
     <section>
@@ -57,14 +65,16 @@ const ProductForm = ({ initValue }: Props) => {
         >
           Cancelar
         </Button>
-        <LoaderButton
-          form="product-form"
-          type="submit"
-          loading={isPending}
-          disabled={isPending}
-        >
-          {isEdit ? "Actualizar Producto" : "Crear Producto"}
-        </LoaderButton>
+        {hasUpdatePermission && (
+          <LoaderButton
+            form="product-form"
+            type="submit"
+            loading={isPending}
+            disabled={isPending}
+          >
+            {isEdit ? "Actualizar Producto" : "Crear Producto"}
+          </LoaderButton>
+        )}
       </div>
     </section>
   );

@@ -12,7 +12,7 @@ export interface SidebarMenuItem {
   disabled?: boolean;
   subsections?: SidebarSubsection[];
   isCollapsible?: boolean;
-  adminOnly?: boolean; // Solo para admin
+  permissions?: string[]; // Permisos requeridos para mostrar este item
 }
 
 export interface SidebarSubsection {
@@ -28,6 +28,7 @@ export interface SidebarSubItem {
   path: string;
   disabled?: boolean;
   adminOnly?: boolean;
+  permissions?: string[]; // Permisos requeridos para mostrar este subitem
 }
 
 export interface SidebarSection {

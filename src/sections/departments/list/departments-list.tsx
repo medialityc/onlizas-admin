@@ -12,7 +12,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Department, GetAllDepartments } from "@/types/departments";
 import DepartmentsModalContainer from "../modals/department-modal-container";
 import { deleteDepartment } from "@/services/department";
-import { useHasPermissions } from "@/auth-sso/permissions/hooks";
 
 interface Props {
   data?: GetAllDepartments;
