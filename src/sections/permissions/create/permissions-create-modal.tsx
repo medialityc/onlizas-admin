@@ -22,6 +22,7 @@ import {
   CreatePermissionSchema,
   defaultPermissionForm,
 } from "./permissions-schemas";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface PermissionCreateModalProps {
   open: boolean;
@@ -53,6 +54,13 @@ export default function PermissionCreateModal({
     setError(null);
     onClose();
   };
+  // Control de permisos
+      const { data: permission = [] } = usePermissions();
+      const hasPermission = (requiredPerms: string[]) => {
+        return requiredPerms.every(perm => permission.some(p => p.code === perm));
+      };
+      const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+    
 
   const onSubmit = async (data: CreatePermissionSchema) => {
     setError(null);
@@ -155,13 +163,14 @@ export default function PermissionCreateModal({
             >
               Cancelar
             </button>
+            {hasUpdatePermission&&
             <LoaderButton
               type="submit"
               loading={isSubmitting}
               className="btn btn-primary "
             >
               Crear Permiso
-            </LoaderButton>
+            </LoaderButton>}
           </div>
         </FormProvider>
       </div>

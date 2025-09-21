@@ -18,6 +18,7 @@ import { Controller } from "react-hook-form";
 import RHFSelectWithLabel from "@/components/react-hook-form/rhf-select";
 import RHFSwitch from "@/components/react-hook-form/rhf-switch";
 import { createLocation, updateLocation } from "@/services/locations";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface LocationsModalProps {
   open: boolean;
@@ -39,6 +40,15 @@ export default function LocationsModal({
   const [error, setError] = useState<string | null>(null);
   const [typeQuery, setTypeQuery] = useState("");
   const queryClient = useQueryClient();
+
+  // Control de permisos
+      const { data: permissions = [] } = usePermissions();
+      const hasPermission = (requiredPerms: string[]) => {
+        return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+      };
+      const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+    
+
 
   const methods = useForm<LocationFormData>({
     resolver: zodResolver(locationSchema),
@@ -260,13 +270,14 @@ console.log(place)
             >
               Cancelar
             </button>
+            {hasUpdatePermission&&
             <LoaderButton
               type="submit"
               loading={isSubmitting}
               className="btn btn-primary"
             >
               {location ? "Editar" : "Crear"} Localización
-            </LoaderButton>
+            </LoaderButton>}
           </div>
         </FormProvider>
       </div>

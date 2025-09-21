@@ -16,6 +16,7 @@ import { getAllLocations } from "@/services/locations";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import { processImageFile } from "@/utils/image-helpers";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface BusinessModalProps {
   open: boolean;
@@ -58,6 +59,14 @@ export default function BusinessModal({
       photoObjectCodes: business?.photoObjectCodes,
     },
   });
+
+  // Control de permisos
+    const { data: permissions = [] } = usePermissions();
+    const hasPermission = (requiredPerms: string[]) => {
+      return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    };
+    const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  
 
   const {
     reset,
@@ -305,6 +314,7 @@ export default function BusinessModal({
               >
                 Cancelar
               </button>
+              {hasUpdatePermission&&
               <LoaderButton
                 type="submit"
                 loading={isSubmitting}
@@ -312,7 +322,7 @@ export default function BusinessModal({
                 disabled={isSubmitting}
               >
                 {business ? "Guardar Cambios" : "Crear Negocio"}
-              </LoaderButton>
+              </LoaderButton>}
             </div>
           </form>
         </FormProvider>

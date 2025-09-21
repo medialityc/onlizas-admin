@@ -6,6 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Category } from "@/types/categories";
 import Link from "next/link";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface CategoriesModalProps {
   open: boolean;
@@ -22,6 +23,15 @@ export default function CategoriesModal({
 }: CategoriesModalProps) {
   const [error, setError] = useState<string | null>(null);
   useQueryClient();
+
+  // Control de permisos
+      const { data: permissions = [] } = usePermissions();
+      const hasPermission = (requiredPerms: string[]) => {
+        return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+      };
+      const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+    
+  
 
   const handleClose = () => {
     setError(null);
@@ -49,6 +59,7 @@ export default function CategoriesModal({
           >
             Cerrar
           </button>
+          {hasUpdatePermission&&
           <Link
             href={
               category
@@ -58,7 +69,7 @@ export default function CategoriesModal({
             className="btn btn-primary "
           >
             {category ? "Editar en vista" : "Crear en vista"}
-          </Link>
+          </Link>}
         </div>
       </div>
     </SimpleModal>

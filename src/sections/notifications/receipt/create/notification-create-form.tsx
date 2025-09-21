@@ -23,6 +23,7 @@ import { Label } from "@/components/label/label";
 import RHFMultiSelect from "@/components/react-hook-form/rhf-autocomplete-multiple-fetcher-scroll-infinity";
 import LoaderButton from "@/components/loaders/loader-button";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 interface NotificationCreateFormProps {
   onClose: () => void;
 }
@@ -46,6 +47,14 @@ export const NotificationCreateForm = ({
       specificRecipients: [],
     },
   });
+
+  // Control de permisos
+      const { data: permissions = [] } = usePermissions();
+      const hasPermission = (requiredPerms: string[]) => {
+        return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+      };
+      const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+    
 
   const { watch } = methods;
 
@@ -237,13 +246,14 @@ export const NotificationCreateForm = ({
 
         {/* Botón de envío */}
         <div className="mt-8">
+          {hasUpdatePermission&&
           <LoaderButton
             type="submit"
             className="w-full bg-primary hover:bg-primary-dark text-white py-3 px-4 rounded-md transition"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Enviando..." : "Enviar notificación"}
-          </LoaderButton>
+          </LoaderButton>}
         </div>
       </div>
     </FormProvider>
