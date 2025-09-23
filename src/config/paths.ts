@@ -106,6 +106,7 @@ export const paths = {
       list: `${DASHBOARD}/content/sections`,
       view: (id: string | number) => `${DASHBOARD}/content/sections/${id}`,
       edit: (id: string | number) => `${DASHBOARD}/content/sections/${id}/edit`,
+      new: `${DASHBOARD}/content/sections/new`,
     },
     banners: {
       list: `${DASHBOARD}/content/home-banners`,

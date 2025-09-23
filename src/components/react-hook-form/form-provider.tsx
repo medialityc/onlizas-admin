@@ -25,17 +25,10 @@ export default function FormProvider({
   id,
   noValidate = false,
 }: Props) {
-  const handleFormSubmit = (data: any) => {
-    console.log("📋 FormProvider handleSubmit called with:", data);
-    // Print errors before submit
-
-    return onSubmit(data);
-  };
-
   return (
     <Form {...methods}>
       <form
-        onSubmit={methods.handleSubmit(handleFormSubmit)}
+        onSubmit={onSubmit}
         autoComplete={autocomplete}
         className={className}
         noValidate={noValidate}

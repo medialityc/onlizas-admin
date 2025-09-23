@@ -1,10 +1,10 @@
-import { getCategoryById } from "@/services/categories";
 import { notFound } from "next/navigation";
-import CategoryEditFormContainer from "@/sections/categories/containers/category-edit-from.container";
-import { CategoryFormData } from "@/sections/categories/schemas/category-schema";
+import { getSectionById } from "@/services/section";
+import SectionEditFormContainer from "@/sections/admin/sections/containers/section-edit-from.container";
+import { SectionFormData } from "@/sections/admin/sections/schema/section-schema";
 
 export const metadata = {
-  title: "Editar Categoría - ZAS Express",
+  title: "Editar Sección - ZAS Express",
 };
 
 interface EditPageProps {
@@ -12,12 +12,12 @@ interface EditPageProps {
 }
 
 export default async function EditCategoryPage({ params }: EditPageProps) {
-  const res = await getCategoryById((await params).id);
+  const res = await getSectionById((await params).id);
   if (!res || res.error || !res.data) notFound();
 
   return (
-    <CategoryEditFormContainer
-      category={res.data! as unknown as CategoryFormData}
+    <SectionEditFormContainer
+      section={res.data! as unknown as SectionFormData}
     />
   );
 }
