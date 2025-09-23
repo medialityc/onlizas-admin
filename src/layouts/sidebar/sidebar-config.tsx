@@ -191,7 +191,7 @@ export const sidebarSections: SidebarSection[] = [
   },
   {
     id: "gatewaySettings",
-    label: "Configuraciones de Pasarelas de Pago",
+    label: "Pagos",
     items: [
       {
         id: "overview",

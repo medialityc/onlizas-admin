@@ -3,16 +3,17 @@ import { useEffect, useState } from "react";
 
 const SIDEBAR_STORAGE_KEY = "sidebar-expanded-sections";
 
-export const useSidebarPreferences = (defaultState: {
-  [key: string]: boolean;
-}) => {
+export const useSidebarPreferences = (
+  defaultState: { [key: string]: boolean },
+  storageKey: string = SIDEBAR_STORAGE_KEY
+) => {
   const [expandedSections, setExpandedSections] = useState<{
     [key: string]: boolean;
   }>(defaultState);
 
   // Cargar preferencias desde localStorage al montar el componente
   useEffect(() => {
-    const savedPreferences = localStorage.getItem(SIDEBAR_STORAGE_KEY);
+    const savedPreferences = localStorage.getItem(storageKey);
     if (savedPreferences) {
       try {
         const parsed = JSON.parse(savedPreferences);
@@ -21,12 +22,12 @@ export const useSidebarPreferences = (defaultState: {
         console.warn("Error parsing sidebar preferences:", error);
       }
     }
-  }, []);
+  }, [storageKey]);
 
   // Guardar preferencias en localStorage cuando cambian
   useEffect(() => {
-    localStorage.setItem(SIDEBAR_STORAGE_KEY, JSON.stringify(expandedSections));
-  }, [expandedSections]);
+    localStorage.setItem(storageKey, JSON.stringify(expandedSections));
+  }, [expandedSections, storageKey]);
 
   const toggleSection = (sectionId: string) => {
     setExpandedSections((prev) => ({

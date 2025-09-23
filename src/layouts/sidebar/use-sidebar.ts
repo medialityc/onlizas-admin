@@ -3,10 +3,11 @@ import { paths } from "@/config/paths";
 import { RootState } from "@/store";
 import { toggleSidebar } from "@/store/themeConfigSlice";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { sidebarSections } from "./sidebar-config";
+import { flattenSidebarItems, matchItemByPath } from "./sidebar-utils";
 import { useSidebarPreferences } from "./use-sidebar-preferences";
-import { defaultExpandedItems, sidebarSections } from "./sidebar-config";
 
 // Función para verificar si una sección tiene elementos activos
 const sectionHasActiveItems = (
@@ -30,15 +31,26 @@ export const useSidebar = () => {
   const themeConfig = useSelector((state: RootState) => state.themeConfig);
 
   // State for expanded items within sections
+  // Combinamos estado inicial de secciones e items
+  // Start everything collapsed by default
+  const collapsedDefaults: Record<string, boolean> = {};
+  sidebarSections.forEach((s) => (collapsedDefaults[s.id] = false));
+  // groups collapsed
+  sidebarSections.forEach((s) =>
+    s.groups?.forEach((g) => (collapsedDefaults[`${s.id}:${g.id}`] = false))
+  );
+  const initialState = { ...collapsedDefaults };
+  // We will maintain a single map that includes sections, items and groups (group ids will be namespaced as sectionId:groupId)
   const { expandedSections: expandedItems, toggleSection: toggleItem } =
-    useSidebarPreferences(defaultExpandedItems);
+    useSidebarPreferences(initialState);
 
-  const isActiveLink = (path: string) => {
-    if (path === paths.dashboard.root) {
-      return pathname === path;
-    }
-    return pathname.startsWith(path);
-  };
+  const flatItems = useMemo(() => flattenSidebarItems(sidebarSections), []);
+  const activeItem = useMemo(
+    () => matchItemByPath(pathname, flatItems),
+    [pathname, flatItems]
+  );
+
+  const isActiveLink = (path: string) => activeItem?.path === path;
 
   const setActiveRoute = () => {
     const allLinks = document.querySelectorAll(".sidebar ul a.active");
@@ -77,8 +89,31 @@ export const useSidebar = () => {
     if (window.innerWidth < 1024 && themeConfig.sidebar) {
       dispatch(toggleSidebar());
     }
+
+    // Expand the path (section -> group if any) for the active item
+    if (activeItem) {
+      // Find section containing this item
+      sidebarSections.forEach((section) => {
+        const inItems = section.items.some((i) => i.id === activeItem.id);
+        const inGroup = section.groups?.some((g) =>
+          g.items.some((i) => i.id === activeItem.id)
+        );
+        if (inItems || inGroup) {
+          if (!expandedItems[section.id]) toggleItem(section.id);
+          if (inGroup) {
+            const group = section.groups!.find((g) =>
+              g.items.some((i) => i.id === activeItem.id)
+            );
+            if (group) {
+              const groupId = `${section.id}:${group.id}`;
+              if (!expandedItems[groupId]) toggleItem(groupId);
+            }
+          }
+        }
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, activeItem]);
 
   return {
     expandedItems,
@@ -86,5 +121,6 @@ export const useSidebar = () => {
     toggleItem,
     sectionHasActiveItems: (sectionId: string) =>
       sectionHasActiveItems(sectionId, pathname),
+    activeItem,
   };
 };

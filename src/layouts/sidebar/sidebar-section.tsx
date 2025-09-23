@@ -1,8 +1,18 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import {
+  Boxes,
+  ChevronDown,
+  ChevronRight,
+  DollarSign,
+  Globe2,
+  LayoutDashboard,
+  PackageSearch,
+  Shield,
+  Store,
+} from "lucide-react";
+import AnimateHeight from "react-animate-height";
 import SidebarItem from "./sidebar-item";
 import { SidebarSectionProps } from "./types";
-import IconCaretsDown from "@/components/icon/icon-carets-down";
 
 const SidebarSection = ({
   section,
@@ -10,92 +20,165 @@ const SidebarSection = ({
   expandedItems,
   onToggleItem,
 }: SidebarSectionProps) => {
-  // Detecta si algún item de la sección está activo, para abrir por defecto
-  const hasActiveItem = useMemo(
-    () =>
-      section.items.some((item) =>
-        item.path ? isActiveLink(item.path) : false
-      ),
-    [section.items, isActiveLink]
-  );
+  const sectionExpanded = expandedItems[section.id] ?? true; // fallback abierto
 
-  // Estado local de apertura/cierre del acordeón
-  const [isOpen, setIsOpen] = useState<boolean>(
-    () => hasActiveItem || expandedItems[section.id]
-  );
+  const sectionIcon = (() => {
+    switch (section.id) {
+      case "orders":
+        return <PackageSearch className="h-4 w-4" />;
+      case "business":
+        return <Store className="h-4 w-4" />;
+      case "warehouse":
+        return <Boxes className="h-4 w-4" />;
+      case "containers":
+        return <Globe2 className="h-4 w-4" />;
+      case "billing":
+        return <DollarSign className="h-4 w-4" />;
+      case "reports":
+        return <LayoutDashboard className="h-4 w-4" />;
+      case "nomenclators":
+        return <PackageSearch className="h-4 w-4" />;
+      case "security":
+        return <Shield className="h-4 w-4" />;
+      default:
+        return <LayoutDashboard className="h-4 w-4" />;
+    }
+  })();
 
-  // Si cambia el item activo, autoexpande la sección
-  useEffect(() => {
-    if (hasActiveItem) setIsOpen(true);
-  }, [hasActiveItem]);
-
-  const handleToggleSection = () => setIsOpen((v) => !v);
-  const contentId = `sidebar-section-${section.id}-content`;
-  const buttonId = `sidebar-section-${section.id}-button`;
+  // Determine if any item (or group item) inside is active for path highlighting
+  const sectionActive =
+    section.items.some((i) => i.path && isActiveLink(i.path)) ||
+    section.groups?.some((g) =>
+      g.items.some((i) => i.path && isActiveLink(i.path))
+    ) ||
+    false;
 
   return (
     <li className="mb-6">
-      {!section.noSection && (
-        <div className="mb-2">
-          <div className="relative">
-            <button
-              type="button"
-              onClick={handleToggleSection}
-              id={buttonId}
-              aria-expanded={isOpen}
-              aria-controls={contentId}
-              className="w-full px-4 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider bg-primary/5 border-l-4 border-primary border-r-4 rounded-lg shadow-sm backdrop-blur-sm flex items-center justify-between"
-            >
-              <span className="flex items-center space-x-2">
-                <span>{section.label}</span>
-              </span>
-              <IconCaretsDown
-                className={`h-4 w-4 transition-transform duration-200 ${isOpen ? "rotate-180" : "rotate-0"}`}
-              />
-            </button>
-            {/* Línea decorativa */}
-            <div className="absolute -bottom-1 left-4 right-4 h-px bg-gradient-to-r from-primary/20 via-primary/10 to-transparent" />
-          </div>
-        </div>
-      )}
-
-      {/* Items de la sección (acordeón) */}
-      {section.noSection ? (
-        <ul className="space-y-1">
-          {section.items.map((item) => (
-            <SidebarItem
-              key={item.id}
-              item={item}
-              isActive={item.path ? isActiveLink(item.path) : false}
-              isExpanded={expandedItems[item.id]}
-              onToggle={() => onToggleItem(item.id)}
-              isActiveLink={isActiveLink}
-            />
-          ))}
-        </ul>
-      ) : (
-        <div
-          id={contentId}
-          role="region"
-          aria-labelledby={buttonId}
-          className={`grid transition-[grid-template-rows] duration-300 ease-out ${
-            isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+      <div className="mb-2">
+        <button
+          type="button"
+          onClick={() => onToggleItem(section.id)}
+          className={`w-full group flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm backdrop-blur-sm transition-colors border-l-4 border-r-4 ${
+            sectionActive
+              ? "bg-primary/15 border-primary text-primary"
+              : "bg-primary/5 border-primary text-gray-700 dark:text-gray-300 hover:bg-primary/10"
           }`}
         >
-          <ul className="space-y-1 overflow-hidden">
-            {section.items.map((item) => (
-              <SidebarItem
-                key={item.id}
-                item={item}
-                isActive={item.path ? isActiveLink(item.path) : false}
-                isExpanded={expandedItems[item.id]}
-                onToggle={() => onToggleItem(item.id)}
-                isActiveLink={isActiveLink}
-              />
-            ))}
-          </ul>
+          <div className="flex items-center space-x-2">
+            <span className="text-primary/70 group-hover:text-primary transition-colors">
+              {sectionIcon}
+            </span>
+            <span className={sectionActive ? "text-primary" : ""}>
+              {section.label}
+            </span>
+          </div>
+          <ChevronDown
+            className={`h-4 w-4 transition-transform duration-200 ${
+              sectionExpanded ? "rotate-0" : "-rotate-90"
+            }`}
+          />
+        </button>
+      </div>
+
+      <AnimateHeight
+        height={sectionExpanded ? "auto" : 0}
+        duration={260}
+        animateOpacity
+        easing="cubic-bezier(0.4, 0, 0.2, 1)"
+      >
+        <div className="space-y-4" aria-hidden={!sectionExpanded}>
+          {section.items && section.items.length > 0 && (
+            <ul className="space-y-1">
+              {section.items.map((item) => (
+                <SidebarItem
+                  key={item.id}
+                  item={item}
+                  isActive={item.path ? isActiveLink(item.path) : false}
+                  isExpanded={expandedItems[item.id]}
+                  onToggle={() => onToggleItem(item.id)}
+                  isActiveLink={isActiveLink}
+                />
+              ))}
+            </ul>
+          )}
+          {section.groups && section.groups.length > 0 && (
+            <div className="space-y-2">
+              {section.groups.map((group) => {
+                const groupId = `${section.id}:${group.id}`;
+                const groupExpanded = expandedItems[groupId] ?? true;
+                const collapsible = group.collapsible !== false;
+                const groupActive = group.items.some(
+                  (i) => i.path && isActiveLink(i.path)
+                );
+                return (
+                  <div
+                    key={group.id}
+                    className={`rounded-md border overflow-hidden transition-colors ${
+                      groupActive
+                        ? "border-primary/60 bg-primary/5"
+                        : "border-gray-100 dark:border-gray-800"
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => collapsible && onToggleItem(groupId)}
+                      className={`flex w-full items-center justify-between px-3 py-2 text-xs font-semibold tracking-wide uppercase transition-colors ${
+                        groupActive
+                          ? "bg-primary/10 text-primary"
+                          : "bg-gray-50 dark:bg-gray-900/40 hover:bg-gray-100 dark:hover:bg-gray-900"
+                      } ${collapsible ? "cursor-pointer" : "cursor-default"}`}
+                    >
+                      <span
+                        className={`flex items-center gap-1 ${
+                          groupActive
+                            ? "text-primary"
+                            : "text-gray-600 dark:text-gray-400"
+                        }`}
+                      >
+                        <ChevronRight
+                          className={`h-3 w-3 ${
+                            groupExpanded ? "opacity-70" : "opacity-50"
+                          }`}
+                        />
+                        {group.label}
+                      </span>
+                      {collapsible && (
+                        <ChevronDown
+                          className={`h-3.5 w-3.5 text-gray-400 transition-transform duration-200 ${
+                            groupExpanded ? "rotate-0" : "-rotate-90"
+                          }`}
+                        />
+                      )}
+                    </button>
+                    <AnimateHeight
+                      height={groupExpanded ? "auto" : 0}
+                      duration={220}
+                      easing="cubic-bezier(0.4, 0, 0.2, 1)"
+                      animateOpacity
+                    >
+                      <ul className="p-2 space-y-1">
+                        {group.items.map((item) => (
+                          <SidebarItem
+                            key={item.id}
+                            item={item}
+                            isActive={
+                              item.path ? isActiveLink(item.path) : false
+                            }
+                            isExpanded={expandedItems[item.id]}
+                            onToggle={() => onToggleItem(item.id)}
+                            isActiveLink={isActiveLink}
+                          />
+                        ))}
+                      </ul>
+                    </AnimateHeight>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
-      )}
+      </AnimateHeight>
     </li>
   );
 };
