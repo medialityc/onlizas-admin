@@ -1,11 +1,6 @@
 import { PaginatedResponse } from "./common";
 
 export enum TEMPLATE_TYPE_ENUM {
-  BANNER = "banner",
-  PRODUCT = "product",
-  CRITERIA = "criteria",
-}
-export enum COLLECTION_PRODUCT_TYPE_ENUM {
   CARROUSEL = "carrousel",
   COMBO = "combo",
 }
@@ -21,7 +16,6 @@ export type ISection = {
   updatedAt: Date | string;
   createdBy: string;
   templateType: TEMPLATE_TYPE_ENUM;
-  collectionType: COLLECTION_PRODUCT_TYPE_ENUM
   defaultItemCount: number;
   backgroundColor: string;
   textColor: string;

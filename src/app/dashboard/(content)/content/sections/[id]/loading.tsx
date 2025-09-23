@@ -1,11 +1,9 @@
-import { DetailsSkeleton } from "@/components/skeletons/details-skeleton";
-
 export default function Loading() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex justify-between items-center animate-pulse">
         <div>
-          <h1 className="text-2xl font-bold ">Detalles de la categoría</h1>
+          <h1 className="text-2xl font-bold ">Detalles de la sección</h1>
         </div>
         <div className="flex gap-2 animate-pulse">
           <div className="h-10 w-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
@@ -21,10 +19,6 @@ export default function Loading() {
           <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded"></div>
         </div>
       </div>
-
-      <DetailsSkeleton title="Departamento" rows={1} rowHeight={20} />
-
-      <DetailsSkeleton title="Características" rows={5} rowHeight={20} />
     </div>
   );
 }

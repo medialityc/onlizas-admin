@@ -2,7 +2,7 @@
 
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
-import { SearchParams } from "@/types/fetch/request"; 
+import { SearchParams } from "@/types/fetch/request";
 import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 import { SectionList } from "./section-list";
@@ -13,10 +13,7 @@ interface Props {
   query: SearchParams;
 }
 
-export default function SectionListContainer({
-  sectionPromise,
-  query,
-}: Props) {
+export default function SectionListContainer({ sectionPromise, query }: Props) {
   const sectionResponse = sectionPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(sectionResponse);

@@ -8,11 +8,7 @@ import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
-import {
-  ISection,
-  IGetAllAdminsSection,
-  UpdateSection,
-} from "@/types/section";
+import { ISection, IGetAllAdminsSection, UpdateSection } from "@/types/section";
 
 export async function createSection(
   data: FormData
@@ -67,15 +63,15 @@ export async function getAllSection(
   return buildApiResponseAsync<IGetAllAdminsSection>(res);
 }
 
-/* export async function getCategoryById(
+export async function getSectionById(
   id: string | number
 ): Promise<ApiResponse<ISection>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.content.section(id),
+    url: backendRoutes.content.section.getOne(id),
     method: "GET",
     useAuth: true,
     next: { tags: ["admin-section"] },
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<ISection>(res);
-} */
+}

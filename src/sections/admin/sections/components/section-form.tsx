@@ -2,20 +2,17 @@
 
 import FormProvider from "@/components/react-hook-form/form-provider";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
-import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-
 import LoaderButton from "@/components/loaders/loader-button";
 import { Button } from "@/components/button/button";
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
-import { getAllStores } from "@/services/stores";
 import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
-import { RHFCheckbox, RHFSelect } from "@/components/react-hook-form";
+import { RHFSelect, RHFSwitch } from "@/components/react-hook-form";
 import { useSectionCreateForm } from "../hooks/use-section-create-form";
 import { SectionFormData } from "../schema/section-schema";
 import { TEMPLATE_TYPE_ENUM } from "@/types/section";
 import RHFColorPicker from "@/components/react-hook-form/rhf-color-picker";
+import SectionProducts from "./section-products-form/section-products";
 
 interface Props {
   initValue?: SectionFormData;
@@ -31,24 +28,14 @@ export default function SectionForm({ initValue }: Props) {
   );
 
   const templateTypeOptions: { value: TEMPLATE_TYPE_ENUM; label: string }[] = [
-    { value: TEMPLATE_TYPE_ENUM.BANNER, label: "HomeBanners" },
-    { value: TEMPLATE_TYPE_ENUM.PRODUCT, label: "Productos" },
-    { value: TEMPLATE_TYPE_ENUM.CRITERIA, label: "Criterios" },
+    { value: TEMPLATE_TYPE_ENUM.CARROUSEL, label: "Carrousel de Productos" },
+    { value: TEMPLATE_TYPE_ENUM.COMBO, label: "Combos de productos" },
   ];
 
   return (
     <section>
       <FormProvider methods={form} onSubmit={onSubmit} id="section-form">
-        <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
-          <div className="col-span-1">
-            <RHFAutocompleteFetcherInfinity
-              name="storeId"
-              label="Tienda"
-              required
-              onFetch={getAllStores}
-            />
-          </div>
-
+        <div className="gap-4 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4">
           <div className="col-span-1">
             <RHFInputWithLabel
               name="name"
@@ -56,31 +43,6 @@ export default function SectionForm({ initValue }: Props) {
               placeholder="Ej: Productos destacados"
               autoFocus
               maxLength={100}
-            />
-          </div>
-          <div className="col-span-1">
-            <RHFSelect
-              options={[
-                { value: "ALL", label: "Todos" },
-                { value: "YOUNG", label: "Jóvenes" },
-                { value: "ADULT", label: "Adultos" },
-              ]}
-              name="targetUserSegment"
-              label="Segmento de usuarios"
-              placeholder="Ej: Jóvenes, Adultos"
-              autoFocus
-            />
-          </div>
-          <div className="col-span-1">
-            <RHFSelect
-              options={[
-                { value: "MOBILE", label: "Móvil" },
-                { value: "DESKTOP", label: "Escritorio" },
-              ]}
-              name="targetDeviceType"
-              label="Tipo de dispositivo"
-              placeholder="Ej: Móvil, Escritorio"
-              autoFocus
             />
           </div>
           <div className="col-span-1">
@@ -130,59 +92,70 @@ export default function SectionForm({ initValue }: Props) {
               type="number"
             />
           </div>
+
           <div className="col-span-1">
-            <RHFColorPicker name="backgroundColor" label="Color de banner" />
-          </div>
-          <div className="col-span-1">
-            <RHFColorPicker name="textColor" label="Color de texto" />
+            <RHFSelect
+              options={[
+                { value: "ALL", label: "Todos" },
+                { value: "YOUNG", label: "Jóvenes" },
+                { value: "ADULT", label: "Adultos" },
+              ]}
+              name="targetUserSegment"
+              label="Segmento de usuarios"
+              placeholder="Ej: Jóvenes, Adultos"
+              autoFocus
+            />
           </div>
 
           <div className="col-span-1">
+            <RHFSelect
+              options={[
+                { value: "ALL", label: "Todos" },
+                { value: "MOBILE", label: "Móvil" },
+                { value: "DESKTOP", label: "Escritorio" },
+              ]}
+              name="targetDeviceType"
+              label="Tipo de dispositivo"
+              placeholder="Ej: Móvil, Escritorio"
+              autoFocus
+            />
+          </div>
+
+          <div className="col-span-1  md:col-span-2">
             <RHFDateInput
               minDate={new Date()}
               name="startDate"
               label="Fecha de inicio"
             />
           </div>
-          <div className="col-span-1">
+          <div className="col-span-1  md:col-span-2">
             <RHFDateInput
               minDate={new Date(startDate)}
               name="endDate"
               label="Fecha de expiración"
             />
           </div>
-          <div className="col-span-1  ">
-            <RHFCheckbox name="isActive" label="Sección activa" />{" "}
+
+          <div className="border p-4 rounded-md col-span-1 md:col-span-2 2xl:col-span-4 gap-4 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4">
+            <div className="col-span-1 md:col-span-2">
+              <RHFColorPicker name="backgroundColor" label="Color de banner" />
+            </div>
+            <div className="col-span-1 md:col-span-2 ">
+              <RHFColorPicker name="textColor" label="Color de texto" />
+            </div>
           </div>
-          <div className="col-span-1  ">
-            <RHFCheckbox
-              name="isPersonalized"
-              label="Categoría personalizada"
-            />
-          </div>
+
           <div className="col-span-1">
-            <RHFImageUpload
-              name="desktopImage"
-              label="Imagen para computadoras"
-              variant="rounded"
-              size="full"
-              cropDimensions={{
-                height: 557,
-                width: 1920,
-              }}
-            />
+            <RHFSwitch name="isActive" label="Sección activa" />{" "}
           </div>
+
           <div className="col-span-1">
-            <RHFImageUpload
-              name="mobileImage"
-              label="Imagen para dispositivos mobiles"
-              variant="rounded"
-              size="full"
-              cropDimensions={{
-                height: 730,
-                width: 470,
-              }}
-            />
+            <RHFSwitch name="isPersonalized" label="Sección personalizada" />
+          </div>
+
+          {/* section products */}
+          <div className="border rounded-md p-4 col-span-1 md:col-span-2 lg:col-span-4 mt-4">
+            <SectionProducts />
           </div>
         </div>
       </FormProvider>

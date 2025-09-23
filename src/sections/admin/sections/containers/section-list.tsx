@@ -25,12 +25,12 @@ export function SectionList({
   const router = useRouter();
 
   const handleCreateSection = useCallback(() => {
-    router.push("/dashboard/admin/sections/new");
+    router.push(paths.content.sections.new);
   }, [router]);
 
   const handleEditSection = useCallback(
     (section: ISection) => {
-      router.push(`/dashboard/admin/sections/${section.id}/edit`);
+      router.push(paths.content.sections.edit(section.id));
     },
     [router]
   );
@@ -42,26 +42,23 @@ export function SectionList({
     [router]
   );
 
-  const handleToggleActiveSection = useCallback(
-    async (section: ISection) => {
-      try {
-        const res = await toggleStatusCategory(section?.id as number);
-        if (res?.error && res.message) {
-          console.error(res);
-          showToast(res.message, "error");
-        } else {
-          showToast(
-            `Sección ${(res.data as unknown as ISection)?.isActive ? "activada" : "desactivada"}  correctamente`,
-            "success"
-          );
-        }
-      } catch (error) {
-        console.error(error);
-        showToast("Ocurrió un error, intente nuevamente", "error");
+  const handleToggleActiveSection = useCallback(async (section: ISection) => {
+    try {
+      const res = await toggleStatusCategory(section?.id as number);
+      if (res?.error && res.message) {
+        console.error(res);
+        showToast(res.message, "error");
+      } else {
+        showToast(
+          `Sección ${(res.data as unknown as ISection)?.isActive ? "activada" : "desactivada"}  correctamente`,
+          "success"
+        );
       }
-    },
-    []
-  );
+    } catch (error) {
+      console.error(error);
+      showToast("Ocurrió un error, intente nuevamente", "error");
+    }
+  }, []);
 
   const columns = useMemo<DataTableColumn<ISection>[]>(
     () => [
@@ -139,11 +136,7 @@ export function SectionList({
         ),
       },
     ],
-    [
-      handleToggleActiveSection,
-      handleViewSection,
-      handleEditSection,
-    ]
+    [handleToggleActiveSection, handleViewSection, handleEditSection]
   );
 
   return (
@@ -158,16 +151,6 @@ export function SectionList({
         emptyText="No se encontraron secciones"
         createText="Crear Sección"
       />
-      {/* Creación/edición redirige a vistas; mantenemos modal de detalles */}
-      {/* Details Modal */}
-      {/* {selectedCategory && (
-        <CategoriesModalContainer
-          onClose={() => closeModal("view")}
-          open={viewCategoryModal.open}
-          category={selectedCategory}
-          isDetailsView
-        />
-      )} */}
     </>
   );
 }

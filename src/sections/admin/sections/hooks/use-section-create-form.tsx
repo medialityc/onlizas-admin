@@ -5,9 +5,9 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { addDays } from "date-fns";
-import { createHomeBanner, updateHomeBanner } from "@/services/homebanner";
 import { SectionFormData, sectionSchema } from "../schema/section-schema";
 import { setSectionFormData } from "../constants/section-data";
+import { createSection, updateSection } from "@/services/section";
 
 const initValues: SectionFormData = {
   name: "",
@@ -16,8 +16,6 @@ const initValues: SectionFormData = {
   isActive: true,
   displayOrder: 0,
   createdAt: "",
-  updatedAt: "",
-  createdBy: "",
   templateType: "",
   defaultItemCount: 0,
   backgroundColor: "",
@@ -28,8 +26,6 @@ const initValues: SectionFormData = {
   startDate: new Date(),
   endDate: addDays(new Date(), 7),
   products: [],
-  banners: [],
-  criteria: [],
 };
 
 export const useSectionCreateForm = (
@@ -41,14 +37,16 @@ export const useSectionCreateForm = (
     resolver: zodResolver(sectionSchema),
   });
 
+  console.log(form.formState.errors, "ERRORS");
+
   const startDate = form.watch("startDate");
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: SectionFormData) => {
       const formData = await setSectionFormData(payload);
       const res = payload?.id
-        ? await updateHomeBanner(payload?.id, formData)
-        : await createHomeBanner(formData);
+        ? await updateSection(payload?.id, formData)
+        : await createSection(formData);
       if (res.error) {
         throw res;
       }

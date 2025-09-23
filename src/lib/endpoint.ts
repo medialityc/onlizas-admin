@@ -361,6 +361,8 @@ export const backendRoutes = {
     section: {
       list: `${process.env.NEXT_PUBLIC_API_URL}admin/sections`, // GET
       create: `${process.env.NEXT_PUBLIC_API_URL}admin/sections`, // POST
+      getOne: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/sections/${id}`, // GET
       delete: (id: number | string) =>
         `${process.env.NEXT_PUBLIC_API_URL}admin/sections/${id}`, // DELETE
       update: (id: string | number) =>
