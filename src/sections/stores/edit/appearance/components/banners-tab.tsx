@@ -5,10 +5,10 @@ import { useFormContext } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/cards/card";
 import MetricStatCard from "../../components/metric-stat-card";
 import { EyeIcon, TvIcon, TrashIcon, PencilSquareIcon, PlusIcon } from "@heroicons/react/24/outline";
-import BannerCreateModal from "./banner-create-modal";
-import { BannerItem, mockBanners } from "./banners-mock";
+import HomeBannerCreateModal from "./banner-create-modal";
+import { HomeBannerItem, mockHomeBanners } from "./banners-mock";
 
-export default function BannersTab() {
+export default function HomeBannersTab() {
   const { register, setValue, getValues } = useFormContext();
   // Preferir datos existentes del formulario si están presentes; si no, inicializar con store/mock
   const initial = (getValues("banners") as any[])?.length
@@ -22,8 +22,8 @@ export default function BannersTab() {
         image: b.image ?? null,
         isActive: true,
       }))
-    : mockBanners;
-  const [items, setItems] = useState<BannerItem[]>(initial);
+    : mockHomeBanners;
+  const [items, setItems] = useState<HomeBannerItem[]>(initial);
   const [open, setOpen] = useState(false);
   const [source] = useState<string>((getValues("banners") as any[])?.length ? "form" : "mock");
 
@@ -64,8 +64,8 @@ export default function BannersTab() {
   <div className="text-xs text-gray-500">Fuente: {source === "form" ? "Formulario" : "Mock"}</div>
       {/* Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <MetricStatCard label="Total Banners" value={metrics.total} icon={<PlusIcon className="text-indigo-600" />} />
-        <MetricStatCard label="Banners Activos" value={metrics.active} icon={<EyeIcon className="text-emerald-600" />} />
+        <MetricStatCard label="Total HomeBanners" value={metrics.total} icon={<PlusIcon className="text-indigo-600" />} />
+        <MetricStatCard label="HomeBanners Activos" value={metrics.active} icon={<EyeIcon className="text-emerald-600" />} />
         <MetricStatCard label="Posiciones" value={metrics.positions} icon={<TvIcon className="text-violet-600" />} />
       </div>
 
@@ -74,11 +74,11 @@ export default function BannersTab() {
       {/* List */}
       <div className="space-y-3">
         {items.map((b) => (
-          <BannerRow key={b.id} b={b} onToggle={(id) => setItems((prev) => prev.map((x) => (x.id === id ? { ...x, isActive: !x.isActive } : x)))} onDelete={(id) => setItems((prev) => prev.filter((x) => x.id !== id))} />
+          <HomeBannerRow key={b.id} b={b} onToggle={(id) => setItems((prev) => prev.map((x) => (x.id === id ? { ...x, isActive: !x.isActive } : x)))} onDelete={(id) => setItems((prev) => prev.filter((x) => x.id !== id))} />
         ))}
       </div>
 
-      <BannerCreateModal
+      <HomeBannerCreateModal
         open={open}
         onClose={() => setOpen(false)}
         onCreate={(banner) => {
@@ -107,7 +107,7 @@ function Header({ onNew }: { onNew: () => void }) {
   return (
     <div className="flex items-center justify-between mt-2">
       <div>
-        <h3 className="text-sm font-medium text-gray-900">Gestión de Banners</h3>
+        <h3 className="text-sm font-medium text-gray-900">Gestión de HomeBanners</h3>
         <p className="text-xs text-gray-500">Crea y gestiona banners promocionales para tu tienda</p>
       </div>
       <button
@@ -116,13 +116,13 @@ function Header({ onNew }: { onNew: () => void }) {
         className="inline-flex items-center gap-2 rounded-md bg-gray-900 text-white text-xs font-medium px-3 py-2 hover:bg-gray-800"
       >
         <PlusIcon className="w-4 h-4" />
-        Nuevo Banner
+        Nuevo HomeBanner
       </button>
     </div>
   );
 }
 
-function BannerRow({ b, onToggle, onDelete }: { b: BannerItem; onToggle: (id: number) => void; onDelete: (id: number) => void }) {
+function HomeBannerRow({ b, onToggle, onDelete }: { b: HomeBannerItem; onToggle: (id: number) => void; onDelete: (id: number) => void }) {
   return (
     <Card>
       <CardContent className="py-3">

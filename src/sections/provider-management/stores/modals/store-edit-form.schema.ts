@@ -29,7 +29,7 @@ const promotionSchema = z.object({
 
 // Banners en el formulario siguen el contrato del backend:
 // { title, urlDestinity, position:number, initDate, endDate, image }
-const bannerSchema = z.array(z.object({
+const homeBannerSchema = z.array(z.object({
   id: z.number().int().nonnegative().optional(),
   title: z.string().min(1, "El título es obligatorio"),
   urlDestinity: z.string().min(1, "La URL de destino es obligatoria"),
@@ -113,7 +113,7 @@ export const storeEditSchema = z.object({
   // Payloads y colecciones
   categoriesPayload: z.array(categoryItemSchema).optional(),
   promotionsPayload: z.array(promotionSchema).optional(),
-  banners: bannerSchema,
+  banners: homeBannerSchema,
 });
 
 export type StoreEditFormData = z.infer<typeof storeEditSchema>;

@@ -19,12 +19,12 @@ export default function PreviewTab() {
   const template = (watch("template") as string) || "MODERNO";
   const banners = (watch("banners") as Array<any> | undefined) || [];
 
-  const heroBannerTitle = useMemo(() => {
+  const heroHomeBannerTitle = useMemo(() => {
     const hero = banners?.find((b) => {
       const pos = typeof b?.position === "number" ? b.position : parseInt(String(b?.position ?? 0), 10);
       return pos === 1;
     });
-    return hero?.title || "Banner Principal";
+    return hero?.title || "HomeBanner Principal";
   }, [banners]);
 
   const [device, setDevice] = useState<Device>("desktop");
@@ -44,7 +44,7 @@ export default function PreviewTab() {
             accent={accent}
             font={font}
             template={template}
-            heroTitle={heroBannerTitle}
+            heroTitle={heroHomeBannerTitle}
           />
         </CardContent>
       </Card>

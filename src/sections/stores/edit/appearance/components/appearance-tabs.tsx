@@ -2,7 +2,7 @@
 
 import React from "react";
 import TabsWithErrorIndicators from "@/components/tab/tabs-with-error-indicators";
-import { ThemeAndColorsTab, BannersTab, PreviewTab } from "./index";
+import { ThemeAndColorsTab, HomeBannersTab, PreviewTab } from "./index";
 
 export default function AppearanceTabs() {
   return (
@@ -10,7 +10,7 @@ export default function AppearanceTabs() {
       activeColorClass="text-primary"
       tabs={[
         { label: "Tema y Colores", content: <ThemeAndColorsTab /> },
-        { label: "Banners", content: <BannersTab /> },
+        { label: "HomeBanners", content: <HomeBannersTab /> },
         { label: "Vista Previa", content: <PreviewTab /> },
       ]}
     />

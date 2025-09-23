@@ -1,0 +1,72 @@
+import { PaginatedResponse } from "./common";
+
+export enum TEMPLATE_TYPE_ENUM {
+  BANNER = "banner",
+  PRODUCT = "product",
+  CRITERIA = "criteria",
+}
+export enum COLLECTION_PRODUCT_TYPE_ENUM {
+  CARROUSEL = "carrousel",
+  COMBO = "combo",
+}
+
+export type ISection = {
+  id: number;
+  name: string;
+  description: string;
+  viewMoreUrl: string;
+  isActive: true;
+  displayOrder: number;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  createdBy: string;
+  templateType: TEMPLATE_TYPE_ENUM;
+  collectionType: COLLECTION_PRODUCT_TYPE_ENUM
+  defaultItemCount: number;
+  backgroundColor: string;
+  textColor: string;
+  isPersonalized: true;
+  targetUserSegment: string;
+  targetDeviceType: string;
+  startDate: Date | string;
+  endDate: Date | string;
+  products: [
+    {
+      productGlobalId: string;
+      displayOrder: number;
+      isFeatured: true;
+      customLabel: string;
+      customBackgroundColor: string;
+      addedAt: Date | string;
+    },
+  ];
+  banners: [
+    {
+      imageUrl: string;
+      title: string;
+      subtitle: string;
+      buttonText: string;
+      buttonUrl: string;
+      position: string;
+      displayOrder: number;
+      startDate: Date | string;
+      endDate: Date | string;
+      isActive: true;
+    },
+  ];
+  criteria: [
+    {
+      criterionType: string;
+      criterionValue: string;
+      operator: string;
+      parentCriterionId: number;
+      logicalOperator: string;
+      priority: number;
+    },
+  ];
+};
+
+export type CreateSection = ISection;
+export type UpdateSection = ISection;
+
+export type IGetAllAdminsSection = PaginatedResponse<ISection>;

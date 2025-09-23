@@ -14,6 +14,8 @@ import {
   ClipboardDocumentIcon,
   MapPinIcon,
   GlobeAltIcon,
+  PhotoIcon,
+  PuzzlePieceIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "./types";
 
@@ -69,6 +71,24 @@ export const sidebarSections: SidebarSection[] = [
         path: paths.dashboard.locations.list,
         icon: <MapPinIcon className="h-4 w-4" />,
         permissions:permissionsAdmin // Admin puede gestionar localizaciones
+      },
+    ],
+  },
+  {
+    id: "content",
+    label: "Contenido",
+    items: [
+      {
+        id: "content-banners",
+        label: "Banners",
+        path: paths.content.banners.list,
+        icon: <PhotoIcon className="h-4 w-4" />,
+      },
+      {
+        id: "content-sections",
+        label: "Secciones de producto",
+        path: paths.content.sections.list,
+        icon: <PuzzlePieceIcon className="h-4 w-4" />,
       },
     ],
   },
