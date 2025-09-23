@@ -36,22 +36,7 @@ export default function HomeBannerForm({ initValue }: Props) {
               name="regionId"
               label="Tienda"
               required
-              onFetch={async (params) => {
-                const result = await getRegions(params);
-                return {
-                  ...result,
-                  data: result.data
-                    ? {
-                        data: result.data,
-                        totalCount: result.data.length,
-                        page: params?.page ?? 1,
-                        pageSize: params?.pageSize ?? result.data.length,
-                        totalPages: 1,
-                        hasNextPage: false,
-                      }
-                    : undefined,
-                } as any;
-              }}
+              onFetch={(params) => getRegions(params)}
               // multiple
             />
           </div>

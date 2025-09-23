@@ -61,7 +61,7 @@ export interface Region {
   name: string;
   code: string;
   description: string;
-  status: number;
+  status: number | string;
   createdAt: string;
   updatedAt: string;
   isActive: boolean;
@@ -69,7 +69,7 @@ export interface Region {
     id: number;
     code: string;
     name: string;
-    phoneNumberCode: number;
+    phoneNumberCode?: number;
   }>;
   currencyConfig: RegionCurrencyConfig;
   paymentConfig: RegionPaymentConfig;
