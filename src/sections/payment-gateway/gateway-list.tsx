@@ -8,7 +8,7 @@ export const GatewaysManageList = () => {
     Record<string, boolean>
   >({});
 
-  const toggleCredentialVisibility = (id: string) => {
+  const toggleCredentialVisibility = (id: string|number) => {
     setShowCredentials((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 

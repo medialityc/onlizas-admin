@@ -79,28 +79,28 @@ export const mockGateways: Gateway[] = [
 
 export const gateways: TypeGateway[] = [
   {
-    id: "stripe-1",
+    id: 1,
     name: "Stripe",
     type: "stripe",
     status: "active",
     created: "2024-01-15",
   },
   {
-    id: "paypal-1",
+    id: 2,
     name: "PayPal",
     type: "paypal",
     status: "active",
     created: "2024-01-10",
   },
   {
-    id: "tropipay-1",
+    id: 3,
     name: "Tropipay",
     type: "tropipay",
     status: "active",
     created: "2024-02-01",
   },
   {
-    id: "square-1",
+    id: 4,
     name: "Square",
     type: "square",
     status: "inactive",

@@ -14,6 +14,7 @@ import { deleteRegion } from "@/services/regions";
 import StatusBadge from "@/components/badge/status-badge";
 import { PaginatedResponse } from "@/types/common";
 import RegionModalContainer from "../../modals/region-modal-container";
+import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 
 interface RegionListProps {
   data?: PaginatedResponse<Region>;
@@ -28,6 +29,7 @@ export function RegionList({
 }: RegionListProps) {
   const { getModalState, openModal, closeModal } = useRegionModalState();
   const queryClient = useQueryClient();
+ 
 
   const createModal = getModalState("create");
   const editModal = getModalState("edit");
@@ -39,7 +41,7 @@ export function RegionList({
     if (!id || !data?.data) return null;
     return data.data.find((region) => region.id === id) ?? null;
   }, [editModal, viewModal, configureModal, data?.data]);
-
+    
   const handleCreateRegion = useCallback(() => {
     openModal("create");
   }, [openModal]);
@@ -60,7 +62,7 @@ export function RegionList({
 
   const handleConfigureRegion = useCallback(
     (region: Region) => {
-      openModal("edit", region.id);
+      openModal("configure", region.id);
     },
     [openModal]
   );
@@ -164,7 +166,8 @@ export function RegionList({
         title: "Acciones",
         textAlign: "center",
         render: (region) => (
-          <div className="flex justify-center gap-2">
+          
+          <div className="flex justify-center items-center gap-2">
             <ActionsMenu
               onViewDetails={() => handleViewRegion(region)}
               onEdit={() => handleEditRegion(region)}
@@ -176,10 +179,10 @@ export function RegionList({
             {region.status === 0 && (
               <button
                 onClick={() => handleConfigureRegion(region)}
-                className="btn btn-sm btn-outline-primary"
+                className=" btn-sm  flex items-center justify-center"
                 title="Configurar monedas, pagos y envío"
               >
-                ⚙️
+                <Cog6ToothIcon className="w-4 h-4" />
               </button>
             )}
           </div>
@@ -238,14 +241,20 @@ export function RegionList({
       )}
 
       {/* Configure Modal */}
-      {/* {selectedRegion && (
+      {selectedRegion && (
         <RegionModalContainer
           onClose={() => closeModal("configure")}
           open={configureModal.open}
           region={selectedRegion}
-          isConfigureView
+          isConfigView
+          onSuccess={() => {
+            // Invalidar queries para refrescar desde el backend
+            queryClient.invalidateQueries({ queryKey: ["regions"] });
+          }}
         />
-      )} */}
+      )}
+
+      
     </>
   );
 }

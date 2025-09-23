@@ -11,10 +11,11 @@ import LoaderButton from "@/components/loaders/loader-button";
 import SimpleModal from "@/components/modal/modal";
 import { createRegion, updateRegion, getRegionById } from "@/services/regions";
 import { toast } from "react-toastify";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import RHFMultiCountrySelect from "@/components/react-hook-form/rhf-multi-country-select";
 import RHFSwitch from "@/components/react-hook-form/rhf-switch";
-import CountryConflictDialog from "./country-conflict-dialog";
+import { useRegionDetails } from "../hooks/use-region-details";
+import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 
 interface RegionModalProps {
@@ -35,30 +36,38 @@ export default function RegionModal({
   onSuccess,
 }: RegionModalProps) {
   const [error, setError] = useState<string | null>(null);
-  const [showConflictDialog, setShowConflictDialog] = useState(false);
-  const [conflictErrorMessage, setConflictErrorMessage] = useState<string>("");
   const [pendingFormData, setPendingFormData] = useState<any>(null);
   const queryClient = useQueryClient();
 
+  // Control de permisos
+  const { data: permissions = [], isLoading: permissionsLoading } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+  };
+
   // Obtener los datos completos de la región cuando se está editando
-  const { data: regionData, isLoading: isLoadingRegion } = useQuery({
-    queryKey: ["region-edit", region?.id],
-    queryFn: () => getRegionById(region!.id),
-    enabled: open && !!region?.id && !isDetailsView,
-  });
+  const { data: regionData, isLoading: isLoadingRegion } = useRegionDetails(
+    region?.id,
+    open && !!region?.id && !isDetailsView
+  );
 
   // Usar los datos completos si están disponibles, sino usar los datos básicos
   const fullRegion = regionData?.data || region;
+  
+  // Permisos específicos (después de definir fullRegion)
+  const hasCreate = hasPermission(["CREATE_ALL"]);
+  const hasUpdate = hasPermission(["UPDATE_ALL"]);
+  const canEdit = fullRegion ? hasUpdate : hasCreate;
 
   const methods = useForm<CreateRegionSchema>({
-    resolver: zodResolver(regionSchema),
+    resolver: zodResolver(regionSchema) as Resolver<CreateRegionSchema>,
     defaultValues: {
       code: fullRegion?.code || "",
       name: fullRegion?.name || "",
       description: fullRegion?.description || "",
       status: fullRegion?.status === 1 ? false : true, // 1 = inactive, 0 = active
       countryIds: fullRegion?.countries?.map(c => c.id) || [],
-      moveCountries:false,
+      moveCountries: false,
     },
   });
 
@@ -98,15 +107,11 @@ export default function RegionModal({
         toast.success(fullRegion ? "Región actualizada exitosamente" : "Región creada exitosamente");
         handleClose();
       } else {
-        // Verificar si es error de países asociados
-        if ((response as any).errorType === 'COUNTRIES_ALREADY_ASSOCIATED') {
-          setConflictErrorMessage(response.message || 'Países ya asociados a otras regiones');
-          setPendingFormData(submitData);
-          setShowConflictDialog(true);
-        } else {
-          toast.error(response.message || "Error al procesar la región");
-        }
+
+
+        toast.error(response.message || "Error al procesar la región");
       }
+
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Error al procesar la región";
@@ -115,52 +120,12 @@ export default function RegionModal({
     }
   };
 
-  const handleMoveCountries = async () => {
-    if (!pendingFormData) return;
-    
-    try {
-      const dataWithMove = {
-        ...pendingFormData,
-        moveCountries: true,
-      };
-
-      let response;
-      if (fullRegion) {
-        const { code, ...updateData } = dataWithMove;
-        response = await updateRegion(fullRegion.id, updateData);
-      } else {
-        response = await createRegion(dataWithMove);
-      }
-
-      if (!response.error) {
-        queryClient.invalidateQueries({ queryKey: ["regions"] });
-        onSuccess?.(response.data ?? undefined);
-        toast.success(fullRegion ? "Región actualizada exitosamente" : "Región creada exitosamente");
-        setShowConflictDialog(false);
-        setPendingFormData(null);
-        setConflictErrorMessage("");
-        handleClose();
-      } else {
-        toast.error(response.message || "Error al mover los países");
-      }
-    } catch (err) {
-      console.error("Error moving countries:", err);
-      toast.error("Error al intentar mover los países");
-    }
-  };
-
-  const handleConflictDialogClose = () => {
-    setShowConflictDialog(false);
-    setPendingFormData(null);
-    setConflictErrorMessage("");
-  };
-
   return (
     <>
       <SimpleModal
         open={open}
         onClose={handleClose}
-        loading={loading || isLoadingRegion}
+        loading={loading || isLoadingRegion || permissionsLoading}
         title={fullRegion ? "Editar Región" : "Crear Región"}
       >
         <div className="p-5">
@@ -177,7 +142,7 @@ export default function RegionModal({
                 <RHFSwitch
                   name="status"
                   label="Estado"
-                  disabled={isDetailsView}
+                  disabled={isDetailsView || !canEdit}
                 />
               </div>
 
@@ -188,15 +153,15 @@ export default function RegionModal({
                   label="Código"
                   placeholder="Ej: LATAM"
                   required
-                  disabled={isDetailsView || !!fullRegion}
-                  
+                  disabled={isDetailsView || !!fullRegion || !canEdit}
+
                 />
                 <RHFInputWithLabel
                   name="name"
                   label="Nombre"
                   placeholder="Nombre de la región"
                   required
-                  disabled={isDetailsView}
+                  disabled={isDetailsView || !canEdit}
                 />
               </div>
 
@@ -207,7 +172,7 @@ export default function RegionModal({
                 placeholder="Describe la región"
                 type="textarea"
                 rows={3}
-                disabled={isDetailsView}
+                disabled={isDetailsView || !canEdit}
               />
 
               {/* Países asociados */}
@@ -215,7 +180,7 @@ export default function RegionModal({
                 name="countryIds"
                 label="Países asociados"
                 placeholder="Selecciona los países de esta región"
-                disabled={isDetailsView}
+                disabled={isDetailsView || !canEdit}
               />
               {/* Botones */}
               <div className="flex justify-end gap-3 pt-6">
@@ -227,27 +192,22 @@ export default function RegionModal({
                 >
                   Cancelar
                 </button>
-                <LoaderButton
-                  type="submit"
-                  loading={isSubmitting}
-                  className="btn btn-primary"
-                  disabled={isSubmitting}
-                >
-                  {fullRegion ? "Guardar Cambios" : "Crear Región"}
-                </LoaderButton>
+                {!isDetailsView && (
+                  <LoaderButton
+                    type="submit"
+                    loading={isSubmitting || permissionsLoading}
+                    className="btn btn-primary"
+                    disabled={isSubmitting || permissionsLoading || !canEdit}
+                  >
+                    {fullRegion ? "Guardar Cambios" : "Crear Región"}
+                  </LoaderButton>
+                )}
               </div>
             </form>
           </FormProvider>
         </div>
       </SimpleModal>
 
-      {/* Modal de conflicto de países */}
-      <CountryConflictDialog
-        open={showConflictDialog}
-        onClose={handleConflictDialogClose}
-        onMoveCountries={handleMoveCountries}
-        errorMessage={conflictErrorMessage}
-      />
     </>
   );
 }

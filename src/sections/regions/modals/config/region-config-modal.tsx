@@ -4,72 +4,33 @@ import { useState } from "react";
 import SimpleModal from "@/components/modal/modal";
 import { Region } from "@/types/regions";
 import { useQueryClient } from "@tanstack/react-query";
-import RegionGeneralInfo from "./components/region-general-info";
-import RegionCountriesSection from "./components/region-countries-section";
-import RegionCurrencySection from "./components/region-currency-section";
-import RegionPaymentSection from "./components/region-payment-section";
-import RegionShippingSection from "./components/region-shipping-section";
-import { useRegionDetails } from "../hooks/use-region-details";
-import RegionConfigurationModal from "./region-configuration-modal";
+import RegionCurrencySection from "../components/region-currency-section";
+import RegionPaymentSection from "../components/region-payment-section";
+import RegionShippingSection from "../components/region-shipping-section";
+import { useRegionDetails } from "../../hooks/use-region-details";
+import RegionConfigurationModal from "../region-configuration-modal";
 import { 
-  InformationCircleIcon, 
-  GlobeAmericasIcon, 
   CurrencyDollarIcon,
   CreditCardIcon,
-  TruckIcon
+  TruckIcon,
+  CogIcon
 } from "@heroicons/react/24/outline";
 import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
-interface RegionDetailsModalProps {
-  region: Region;
+interface RegionConfigModalProps {
   open: boolean;
   onClose: () => void;
+  region: Region;
   loading?: boolean;
 }
 
-const tabs = [
-  {
-    id: 'general',
-    name: 'General',
-    icon: InformationCircleIcon,
-    description: 'Información básica'
-  },
-  {
-    id: 'countries',
-    name: 'Países',
-    icon: GlobeAmericasIcon,
-    description: 'Países asociados'
-  },
-  {
-    id: 'currencies',
-    name: 'Monedas',
-    icon: CurrencyDollarIcon,
-    description: 'Configuración de monedas'
-  },
-  {
-    id: 'payments',
-    name: 'Pagos',
-    icon: CreditCardIcon,
-    description: 'Gateways de pago'
-  },
-  {
-    id: 'shipping',
-    name: 'Envíos',
-    icon: TruckIcon,
-    description: 'Métodos de envío'
-  }
-];
-
-export function RegionDetailsModal({
-  region,
+export default function RegionConfigModal({
   open,
   onClose,
-  loading: externalLoading = false,
-}: RegionDetailsModalProps) {
-  const [activeTab, setActiveTab] = useState('general');
-
-  const queryClient = useQueryClient();
-
+  region,
+  loading: externalLoading = false
+}: RegionConfigModalProps) {
+  const [activeTab, setActiveTab] = useState('currencies');
   const [configModal, setConfigModal] = useState<{
     open: boolean;
     type: 'currencies' | 'payments' | 'shipping' | null;
@@ -77,6 +38,8 @@ export function RegionDetailsModal({
     open: false,
     type: null
   });
+
+  const queryClient = useQueryClient();
 
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
@@ -103,12 +66,29 @@ export function RegionDetailsModal({
     setConfigModal({ open: false, type: null });
   };
 
+  const tabs = [
+    { 
+      id: 'currencies', 
+      label: 'Monedas', 
+      icon: CurrencyDollarIcon,
+      count: fullRegion.currencyConfig?.enabledCount || 0
+    },
+    { 
+      id: 'payments', 
+      label: 'Pagos', 
+      icon: CreditCardIcon,
+      count: fullRegion.paymentConfig?.enabledCount || 0
+    },
+    { 
+      id: 'shipping', 
+      label: 'Envíos', 
+      icon: TruckIcon,
+      count: fullRegion.shippingConfig?.enabledCount || 0
+    }
+  ];
+
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'general':
-        return <RegionGeneralInfo region={fullRegion} />;
-      case 'countries':
-        return <RegionCountriesSection region={fullRegion} />;
       case 'currencies':
         return (
           <RegionCurrencySection 
@@ -137,21 +117,30 @@ export function RegionDetailsModal({
           />
         );
       default:
-        return <RegionGeneralInfo region={fullRegion} />;
+        return <RegionCurrencySection region={fullRegion} canEdit={canEdit} canDelete={canDelete} onOpenConfig={handleOpenConfig} />;
     }
   };
 
   return (
     <SimpleModal
-      title={`Detalles de ${region.name}`}
-      loading={isLoading}
       open={open}
       onClose={onClose}
+      loading={isLoading}
+      title={
+        <div className="flex items-center space-x-2">
+          <CogIcon className="h-5 w-5 text-blue-600" />
+          <span>Configurar Región: {region.name}</span>
+        </div>
+      }
     >
-      <div className="flex flex-col h-[80vh]">
-        {/* Tabs Navigation */}
-        <div className="border-b border-gray-200 dark:border-gray-700 px-6 pt-6">
-          <nav className="flex flex-wrap gap-x-8 gap-y-2">
+      <div className="flex flex-col h-[80vh] max-w-6xl mx-auto">
+        {/* Header con tabs */}
+        <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+          <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            Configura las monedas, métodos de pago y envío disponibles en esta región
+          </div>
+          
+          <nav className="flex flex-wrap gap-2">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -159,20 +148,25 @@ export function RegionDetailsModal({
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                    isActive
-                      ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
-                  }`}
+                  className={`
+                    flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200
+                    ${isActive 
+                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700' 
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }
+                  `}
                 >
-                  <Icon
-                    className={`-ml-0.5 mr-2 h-5 w-5 ${
-                      isActive
-                        ? 'text-blue-500 dark:text-blue-400'
-                        : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'
-                    }`}
-                  />
-                  <span>{tab.name}</span>
+                  <Icon className="h-4 w-4" />
+                  <span>{tab.label}</span>
+                  <span className={`
+                    px-2 py-1 rounded-full text-xs font-medium
+                    ${isActive 
+                      ? 'bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200' 
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                    }
+                  `}>
+                    {tab.count}
+                  </span>
                 </button>
               );
             })}

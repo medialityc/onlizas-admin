@@ -90,10 +90,60 @@ export interface RegionFormData {
 // Response type for paginated regions list
 export type GetAllRegions = PaginatedResponse<Region>;
 
-// For country conflicts
-export interface CountryConflictData {
-  countryId: number;
-  countryName: string;
-  currentRegionId: number;
-  currentRegionName: string;
+
+// Region logs types
+export type RegionLogs = {
+  id: number;
+  timestamp: string;
+  description: string;
+  regionId: number;
+  regionName: string;
+  regionCode: string;
+  userId: number;
+  userName: string;
+  action: string;
+  entityType: string;
+  entityId?: number;
+  metadata?: Record<string, any>;
+};
+
+export type GetAllRegionLogs = PaginatedResponse<RegionLogs>;
+
+// Payloads for API operations
+export interface AddCurrenciesPayload {
+  currencies: Array<{
+    currencyId: number;
+    isPrimary: boolean;
+    isEnabled: boolean;
+  }>;
+}
+
+export interface AddPaymentGatewaysPayload {
+  paymentGateways: Array<{
+    paymentGatewayId: number;
+    priority: number;
+    isFallback: boolean;
+    isEnabled: boolean;
+    supportedMethods: string[]; // ['card', 'bank_transfer', etc.]
+    configurationJson?: string;
+  }>;
+}
+
+export interface UpdatePaymentPriorityPayload {
+  paymentGatewayId: number;
+  newPriority: number;
+}
+
+export interface AddShippingMethodsPayload {
+  shippingMethods: Array<{
+    shippingMethodId: number;
+    baseCost: number;
+    estimatedDaysMin: number;
+    estimatedDaysMax: number;
+    maxWeight?: number;
+    maxDimensions?: number;
+    carrier: string;
+    enabled: boolean;
+    metadata?: Record<string, any>;
+  }>;
 }

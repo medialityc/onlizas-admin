@@ -43,7 +43,7 @@ async function RegionsListPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
   const regionsPromise = await getRegions(query);
-  console.log(regionsPromise)
+  
 
   return (
     <Suspense fallback={<RegionsListSkeleton />}>

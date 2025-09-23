@@ -323,7 +323,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}`,
     get: `${process.env.NEXT_PUBLIC_API_URL}regions`,
     create: `${process.env.NEXT_PUBLIC_API_URL}regions`,
-    
+
     // Currency configuration endpoints
     currencies: {
       add: (regionId: number | string) =>
@@ -333,7 +333,7 @@ export const backendRoutes = {
       setPrimary: (regionId: number | string, currencyId: number | string) =>
         `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/currencies/${currencyId}/primary`,
     },
-    
+
     // Payment configuration endpoints  
     payments: {
       add: (regionId: number | string) =>
@@ -343,14 +343,21 @@ export const backendRoutes = {
       updatePriority: (regionId: number | string, gatewayId: number | string) =>
         `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/payment-gateways/${gatewayId}/priority`,
     },
-    
+
     // Shipping configuration endpoints
     shipping: {
       add: (regionId: number | string) =>
         `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/shipping-methods`,
+      remove: (regionId: number | string, shippingId: number | string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/shipping-methods/${shippingId}`,
       get: (regionId: number | string) =>
         `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/shipping-methods`,
     },
+
+    // Logs endpoints
+    getAllLogs: `${process.env.NEXT_PUBLIC_API_URL}regions/logs`,
+    getLogsByRegion: (regionId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/logs`,
   },
 
   locations: {

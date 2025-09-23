@@ -17,7 +17,7 @@ export type GatewayType =
   | "bank";
 
 export interface TypeGateway {
-  id: string;
+  id: number;
   name: string;
   type: GatewayType;
   status: "active" | "inactive";
