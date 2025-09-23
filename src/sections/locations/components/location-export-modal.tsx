@@ -63,10 +63,10 @@ export default function LocationExportModal({
       ...locations.map(location => [
         location.id || "",
         `"${safeString(location.name)}"`,
-        safeString(location.country_code),
+        safeString(location.countryCode),
         `"${safeString(location.state)}"`,
         `"${safeString(location.district)}"`,
-        `"${safeString(location.address_raw)}"`,
+        `"${safeString(location.addressRaw)}"`,
         location.latitude || "",
         location.longitude || "",
         `"${safeString(location.type)}"`,

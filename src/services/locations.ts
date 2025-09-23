@@ -5,7 +5,7 @@ import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
-import { GetAllLocations, ILocation } from "@/types/locations";
+import { GetAllLocations, ILocation, CreateLocationData, UpdateLocationData, LocationStatus } from "@/types/locations";
 import { revalidateTag } from "next/cache";
 
 export async function getAllLocations(
@@ -29,23 +29,22 @@ export async function getLocationById(
   id: string | number
 ): Promise<ApiResponse<ILocation>> {
   const res = await nextAuthFetch({
-    url: `${backendRoutes.locations.list}/${id}`,
+    url: backendRoutes.locations.getById(id),
     method: "GET",
     useAuth: true,
     next: { tags: ["locations", String(id)] },
   });
+  console.log(res)
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<ILocation>(res);
 }
 
 export async function deleteLocation(
-  id: string | number,
-  audit: { reason?: string } = {}
+  id: string | number
 ): Promise<ApiResponse<{ success: boolean }>> {
   const res = await nextAuthFetch({
-    url: `${backendRoutes.locations.list}/${id}`,
+    url: backendRoutes.locations.delete(id),
     method: "DELETE",
-    data: audit,
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
@@ -55,13 +54,12 @@ export async function deleteLocation(
 
 export async function updateLocationStatus(
   id: string | number,
-  status: "ACTIVE" | "INACTIVE",
-  audit: { reason?: string } = {}
+ 
 ): Promise<ApiResponse<ILocation>> {
   const res = await nextAuthFetch({
-    url: `${backendRoutes.locations.list}/${id}/status`,
+    url: backendRoutes.locations.toggleStatus(id),
     method: "PATCH",
-    data: { status, ...audit },
+    
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
@@ -70,10 +68,11 @@ export async function updateLocationStatus(
 }
 
 export async function createLocation(
-  data: Omit<ILocation, 'id' | 'created_at' | 'updated_at'>
+  data: CreateLocationData
 ): Promise<ApiResponse<ILocation>> {
+  console.log(data)
   const res = await nextAuthFetch({
-    url: backendRoutes.locations.list,
+    url: backendRoutes.locations.create,
     method: "POST",
     data,
     useAuth: true,
@@ -85,10 +84,11 @@ export async function createLocation(
 
 export async function updateLocation(
   id: string | number,
-  data: Partial<Omit<ILocation, 'id' | 'created_at' | 'updated_at'>>
+  data: UpdateLocationData
 ): Promise<ApiResponse<ILocation>> {
+  console.log(data)
   const res = await nextAuthFetch({
-    url: `${backendRoutes.locations.list}/${id}`,
+    url: backendRoutes.locations.update(id),
     method: "PUT",
     data,
     useAuth: true,

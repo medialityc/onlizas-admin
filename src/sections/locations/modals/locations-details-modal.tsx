@@ -41,11 +41,11 @@ export function LocationsDetailsModal({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InfoCard title="ID">#{location?.id}</InfoCard>
           <InfoCard title="Nombre">{location?.name || '—'}</InfoCard>
-          <InfoCard title="Dirección">{location?.address_raw || '—'}</InfoCard>
+          <InfoCard title="Dirección">{location?.addressRaw || '—'}</InfoCard>
           <InfoCard title="País">
             <div className="flex items-center gap-2">
               <GlobeAltIcon className="size-5 text-purple-500" />
-              <span>{location?.country_code || '—'}</span>
+              <span>{location?.countryCode || '—'}</span>
             </div>
           </InfoCard>
           <InfoCard title="Estado">{location?.state || '—'}</InfoCard>
