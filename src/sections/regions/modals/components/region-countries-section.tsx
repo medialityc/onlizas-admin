@@ -33,7 +33,7 @@ export default function RegionCountriesSection({ region }: { region: Region }) {
       <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {countries.map((country) => (
-            <OptimizedCountryCard key={country.id} country={country} />
+            <OptimizedCountryCard key={country.id} country={country as any} />
           ))}
         </div>
       </div>
