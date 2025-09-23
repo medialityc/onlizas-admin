@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 "use server";
+=======
+import { ApiResponse } from "@/types/fetch/api";
+import { Region, RegionFormData } from "@/types/regions";
+>>>>>>> c18159d (feat: module home banner)
 
 import { ApiResponse, ApiStatusResponse } from '@/types/fetch/api';
 import { Region, RegionFormData, GetAllRegions } from '@/types/regions';
@@ -11,15 +16,22 @@ import { revalidateTag } from "next/cache";
 
 // Local minimal types for service responses used only in this service.
 interface RegionFilters {
-  status?: Region['status'];
+  status?: Region["status"];
   search?: string;
 }
 
 interface RegionResolution {
   region: Region;
   primaryCurrency: string;
-  enabledPaymentGateways: Array<{ gatewayId: number; priority: number; isFallback: boolean }>;
-  enabledShippingMethods: Array<{ methodId: number; metadata: Record<string, any> }>;
+  enabledPaymentGateways: Array<{
+    gatewayId: number;
+    priority: number;
+    isFallback: boolean;
+  }>;
+  enabledShippingMethods: Array<{
+    methodId: number;
+    metadata: Record<string, any>;
+  }>;
 }
 
 interface RegionStats {
@@ -30,174 +42,298 @@ interface RegionStats {
   withCurrencies: number;
 }
 
-// CRUD operations using real backend API calls
-export async function getRegions(params?: IQueryable): Promise<ApiResponse<GetAllRegions>> {
-  const url = new QueryParamsURLFactory(
-    { ...params },
-    backendRoutes.regions.get
-  ).build();
+// Datos mock para desarrollo
+const mockRegions: Region[] = [
+  {
+    id: 1,
+    code: "LATAM",
+    name: "América Latina",
+    description: "Región de América Latina y Caribe",
+    status: "active",
+    createdAt: "2024-01-15T10:00:00Z",
+    updatedAt: "2024-01-15T10:00:00Z",
+    countries: [
+      { id: 1, name: "México", code: "MX" },
+      { id: 2, name: "Colombia", code: "CO" },
+      { id: 3, name: "Brasil", code: "BR" },
+    ],
+  },
+  {
+    id: 2,
+    code: "EU",
+    name: "Unión Europea",
+    description: "Países miembros de la Unión Europea",
+    status: "active",
+    createdAt: "2024-01-16T10:00:00Z",
+    updatedAt: "2024-01-16T10:00:00Z",
+    countries: [
+      { id: 4, name: "España", code: "ES" },
+      { id: 5, name: "Francia", code: "FR" },
+      { id: 6, name: "Alemania", code: "DE" },
+    ],
+  },
+  {
+    id: 3,
+    code: "NA",
+    name: "América del Norte",
+    description: "Estados Unidos, Canadá y México",
+    status: "inactive",
+    createdAt: "2024-01-17T10:00:00Z",
+    updatedAt: "2024-01-17T10:00:00Z",
+    countries: [
+      { id: 7, name: "Estados Unidos", code: "US" },
+      { id: 8, name: "Canadá", code: "CA" },
+      { id: 1, name: "México", code: "MX" },
+    ],
+  },
+];
 
-  const res = await nextAuthFetch({
-    url,
-    method: "GET",
-    useAuth: true,
-    next: { tags: ["regions"] },
-  });
+// Funciones CRUD básicas
+export async function getRegions(
+  filters?: RegionFilters
+): Promise<ApiResponse<Region[]>> {
+  await new Promise((resolve) => setTimeout(resolve, 300));
 
   if (!res.ok) return handleApiServerError(res);
 
-  return buildApiResponseAsync<GetAllRegions>(res);
+  if (filters?.status) {
+    filtered = filtered.filter((r) => r.status === filters.status);
+  }
+
+  if (filters?.search) {
+    const search = filters.search.toLowerCase();
+    filtered = filtered.filter(
+      (r) =>
+        r.name.toLowerCase().includes(search) ||
+        r.code.toLowerCase().includes(search) ||
+        r.description?.toLowerCase().includes(search)
+    );
+  }
+
+  return { data: filtered, status: 200, error: false };
 }
 
-export async function getRegionById(id: number): Promise<ApiResponse<Region | null>> {
-  const baseUrl = backendRoutes.regions.listById(id);  
-  let url = `${baseUrl}?include= `;
-  
-  const res = await nextAuthFetch({
-    url,
-    method: "GET",
-    useAuth:true,
+export async function getRegionById(
+  id: number
+): Promise<ApiResponse<Region | null>> {
+  await new Promise((resolve) => setTimeout(resolve, 200));
 
-  });
-
-  if (!res.ok) {
-    if (res.status === 404) {
-      return { data: null, status: 404, error: true, message: 'Región no encontrada' };
-    }
-    return handleApiServerError(res);
+  const region = mockRegions.find((r) => r.id === id);
+  if (!region) {
+    return {
+      data: null,
+      status: 404,
+      error: true,
+      message: "Región no encontrada",
+    };
   }
 
   return buildApiResponseAsync<Region>(res);
 }
 
-export async function createRegion(data: RegionFormData): Promise<ApiResponse<Region | null>> {
-  const res = await nextAuthFetch({
-    url: backendRoutes.regions.create,
-    method: "POST",
-    data: JSON.stringify(data),
-    useAuth: true,
-    headers: { 'Content-Type': 'application/json' },
+export async function createRegion(
+  data: RegionFormData
+): Promise<ApiResponse<Region | null>> {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  // Basic validation and normalization for code
+  if (!data.code || !data.code.toString().trim()) {
+    return { data: null, status: 400, error: true, message: "Código inválido" };
+  }
+  const normalizedCode = data.code.toString().trim().toUpperCase();
+
+  // Validar código único
+  const existing = mockRegions.find(
+    (r) => r.code.toUpperCase() === normalizedCode
+  );
+  if (existing) {
+    return {
+      data: null,
+      status: 400,
+      error: true,
+      message: "El código de región ya existe",
+    };
+  }
+
+  // Get countries data for the selected IDs
+  const countriesResponse = await import("./countries").then((mod) =>
+    mod.getCountries()
+  );
+  const allCountries = countriesResponse.data || [];
+  const selectedCountries = data.countryIds
+    ? allCountries
+        .filter((c) => data.countryIds.includes(c.id))
+        .map((c) => ({ id: c.id, name: c.name, code: c.code }))
+    : [];
+
+  const newRegion: Region = {
+    id: mockRegions.length ? Math.max(...mockRegions.map((r) => r.id)) + 1 : 1,
+    code: normalizedCode,
+    name: data.name,
+    description: data.description,
+    status: data.status,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    countries: selectedCountries,
+  };
+
+  console.debug("[mock] createRegion", {
+    incoming: data,
+    selectedCountries: selectedCountries.length,
   });
 
-  if (!res.ok) {
-    // Si es 400, intentar devolver el error original para detectar conflictos
-    if (res.status === 400) {
-      try {
-        const errorText = await res.text();
-        const errorData = JSON.parse(errorText);
-        
-        // Si hay error de países asociados, devolver el error estructurado
-        if (errorData.errors && Array.isArray(errorData.errors)) {
-          const countryError = errorData.errors.find((err: any) => err.code === 'COUNTRIES_ALREADY_ASSOCIATED');
-          if (countryError) {
-            return {
-              error: true,
-              status: 400,
-              message: countryError.reason || 'Países ya asociados',
-              data: null,
-              errorType: 'COUNTRIES_ALREADY_ASSOCIATED',
-              originalError: errorData
-            } as any;
-          }
-        }
-      } catch (parseError) {
-        // Si no se puede parsear, usar el manejo normal
-        return handleApiServerError(res);
-      }
-    }
-    return handleApiServerError(res);
-  }  revalidateTag("regions");
-  return buildApiResponseAsync<Region>(res);
+  mockRegions.push(newRegion);
+  return { data: newRegion, status: 201, error: false };
 }
 
-export async function updateRegion(id: number, data: Partial<RegionFormData>): Promise<ApiResponse<Region | null>> {
-  const res = await nextAuthFetch({
-    url: backendRoutes.regions.update(id),
-    method: "PUT",
-    data: JSON.stringify(data),
-    useAuth: true,
-    headers: { 'Content-Type': 'application/json' },
+export async function updateRegion(
+  id: number,
+  data: Partial<RegionFormData>
+): Promise<ApiResponse<Region | null>> {
+  await new Promise((resolve) => setTimeout(resolve, 400));
+
+  const index = mockRegions.findIndex((r) => r.id === id);
+  if (index === -1) {
+    return {
+      data: null,
+      status: 404,
+      error: true,
+      message: "Región no encontrada",
+    };
+  }
+
+  // Validar código único si se está cambiando
+  if (data.code) {
+    const normalized = data.code.toString().trim().toUpperCase();
+    const existing = mockRegions.find(
+      (r) => r.id !== id && r.code.toUpperCase() === normalized
+    );
+    if (existing) {
+      return {
+        data: null,
+        status: 400,
+        error: true,
+        message: "El código de región ya existe",
+      };
+    }
+  }
+
+  // Get countries data for the selected IDs if countryIds is provided
+  let selectedCountries = mockRegions[index].countries;
+  if (data.countryIds !== undefined) {
+    const countriesResponse = await import("./countries").then((mod) =>
+      mod.getCountries()
+    );
+    const allCountries = countriesResponse.data || [];
+    selectedCountries = data.countryIds
+      ? allCountries
+          .filter((c) => data.countryIds!.includes(c.id))
+          .map((c) => ({ id: c.id, name: c.name, code: c.code }))
+      : [];
+  }
+
+  const updatedRegion: Region = {
+    ...mockRegions[index],
+    ...data,
+    code: data.code
+      ? data.code.toString().trim().toUpperCase()
+      : mockRegions[index].code,
+    updatedAt: new Date().toISOString(),
+    countries: selectedCountries,
+  };
+
+  console.debug("[mock] updateRegion", {
+    id,
+    incoming: data,
+    selectedCountries: selectedCountries?.length,
   });
 
-  if (!res.ok) {
-    if (res.status === 404) {
-      return { data: null, status: 404, error: true, message: 'Región no encontrada' };
-    }
-    
-    // Si es 400, intentar devolver el error original para detectar conflictos
-    if (res.status === 400) {
-      try {
-        const errorText = await res.text();
-        const errorData = JSON.parse(errorText);
-        
-        // Si hay error de países asociados, devolver el error estructurado
-        if (errorData.errors && Array.isArray(errorData.errors)) {
-          const countryError = errorData.errors.find((err: any) => err.code === 'COUNTRIES_ALREADY_ASSOCIATED');
-          if (countryError) {
-            return {
-              error: true,
-              status: 400,
-              message: countryError.reason || 'Países ya asociados',
-              data: null,
-              errorType: 'COUNTRIES_ALREADY_ASSOCIATED',
-              originalError: errorData
-            } as any;
-          }
-        }
-      } catch (parseError) {
-        // Si no se puede parsear, usar el manejo normal
-        return handleApiServerError(res);
-      }
-    }
-    
-    return handleApiServerError(res);
-  }  revalidateTag("regions");
-  return buildApiResponseAsync<Region>(res);
+  mockRegions[index] = updatedRegion;
+  return { data: updatedRegion, status: 200, error: false };
 }
 
 export async function deleteRegion(id: number): Promise<ApiResponse<boolean>> {
-  const res = await nextAuthFetch({
-    url: backendRoutes.regions.delete(id),
-    method: "DELETE",
-    useAuth: true,
-    data: JSON.stringify({ id }),
-    contentType: "application/json",
-  });
+  await new Promise((resolve) => setTimeout(resolve, 300));
 
-  if (!res.ok) {
-    if (res.status === 404) {
-      return { data: false, status: 404, error: true, message: 'Región no encontrada' };
-    }
-    return handleApiServerError(res);
+  const index = mockRegions.findIndex((r) => r.id === id);
+  if (index === -1) {
+    return {
+      data: false,
+      status: 404,
+      error: true,
+      message: "Región no encontrada",
+    };
   }
-  revalidateTag("regions");
+
+  // Soft delete
+  mockRegions[index].status = "deleted";
+  mockRegions[index].updatedAt = new Date().toISOString();
 
   return { data: true, status: 200, error: false };
 }
 
-// Note: These functions might need backend endpoints if needed in the future
-export async function resolveRegionByCountry(countryCode: string): Promise<ApiResponse<RegionResolution | null>> {
-  // TODO: Implement when backend endpoint is available
-  // For now, return a basic response or implement via getRegions + client-side filtering
-  return { data: null, status: 404, error: true, message: 'Función no implementada - requerida endpoint del backend' };
+// Resolución rápida por país
+export async function resolveRegionByCountry(
+  countryCode: string
+): Promise<ApiResponse<RegionResolution | null>> {
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
+  // Mock: asignar países a regiones
+  const countryRegionMap: Record<string, number> = {
+    MX: 1,
+    CO: 1,
+    BR: 1, // LATAM
+    ES: 2,
+    FR: 2,
+    DE: 2, // EU
+    US: 3,
+    CA: 3, // NA
+  };
+
+  const regionId = countryRegionMap[countryCode.toUpperCase()];
+  if (!regionId) {
+    return {
+      data: null,
+      status: 404,
+      error: true,
+      message: "País no asignado a ninguna región",
+    };
+  }
+
+  const region = mockRegions.find((r) => r.id === regionId);
+  if (!region || region.status !== "active") {
+    return {
+      data: null,
+      status: 404,
+      error: true,
+      message: "Región no encontrada o inactiva",
+    };
+  }
+
+  const resolution: RegionResolution = {
+    region,
+    primaryCurrency: "USD",
+    enabledPaymentGateways: [{ gatewayId: 1, priority: 1, isFallback: false }],
+    enabledShippingMethods: [
+      { methodId: 1, metadata: { carrier: "DHL", costo_base: 10 } },
+    ],
+  };
+
+  return { data: resolution, status: 200, error: false };
 }
 
-/* export async function getRegionStats(): Promise<ApiResponse<RegionStats>> {
-  // TODO: Implement when backend endpoint is available
-  // For now, return basic stats or implement via getRegions + client-side calculation
-  const regionsResponse = await getRegions();
-  if (regionsResponse.error || !regionsResponse.data) {
-    return { data: { total: 0, active: 0, inactive: 0, withCountries: 0, withCurrencies: 0 }, status: 200, error: false };
-  }
+// Estadísticas
+export async function getRegionStats(): Promise<ApiResponse<RegionStats>> {
+  await new Promise((resolve) => setTimeout(resolve, 200));
 
   const regions = regionsResponse.data.data || []; // Get the actual array from PaginatedResponse
   const stats: RegionStats = {
-    total: regions.length,
-    active: regions.filter(r => r.status === 'active').length,
-    inactive: regions.filter(r => r.status === 'inactive').length,
-    withCountries: regions.filter(r => r.countries && r.countries.length > 0).length,
-    withCurrencies: 0, // TODO: Add currency information when available from backend
+    total: mockRegions.length,
+    active: mockRegions.filter((r) => r.status === "active").length,
+    inactive: mockRegions.filter((r) => r.status === "inactive").length,
+    withCountries: mockRegions.filter((r) => r.id <= 3).length, // Mock
+    withCurrencies: mockRegions.filter((r) => r.id <= 2).length, // Mock
   };
 
   return { data: stats, status: 200, error: false };
-} */
+} 

@@ -26,8 +26,8 @@ const promotionSchema = z.object({
 	badge: z.string().optional(),
 });
 
-// Banners in the form follow backend contract
-const bannerSchema = z.object({
+// HomeBanners in the form follow backend contract
+const homeBannerSchema = z.object({
 	id: z.number().int().nonnegative().optional(),
 	title: z.string().min(1, "El título es obligatorio"),
 	urlDestinity: z.string().min(1, "La URL de destino es obligatoria"),
@@ -108,7 +108,7 @@ export const storeEditSchema = z.object({
 	// Payloads y colecciones
 	categoriesPayload: z.array(categoryItemSchema).optional(),
 	promotionsPayload: z.array(promotionSchema).optional(),
-	banners: z.array(bannerSchema).optional(),
+	banners: z.array(homeBannerSchema).optional(),
 });
 
 export type StoreEditFormData = z.infer<typeof storeEditSchema>;

@@ -100,4 +100,19 @@ export const paths = {
       list: `${PROVIDER}/stores`,
     },
   },
+
+  content: {
+    sections: {
+      list: `${DASHBOARD}/content/sections`,
+      view: (id: string | number) => `${DASHBOARD}/content/sections/${id}`,
+      edit: (id: string | number) => `${DASHBOARD}/content/sections/${id}/edit`,
+    },
+    banners: {
+      list: `${DASHBOARD}/content/home-banners`,
+      view: (id: string | number) => `${DASHBOARD}/content/home-banners/${id}`,
+      new: `${DASHBOARD}/content/home-banners/new`,
+      edit: (id: string | number) =>
+        `${DASHBOARD}/content/home-banners/${id}/edit`,
+    },
+  },
 };

@@ -1,4 +1,4 @@
-export type BannerItem = {
+export type HomeBannerItem = {
   id: number;
   title: string;
   url: string;
@@ -9,7 +9,7 @@ export type BannerItem = {
   isActive: boolean;
 };
 
-export const mockBanners: BannerItem[] = [
+export const mockHomeBanners: HomeBannerItem[] = [
   {
     id: 1,
     title: "Oferta Especial Laptops",

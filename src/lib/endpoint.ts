@@ -356,4 +356,32 @@ export const backendRoutes = {
   locations: {
     list: `${process.env.NEXT_PUBLIC_API_URL}locations`,
   },
+
+  content: {
+    section: {
+      list: `${process.env.NEXT_PUBLIC_API_URL}admin/sections`, // GET
+      create: `${process.env.NEXT_PUBLIC_API_URL}admin/sections`, // POST
+      delete: (id: number | string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/sections/${id}`, // DELETE
+      update: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/sections/${id}`, // PUT
+      rollBack: (id: string | number, versionId: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/sections/${id}/rollback/${versionId}`, // POST
+    },
+    homeBanner: {
+      list: `${process.env.NEXT_PUBLIC_API_URL}home-banners`, // GET
+      create: `${process.env.NEXT_PUBLIC_API_URL}home-banners/create`, // POST
+      getOne: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}home-banners/${id}`, // GET
+      delete: (id: number | string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}home-banners/${id}`, // DELETE
+      update: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}home-banners/${id}`, // PUT
+
+      searchByStore: (storeId: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}home-banners/${storeId}`, // GET
+      searchAdminByStore: (storeId: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}home-banners/admin/${storeId}`, // GET
+    },
+  },
 };

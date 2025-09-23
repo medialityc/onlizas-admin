@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const BannerSchema = z.object({
+export const HomeBannerSchema = z.object({
   title: z.string().min(1, "Requerido"),
   url: z.string().min(1, "Requerido"),
   position: z.enum(["hero", "sidebar", "slideshow"], {
@@ -12,4 +12,4 @@ export const BannerSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
-export type BannerForm = z.infer<typeof BannerSchema>;
+export type HomeBannerForm = z.infer<typeof HomeBannerSchema>;

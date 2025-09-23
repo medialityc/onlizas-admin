@@ -34,7 +34,7 @@ type DataCardProps = {
 
 export const SoreCard = ({ store }: DataCardProps) => {
   const [hasImageError, setHasImageError] = useState(false);
-  const [hasBannerError, setHasBannerError] = useState(false);
+  const [hasHomeBannerError, setHasHomeBannerError] = useState(false);
   const router = useRouter();
 
   // Control de permisos
@@ -54,14 +54,14 @@ export const SoreCard = ({ store }: DataCardProps) => {
 
   const accentColor =
     store.primaryColor || store.secondaryColor || store.accentColor;
-  const firstBanner =
+  const firstHomeBanner =
     Array.isArray(store.banners) && store.banners.length > 0
       ? (store.banners[0] as any)
       : undefined;
   const bannerUrl =
-    typeof firstBanner === "string"
-      ? firstBanner
-      : firstBanner?.url || firstBanner?.image || undefined;
+    typeof firstHomeBanner === "string"
+      ? firstHomeBanner
+      : firstHomeBanner?.url || firstHomeBanner?.image || undefined;
 
   return (
     <Card
@@ -71,7 +71,7 @@ export const SoreCard = ({ store }: DataCardProps) => {
     >
       {/* Decorative header: banner or fallback gradient */}
       <div className="relative h-20 w-full overflow-hidden">
-        {bannerUrl && !hasBannerError ? (
+        {bannerUrl && !hasHomeBannerError ? (
           <>
             <Image
               src={bannerUrl}
@@ -79,7 +79,7 @@ export const SoreCard = ({ store }: DataCardProps) => {
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 33vw"
-              onError={() => setHasBannerError(true)}
+              onError={() => setHasHomeBannerError(true)}
             />
             <div className="absolute inset-0 bg-black/5 dark:bg-black/20" />
           </>
