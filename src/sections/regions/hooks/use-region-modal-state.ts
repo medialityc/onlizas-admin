@@ -23,6 +23,7 @@ export function useRegionModalState<T = any>(options?: UseRegionModalOptions<T>)
     edit: { open: false },
     view: { open: false },
     configure: { open: false },
+    
   });
 
   const [submitting, setSubmitting] = useState(false);

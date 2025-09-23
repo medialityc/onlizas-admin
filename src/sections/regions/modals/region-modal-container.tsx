@@ -1,7 +1,7 @@
 import { Region } from "@/types/regions";
-import { RegionDetailsModal } from "./region-details-modal";
+import RegionDetailsModal from "./details/region-details-modal";
+import RegionConfigModal from "./config/region-config-modal";
 import RegionModal from "./region-modal";
-
 
 interface RegionModalContainerProps {
   open: boolean;
@@ -9,6 +9,7 @@ interface RegionModalContainerProps {
   onSuccess?: (data?: Region) => void;
   region?: Region;
   isDetailsView?: boolean;
+  isConfigView?: boolean;
 }
 
 export default function RegionModalContainer({
@@ -16,17 +17,26 @@ export default function RegionModalContainer({
   onClose,
   region,
   isDetailsView,
+  isConfigView,
   onSuccess,
 }: RegionModalContainerProps) {
   if (!open) return null;
 
-  if (isDetailsView) {
-    if (!region) return null;
+  if (isDetailsView && region) {
     return (
       <RegionDetailsModal
-        loading={false}
-        onClose={onClose}
         open={open}
+        onClose={onClose}
+        region={region}
+      />
+    );
+  }
+
+  if (isConfigView && region) {
+    return (
+      <RegionConfigModal
+        open={open}
+        onClose={onClose}
         region={region}
       />
     );

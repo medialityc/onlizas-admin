@@ -6,6 +6,7 @@ import {
   TagIcon,
   UserGroupIcon,
   KeyIcon,
+  GlobeAmericasIcon,
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -58,6 +59,14 @@ const modules = [
     icon: KeyIcon,
     color: "text-amber-600 dark:text-amber-400",
     bg: "bg-amber-50 dark:bg-amber-900/20",
+    permissions: ["READ_ALL"],
+  },
+  {
+    name: "Regiones",
+    href: "/dashboard/regionslogs",
+    icon: GlobeAmericasIcon,
+    color: "text-cyan-600 dark:text-cyan-400",
+    bg: "bg-cyan-50 dark:bg-cyan-900/20",
     permissions: ["READ_ALL"],
   },
   {

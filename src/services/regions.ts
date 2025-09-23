@@ -1,7 +1,7 @@
 "use server";
 
-import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
-import { Region, RegionFormData, GetAllRegions } from "@/types/regions";
+import { ApiResponse } from '@/types/fetch/api';
+import { Region, RegionFormData, GetAllRegions, AddCurrenciesPayload, AddPaymentGatewaysPayload, UpdatePaymentPriorityPayload, AddShippingMethodsPayload } from '@/types/regions';
 import { IQueryable } from "@/types/fetch/request";
 import { QueryParamsURLFactory } from "@/lib/request";
 import { backendRoutes } from "@/lib/endpoint";
@@ -13,11 +13,6 @@ import {
 } from "@/lib/api";
 import { revalidateTag } from "next/cache";
 
-// Local minimal types for service responses used only in this service.
-interface RegionFilters {
-  status?: Region["status"];
-  search?: string;
-}
 
 interface RegionResolution {
   region: Region;
@@ -31,14 +26,6 @@ interface RegionResolution {
     methodId: number;
     metadata: Record<string, any>;
   }>;
-}
-
-interface RegionStats {
-  total: number;
-  active: number;
-  inactive: number;
-  withCountries: number;
-  withCurrencies: number;
 }
 
 // CRUD operations using real backend API calls
@@ -62,16 +49,16 @@ export async function getRegions(
   return buildApiResponseAsync<GetAllRegions>(res);
 }
 
-export async function getRegionById(
-  id: number
-): Promise<ApiResponse<Region | null>> {
+export async function getRegionById(id: number): Promise<ApiResponse<Region | null>> {
   const baseUrl = backendRoutes.regions.listById(id);
   let url = `${baseUrl}?include= `;
+
 
   const res = await nextAuthFetch({
     url,
     method: "GET",
     useAuth: true,
+
   });
 
   if (!res.ok) {
@@ -101,35 +88,9 @@ export async function createRegion(
   });
 
   if (!res.ok) {
-    // Si es 400, intentar devolver el error original para detectar conflictos
-    if (res.status === 400) {
-      try {
-        const errorText = await res.text();
-        const errorData = JSON.parse(errorText);
-
-        // Si hay error de países asociados, devolver el error estructurado
-        if (errorData.errors && Array.isArray(errorData.errors)) {
-          const countryError = errorData.errors.find(
-            (err: any) => err.code === "COUNTRIES_ALREADY_ASSOCIATED"
-          );
-          if (countryError) {
-            return {
-              error: true,
-              status: 400,
-              message: countryError.reason || "Países ya asociados",
-              data: null,
-              errorType: "COUNTRIES_ALREADY_ASSOCIATED",
-              originalError: errorData,
-            } as any;
-          }
-        }
-      } catch (parseError) {
-        // Si no se puede parsear, usar el manejo normal
-        return handleApiServerError(res);
-      }
-    }
     return handleApiServerError(res);
   }
+  
   revalidateTag("regions");
   return buildApiResponseAsync<Region>(res);
 }
@@ -147,45 +108,9 @@ export async function updateRegion(
   });
 
   if (!res.ok) {
-    if (res.status === 404) {
-      return {
-        data: null,
-        status: 404,
-        error: true,
-        message: "Región no encontrada",
-      };
-    }
-
-    // Si es 400, intentar devolver el error original para detectar conflictos
-    if (res.status === 400) {
-      try {
-        const errorText = await res.text();
-        const errorData = JSON.parse(errorText);
-
-        // Si hay error de países asociados, devolver el error estructurado
-        if (errorData.errors && Array.isArray(errorData.errors)) {
-          const countryError = errorData.errors.find(
-            (err: any) => err.code === "COUNTRIES_ALREADY_ASSOCIATED"
-          );
-          if (countryError) {
-            return {
-              error: true,
-              status: 400,
-              message: countryError.reason || "Países ya asociados",
-              data: null,
-              errorType: "COUNTRIES_ALREADY_ASSOCIATED",
-              originalError: errorData,
-            } as any;
-          }
-        }
-      } catch (parseError) {
-        // Si no se puede parsear, usar el manejo normal
-        return handleApiServerError(res);
-      }
-    }
-
     return handleApiServerError(res);
   }
+  
   revalidateTag("regions");
   return buildApiResponseAsync<Region>(res);
 }
@@ -200,51 +125,174 @@ export async function deleteRegion(id: number): Promise<ApiResponse<boolean>> {
   });
 
   if (!res.ok) {
-    if (res.status === 404) {
-      return {
-        data: false,
-        status: 404,
-        error: true,
-        message: "Región no encontrada",
-      };
-    }
     return handleApiServerError(res);
   }
+  
   revalidateTag("regions");
-
   return { data: true, status: 200, error: false };
 }
 
-// Note: These functions might need backend endpoints if needed in the future
-export async function resolveRegionByCountry(
-  countryCode: string
-): Promise<ApiResponse<RegionResolution | null>> {
-  // TODO: Implement when backend endpoint is available
-  // For now, return a basic response or implement via getRegions + client-side filtering
-  return {
-    data: null,
-    status: 404,
-    error: true,
-    message: "Función no implementada - requerida endpoint del backend",
-  };
+// Currency management services
+export async function removeCurrencyFromRegion(
+  regionId: number, 
+  currencyId: number
+): Promise<ApiResponse<boolean>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.regions.currencies.remove(regionId, currencyId),
+    method: "DELETE",
+    useAuth: true,
+    data: JSON.stringify({regionId, currencyId}),
+    headers: { 'Content-Type': 'application/json' },
+
+  });
+
+  if (!res.ok) {
+    return handleApiServerError(res);
+  }
+  
+  revalidateTag("regions");
+  return { data: true, status: 200, error: false };
 }
 
-/* export async function getRegionStats(): Promise<ApiResponse<RegionStats>> {
-  // TODO: Implement when backend endpoint is available
-  // For now, return basic stats or implement via getRegions + client-side calculation
-  const regionsResponse = await getRegions();
-  if (regionsResponse.error || !regionsResponse.data) {
-    return { data: { total: 0, active: 0, inactive: 0, withCountries: 0, withCurrencies: 0 }, status: 200, error: false };
+export async function addCurrenciesToRegion(
+  regionId: number, 
+  payload: AddCurrenciesPayload
+): Promise<ApiResponse<boolean>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.regions.currencies.add(regionId),
+    method: "PUT",
+    useAuth: true,
+    data: JSON.stringify(payload),
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!res.ok) {
+    return handleApiServerError(res);
   }
+  
+  revalidateTag("regions");
+  return buildApiResponseAsync<boolean>(res);
+}
 
-  const regions = regionsResponse.data.data || []; // Get the actual array from PaginatedResponse
-  const stats: RegionStats = {
-    total: regions.length,
-    active: regions.filter(r => r.status === 'active').length,
-    inactive: regions.filter(r => r.status === 'inactive').length,
-    withCountries: regions.filter(r => r.countries && r.countries.length > 0).length,
-    withCurrencies: 0, // TODO: Add currency information when available from backend
-  };
+export async function setPrimaryCurrency(
+  regionId: number, 
+  currencyId: number
+): Promise<ApiResponse<boolean>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.regions.currencies.setPrimary(regionId, currencyId),
+    method: "PUT",
+    data: JSON.stringify({ regionId, currencyId }),
+    useAuth: true,
+    headers: { 'Content-Type': 'application/json' },
+  });
 
-  return { data: stats, status: 200, error: false };
-} */
+  if (!res.ok) {
+    return handleApiServerError(res);
+  }
+  
+  revalidateTag("regions");
+  return { data: true, status: 200, error: false };
+}
+
+// Payment gateway management services
+export async function removePaymentGatewayFromRegion(
+  regionId: number, 
+  gatewayId: number
+): Promise<ApiResponse<boolean>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.regions.payments.remove(regionId, gatewayId),
+    method: "DELETE",
+    useAuth: true,
+    data: JSON.stringify({regionId, gatewayId}),
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!res.ok) {
+    return handleApiServerError(res);
+  }
+  
+  revalidateTag("regions");
+  return { data: true, status: 200, error: false };
+}
+
+export async function addPaymentGatewaysToRegion(
+  regionId: number, 
+  payload: AddPaymentGatewaysPayload
+): Promise<ApiResponse<boolean>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.regions.payments.add(regionId),
+    method: "PUT",
+    useAuth: true,
+    data: JSON.stringify(payload),
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!res.ok) {
+    return handleApiServerError(res);
+  }
+  
+  revalidateTag("regions");
+  return buildApiResponseAsync<boolean>(res);
+}
+
+export async function updatePaymentGatewayPriority(
+  regionId: number, 
+  gatewayId: number,
+  payload: UpdatePaymentPriorityPayload
+): Promise<ApiResponse<boolean>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.regions.payments.updatePriority(regionId, gatewayId),
+    method: "PUT",
+    useAuth: true,
+    data: JSON.stringify(payload),
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!res.ok) {
+    return handleApiServerError(res);
+  }
+  
+  revalidateTag("regions");
+  return { data: true, status: 200, error: false };
+}
+
+// Shipping methods management services
+export async function removeShippingMethodFromRegion(
+  regionId: number, 
+  shippingId: number
+): Promise<ApiResponse<boolean>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.regions.shipping.remove(regionId, shippingId),
+    method: "DELETE",
+    useAuth: true,
+    data: JSON.stringify({regionId, shippingId}),
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!res.ok) {
+    return handleApiServerError(res);
+  }
+  
+  revalidateTag("regions");
+  return { data: true, status: 200, error: false };
+}
+
+export async function addShippingMethodsToRegion(
+  regionId: number, 
+  payload: AddShippingMethodsPayload
+): Promise<ApiResponse<boolean>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.regions.shipping.add(regionId),
+    method: "PUT",
+    useAuth: true,
+    data: JSON.stringify(payload),
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!res.ok) {
+    return handleApiServerError(res);
+  }
+  
+  revalidateTag("regions");
+  return buildApiResponseAsync<boolean>(res);
+}
