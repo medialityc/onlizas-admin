@@ -82,7 +82,7 @@ export default function LocationDeleteModal({
 
     setLoading(true);
     try {
-      const response = await deleteLocation(location.id, { reason: reason || "Eliminación desde interfaz" });
+      const response = await deleteLocation(location.id);
       
       if (!response.error) {
         queryClient.invalidateQueries({ queryKey: ["locations"] });
@@ -132,9 +132,9 @@ export default function LocationDeleteModal({
               </h3>
               <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-4">
                 <p className="font-medium text-gray-900 dark:text-white">{location.name}</p>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">{location.address_raw}</p>
+                <p className="text-gray-600 dark:text-gray-300 text-sm">{location.addressRaw}</p>
                 <p className="text-gray-500 dark:text-gray-400 text-xs">
-                  {location.district}, {location.state} - {location.country_code}
+                  {location.district}, {location.state} - {location.countryCode}
                 </p>
               </div>
             </div>

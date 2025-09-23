@@ -362,6 +362,13 @@ export const backendRoutes = {
 
   locations: {
     list: `${process.env.NEXT_PUBLIC_API_URL}locations`,
+    getById: (id: number | string) => `${process.env.NEXT_PUBLIC_API_URL}locations/${id}`,
+    create: `${process.env.NEXT_PUBLIC_API_URL}locations`,
+    update: (id: number | string) => `${process.env.NEXT_PUBLIC_API_URL}locations/${id}`,
+    delete: (id: number | string) => `${process.env.NEXT_PUBLIC_API_URL}locations/${id}`,
+    toggleStatus: (id: number | string) => `${process.env.NEXT_PUBLIC_API_URL}locations/${id}/toggle-status`, // PATCH
+    listLogs: `${process.env.NEXT_PUBLIC_API_URL}locations/logs`, // GET
+    getLogsById: (id: number | string) => `${process.env.NEXT_PUBLIC_API_URL}locations/${id}/logs`, // GET
   },
   systemConfigurations: {
     list: `${process.env.NEXT_PUBLIC_API_URL}system-configuration`,

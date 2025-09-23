@@ -7,11 +7,13 @@ import { useModalState } from "@/hooks/use-modal-state";
 import { SearchParams } from "@/types/fetch/request";
 import { DataTableColumn } from "mantine-datatable";
 import { useCallback, useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import LocationsModalContainer from "../modals/locations-modal-container";
 import LocationDeleteModal from "../modals/location-delete-modal";
 import LocationExportModal from "../components/location-export-modal";
-import { ILocation, GetAllLocations } from "@/types/locations";
+import { ILocation, GetAllLocations, LocationStatus, LocationType } from "@/types/locations";
 import StatusBadge from "@/components/badge/status-badge";
+import { updateLocationStatus } from "@/services/locations";
 import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 interface LocationsListProps {
@@ -35,12 +37,6 @@ const getLocationTypeLabel = (type: string | number | undefined): string => {
   return LOCATION_TYPE_MAP[typeKey] || typeKey;
 };
 
-interface LocationsListProps {
-  data?: GetAllLocations;
-  searchParams: SearchParams;
-  onSearchParamsChange: (params: SearchParams) => void;
-}
-
 export function LocationsList({
   data,
   searchParams,
@@ -52,6 +48,7 @@ export function LocationsList({
   const [locationToDelete, setLocationToDelete] = useState<ILocation | null>(null);
   const { data: permissions = [] } = usePermissions();
   const hasReadPermission = permissions.some(p => p.code === "READ_ALL");
+  const queryClient = useQueryClient();
 
   const createLocationModal = getModalState("create");
   const editLocationModal = getModalState<number>("edit");
@@ -86,6 +83,30 @@ export function LocationsList({
     setShowDeleteModal(true);
   }, []);
 
+  const handleToggleStatus = useCallback(async (location: ILocation) => {
+    try {
+      const newStatus = location.status === LocationStatus.ACTIVE 
+        ? LocationStatus.INACTIVE 
+        : LocationStatus.ACTIVE;
+      
+      const response = await updateLocationStatus(location.id);
+      
+      if (response.error) {
+        showToast(response.message || "Error al cambiar el estado de la ubicación", "error");
+        return;
+      }
+      
+      queryClient.invalidateQueries({ queryKey: ["locations"] });
+      showToast(
+        `Ubicación ${newStatus === LocationStatus.ACTIVE ? "activada" : "desactivada"} exitosamente`,
+        "success"
+      );
+    } catch (error) {
+      console.error("Error toggling location status:", error);
+      showToast("Error al cambiar el estado de la ubicación", "error");
+    }
+  }, [queryClient]);
+
   const columns = useMemo<DataTableColumn<ILocation>[]>(() => [
     {
       accessor: "id",
@@ -109,14 +130,14 @@ export function LocationsList({
       ),
     },
     {
-      accessor: "address_raw",
+      accessor: "addressRaw",
       title: "Dirección",
       render: (location) => (
         <div className="max-w-xs">
           <span className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-            {location.address_raw?.length > 100
-              ? `${location.address_raw.substring(0, 100)}...`
-              : (location.address_raw ?? "-")}
+            {location.addressRaw?.length > 100
+              ? `${location.addressRaw.substring(0, 100)}...`
+              : (location.addressRaw ?? "-")}
           </span>
         </div>
       ),
@@ -140,11 +161,11 @@ export function LocationsList({
       ),
     },
     {
-      accessor: "country_code",
+      accessor: "countryCode",
       title: "País",
       render: (location) => (
         <span className="text-sm text-gray-500 dark:text-gray-300">
-          {location.country_code ?? "-"}
+          {location.countryCode ?? "-"}
         </span>
       ),
     },
@@ -162,7 +183,7 @@ export function LocationsList({
       title: "Estado",
       render: (location) => (
         <StatusBadge
-          isActive={location.status === "ACTIVE"}
+          isActive={location.status === LocationStatus.ACTIVE}
           activeText="Activo"
           inactiveText="Inactivo"
         />
@@ -175,10 +196,11 @@ export function LocationsList({
       render: (location) => (
         <div className="flex justify-center">
           <ActionsMenu
-            isActive={location.status === "ACTIVE"}
+            isActive={location.status === LocationStatus.ACTIVE}
             onViewDetails={() => handleViewLocation(location)}
             onEdit={() => handleEditLocation(location)}
             onDelete={() => handleDeleteLocation(location)}
+            onActive={() => handleToggleStatus(location)}
             viewPermissions={["READ_ALL"]}
             editPermissions={["UPDATE_ALL"]}
             deletePermissions={["DELETE_ALL"]}
@@ -186,7 +208,7 @@ export function LocationsList({
         </div>
       ),
     },
-  ], [handleViewLocation, handleEditLocation, handleDeleteLocation]);
+  ], [handleViewLocation, handleEditLocation, handleDeleteLocation, handleToggleStatus]);
 
   return (
     <>

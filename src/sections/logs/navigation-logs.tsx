@@ -6,6 +6,7 @@ import {
   TagIcon,
   UserGroupIcon,
   KeyIcon,
+  MapPinIcon,
   GlobeAmericasIcon,
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
@@ -77,6 +78,13 @@ const modules = [
     bg: "bg-indigo-50 dark:bg-indigo-900/20",
     permissions: ["READ_ALL"],
   },
+  {
+    name: "Ubicaciones",
+    href: "/dashboard/locationslogs",
+    icon: MapPinIcon,
+    color: "text-red-600 dark:text-red-400",
+    bg: "bg-red-50 dark:bg-red-900/20",
+  },
   // Agrega más módulos aquí cuando estén disponibles
 ];
 
@@ -86,11 +94,13 @@ function NavigationLogs() {
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
 
   // Filtrar módulos basados en permisos
-  const accessibleModules = modules.filter(module =>
+  const accessibleModules = modules.filter((module) =>
     hasPermission(module.permissions)
   );
 
