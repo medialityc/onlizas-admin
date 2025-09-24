@@ -11,7 +11,7 @@ import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import { HomeBannerFormData } from "../schema/banner-schema";
 import { useHomeBannerCreateForm } from "../hooks/use-banner-create-form";
 
-import { RHFCheckbox } from "@/components/react-hook-form";
+import { RHFSwitch } from "@/components/react-hook-form";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getRegions } from "@/services/regions";
 
@@ -33,11 +33,11 @@ export default function HomeBannerForm({ initValue }: Props) {
         <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
           <div className="col-span-1">
             <RHFAutocompleteFetcherInfinity
-              name="regionId"
-              label="Tienda"
+              name="regionIds"
+              label="Regiones"
               required
               onFetch={(params) => getRegions(params)}
-              // multiple
+              multiple
             />
           </div>
 
@@ -51,31 +51,6 @@ export default function HomeBannerForm({ initValue }: Props) {
             />
           </div>
 
-          {/* <div className="col-span-1">
-            <RHFInputWithLabel
-              name="position"
-              label="Posición"
-              placeholder="Ej: 1,2,3"
-              type="number"
-            />
-          </div> */}
-          {/*  <div className="col-span-1">
-            <RHFDateInput
-              minDate={new Date()}
-              name="initDate"
-              label="Fecha de inicio"
-            />
-          </div>
-          <div className="col-span-1">
-            <RHFDateInput
-              minDate={initDate}
-              name="endDate"
-              label="Fecha de expiración"
-            />
-          </div> */}
-          <div className="col-span-1 md:col-span-2">
-            <RHFCheckbox name="isActive" label="Activar banner" />{" "}
-          </div>
           <div className="col-span-1">
             <RHFImageUpload
               name="imageDesktopUrl"
@@ -99,6 +74,10 @@ export default function HomeBannerForm({ initValue }: Props) {
                 width: 470,
               }}
             />
+          </div>
+
+          <div className="col-span-1 md:col-span-2">
+            <RHFSwitch name="isActive" label="Activar banner" />{" "}
           </div>
         </div>
       </FormProvider>

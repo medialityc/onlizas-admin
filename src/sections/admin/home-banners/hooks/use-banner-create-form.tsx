@@ -13,7 +13,7 @@ const initValues: HomeBannerFormData = {
   imageMobileUrl: "",
   imageDesktopUrl: "",
   isActive: true,
-  regionId: 1,
+  regionIds: [],
 };
 
 export const useHomeBannerCreateForm = (
@@ -30,6 +30,7 @@ export const useHomeBannerCreateForm = (
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: HomeBannerFormData) => {
       const formData = await setHomeBannerFormData(payload);
+      formData.append("id", String(payload?.id));
       const res = payload?.id
         ? await updateHomeBanner(payload?.id, formData)
         : await createHomeBanner(formData);

@@ -8,7 +8,11 @@ import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
-import { IHomeBanner, IGetAllHomeBanner, UpdateBanner } from "@/types/home-banner";
+import {
+  IHomeBanner,
+  IGetAllHomeBanner,
+  UpdateBanner,
+} from "@/types/home-banner";
 
 export async function createHomeBanner(
   data: FormData
@@ -31,7 +35,7 @@ export async function updateHomeBanner(
   data: FormData
 ): Promise<ApiResponse<UpdateBanner>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.content.homeBanner.update(id),
+    url: backendRoutes.content.homeBanner.update,
     method: "PUT",
     data,
     useAuth: true,
@@ -47,7 +51,7 @@ export async function getAllHomeBanner(
   params: IQueryable
 ): Promise<ApiResponse<IGetAllHomeBanner>> {
   const url = new QueryParamsURLFactory(
-    { ...params },
+    { ...params, isDescending: true },
     backendRoutes.content.homeBanner.list
   ).build();
 
@@ -74,4 +78,36 @@ export async function getHomeBannerById(
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<IHomeBanner>(res);
+}
+
+export async function deleteHomeBannerById(
+  id: string | number
+): Promise<ApiResponse<IHomeBanner>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.content.homeBanner.delete,
+    method: "DELETE",
+    useAuth: true,
+    next: { tags: ["content-home-banner"] },
+    data: { id },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<IHomeBanner>(res);
+}
+
+export async function toggleStatusHomeBanner(
+  id: string | number
+): Promise<ApiResponse<ApiStatusResponse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.content.homeBanner.toggleStatus,
+    method: "PATCH",
+    useAuth: true,
+    data: {
+      id,
+    },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag("categories");
+
+  return buildApiResponseAsync<ApiStatusResponse>(res);
 }
