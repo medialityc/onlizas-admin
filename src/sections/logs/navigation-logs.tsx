@@ -84,6 +84,7 @@ const modules = [
     icon: MapPinIcon,
     color: "text-red-600 dark:text-red-400",
     bg: "bg-red-50 dark:bg-red-900/20",
+    permissions: ["READ_ALL"],
   },
   // Agrega más módulos aquí cuando estén disponibles
 ];
