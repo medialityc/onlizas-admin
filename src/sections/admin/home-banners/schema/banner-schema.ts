@@ -3,9 +3,9 @@ import { z } from "zod";
 export const homeBannerSchema = z.object({
   id: z.number().optional(),
   link: z.string({ required_error: "Requerido" }).min(5, "Mínimo 5 caracteres"),
-  regionId: z.number().refine((val) => val !== 0, {
+  regionIds: z.array(z.number()).refine((arr) => arr.length > 0, {
     message: "La región es obligatoria.",
-    path: ["regionId"],
+    path: ["regionIds"],
   }),
   imageMobileUrl: z.union(
     [
@@ -26,4 +26,6 @@ export const homeBannerSchema = z.object({
     .default(false),
 });
 
-export type HomeBannerFormData = z.infer<typeof homeBannerSchema>;
+export type HomeBannerFormData = z.infer<typeof homeBannerSchema> & {
+  regionsIds?: string[];
+};

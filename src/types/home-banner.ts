@@ -2,11 +2,17 @@ import { PaginatedResponse } from "./common";
 
 export type IHomeBanner = {
   id: number;
+  link: string;
   imageDesktopUrl: string;
   imageMobileUrl: string;
-  link: string;
-  regionId: number;
-  regionName?: string;
+  isActive: boolean;
+
+  //details
+  regionNames?: string[];
+  regionIds: number[] | string[];
+  desktopImageThumbnail?: string;
+  mobileImageThumbnail?: string;
+  createdDate?: Date;
 };
 
 export type CreateBanner = IHomeBanner;

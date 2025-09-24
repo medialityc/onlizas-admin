@@ -13,7 +13,10 @@ interface Props {
   query: SearchParams;
 }
 
-export default function HomeBannerListContainer({ bannerPromise, query }: Props) {
+export default function HomeBannerListContainer({
+  bannerPromise,
+  query,
+}: Props) {
   const bannerResponse = bannerPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
   useFetchError(bannerResponse);
@@ -36,7 +39,6 @@ export default function HomeBannerListContainer({ bannerPromise, query }: Props)
             </p>
           </div>
         </div>
-
         <HomeBannerList
           data={bannerResponse.data}
           searchParams={query}

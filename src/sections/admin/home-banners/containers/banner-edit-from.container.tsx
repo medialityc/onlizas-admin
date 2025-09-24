@@ -2,6 +2,7 @@
 
 import { HomeBannerFormData } from "../schema/banner-schema";
 import HomeBannerForm from "../components/banner-form";
+import { bannerAdapter } from "../constants/banner-adapter";
 
 type Props = {
   banner: HomeBannerFormData;
@@ -17,7 +18,8 @@ const HomeBannerEditFormContainer = ({ banner }: Props) => {
           Define el banner y sus características
         </p>
       </div>
-      <HomeBannerForm initValue={banner} />
+
+      <HomeBannerForm initValue={bannerAdapter(banner)} />
     </div>
   );
 };

@@ -397,15 +397,14 @@ export const backendRoutes = {
       create: `${process.env.NEXT_PUBLIC_API_URL}home-banners/create`, // POST
       getOne: (id: string | number) =>
         `${process.env.NEXT_PUBLIC_API_URL}home-banners/${id}`, // GET
-      delete: (id: number | string) =>
-        `${process.env.NEXT_PUBLIC_API_URL}home-banners/${id}`, // DELETE
-      update: (id: string | number) =>
-        `${process.env.NEXT_PUBLIC_API_URL}home-banners/${id}`, // PUT
+      delete: `${process.env.NEXT_PUBLIC_API_URL}home-banners/soft-delete`, // DELETE
+      update: `${process.env.NEXT_PUBLIC_API_URL}home-banners/update`, // PUT
 
       searchByStore: (storeId: string | number) =>
         `${process.env.NEXT_PUBLIC_API_URL}home-banners/${storeId}`, // GET
       searchAdminByStore: (storeId: string | number) =>
         `${process.env.NEXT_PUBLIC_API_URL}home-banners/admin/${storeId}`, // GET
+      toggleStatus: `${process.env.NEXT_PUBLIC_API_URL}home-banners/toggle-status`, // TOGGLE STATUS
     },
   },
 };

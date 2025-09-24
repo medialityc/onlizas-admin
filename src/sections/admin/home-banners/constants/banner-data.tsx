@@ -9,27 +9,35 @@ export const setHomeBannerFormData = async (
 
   // Procesar imagen
   if (banner.imageDesktopUrl) {
-    const processedImage = await processImageFile(banner.imageDesktopUrl);
-    if (processedImage) {
-      formData.append("imageDesktopUrl", processedImage);
-    } else {
-      toast.error("Error al procesar la imagen");
+    if (banner.imageDesktopUrl instanceof File) {
+      const processedImage = await processImageFile(banner.imageDesktopUrl);
+      if (processedImage) {
+        formData.append("imageDesktopUrl", processedImage);
+      } else {
+        toast.error("Error al procesar la imagen");
+      }
     }
   }
   // Procesar imagen
   if (banner.imageMobileUrl) {
-    const processedImage = await processImageFile(banner.imageMobileUrl);
-    if (processedImage) {
-      formData.append("imageMobileUrl", processedImage);
-    } else {
-      toast.error("Error al procesar la imagen");
+    if (banner.imageMobileUrl instanceof File) {
+      const processedImage = await processImageFile(banner.imageMobileUrl);
+      if (processedImage) {
+        formData.append("imageMobileUrl", processedImage);
+      } else {
+        toast.error("Error al procesar la imagen");
+      }
     }
   }
 
   // Datos básicos del banner
   formData.append("link", String(banner.link));
-  formData.append("regionId", String(banner.regionId));
   formData.append("isActive", String(banner.isActive));
+
+  /* banner.regionIds.forEach((id, index) =>
+    formData.append(`regionIds[${index}]`, String(id))
+  ); */
+  formData.append(`regionIds`, JSON.stringify(banner?.regionIds));
 
   return formData;
 };
