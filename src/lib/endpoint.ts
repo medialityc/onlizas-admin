@@ -334,7 +334,7 @@ export const backendRoutes = {
         `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/currencies/${currencyId}/primary`,
     },
 
-    // Payment configuration endpoints  
+    // Payment configuration endpoints
     payments: {
       add: (regionId: number | string) =>
         `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/payment-gateways`,
@@ -362,6 +362,14 @@ export const backendRoutes = {
 
   locations: {
     list: `${process.env.NEXT_PUBLIC_API_URL}locations`,
+  },
+  systemConfigurations: {
+    list: `${process.env.NEXT_PUBLIC_API_URL}system-configuration`,
+    update: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}system-configuration/${id}`,
+    setCurrent: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}system-configuration/${id}/current`,
+    create: `${process.env.NEXT_PUBLIC_API_URL}system-configuration`,
   },
 
   content: {

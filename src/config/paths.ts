@@ -72,6 +72,9 @@ export const paths = {
     regions: {
       list: `${DASHBOARD}/regions`,
     },
+    systemConfigurations: {
+      list: `${DASHBOARD}/system-configurations`,
+    },
     gateways: {
       overview: `${DASHBOARD}/overview`,
       auditHistory: `${DASHBOARD}/audit-history`,

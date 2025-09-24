@@ -42,7 +42,6 @@ export function DataGridHeader<T extends Record<string, any>>({
   leftActions,
   rightActions,
   customActions,
- 
 }: DataGridHeaderProps<T>) {
   // Obtener permisos del usuario
   const { data: permissions = [] } = usePermissions();
@@ -50,7 +49,9 @@ export function DataGridHeader<T extends Record<string, any>>({
   // Función helper para verificar permisos
   const hasPermission = (requiredPermissions?: string[]) => {
     if (!requiredPermissions || requiredPermissions.length === 0) return true;
-    return requiredPermissions.every(perm => permissions.some(p => p.code === perm));
+    return requiredPermissions.some((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   return (
     <div className="mb-5 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">

@@ -24,12 +24,14 @@ type Props = {
   name: string;
   variant?: "code" | "name"; // ← nueva prop para filtrar
   inputClassname?: string;
+  fullwidth?: boolean;
 };
 
 export function RHFCountrySelect({
   name,
   variant = "code",
   inputClassname,
+  fullwidth = false,
 }: Props) {
   const { control, watch } = useFormContext();
   const [countries, setCountries] = useState<Country[]>([]);
@@ -89,7 +91,12 @@ export function RHFCountrySelect({
       control={control}
       name={name}
       render={({ field: { onChange } }) => (
-        <div className="flex-shrink-0 w-full max-w-[100px]">
+        <div
+          className={cn(
+            "w-full",
+            fullwidth ? "max-w-none" : "flex-shrink-0 max-w-[100px]"
+          )}
+        >
           <Combobox
             value={selectedCountry ?? null}
             onChange={(val) => onChange(Number(val?.id) ?? -1)}

@@ -12,6 +12,7 @@ import {
   DocumentIcon,
   UserPlusIcon,
   TrashIcon,
+  StarIcon,
 } from "@heroicons/react/24/solid";
 import DeleteDialog from "../modal/delete-modal";
 import ToggleStatusDialog from "../modal/toggle-status-modal";
@@ -28,6 +29,7 @@ interface MenuProps {
   onDownload?: () => void;
   onActive?: () => void;
   isActive?: boolean;
+  onSetDefault?: () => void; // nueva acción para establecer como actual
   onBlocked?: () => void;
   isBlocked?: boolean;
   onVerify?: () => void;
@@ -39,6 +41,7 @@ interface MenuProps {
   editPermissions?: string[];
   deletePermissions?: string[];
   activePermissions?: string[];
+  setDefaultPermissions?: string[];
   documentsPermissions?: string[];
   addUsersPermissions?: string[];
   payPermissions?: string[];
@@ -64,10 +67,12 @@ const ActionsMenu = ({
   onBlocked,
   onVerify,
   onModifyAttributes,
+  onSetDefault,
   viewPermissions,
   editPermissions,
   deletePermissions,
   activePermissions,
+  setDefaultPermissions,
   documentsPermissions,
   addUsersPermissions,
   payPermissions,
@@ -86,7 +91,9 @@ const ActionsMenu = ({
   // Función helper para verificar permisos
   const hasPermission = (requiredPermissions?: string[]) => {
     if (!requiredPermissions || requiredPermissions.length === 0) return true;
-    return requiredPermissions.every(perm => permissions.some(p => p.code === perm));
+    return requiredPermissions.some((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
 
   const handleDelete = async () => {
@@ -167,6 +174,16 @@ const ActionsMenu = ({
             </Menu.Item>
           )}
 
+          {onSetDefault && hasPermission(setDefaultPermissions) && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-white"
+              leftSection={<StarIcon className="h-4 w-4 " />}
+              onClick={onSetDefault}
+            >
+              Establecer como actual
+            </Menu.Item>
+          )}
+
           {onModifyAttributes && hasPermission(modifyAttributesPermissions) && (
             <Menu.Item
               className="p-1 text-sm hover:text-white"
@@ -226,7 +243,10 @@ const ActionsMenu = ({
             </Menu.Item>
           )}
 
-          {((onDelete && hasPermission(deletePermissions)) || (onVerify && hasPermission(verifyPermissions)) || (onBlocked && hasPermission(blockedPermissions)) || (onActive && hasPermission(activePermissions))) && (
+          {((onDelete && hasPermission(deletePermissions)) ||
+            (onVerify && hasPermission(verifyPermissions)) ||
+            (onBlocked && hasPermission(blockedPermissions)) ||
+            (onActive && hasPermission(activePermissions))) && (
             <>
               <Menu.Divider />
               <Menu.Label>Zona de peligro</Menu.Label>
