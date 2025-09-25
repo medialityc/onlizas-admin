@@ -1,7 +1,7 @@
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { ColumnSelector } from "./column-selector";
 import { DataTableColumn } from "mantine-datatable";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface DataGridHeaderProps<T> {
   enableSearch: boolean;

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface BannerHeaderProps {
   onNew: () => void;
@@ -12,14 +12,18 @@ export default function BannerHeader({ onNew }: BannerHeaderProps) {
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasCreatePermission = hasPermission(["CREATE_ALL"]);
 
   return (
     <div className="flex items-center justify-between mt-2">
       <div>
-        <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">Gestión de Banners</h3>
+        <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          Gestión de Banners
+        </h3>
         <p className="text-xs text-gray-500 dark:text-gray-400">
           Crea y gestiona banners promocionales para tu tienda
         </p>

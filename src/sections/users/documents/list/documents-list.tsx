@@ -1,7 +1,5 @@
 "use client";
 
-import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
-import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 import { DataGrid } from "@/components/datagrid/datagrid";
 import ActionsMenu from "@/components/menu/actions-menu";
 import showToast from "@/config/toast/toastConfig";
@@ -19,7 +17,6 @@ interface Props {
 
 export function UserDocumentsList({ documentsPromise, userId }: Props) {
   const response = use(documentsPromise);
-  useFetchError(response);
   const data = useMemo(() => response.data || [], [response.data]);
 
   const router = useRouter();
@@ -122,7 +119,6 @@ export function UserDocumentsList({ documentsPromise, userId }: Props) {
 
   return (
     <>
-      {response.status == 401 && <SessionExpiredAlert />}
       <div className="panel">
         <div className="mb-5 flex items-center justify-between">
           <div>

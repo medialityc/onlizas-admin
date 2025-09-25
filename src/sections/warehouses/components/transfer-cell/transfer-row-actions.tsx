@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { ActionIcon, Menu } from "@mantine/core";
 import { useState } from "react";
 import {
@@ -8,7 +8,7 @@ import {
   EllipsisHorizontalIcon,
 } from "@heroicons/react/24/solid";
 import ConfirmationDialog from "@/components/modal/confirm-modal";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface MenuProps {
   onApproveTransfer?: () => void;
@@ -35,7 +35,9 @@ const TransferActionsMenu = ({
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasApprovePermission = hasPermission(["UPDATE_ALL"]);
   const hasExecutePermission = hasPermission(["UPDATE_ALL"]);
@@ -84,9 +86,10 @@ const TransferActionsMenu = ({
   };
 
   // Verificar si hay al menos una acción disponible
-  const hasActions = ((onApproveTransfer && isApproveActive && hasApprovePermission) || 
-                    (onCancelTransfer && isCancelActive && hasCancelPermission) || 
-                    (onExecuteTransfer && isExecuteActive && hasExecutePermission));
+  const hasActions =
+    (onApproveTransfer && isApproveActive && hasApprovePermission) ||
+    (onCancelTransfer && isCancelActive && hasCancelPermission) ||
+    (onExecuteTransfer && isExecuteActive && hasExecutePermission);
 
   // Si no hay acciones disponibles, no renderizar el menú
   if (!hasActions) {

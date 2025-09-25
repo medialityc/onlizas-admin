@@ -4,8 +4,7 @@ import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
 import { use, useCallback } from "react";
-import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
-import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
+
 import { InventoryProviderCardGrid } from "../components/inventory-provider-card-grid/inventory-provider-card-grid";
 import { Button } from "@/components/button/button";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
@@ -28,8 +27,6 @@ export default function InventoryProviderCardListContainer({
 }: Props) {
   const inventoriesResponse = use(inventories);
   const { updateFiltersInUrl } = useFiltersUrl();
-  useFetchError(inventoriesResponse);
-
   const { push } = useRouter();
 
   const handleSearchParamsChange = (params: SearchParams) => {
@@ -41,7 +38,6 @@ export default function InventoryProviderCardListContainer({
 
   return (
     <div className="space-y-6">
-      {inventoriesResponse.status == 401 && <SessionExpiredAlert />}
       <div className="panel">
         <div className="mb-5 flex items-center justify-start gap-2">
           {showBackButton && (

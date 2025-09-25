@@ -2,9 +2,7 @@
 
 import { DataGrid } from "@/components/datagrid/datagrid";
 import { cn } from "@/lib/utils";
-import {
-  GetAllNotificationByUserResponse,
-} from "@/types/notifications";
+import { GetAllNotificationByUserResponse } from "@/types/notifications";
 import { DataTableColumn } from "mantine-datatable";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -18,7 +16,7 @@ import ActionsMenu from "@/components/menu/actions-menu";
 import { Notification } from "../../../../types/notifications";
 import showToast from "@/config/toast/toastConfig";
 import NotificationCreateModal from "../create/notification-create-modal";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface NotificationsListProps {
   data?: GetAllNotificationByUserResponse;
@@ -40,10 +38,12 @@ export function UserNotificationsList({
   // Permission hooks
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasCreatePermission = hasPermission(["CREATE_ALL"]);
-  
+
   const selectedNotificationUser = useMemo(() => {
     console.log(data);
 
@@ -175,7 +175,6 @@ export function UserNotificationsList({
             }}
             onDelete={() => handleDeleteNotification(notification)}
             viewPermissions={["READ_ALL"]}
-
             deletePermissions={["DELETE_ALL"]}
           />
         ),

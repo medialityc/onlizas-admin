@@ -10,7 +10,7 @@ import ImagePreview from "@/components/image/image-preview";
 import { InventoryProvider } from "@/types/inventory";
 import { Edit, EyeIcon, Package } from "lucide-react";
 import Link from "next/link";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 import { Button } from "@/components/button/button";
 
 type Props = {

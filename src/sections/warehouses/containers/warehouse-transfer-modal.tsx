@@ -8,7 +8,7 @@ import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-aut
 import { getAllWarehouses } from "@/services/warehouses";
 import { useCallback } from "react";
 import { WarehouseFormData } from "../schemas/warehouse-schema";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface Props {
   open: boolean;
@@ -44,7 +44,9 @@ export default function WarehouseSelectedModal({
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 

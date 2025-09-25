@@ -3,7 +3,7 @@ import { ChevronDown, Minus } from "lucide-react";
 import Link from "next/link";
 import AnimateHeight from "react-animate-height";
 import { SidebarItemProps } from "./types";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 const SidebarItem = ({
   item,

@@ -11,7 +11,7 @@ import { UseFieldArrayRemove, useFormContext } from "react-hook-form";
 import InventoryProviderDetailSection from "../inventory-provider-detail-section/inventory-provider-detail-section";
 import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
 import { ProductVariant } from "../../schemas/inventory-provider.schema";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 type Props = {
   variantIndex: number;

@@ -4,7 +4,7 @@ import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
 import { GetAllProducts } from "@/types/products";
-import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
+
 import { SupplierProductList } from "../components/supplier-product-list";
 
 interface ProductsListContainerProps {
@@ -25,7 +25,6 @@ export default function SupplierProductsListContainer({
 
   return (
     <div className="space-y-6">
-      {productsResponse.status == 401 && <SessionExpiredAlert />}
       <div className="panel">
         <div className="mb-5 flex items-center justify-between">
           <div>

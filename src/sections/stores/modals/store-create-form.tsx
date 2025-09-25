@@ -7,7 +7,7 @@ import React, { useEffect } from "react";
 import { StoreFormData } from "./stores-schema";
 import { useFormContext } from "react-hook-form";
 import { getAllSupplierUsers } from "@/services/users";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 type Props = {
   isSubmitting: boolean;
   handleClose: VoidFunction;
@@ -19,7 +19,9 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasCreatePermission = hasPermission(["CREATE_ALL"]);
 

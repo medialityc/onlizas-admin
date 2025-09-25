@@ -2,7 +2,7 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { useFormContext } from "react-hook-form";
 import { useMemo } from "react";
 import { UpdateSupplierFormData } from "./schema";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 export default function SupplierEditActions({
   isLoading,
@@ -18,7 +18,9 @@ export default function SupplierEditActions({
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 

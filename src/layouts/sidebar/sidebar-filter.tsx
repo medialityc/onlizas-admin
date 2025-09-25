@@ -1,15 +1,22 @@
 "use client";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 import { SidebarSection } from "./types";
 
-export const useFilteredSidebar = (sections: SidebarSection[]): SidebarSection[] => {
+export const useFilteredSidebar = (
+  sections: SidebarSection[]
+): SidebarSection[] => {
   // Obtener permisos del usuario
   const { data: permissions = [] } = usePermissions();
 
   // Función para filtrar items dentro de una sección
-  const filterSectionItems = (section: SidebarSection): SidebarSection | null => {
-    const filteredItems = section.items.filter(item => {
-      const hasAccess = item.permissions?.every(perm => permissions.some(p => p.code === perm)) ?? true;
+  const filterSectionItems = (
+    section: SidebarSection
+  ): SidebarSection | null => {
+    const filteredItems = section.items.filter((item) => {
+      const hasAccess =
+        item.permissions?.every((perm) =>
+          permissions.some((p) => p.code === perm)
+        ) ?? true;
       return hasAccess;
     });
 
@@ -20,7 +27,7 @@ export const useFilteredSidebar = (sections: SidebarSection[]): SidebarSection[]
 
     return {
       ...section,
-      items: filteredItems
+      items: filteredItems,
     };
   };
 

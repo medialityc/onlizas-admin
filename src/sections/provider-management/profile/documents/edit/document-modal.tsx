@@ -13,7 +13,7 @@ import FormProvider from "@/components/react-hook-form/form-provider";
 import { IDocument } from "@/types/users";
 import { uploadOrUpdateUserDocument } from "@/services/users";
 import showToast from "@/config/toast/toastConfig";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 const documentSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
@@ -54,7 +54,9 @@ export function DocumentModal({
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 

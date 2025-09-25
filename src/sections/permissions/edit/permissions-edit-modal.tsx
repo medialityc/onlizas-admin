@@ -15,7 +15,7 @@ import {
   PermissionUpdateData,
   permissionUpdateSchema,
 } from "./permissions-update-schema";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface PermissionEditModalProps {
   permission: IPermission;
@@ -33,7 +33,9 @@ export function PermissionEditModal({
   const queryClient = useQueryClient();
   const { data: userPermissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => userPermissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      userPermissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
   const methods = useForm<PermissionUpdateData>({

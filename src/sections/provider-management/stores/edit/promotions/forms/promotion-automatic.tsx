@@ -33,7 +33,7 @@ import {
   automaticSchema,
 } from "../schemas/automatic-schema";
 import { navigateAfterSave } from "../utils/promotion-helpers";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface OrderValueFormProps {
   storeId: number;
@@ -77,7 +77,9 @@ export default function AutomaticForm({
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 

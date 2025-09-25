@@ -5,8 +5,6 @@ import { GetAllUsersResponse } from "@/types/users";
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
-import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 
 interface UserListPageProps {
   users: ApiResponse<GetAllUsersResponse>;
@@ -15,17 +13,14 @@ interface UserListPageProps {
 
 export default function UserListContainer({ users, query }: UserListPageProps) {
   const { updateFiltersInUrl } = useFiltersUrl();
-  const { hasError, status, message } = useFetchError(users);
-
+  
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
   };
 
-  // Token expirado
-  if (status === 401) {
-    return <SessionExpiredAlert />;
-  }
-
+const hasError = users.error;
+const status = users.status;
+const message = users.message || "Ocurrió un error al cargar los usuarios.";
   return (
     <div className="space-y-6">
       <div className="panel">

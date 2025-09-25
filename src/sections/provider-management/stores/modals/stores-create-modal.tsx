@@ -16,7 +16,7 @@ import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { useRouter } from "next/navigation";
 import { getAllUserBusiness } from "@/services/business";
-import { useAuth } from "@/auth-sso/hooks/use-auth";
+import { useAuth } from "zas-sso-client";
 import { processImageFile } from "@/utils/image-helpers";
 
 interface StoresModalProps {

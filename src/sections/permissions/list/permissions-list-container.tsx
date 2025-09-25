@@ -5,8 +5,6 @@ import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
 import { GetAllPermissionsResponse } from "@/types/permissions";
 import { PermissionList } from "./permissions-list";
-import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
-import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 
 interface PermissionListPageProps {
   permissionsPromise: ApiResponse<GetAllPermissionsResponse>;
@@ -19,15 +17,12 @@ export default function PermissionListContainer({
 }: PermissionListPageProps) {
   const permissionResponse = permissionsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
-  useFetchError(permissionResponse);
-
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
   };
 
   return (
     <div className="space-y-6">
-      {permissionResponse.status == 401 && <SessionExpiredAlert />}
       <div className="panel">
         <div className="mb-5 flex items-center justify-between">
           <div>

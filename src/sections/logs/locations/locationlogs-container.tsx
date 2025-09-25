@@ -4,9 +4,8 @@ import React from "react";
 import { ApiResponse } from "@/types/fetch/api";
 import { GetAllLocationLogsResponse } from "@/types/locations";
 import { SearchParams } from "@/types/fetch/request";
-import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
-import LocationLogsContent from "./locationlogs-list";
 
+import LocationLogsContent from "./locationlogs-list";
 
 function LocationLogsContainer({
   locationLogsPromise,
@@ -17,8 +16,6 @@ function LocationLogsContainer({
 }) {
   const locationResponse = locationLogsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
-  useFetchError(locationResponse);
-
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
   };

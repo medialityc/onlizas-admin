@@ -5,7 +5,6 @@ import BusinessLogsContent from "./businesslogs-list";
 import { ApiResponse } from "@/types/fetch/api";
 import { GetAllBusinessLogs } from "@/types/business";
 import { SearchParams } from "@/types/fetch/request";
-import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
 
 function BusinessLogsContainer({
   businessLogsPromise,
@@ -16,8 +15,6 @@ function BusinessLogsContainer({
 }) {
   const businessResponse = businessLogsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
-  useFetchError(businessResponse);
-
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
   };

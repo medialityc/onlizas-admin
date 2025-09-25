@@ -3,14 +3,12 @@ import Dropdown from "@/components/ui/dropdown";
 import Image from "next/image";
 import IconUser from "@/components/icon/icon-user";
 import IconLogout from "@/components/icon/icon-logout";
-import { useAuth } from "@/auth-sso/hooks/use-auth";
-import { useRouter } from "next/navigation";
+import { redirectToLogin, useAuth } from "zas-sso-client";
 import { cn } from "@/lib/utils";
 
 export default function UserProfileDropdown() {
   const session = useAuth();
   const user = session.user;
-  const router = useRouter();
 
   return (
     <Dropdown
@@ -72,8 +70,8 @@ export default function UserProfileDropdown() {
         <li className="border-t border-white-light dark:border-white-light/10">
           <button
             onClick={async () => {
-              await session.clearSession();
-              router.push("/");
+              await session.signOut();
+              redirectToLogin({ preservePath: true });
             }}
             className="!py-3 text-danger flex items-center"
           >

@@ -3,8 +3,7 @@
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
-import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
+
 import { InventoryCardGrid } from "../components/inventory-provider-card-grid/inventory-card-grid";
 import { useModalState } from "@/hooks/use-modal-state";
 import CreateInventoryModal from "../modal/create-inventory-modal";
@@ -30,15 +29,12 @@ export default function InventoryCardListContainer({
     closeModal("create");
   };
   const { updateFiltersInUrl } = useFiltersUrl();
-  useFetchError(inventoriesResponse);
-
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
   };
 
   return (
     <div className="space-y-6">
-      {inventoriesResponse.status == 401 && <SessionExpiredAlert />}
       <div className="panel">
         <div className="mb-5 flex items-center justify-start gap-2">
           <div>

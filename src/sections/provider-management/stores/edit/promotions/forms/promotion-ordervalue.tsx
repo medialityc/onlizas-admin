@@ -34,7 +34,7 @@ import { getCommonDefaultValues } from "../utils/default-values";
 import { togglePromotionStatus } from "@/services/promotions";
 import { RHFInputWithLabel } from "@/components/react-hook-form";
 import { navigateAfterSave } from "../utils/promotion-helpers";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface OrderValueFormProps {
   storeId: number;
@@ -80,12 +80,13 @@ export default function OrderValueForm({
   const { handleSubmit } = methods;
 
   // Control de permisos
-    const { data: permissions = [] } = usePermissions();
-    const hasPermission = (requiredPerms: string[]) => {
-      return requiredPerms.every(perm => permissions.some(p => p.code === perm));
-    };
-    const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
-  
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   const onFormSubmit = handleSubmit(async (data) => {
     // Usar la función reutilizable para construir FormData
@@ -257,20 +258,21 @@ export default function OrderValueForm({
           >
             Cancelar
           </Button>
-          {hasUpdatePermission&&
-          <LoaderButton
-            color="primary"
-            type="submit"
-            loading={loading}
-            disabled={loading}
-            className="min-w-[140px]"
-          >
-            {loading
-              ? "Guardando..."
-              : mode === "create"
-                ? "Crear promoción"
-                : "Guardar cambios"}
-          </LoaderButton>}
+          {hasUpdatePermission && (
+            <LoaderButton
+              color="primary"
+              type="submit"
+              loading={loading}
+              disabled={loading}
+              className="min-w-[140px]"
+            >
+              {loading
+                ? "Guardando..."
+                : mode === "create"
+                  ? "Crear promoción"
+                  : "Guardar cambios"}
+            </LoaderButton>
+          )}
         </div>
       </form>
     </FormProvider>

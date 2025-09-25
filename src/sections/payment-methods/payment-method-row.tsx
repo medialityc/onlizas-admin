@@ -5,7 +5,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Badge, Button, Switch } from "@mantine/core";
 import { GripVertical, Settings } from "lucide-react";
 import type { PaymentMethod } from "@/types";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 type Props = {
   method: PaymentMethod;
@@ -25,7 +25,9 @@ export function PaymentMethodRow({ method, onToggleEnabled }: Props) {
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 

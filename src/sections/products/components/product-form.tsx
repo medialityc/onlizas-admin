@@ -13,7 +13,7 @@ import ProductDimensionSection from "./product-dimension-section";
 import AboutProductSection from "./about-product-section";
 import ProductDetailsSection from "./product-details-section";
 import { ProductCustomsInfoSection } from "./product-custom-info";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 type Props = {
   initValue?: ProductFormData;

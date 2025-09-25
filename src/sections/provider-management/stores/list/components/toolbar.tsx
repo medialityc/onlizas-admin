@@ -3,7 +3,7 @@
 import { DataGridHeader } from "@/components/datagrid";
 import { Button } from "@/components/button/button";
 import { PlusIcon } from "@heroicons/react/24/solid";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 type StoreListToolbarProps = {
   searchValue: string;
@@ -19,7 +19,9 @@ export function StoreListToolbar({
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasCreatePermission = hasPermission(["CREATE_ALL"]);
 

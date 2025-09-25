@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/cards/card";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { BannerItem } from "@/types/stores";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface BannerCardProps {
   banner: BannerItem;

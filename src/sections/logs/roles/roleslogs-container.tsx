@@ -4,7 +4,7 @@ import React from "react";
 import { ApiResponse } from "@/types/fetch/api";
 import { GetAllRolesLogsResponse } from "@/types/roles";
 import { SearchParams } from "@/types/fetch/request";
-import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
+
 import RolesLogsContent from "./roleslogs-list";
 
 function RolesLogsContainer({
@@ -16,8 +16,6 @@ function RolesLogsContainer({
 }) {
   const rolesResponse = rolesLogsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
-  useFetchError(rolesResponse);
-
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
   };

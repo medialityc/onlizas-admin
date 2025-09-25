@@ -1,7 +1,7 @@
 import type { gateways } from "@/services/data-for-gateway-settings/mock-datas";
 import { Badge, Button, Card, Group, Text } from "@mantine/core";
 import { CreditCard, Edit, Eye, EyeOff, Trash2 } from "lucide-react";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 export const GatewayCard = ({
   gateway,
@@ -15,7 +15,9 @@ export const GatewayCard = ({
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasReadPermission = hasPermission(["READ_ALL"]);
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);

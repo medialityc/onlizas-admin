@@ -5,7 +5,6 @@ import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
 import { ProductList } from "../components/product-list";
 import { GetAllProducts } from "@/types/products";
-import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
 
 interface ProductsListContainerProps {
   productsPromise: ApiResponse<GetAllProducts>;
@@ -25,7 +24,6 @@ export default function ProductsListContainer({
 
   return (
     <div className="space-y-6">
-      {productsResponse.status == 401 && <SessionExpiredAlert />}
       <div className="panel">
         <div className="mb-5 flex items-center justify-between">
           <div>

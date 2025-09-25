@@ -1,24 +1,25 @@
-"use client"; // Error boundaries must be Client Components
+"use client";
 
 import lottie from "lottie-web";
-import { useEffect, useRef } from "react";
-import animationData from "./Web Development.json";
+import { useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import animationData from "./animations/403.json";
 
-export default function ErrorFallback({
+/**
+ * Error403Fallback
+ * Pantalla especializada para status 403 (forbidden / sin permisos).
+ * Mensaje: no tienes permisos para esta vista. Botón: Ir a página de inicio.
+ */
+export function Error403Fallback({
   error,
   reset,
 }: {
-  error: Error & { digest?: string };
-  reset: () => void;
+  error?: Error & { digest?: string; status?: number };
+  reset?: () => void;
 }) {
+  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Log error for observability
-  useEffect(() => {
-    console.error(error);
-  }, [error]);
-
-  // Init Lottie like session-expired-alert
   useEffect(() => {
     if (!containerRef.current) return;
     const instance = lottie.loadAnimation({
@@ -31,6 +32,16 @@ export default function ErrorFallback({
     return () => instance.destroy();
   }, []);
 
+  useEffect(() => {
+    if (error) console.warn("403 Fallback error captured", error);
+  }, [error]);
+
+  const goHome = useCallback(() => {
+    // Preferimos reset si proviene de un boundary para limpiar estado
+    if (reset) reset();
+    router.push("/dashboard" as const);
+  }, [reset, router]);
+
   return (
     <div
       style={{
@@ -38,15 +49,15 @@ export default function ErrorFallback({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(90deg, #f8fafc 0%, #e0e7ef 100%)",
+        background: "linear-gradient(90deg,#f8fafc 0%,#e2e8f0 100%)",
         padding: "2rem",
       }}
     >
-      {/* Left: Lottie animation */}
+      {/* Animación */}
       <div
         style={{
           flex: 1,
-          maxWidth: 420,
+          maxWidth: 400,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -54,11 +65,11 @@ export default function ErrorFallback({
       >
         <div
           ref={containerRef}
-          style={{ width: "100%", maxWidth: 340, aspectRatio: "1 / 1" }}
+          style={{ width: "100%", maxWidth: 300, aspectRatio: "1 / 1" }}
         />
       </div>
 
-      {/* Right: Content card */}
+      {/* Contenido */}
       <div
         style={{
           flex: 2,
@@ -79,91 +90,66 @@ export default function ErrorFallback({
             display: "inline-flex",
             alignItems: "center",
             gap: ".5rem",
-            background: "#eff6ff",
-            color: "#1d4ed8",
+            background: "#fee2e2",
+            color: "#b91c1c",
             borderRadius: "999px",
             padding: ".35rem .75rem",
-            fontSize: ".8rem",
+            fontSize: ".7rem",
             fontWeight: 600,
             marginBottom: ".75rem",
+            letterSpacing: ".5px",
+            textTransform: "uppercase",
           }}
         >
-          Aviso
+          Acceso restringido (403)
         </span>
         <h2
           style={{
             color: "#1f2937",
-            fontSize: "1.75rem",
+            fontSize: "1.65rem",
             lineHeight: 1.2,
             fontWeight: 700,
             marginBottom: ".75rem",
           }}
         >
-          ¡Ups! Algo salió mal
+          No tienes permisos para esta vista
         </h2>
         <p
           style={{
             color: "#64748b",
-            fontSize: "1.05rem",
-            marginBottom: "1.75rem",
+            fontSize: "1rem",
+            marginBottom: "1.5rem",
           }}
         >
-          Ocurrió un error inesperado. Puedes intentar nuevamente y, si el
-          problema persiste, contáctanos para ayudarte.
+          El recurso al que intentas acceder está restringido. Si crees que se
+          trata de un error, solicita los permisos correspondientes al
+          administrador del sistema.
         </p>
-        <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: ".75rem", flexWrap: "wrap" }}>
           <button
-            onClick={() => reset()}
+            onClick={goHome}
             style={{
-              background: "linear-gradient(90deg, #2563eb 0%, #60a5fa 100%)",
+              background: "linear-gradient(90deg,#dc2626 0%,#f87171 100%)",
               color: "#fff",
               border: "none",
               borderRadius: "0.75rem",
               padding: "0.75rem 1.25rem",
-              fontSize: ".95rem",
+              fontSize: ".9rem",
               fontWeight: 600,
               cursor: "pointer",
-              boxShadow: "0 6px 16px rgba(37,99,235,0.18)",
-              transition: "transform .15s ease, box-shadow .2s ease",
-            }}
-            onMouseDown={(e) => (
-              (e.currentTarget.style.transform = "translateY(1px)"),
-              (e.currentTarget.style.boxShadow =
-                "0 3px 10px rgba(37,99,235,0.18)")
-            )}
-            onMouseUp={(e) => (
-              (e.currentTarget.style.transform = "translateY(0)"),
-              (e.currentTarget.style.boxShadow =
-                "0 6px 16px rgba(37,99,235,0.18)")
-            )}
-          >
-            Reintentar
-          </button>
-          <button
-            onClick={() => (window?.location ? window.location.reload() : null)}
-            style={{
-              background: "#f1f5f9",
-              color: "#0f172a",
-              border: "1px solid #e2e8f0",
-              borderRadius: "0.75rem",
-              padding: "0.75rem 1.1rem",
-              fontSize: ".95rem",
-              fontWeight: 600,
-              cursor: "pointer",
+              boxShadow: "0 6px 16px rgba(220,38,38,0.25)",
             }}
           >
-            Recargar página
+            Ir a página de inicio
           </button>
         </div>
-
         {error?.digest && (
           <small style={{ marginTop: "1rem", color: "#94a3b8" }}>
-            Código de referencia: {error.digest}
+            Ref: {error.digest}
           </small>
         )}
       </div>
 
-      {/* Responsive adjustments */}
       <style>{`
         @media (max-width: 900px) {
           div[style*='display: flex'][style*='align-items: center'] {
@@ -181,3 +167,5 @@ export default function ErrorFallback({
     </div>
   );
 }
+
+export default Error403Fallback;

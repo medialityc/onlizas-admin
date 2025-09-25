@@ -13,7 +13,7 @@ import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
 import { CalendarIcon, PackageIcon, Users2Icon } from "lucide-react";
 import Badge from "@/components/badge/badge";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 import { Button } from "@/components/button/button";
 import { cn } from "@/lib/utils";
 import {
@@ -38,7 +38,9 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasEditPermission = hasPermission(["UPDATE_ALL"]);
   const hasTransferPermission = hasPermission(["UPDATE_ALL"]);

@@ -11,10 +11,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import LocationsModalContainer from "../modals/locations-modal-container";
 import LocationDeleteModal from "../modals/location-delete-modal";
 import LocationExportModal from "../components/location-export-modal";
-import { ILocation, GetAllLocations, LocationStatus, LocationType } from "@/types/locations";
+import {
+  ILocation,
+  GetAllLocations,
+  LocationStatus,
+  LocationType,
+} from "@/types/locations";
 import StatusBadge from "@/components/badge/status-badge";
 import { updateLocationStatus } from "@/services/locations";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface LocationsListProps {
   data?: GetAllLocations;
@@ -22,27 +27,41 @@ interface LocationsListProps {
   onSearchParamsChange: (params: SearchParams) => void;
 }
 
-const LOCATION_TYPE_LABELS = ["Almacén", "Negocio", "Centro de distribución", "Punto de recogida", "Oficina", "Otro"];
+const LOCATION_TYPE_LABELS = [
+  "Almacén",
+  "Negocio",
+  "Centro de distribución",
+  "Punto de recogida",
+  "Oficina",
+  "Otro",
+];
 
 const LOCATION_STATUS_LABELS = {
   0: "Activo",
-  1: "Inactivo", 
+  1: "Inactivo",
   2: "Eliminado",
   ACTIVE: "Activo",
   INACTIVE: "Inactivo",
-  DELETE: "Eliminado"
+  DELETE: "Eliminado",
 };
 
-const getLocationTypeLabel = (type: number): string => LOCATION_TYPE_LABELS[type] || "-";
+const getLocationTypeLabel = (type: number): string =>
+  LOCATION_TYPE_LABELS[type] || "-";
 
 const getLocationStatusLabel = (status: string | number): string => {
-  if (status === 0 || status === 1 || status === 2) return LOCATION_STATUS_LABELS[status];
-  return LOCATION_STATUS_LABELS[status as keyof typeof LOCATION_STATUS_LABELS] || String(status);
+  if (status === 0 || status === 1 || status === 2)
+    return LOCATION_STATUS_LABELS[status];
+  return (
+    LOCATION_STATUS_LABELS[status as keyof typeof LOCATION_STATUS_LABELS] ||
+    String(status)
+  );
 };
 
-const isLocationActive = (location: ILocation): boolean => location.status === 0 || location.status === LocationStatus.ACTIVE;
+const isLocationActive = (location: ILocation): boolean =>
+  location.status === 0 || location.status === LocationStatus.ACTIVE;
 
-const canToggleStatus = (location: ILocation): boolean => location.status !== 2 && location.status !== LocationStatus.DELETE;
+const canToggleStatus = (location: ILocation): boolean =>
+  location.status !== 2 && location.status !== LocationStatus.DELETE;
 
 export function LocationsList({
   data,
@@ -52,9 +71,11 @@ export function LocationsList({
   const { getModalState, openModal, closeModal } = useModalState();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
-  const [locationToDelete, setLocationToDelete] = useState<ILocation | null>(null);
+  const [locationToDelete, setLocationToDelete] = useState<ILocation | null>(
+    null
+  );
   const { data: permissions = [] } = usePermissions();
-  const hasReadPermission = permissions.some(p => p.code === "READ_ALL");
+  const hasReadPermission = permissions.some((p) => p.code === "READ_ALL");
   const queryClient = useQueryClient();
 
   const createLocationModal = getModalState("create");
@@ -90,139 +111,160 @@ export function LocationsList({
     setShowDeleteModal(true);
   }, []);
 
-  const handleToggleStatus = useCallback(async (location: ILocation) => {
-    try {
-            
-      const response = await updateLocationStatus(location.id);
-      
-      if (response.error) {
-        showToast(response.message || "Error al cambiar el estado de la ubicación", "error");
-        return;
-      }
-      
-      queryClient.invalidateQueries({ queryKey: ["locations"] });
-      
-      // Determinar el nuevo estado basado en el estado actual
-      const newStatus = isLocationActive(location) ? "Inactivo" : "Activo";
-        
-      showToast(
-        `Ubicación ${newStatus === "Activo" ? "activada" : "desactivada"} exitosamente`,
-        "success"
-      );
-    } catch (error) {
-      console.error("Error toggling location status:", error);
-      showToast("Error al cambiar el estado de la ubicación", "error");
-    }
-  }, [queryClient]);
+  const handleToggleStatus = useCallback(
+    async (location: ILocation) => {
+      try {
+        const response = await updateLocationStatus(location.id);
 
-  const columns = useMemo<DataTableColumn<ILocation>[]>(() => [
-    {
-      accessor: "id",
-      title: "ID",
-      sortable: true,
-      width: 80,
-      render: (location) => (
-        <span className="font-medium text-dark dark:text-white">
-          #{location.id}
-        </span>
-      ),
-    },
-    {
-      accessor: "name",
-      title: "Nombre",
-      sortable: true,
-      render: (location) => (
-        <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
-          {location.name}
-        </span>
-      ),
-    },
-    {
-      accessor: "addressRaw",
-      title: "Dirección",
-      render: (location) => (
-        <div className="max-w-xs">
-          <span className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-            {location.addressRaw?.length > 100
-              ? `${location.addressRaw.substring(0, 100)}...`
-              : (location.addressRaw ?? "-")}
-          </span>
-        </div>
-      ),
-    },
-    {
-      accessor: "state",
-      title: "Estado",
-      render: (location) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {location.state ?? "-"}
-        </span>
-      ),
-    },
-    {
-      accessor: "district",
-      title: "Distrito",
-      render: (location) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {location.district ?? "-"}
-        </span>
-      ),
-    },
-    {
-      accessor: "countryCode",
-      title: "País",
-      render: (location) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {location.countryCode ?? "-"}
-        </span>
-      ),
-    },
-    {
-      accessor: "type",
-      title: "Tipo",
-      render: (location) => (
-        <span className="text-sm text-gray-500 dark:text-gray-300">
-          {getLocationTypeLabel(location.type)}
-        </span>
-      ),
-    },
-    {
-      accessor: "status",
-      title: "Estado",
-      render: (location) => {
-        const statusLabel = getLocationStatusLabel(location.status);
-        const isActive = isLocationActive(location);
-        
-        return (
-          <StatusBadge
-            isActive={isActive}
-            activeText={statusLabel}
-            inactiveText={statusLabel}
-          />
+        if (response.error) {
+          showToast(
+            response.message || "Error al cambiar el estado de la ubicación",
+            "error"
+          );
+          return;
+        }
+
+        queryClient.invalidateQueries({ queryKey: ["locations"] });
+
+        // Determinar el nuevo estado basado en el estado actual
+        const newStatus = isLocationActive(location) ? "Inactivo" : "Activo";
+
+        showToast(
+          `Ubicación ${newStatus === "Activo" ? "activada" : "desactivada"} exitosamente`,
+          "success"
         );
+      } catch (error) {
+        console.error("Error toggling location status:", error);
+        showToast("Error al cambiar el estado de la ubicación", "error");
+      }
+    },
+    [queryClient]
+  );
+
+  const columns = useMemo<DataTableColumn<ILocation>[]>(
+    () => [
+      {
+        accessor: "id",
+        title: "ID",
+        sortable: true,
+        width: 80,
+        render: (location) => (
+          <span className="font-medium text-dark dark:text-white">
+            #{location.id}
+          </span>
+        ),
       },
-    },
-    {
-      accessor: "actions",
-      title: "Acciones",
-      textAlign: "center",
-      render: (location) => (
-        <div className="flex justify-center">
-          <ActionsMenu
-            isActive={isLocationActive(location)}
-            onViewDetails={() => handleViewLocation(location)}
-            onEdit={() => handleEditLocation(location)}                      
-            onDelete={!isLocationActive(location) ? () => handleDeleteLocation(location) : undefined}
-            onActive={canToggleStatus(location) ? () => handleToggleStatus(location) : undefined}
-            viewPermissions={["READ_ALL"]}
-            editPermissions={["UPDATE_ALL"]}
-            deletePermissions={["DELETE_ALL"]}
-            activePermissions={["UPDATE_ALL"]}
-          />
-        </div>
-      ),
-    },
-  ], [handleViewLocation, handleEditLocation, handleDeleteLocation, handleToggleStatus]);
+      {
+        accessor: "name",
+        title: "Nombre",
+        sortable: true,
+        render: (location) => (
+          <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+            {location.name}
+          </span>
+        ),
+      },
+      {
+        accessor: "addressRaw",
+        title: "Dirección",
+        render: (location) => (
+          <div className="max-w-xs">
+            <span className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+              {location.addressRaw?.length > 100
+                ? `${location.addressRaw.substring(0, 100)}...`
+                : (location.addressRaw ?? "-")}
+            </span>
+          </div>
+        ),
+      },
+      {
+        accessor: "state",
+        title: "Estado",
+        render: (location) => (
+          <span className="text-sm text-gray-500 dark:text-gray-300">
+            {location.state ?? "-"}
+          </span>
+        ),
+      },
+      {
+        accessor: "district",
+        title: "Distrito",
+        render: (location) => (
+          <span className="text-sm text-gray-500 dark:text-gray-300">
+            {location.district ?? "-"}
+          </span>
+        ),
+      },
+      {
+        accessor: "countryCode",
+        title: "País",
+        render: (location) => (
+          <span className="text-sm text-gray-500 dark:text-gray-300">
+            {location.countryCode ?? "-"}
+          </span>
+        ),
+      },
+      {
+        accessor: "type",
+        title: "Tipo",
+        render: (location) => (
+          <span className="text-sm text-gray-500 dark:text-gray-300">
+            {getLocationTypeLabel(location.type)}
+          </span>
+        ),
+      },
+      {
+        accessor: "status",
+        title: "Estado",
+        render: (location) => {
+          const statusLabel = getLocationStatusLabel(location.status);
+          const isActive = isLocationActive(location);
+
+          return (
+            <StatusBadge
+              isActive={isActive}
+              activeText={statusLabel}
+              inactiveText={statusLabel}
+            />
+          );
+        },
+      },
+      {
+        accessor: "actions",
+        title: "Acciones",
+        textAlign: "center",
+        render: (location) => (
+          <div className="flex justify-center">
+            <ActionsMenu
+              isActive={isLocationActive(location)}
+              onViewDetails={() => handleViewLocation(location)}
+              onEdit={() => handleEditLocation(location)}
+              onDelete={
+                !isLocationActive(location)
+                  ? () => handleDeleteLocation(location)
+                  : undefined
+              }
+              onActive={
+                canToggleStatus(location)
+                  ? () => handleToggleStatus(location)
+                  : undefined
+              }
+              viewPermissions={["READ_ALL"]}
+              editPermissions={["UPDATE_ALL"]}
+              deletePermissions={["DELETE_ALL"]}
+              activePermissions={["UPDATE_ALL"]}
+            />
+          </div>
+        ),
+      },
+    ],
+    [
+      handleViewLocation,
+      handleEditLocation,
+      handleDeleteLocation,
+      handleToggleStatus,
+    ]
+  );
 
   return (
     <>
@@ -236,17 +278,27 @@ export function LocationsList({
         onCreate={handleCreateLocation}
         createPermissions={["CREATE_ALL"]}
         rightActions={
-          //poner lo del read luegp que se defina la ofrma 
+          //poner lo del read luegp que se defina la ofrma
           hasReadPermission && (
-          <button
-            onClick={() => setShowExportModal(true)}
-            className="btn btn-outline-primary"
-          >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Exportar
-          </button>
+            <button
+              onClick={() => setShowExportModal(true)}
+              className="btn btn-outline-primary"
+            >
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              Exportar
+            </button>
           )
         }
       />

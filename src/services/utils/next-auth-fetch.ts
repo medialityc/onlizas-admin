@@ -1,6 +1,7 @@
 "use server";
 
-import { getSession } from "@/auth-sso/services/server-actions";
+import { unauthorized } from "next/navigation";
+import { getServerSession } from "zas-sso-client";
 
 /**
  * Parámetros para la función `nextAuthFetch`.
@@ -40,7 +41,7 @@ interface FetchWithAuthParams<T = unknown>
 }
 
 /**
- * Realiza una solicitud `fetch` con soporte opcional para autenticación 
+ * Realiza una solicitud `fetch` con soporte opcional para autenticación
  *
  * Esta función maneja automáticamente:
  * - El encabezado `Authorization` con un token de sesión si `useAuth` está activado.
@@ -84,7 +85,8 @@ export async function nextAuthFetch<T>({
 }: FetchWithAuthParams<T>): Promise<Response> {
   // --- Obtener token si es necesario ---
   const accessToken =
-    token ?? (useAuth ? (await getSession())?.tokens?.accessToken : undefined);
+    token ??
+    (useAuth ? (await getServerSession())?.tokens?.accessToken : undefined);
   if (useAuth && !accessToken) {
     console.error(`No se ha proporcionado token de acceso para ${url}`);
   }
@@ -102,7 +104,12 @@ export async function nextAuthFetch<T>({
     contentType = "multipart/form-data";
   }
   const upperMethod = method.toUpperCase();
-  if (!isFormData && contentType && upperMethod !== "GET" && upperMethod !== "HEAD") {
+  if (
+    !isFormData &&
+    contentType &&
+    upperMethod !== "GET" &&
+    upperMethod !== "HEAD"
+  ) {
     hdrs.set("Content-Type", contentType);
   }
 
@@ -121,11 +128,16 @@ export async function nextAuthFetch<T>({
     body,
     ...rest,
   });
-  // --- Ejecutar fetch ---
-  return fetch(url, {
+
+  const res = await fetch(url, {
     method,
     headers: hdrs,
     body,
     ...rest,
   });
+  if (res.status === 401) {
+    unauthorized();
+  }
+  // --- Ejecutar fetch ---
+  return res;
 }

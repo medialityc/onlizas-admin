@@ -3,7 +3,7 @@ import { useCountry } from "@/hooks/use-country";
 import { MapPinIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { AddressFormData } from "./user-schema";
 import { Button } from "@/components/button/button";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface AdressFieldProps {
   field: AddressFormData;
@@ -27,7 +27,9 @@ const AdressField = ({
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
   const hasDeletePermission = hasPermission(["DELETE_ALL"]);

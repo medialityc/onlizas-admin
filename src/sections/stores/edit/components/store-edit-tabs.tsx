@@ -18,7 +18,7 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { Store } from "@/types/stores";
 import styles from "./store-edit-tabs.module.css";
 import TabsWithErrorIndicators from "@/components/tab/tabs-with-error-indicators";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface TabsProps {
   store: Store;
@@ -30,7 +30,9 @@ const StoreTabs = ({ store }: TabsProps) => {
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 

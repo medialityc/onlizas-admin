@@ -5,7 +5,7 @@ import React from "react";
 import { ApiResponse } from "@/types/fetch/api";
 import { GetAllRegionLogs } from "@/types/regions";
 import { SearchParams } from "@/types/fetch/request";
-import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
+
 import RegionsLogsContent from "./regionslogs-list";
 
 function RegionsLogsContainer({
@@ -17,8 +17,6 @@ function RegionsLogsContainer({
 }) {
   const regionsResponse = regionsLogsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
-  useFetchError(regionsResponse);
-
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
   };

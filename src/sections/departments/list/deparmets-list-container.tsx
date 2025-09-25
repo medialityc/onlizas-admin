@@ -3,8 +3,7 @@
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
-import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
+
 import { GetAllDepartments } from "@/types/departments";
 import { DepartmentsList } from "./departments-list";
 
@@ -19,15 +18,12 @@ export default function DepartmentsListContainer({
 }: DepartmentsListPageProps) {
   const departmentsResponse = departmentsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
-  useFetchError(departmentsResponse);
-
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
   };
 
   return (
     <div className="space-y-6">
-      {departmentsResponse.status == 401 && <SessionExpiredAlert />}
       <div className="panel">
         <div className="mb-5 flex items-center justify-between">
           <div>

@@ -1,8 +1,12 @@
 import type { Promotion } from "@/types/promotions";
 import Badge from "@/components/badge/badge";
-import { PencilIcon, TrashIcon, EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import {
+  PencilIcon,
+  TrashIcon,
+  EllipsisVerticalIcon,
+} from "@heroicons/react/24/outline";
 import { getPromotionTypeName } from "../index-refactored";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface PromotionRowProps {
   p: Promotion;
@@ -11,13 +15,20 @@ interface PromotionRowProps {
   onViewDetails?: (promotion: Promotion) => void;
 }
 
-export default function PromotionRow({ p, onEdit, onDelete, onViewDetails }: PromotionRowProps) {
+export default function PromotionRow({
+  p,
+  onEdit,
+  onDelete,
+  onViewDetails,
+}: PromotionRowProps) {
   const isExpired = p.endDate && new Date(p.endDate) < new Date();
 
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasReadPermission = hasPermission(["READ_ALL"]);
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
@@ -29,10 +40,10 @@ export default function PromotionRow({ p, onEdit, onDelete, onViewDetails }: Pro
 
   const formatDate = (dateString: string) => {
     try {
-      return new Date(dateString).toLocaleDateString('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit'
+      return new Date(dateString).toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
       });
     } catch {
       return dateString;
@@ -44,19 +55,52 @@ export default function PromotionRow({ p, onEdit, onDelete, onViewDetails }: Pro
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{p.name}</h4>
-            {p.isActive && !isExpired && <Badge variant="outline-primary" className="!text-[11px] !px-2 !py-0.5" rounded>Activa</Badge>}
-            {isExpired && <Badge variant="outline-danger" className="!text-[11px] !px-2 !py-0.5" rounded>Vencida</Badge>}
-            {!p.isActive && !isExpired && <Badge variant="outline-secondary" className="!text-[11px] !px-2 !py-0.5" rounded>Inactiva</Badge>}
+            <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+              {p.name}
+            </h4>
+            {p.isActive && !isExpired && (
+              <Badge
+                variant="outline-primary"
+                className="!text-[11px] !px-2 !py-0.5"
+                rounded
+              >
+                Activa
+              </Badge>
+            )}
+            {isExpired && (
+              <Badge
+                variant="outline-danger"
+                className="!text-[11px] !px-2 !py-0.5"
+                rounded
+              >
+                Vencida
+              </Badge>
+            )}
+            {!p.isActive && !isExpired && (
+              <Badge
+                variant="outline-secondary"
+                className="!text-[11px] !px-2 !py-0.5"
+                rounded
+              >
+                Inactiva
+              </Badge>
+            )}
           </div>
-          {p.description && <p className="text-xs text-gray-500 dark:text-gray-300">{p.description}</p>}
-          <span className="text-xs font-normal text-gray-500 dark:text-gray-300 uppercase tracking-wide">Tipo: {getPromotionTypeName(p.promotionType)}
+          {p.description && (
+            <p className="text-xs text-gray-500 dark:text-gray-300">
+              {p.description}
+            </p>
+          )}
+          <span className="text-xs font-normal text-gray-500 dark:text-gray-300 uppercase tracking-wide">
+            Tipo: {getPromotionTypeName(p.promotionType)}
           </span>
 
           <div className="text-[11px] text-gray-500 mt-1">
-            {p.code ? (<span className="font-medium">{p.code}</span>) : null}
+            {p.code ? <span className="font-medium">{p.code}</span> : null}
             {p.startDate && p.endDate ? (
-              <span className="ml-2 dark:text-gray-300">{formatDate(p.startDate)} - {formatDate(p.endDate)}</span>
+              <span className="ml-2 dark:text-gray-300">
+                {formatDate(p.startDate)} - {formatDate(p.endDate)}
+              </span>
             ) : null}
           </div>
         </div>
@@ -66,7 +110,9 @@ export default function PromotionRow({ p, onEdit, onDelete, onViewDetails }: Pro
             <div className="text-indigo-600 dark:text-indigo-400 font-semibold">
               {getDiscountText(p.discountType, p.discountValue)}
             </div>
-            <div className="text-[11px] text-gray-500 dark:text-gray-300">{p.usedCount ?? 0} usos</div>
+            <div className="text-[11px] text-gray-500 dark:text-gray-300">
+              {p.usedCount ?? 0} usos
+            </div>
           </div>
 
           {/* Actions */}

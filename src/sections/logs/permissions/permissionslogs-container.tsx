@@ -4,7 +4,7 @@ import React from "react";
 import { ApiResponse } from "@/types/fetch/api";
 import { GetAllPermissionsLogsResponse } from "@/types/permissions";
 import { SearchParams } from "@/types/fetch/request";
-import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
+
 import PermissionsLogsContent from "./permissionslogs-list";
 
 function PermissionsLogsContainer({
@@ -16,8 +16,6 @@ function PermissionsLogsContainer({
 }) {
   const permissionsResponse = permissionsLogsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
-  useFetchError(permissionsResponse);
-
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
   };

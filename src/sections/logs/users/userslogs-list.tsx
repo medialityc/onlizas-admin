@@ -10,7 +10,7 @@ import SimpleModal from "@/components/modal/modal";
 import DescriptionViewer from "@/components/logs/description-viewer";
 import { InformationCircleIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { extractRecord } from "../utils";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 function UsersLogsContent({
   data,
@@ -27,7 +27,9 @@ function UsersLogsContent({
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) => permissions.some((p) => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasReadPermission = hasPermission(["READ_ALL"]);
 
@@ -74,7 +76,7 @@ function UsersLogsContent({
     {
       accessor: "actions",
       title: "",
-      render: (row) => (
+      render: (row) =>
         hasReadPermission ? (
           <button
             type="button"
@@ -85,8 +87,7 @@ function UsersLogsContent({
           >
             <EyeIcon className="h-4 w-4" />
           </button>
-        ) : null
-      ),
+        ) : null,
     },
   ];
 

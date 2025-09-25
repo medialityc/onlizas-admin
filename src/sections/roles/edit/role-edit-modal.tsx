@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { RoleUpdateData, roleUpdateSchema } from "./role-update-schema";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface RoleEditModalProps {
   role: IRole;
@@ -31,7 +31,7 @@ export function RoleEditModal({
 
   const methods = useForm<RoleUpdateData>({
     resolver: zodResolver(
-      roleUpdateSchema(roles.filter(r => r.id !== role.id))
+      roleUpdateSchema(roles.filter((r) => r.id !== role.id))
     ),
     defaultValues: {
       name: "",
@@ -50,7 +50,9 @@ export function RoleEditModal({
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
@@ -100,14 +102,12 @@ export function RoleEditModal({
               name="name"
               label="Nombre"
               placeholder="Ingrese el nombre del rol"
-              
             />
 
             <RHFInputWithLabel
               name="code"
               label="Código"
               placeholder="Ingrese el código del rol (ej: ADMIN, USER, MODERATOR)"
-              
             />
 
             <RHFInputWithLabel

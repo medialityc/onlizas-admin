@@ -13,7 +13,7 @@ import { Button } from "@/components/button/button";
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface CategoryFormProps {
   initValue?: CategoryFormData;
@@ -27,7 +27,9 @@ export default function CategoryForm({ initValue }: CategoryFormProps) {
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 

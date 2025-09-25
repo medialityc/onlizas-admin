@@ -20,10 +20,10 @@ import {
 import { getAllUsers } from "@/services/users";
 import { getAllRoles } from "@/services/roles";
 import { Label } from "@/components/label/label";
-import RHFMultiSelect from "@/components/react-hook-form/rhf-autocomplete-multiple-fetcher-scroll-infinity";
+
 import LoaderButton from "@/components/loaders/loader-button";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 interface NotificationCreateFormProps {
   onClose: () => void;
 }

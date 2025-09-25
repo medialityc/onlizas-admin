@@ -1,4 +1,4 @@
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 import LoaderButton from "@/components/loaders/loader-button";
 import {
   RHFFileUpload,
@@ -51,12 +51,13 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
     name: "documents",
   });
   // Control de permisos
-    const { data: permissions = [] } = usePermissions();
-    const hasPermission = (requiredPerms: string[]) => {
-      return requiredPerms.every(perm => permissions.some(p => p.code === perm));
-    };
-    const hasCreate = hasPermission(["CREATE_ALL"]);
-  
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const hasCreate = hasPermission(["CREATE_ALL"]);
 
   return (
     <>
@@ -275,15 +276,16 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Documentos
             </label>
-            {hasCreate&&
-            <button
-              type="button"
-              onClick={() => append({ fileName: "", content: undefined })}
-              className="flex items-center gap-2 px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-            >
-              <PlusIcon className="size-4" />
-              Agregar Documento
-            </button>}
+            {hasCreate && (
+              <button
+                type="button"
+                onClick={() => append({ fileName: "", content: undefined })}
+                className="flex items-center gap-2 px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              >
+                <PlusIcon className="size-4" />
+                Agregar Documento
+              </button>
+            )}
           </div>
 
           {fields.length === 0 && (
@@ -355,14 +357,15 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
         >
           Cancelar
         </button>
-        {hasCreate&&
-        <LoaderButton
-          type="submit"
-          loading={isSubmitting}
-          className="btn btn-primary "
-        >
-          Crear Proveedor
-        </LoaderButton>}
+        {hasCreate && (
+          <LoaderButton
+            type="submit"
+            loading={isSubmitting}
+            className="btn btn-primary "
+          >
+            Crear Proveedor
+          </LoaderButton>
+        )}
       </div>
     </>
   );

@@ -11,7 +11,7 @@ import { getAdapterWarehouse } from "../../adapter/warehouse-edit.adapter";
 import VirtualSection from "./components/virtual-section";
 import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
 import Link from "next/link";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 type Props = {
   warehouse?: WarehouseFormData;
@@ -24,7 +24,9 @@ export function WarehouseForm({ warehouse }: Props) {
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 

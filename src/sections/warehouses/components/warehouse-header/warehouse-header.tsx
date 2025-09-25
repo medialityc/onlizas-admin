@@ -5,7 +5,7 @@ import { PlusIcon, ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import WarehouseSelectedModal from "../../containers/warehouse-transfer-modal";
 import { useCallback } from "react";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 const WarehouseHeader = () => {
   const { getModalState, openModal, closeModal } = useModalState();
@@ -20,7 +20,9 @@ const WarehouseHeader = () => {
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasCreatePermission = hasPermission(["CREATE_ALL"]);
   const hasTransferPermission = hasPermission(["UPDATE_ALL"]);

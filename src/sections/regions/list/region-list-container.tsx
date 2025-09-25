@@ -4,8 +4,7 @@ import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
 import { GetAllRegions } from "@/types/regions";
-import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
-import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
+
 import { RegionList } from "./components/region-list";
 
 interface RegionListContainerProps {
@@ -19,8 +18,6 @@ export default function RegionListContainer({
 }: RegionListContainerProps) {
   const regionsResponse = regionsPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
-  useFetchError(regionsResponse);
-
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
   };
@@ -30,7 +27,6 @@ export default function RegionListContainer({
 
   return (
     <div className="space-y-6">
-      {regionsResponse.status == 401 && <SessionExpiredAlert />}
       <div className="panel">
         <div className="mb-5 flex items-center justify-between">
           <div>

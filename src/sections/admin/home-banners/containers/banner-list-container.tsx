@@ -3,8 +3,7 @@
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { useFetchError } from "@/auth-sso/hooks/use-fetch-error";
-import { SessionExpiredAlert } from "@/auth-sso/components/session-expired-alert";
+
 import { HomeBannerList } from "./banner-section-list";
 import { IGetAllHomeBanner } from "@/types/home-banner";
 
@@ -19,7 +18,6 @@ export default function HomeBannerListContainer({
 }: Props) {
   const bannerResponse = bannerPromise;
   const { updateFiltersInUrl } = useFiltersUrl();
-  useFetchError(bannerResponse);
 
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
@@ -27,7 +25,6 @@ export default function HomeBannerListContainer({
 
   return (
     <div className="space-y-6">
-      {bannerResponse.status == 401 && <SessionExpiredAlert />}
       <div className="panel">
         <div className="mb-5 flex items-center justify-between">
           <div>

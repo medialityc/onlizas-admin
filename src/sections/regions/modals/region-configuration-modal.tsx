@@ -3,14 +3,29 @@
 import { useState, useEffect } from "react";
 import SimpleModal from "@/components/modal/modal";
 import { Region } from "@/types/regions";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/cards/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/cards/card";
 import { Button } from "@/components/button/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/label/label";
 import { CheckIcon } from "@heroicons/react/24/outline";
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addCurrenciesToRegion, addPaymentGatewaysToRegion, addShippingMethodsToRegion } from '@/services/regions';
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  addCurrenciesToRegion,
+  addPaymentGatewaysToRegion,
+  addShippingMethodsToRegion,
+} from "@/services/regions";
+import { usePermissions } from "zas-sso-client";
 import showToast from "@/config/toast/toastConfig";
 import { CurrencyConfigForm } from "./components/currency-config-form";
 import { PaymentConfigForm } from "./components/payment-config-form";
@@ -22,7 +37,7 @@ interface RegionConfigurationModalProps {
   region: Region;
   loading?: boolean;
   onSuccess?: () => void;
-  initialTab?: 'currencies' | 'payments' | 'shipping';
+  initialTab?: "currencies" | "payments" | "shipping";
 }
 
 type ConfigurationType = "currency" | "payment-method" | "shipping-method";
@@ -33,7 +48,7 @@ export default function RegionConfigurationModal({
   region,
   loading = false,
   onSuccess,
-  initialTab = 'currencies',
+  initialTab = "currencies",
 }: RegionConfigurationModalProps) {
   const [selectedType, setSelectedType] = useState<ConfigurationType | "">("");
   const [selectedCurrency, setSelectedCurrency] = useState("");
@@ -48,9 +63,9 @@ export default function RegionConfigurationModal({
   useEffect(() => {
     if (open && initialTab) {
       const typeMap: Record<string, ConfigurationType> = {
-        'currencies': 'currency',
-        'payments': 'payment-method',
-        'shipping': 'shipping-method'
+        currencies: "currency",
+        payments: "payment-method",
+        shipping: "shipping-method",
       };
       const mappedType = typeMap[initialTab];
       if (mappedType) {
@@ -60,22 +75,25 @@ export default function RegionConfigurationModal({
   }, [open, initialTab]);
 
   // Permission hooks
-  const { data: permissions = [], isLoading: permissionsLoading } = usePermissions();
+  const { data: permissions = [], isLoading: permissionsLoading } =
+    usePermissions();
 
   // Helper function to check permissions
   const hasPermission = (permissionCode: string) => {
-    return permissions.some(permission => permission.code === permissionCode);
+    return permissions.some((permission) => permission.code === permissionCode);
   };
 
   const hasCreatePermission = hasPermission("CREATE_ALL");
-  
+
   const queryClient = useQueryClient();
 
   // Mutations
   const addCurrencyMutation = useMutation({
     mutationFn: async (config: { currencyId: number; isPrimary: boolean }) => {
-      const response = await addCurrenciesToRegion(region.id, { 
-        currencies: [{ currencyId: config.currencyId, isEnabled: true, isPrimary: false }]
+      const response = await addCurrenciesToRegion(region.id, {
+        currencies: [
+          { currencyId: config.currencyId, isEnabled: true, isPrimary: false },
+        ],
       });
       if (response.error) {
         throw new Error(response.message || "Error al agregar la moneda");
@@ -83,7 +101,7 @@ export default function RegionConfigurationModal({
       return response;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['regions'] });
+      queryClient.invalidateQueries({ queryKey: ["regions"] });
       showToast("Moneda agregada exitosamente a la región", "success");
       onSuccess?.();
       handleClose();
@@ -91,64 +109,84 @@ export default function RegionConfigurationModal({
     onError: (error: any) => {
       console.error("Error adding currency:", error);
       showToast(error?.message || "Error al agregar la moneda", "error");
-    }
+    },
   });
 
   const addPaymentMutation = useMutation({
-    mutationFn: async (config: { paymentGatewayId: number; priority: number }) => {
+    mutationFn: async (config: {
+      paymentGatewayId: number;
+      priority: number;
+    }) => {
       const response = await addPaymentGatewaysToRegion(region.id, {
-        paymentGateways: [{
-          ...config,
-          isFallback: false,
-          isEnabled: true,
-          supportedMethods: ['card'], // Default method
-          configurationJson: ''
-        }]
+        paymentGateways: [
+          {
+            ...config,
+            isFallback: false,
+            isEnabled: true,
+            supportedMethods: ["card"], // Default method
+            configurationJson: "",
+          },
+        ],
       });
       if (response.error) {
-        throw new Error(response.message || "Error al agregar el método de pago");
+        throw new Error(
+          response.message || "Error al agregar el método de pago"
+        );
       }
       return response;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['regions'] });
+      queryClient.invalidateQueries({ queryKey: ["regions"] });
       showToast("Método de pago agregado exitosamente a la región", "success");
       onSuccess?.();
       handleClose();
     },
     onError: (error: any) => {
       console.error("Error adding payment method:", error);
-      showToast(error?.message || "Error al agregar el método de pago", "error");
-    }
+      showToast(
+        error?.message || "Error al agregar el método de pago",
+        "error"
+      );
+    },
   });
 
   const addShippingMutation = useMutation({
     mutationFn: async (shippingMethodId: number) => {
       const response = await addShippingMethodsToRegion(region.id, {
-        shippingMethods: [{
-          shippingMethodId,
-          baseCost: 0, // Default cost
-          estimatedDaysMin: 1,
-          estimatedDaysMax: 7,
-          carrier: 'Default',
-          enabled: true
-        }]
+        shippingMethods: [
+          {
+            shippingMethodId,
+            baseCost: 0, // Default cost
+            estimatedDaysMin: 1,
+            estimatedDaysMax: 7,
+            carrier: "Default",
+            enabled: true,
+          },
+        ],
       });
       if (response.error) {
-        throw new Error(response.message || "Error al agregar el método de entrega");
+        throw new Error(
+          response.message || "Error al agregar el método de entrega"
+        );
       }
       return response;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['regions'] });
-      showToast("Método de entrega agregado exitosamente a la región", "success");
+      queryClient.invalidateQueries({ queryKey: ["regions"] });
+      showToast(
+        "Método de entrega agregado exitosamente a la región",
+        "success"
+      );
       onSuccess?.();
       handleClose();
     },
     onError: (error: any) => {
       console.error("Error adding shipping method:", error);
-      showToast(error?.message || "Error al agregar el método de entrega", "error");
-    }
+      showToast(
+        error?.message || "Error al agregar el método de entrega",
+        "error"
+      );
+    },
   });
 
   const handleClose = () => {
@@ -162,26 +200,26 @@ export default function RegionConfigurationModal({
   };
 
   const handleSave = () => {
-    if (selectedType === 'currency' && selectedCurrency) {
+    if (selectedType === "currency" && selectedCurrency) {
       addCurrencyMutation.mutate({
         currencyId: parseInt(selectedCurrency),
-        ...currencyConfig
+        ...currencyConfig,
       });
-    } else if (selectedType === 'payment-method' && selectedPaymentMethod) {
+    } else if (selectedType === "payment-method" && selectedPaymentMethod) {
       addPaymentMutation.mutate({
         paymentGatewayId: parseInt(selectedPaymentMethod),
-        ...paymentConfig
+        ...paymentConfig,
       });
-    } else if (selectedType === 'shipping-method' && selectedShippingMethod) {
+    } else if (selectedType === "shipping-method" && selectedShippingMethod) {
       addShippingMutation.mutate(parseInt(selectedShippingMethod));
     }
   };
 
-  const canSave = selectedType && (
-    (selectedType === "currency" && selectedCurrency) ||
-    (selectedType === "payment-method" && selectedPaymentMethod) ||
-    (selectedType === "shipping-method" && selectedShippingMethod)
-  );
+  const canSave =
+    selectedType &&
+    ((selectedType === "currency" && selectedCurrency) ||
+      (selectedType === "payment-method" && selectedPaymentMethod) ||
+      (selectedType === "shipping-method" && selectedShippingMethod));
 
   const renderConfigurationForm = () => {
     switch (selectedType) {
@@ -191,7 +229,9 @@ export default function RegionConfigurationModal({
             selectedCurrency={selectedCurrency}
             onCurrencyChange={setSelectedCurrency}
             isPrimary={currencyConfig.isPrimary}
-            onPrimaryChange={(value) => setCurrencyConfig(prev => ({ ...prev, isPrimary: value }))}
+            onPrimaryChange={(value) =>
+              setCurrencyConfig((prev) => ({ ...prev, isPrimary: value }))
+            }
             disabled={!hasCreatePermission}
           />
         );
@@ -202,7 +242,9 @@ export default function RegionConfigurationModal({
             selectedPaymentMethod={selectedPaymentMethod}
             onPaymentMethodChange={setSelectedPaymentMethod}
             priority={paymentConfig.priority}
-            onPriorityChange={(value) => setPaymentConfig(prev => ({ ...prev, priority: value }))}
+            onPriorityChange={(value) =>
+              setPaymentConfig((prev) => ({ ...prev, priority: value }))
+            }
             disabled={!hasCreatePermission}
           />
         );
@@ -237,14 +279,18 @@ export default function RegionConfigurationModal({
           {/* Tipo de configuración */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Agregar Servicios a la Región</CardTitle>
+              <CardTitle className="text-lg">
+                Agregar Servicios a la Región
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
                 <Label>¿Qué deseas agregar a la región?</Label>
-                <Select 
-                  value={selectedType} 
-                  onValueChange={(value) => setSelectedType(value as ConfigurationType | "")}
+                <Select
+                  value={selectedType}
+                  onValueChange={(value) =>
+                    setSelectedType(value as ConfigurationType | "")
+                  }
                   disabled={!hasCreatePermission}
                 >
                   <SelectTrigger>
@@ -252,8 +298,12 @@ export default function RegionConfigurationModal({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="currency">💰 Agregar Moneda</SelectItem>
-                    <SelectItem value="payment-method">💳 Agregar Pasarela de Pago</SelectItem>
-                    <SelectItem value="shipping-method">🚚 Agregar Método de Entrega</SelectItem>
+                    <SelectItem value="payment-method">
+                      💳 Agregar Pasarela de Pago
+                    </SelectItem>
+                    <SelectItem value="shipping-method">
+                      🚚 Agregar Método de Entrega
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -266,13 +316,13 @@ export default function RegionConfigurationModal({
               <CardHeader>
                 <CardTitle className="text-lg">
                   {selectedType === "currency" && "Agregar Moneda"}
-                  {selectedType === "payment-method" && "Agregar Método de Pago"}
-                  {selectedType === "shipping-method" && "Agregar Método de Entrega"}
+                  {selectedType === "payment-method" &&
+                    "Agregar Método de Pago"}
+                  {selectedType === "shipping-method" &&
+                    "Agregar Método de Entrega"}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                {renderConfigurationForm()}
-              </CardContent>
+              <CardContent>{renderConfigurationForm()}</CardContent>
             </Card>
           )}
 
@@ -289,11 +339,23 @@ export default function RegionConfigurationModal({
             <Button
               type="button"
               onClick={handleSave}
-              disabled={!canSave || !hasCreatePermission || loading || permissionsLoading || addCurrencyMutation.isPending || addPaymentMutation.isPending || addShippingMutation.isPending}
+              disabled={
+                !canSave ||
+                !hasCreatePermission ||
+                loading ||
+                permissionsLoading ||
+                addCurrencyMutation.isPending ||
+                addPaymentMutation.isPending ||
+                addShippingMutation.isPending
+              }
               className="flex items-center gap-2"
             >
               <CheckIcon className="h-4 w-4" />
-              {(addCurrencyMutation.isPending || addPaymentMutation.isPending || addShippingMutation.isPending) ? 'Guardando...' : 'Agregar Configuración'}
+              {addCurrencyMutation.isPending ||
+              addPaymentMutation.isPending ||
+              addShippingMutation.isPending
+                ? "Guardando..."
+                : "Agregar Configuración"}
             </Button>
           </div>
         </div>

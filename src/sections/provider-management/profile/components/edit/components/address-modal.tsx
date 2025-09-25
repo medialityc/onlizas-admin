@@ -12,7 +12,7 @@ import { Label } from "@/components/label/label";
 import LoaderButton from "@/components/loaders/loader-button";
 import { Button } from "@/components/button/button";
 import { MapPinIcon } from "@heroicons/react/24/outline";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface AddressModalProps {
   open: boolean;
@@ -29,7 +29,9 @@ export function AddressModal({
 }: AddressModalProps) {
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
   const methods = useForm<AddressFormData>({

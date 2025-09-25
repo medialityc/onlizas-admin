@@ -16,7 +16,7 @@ import { getAllLocations } from "@/services/locations";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import { processImageFile } from "@/utils/image-helpers";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface BusinessModalProps {
   open: boolean;
@@ -61,12 +61,13 @@ export default function BusinessModal({
   });
 
   // Control de permisos
-    const { data: permissions = [] } = usePermissions();
-    const hasPermission = (requiredPerms: string[]) => {
-      return requiredPerms.every(perm => permissions.some(p => p.code === perm));
-    };
-    const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
-  
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   const {
     reset,
@@ -314,15 +315,16 @@ export default function BusinessModal({
               >
                 Cancelar
               </button>
-              {hasUpdatePermission&&
-              <LoaderButton
-                type="submit"
-                loading={isSubmitting}
-                className="btn btn-primary "
-                disabled={isSubmitting}
-              >
-                {business ? "Guardar Cambios" : "Crear Negocio"}
-              </LoaderButton>}
+              {hasUpdatePermission && (
+                <LoaderButton
+                  type="submit"
+                  loading={isSubmitting}
+                  className="btn btn-primary "
+                  disabled={isSubmitting}
+                >
+                  {business ? "Guardar Cambios" : "Crear Negocio"}
+                </LoaderButton>
+              )}
             </div>
           </form>
         </FormProvider>

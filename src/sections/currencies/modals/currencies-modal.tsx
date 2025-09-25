@@ -22,7 +22,7 @@ import { PaginatedResponse } from "@/types/common";
 import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { getRegions } from "@/services/regions";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface CurrenciesModalProps {
   open: boolean;
@@ -49,7 +49,7 @@ export default function CurrenciesModal({
       codIso: currency?.codIso ?? "",
       symbol: "", // Nuevo campo que no existe en Currency base
       rate: currency?.rate ?? 1,
-  regionsId: currency?.regions?.map(r => r.id) ?? [],
+      regionsId: currency?.regions?.map((r) => r.id) ?? [],
     },
   });
 
@@ -61,7 +61,9 @@ export default function CurrenciesModal({
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
@@ -210,7 +212,6 @@ export default function CurrenciesModal({
                   <span className="text-xs text-gray-500">({region.code})</span>
                 </div>
               )}
-              
             />
           </div>
 

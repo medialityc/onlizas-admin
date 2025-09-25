@@ -11,14 +11,14 @@ import RegionPaymentSection from "./components/region-payment-section";
 import RegionShippingSection from "./components/region-shipping-section";
 import { useRegionDetails } from "../hooks/use-region-details";
 import RegionConfigurationModal from "./region-configuration-modal";
-import { 
-  InformationCircleIcon, 
-  GlobeAmericasIcon, 
+import {
+  InformationCircleIcon,
+  GlobeAmericasIcon,
   CurrencyDollarIcon,
   CreditCardIcon,
-  TruckIcon
+  TruckIcon,
 } from "@heroicons/react/24/outline";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface RegionDetailsModalProps {
   region: Region;
@@ -29,35 +29,35 @@ interface RegionDetailsModalProps {
 
 const tabs = [
   {
-    id: 'general',
-    name: 'General',
+    id: "general",
+    name: "General",
     icon: InformationCircleIcon,
-    description: 'Información básica'
+    description: "Información básica",
   },
   {
-    id: 'countries',
-    name: 'Países',
+    id: "countries",
+    name: "Países",
     icon: GlobeAmericasIcon,
-    description: 'Países asociados'
+    description: "Países asociados",
   },
   {
-    id: 'currencies',
-    name: 'Monedas',
+    id: "currencies",
+    name: "Monedas",
     icon: CurrencyDollarIcon,
-    description: 'Configuración de monedas'
+    description: "Configuración de monedas",
   },
   {
-    id: 'payments',
-    name: 'Pagos',
+    id: "payments",
+    name: "Pagos",
     icon: CreditCardIcon,
-    description: 'Gateways de pago'
+    description: "Gateways de pago",
   },
   {
-    id: 'shipping',
-    name: 'Envíos',
+    id: "shipping",
+    name: "Envíos",
     icon: TruckIcon,
-    description: 'Métodos de envío'
-  }
+    description: "Métodos de envío",
+  },
 ];
 
 export function RegionDetailsModal({
@@ -66,22 +66,24 @@ export function RegionDetailsModal({
   onClose,
   loading: externalLoading = false,
 }: RegionDetailsModalProps) {
-  const [activeTab, setActiveTab] = useState('general');
+  const [activeTab, setActiveTab] = useState("general");
 
   const queryClient = useQueryClient();
 
   const [configModal, setConfigModal] = useState<{
     open: boolean;
-    type: 'currencies' | 'payments' | 'shipping' | null;
+    type: "currencies" | "payments" | "shipping" | null;
   }>({
     open: false,
-    type: null
+    type: null,
   });
 
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const canEdit = hasPermission(["UPDATE_ALL"]);
   const canDelete = hasPermission(["DELETE_ALL"]);
@@ -95,7 +97,7 @@ export function RegionDetailsModal({
   const fullRegion = regionData?.data || region;
   const isLoading = externalLoading || isLoadingRegion;
 
-  const handleOpenConfig = (type: 'currencies' | 'payments' | 'shipping') => {
+  const handleOpenConfig = (type: "currencies" | "payments" | "shipping") => {
     setConfigModal({ open: true, type });
   };
 
@@ -105,32 +107,32 @@ export function RegionDetailsModal({
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'general':
+      case "general":
         return <RegionGeneralInfo region={fullRegion} />;
-      case 'countries':
+      case "countries":
         return <RegionCountriesSection region={fullRegion} />;
-      case 'currencies':
+      case "currencies":
         return (
-          <RegionCurrencySection 
-            region={fullRegion} 
+          <RegionCurrencySection
+            region={fullRegion}
             canEdit={canEdit}
             canDelete={canDelete}
             onOpenConfig={handleOpenConfig}
           />
         );
-      case 'payments':
+      case "payments":
         return (
-          <RegionPaymentSection 
-            region={fullRegion} 
+          <RegionPaymentSection
+            region={fullRegion}
             canEdit={canEdit}
             canDelete={canDelete}
             onOpenConfig={handleOpenConfig}
           />
         );
-      case 'shipping':
+      case "shipping":
         return (
-          <RegionShippingSection 
-            region={fullRegion} 
+          <RegionShippingSection
+            region={fullRegion}
             canEdit={canEdit}
             canDelete={canDelete}
             onOpenConfig={handleOpenConfig}
@@ -161,15 +163,15 @@ export function RegionDetailsModal({
                   onClick={() => setActiveTab(tab.id)}
                   className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                     isActive
-                      ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                      ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
                   }`}
                 >
                   <Icon
                     className={`-ml-0.5 mr-2 h-5 w-5 ${
                       isActive
-                        ? 'text-blue-500 dark:text-blue-400'
-                        : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'
+                        ? "text-blue-500 dark:text-blue-400"
+                        : "text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300"
                     }`}
                   />
                   <span>{tab.name}</span>
@@ -180,14 +182,14 @@ export function RegionDetailsModal({
         </div>
 
         {/* Tab Content */}
-        <div className="flex-1 overflow-y-auto p-6">
-          {renderTabContent()}
-        </div>
+        <div className="flex-1 overflow-y-auto p-6">{renderTabContent()}</div>
 
         {/* Footer */}
         <div className="border-t border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between bg-gray-50 dark:bg-gray-800/50">
-          <button 
-            onClick={() => queryClient.invalidateQueries({ queryKey: ["regions"] })}
+          <button
+            onClick={() =>
+              queryClient.invalidateQueries({ queryKey: ["regions"] })
+            }
             className="btn btn-outline-primary"
           >
             Actualizar Datos
@@ -203,7 +205,7 @@ export function RegionDetailsModal({
         open={configModal.open}
         onClose={handleCloseConfig}
         region={fullRegion}
-        initialTab={configModal.type || 'currencies'}
+        initialTab={configModal.type || "currencies"}
       />
     </SimpleModal>
   );

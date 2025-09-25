@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Category } from "@/types/categories";
 import Link from "next/link";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface CategoriesModalProps {
   open: boolean;
@@ -25,13 +25,13 @@ export default function CategoriesModal({
   useQueryClient();
 
   // Control de permisos
-      const { data: permissions = [] } = usePermissions();
-      const hasPermission = (requiredPerms: string[]) => {
-        return requiredPerms.every(perm => permissions.some(p => p.code === perm));
-      };
-      const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
-    
-  
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 
   const handleClose = () => {
     setError(null);
@@ -59,17 +59,18 @@ export default function CategoriesModal({
           >
             Cerrar
           </button>
-          {hasUpdatePermission&&
-          <Link
-            href={
-              category
-                ? `/dashboard/categories/${category.id}/edit`
-                : "/dashboard/categories/new"
-            }
-            className="btn btn-primary "
-          >
-            {category ? "Editar en vista" : "Crear en vista"}
-          </Link>}
+          {hasUpdatePermission && (
+            <Link
+              href={
+                category
+                  ? `/dashboard/categories/${category.id}/edit`
+                  : "/dashboard/categories/new"
+              }
+              className="btn btn-primary "
+            >
+              {category ? "Editar en vista" : "Crear en vista"}
+            </Link>
+          )}
         </div>
       </div>
     </SimpleModal>

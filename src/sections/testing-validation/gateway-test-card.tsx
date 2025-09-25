@@ -3,12 +3,14 @@
 import { GatewayTest } from "@/types";
 import { Badge, Button } from "@mantine/core";
 import { CreditCard } from "lucide-react";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 export const GatewayTestCard = ({ test }: { test: GatewayTest }) => {
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 

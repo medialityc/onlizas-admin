@@ -1,6 +1,5 @@
 import { Button } from "@/components/button/button";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
-
+import { usePermissions } from "zas-sso-client";
 
 interface FormActionsProps {
   isSubmitting: boolean;
@@ -11,7 +10,9 @@ export const FormActions = ({ isSubmitting, onCancel }: FormActionsProps) => {
   // Control de permisos
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
 

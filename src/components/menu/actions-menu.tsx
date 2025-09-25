@@ -16,7 +16,7 @@ import {
 } from "@heroicons/react/24/solid";
 import DeleteDialog from "../modal/delete-modal";
 import ToggleStatusDialog from "../modal/toggle-status-modal";
-import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { usePermissions } from "zas-sso-client";
 
 interface MenuProps {
   onAddUsers?: () => void;
