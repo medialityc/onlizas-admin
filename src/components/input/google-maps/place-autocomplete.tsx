@@ -26,6 +26,7 @@ type GooglePlacesAutocompleteProps = {
   placeholder?: string;
   onPlaceSelected: (place: google.maps.places.PlaceResult) => void;
   initialValue?: string;
+  onInputChange?: (value: string) => void;
 };
 
 function useGoogleMapsScript(
@@ -70,6 +71,7 @@ export const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> =
   countryCode,
   placeholder = "Escribe una dirección",
   onPlaceSelected,
+  onInputChange,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [options, setOptions] = useState<google.maps.places.AutocompletePrediction[]>([]);
@@ -220,6 +222,7 @@ export const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> =
         value={userInput}
         onChange={(e) => {
           setUserInput(e.target.value);
+          onInputChange?.(e.target.value);
           setShowDropdown(true);
           setActiveIndex(-1);
         }}

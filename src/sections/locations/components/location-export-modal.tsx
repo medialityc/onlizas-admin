@@ -24,11 +24,17 @@ export default function LocationExportModal({
   const handleExport = async () => {
     setLoading(true);
     try {
-      const queryParams = { ...appliedFilters, pageSize: 10000 };
+      const queryParams = { ...appliedFilters, pageSize: 10 };
       const response = await getAllLocations(queryParams);
-      
-      if (response.error || !response.data?.data) {
-        toast.error("Error al obtener los datos para exportar");
+      console.log("Respuesta del servicio:", response);
+
+      if (response.error) {
+        toast.error(response.message || "Error al obtener los datos para exportar");
+        return;
+      }
+
+      if (!response.data?.data) {
+        toast.error("No se encontraron datos para exportar");
         return;
       }
 
@@ -44,7 +50,8 @@ export default function LocationExportModal({
       onClose();
     } catch (error) {
       console.error("Export error:", error);
-      toast.error("Error durante la exportación");
+      const errorMessage = error instanceof Error ? error.message : "Error durante la exportación";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -63,19 +70,23 @@ export default function LocationExportModal({
       ...locations.map(location => [
         location.id || "",
         `"${safeString(location.name)}"`,
-        safeString(location.countryCode),
+        `"${safeString(location.countryCode)}"`,
         `"${safeString(location.state)}"`,
         `"${safeString(location.district)}"`,
         `"${safeString(location.addressRaw)}"`,
         location.latitude || "",
         location.longitude || "",
         `"${safeString(location.type)}"`,
-        safeString(location.status),
+        `"${safeString(location.status)}"`,
         `"${location.tags?.join(';') || ''}"`
       ].join(","))
     ].join("\n");
 
-    const blob = new Blob([csvContent], { type: "text/csv" });
+    // Add UTF-8 BOM for proper Excel recognition
+    const BOM = '\uFEFF';
+    const csvWithBOM = BOM + csvContent;
+
+    const blob = new Blob([csvWithBOM], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;

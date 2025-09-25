@@ -6,9 +6,8 @@ export const locationSchema = z.object({
     .min(1, "El nombre no puede estar vacío.")
     .max(120, "El nombre no puede tener más de 120 caracteres."),
   countryCode: z
-    .string({ required_error: "El código de país es obligatorio." })
-    .min(2, "El código de país debe tener al menos 2 caracteres.")
-    .max(3, "El código de país no puede tener más de 3 caracteres."),
+    .string({ required_error: "El país es obligatorio." })
+    .min(1, "Debe seleccionar un país."),
   state: z
     .string({ required_error: "El estado es obligatorio." })
     .min(1, "El estado no puede estar vacío.")

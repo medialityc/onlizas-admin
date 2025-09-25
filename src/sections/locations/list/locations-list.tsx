@@ -22,20 +22,27 @@ interface LocationsListProps {
   onSearchParamsChange: (params: SearchParams) => void;
 }
 
-const LOCATION_TYPE_MAP: Record<string, string> = {
-  // Mapeo por si el backend devuelve números
-  "0": "Almacén",
-  "1": "Negocio",
-  "2": "Punto de recogida", 
-  "3": "Hub",
-  "4": "Otro"
+const LOCATION_TYPE_LABELS = ["Almacén", "Negocio", "Centro de distribución", "Punto de recogida", "Oficina", "Otro"];
+
+const LOCATION_STATUS_LABELS = {
+  0: "Activo",
+  1: "Inactivo", 
+  2: "Eliminado",
+  ACTIVE: "Activo",
+  INACTIVE: "Inactivo",
+  DELETE: "Eliminado"
 };
 
-const getLocationTypeLabel = (type: string | number | undefined): string => {
-  if (!type) return "-";
-  const typeKey = String(type);
-  return LOCATION_TYPE_MAP[typeKey] || typeKey;
+const getLocationTypeLabel = (type: number): string => LOCATION_TYPE_LABELS[type] || "-";
+
+const getLocationStatusLabel = (status: string | number): string => {
+  if (status === 0 || status === 1 || status === 2) return LOCATION_STATUS_LABELS[status];
+  return LOCATION_STATUS_LABELS[status as keyof typeof LOCATION_STATUS_LABELS] || String(status);
 };
+
+const isLocationActive = (location: ILocation): boolean => location.status === 0 || location.status === LocationStatus.ACTIVE;
+
+const canToggleStatus = (location: ILocation): boolean => location.status !== 2 && location.status !== LocationStatus.DELETE;
 
 export function LocationsList({
   data,
@@ -85,10 +92,7 @@ export function LocationsList({
 
   const handleToggleStatus = useCallback(async (location: ILocation) => {
     try {
-      const newStatus = location.status === LocationStatus.ACTIVE 
-        ? LocationStatus.INACTIVE 
-        : LocationStatus.ACTIVE;
-      
+            
       const response = await updateLocationStatus(location.id);
       
       if (response.error) {
@@ -97,8 +101,12 @@ export function LocationsList({
       }
       
       queryClient.invalidateQueries({ queryKey: ["locations"] });
+      
+      // Determinar el nuevo estado basado en el estado actual
+      const newStatus = isLocationActive(location) ? "Inactivo" : "Activo";
+        
       showToast(
-        `Ubicación ${newStatus === LocationStatus.ACTIVE ? "activada" : "desactivada"} exitosamente`,
+        `Ubicación ${newStatus === "Activo" ? "activada" : "desactivada"} exitosamente`,
         "success"
       );
     } catch (error) {
@@ -174,20 +182,25 @@ export function LocationsList({
       title: "Tipo",
       render: (location) => (
         <span className="text-sm text-gray-500 dark:text-gray-300">
-          {getLocationTypeLabel(location.type)??"-"}
+          {getLocationTypeLabel(location.type)}
         </span>
       ),
     },
     {
       accessor: "status",
       title: "Estado",
-      render: (location) => (
-        <StatusBadge
-          isActive={location.status === LocationStatus.ACTIVE}
-          activeText="Activo"
-          inactiveText="Inactivo"
-        />
-      ),
+      render: (location) => {
+        const statusLabel = getLocationStatusLabel(location.status);
+        const isActive = isLocationActive(location);
+        
+        return (
+          <StatusBadge
+            isActive={isActive}
+            activeText={statusLabel}
+            inactiveText={statusLabel}
+          />
+        );
+      },
     },
     {
       accessor: "actions",
@@ -196,14 +209,15 @@ export function LocationsList({
       render: (location) => (
         <div className="flex justify-center">
           <ActionsMenu
-            isActive={location.status === LocationStatus.ACTIVE}
+            isActive={isLocationActive(location)}
             onViewDetails={() => handleViewLocation(location)}
-            onEdit={() => handleEditLocation(location)}
-            onDelete={() => handleDeleteLocation(location)}
-            onActive={() => handleToggleStatus(location)}
+            onEdit={() => handleEditLocation(location)}                      
+            onDelete={!isLocationActive(location) ? () => handleDeleteLocation(location) : undefined}
+            onActive={canToggleStatus(location) ? () => handleToggleStatus(location) : undefined}
             viewPermissions={["READ_ALL"]}
             editPermissions={["UPDATE_ALL"]}
             deletePermissions={["DELETE_ALL"]}
+            activePermissions={["UPDATE_ALL"]}
           />
         </div>
       ),
