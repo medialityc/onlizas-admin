@@ -34,11 +34,13 @@ function EditContainer({ userProvider, inventory, features }: Props) {
   const handleAddVariant = () => {
     setVariants([
       {
+        sku: "",
         details: featuresNormalized,
         quantity: 0,
         price: 0,
         purchaseLimit: 0,
         isPrime: false,
+
         warranty: {
           isWarranty: false,
           warrantyTime: 0,
@@ -68,6 +70,7 @@ function EditContainer({ userProvider, inventory, features }: Props) {
           inventoryId={inventory.id}
           index={index}
           onRemove={() => handleDeleteVariant(product.id)}
+          isPacking={inventory.isPacking}
         />
       ))}
     </>

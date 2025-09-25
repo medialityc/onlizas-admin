@@ -9,16 +9,21 @@ import {
   inventoryEasySchema,
 } from "../schemas/inventory-easy.schema";
 import { CreateEasyInventory } from "@/types/inventory";
+import { usePathname, useRouter } from "next/navigation";
 
 export const useInventoryCreateForm = (
   initValues: Partial<InventoryEasy>,
-  onRedirect: () => void
+  onClose: () => void
 ) => {
   const form = useForm<InventoryEasy>({
     resolver: zodResolver(inventoryEasySchema),
     defaultValues: initValues,
   });
-
+  const pathanme = usePathname();
+  const { replace } = useRouter();
+  const onRedirect = (id: number) => {
+    replace(`${pathanme}/${id}/edit`);
+  };
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: InventoryEasy) => {
       const body: CreateEasyInventory = {
@@ -26,6 +31,7 @@ export const useInventoryCreateForm = (
         warehouseId: payload.physicalWarehouseId ?? payload.virtualWarehouseId,
         productId: payload.productId,
         supplierId: payload.supplierId,
+        isPaqueteria: payload.isPaqueteria,
       };
       const res = await createInventoryProvider(body);
 
@@ -33,11 +39,18 @@ export const useInventoryCreateForm = (
         throw res;
       }
 
-      return;
+      return res;
     },
-    onSuccess() {
+    onSuccess({ data }) {
       toast.success(`Se creó el inventario correctamente`);
-      onRedirect?.();
+      console.log({ data });
+      if (data) {
+        onRedirect(data.id);
+        return;
+      }
+      {
+        onClose();
+      }
     },
     onError: async (error: any) => {
       toast.error(error?.message);

@@ -1,6 +1,5 @@
 "use client";
 import Badge from "@/components/badge/badge";
-import { Button } from "@/components/button/button";
 import {
   Card,
   CardContent,
@@ -12,6 +11,7 @@ import { InventoryProvider } from "@/types/inventory";
 import { Edit, EyeIcon, Package } from "lucide-react";
 import Link from "next/link";
 import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { Button } from "@/components/button/button";
 
 type Props = {
   item: InventoryProvider;
@@ -22,7 +22,9 @@ const InventoryProviderCard = ({ item }: Props) => {
   const { data: permissions = [] } = usePermissions();
 
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
 
   const hasReadPermission = hasPermission(["READ_ALL"]);
@@ -54,9 +56,19 @@ const InventoryProviderCard = ({ item }: Props) => {
               <span>{item.totalQuantity} unidades</span>
             </div>
           </div>
-          <Badge variant={item.isActive ? "info" : "danger"} className="h-fit">
-            {item.isActive ? "Activo" : "Inactivo"}
-          </Badge>
+          <div className="flex flex-col items-end gap-2">
+            <Badge
+              variant={item.isActive ? "info" : "danger"}
+              className="size-fit"
+            >
+              {item.isActive ? "Activo" : "Inactivo"}
+            </Badge>
+            {item.isPacking && (
+              <Badge variant="outline-warning" className="size-fit">
+                Paquetería
+              </Badge>
+            )}
+          </div>
         </div>
       </CardHeader>
 
@@ -97,7 +109,7 @@ const InventoryProviderCard = ({ item }: Props) => {
         )}
         {hasUpdatePermission && (
           <Link href={`inventory/${item?.id}/edit`}>
-            <Button   variant="primary" size="sm" className="w-full">
+            <Button variant="primary" size="sm" className="w-full">
               <Edit className="mr-2 h-4 w-4" />
               Editar
             </Button>

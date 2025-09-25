@@ -1,10 +1,8 @@
-import { notFound } from "next/navigation";
-import { getInventoryById } from "@/services/inventory-providers";
 import InventoryProviderEditContainer from "@/sections/inventory-provider/containers/inventory-provider-edit-container";
-
-import { getUserProviderById } from "@/services/users";
-import { InventoryStoreFormData } from "@/sections/inventory-provider/schemas/inventory-edit.schema";
+import { getInventoryById } from "@/services/inventory-providers";
 import { getCategoryFeatures } from "@/services/products";
+import { getUserProviderById } from "@/services/users";
+import { notFound } from "next/navigation";
 
 export const metadata = {
   title: "Editar Inventario - ZAS Express",
@@ -17,15 +15,14 @@ interface EditPageProps {
 export default async function InventoryEditPage({ params }: EditPageProps) {
   const { id } = await params;
   const res = await getInventoryById(id);
-  const resSupplier = await getUserProviderById(Number(res.data?.supplierId));
-  const resFeatures = await getCategoryFeatures(res.data?.categoryIds ?? []);
-
   if (!res || res.error || !res.data) notFound();
+  const resSupplier = await getUserProviderById(Number(res.data?.supplierId));
   if (!resSupplier || resSupplier.error || !resSupplier.data) notFound();
+  const resFeatures = await getCategoryFeatures(res.data?.categoryIds ?? []);
 
   return (
     <InventoryProviderEditContainer
-      inventory={res.data! as unknown as InventoryStoreFormData}
+      inventory={res.data}
       userProvider={resSupplier?.data}
       features={resFeatures?.data?.features ?? []}
     />

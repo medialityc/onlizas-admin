@@ -25,15 +25,15 @@ export class QueryParamsURLFactory {
     if (search) queryParams.append("search", search);
 
     if (rest) {
-      Object.keys(rest).forEach(key => {
-      if (["create", "edit", "view"].includes(key)) return;
-      if (Array.isArray(rest[key])) {
-        rest[key].forEach(value => {
-        queryParams.append(key, value.toString());
-        });
-      } else {
-        queryParams.append(key, String(rest[key]));
-      }
+      Object.keys(rest).forEach((key) => {
+        if (["create", "edit", "view"].includes(key)) return;
+        if (Array.isArray(rest[key])) {
+          rest[key].forEach((value) => {
+            queryParams.append(key, value.toString());
+          });
+        } else {
+          queryParams.append(key, String(rest[key]));
+        }
       });
     }
 
@@ -62,7 +62,8 @@ export const buildQueryParams = (
       page: page ? Number(page) : 1,
       pageSize: pageSize ? +pageSize : 10,
     },
-
+    sortBy: "createdAt",
+    isDescending: true,
     search,
     ...restParams, // Include additional key-value pairs in the query
   };

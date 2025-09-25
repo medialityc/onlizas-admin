@@ -37,22 +37,55 @@ export type ProductSupplier = {
 };
 
 // Producto según respuesta de la API
-export type Product = {
+export interface Product {
   id: number;
   name: string;
   description: string;
+  image: string;
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
+  customsValue: number;
+  quantityValue: string;
+  isDurable: boolean;
+  aduanaCategoryGuid: string;
+  aduanaCategory: AduanaCategory;
+  source: string;
+  shortDescription: string;
+  customsValueAduanaUsd: number;
+  points: number;
+  minimumQuantity: number;
+  rateXValue: number;
+  stock: number;
+  unitGuid: string;
+  aboutThis: string[];
+  details: Details;
   state: boolean;
+  categories: Category[];
+  suppliers: Category[];
   isActive: boolean;
-  suppliers: ProductSupplier[];
-  categories: ProductCategory[];
-  dimensions?: ProductDimensions;
-  about: string[];
-  details: ProductDetail[];
-  features: ProductFeatureResponse[];
-  images: ProductImage[];
-  image: string
-};
+}
+export interface AduanaCategory {
+  id: number;
+  guid: string;
+  source: string;
+  chapter: string;
+  chapterName: string;
+  specificRule: string;
+  isActive: boolean;
+}
 
+export interface Category {
+  id: number;
+  name: string;
+}
+
+export interface Details {
+  additionalProp1: string;
+  additionalProp2: string;
+  additionalProp3: string;
+}
 // Para crear producto según la API
 export type CreateProductRequest = {
   name: string;

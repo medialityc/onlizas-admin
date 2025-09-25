@@ -8,7 +8,11 @@ import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
-import { Category, GetAllCategories } from "@/types/categories";
+import {
+  Category,
+  GetAllAduanaCategories,
+  GetAllCategories,
+} from "@/types/categories";
 
 export async function createCategory(
   data: FormData
@@ -90,7 +94,18 @@ export async function getCategoryById(
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<Category>(res);
 }
-
+export async function getAduanaCategories(): Promise<
+  ApiResponse<GetAllAduanaCategories>
+> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.categories.aduanaCategories,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["aduana-categories"] },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<GetAllAduanaCategories>(res);
+}
 // Para autocomplete infinito en promociones
 export async function getCategoriesForPromotion(
   params: IQueryable

@@ -7,23 +7,27 @@ import { createProduct, updateProduct } from "@/services/products";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { setProductFormData } from "../constants/product-data";
-
 const initValues: ProductFormData = {
+  id: undefined,
   name: "",
   description: "",
-
-  //dimensions
   length: 0,
   width: 0,
   height: 0,
   weight: 0,
-
   isActive: false,
   categoryIds: [],
   supplierUserIds: [],
   aboutThis: [],
   details: [],
   image: "",
+
+  // Aduanera
+  customsValueAduanaUsd: undefined,
+  valuePerUnit: undefined,
+  isDurable: false,
+  aduanaCategoryGuid: "",
+  unitGuid: "",
 };
 
 export const useProductCreateForm = (
@@ -37,7 +41,10 @@ export const useProductCreateForm = (
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: ProductFormData) => {
+      console.log(payload);
+
       const fromData = await setProductFormData(payload);
+
       const res = payload?.id
         ? await updateProduct(payload?.id, fromData)
         : await createProduct(fromData);
@@ -60,7 +67,7 @@ export const useProductCreateForm = (
   });
 
   return {
-    form: form,
+    form,
     isPending,
     onSubmit: form.handleSubmit((values) => {
       mutate(values);

@@ -6,7 +6,9 @@ import { imageConvertWebp } from "@/utils/image-convert";
  * @param image Imagen a procesar (puede ser un File o un string).
  * @returns Un File procesado o el string original.
  */
-export async function processImageFile(image: File | string): Promise<File | string | null> {
+export async function processImageFile(
+  image: File | string
+): Promise<File | string | null> {
   if (image instanceof File) {
     try {
       const processedImage = await imageConvertWebp(image);
@@ -17,6 +19,7 @@ export async function processImageFile(image: File | string): Promise<File | str
         return null;
       }
     } catch {
+      console.error("Error al procesar la imagen");
       toast.error("Error al procesar la imagen");
       return null;
     }

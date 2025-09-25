@@ -14,29 +14,28 @@ import {
 } from "@/services/inventory-providers";
 
 const initValue: ProductVariant = {
-  //Información de Inventario
+  id: 0,
+  sku: "",
+  details: {},
   quantity: 0,
   price: 0,
-
-  //Restricciones y Límites
+  volume: 0,
+  weight: 0,
   purchaseLimit: 0,
-  isPrime: false,
-  // Garantía
   warranty: {
     isWarranty: false,
     warrantyTime: 0,
     warrantyPrice: 0,
   },
+  isLimit: false,
+  isPrime: false,
   packageDelivery: false,
   images: [],
-  id: 0,
-  details: {},
-  isLimit: false,
 };
 
 export const useInventoryProviderEditForm = (
   defaultValues: ProductVariant = initValue,
-  onRedirect: () => void,
+  handleCancel: () => void,
   inventoryId: number
 ) => {
   const form = useForm({
@@ -50,15 +49,31 @@ export const useInventoryProviderEditForm = (
       const res = await (payload.id
         ? editVariantInventory(payload.id, fromData)
         : addVariantToInventory(inventoryId, fromData));
-      console.log(res);
+
+      if (res.error) {
+        const msg =
+          typeof res.error === "string"
+            ? res.error
+            : res?.message ||
+              res.message ||
+              "Ocurrió un error al guardar el inventario";
+        throw new Error(msg);
+      }
       return;
     },
-    onSuccess() {
+    onSuccess(data) {
       toast.success(`Se editó el inventario correctamente`);
+      console.log({ data });
       // onRedirect?.();
     },
-    onError: async (error: any) => {
-      toast.error(error?.message);
+    onError: (error: unknown) => {
+      let msg = "Error desconocido";
+      if (error instanceof Error) {
+        msg = error.message;
+      } else if (typeof error === "string") {
+        msg = error;
+      }
+      toast.error(msg);
     },
   });
 

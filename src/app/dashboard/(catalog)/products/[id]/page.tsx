@@ -136,33 +136,33 @@ async function ProductDetails({ id }: { id: string }) {
       </div>
 
       {/* Información adicional */}
-      {(product.about && product.about.length > 0) ||
-      (product.details && product.details.length > 0) ? (
+      {(product.aboutThis && product.aboutThis.length > 0) ||
+      (product.details && Object.keys(product.details).length > 0) ? (
         <div className="bg-white rounded-lg border p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             Información adicional
           </h3>
 
-          {product.about && product.about.length > 0 && (
+          {product.aboutThis && product.aboutThis.length > 0 && (
             <div className="mb-6">
               <h4 className="font-medium text-gray-700 mb-2">
                 Acerca del producto:
               </h4>
               <ul className="list-disc list-inside space-y-1 text-gray-600">
-                {product.about.map((item, i) => (
+                {product.aboutThis.map((item, i) => (
                   <li key={i}>{item}</li>
                 ))}
               </ul>
             </div>
           )}
 
-          {product.details && product.details.length > 0 && (
+          {product.details && Object.keys(product.details).length > 0 && (
             <div>
               <h4 className="font-medium text-gray-700 mb-2">
                 Detalles técnicos:
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {product.details.map((detail, i) => (
+                {/* {product.details.map((detail, i) => (
                   <div
                     key={i}
                     className="flex justify-between py-1 border-b border-gray-100"
@@ -172,7 +172,7 @@ async function ProductDetails({ id }: { id: string }) {
                     </span>
                     <span className="text-gray-900">{detail.value}</span>
                   </div>
-                ))}
+                ))} */}
               </div>
             </div>
           )}

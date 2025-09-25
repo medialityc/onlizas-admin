@@ -37,8 +37,8 @@ const InventoryProviderList = ({ data, searchParams }: Props) => {
   }
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 md:gap-6 mb-4">
-      {data?.map((provider: InventoryProvider) => (
-        <div className="col-span-1" key={`${id}-${provider?.id}`}>
+      {data?.map((provider: InventoryProvider, idx) => (
+        <div className="col-span-1" key={`${id}-${provider?.id}${idx}`}>
           <InventoryProviderCard item={provider} />
         </div>
       ))}

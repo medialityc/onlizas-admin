@@ -10,20 +10,23 @@ import React from "react";
 import { UseFieldArrayRemove, useFormContext } from "react-hook-form";
 import InventoryProviderDetailSection from "../inventory-provider-detail-section/inventory-provider-detail-section";
 import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
+import { ProductVariant } from "../../schemas/inventory-provider.schema";
 import { usePermissions } from "@/auth-sso/permissions-control/hooks";
 
 type Props = {
   variantIndex: number;
   remove: UseFieldArrayRemove;
+  isPacking: boolean;
 };
 
-const InventoryVariantFrom = ({ variantIndex, remove }: Props) => {
-  const { watch } = useFormContext();
-  const isWarranty = watch(`warranty.isWarranty`);
-  const isLimit = watch(`isLimit`);
+const InventoryVariantFrom = ({ variantIndex, remove, isPacking }: Props) => {
+  const { watch } = useFormContext<ProductVariant>();
+  const [isWarranty, isLimit] = watch(["warranty.isWarranty", "isLimit"]);
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
   };
   const hasDeletePermission = hasPermission(["DELETE_ALL"]);
 
@@ -57,24 +60,62 @@ const InventoryVariantFrom = ({ variantIndex, remove }: Props) => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
             <RHFInputWithLabel
-              name={`quantity`}
+              name="sku"
+              label="SKU"
+              type="text"
+              placeholder="Ingrese SKU"
+              required
+            />
+          </div>
+          <div>
+            <RHFInputWithLabel
+              name="quantity"
               label="Cantidad disponible"
               type="number"
               placeholder="0"
               min="0"
               step="0"
+              required={isPacking}
             />
           </div>
           <div>
             <RHFInputWithLabel
-              name={`price`}
+              name="price"
               label="Precio de la variante"
               type="number"
               placeholder="0"
               min="0"
+              required
               step="0.1"
             />
           </div>
+          {isPacking && (
+            <>
+              <div>
+                <RHFInputWithLabel
+                  name="volume"
+                  label="Volumen"
+                  type="number"
+                  placeholder="0"
+                  min="0"
+                  step="0.1"
+                  required
+                />
+              </div>
+              <div>
+                <RHFInputWithLabel
+                  name="weight"
+                  label="Peso (lb)"
+                  type="number"
+                  placeholder="0"
+                  min="0"
+                  step="0.1"
+                  required
+                  defaultValue={0}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -149,17 +190,20 @@ const InventoryVariantFrom = ({ variantIndex, remove }: Props) => {
         </div>
       </div>
 
-      <Separator className="my-2" />
-
       {/* Sección productos por paquetería */}
-      <div className="flex flex-col gap-2">
-        <p className="text-sm font-bold">Producto por Paquetería</p>
-        <RHFCheckbox
-          name={`packageDelivery`}
-          label="Habilitar entrega por paquetería"
-          className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
-        />
-      </div>
+      {!isPacking && (
+        <>
+          <Separator className="my-2" />
+          <div className="flex flex-col gap-2">
+            <p className="text-sm font-bold">Producto por Paquetería</p>
+            <RHFCheckbox
+              name={`packageDelivery`}
+              label="Habilitar entrega por paquetería"
+              className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };

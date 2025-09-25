@@ -78,19 +78,19 @@ export const buildApiResponseAsync = async <T>(
       response.status === 204 ||
       response.headers.get("content-length") === "0"
     ) {
-      return await Promise.resolve({
+      return {
         data: null as unknown as T,
         error: false,
         status: response.status,
-      });
+      };
     }
 
     const data = await response.json();
-    return await Promise.resolve({
+    return {
       data,
       error: false,
       status: response.status,
-    });
+    };
   } catch (e) {
     if (isApiError(e)) {
       return { ...e, title: e.title, error: true };

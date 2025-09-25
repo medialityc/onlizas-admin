@@ -31,8 +31,6 @@ const SimpleModal = ({
   className,
   footer,
 }: Props) => {
-
-
   return (
     <div className="mb-5">
       <Transition appear show={open} as={Fragment}>
@@ -66,12 +64,19 @@ const SimpleModal = ({
               >
                 <DialogPanel
                   as="div"
-                  className={cn("panel my-8 w-full max-w-lg rounded-md border-0 p-0 max-h-[90vh] overflow-hidden", className)}
+                  className={cn(
+                    "panel my-8 w-full max-w-lg rounded-md border-0 p-0 max-h-[90vh] overflow-hidden",
+                    className
+                  )}
                 >
                   {/* Header sticky */}
                   <div className="sticky top-0 z-10 bg-white dark:bg-[#121c2c]">
                     <div className="flex items-center justify-between px-5 py-3">
-                      {title && <div className="text-lg font-bold dark:text-white-light ">{title}</div>}
+                      {title && (
+                        <div className="text-lg font-bold dark:text-white-light ">
+                          {title}
+                        </div>
+                      )}
                       <button
                         type="button"
                         className="text-white-dark hover:text-dark ml-auto"
@@ -103,9 +108,7 @@ const SimpleModal = ({
                   {/* Footer sticky */}
                   {footer && (
                     <div className="sticky bottom-0 z-10 bg-white dark:bg-[#121c2c] border-t">
-                      <div className="px-5 py-3">
-                        {footer}
-                      </div>
+                      <div className="px-5 py-3">{footer}</div>
                     </div>
                   )}
                 </DialogPanel>
