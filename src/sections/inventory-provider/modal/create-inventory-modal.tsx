@@ -18,6 +18,7 @@ export default function CreateInventoryModal({
   provider,
 }: CreateInventoryModalProps) {
   const [error, setError] = useState<string | null>(null);
+
   useQueryClient();
 
   const handleClose = () => {

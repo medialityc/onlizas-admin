@@ -1,4 +1,3 @@
-"use client";
 import { SearchParams } from "@/types/fetch/request";
 import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
 import InventoryProviderList from "../inventory-provider-card/inventory-provider-list";
@@ -29,7 +28,7 @@ export function InventoryCardGrid({
         enableColumnToggle={false}
         component={
           <InventoryProviderList
-            data={data?.data as any[]}
+            data={data?.data}
             searchParams={searchParams}
           />
         }

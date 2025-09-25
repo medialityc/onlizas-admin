@@ -1,25 +1,25 @@
 "use client";
-import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
+
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import { InventoryEasy } from "../../schemas/inventory-easy.schema";
+import { RHFCheckbox } from "@/components/react-hook-form";
+import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAllProductsBySupplier } from "@/services/products";
 import { getAllProviderStores } from "@/services/stores";
-import {
-  getAllWarehousesBySupplier,
-  getAllWarehousesByType,
-} from "@/services/warehouses";
-import { RHFCheckbox } from "@/components/react-hook-form";
 import { getAllSupplierUsers } from "@/services/users";
-import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
+import { RenderWarehouseField } from "./render-warehouse-field";
+
 type Props = {
   provider?: number;
 };
 
 function InventoryForm({ provider }: Props) {
   const { watch } = useFormContext<InventoryEasy>();
+
   const supplierId = watch("supplierId") ?? provider;
-  const meWarehouse = watch("meWarehouse");
+  const [meWarehouse, isPaqueteria] = watch(["meWarehouse", "isPaqueteria"]);
+
   return (
     <div className="grid grid-cols-1 gap-4 md:gap-4">
       {!provider && (
@@ -31,6 +31,7 @@ function InventoryForm({ provider }: Props) {
           onFetch={getAllSupplierUsers}
         />
       )}
+
       {supplierId && (
         <>
           <RHFAutocompleteFetcherInfinity
@@ -41,6 +42,9 @@ function InventoryForm({ provider }: Props) {
             required
             queryKey={`products-${supplierId}`}
           />
+
+          <RHFCheckbox name="isPaqueteria" label="¿Es paquetería?" />
+
           <RHFAutocompleteFetcherInfinity
             name="storeId"
             label="Tienda"
@@ -49,38 +53,19 @@ function InventoryForm({ provider }: Props) {
             onFetch={(params) => getAllProviderStores(supplierId, params)}
             queryKey={`stores-${supplierId}`}
           />
-          <RHFCheckbox
-            name="meWarehouse"
-            label="¿Guardar en almacén virtual?"
-          />
-          {!meWarehouse ? (
-            <RHFAutocompleteFetcherInfinity
-              name={`physicalWarehouseId`}
-              label="Almacenes físicos"
-              placeholder="Seleccionar almacenes físicos"
-              onFetch={(params) =>
-                getAllWarehousesByType(params, WAREHOUSE_TYPE_ENUM.physical)
-              }
-              objectValueKey="id"
-              objectKeyLabel="name"
-              queryKey={`warehouses-physical-${supplierId}`}
-              disabled={!supplierId}
-              required
-            />
-          ) : (
-            <RHFAutocompleteFetcherInfinity
-              name={`virtualWarehouseId`}
-              label="Almacenes del proveedor"
-              placeholder="Seleccionar almacenes del proveedor"
-              onFetch={(params) =>
-                getAllWarehousesBySupplier(supplierId, params)
-              }
-              objectValueKey="id"
-              objectKeyLabel="name"
-              queryKey={`warehouses-virtual-${supplierId}`}
-              required
+
+          {!isPaqueteria && (
+            <RHFCheckbox
+              name="meWarehouse"
+              label="¿Guardar en almacén virtual?"
             />
           )}
+
+          <RenderWarehouseField
+            isPaqueteria={isPaqueteria}
+            meWarehouse={meWarehouse}
+            supplierId={supplierId}
+          />
         </>
       )}
     </div>

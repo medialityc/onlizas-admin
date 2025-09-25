@@ -15,7 +15,10 @@ export type Category = {
   productsWithStock: number;
   features?: Feature[];
 };
-
+export type AduanaCategory = {
+  guid: string;
+  name: string;
+};
 export type Feature = {
   featureName: string;
   featureDescription: string;
@@ -36,7 +39,7 @@ export type CreateCategory = {
 export type UpdateCategory = CreateCategory;
 
 export type GetAllCategories = PaginatedResponse<Category>;
-
+export type GetAllAduanaCategories = PaginatedResponse<AduanaCategory>;
 export type CategoryLogs = {
   id: number;
   timestamp: string;

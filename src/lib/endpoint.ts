@@ -53,6 +53,7 @@ export const backendRoutes = {
     create: `${process.env.NEXT_PUBLIC_API_URL}categories`, // POST
     list: `${process.env.NEXT_PUBLIC_API_URL}admin/categories`, // GET
     listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/categories`, // GET
+    aduanaCategories: `${process.env.NEXT_PUBLIC_API_URL}aduana-categories`,
     toggleStatus: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}categories/${id}/toggle-status`, // TOGGLE STATUS
     update: (id: string | number) =>
@@ -359,16 +360,20 @@ export const backendRoutes = {
     getLogsByRegion: (regionId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/logs`,
   },
-
   locations: {
     list: `${process.env.NEXT_PUBLIC_API_URL}locations`,
-    getById: (id: number | string) => `${process.env.NEXT_PUBLIC_API_URL}locations/${id}`,
+    getById: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}locations/${id}`,
     create: `${process.env.NEXT_PUBLIC_API_URL}locations`,
-    update: (id: number | string) => `${process.env.NEXT_PUBLIC_API_URL}locations/${id}`,
-    delete: (id: number | string) => `${process.env.NEXT_PUBLIC_API_URL}locations/${id}`,
-    toggleStatus: (id: number | string) => `${process.env.NEXT_PUBLIC_API_URL}locations/${id}/toggle-status`, // PATCH
+    update: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}locations/${id}`,
+    delete: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}locations/${id}`,
+    toggleStatus: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}locations/${id}/toggle-status`, // PATCH
     listLogs: `${process.env.NEXT_PUBLIC_API_URL}locations/logs`, // GET
-    getLogsById: (id: number | string) => `${process.env.NEXT_PUBLIC_API_URL}locations/${id}/logs`, // GET
+    getLogsById: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}locations/${id}/logs`, // GET
   },
   systemConfigurations: {
     list: `${process.env.NEXT_PUBLIC_API_URL}system-configuration`,
@@ -406,5 +411,8 @@ export const backendRoutes = {
         `${process.env.NEXT_PUBLIC_API_URL}home-banners/admin/${storeId}`, // GET
       toggleStatus: `${process.env.NEXT_PUBLIC_API_URL}home-banners/toggle-status`, // TOGGLE STATUS
     },
+  },
+  unit: {
+    list: `${process.env.NEXT_PUBLIC_API_URL}units`,
   },
 };

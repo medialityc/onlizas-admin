@@ -48,7 +48,7 @@ export function ProductList({
         showToast(res.message, "error");
       } else {
         showToast(
-          `Producto ${(res.data as unknown as Product)?.isActive ? "activado" : "desactivado"}  correctamente`,
+          `Producto ${(res.data as unknown as Product)?.aduanaCategory.isActive ? "activado" : "desactivado"}  correctamente`,
           "success"
         );
       }

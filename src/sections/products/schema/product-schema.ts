@@ -1,7 +1,6 @@
 import { detailsObjectToArray } from "@/utils/format";
 import { z } from "zod";
 
-// Schema completo que coincide con la API real según product-apis.md
 export const productSchema = z.object({
   id: z.number().optional(),
   name: z
@@ -12,16 +11,39 @@ export const productSchema = z.object({
     .string()
     .max(500, "La descripción no puede tener más de 500 caracteres.")
     .default(""),
-  isActive: z.boolean().default(false).optional(),
-
+  isActive: z.boolean(),
   supplierUserIds: z
     .array(z.number())
     .min(1, "Debe seleccionar al menos un proveedor."),
   categoryIds: z
     .array(z.number())
     .min(1, "Debe seleccionar al menos una categoría."),
-
-  /* dimensions */
+  customsValueAduanaUsd: z
+    .number({
+      required_error: "El valor aduanero es obligatorio",
+      invalid_type_error: "El valor aduanero es obligatorio",
+    })
+    .min(0, "El valor aduanero no puede ser negativo")
+    .optional(),
+  valuePerUnit: z
+    .number({
+      required_error: "El valor por unidad es obligatorio",
+      invalid_type_error: "El valor por unidad es obligatorio",
+    })
+    .min(0, "El valor por unidad no puede ser negativo")
+    .optional(),
+  isDurable: z.boolean().default(false),
+  unitGuid: z
+    .union([z.string(), z.number()])
+    .refine((val) => val !== "" && val !== undefined && val !== null, {
+      message: "Debe seleccionar una unidad",
+    }),
+  aduanaCategoryGuid: z
+    .union([z.string(), z.number()])
+    .refine((val) => val !== "" && val !== undefined && val !== null, {
+      message: "Debe seleccionar una categoría aduanal",
+    }),
+  /* dimensiones */
   width: z
     .number()
     .positive("El ancho debe ser un número positivo.")

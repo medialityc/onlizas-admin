@@ -5,6 +5,13 @@ export function buildCreateProductVariantFormData(
 ): FormData {
   const fd = new FormData();
 
+  // ID del producto variante
+  if (input.id !== undefined) fd.append("id", String(input.id));
+
+  // SKU
+  if (input.sku) fd.append("sku", input.sku);
+
+  // Details: objeto serializado
   if (input.details && typeof input.details === "object") {
     const detailsObj: Record<string, string> = {};
     Object.entries(input.details).forEach(([key, value]) => {
@@ -19,30 +26,37 @@ export function buildCreateProductVariantFormData(
     fd.append("details", JSON.stringify(detailsObj));
   }
 
+  // Quantity & Price
   if (input.quantity !== undefined)
-    fd.append("Quantity", String(input.quantity));
-  if (input.price !== undefined) fd.append("Price", String(input.price));
-  if (input.purchaseLimit !== undefined)
-    fd.append("PurchaseLimit", String(input.purchaseLimit));
-  if (input.isPrime !== undefined) fd.append("IsPrime", String(input.isPrime));
-  if (input.packageDelivery !== undefined)
-    fd.append("PackageDelivery", String(input.packageDelivery));
+    fd.append("quantity", String(input.quantity));
+  if (input.price !== undefined) fd.append("price", String(input.price));
 
-  // Warranty: nested object -> Warranty.PropName (dot notation works with ASP.NET model binding)
+  // Purchase limit & flags
+  if (input.purchaseLimit !== undefined)
+    fd.append("purchaseLimit", String(input.purchaseLimit));
+  if (input.isLimit !== undefined)
+    fd.append("isLimit", input.isLimit ? "true" : "false");
+  if (input.isPrime !== undefined)
+    fd.append("isPrime", input.isPrime ? "true" : "false");
+  if (input.packageDelivery !== undefined)
+    fd.append("packageDelivery", input.packageDelivery ? "true" : "false");
+
+  // Volume & Weight (paquetería)
+  if (input.volume !== undefined) fd.append("volume", String(input.volume));
+  if (input.weight !== undefined) fd.append("weight", String(input.weight));
+
+  // Warranty
   if (input.warranty && typeof input.warranty === "object") {
     Object.entries(input.warranty).forEach(([k, v]) => {
       if (v === undefined || v === null) {
-        fd.append(`Warranty.${k}`, "");
-      } else if (Array.isArray(v)) {
-        // arrays -> append multiple entries with same key (or serialize if needed)
-        v.forEach((item) => fd.append(`Warranty.${k}`, String(item)));
+        fd.append(`warranty.${k}`, "");
       } else {
-        fd.append(`Warranty.${k}`, String(v));
+        fd.append(`warranty.${k}`, String(v));
       }
     });
   }
 
-  // Images: validate size <= 5MB and append every File under key "Images" (IFormFile list)
+  // Images
   const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
   if (Array.isArray(input.images)) {
     const oversized: string[] = [];
@@ -51,11 +65,10 @@ export function buildCreateProductVariantFormData(
         if (f.size > MAX_IMAGE_SIZE) {
           oversized.push(f.name ?? "unnamed");
         } else {
-          fd.append("Images", f);
+          fd.append("images", f);
         }
       } else if (typeof f === "string") {
-        // if the UI may pass existing image URLs as strings, consider sending them as text fields
-        fd.append("ImagesUrls", f); // optional: backend must accept this
+        fd.append("imagesUrls", f); // si el backend acepta URLs
       }
     });
     if (oversized.length) {

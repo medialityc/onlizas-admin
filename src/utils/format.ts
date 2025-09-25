@@ -316,8 +316,7 @@ export function detailsArrayToObject(
 /**
  * Convierte un objeto de detalles (diccionario) a un array de pares {key,value}
  * Compatible con el componente de edición dinámico.
- */
-export function detailsObjectToArray(
+ */ export function detailsObjectToArray(
   obj: Record<string, any> | null | undefined,
   {
     trimKeys = true,
@@ -332,8 +331,9 @@ export function detailsObjectToArray(
     max?: number;
     sort?: "none" | "asc" | "desc";
   } = {}
-): Array<{ key: string; value: string }> {
+): Array<{ key: string; value: string; isRequired?: boolean }> {
   if (!obj || typeof obj !== "object") return [];
+
   let entries = Object.keys(obj).map((k) => {
     let key = k;
     const raw = obj[k];
@@ -351,6 +351,7 @@ export function detailsObjectToArray(
 
     if (trimKeys) key = key.trim();
     if (trimValues) value = value.trim();
+
     return { key, value, isRequired };
   });
 
@@ -367,5 +368,6 @@ export function detailsObjectToArray(
   }
 
   if (entries.length > max) entries = entries.slice(0, max);
+
   return entries;
 }

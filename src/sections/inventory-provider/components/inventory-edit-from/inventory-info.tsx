@@ -1,11 +1,11 @@
 import { Package, Store, Warehouse, Truck, LucideProps } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { InventoryStoreFormData } from "../../schemas/inventory-edit.schema";
+import Badge from "@/components/badge/badge";
 
 type IconProps = ForwardRefExoticComponent<
   Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
 >;
-
 const InventoryHeader = ({
   inventory,
 }: {
@@ -13,6 +13,17 @@ const InventoryHeader = ({
 }) => {
   return (
     <div className="w-full bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-slate-900 p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+          Información del Inventario
+        </h3>
+        {inventory.isPacking && (
+          <Badge variant="outline-warning" className="size-fit">
+            Paquetería
+          </Badge>
+        )}
+      </div>
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <InfoCard
           icon={Package}

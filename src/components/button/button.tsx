@@ -83,7 +83,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className
     );
 
-
     const showChildren = children && !iconOnly;
 
     return (

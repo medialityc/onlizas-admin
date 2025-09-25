@@ -35,6 +35,7 @@ export type InventoryProvider = {
   warehouseName: string;
   totalPrice: number;
   totalQuantity: number;
+  isPacking?: boolean;
 
   products: InventoryProductItem[];
   categoryIds: number[];
@@ -55,6 +56,7 @@ export type CreateEasyInventory = {
   warehouseId?: number;
   productId: number;
   supplierId: number;
+  isPaqueteria?: boolean;
 };
 
 export type GetAllInventoryProviderResponse =

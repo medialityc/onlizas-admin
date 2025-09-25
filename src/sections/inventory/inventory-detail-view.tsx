@@ -1,3 +1,4 @@
+import Badge from "@/components/badge/badge";
 import { InventoryProductItem, InventoryProvider } from "@/types/inventory";
 import React from "react";
 
@@ -32,8 +33,13 @@ export default function InventoryDetailView({ inventory }: Props) {
           <div className="flex-1 w-full">
             <div className="flex flex-col sm:flex-row items-center sm:items-start sm:justify-between text-center sm:text-left">
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                   {inventory.parentProductName}
+                  {inventory.isPacking && (
+                    <Badge variant="outline-warning" className="size-fit">
+                      Paquetería
+                    </Badge>
+                  )}
                 </h2>
                 <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                   Inventario en{" "}

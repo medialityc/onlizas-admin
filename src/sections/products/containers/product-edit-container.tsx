@@ -1,10 +1,10 @@
 import React from "react";
 import ProductForm from "../components/product-form";
-import { ProductFormData } from "../schema/product-schema";
 import { productTransformData } from "../utils/product-transform-data";
+import { Product } from "@/types/products";
 
 type Props = {
-  product: ProductFormData;
+  product: Product;
 };
 const ProductEditContainer = ({ product }: Props) => {
   return (

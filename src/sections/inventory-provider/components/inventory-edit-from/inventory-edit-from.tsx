@@ -12,6 +12,7 @@ type Props = {
   inventoryId?: number;
   index?: number;
   onRemove: () => void;
+  isPacking: boolean;
 };
 
 const InventoryEditForm = ({
@@ -20,6 +21,7 @@ const InventoryEditForm = ({
   inventoryId,
   index,
   onRemove,
+  isPacking,
 }: Props) => {
   const { push } = useRouter();
   const handleCancel = useCallback(
@@ -41,6 +43,7 @@ const InventoryEditForm = ({
           onRemove={onRemove}
           index={index}
           isPending={isPending}
+          isPacking={isPacking}
         />
       </FormProvider>
     </section>
