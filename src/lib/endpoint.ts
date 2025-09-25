@@ -313,7 +313,7 @@ export const backendRoutes = {
     AddVariantToInventory: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}inventories/${id}/variants`,
     editVariantInventory: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}variants/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}inventories/variants/${id}`,
   },
   regions: {
     listById: (regionId: number | string) =>
