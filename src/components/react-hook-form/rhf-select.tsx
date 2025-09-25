@@ -239,7 +239,7 @@ export default function RHFSelectWithLabel({
         {/* Dropdown */}
         <div
           className={cn(
-            "absolute z-20 mt-2 w-full overflow-hidden",
+            "absolute z-50 mt-2 w-full overflow-hidden",
             "rounded-xl border border-gray-200 dark:border-gray-700",
             "bg-white dark:bg-gray-900 shadow-xl",
             // Smooth open/close animation

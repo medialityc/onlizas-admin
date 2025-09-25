@@ -3,12 +3,10 @@
 
 import { ILocation, LocationType } from "@/types/locations";
 import SimpleModal from "@/components/modal/modal";
-import { AlertBox } from "@/components/alert/alert-box";
 import LoaderButton from "@/components/loaders/loader-button";
 import FormProvider from "@/components/react-hook-form/form-provider";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { LocationFormData, locationSchema } from "./locations-schema";
@@ -19,6 +17,7 @@ import { LOCATION_TYPE_OPTIONS } from "../utils/location-type-options";
 import { buildNormalizedAddress, extractLocationFields } from "../utils/address-parser";
 import { useLocationSubmit } from "../hooks/use-location-submit";
 import { usePermissions } from "@/auth-sso/permissions-control/hooks";
+import { RHFCountrySelect } from "@/components/react-hook-form/rhf-country-code-select";
 
 interface LocationsModalProps {
   open: boolean;
@@ -37,7 +36,6 @@ export default function LocationsModal({
   loading,
   onSuccess,
 }: LocationsModalProps) {
-  const [error, setError] = useState<string | null>(null);
   const { submitLocation } = useLocationSubmit(onSuccess);
 
   // Control de permisos
@@ -57,8 +55,8 @@ export default function LocationsModal({
       addressRaw: location?.addressRaw ?? "",
       addressNormalized: location?.addressNormalized ?? "",
       postalCode: location?.postalCode ?? "",
-      latitude: location?.latitude ?? 0,
-      longitude: location?.longitude ?? 0,
+      latitude: location? location.latitude : 40.4168,
+      longitude: location?.longitude ? location.longitude : -3.7038,
       placeId: location?.placeId ?? "",
       type: location?.type ?? LocationType.WAREHOUSE,
       tags: location?.tags ?? [],
@@ -73,7 +71,6 @@ export default function LocationsModal({
 
   const handleClose = () => {
     reset();
-    setError(null);
     onClose();
   };
 
@@ -95,19 +92,19 @@ export default function LocationsModal({
     setValue('addressRaw', place.formatted_address || '');
     setValue('addressNormalized', addressNormalized);
     setValue('postalCode', locationFields.postalCode);
-    setValue('latitude', geometry?.location?.lat() || 0);
-    setValue('longitude', geometry?.location?.lng() || 0);
+    setValue('latitude', geometry?.location?.lat() ?? 40.4168);
+    setValue('longitude', geometry?.location?.lng() ?? -3.7038);
     setValue('placeId', place.place_id || '');
   };
 
   const onSubmit = async (data: LocationFormData) => {
-    setError(null);
+   
     try {
       await submitLocation(data, location);
       handleClose();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Error al procesar la localización";
-      setError(errorMessage);
+      
       toast.error(errorMessage);
     }
   };
@@ -118,15 +115,10 @@ export default function LocationsModal({
         onClose={handleClose}
         loading={loading}
         title={location ? "Editar Localización" : "Crear Localización"}
+        className="max-w-2xl"
       >
-        <div className="p-5 max-w-full">
-          {error && (
-            <div className="mb-4">
-              <AlertBox title="Error" variant="danger" message={error} />
-            </div>
-          )}
-
-          <FormProvider methods={methods} onSubmit={onSubmit}>
+        <div className="p-5 max-w-full overflow-visible">
+          <FormProvider methods={methods} onSubmit={methods.handleSubmit(onSubmit)}>
             <div className="w-full min-w-0">
               {/* Name - full width */}
               <div className="mb-4">
@@ -154,6 +146,8 @@ export default function LocationsModal({
                         onPlaceSelected={handlePlaceSelected}
                         placeholder="Buscar dirección..."
                         inputClassName="form-input h-12 w-full"
+                        initialValue={field.value}
+                        onInputChange={(value) => field.onChange(value)}
                       />
                     </div>
                   )}
@@ -170,27 +164,46 @@ export default function LocationsModal({
                 />
               </div>
 
-              {/* Grid: country / state / district / type */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <div className="col-span-1 min-w-0">
-                  <RHFInputWithLabel
-                    name="countryCode"
-                    label="País (código)"
-                    placeholder="Ej: CO"
-                    maxLength={3}
-                  />
+              {/* Grid: country / state - PRIMERA FILA */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div className="min-w-0 flex flex-col">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3.5">
+                    País *
+                  </label>
+                  <div className="h-12">
+                    <RHFCountrySelect
+                      name="countryCode"
+                      variant="name"
+                      inputClassname="h-full w-full"
+                      storeCode={true}
+                      fullwidth={true}
+                    />
+                  </div>
+                  <div className="h-5 mt-1">
+                    {methods.formState.errors.countryCode && (
+                      <span className="text-sm text-red-600">
+                        {methods.formState.errors.countryCode.message}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
-                <div className="col-span-1 min-w-0">
+                <div className="min-w-0 flex flex-col">
                   <RHFInputWithLabel
                     name="state"
                     label="Estado / Departamento"
                     placeholder="Ej: Cundinamarca"
                     maxLength={120}
                   />
+                  <div className="h-5 mt-1">
+                    {/* Espacio reservado para mantener alineación */}
+                  </div>
                 </div>
+              </div>
 
-                <div className="col-span-1 min-w-0">
+              {/* Grid: district / type - SEGUNDA FILA */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div className="min-w-0">
                   <RHFInputWithLabel
                     name="district"
                     label="Distrito / Ciudad"
@@ -199,7 +212,7 @@ export default function LocationsModal({
                   />
                 </div>
 
-                <div className="col-span-1 min-w-0">
+                <div className="min-w-0">
                   <RHFSelectWithLabel
                     name="type"
                     label="Tipo"

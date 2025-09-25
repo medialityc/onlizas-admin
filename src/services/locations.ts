@@ -46,6 +46,10 @@ export async function deleteLocation(
     url: backendRoutes.locations.delete(id),
     method: "DELETE",
     useAuth: true,
+    data: JSON.stringify({id}),
+    
+    headers: { "Content-Type": "application/json" },
+
   });
   if (!res.ok) return handleApiServerError(res);
   revalidateTag("locations");
@@ -53,14 +57,14 @@ export async function deleteLocation(
 }
 
 export async function updateLocationStatus(
-  id: string | number,
- 
+  id: string | number
 ): Promise<ApiResponse<ILocation>> {
+  
   const res = await nextAuthFetch({
     url: backendRoutes.locations.toggleStatus(id),
     method: "PATCH",
-    
     useAuth: true,
+
   });
   if (!res.ok) return handleApiServerError(res);
   revalidateTag("locations");
@@ -70,7 +74,7 @@ export async function updateLocationStatus(
 export async function createLocation(
   data: CreateLocationData
 ): Promise<ApiResponse<ILocation>> {
-  console.log(data)
+  
   const res = await nextAuthFetch({
     url: backendRoutes.locations.create,
     method: "POST",
@@ -86,7 +90,7 @@ export async function updateLocation(
   id: string | number,
   data: UpdateLocationData
 ): Promise<ApiResponse<ILocation>> {
-  console.log(data)
+  
   const res = await nextAuthFetch({
     url: backendRoutes.locations.update(id),
     method: "PUT",

@@ -13,7 +13,7 @@ export const useLocationSubmit = (onSuccess?: (data?: ILocation) => void) => {
   ) => {
     const submitData = {
       name: data.name,
-      countryCode: data.countryCode.toUpperCase(),
+      countryCode: data.countryCode,
       state: data.state,
       district: data.district,
       addressRaw: data.addressRaw,
@@ -24,9 +24,10 @@ export const useLocationSubmit = (onSuccess?: (data?: ILocation) => void) => {
       placeId: data.placeId || "",
       type: data.type,
       tags: data.tags,
-      version: location ? (location.version || 0) + 1 : 1, // Incrementar versión al editar, 1 para nuevos
+      version: location ? (location.version || 0) : 1, // Incrementar versión al editar, 1 para nuevos
     };
-
+    console.log(location?.version)
+    console.log(submitData)
     const response = location 
       ? await updateLocation(location.id, submitData)
       : await createLocation(submitData);

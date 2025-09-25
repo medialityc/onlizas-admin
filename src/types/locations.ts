@@ -20,7 +20,7 @@ export type ILocation = {
   id: number;
   globalId: string;
   name: string;
-  countryCode: string;
+  countryCode?: string;
   state: string;
   district: string;
   addressRaw: string;
@@ -70,7 +70,7 @@ export type GetAllLocationLogsResponse = PaginatedResponse<LocationLogs>;
 // Tipos para crear y actualizar ubicaciones
 export type CreateLocationData = {
   name: string;
-  countryCode: string;
+  countryCode?: string;
   state: string;
   district: string;
   addressRaw: string;

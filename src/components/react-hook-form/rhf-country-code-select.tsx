@@ -25,6 +25,7 @@ type Props = {
   variant?: "code" | "name"; // ← nueva prop para filtrar
   inputClassname?: string;
   fullwidth?: boolean;
+  storeCode?: boolean; // ← nueva prop para almacenar código en lugar de ID
 };
 
 export function RHFCountrySelect({
@@ -32,13 +33,16 @@ export function RHFCountrySelect({
   variant = "code",
   inputClassname,
   fullwidth = false,
+  storeCode = false,
 }: Props) {
   const { control, watch } = useFormContext();
   const [countries, setCountries] = useState<Country[]>([]);
   const [query, setQuery] = useState("");
-  const selectedCountryId = watch(name);
+  const selectedValue = watch(name);
   const selectedCountry = countries.find(
-    (country) => country.id === Number(selectedCountryId)
+    (country) => storeCode 
+      ? country.code === selectedValue 
+      : country.id === Number(selectedValue)
   );
 
   useEffect(() => {
@@ -99,7 +103,7 @@ export function RHFCountrySelect({
         >
           <Combobox
             value={selectedCountry ?? null}
-            onChange={(val) => onChange(Number(val?.id) ?? -1)}
+            onChange={(val) => onChange(storeCode ? val?.code ?? "" : Number(val?.id) ?? -1)}
           >
             <div className="w-full flex flex-col gap-1 relative">
               <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left sm:text-sm">
@@ -128,7 +132,7 @@ export function RHFCountrySelect({
                 leaveTo="opacity-0"
                 afterLeave={() => setQuery("")}
               >
-                <ComboboxOptions className="z-20 custom-scrollbar w-full absolute mt-10 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+                <ComboboxOptions className="z-50 custom-scrollbar w-full absolute mt-10 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
                   {filteredCountries.length === 0 && query !== "" ? (
                     <div className="relative cursor-default select-none px-4 py-2 text-gray-700">
                       No encontrado
