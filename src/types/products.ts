@@ -1,3 +1,5 @@
+import { InventoryProductItem } from "./inventory";
+
 // Tipos según la API real en product-apis.md
 export type ProductDimensions = {
   width?: number;
@@ -74,6 +76,14 @@ export interface AduanaCategory {
   chapterName: string;
   specificRule: string;
   isActive: boolean;
+  suppliers: ProductSupplier[];
+  categories: ProductCategory[];
+  dimensions?: ProductDimensions;
+  about: string[];
+  details: ProductDetail[];
+  features: ProductFeatureResponse[];
+  images: ProductImage[];
+  image: string;
 }
 
 export interface Category {
@@ -119,6 +129,9 @@ export type ProductApiResponse = {
 };
 
 export type GetAllProducts = ProductApiResponse;
+export type GetAllProductVariant = Omit<ProductApiResponse, "data"> & {
+  data: InventoryProductItem[];
+};
 
 export type ProductFilter = {
   search?: string;

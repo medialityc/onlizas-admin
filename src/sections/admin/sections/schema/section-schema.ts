@@ -2,17 +2,16 @@ import { TEMPLATE_TYPE_ENUM } from "@/types/section";
 import { z } from "zod";
 
 export const sectionProductSchema = z.object({
-  productGlobalId: z
-    .union([z.string(), z.number()])
-    .refine((val) => val !== null && val !== 0 && val !== "", {
-      message: "Debes seleccionar un producto válido",
-    }),
+  productGlobalId: z.union([z.string(), z.number()]),
   displayOrder: z.number(),
-  isFeatured: z.literal(true),
+  isFeatured: z.boolean().default(true),
   customLabel: z.string(),
   customBackgroundColor: z.string(),
-
-  product: z.any().nullable().optional(),
+  products: z.array(z.any()).min(1, "Seleccione al menos un producto"),
+  categoriesIds: z
+    .array(z.number())
+    .min(1, "Seleccione al menos una categoría"),
+  supplierId: z.number().optional(),
 });
 
 export const sectionCriterionSchema = z.object({
@@ -42,7 +41,7 @@ export const sectionSchema = z
     name: z.string(),
     description: z.string(),
     viewMoreUrl: z.string(),
-    isActive: z.literal(true),
+    isActive: z.boolean().default(true),
     displayOrder: z.number(),
     templateType: z.enum(
       Object.values(TEMPLATE_TYPE_ENUM) as [string, ...string[]]
@@ -52,7 +51,7 @@ export const sectionSchema = z
     //banner template
     backgroundColor: z.string(),
     textColor: z.string(),
-    isPersonalized: z.literal(true),
+    isPersonalized: z.boolean().default(true),
 
     //selects
     targetUserSegment: z.string(),
@@ -60,12 +59,19 @@ export const sectionSchema = z
 
     startDate: z.union([z.date(), z.string()]),
     endDate: z.union([z.date(), z.string()]),
-    products: z.array(sectionProductSchema),
-    /* banners: z.array(sectionHomeBannerSchema),
-  criteria: z.array(sectionCriterionSchema), */
+    products: z.array(
+      sectionProductSchema.omit({ products: true, categoriesIds: true })
+    ),
   })
   .superRefine((data, ctx) => {
     if (data.products) {
+      if (data.products.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Debes agregar al menos un producto.",
+          path: ["products"],
+        });
+      }
       const ids = data.products.map((item) => item.productGlobalId);
       const hasDuplicates = ids.length !== new Set(ids).size;
       if (hasDuplicates) {
@@ -84,4 +90,8 @@ export type SectionFormData = z.infer<typeof sectionSchema> & {
   updatedAt?: string | Date;
 };
 
-export type SectionProductItemFormData = z.infer<typeof sectionProductSchema>;
+export type SectionProductItemFormData = z.infer<
+  typeof sectionProductSchema
+> & {
+  productName?: string;
+};

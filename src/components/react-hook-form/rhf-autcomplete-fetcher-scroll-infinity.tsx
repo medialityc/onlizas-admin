@@ -43,6 +43,7 @@ interface Props<T> extends Omit<AutocompleteProps, "data" | "renderOption"> {
     removeSelected: (option: T) => void
   ) => React.ReactNode;
   onFetch: (params: IQueryable) => Promise<ApiResponse<PaginatedResponse<T>>>;
+  extraFilters?: Record<string, any>;
   objectValueKey?: keyof T;
   objectKeyLabel?: keyof T;
   params?: IQueryable;
@@ -71,18 +72,23 @@ export default function RHFAutocompleteFetcherInfinity<T>({
   enabled = true,
   inputClassName,
   onOptionSelected,
+  extraFilters = {},
   ...other
 }: Props<T>) {
   // Estado para el término de búsqueda
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 350);
 
-  // Reset search when the field identity changes
+  // Reset search when the field identity or filters change
+  const extraFiltersString = useMemo(
+    () => JSON.stringify(extraFilters),
+    [extraFilters]
+  );
   useEffect(() => {
     setSearchTerm("");
-  }, [name, queryKey]);
+  }, [name, queryKey, extraFiltersString]);
 
-  // Genera la queryKey estable basada en nombre, params y búsqueda
+  // Genera la queryKey estable basada en nombre, params, búsqueda y filtros
   const stableQueryKey = useMemo(() => {
     return [
       queryKey,
@@ -90,8 +96,9 @@ export default function RHFAutocompleteFetcherInfinity<T>({
       name,
       JSON.stringify(params),
       debouncedSearchTerm,
+      JSON.stringify(extraFilters),
     ];
-  }, [queryKey, name, params, debouncedSearchTerm]);
+  }, [queryKey, name, params, debouncedSearchTerm, extraFilters]);
 
   const cacheConfig = useMemo(() => {
     if (queryKey === "no-cache") {
@@ -108,9 +115,13 @@ export default function RHFAutocompleteFetcherInfinity<T>({
   // Actualiza el parámetro de búsqueda en onFetch
   const fetcherWithSearch = useCallback(
     (fetchParams: IQueryable) => {
-      return onFetch({ ...fetchParams, search: debouncedSearchTerm });
+      return onFetch({
+        ...fetchParams,
+        ...extraFilters,
+        search: debouncedSearchTerm,
+      });
     },
-    [onFetch, debouncedSearchTerm]
+    [onFetch, debouncedSearchTerm, extraFilters]
   );
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =

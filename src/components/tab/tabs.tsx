@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import React, { Fragment, useEffect, useState, ReactNode } from "react";
 
@@ -13,6 +14,7 @@ type TabItem = {
 type TabsWithIconsProps = {
   tabs: TabItem[];
   activeColorClass?: string;
+  tabListClassName?: string;
   /**
    * Callback fired when the selected tab changes.
    * @param index The index of the newly selected tab.
@@ -38,7 +40,7 @@ type TabsWithIconsProps = {
  *     { icon: <HomeIcon />, label: "Home", content: <HomeContent /> },
  *     { icon: <UserIcon />, label: "Profile", content: <ProfileContent />, disabled: true },
  *   ]}
- * 
+ *
  * />
  * ```
  */
@@ -46,6 +48,7 @@ const TabsWithIcons: React.FC<TabsWithIconsProps> = ({
   tabs,
   activeColorClass = "bg-primary text-white",
   handleChange,
+  tabListClassName,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -58,7 +61,7 @@ const TabsWithIcons: React.FC<TabsWithIconsProps> = ({
   return (
     <div className="mb-5">
       <TabGroup onChange={handleChange}>
-        <TabList className="mt-3 flex flex-wrap gap-2">
+        <TabList className={cn("mt-3 flex flex-wrap gap-2", tabListClassName)}>
           {tabs.map((tab, index) =>
             tab.disabled ? (
               <Tab

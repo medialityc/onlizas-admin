@@ -38,6 +38,7 @@ export interface SearchSelectProps<T = any> {
   query?: string;
   setQuery?: (q: string) => void;
   inputClassName?: string;
+  disabled?: boolean;
 }
 
 export function AdvancedSearchSelect<T>({
@@ -60,6 +61,7 @@ export function AdvancedSearchSelect<T>({
   onOptionSelected,
   renderMultiplesValues,
   query = "",
+  disabled,
   setQuery,
 }: SearchSelectProps<T>) {
   const { control } = useFormContext();
@@ -213,6 +215,7 @@ export function AdvancedSearchSelect<T>({
       name={name}
       control={control}
       rules={{ required }}
+      disabled={disabled}
       render={({ field, fieldState: { error } }) => {
         const selectedOptions = getSelectedOptions(field.value);
 
@@ -230,6 +233,7 @@ export function AdvancedSearchSelect<T>({
 
             <div className="relative">
               <input
+                disabled={disabled}
                 type="text"
                 value={query}
                 onChange={(e) => {

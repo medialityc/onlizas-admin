@@ -12,6 +12,7 @@ import {
   GetAllInventoryProviderResponse,
   InventoryProvider,
 } from "@/types/inventory";
+import { GetAllProductVariant } from "@/types/products";
 
 const INVENTORY_TAG_KEY = "inventory-provider";
 
@@ -169,4 +170,44 @@ export async function getAllMyInventoryProvider(
   if (!res.ok) return handleApiServerError(res);
 
   return buildApiResponseAsync<GetAllInventoryProviderResponse>(res);
+}
+
+export async function getAllInventoryVariantsByCategories(
+  params: IQueryable
+): Promise<ApiResponse<GetAllProductVariant>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.inventoryProvider.variantByCategory
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: [INVENTORY_TAG_KEY] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetAllProductVariant>(res);
+}
+
+export async function getAllInventoryVariantsBySupplier(
+  params: IQueryable
+): Promise<ApiResponse<GetAllProductVariant>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.inventoryProvider.variantBySupplier
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: [INVENTORY_TAG_KEY] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetAllProductVariant>(res);
 }

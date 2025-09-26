@@ -13,7 +13,9 @@ export const sectionProductInitValues: SectionProductItemFormData = {
   isFeatured: true,
   customLabel: "",
   customBackgroundColor: "",
-  product: null,
+  products: [],
+  categoriesIds: [],
+  supplierId: 0
 };
 
 export const useSectionProductItemAddForm = (
@@ -25,9 +27,12 @@ export const useSectionProductItemAddForm = (
     resolver: zodResolver(sectionProductSchema),
   });
 
+  console.log("Form errors:", form.formState.errors);
+
   return {
     form: form,
     onSubmit: form.handleSubmit((values) => {
+      console.log("Adding product to section:", values);
       onAdd(values);
       form.reset();
     }),
