@@ -19,7 +19,7 @@ import RHFSwitch from "@/components/react-hook-form/rhf-switch";
 import {
   currencySchema,
   CurrencyFormData,
-  Currency,
+  Currency
 } from "@/sections/regions/schemas/region-modal-schemas";
 
 interface EditCurrencyModalProps {
@@ -39,9 +39,7 @@ export default function EditCurrencyModal({
   const { data: permissions = [] } = usePermissions();
 
   const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.some((perm) =>
-      permissions.some((p: any) => p.code === perm)
-    );
+    return requiredPerms.some(perm => permissions.some((p: any) => p.code === perm));
   };
 
   const canEdit = hasPermission(["UPDATE_ALL"]);
@@ -80,6 +78,7 @@ export default function EditCurrencyModal({
       if (!response.error) {
         toast.success("Configuración de moneda actualizada");
         queryClient.invalidateQueries({ queryKey: ["regions"] });
+        queryClient.invalidateQueries({ queryKey: ["region-details", regionId] });
         onClose();
       } else {
         toast.error(response.message || "Error al actualizar configuración");
@@ -113,23 +112,15 @@ export default function EditCurrencyModal({
             </h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">
-                  Nombre:
-                </span>
-                <span className="font-medium">
-                  {currency.name} ({currency.code})
-                </span>
+                <span className="text-gray-600 dark:text-gray-400">Nombre:</span>
+                <span className="font-medium">{currency.name} ({currency.code})</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">
-                  Símbolo:
-                </span>
+                <span className="text-gray-600 dark:text-gray-400">Símbolo:</span>
                 <span className="font-medium">{currency.symbol}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400">
-                  Estado:
-                </span>
+                <span className="text-gray-600 dark:text-gray-400">Estado:</span>
                 <div className="flex space-x-2">
                   {currency.isPrimary && (
                     <Badge color="blue" variant="light" size="sm">
@@ -154,10 +145,9 @@ export default function EditCurrencyModal({
             <RHFSwitch
               name="isEnabled"
               label="Estado de Habilitación"
-              helperText={
-                currency.isPrimary
-                  ? "La moneda principal no puede ser deshabilitada"
-                  : "Habilitar esta moneda en la región"
+              helperText={currency.isPrimary
+                ? "La moneda principal no puede ser deshabilitada"
+                : "Habilitar esta moneda en la región"
               }
               disabled={!canEdit || isSubmitting || currency.isPrimary}
             />

@@ -90,7 +90,7 @@ export async function createRegion(
   if (!res.ok) {
     return handleApiServerError(res);
   }
-  
+
   revalidateTag("regions");
   return buildApiResponseAsync<Region>(res);
 }
@@ -110,7 +110,7 @@ export async function updateRegion(
   if (!res.ok) {
     return handleApiServerError(res);
   }
-  
+
   revalidateTag("regions");
   return buildApiResponseAsync<Region>(res);
 }
@@ -127,21 +127,21 @@ export async function deleteRegion(id: number): Promise<ApiResponse<boolean>> {
   if (!res.ok) {
     return handleApiServerError(res);
   }
-  
+
   revalidateTag("regions");
   return { data: true, status: 200, error: false };
 }
 
 // Currency management services
 export async function removeCurrencyFromRegion(
-  regionId: number, 
+  regionId: number,
   currencyId: number
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
     url: backendRoutes.regions.currencies.remove(regionId, currencyId),
     method: "DELETE",
     useAuth: true,
-    data: JSON.stringify({regionId, currencyId}),
+    data: JSON.stringify({ regionId, currencyId }),
     headers: { 'Content-Type': 'application/json' },
 
   });
@@ -149,13 +149,13 @@ export async function removeCurrencyFromRegion(
   if (!res.ok) {
     return handleApiServerError(res);
   }
-  
+
   revalidateTag("regions");
   return { data: true, status: 200, error: false };
 }
 
 export async function addCurrenciesToRegion(
-  regionId: number, 
+  regionId: number,
   payload: AddCurrenciesPayload
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
@@ -169,13 +169,13 @@ export async function addCurrenciesToRegion(
   if (!res.ok) {
     return handleApiServerError(res);
   }
-  
+
   revalidateTag("regions");
   return buildApiResponseAsync<boolean>(res);
 }
 
 export async function setPrimaryCurrency(
-  regionId: number, 
+  regionId: number,
   currencyId: number
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
@@ -183,40 +183,39 @@ export async function setPrimaryCurrency(
     method: "PUT",
     data: JSON.stringify({ regionId, currencyId }),
     useAuth: true,
-    headers: { 'Content-Type': 'application/json' },
   });
 
   if (!res.ok) {
     return handleApiServerError(res);
   }
-  
+
   revalidateTag("regions");
   return { data: true, status: 200, error: false };
 }
 
 // Payment gateway management services
 export async function removePaymentGatewayFromRegion(
-  regionId: number, 
+  regionId: number,
   gatewayId: number
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
     url: backendRoutes.regions.payments.remove(regionId, gatewayId),
     method: "DELETE",
     useAuth: true,
-    data: JSON.stringify({regionId, gatewayId}),
+    data: JSON.stringify({ regionId, gatewayId }),
     headers: { 'Content-Type': 'application/json' },
   });
 
   if (!res.ok) {
     return handleApiServerError(res);
   }
-  
+
   revalidateTag("regions");
   return { data: true, status: 200, error: false };
 }
 
 export async function addPaymentGatewaysToRegion(
-  regionId: number, 
+  regionId: number,
   payload: AddPaymentGatewaysPayload
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
@@ -230,13 +229,13 @@ export async function addPaymentGatewaysToRegion(
   if (!res.ok) {
     return handleApiServerError(res);
   }
-  
+
   revalidateTag("regions");
   return buildApiResponseAsync<boolean>(res);
 }
 
 export async function updatePaymentGatewayPriority(
-  regionId: number, 
+  regionId: number,
   gatewayId: number,
   payload: UpdatePaymentPriorityPayload
 ): Promise<ApiResponse<boolean>> {
@@ -251,34 +250,34 @@ export async function updatePaymentGatewayPriority(
   if (!res.ok) {
     return handleApiServerError(res);
   }
-  
+
   revalidateTag("regions");
   return { data: true, status: 200, error: false };
 }
 
 // Shipping methods management services
 export async function removeShippingMethodFromRegion(
-  regionId: number, 
+  regionId: number,
   shippingId: number
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
     url: backendRoutes.regions.shipping.remove(regionId, shippingId),
     method: "DELETE",
     useAuth: true,
-    data: JSON.stringify({regionId, shippingId}),
+    data: JSON.stringify({ regionId, shippingId }),
     headers: { 'Content-Type': 'application/json' },
   });
 
   if (!res.ok) {
     return handleApiServerError(res);
   }
-  
+
   revalidateTag("regions");
   return { data: true, status: 200, error: false };
 }
 
 export async function addShippingMethodsToRegion(
-  regionId: number, 
+  regionId: number,
   payload: AddShippingMethodsPayload
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
@@ -292,7 +291,7 @@ export async function addShippingMethodsToRegion(
   if (!res.ok) {
     return handleApiServerError(res);
   }
-  
+
   revalidateTag("regions");
   return buildApiResponseAsync<boolean>(res);
 }

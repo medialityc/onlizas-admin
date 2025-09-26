@@ -64,6 +64,7 @@ export default function RegionShippingSection({
       if (!response.error) {
         toast.success("Método de envío eliminado exitosamente");
         queryClient.invalidateQueries({ queryKey: ["regions"] });
+        queryClient.invalidateQueries({ queryKey: ["region-details", region.id] });
         closeDeleteDialog();
       } else {
         toast.error(response.message || "Error al eliminar método de envío");

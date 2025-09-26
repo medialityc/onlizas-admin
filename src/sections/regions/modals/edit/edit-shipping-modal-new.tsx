@@ -96,6 +96,7 @@ export default function EditShippingModal({
       if (!response.error) {
         toast.success("Configuración de método de envío actualizada");
         queryClient.invalidateQueries({ queryKey: ["regions"] });
+        queryClient.invalidateQueries({ queryKey: ["region-details", regionId] });
         onClose();
       } else {
         toast.error(response.message || "Error al actualizar configuración");

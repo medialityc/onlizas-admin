@@ -170,7 +170,7 @@ export function RegionList({
           <div className="flex justify-center items-center gap-2">
             <ActionsMenu
               onViewDetails={() => handleViewRegion(region)}
-              onEdit={() => handleEditRegion(region)}
+              onEdit={region.status != 2 ? () => handleEditRegion(region):undefined}
               onDelete={region.status === 1 ? () => handleDeleteRegion(region) : undefined}
               viewPermissions={["READ_ALL"]}
               editPermissions={["UPDATE_ALL"]}

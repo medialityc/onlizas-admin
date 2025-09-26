@@ -86,6 +86,7 @@ export default function EditPaymentModal({
       if (!response.error) {
         toast.success("Configuración de pasarela de pago actualizada");
         queryClient.invalidateQueries({ queryKey: ["regions"] });
+        queryClient.invalidateQueries({ queryKey: ["region-details", regionId] });
         onClose();
       } else {
         toast.error(response.message || "Error al actualizar configuración");
@@ -210,11 +211,10 @@ export default function EditPaymentModal({
                       onClick={() => handleMethodToggle(method.value)}
                       className={`
                                                 p-3 rounded-lg border cursor-pointer transition-all
-                                                ${
-                                                  isSelected
-                                                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                                                    : "border-gray-300 dark:border-gray-600 hover:border-gray-400"
-                                                }
+                                                ${isSelected
+                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                          : "border-gray-300 dark:border-gray-600 hover:border-gray-400"
+                        }
                                                 ${!canEdit || isSubmitting ? "cursor-not-allowed opacity-50" : ""}
                                             `}
                     >
@@ -222,11 +222,10 @@ export default function EditPaymentModal({
                         <div
                           className={`
                                                     w-4 h-4 rounded border-2 flex items-center justify-center
-                                                    ${
-                                                      isSelected
-                                                        ? "border-blue-500 bg-blue-500"
-                                                        : "border-gray-300 dark:border-gray-600"
-                                                    }
+                                                    ${isSelected
+                              ? "border-blue-500 bg-blue-500"
+                              : "border-gray-300 dark:border-gray-600"
+                            }
                                                 `}
                         >
                           {isSelected && (
