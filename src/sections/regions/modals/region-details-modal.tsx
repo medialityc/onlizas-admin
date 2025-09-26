@@ -14,13 +14,11 @@ import RegionConfigurationModal from "./region-configuration-modal";
 import {
   InformationCircleIcon,
   GlobeAmericasIcon,
-import {
-    InformationCircleIcon,
-    GlobeAmericasIcon,
-    CurrencyDollarIcon,
-    CreditCardIcon,
-    TruckIcon,
-  } from "@heroicons/react/24/outline";
+
+  CurrencyDollarIcon,
+  CreditCardIcon,
+  TruckIcon,
+} from "@heroicons/react/24/outline";
 import { usePermissions } from "zas-sso-client";
 
 interface RegionDetailsModalProps {
@@ -116,8 +114,7 @@ export function RegionDetailsModal({
         return <RegionCountriesSection region={fullRegion} />;
       case "currencies":
         return (
-          <RegionCurrencySection
-            region={fullRegion}
+
           <RegionCurrencySection
             region={fullRegion}
             canEdit={canEdit}
@@ -127,8 +124,7 @@ export function RegionDetailsModal({
         );
       case "payments":
         return (
-          <RegionPaymentSection
-            region={fullRegion}
+
           <RegionPaymentSection
             region={fullRegion}
             canEdit={canEdit}
@@ -138,8 +134,7 @@ export function RegionDetailsModal({
         );
       case "shipping":
         return (
-          <RegionShippingSection
-            region={fullRegion}
+
           <RegionShippingSection
             region={fullRegion}
             canEdit={canEdit}

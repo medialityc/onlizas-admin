@@ -45,7 +45,7 @@ export default function RegionConfigModal({
   const { data: permissions = [] } = usePermissions();
   const hasPermission = (requiredPerms: string[]) => {
     return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
+      permissions.some((p: { code: string; }) => p.code === perm)
     );
   };
   const canEdit = hasPermission(["UPDATE_ALL"]);
@@ -93,8 +93,7 @@ export default function RegionConfigModal({
     switch (activeTab) {
       case "currencies":
         return (
-          <RegionCurrencySection
-            region={fullRegion}
+
           <RegionCurrencySection
             region={fullRegion}
             canEdit={canEdit}
