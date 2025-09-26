@@ -14,13 +14,13 @@ const initValues: SectionFormData = {
   description: "",
   viewMoreUrl: "",
   isActive: true,
+  isPersonalized: true,
   displayOrder: 0,
   createdAt: "",
   templateType: "",
   defaultItemCount: 0,
   backgroundColor: "",
   textColor: "",
-  isPersonalized: true,
   targetUserSegment: "",
   targetDeviceType: "",
   startDate: new Date(),
@@ -37,13 +37,12 @@ export const useSectionCreateForm = (
     resolver: zodResolver(sectionSchema),
   });
 
-  console.log(form.formState.errors, "ERRORS");
-
   const startDate = form.watch("startDate");
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: SectionFormData) => {
       const formData = await setSectionFormData(payload);
+
       const res = payload?.id
         ? await updateSection(payload?.id, formData)
         : await createSection(formData);
@@ -57,7 +56,7 @@ export const useSectionCreateForm = (
       toast.success(
         `Se ${defaultValues?.id ? "editó" : "creó"} correctamente la sección`
       );
-      push("/dashboard/content/sections");
+      // push("/dashboard/content/sections");
     },
     onError: async (error: any) => {
       toast.error(error?.message);

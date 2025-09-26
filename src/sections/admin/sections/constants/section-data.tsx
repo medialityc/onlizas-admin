@@ -1,5 +1,4 @@
- 
-import { SectionFormData } from "../schema/section-schema"; 
+import { SectionFormData } from "../schema/section-schema";
 
 export const setSectionFormData = async (
   section: SectionFormData
@@ -21,14 +20,18 @@ export const setSectionFormData = async (
   formData.append("isPersonalized", String(section.isPersonalized));
   formData.append("targetUserSegment", String(section.targetUserSegment));
   formData.append("targetDeviceType", String(section.targetDeviceType));
-  formData.append("startDate", String((section.startDate as any).toISOString()));
+  formData.append(
+    "startDate",
+    String((section.startDate as any).toISOString())
+  );
   formData.append("endDate", String((section.endDate as any).toISOString()));
 
   /* productos de la sección */
   if (section.products && section.products.length > 0) {
     section.products?.forEach((prod, idx) => {
-      formData.append(
-        `products[${idx}][productGlobalId]`,
+      formData.append(`products[${idx}]`, JSON.stringify(prod));
+      /*  formData.append(
+        `products[${idx}]productGlobalId`,
         String(prod.productGlobalId)
       );
       formData.append(`products[${idx}][displayOrder]`, String(idx + 1));
@@ -40,7 +43,7 @@ export const setSectionFormData = async (
       formData.append(
         `products[${idx}][customBackgroundColor]`,
         String(prod.customBackgroundColor)
-      );
+      ); */
     });
   }
 

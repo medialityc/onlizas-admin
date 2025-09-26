@@ -8,6 +8,7 @@ import SimpleModal from "@/components/modal/modal";
 import { useState } from "react";
 import Badge from "@/components/badge/badge";
 import { AlertBox } from "@/components/alert/alert-box";
+import { isValidUrl } from "@/utils/format";
 
 export default function SectionProducts() {
   const { control, formState } = useFormContext();
@@ -17,6 +18,8 @@ export default function SectionProducts() {
   });
 
   const [modalOpen, setModalOpen] = useState(false);
+
+  console.log(fields, "fields");
 
   return (
     <>
@@ -60,21 +63,28 @@ export default function SectionProducts() {
                   <div className="flex flex-row items-center gap-4 min-w-0">
                     <div className="flex flex-row gap-2 items-center max-w-96">
                       <ImagePreview
-                        images={[item.product.image]}
-                        alt={item.product.name}
+                        images={
+                          item.product.images?.map((image: string) =>
+                            isValidUrl(image) ? image : ""
+                          ) || []
+                        }
+                        alt={item.product.productName || "product"}
                         className="w-12 h-12"
                       />
                       <div>
                         <LongText
                           className="text-base"
-                          text={item.product?.name}
+                          text={item.product?.productName ?? "product"}
                           lineClamp={1}
                         />
-                        <LongText
-                          className="text-sm font-light"
-                          text={item.product?.description}
-                          lineClamp={1}
-                        />
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {item.product?.storeName && (
+                            <Badge>{item.product?.storeName}</Badge>
+                          )}
+                          {item.product?.price && (
+                            <Badge>${item.product?.price}</Badge>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>

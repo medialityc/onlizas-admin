@@ -2,6 +2,8 @@ import { PaginatedResponse } from "./common";
 
 export type InventoryProductItem = {
   id: number;
+  productGlobalId: number;
+  globalID: string;
   productId: number;
   productName: string;
   price: number;

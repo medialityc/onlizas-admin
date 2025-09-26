@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { toggleStatusCategory } from "@/services/categories";
 import { paths } from "@/config/paths";
 import { ISection, IGetAllAdminsSection } from "@/types/section";
+import StatusBadgeCell from "@/sections/common/components/cells/status-badge-cell";
+import DateValue from "@/components/format-vales/date-value";
 
 interface Props {
   data?: IGetAllAdminsSection;
@@ -83,40 +85,47 @@ export function SectionList({
               {section.name}
             </span>
             <span className="text-xs text-gray-500 dark:text-gray-400">
-              {section?.name}
+              {section?.description}
             </span>
           </div>
         ),
       },
-      {
-        accessor: "description",
-        title: "Descripción",
-        render: (section) => (
-          <div className="max-w-xs">
-            <span className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-              {section.description.length > 100
-                ? `${section.description.substring(0, 100)}...`
-                : section.description}
-            </span>
-          </div>
-        ),
-      },
+
       {
         accessor: "isActive",
         title: "Estado",
         sortable: true,
         width: 100,
+        render: (section) => <StatusBadgeCell value={section.isActive} />,
+      },
+      {
+        accessor: "isPersonalized",
+        title: "Personalizado",
+        sortable: true,
+        width: 150,
         render: (section) => (
-          <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              section.isActive
-                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-            }`}
-          >
-            {section.isActive ? "Activa" : "Inactiva"}
-          </span>
+          <StatusBadgeCell
+            value={section.isPersonalized}
+            status={{
+              active: "Sí",
+              inactive: "No",
+            }}
+          />
         ),
+      },
+      {
+        accessor: "startDate",
+        title: "Fecha de inicio",
+        sortable: true,
+        width: 150,
+        render: (section) => <DateValue value={section.startDate} />,
+      },
+      {
+        accessor: "endDate",
+        title: "Fecha de Fin",
+        sortable: true,
+        width: 150,
+        render: (section) => <DateValue value={section.endDate} />,
       },
 
       {
@@ -141,6 +150,7 @@ export function SectionList({
 
   return (
     <>
+      <pre> {JSON.stringify(data, null, 2)} </pre>
       <DataGrid
         data={data}
         columns={columns}

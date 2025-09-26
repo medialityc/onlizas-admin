@@ -35,8 +35,8 @@ export default function SectionForm({ initValue }: Props) {
   return (
     <section>
       <FormProvider methods={form} onSubmit={onSubmit} id="section-form">
-        <div className="gap-4 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4">
-          <div className="col-span-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="col-span-1  ">
             <RHFInputWithLabel
               name="name"
               label="Nombre de sección"
@@ -45,7 +45,7 @@ export default function SectionForm({ initValue }: Props) {
               maxLength={100}
             />
           </div>
-          <div className="col-span-1">
+          <div className="col-span-1  ">
             <RHFInputWithLabel
               name="description"
               label="Descripción"
@@ -56,7 +56,7 @@ export default function SectionForm({ initValue }: Props) {
             />
           </div>
 
-          <div className="col-span-1">
+          <div className="col-span-1  ">
             <RHFInputWithLabel
               name="viewMoreUrl"
               label="Url"
@@ -65,7 +65,7 @@ export default function SectionForm({ initValue }: Props) {
             />
           </div>
 
-          <div className="col-span-1">
+          <div className="col-span-1  ">
             <RHFInputWithLabel
               name="displayOrder"
               label="Orden de visualización"
@@ -74,7 +74,7 @@ export default function SectionForm({ initValue }: Props) {
             />
           </div>
 
-          <div className="col-span-1">
+          <div className="col-span-1  ">
             <RHFSelect
               label="Tipo de plantilla"
               name="templateType"
@@ -84,7 +84,7 @@ export default function SectionForm({ initValue }: Props) {
             />
           </div>
 
-          <div className="col-span-1">
+          <div className="col-span-1  ">
             <RHFInputWithLabel
               name="defaultItemCount"
               label="Cantidad de elementos por defecto"
@@ -93,7 +93,7 @@ export default function SectionForm({ initValue }: Props) {
             />
           </div>
 
-          <div className="col-span-1">
+          <div className="col-span-1  ">
             <RHFSelect
               options={[
                 { value: "ALL", label: "Todos" },
@@ -107,7 +107,7 @@ export default function SectionForm({ initValue }: Props) {
             />
           </div>
 
-          <div className="col-span-1">
+          <div className="col-span-1  ">
             <RHFSelect
               options={[
                 { value: "ALL", label: "Todos" },
@@ -121,7 +121,7 @@ export default function SectionForm({ initValue }: Props) {
             />
           </div>
 
-          <div className="col-span-1  md:col-span-2">
+          <div className="col-span-1 md:col-span-2">
             <RHFDateInput
               minDate={new Date()}
               name="startDate"
@@ -136,13 +136,11 @@ export default function SectionForm({ initValue }: Props) {
             />
           </div>
 
-          <div className="border p-4 rounded-md col-span-1 md:col-span-2 2xl:col-span-4 gap-4 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4">
-            <div className="col-span-1 md:col-span-2">
-              <RHFColorPicker name="backgroundColor" label="Color de banner" />
-            </div>
-            <div className="col-span-1 md:col-span-2 ">
-              <RHFColorPicker name="textColor" label="Color de texto" />
-            </div>
+          <div className="col-span-1 md:col-span-2">
+            <RHFColorPicker name="backgroundColor" label="Color de banner" />
+          </div>
+          <div className="col-span-1 md:col-span-2 ">
+            <RHFColorPicker name="textColor" label="Color de texto" />
           </div>
 
           <div className="col-span-1">
