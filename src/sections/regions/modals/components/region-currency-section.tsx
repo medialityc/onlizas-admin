@@ -71,6 +71,7 @@ export default function RegionCurrencySection({
       if (!response.error) {
         toast.success(`${currencyName} establecida como moneda primaria`);
         queryClient.invalidateQueries({ queryKey: ["regions"] });
+        queryClient.invalidateQueries({ queryKey: ["region-details", region.id] });
       } else {
         toast.error(response.message || "Error al establecer moneda primaria");
       }
@@ -87,6 +88,7 @@ export default function RegionCurrencySection({
       if (!response.error) {
         toast.success("Moneda eliminada exitosamente");
         queryClient.invalidateQueries({ queryKey: ["regions"] });
+        queryClient.invalidateQueries({ queryKey: ["region-details", region.id] });
         closeDeleteDialog();
       } else {
         toast.error(response.message || "Error al eliminar moneda");

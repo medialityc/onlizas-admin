@@ -85,15 +85,14 @@ export default function RegionConfigurationModal({
 
   const hasCreatePermission = hasPermission("CREATE_ALL");
 
+
   const queryClient = useQueryClient();
 
   // Mutations
   const addCurrencyMutation = useMutation({
     mutationFn: async (config: { currencyId: number; isPrimary: boolean }) => {
       const response = await addCurrenciesToRegion(region.id, {
-        currencies: [
-          { currencyId: config.currencyId, isEnabled: true, isPrimary: false },
-        ],
+        currencies: [{ currencyId: config.currencyId, isEnabled: true, isPrimary: false }]
       });
       if (response.error) {
         throw new Error(response.message || "Error al agregar la moneda");
@@ -288,9 +287,7 @@ export default function RegionConfigurationModal({
                 <Label>¿Qué deseas agregar a la región?</Label>
                 <Select
                   value={selectedType}
-                  onValueChange={(value) =>
-                    setSelectedType(value as ConfigurationType | "")
-                  }
+                  onValueChange={(value) => setSelectedType(value as ConfigurationType | "")}
                   disabled={!hasCreatePermission}
                 >
                   <SelectTrigger>
@@ -352,8 +349,8 @@ export default function RegionConfigurationModal({
             >
               <CheckIcon className="h-4 w-4" />
               {addCurrencyMutation.isPending ||
-              addPaymentMutation.isPending ||
-              addShippingMutation.isPending
+                addPaymentMutation.isPending ||
+                addShippingMutation.isPending
                 ? "Guardando..."
                 : "Agregar Configuración"}
             </Button>

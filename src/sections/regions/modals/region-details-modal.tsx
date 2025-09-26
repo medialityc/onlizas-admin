@@ -14,6 +14,7 @@ import RegionConfigurationModal from "./region-configuration-modal";
 import {
   InformationCircleIcon,
   GlobeAmericasIcon,
+
   CurrencyDollarIcon,
   CreditCardIcon,
   TruckIcon,
@@ -113,6 +114,7 @@ export function RegionDetailsModal({
         return <RegionCountriesSection region={fullRegion} />;
       case "currencies":
         return (
+
           <RegionCurrencySection
             region={fullRegion}
             canEdit={canEdit}
@@ -122,6 +124,7 @@ export function RegionDetailsModal({
         );
       case "payments":
         return (
+
           <RegionPaymentSection
             region={fullRegion}
             canEdit={canEdit}
@@ -131,6 +134,7 @@ export function RegionDetailsModal({
         );
       case "shipping":
         return (
+
           <RegionShippingSection
             region={fullRegion}
             canEdit={canEdit}
@@ -161,18 +165,16 @@ export function RegionDetailsModal({
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                    isActive
-                      ? "border-blue-500 text-blue-600 dark:text-blue-400"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
-                  }`}
+                  className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${isActive
+                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                    }`}
                 >
                   <Icon
-                    className={`-ml-0.5 mr-2 h-5 w-5 ${
-                      isActive
-                        ? "text-blue-500 dark:text-blue-400"
-                        : "text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300"
-                    }`}
+                    className={`-ml-0.5 mr-2 h-5 w-5 ${isActive
+                      ? 'text-blue-500 dark:text-blue-400'
+                      : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'
+                      }`}
                   />
                   <span>{tab.name}</span>
                 </button>
@@ -187,9 +189,7 @@ export function RegionDetailsModal({
         {/* Footer */}
         <div className="border-t border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between bg-gray-50 dark:bg-gray-800/50">
           <button
-            onClick={() =>
-              queryClient.invalidateQueries({ queryKey: ["regions"] })
-            }
+            onClick={() => queryClient.invalidateQueries({ queryKey: ["regions"] })}
             className="btn btn-outline-primary"
           >
             Actualizar Datos
@@ -205,7 +205,12 @@ export function RegionDetailsModal({
         open={configModal.open}
         onClose={handleCloseConfig}
         region={fullRegion}
-        initialTab={configModal.type || "currencies"}
+        initialTab={configModal.type || 'currencies'}
+        onSuccess={() => {
+          // Refrescar datos después de una acción exitosa
+          queryClient.invalidateQueries({ queryKey: ["regions"] });
+          queryClient.invalidateQueries({ queryKey: ["region-details", region.id] });
+        }}
       />
     </SimpleModal>
   );
