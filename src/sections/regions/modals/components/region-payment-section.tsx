@@ -81,6 +81,7 @@ export default function RegionPaymentSection({
       if (!response.error) {
         toast.success(`Prioridad de ${paymentGatewayName} actualizada`);
         queryClient.invalidateQueries({ queryKey: ["regions"] });
+        queryClient.invalidateQueries({ queryKey: ["region-details", region.id] });
       } else {
         toast.error(response.message || "Error al actualizar prioridad");
       }
@@ -97,6 +98,7 @@ export default function RegionPaymentSection({
       if (!response.error) {
         toast.success("Pasarela de pago eliminada exitosamente");
         queryClient.invalidateQueries({ queryKey: ["regions"] });
+        queryClient.invalidateQueries({ queryKey: ["region-details", region.id] });
         closeDeleteDialog();
       } else {
         toast.error(response.message || "Error al eliminar pasarela de pago");
