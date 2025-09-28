@@ -69,7 +69,7 @@
         "tippy.js": "^6.3.7",
         "typescript": "^5.3.3",
         "universal-cookie": "^7.2.0",
-        "zas-sso-client": "^1.1.6",
+        "zas-sso-client": "^1.1.7",
         "zod": "^3.25.23",
         "zustand": "^5.0.8",
       },
@@ -1483,7 +1483,7 @@
 
     "yocto-queue": ["yocto-queue@0.1.0", "", {}, "sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q=="],
 
-    "zas-sso-client": ["zas-sso-client@1.1.6", "", { "dependencies": { "@tanstack/react-query": "^5.17.15", "jose": "^5.2.0" }, "peerDependencies": { "next": ">=13 <16", "react": ">=18 <19", "react-dom": ">=18 <19" } }, "sha512-bybgl1dr47z1aMAQEY0elB0G4SF6dvdFefQTaoHkzrBcInfJABxl4uQ0o02N7SWMzeKs46lfjkALoIhguZLaxw=="],
+    "zas-sso-client": ["zas-sso-client@1.1.7", "", { "dependencies": { "@tanstack/react-query": "^5.17.15", "jose": "^5.2.0" }, "peerDependencies": { "next": ">=13 <16", "react": ">=18 <19", "react-dom": ">=18 <19" } }, "sha512-yT0WWFb/E5zg9yhmtfy2d6lgsRTveLhSYx1rpdlVUnyECBRoLzpYxfgYH4UKA4WrjKy0xiMJZ+am4CtynyVu6g=="],
 
     "zod": ["zod@3.25.23", "", {}, "sha512-Od2bdMosahjSrSgJtakrwjMDb1zM1A3VIHCPGveZt/3/wlrTWBya2lmEh2OYe4OIu8mPTmmr0gnLHIWQXdtWBg=="],
 
