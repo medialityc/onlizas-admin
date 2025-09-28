@@ -75,3 +75,16 @@ export async function getSectionById(
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<ISection>(res);
 }
+
+export async function deleteSectionById(
+  id: string | number
+): Promise<ApiResponse<ISection>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.content.section.delete(id),
+    method: "DELETE",
+    useAuth: true,
+    next: { tags: ["admin-section"] },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<ISection>(res);
+}

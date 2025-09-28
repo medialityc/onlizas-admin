@@ -28,23 +28,12 @@ export const setSectionFormData = async (
 
   /* productos de la sección */
   if (section.products && section.products.length > 0) {
-    section.products?.forEach((prod, idx) => {
-      formData.append(`products[${idx}]`, JSON.stringify(prod));
-      /*  formData.append(
-        `products[${idx}]productGlobalId`,
-        String(prod.productGlobalId)
-      );
-      formData.append(`products[${idx}][displayOrder]`, String(idx + 1));
-      formData.append(`products[${idx}][isFeatured]`, String(prod.isFeatured));
-      formData.append(
-        `products[${idx}][customLabel]`,
-        String(prod.customLabel)
-      );
-      formData.append(
-        `products[${idx}][customBackgroundColor]`,
-        String(prod.customBackgroundColor)
-      ); */
-    });
+    formData.append(
+      `products`,
+      JSON.stringify(
+        section.products?.map((p, index) => ({ ...p, displayOrder: index + 1 }))
+      )
+    );
   }
 
   return formData;

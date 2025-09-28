@@ -56,7 +56,7 @@ export const useSectionCreateForm = (
       toast.success(
         `Se ${defaultValues?.id ? "editó" : "creó"} correctamente la sección`
       );
-      // push("/dashboard/content/sections");
+      push("/dashboard/content/sections");
     },
     onError: async (error: any) => {
       toast.error(error?.message);
