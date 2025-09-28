@@ -12,6 +12,7 @@ import { paths } from "@/config/paths";
 import { ISection, IGetAllAdminsSection } from "@/types/section";
 import StatusBadgeCell from "@/sections/common/components/cells/status-badge-cell";
 import DateValue from "@/components/format-vales/date-value";
+import { deleteSectionById } from "@/services/section";
 
 interface Props {
   data?: IGetAllAdminsSection;
@@ -43,6 +44,21 @@ export function SectionList({
     },
     [router]
   );
+
+  const handleDeleteSection = useCallback(async (banner: ISection) => {
+    try {
+      const res = await deleteSectionById(banner.id);
+      if (res?.error && res.message) {
+        console.error(res);
+        showToast(res.message, "error");
+      } else {
+        showToast("Sección desactivada exitosamente", "success");
+      }
+    } catch (error) {
+      console.error(error);
+      showToast("Ocurrió un error, por favor intenta de nuevo", "error");
+    }
+  }, []);
 
   const handleToggleActiveSection = useCallback(async (section: ISection) => {
     try {
@@ -135,17 +151,17 @@ export function SectionList({
         render: (section) => (
           <div className="flex justify-center">
             <ActionsMenu
-              isActive={section.isActive}
-              onActive={() => handleToggleActiveSection(section)}
+              /*  isActive={section.isActive}
+              onActive={() => handleToggleActiveSection(section)} */
               onViewDetails={() => handleViewSection(section)}
               onEdit={() => handleEditSection(section)}
-              //  onDelete={() => handleDeleteCategory(category)}
+              onDelete={() => handleDeleteSection(section)}
             />
           </div>
         ),
       },
     ],
-    [handleToggleActiveSection, handleViewSection, handleEditSection]
+    [handleViewSection, handleEditSection, handleDeleteSection]
   );
 
   return (

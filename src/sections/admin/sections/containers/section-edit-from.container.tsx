@@ -17,6 +17,7 @@ const SectionEditFormContainer = ({ section }: Props) => {
           Define la sección y sus características
         </p>
       </div>
+      <pre> {JSON.stringify(section , null , 2 )} </pre>
       <SectionForm initValue={section} />
     </div>
   );
