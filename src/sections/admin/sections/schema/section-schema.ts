@@ -1,4 +1,3 @@
-import { TEMPLATE_TYPE_ENUM } from "@/types/section";
 import { z } from "zod";
 
 export const sectionProductSchema = z.object({
@@ -43,9 +42,7 @@ export const sectionSchema = z
     viewMoreUrl: z.string(),
     isActive: z.boolean().default(true),
     displayOrder: z.number(),
-    templateType: z.enum(
-      Object.values(TEMPLATE_TYPE_ENUM) as [string, ...string[]]
-    ),
+    templateType: z.number(),
     defaultItemCount: z.number(),
 
     //banner template

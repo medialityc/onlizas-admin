@@ -138,6 +138,7 @@ const SectionProductFrom = ({ append }: Props) => {
                           return (
                             <div className="flex flex-row gap-2 items-center">
                               <ImagePreview
+                                previewEnabled={false}
                                 images={
                                   variant.images?.map((img: string | File) =>
                                     typeof img === "string" && isValidUrl(img)
@@ -215,6 +216,7 @@ const SectionProductFrom = ({ append }: Props) => {
                           return (
                             <div className="flex flex-row gap-2 items-center">
                               <ImagePreview
+                                previewEnabled={false}
                                 images={
                                   variant.images?.map((img: string | File) =>
                                     typeof img === "string" && isValidUrl(img)
