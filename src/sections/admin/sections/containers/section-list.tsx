@@ -7,12 +7,15 @@ import { SearchParams } from "@/types/fetch/request";
 import { DataTableColumn } from "mantine-datatable";
 import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { toggleStatusCategory } from "@/services/categories";
 import { paths } from "@/config/paths";
 import { ISection, IGetAllAdminsSection } from "@/types/section";
 import StatusBadgeCell from "@/sections/common/components/cells/status-badge-cell";
 import DateValue from "@/components/format-vales/date-value";
 import { deleteSectionById } from "@/services/section";
+import {
+  TARGET_USER_DEVICE_OPTIONS,
+  TARGET_USER_SEGMENT_OPTIONS,
+} from "../constants/section.options";
 
 interface Props {
   data?: IGetAllAdminsSection;
@@ -57,24 +60,6 @@ export function SectionList({
     } catch (error) {
       console.error(error);
       showToast("Ocurrió un error, por favor intenta de nuevo", "error");
-    }
-  }, []);
-
-  const handleToggleActiveSection = useCallback(async (section: ISection) => {
-    try {
-      const res = await toggleStatusCategory(section?.id as number);
-      if (res?.error && res.message) {
-        console.error(res);
-        showToast(res.message, "error");
-      } else {
-        showToast(
-          `Sección ${(res.data as unknown as ISection)?.isActive ? "activada" : "desactivada"}  correctamente`,
-          "success"
-        );
-      }
-    } catch (error) {
-      console.error(error);
-      showToast("Ocurrió un error, intente nuevamente", "error");
     }
   }, []);
 
@@ -130,6 +115,33 @@ export function SectionList({
         ),
       },
       {
+        accessor: "targetUserSegment",
+        title: "Usuario objetivo",
+        sortable: true,
+        width: 150,
+        render: (section) =>
+          TARGET_USER_SEGMENT_OPTIONS.find(
+            (opt) => opt.value === section.targetUserSegment
+          )?.label,
+      },
+      {
+        accessor: "targetDeviceType",
+        title: "Dispositivo objetivo",
+        sortable: true,
+        width: 150,
+        render: (section) =>
+          TARGET_USER_DEVICE_OPTIONS.find(
+            (opt) => opt.value === section.targetDeviceType
+          )?.label,
+      },
+      {
+        accessor: "defaultItemCount",
+        title: "Cantidad",
+        sortable: true,
+        width: 150,
+        render: (section) => section.defaultItemCount,
+      },
+      {
         accessor: "startDate",
         title: "Fecha de inicio",
         sortable: true,
@@ -166,7 +178,6 @@ export function SectionList({
 
   return (
     <>
-      <pre> {JSON.stringify(data, null, 2)} </pre>
       <DataGrid
         data={data}
         columns={columns}

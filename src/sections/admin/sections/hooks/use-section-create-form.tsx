@@ -17,7 +17,7 @@ const initValues: SectionFormData = {
   isPersonalized: true,
   displayOrder: 0,
   createdAt: "",
-  templateType: "",
+  templateType: 0,
   defaultItemCount: 0,
   backgroundColor: "",
   textColor: "",
@@ -43,8 +43,8 @@ export const useSectionCreateForm = (
     mutationFn: async (payload: SectionFormData) => {
       const formData = await setSectionFormData(payload);
 
-      const res = payload?.id
-        ? await updateSection(payload?.id, formData)
+      const res = defaultValues?.id
+        ? await updateSection(defaultValues?.id, formData)
         : await createSection(formData);
       if (res.error) {
         throw res;

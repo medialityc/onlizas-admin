@@ -50,7 +50,7 @@ export default function DateInput({
   // Formato DD/MM/YYYY
   const formatDate = (date: Date | undefined): string => {
     if (!date) return "";
-    const day = String(date.getDate()).padStart(2, "0");
+    const day = String(date?.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
@@ -137,7 +137,7 @@ export default function DateInput({
     if (
       date.getFullYear() === year &&
       date.getMonth() === month - 1 &&
-      date.getDate() === day
+      date?.getDate() === day
     ) {
       return date;
     }

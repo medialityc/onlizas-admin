@@ -1,8 +1,10 @@
 import { PaginatedResponse } from "./common";
 
 export enum TEMPLATE_TYPE_ENUM {
-  CARROUSEL = "carrousel",
-  COMBO = "combo",
+  carousel,
+  featured,
+  list,
+  masonry,
 }
 
 export type ISection = {
@@ -32,6 +34,7 @@ export type ISection = {
       customLabel: string;
       customBackgroundColor: string;
       addedAt: Date | string;
+      product?: any;
     },
   ];
   banners: [

@@ -1,6 +1,7 @@
 "use client";
 
 import SectionForm from "../components/section-form";
+import { sectionAdapterEdit } from "../constants/section-adapter-edit";
 import { SectionFormData } from "../schema/section-schema";
 
 type Props = {
@@ -17,8 +18,8 @@ const SectionEditFormContainer = ({ section }: Props) => {
           Define la sección y sus características
         </p>
       </div>
-      <pre> {JSON.stringify(section , null , 2 )} </pre>
-      <SectionForm initValue={section} />
+
+      <SectionForm initValue={sectionAdapterEdit(section)} />
     </div>
   );
 };

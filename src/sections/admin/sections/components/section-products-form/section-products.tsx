@@ -19,8 +19,6 @@ export default function SectionProducts() {
 
   const [modalOpen, setModalOpen] = useState(false);
 
-  console.log(fields, "fields");
-
   return (
     <>
       <section className="w-full ">
@@ -43,11 +41,11 @@ export default function SectionProducts() {
         </div>
 
         {/* Lista moderna y responsive de productos añadidos */}
-        {fields.length > 0 ? (
+        {fields?.length > 0 ? (
           <ul className="mt-4 w-full   mx-auto flex flex-col gap-3">
-            {fields.map((item: any, idx) => (
+            {fields?.map((item: any, idx) => (
               <li
-                key={item.id}
+                key={item?.id}
                 className="flex items-center justify-between gap-4 px-4 py-4 rounded-xl shadow-sm bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 hover:shadow-md transition-all"
               >
                 <div className="flex items-center gap-4 flex-1 min-w-0">
@@ -55,34 +53,42 @@ export default function SectionProducts() {
                   <span
                     className="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-700 flex-shrink-0"
                     style={{
-                      background: item.customBackgroundColor || "#f3f4f6",
+                      background: item?.customBackgroundColor || "#f3f4f6",
                     }}
-                    title={item.customBackgroundColor}
+                    title={item?.customBackgroundColor}
                   />
                   {/* Info producto */}
                   <div className="flex flex-row items-center gap-4 min-w-0">
                     <div className="flex flex-row gap-2 items-center max-w-96">
                       <ImagePreview
                         images={
-                          item.product.images?.map((image: string) =>
+                          (item?.product?.images || item?.product?.imagesUrl)?.map((image: string) =>
                             isValidUrl(image) ? image : ""
                           ) || []
                         }
-                        alt={item.product.productName || "product"}
+                        alt={
+                          item?.product?.productName ||
+                          item?.product?.name ||
+                          "product"
+                        }
                         className="w-12 h-12"
                       />
                       <div>
                         <LongText
                           className="text-base"
-                          text={item.product?.productName ?? "product"}
+                          text={
+                            item?.product?.productName ||
+                            item?.product?.name ||
+                            "product"
+                          }
                           lineClamp={1}
                         />
                         <div className="flex flex-wrap gap-1 mt-1">
-                          {item.product?.storeName && (
-                            <Badge>{item.product?.storeName}</Badge>
+                          {item?.product?.storeName && (
+                            <Badge>{item?.product?.storeName}</Badge>
                           )}
-                          {item.product?.price && (
-                            <Badge>${item.product?.price}</Badge>
+                          {item?.product?.price && (
+                            <Badge>${item?.product?.price}</Badge>
                           )}
                         </div>
                       </div>
@@ -108,12 +114,12 @@ export default function SectionProducts() {
                     className="px-2 py-1 rounded-lg text-gray-600 hover:bg-gray-100 border border-gray-200 text-xs font-semibold transition"
                     type="button"
                     onClick={() => {
-                      if (idx < fields.length - 1) {
+                      if (idx < fields?.length - 1) {
                         move(idx, idx + 1);
                       }
                     }}
                     aria-label="Bajar producto"
-                    disabled={idx === fields.length - 1}
+                    disabled={idx === fields?.length - 1}
                   >
                     <ArrowDown className="w-4 h-4" />
                   </button>

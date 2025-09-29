@@ -10,9 +10,13 @@ import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
 import { RHFSelect, RHFSwitch } from "@/components/react-hook-form";
 import { useSectionCreateForm } from "../hooks/use-section-create-form";
 import { SectionFormData } from "../schema/section-schema";
-import { TEMPLATE_TYPE_ENUM } from "@/types/section";
 import RHFColorPicker from "@/components/react-hook-form/rhf-color-picker";
 import SectionProducts from "./section-products-form/section-products";
+import {
+  TARGET_USER_DEVICE_OPTIONS,
+  TARGET_USER_SEGMENT_OPTIONS,
+  TEMPLATE_TYPE_ENUM_OPTIONS,
+} from "../constants/section.options";
 
 interface Props {
   initValue?: SectionFormData;
@@ -26,11 +30,6 @@ export default function SectionForm({ initValue }: Props) {
     () => push("/dashboard/content/sections"),
     [push]
   );
-
-  const templateTypeOptions: { value: TEMPLATE_TYPE_ENUM; label: string }[] = [
-    { value: TEMPLATE_TYPE_ENUM.CARROUSEL, label: "Carrousel de Productos" },
-    { value: TEMPLATE_TYPE_ENUM.COMBO, label: "Combos de productos" },
-  ];
 
   return (
     <section className="w-full px-2 sm:px-4 py-6">
@@ -69,7 +68,7 @@ export default function SectionForm({ initValue }: Props) {
               <RHFSelect
                 label="Tipo de plantilla"
                 name="templateType"
-                options={templateTypeOptions}
+                options={TEMPLATE_TYPE_ENUM_OPTIONS}
                 required
                 size="small"
               />
@@ -80,22 +79,14 @@ export default function SectionForm({ initValue }: Props) {
                 type="number"
               />
               <RHFSelect
-                options={[
-                  { value: "ALL", label: "Todos" },
-                  { value: "YOUNG", label: "Jóvenes" },
-                  { value: "ADULT", label: "Adultos" },
-                ]}
+                options={TARGET_USER_SEGMENT_OPTIONS}
                 name="targetUserSegment"
                 label="Segmento de usuarios"
                 placeholder="Ej: Jóvenes, Adultos"
                 autoFocus
               />
               <RHFSelect
-                options={[
-                  { value: "ALL", label: "Todos" },
-                  { value: "MOBILE", label: "Móvil" },
-                  { value: "DESKTOP", label: "Escritorio" },
-                ]}
+                options={TARGET_USER_DEVICE_OPTIONS}
                 name="targetDeviceType"
                 label="Tipo de dispositivo"
                 placeholder="Ej: Móvil, Escritorio"
