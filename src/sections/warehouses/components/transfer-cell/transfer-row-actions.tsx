@@ -6,6 +6,9 @@ import {
   XMarkIcon,
   PlayIcon,
   EllipsisHorizontalIcon,
+  EyeIcon,
+  ClockIcon,
+  InboxArrowDownIcon,
 } from "@heroicons/react/24/solid";
 import ConfirmationDialog from "@/components/modal/confirm-modal";
 import { usePermissions } from "@/hooks/use-permissions";
@@ -15,22 +18,35 @@ interface MenuProps {
   onApproveTransfer?: () => void;
   onCancelTransfer?: () => void;
   onExecuteTransfer?: () => void;
+  onMarkAwaitingReception?: () => void;
+  onViewReception?: () => void;
+  onViewDetails?: () => void;
   isApproveActive?: boolean;
   isCancelActive?: boolean;
   isExecuteActive?: boolean;
+  isMarkAwaitingReceptionActive?: boolean;
+  isViewReceptionActive?: boolean;
+  isViewDetailsActive?: boolean;
 }
 
 const TransferActionsMenu = ({
   onApproveTransfer,
   onCancelTransfer,
   onExecuteTransfer,
+  onMarkAwaitingReception,
+  onViewReception,
+  onViewDetails,
   isApproveActive = false,
   isCancelActive = false,
   isExecuteActive = false,
+  isMarkAwaitingReceptionActive = false,
+  isViewReceptionActive = false,
+  isViewDetailsActive = false,
 }: MenuProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [approveDialogOpen, setApproveDialogOpen] = useState(false);
   const [executeDialogOpen, setExecuteDialogOpen] = useState(false);
+  const [awaitingReceptionDialogOpen, setAwaitingReceptionDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Control de permisos
@@ -81,11 +97,28 @@ const TransferActionsMenu = ({
     }
   };
 
+  const handleMarkAwaitingReception = async () => {
+    if (onMarkAwaitingReception) {
+      setLoading(true);
+      try {
+        await onMarkAwaitingReception();
+      } catch (error) {
+        console.error("Error marking awaiting reception:", error);
+      } finally {
+        setLoading(false);
+        setAwaitingReceptionDialogOpen(false);
+      }
+    }
+  };
+
   // Verificar si hay al menos una acción disponible
   const hasActions =
     (onApproveTransfer && isApproveActive && hasApprovePermission) ||
     (onCancelTransfer && isCancelActive && hasCancelPermission) ||
-    (onExecuteTransfer && isExecuteActive && hasExecutePermission);
+    (onExecuteTransfer && isExecuteActive && hasExecutePermission) ||
+    (onMarkAwaitingReception && isMarkAwaitingReceptionActive && hasMarkAwaitingPermission) ||
+    (onViewReception && isViewReceptionActive && hasViewPermission) ||
+    (onViewDetails && isViewDetailsActive && hasViewPermission);
 
   // Si no hay acciones disponibles, no renderizar el menú
   if (!hasActions) {
@@ -104,6 +137,26 @@ const TransferActionsMenu = ({
         <Menu.Dropdown className="bg-white text-gray-700 space-y-2 border border-gray-200 px-1 dark:bg-black">
           <Menu.Label>Acciones</Menu.Label>
 
+          {onViewReception && isViewReceptionActive && hasViewPermission && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-white hover:bg-blue-500"
+              leftSection={<InboxArrowDownIcon className="h-4 w-4" />}
+              onClick={onViewReception}
+            >
+              Recepcionar
+            </Menu.Item>
+          )}
+
+          {onViewDetails && isViewDetailsActive && hasViewPermission && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-white hover:bg-gray-500"
+              leftSection={<EyeIcon className="h-4 w-4" />}
+              onClick={onViewDetails}
+            >
+              Ver Detalles
+            </Menu.Item>
+          )}
+
           {onApproveTransfer && isApproveActive && hasApprovePermission && (
             <Menu.Item
               className="p-1 text-sm hover:text-white hover:bg-green-500"
@@ -121,6 +174,16 @@ const TransferActionsMenu = ({
               onClick={() => setExecuteDialogOpen(true)}
             >
               Ejecutar transferencia
+            </Menu.Item>
+          )}
+
+          {onMarkAwaitingReception && isMarkAwaitingReceptionActive && hasMarkAwaitingPermission && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-white hover:bg-amber-500"
+              leftSection={<ClockIcon className="h-4 w-4" />}
+              onClick={() => setAwaitingReceptionDialogOpen(true)}
+            >
+              Marcar esperando recepción
             </Menu.Item>
           )}
 
@@ -170,6 +233,17 @@ const TransferActionsMenu = ({
           open={executeDialogOpen}
           title="Ejecutar transferencia"
           description="¿Estás seguro de que deseas ejecutar esta transferencia? Esta acción no se puede deshacer."
+          actionType="confirm"
+        />
+      )}
+      {onMarkAwaitingReception && isMarkAwaitingReceptionActive && hasMarkAwaitingPermission && (
+        <ConfirmationDialog
+          onClose={() => setAwaitingReceptionDialogOpen(false)}
+          onConfirm={handleMarkAwaitingReception}
+          loading={loading}
+          open={awaitingReceptionDialogOpen}
+          title="Marcar esperando recepción"
+          description="¿Estás seguro de que deseas marcar esta transferencia como esperando recepción? El almacén destino podrá proceder con la recepción."
           actionType="confirm"
         />
       )}

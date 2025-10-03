@@ -33,12 +33,13 @@ const WarehouseInventoryList = ({ warehouse }: Props) => {
 
   const onOptionSelected = (option: any) => {
     const exist = inventories?.find((o) => o.id === option.id);
+
     if (exist) {
-      // Si ya existe, solo lo eliminamos
-      remove(exist?.id);
+      // Si ya existe, no hacemos nada - el usuario puede manejar las cantidades manualmente
+      return;
     } else {
       // Si no existe, lo agregamos
-      addNewInventory({
+      const newInventory = {
         id: option?.id,
         parentProductName: option?.parentProductName,
         supplierName: option?.supplierName,
@@ -54,7 +55,9 @@ const WarehouseInventoryList = ({ warehouse }: Props) => {
             count: 0,
             allowPartialFulfillment: false,
           })) || [],
-      });
+      };
+
+      addNewInventory(newInventory);
     }
   };
 
