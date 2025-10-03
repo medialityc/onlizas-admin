@@ -104,7 +104,7 @@ export const backendRoutes = {
   },
   warehouseVirtualTypes: {
     create: `${process.env.NEXT_PUBLIC_API_URL}virtual-warehouse-types`,
-    list: `${process.env.NEXT_PUBLIC_API_URL}admin/virtual-warehouse-types`,
+    list: `${process.env.NEXT_PUBLIC_API_URL}virtual-warehouse-types`,
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}virtual-warehouse-types/${id}`,
     toggleStatus: (id: string | number) =>
@@ -124,7 +124,7 @@ export const backendRoutes = {
     transferById: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}warehouses/transfers/${id}`,
     listBySupplier: (supplierId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${supplierId}/warehouses`,
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/warehouses`,
     listByType: (type: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}warehouses/${type}`,
     listSupplier: `${process.env.NEXT_PUBLIC_API_URL}suppliers/warehouses`,
@@ -137,16 +137,18 @@ export const backendRoutes = {
     metrics: `${process.env.NEXT_PUBLIC_API_URL}warehouses/metrics`,
   },
   warehouse_transfers: {
-    create: `${process.env.NEXT_PUBLIC_API_URL}admin/transfers`,
-    list: `${process.env.NEXT_PUBLIC_API_URL}admin/transfers`,
+    create: `${process.env.NEXT_PUBLIC_API_URL}transfers`,
+    list: `${process.env.NEXT_PUBLIC_API_URL}transfers`,
     getById: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/transfers/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}transfers/${id}`,
     approve: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/transfers/${id}/approve`,
+      `${process.env.NEXT_PUBLIC_API_URL}transfers/${id}/approve`,
     cancel: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/transfers/${id}/cancel`,
+      `${process.env.NEXT_PUBLIC_API_URL}transfers/${id}/cancel`,
     execute: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/transfers/${id}/execute`,
+      `${process.env.NEXT_PUBLIC_API_URL}transfers/${id}/execute`,
+    markAwaitingReception: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}transfers/${id}/mark-awaiting-reception`,
   },
   warehouse_me: {
     create: `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/virtual-warehouses`,
@@ -155,6 +157,21 @@ export const backendRoutes = {
     list: `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/virtual-warehouses`,
     byId: (warehouseId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/virtual-warehouses/${warehouseId}`,
+  },
+  transferReceptions: {
+    list: `${process.env.NEXT_PUBLIC_API_URL}transfer-receptions`,
+    getById: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}transfer-receptions/${id}`,
+    receive: `${process.env.NEXT_PUBLIC_API_URL}transfer-receptions/receive`,
+    reportDiscrepancy: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}transfer-receptions/${id}/report-discrepancy`,
+    resolveDiscrepancy: (discrepancyId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}transfer-receptions/${discrepancyId}/resolve-discrepancy`,
+    addComment: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}transfer-receptions/${id}/comments`,
+    logs: `${process.env.NEXT_PUBLIC_API_URL}transfer-receptions/logs`,
+    createInventory: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}transfer-receptions/${id}/create-inventory`,
   },
 
   departments: {

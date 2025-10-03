@@ -48,22 +48,29 @@ const ProductCount = ({
   const actualMax = Math.min(max, maxAvailable);
 
   const handleIncrement = () => {
+    console.log(`🔼 Incrementando: Inventario ${inventoryId}, Producto ${productId}, Count actual: ${count}, Max: ${actualMax}`);
     if (count < actualMax) {
       incrementProduct(inventoryId, productId);
       addSelectedProductsToItems();
+    } else {
+      console.log("⚠️ No se puede incrementar más, ya está en el máximo");
     }
   };
 
   const handleDecrement = () => {
+    console.log(`🔽 Decrementando: Inventario ${inventoryId}, Producto ${productId}, Count actual: ${count}, Min: ${min}`);
     if (count >= min) {
       decrementProduct(inventoryId, productId);
       addSelectedProductsToItems();
+    } else {
+      console.log("⚠️ No se puede decrementar más, ya está en el mínimo");
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value) || min;
     const clampedValue = Math.min(Math.max(value, min), actualMax);
+    console.log(`📝 Input change: Inventario ${inventoryId}, Producto ${productId}, Valor: ${value}, Valor ajustado: ${clampedValue}`);
     updateProductCount(inventoryId, productId, clampedValue);
     addSelectedProductsToItems();
   };

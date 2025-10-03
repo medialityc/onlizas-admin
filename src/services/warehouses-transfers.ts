@@ -37,7 +37,7 @@ export async function getAllTransfers(
 
 export async function getWarehouseTransferById(
   id: number
-): Promise<ApiResponse<WarehouseFormData>> {
+): Promise<ApiResponse<WarehouseTransfer>> {
   const res = await nextAuthFetch({
     url: backendRoutes.warehouse_transfers.getById(id),
     method: "GET",
@@ -45,7 +45,7 @@ export async function getWarehouseTransferById(
     next: { tags: [WAREHOUSE_TRANSFER_TAG, String(id)] },
   });
   if (!res.ok) return handleApiServerError(res);
-  return buildApiResponseAsync<WarehouseFormData>(res);
+  return buildApiResponseAsync<WarehouseTransfer>(res);
 }
 
 export async function createWarehouseTransfer(
@@ -95,6 +95,23 @@ export async function executeWarehouseTransfer(
     url: backendRoutes.warehouse_transfers.execute(transferId),
     method: "PUT",
     useAuth: true,
+  });
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag(WAREHOUSE_TRANSFER_TAG);
+  return buildApiResponseAsync<WarehouseTransfer>(res);
+}
+
+export async function markWarehouseTransferAwaitingReception(
+  transferId: number | string,
+  notes?: string
+): Promise<ApiResponse<WarehouseTransfer>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.warehouse_transfers.markAwaitingReception(transferId),
+    method: "PUT",
+    useAuth: true,
+    data: {
+      notes: notes || ""
+    },
   });
   if (!res.ok) return handleApiServerError(res);
   revalidateTag(WAREHOUSE_TRANSFER_TAG);
