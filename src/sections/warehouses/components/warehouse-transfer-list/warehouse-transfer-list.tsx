@@ -10,7 +10,7 @@ import {
   WAREHOUSE_TRANSFER_STATUS,
   WarehouseTransfer,
 } from "@/types/warehouses-transfers";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import DateValue from "@/components/format-vales/date-value";
 import TransferStatusCell from "../transfer-cell/transfer-status-cell";
 import TransferActionsMenu from "../transfer-cell/transfer-row-actions";
@@ -19,22 +19,26 @@ import {
   approveWarehouseTransfer,
   cancelWarehouseTransfer,
   executeWarehouseTransfer,
+  markWarehouseTransferAwaitingReception,
 } from "@/services/warehouses-transfers";
 import showToast from "@/config/toast/toastConfig";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface Props {
-  data?: GetAllWarehouseTransfers;
+  data?: WarehouseTransfer[]; // Array directo de transfers
   searchParams: SearchParams;
   onSearchParamsChange: (params: SearchParams) => void;
+  currentWarehouseId: number;
 }
 
 export function WarehouseTransferList({
   data,
   searchParams,
   onSearchParamsChange,
+  currentWarehouseId,
 }: Props) {
   const { push } = useRouter();
+  const pathname = usePathname();
   const handleCreateTransfer = useCallback(() => {
     const newPath = window.location.pathname.replace(/\/list$/, "");
     push(newPath);
@@ -80,6 +84,52 @@ export function WarehouseTransferList({
       showToast("Ocurrió un error, por favor intenta de nuevo", "error");
     }
   }, []);
+
+  const handleMarkAwaitingReception = useCallback(async (transferId: number) => {
+    try {
+      // Solicitar notas al usuario (temporalmente con prompt, idealmente sería un modal)
+      const notes = window.prompt("Notas adicionales (opcional):", "") || "";
+
+      const res = await markWarehouseTransferAwaitingReception(transferId, notes);
+      if (res?.error && res.message) {
+        showToast(res.message, "error");
+      }
+      // Quitar el toast de éxito - solo mostrar errores
+    } catch (error) {
+      console.error(error);
+      showToast("Ocurrió un error, por favor intenta de nuevo", "error");
+    }
+  }, []);
+
+  const handleViewReception = useCallback((transferId: number) => {
+    // Construir la ruta de recepción basada en la ruta actual
+    // pathname será algo como: /dashboard/warehouses/[type]/[id]/edit/transfers/list
+    // Necesitamos extraer type e id para construir la ruta de recepción
+    const pathParts = pathname.split('/');
+    const typeIndex = pathParts.indexOf('warehouses') + 1;
+    const idIndex = typeIndex + 1;
+
+    if (typeIndex > 0 && idIndex < pathParts.length) {
+      const type = pathParts[typeIndex];
+      const warehouseId = pathParts[idIndex];
+      const receptionPath = `/dashboard/warehouses/${type}/${warehouseId}/reception/${transferId}`;
+      push(receptionPath);
+    }
+  }, [pathname, push]);
+
+  const handleViewTransferDetails = useCallback((transferId: number) => {
+    // Para transferencias completadas, ir a una página de solo lectura
+    const pathParts = pathname.split('/');
+    const typeIndex = pathParts.indexOf('warehouses') + 1;
+    const idIndex = typeIndex + 1;
+
+    if (typeIndex > 0 && idIndex < pathParts.length) {
+      const type = pathParts[typeIndex];
+      const warehouseId = pathParts[idIndex];
+      const detailsPath = `/dashboard/warehouses/${type}/${warehouseId}/transfers/${transferId}/details`;
+      push(detailsPath);
+    }
+  }, [pathname, push]);
 
   const columns = useMemo<DataTableColumn<WarehouseTransfer>[]>(
     () => [
@@ -162,18 +212,31 @@ export function WarehouseTransferList({
                 trans?.status === WAREHOUSE_TRANSFER_STATUS.Approved
               }
               onExecuteTransfer={() => handleExecuteTransfer(trans?.id)}
+              isMarkAwaitingReceptionActive={
+                trans?.status === WAREHOUSE_TRANSFER_STATUS.InTransit
+              }
+              onMarkAwaitingReception={() => handleMarkAwaitingReception(trans?.id)}
+              isViewReceptionActive={[
+                WAREHOUSE_TRANSFER_STATUS.AwaitingReception,
+                WAREHOUSE_TRANSFER_STATUS.PartiallyReceived,
+                WAREHOUSE_TRANSFER_STATUS.ReceivedWithDiscrepancies,
+              ].includes(trans?.status) && trans?.destinationId === currentWarehouseId}
+              onViewReception={() => handleViewReception(trans?.id)}
+              isViewDetailsActive={true}
+              onViewDetails={() => handleViewTransferDetails(trans?.id)}
             />
           </div>
         ),
       },
     ],
-    [handleApprovedTransfer, handleCanceledTransfer, handleExecuteTransfer]
+    [handleApprovedTransfer, handleCanceledTransfer, handleExecuteTransfer, handleMarkAwaitingReception, handleViewReception, handleViewTransferDetails]
   );
 
   return (
     <>
       <DataGrid
-        data={data}
+       
+        simpleData={data}
         columns={columns}
         searchParams={searchParams}
         onSearchParamsChange={onSearchParamsChange}
