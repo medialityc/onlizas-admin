@@ -16,6 +16,7 @@ import {
   setAsDefaultCurrency,
 } from "@/services/currencies";
 import CurrenciesModalContainer from "../modals/currencies-modal-container";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface CurrenciesListProps {
   data?: GetAllCurrencies;
@@ -35,7 +36,6 @@ export function CurrenciesList({
   const editCurrencyModal = getModalState<number>("edit");
   const viewCurrencyModal = getModalState<number>("view");
 
- 
   const selectedCurrency = useMemo(() => {
     const id = editCurrencyModal.id || viewCurrencyModal.id;
     if (!id || !data?.data) return null;
@@ -198,13 +198,21 @@ export function CurrenciesList({
             <ActionsMenu
               onViewDetails={() => handleViewCurrency(currency)}
               onEdit={() => handleEditCurrency(currency)}
-              onPay={!currency.default ? () => handleSetAsDefault(currency) : undefined}
+              onPay={
+                !currency.default
+                  ? () => handleSetAsDefault(currency)
+                  : undefined
+              }
               isActive={currency.isActive}
-              onActive={!currency.default ? () => handleDeleteCurrency(currency) : undefined}
-              viewPermissions={["READ_ALL"]}
-              editPermissions={["UPDATE_ALL"]}
-              payPermissions={["UPDATE_ALL", "CURRENCY_SET_DEFAULT"]}
-              activePermissions={["DELETE_ALL"]}
+              onActive={
+                !currency.default
+                  ? () => handleDeleteCurrency(currency)
+                  : undefined
+              }
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              payPermissions={[PERMISSION_ENUM.UPDATE]}
+              activePermissions={[PERMISSION_ENUM.DELETE]}
             />
           </div>
         ),
@@ -227,7 +235,7 @@ export function CurrenciesList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar monedas..."
         onCreate={handleCreateCurrency}
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={[PERMISSION_ENUM.CREATE]}
         emptyText="No se encontraron monedas"
       />
       {/* Create Modal */}

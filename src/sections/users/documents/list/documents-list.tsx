@@ -3,6 +3,7 @@
 import { DataGrid } from "@/components/datagrid/datagrid";
 import ActionsMenu from "@/components/menu/actions-menu";
 import showToast from "@/config/toast/toastConfig";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 import { downloadUserDocument } from "@/services/users";
 import { ApiResponse } from "@/types/fetch/api";
 import { IDocument } from "@/types/users";
@@ -109,7 +110,7 @@ export function UserDocumentsList({ documentsPromise, userId }: Props) {
             onEdit={() => handleEdit(document)}
             onDownload={() => handleDownload(document)}
             editPermissions={["DOCUMENT_VALIDATE"]}
-            downloadPermissions={["READ_ALL"]}
+            downloadPermissions={[PERMISSION_ENUM.RETRIEVE]}
           />
         ),
       },

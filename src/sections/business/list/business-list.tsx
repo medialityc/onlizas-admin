@@ -11,6 +11,7 @@ import BusinessModalContainer from "../modals/business-modal-container";
 import { Business, GetAllBusiness } from "@/types/business";
 import { deleteBusiness } from "@/services/business";
 import StatusBadge from "@/components/badge/status-badge";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface BusinessListProps {
   data?: GetAllBusiness;
@@ -153,9 +154,9 @@ export function BusinessList({
               onViewDetails={() => handleViewBusiness(business)}
               onEdit={() => handleEditBusiness(business)}
               onActive={() => handleDeleteBusiness(business)}
-              viewPermissions={["READ_ALL"]}
-              editPermissions={["UPDATE_ALL"]}
-              activePermissions={["DELETE_ALL", "BUSINESS_DEACTIVATE"]}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              activePermissions={[PERMISSION_ENUM.DELETE, PERMISSION_ENUM.UPDATE_BUSINESS]}
             />
           </div>
         ),

@@ -21,6 +21,7 @@ import {
   executeWarehouseTransfer,
 } from "@/services/warehouses-transfers";
 import showToast from "@/config/toast/toastConfig";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface Props {
   data?: GetAllWarehouseTransfers;
@@ -191,7 +192,7 @@ export function WarehouseTransferList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar transferencia..."
         onCreate={handleCreateTransfer}
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={[PERMISSION_ENUM.CREATE]}
         emptyText="No se encontraron transferencias del almacén"
         createText="Crear Transferencia"
         enableColumnToggle={false}

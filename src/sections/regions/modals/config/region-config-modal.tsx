@@ -15,7 +15,8 @@ import {
   TruckIcon,
   CogIcon,
 } from "@heroicons/react/24/outline";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface RegionConfigModalProps {
   open: boolean;
@@ -42,14 +43,9 @@ export default function RegionConfigModal({
   const queryClient = useQueryClient();
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p: { code: string; }) => p.code === perm)
-    );
-  };
-  const canEdit = hasPermission(["UPDATE_ALL"]);
-  const canDelete = hasPermission(["DELETE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const canEdit = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const canDelete = hasPermission([PERMISSION_ENUM.DELETE]);
 
   // Obtener los datos completos de la región incluyendo configuraciones
   const { data: regionData, isLoading: isLoadingRegion } = useRegionDetails(
@@ -70,20 +66,20 @@ export default function RegionConfigModal({
 
   const tabs = [
     {
-      id: 'currencies',
-      label: 'Monedas',
+      id: "currencies",
+      label: "Monedas",
       icon: CurrencyDollarIcon,
       count: fullRegion.currencyConfig?.enabledCount || 0,
     },
     {
-      id: 'payments',
-      label: 'Pagos',
+      id: "payments",
+      label: "Pagos",
       icon: CreditCardIcon,
       count: fullRegion.paymentConfig?.enabledCount || 0,
     },
     {
-      id: 'shipping',
-      label: 'Envíos',
+      id: "shipping",
+      label: "Envíos",
       icon: TruckIcon,
       count: fullRegion.shippingConfig?.enabledCount || 0,
     },
@@ -93,7 +89,6 @@ export default function RegionConfigModal({
     switch (activeTab) {
       case "currencies":
         return (
-
           <RegionCurrencySection
             region={fullRegion}
             canEdit={canEdit}
@@ -151,7 +146,6 @@ export default function RegionConfigModal({
             región
           </div>
 
-
           <nav className="flex flex-wrap gap-2">
             {tabs.map((tab) => {
               const Icon = tab.icon;
@@ -162,9 +156,10 @@ export default function RegionConfigModal({
                   onClick={() => setActiveTab(tab.id)}
                   className={`
                     flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200
-                    ${isActive
-                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    ${
+                      isActive
+                        ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700"
+                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
                     }
                   `}
                 >
@@ -173,10 +168,11 @@ export default function RegionConfigModal({
                   <span
                     className={`
                     px-2 py-1 rounded-full text-xs font-medium
-                    ${isActive
-                        ? 'bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200'
-                        : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-                      }
+                    ${
+                      isActive
+                        ? "bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200"
+                        : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                    }
                   `}
                   >
                     {tab.count}
@@ -193,7 +189,9 @@ export default function RegionConfigModal({
         {/* Footer */}
         <div className="border-t border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between bg-gray-50 dark:bg-gray-800/50">
           <button
-            onClick={() => queryClient.invalidateQueries({ queryKey: ["regions"] })}
+            onClick={() =>
+              queryClient.invalidateQueries({ queryKey: ["regions"] })
+            }
             className="btn btn-outline-primary"
           >
             Actualizar Datos

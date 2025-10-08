@@ -12,6 +12,7 @@ import { useCallback, useMemo } from "react";
 import PermissionCreateModal from "../create/permissions-create-modal";
 import { PermissionDetailsModal } from "../details/permissions-details-modal";
 import { PermissionEditModal } from "../edit/permissions-edit-modal";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface PermissionListProps {
   data?: GetAllPermissionsResponse;
@@ -34,7 +35,7 @@ export function PermissionList({
   const selectedPermission = useMemo(() => {
     const id = editPermissionModal.id || viewPermissionModal.id;
     if (!id || !data?.data) return null;
-    return data.data.find(role => role.id == id);
+    return data.data.find((role) => role.id == id);
   }, [editPermissionModal, viewPermissionModal, data?.data]);
 
   // Modal handlers
@@ -79,7 +80,7 @@ export function PermissionList({
         accessor: "name",
         title: "Nombre",
         sortable: true,
-        render: permission => (
+        render: (permission) => (
           <div className="flex flex-col">
             <span className="font-medium text-dark dark:text-white">
               {permission.name}
@@ -94,20 +95,20 @@ export function PermissionList({
         accessor: "description",
         title: "Descripción",
         sortable: true,
-        render: permission => (
-            <span
+        render: (permission) => (
+          <span
             className="text-sm text-gray-600 dark:text-gray-300 truncate max-w-[200px] block"
             title={permission.description}
-            >
+          >
             {permission.description}
-            </span>
+          </span>
         ),
       },
       {
         accessor: "roleName",
         title: "Rol",
         sortable: true,
-        render: permission => (
+        render: (permission) => (
           <div className="flex flex-col">
             <span className="text-sm font-medium">{permission.roleName}</span>
             <span className="text-xs text-gray-500">
@@ -118,17 +119,17 @@ export function PermissionList({
       },
 
       {
-        accessor: "actions",       
+        accessor: "actions",
         textAlign: "center",
-        render: permission => (
+        render: (permission) => (
           <div className="flex justify-center">
             <ActionsMenu
               onViewDetails={() => handleViewPermission(permission)}
               onEdit={() => handleEditPermission(permission)}
               onDelete={() => handleDeletePermission(permission)}
-              viewPermissions={["READ_PERMISSIONS", "READ_ALL"]}
-              editPermissions={["UPDATE_PERMISSION", "UPDATE_ALL"]}
-              deletePermissions={["DELETE_ALL"]}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              deletePermissions={[PERMISSION_ENUM.DELETE]}
             />
           </div>
         ),
@@ -146,7 +147,7 @@ export function PermissionList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar permisos..."
         onCreate={handleCreatePermission}
-        createPermissions={["CREATE_PERMISSION", "CREATE_ALL"]}
+        createPermissions={["CREATE_PERMISSION", PERMISSION_ENUM.CREATE]}
         emptyText="No se encontraron permisos"
       />
       {/* Create Modal */}

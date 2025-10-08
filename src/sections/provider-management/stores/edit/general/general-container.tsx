@@ -16,7 +16,8 @@ import { Store } from "@/types/stores";
 import { GeneralStoreSchema, type GeneralStoreForm } from "./general-schema";
 import { updateSupplierStore } from "@/services/stores";
 import { buildStoreFormData } from "../utils/transform";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface Props {
   store: Store;
@@ -62,13 +63,8 @@ export default function GeneralContainer({ store }: Props) {
     }
   };
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   return (
     <FormProvider id="general-form" methods={methods} onSubmit={onSubmit}>

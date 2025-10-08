@@ -31,7 +31,8 @@ import { Label } from "@/components/label/label";
 import { usePromotionCodeMutations } from "../hooks/mutations/usePromotionCodeMutations";
 import { FormProvider, RHFInputWithLabel } from "@/components/react-hook-form";
 import { getCommonDefaultValues } from "../utils/default-values";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface CodeFormProps {
   storeId: number;
@@ -77,19 +78,12 @@ export default function PromotionCode({
   const router = useRouter();
   const {
     handleSubmit,
-    register,
     formState: { errors },
   } = methods;
-  console.log(methods.formState.errors);
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const onFormSubmit = handleSubmit(async (data) => {
     // Usar la función reutilizable para construir FormData
@@ -124,12 +118,12 @@ export default function PromotionCode({
       } else {
         if (mutations.updateAsync)
           await mutations.updateAsync({
-            promotionId: promotionData?.id!,
+            promotionId: promotionData?.id as number,
             data: formData,
           });
         else
           await mutations.update({
-            promotionId: promotionData?.id!,
+            promotionId: promotionData?.id as number,
             data: formData,
           });
         navigateAfterSave(router);

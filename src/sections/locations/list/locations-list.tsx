@@ -11,15 +11,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import LocationsModalContainer from "../modals/locations-modal-container";
 import LocationDeleteModal from "../modals/location-delete-modal";
 import LocationExportModal from "../components/location-export-modal";
-import {
-  ILocation,
-  GetAllLocations,
-  LocationStatus,
-  LocationType,
-} from "@/types/locations";
+import { ILocation, GetAllLocations, LocationStatus } from "@/types/locations";
 import StatusBadge from "@/components/badge/status-badge";
 import { updateLocationStatus } from "@/services/locations";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface LocationsListProps {
   data?: GetAllLocations;
@@ -74,8 +70,9 @@ export function LocationsList({
   const [locationToDelete, setLocationToDelete] = useState<ILocation | null>(
     null
   );
-  const { data: permissions = [] } = usePermissions();
-  const hasReadPermission = permissions.some((p) => p.code === "READ_ALL");
+  const { hasPermission } = usePermissions();
+  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+
   const queryClient = useQueryClient();
 
   const createLocationModal = getModalState("create");
@@ -249,10 +246,10 @@ export function LocationsList({
                   ? () => handleToggleStatus(location)
                   : undefined
               }
-              viewPermissions={["READ_ALL"]}
-              editPermissions={["UPDATE_ALL"]}
-              deletePermissions={["DELETE_ALL"]}
-              activePermissions={["UPDATE_ALL"]}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              deletePermissions={[PERMISSION_ENUM.DELETE]}
+              activePermissions={[PERMISSION_ENUM.UPDATE]}
             />
           </div>
         ),
@@ -276,7 +273,7 @@ export function LocationsList({
         searchPlaceholder="Buscar localizaciones..."
         emptyText="No se encontraron localizaciones"
         onCreate={handleCreateLocation}
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={[PERMISSION_ENUM.CREATE]}
         rightActions={
           //poner lo del read luegp que se defina la ofrma
           hasReadPermission && (

@@ -15,7 +15,8 @@ import {
   PermissionUpdateData,
   permissionUpdateSchema,
 } from "./permissions-update-schema";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface PermissionEditModalProps {
   permission: IPermission;
@@ -31,13 +32,8 @@ export function PermissionEditModal({
   permissions = [],
 }: PermissionEditModalProps) {
   const queryClient = useQueryClient();
-  const { data: userPermissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      userPermissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
   const methods = useForm<PermissionUpdateData>({
     resolver: zodResolver(permissionUpdateSchema(permissions)),
     mode: "onChange",

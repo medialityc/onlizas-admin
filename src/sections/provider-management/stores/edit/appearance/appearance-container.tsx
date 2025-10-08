@@ -7,7 +7,8 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
 import AppearanceTabs from "./appearance-tabs";
 import { useAppearanceSave } from "./hooks/use-appearance-save";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface Props {
   store: Store;
@@ -18,13 +19,8 @@ export default function AppearanceContainer({ store }: Props) {
     store,
   });
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   return (
     <FormProvider id="appearance-form" methods={methods} onSubmit={onSubmit}>

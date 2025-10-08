@@ -9,7 +9,8 @@ import RHFInput from "@/components/react-hook-form/rhf-input";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAllWarehousesVirtualType } from "@/services/warehouses-virtual-types";
 import { MeWarehouseFormData } from "../../schemas/me-warehouse-schema";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from '../../../../lib/permissions';
 
 type Props = {
   warehouse?: MeWarehouseFormData;
@@ -27,13 +28,8 @@ export function MeWarehouseForm({ warehouse, onClose }: Props) {
   }, [form, onClose]);
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   return (
     <FormProvider

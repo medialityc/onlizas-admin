@@ -13,7 +13,9 @@ import { Button } from "@/components/button/button";
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
-import { usePermissions } from "zas-sso-client";
+
+import { PERMISSION_ENUM } from "@/lib/permissions";
+import { usePermissions } from "@/hooks/use-permissions";
 
 interface CategoryFormProps {
   initValue?: CategoryFormData;
@@ -25,13 +27,8 @@ export default function CategoryForm({ initValue }: CategoryFormProps) {
   const handleCancel = useCallback(() => push("/dashboard/categories"), [push]);
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   return (
     <section>

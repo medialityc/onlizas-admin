@@ -2,7 +2,8 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { useFormContext } from "react-hook-form";
 import { useMemo } from "react";
 import { UpdateSupplierFormData } from "./schema";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 export default function SupplierEditActions({
   isLoading,
@@ -16,13 +17,8 @@ export default function SupplierEditActions({
   } = useFormContext<UpdateSupplierFormData>();
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   // Consider only meaningful fields for the dirty indicator (ignore temp pickers, etc.)
   const hasMeaningfulDirty = useMemo(() => {

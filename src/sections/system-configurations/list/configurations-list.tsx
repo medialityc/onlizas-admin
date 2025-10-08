@@ -13,6 +13,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import SystemConfigurationCreateModal from "../create/system-configuration-create-modal";
 import SystemConfigurationEditModal from "../edit/system-configuration-edit-modal";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface ConfigurationsListProps {
   data?: PaginatedResponse<SystemConfiguration>;
@@ -133,10 +134,10 @@ export function ConfigurationsList({
             <ActionsMenu
               onEdit={() => handleEdit(r)}
               onSetDefault={!r.isActive ? () => handleSetDefault(r) : undefined}
-              editPermissions={["UPDATE_SYSTEM_CONFIGURATIONS", "UPDATE_ALL"]}
+              editPermissions={["UPDATE_SYSTEM_CONFIGURATIONS", PERMISSION_ENUM.UPDATE]}
               setDefaultPermissions={[
                 "UPDATE_SYSTEM_CONFIGURATIONS",
-                "UPDATE_ALL",
+                PERMISSION_ENUM.UPDATE,
               ]}
             />
           </div>
@@ -155,7 +156,7 @@ export function ConfigurationsList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar configuraciones..."
         onCreate={handleCreate}
-        createPermissions={["CREATE_SYSTEM_CONFIGURATIONS", "CREATE_ALL"]}
+        createPermissions={[PERMISSION_ENUM.CREATE]}
         emptyText="No se encontraron configuraciones"
       />
       <SystemConfigurationCreateModal

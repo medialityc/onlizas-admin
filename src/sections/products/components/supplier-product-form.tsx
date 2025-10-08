@@ -18,7 +18,8 @@ import { ImagesIcon } from "lucide-react";
 import IconBox from "@/components/icon/icon-box";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAllMeApprovedCategories } from "@/services/categories";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 type Props = {
   initValue?: SupplierProductFormData;
@@ -36,13 +37,8 @@ const SupplierProductForm = ({ initValue, isEdit }: Props) => {
   const isProductDraft = [isDraft, isEdit].some(Boolean);
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   return (
     <section>

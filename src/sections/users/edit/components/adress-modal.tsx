@@ -11,7 +11,8 @@ import { Button } from "@/components/button/button";
 import LoaderButton from "@/components/loaders/loader-button";
 import FormProvider from "@/components/react-hook-form/form-provider";
 import { addressSchema } from "./user-schema";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 type AddressFormData = z.infer<typeof addressSchema>;
 
@@ -54,13 +55,8 @@ export function AddressModal({
   } = methods;
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const onSubmit = async (data: AddressFormData) => {
     onSave(data);

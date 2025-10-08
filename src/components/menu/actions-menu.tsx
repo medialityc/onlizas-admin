@@ -16,7 +16,7 @@ import {
 } from "@heroicons/react/24/solid";
 import DeleteDialog from "../modal/delete-modal";
 import ToggleStatusDialog from "../modal/toggle-status-modal";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
 
 interface MenuProps {
   onAddUsers?: () => void;
@@ -86,15 +86,7 @@ const ActionsMenu = ({
   const [loading, setLoading] = useState(false);
 
   // Obtener permisos del usuario
-  const { data: permissions = [] } = usePermissions();
-
-  // Función helper para verificar permisos
-  const hasPermission = (requiredPermissions?: string[]) => {
-    if (!requiredPermissions || requiredPermissions.length === 0) return true;
-    return requiredPermissions.some((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
+  const { hasPermission } = usePermissions();
 
   const handleDelete = async () => {
     if (onDelete) {

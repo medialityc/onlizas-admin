@@ -1,21 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm, FormProvider, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Region } from "@/types/regions";
 import { regionSchema, CreateRegionSchema } from "../schemas/region-schema";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
-import RHFSelectWithLabel from "@/components/react-hook-form/rhf-select";
 import LoaderButton from "@/components/loaders/loader-button";
 import SimpleModal from "@/components/modal/modal";
-import { createRegion, updateRegion, getRegionById } from "@/services/regions";
+import { createRegion, updateRegion } from "@/services/regions";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import RHFMultiCountrySelect from "@/components/react-hook-form/rhf-multi-country-select";
 import RHFSwitch from "@/components/react-hook-form/rhf-switch";
 import { useRegionDetails } from "../hooks/use-region-details";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface RegionModalProps {
   open: boolean;
@@ -35,17 +35,10 @@ export default function RegionModal({
   onSuccess,
 }: RegionModalProps) {
   const [error, setError] = useState<string | null>(null);
-  const [pendingFormData, setPendingFormData] = useState<any>(null);
   const queryClient = useQueryClient();
 
   // Control de permisos
-  const { data: permissions = [], isLoading: permissionsLoading } =
-    usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
+  const { hasPermission, isLoading: permissionsLoading } = usePermissions();
 
   // Obtener los datos completos de la región cuando se está editando
   const { data: regionData, isLoading: isLoadingRegion } = useRegionDetails(
@@ -57,8 +50,8 @@ export default function RegionModal({
   const fullRegion = regionData?.data || region;
 
   // Permisos específicos (después de definir fullRegion)
-  const hasCreate = hasPermission(["CREATE_ALL"]);
-  const hasUpdate = hasPermission(["UPDATE_ALL"]);
+  const hasCreate = hasPermission([PERMISSION_ENUM.CREATE]);
+  const hasUpdate = hasPermission([PERMISSION_ENUM.UPDATE]);
   const canEdit = fullRegion ? hasUpdate : hasCreate;
 
   const methods = useForm<CreateRegionSchema>({
@@ -97,7 +90,7 @@ export default function RegionModal({
       let response;
       if (fullRegion) {
         // En edición, no enviar el código
-        const { code, ...updateData } = submitData;
+        const { code: _, ...updateData } = submitData;
         response = await updateRegion(fullRegion.id, updateData);
       } else {
         response = await createRegion(submitData);

@@ -19,7 +19,7 @@ import {
   PendingDocumentsForm,
   pendingDocumentsFormSchema,
 } from "./pending-docs-schema";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
 
 export default function SupplierPendingDocuments({
   approvalProcessId,
@@ -64,12 +64,7 @@ export default function SupplierPendingDocuments({
   const [viewReasonIdx, setViewReasonIdx] = useState<number | null>(null);
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
+  const { hasPermission } = usePermissions();
   const canValidateDocuments = hasPermission(["DOCUMENT_VALIDATE"]);
 
   const onAdd = () => append({ fileName: "", content: undefined });

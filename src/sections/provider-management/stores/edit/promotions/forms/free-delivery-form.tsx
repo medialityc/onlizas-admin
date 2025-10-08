@@ -34,7 +34,8 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { Button } from "@/components/button/button";
 import { Label } from "@/components/label/label";
 import { getCommonDefaultValues } from "../utils/default-values";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface FreeDeliveryFormProps {
   storeId: number;
@@ -84,13 +85,8 @@ export default function FreeDeliveryForm({
   const { handleSubmit } = methods;
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const onFormSubmit = handleSubmit(async (data) => {
     // Usar la función reutilizable para construir FormData

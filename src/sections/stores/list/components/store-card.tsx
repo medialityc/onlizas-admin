@@ -26,7 +26,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatNumber, formatPercentage, isValidUrl } from "@/utils/format";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 type DataCardProps = {
   store: Store;
@@ -38,14 +39,9 @@ export const SoreCard = ({ store }: DataCardProps) => {
   const router = useRouter();
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasReadPermission = hasPermission(["READ_ALL"]);
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   // Prefer https:// if not present
   const viewUrl = (() => {

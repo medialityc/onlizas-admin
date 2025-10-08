@@ -1,5 +1,5 @@
 "use client";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
 
 import { AlertBox } from "@/components/alert/alert-box";
 import LoaderButton from "@/components/loaders/loader-button";
@@ -19,6 +19,7 @@ import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import RHFCheckbox from "@/components/react-hook-form/rhf-checkbox";
 import { urlToFile, isValidUrl } from "@/utils/format";
 import { processImageFile } from "@/utils/image-helpers";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface ModalProps {
   open: boolean;
@@ -82,13 +83,8 @@ export default function DepartmentModal({
   };
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const onSubmit = async (data: DepartmentFormData) => {
     setError(null);

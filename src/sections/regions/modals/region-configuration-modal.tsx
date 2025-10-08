@@ -25,11 +25,12 @@ import {
   addPaymentGatewaysToRegion,
   addShippingMethodsToRegion,
 } from "@/services/regions";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
 import showToast from "@/config/toast/toastConfig";
 import { CurrencyConfigForm } from "./components/currency-config-form";
 import { PaymentConfigForm } from "./components/payment-config-form";
 import { ShippingConfigForm } from "./components/shipping-config-form";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface RegionConfigurationModalProps {
   open: boolean;
@@ -75,16 +76,8 @@ export default function RegionConfigurationModal({
   }, [open, initialTab]);
 
   // Permission hooks
-  const { data: permissions = [], isLoading: permissionsLoading } =
-    usePermissions();
-
-  // Helper function to check permissions
-  const hasPermission = (permissionCode: string) => {
-    return permissions.some((permission) => permission.code === permissionCode);
-  };
-
-  const hasCreatePermission = hasPermission("CREATE_ALL");
-
+  const { hasPermission, isLoading } = usePermissions();
+  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
 
   const queryClient = useQueryClient();
 
@@ -92,7 +85,9 @@ export default function RegionConfigurationModal({
   const addCurrencyMutation = useMutation({
     mutationFn: async (config: { currencyId: number; isPrimary: boolean }) => {
       const response = await addCurrenciesToRegion(region.id, {
-        currencies: [{ currencyId: config.currencyId, isEnabled: true, isPrimary: false }]
+        currencies: [
+          { currencyId: config.currencyId, isEnabled: true, isPrimary: false },
+        ],
       });
       if (response.error) {
         throw new Error(response.message || "Error al agregar la moneda");
@@ -270,7 +265,7 @@ export default function RegionConfigurationModal({
     <SimpleModal
       open={open}
       onClose={handleClose}
-      loading={loading || permissionsLoading}
+      loading={loading || isLoading}
       title={`Configurar Servicios: ${region.name}`}
     >
       <div className="p-6 max-w-2xl">
@@ -287,7 +282,9 @@ export default function RegionConfigurationModal({
                 <Label>¿Qué deseas agregar a la región?</Label>
                 <Select
                   value={selectedType}
-                  onValueChange={(value) => setSelectedType(value as ConfigurationType | "")}
+                  onValueChange={(value) =>
+                    setSelectedType(value as ConfigurationType | "")
+                  }
                   disabled={!hasCreatePermission}
                 >
                   <SelectTrigger>
@@ -329,7 +326,7 @@ export default function RegionConfigurationModal({
               type="button"
               variant="secondary"
               onClick={handleClose}
-              disabled={loading || permissionsLoading}
+              disabled={loading || isLoading}
             >
               Cancelar
             </Button>
@@ -340,7 +337,7 @@ export default function RegionConfigurationModal({
                 !canSave ||
                 !hasCreatePermission ||
                 loading ||
-                permissionsLoading ||
+                isLoading ||
                 addCurrencyMutation.isPending ||
                 addPaymentMutation.isPending ||
                 addShippingMutation.isPending
@@ -349,8 +346,8 @@ export default function RegionConfigurationModal({
             >
               <CheckIcon className="h-4 w-4" />
               {addCurrencyMutation.isPending ||
-                addPaymentMutation.isPending ||
-                addShippingMutation.isPending
+              addPaymentMutation.isPending ||
+              addShippingMutation.isPending
                 ? "Guardando..."
                 : "Agregar Configuración"}
             </Button>

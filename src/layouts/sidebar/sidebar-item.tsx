@@ -3,7 +3,7 @@ import { ChevronDown, Minus } from "lucide-react";
 import Link from "next/link";
 import AnimateHeight from "react-animate-height";
 import { SidebarItemProps } from "./types";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
 
 const SidebarItem = ({
   item,
@@ -12,16 +12,8 @@ const SidebarItem = ({
   onToggle,
   isActiveLink,
 }: SidebarItemProps) => {
-  // Obtener permisos del usuario
-  const { data: permissions = [] } = usePermissions();
-
-  // Función helper para verificar permisos
-  const hasPermission = (requiredPermissions?: string[]) => {
-    if (!requiredPermissions || requiredPermissions.length === 0) return true;
-    return requiredPermissions.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
+  // Obtener permisos del usuario usando el hook personalizado
+  const { hasPermission, filterByPermissions } = usePermissions();
 
   // Si no tiene permisos, no renderizar el item
   if (!hasPermission(item.permissions)) {
@@ -184,8 +176,7 @@ const SidebarItem = ({
                   {subsection.label}
                 </h4>
                 <ul className="space-y-1">
-                  {subsection.items
-                    .filter((subItem) => hasPermission(subItem.permissions))
+                  {filterByPermissions(subsection.items)
                     .map((subItem) => (
                       <li key={subItem.id}>
                         <Link

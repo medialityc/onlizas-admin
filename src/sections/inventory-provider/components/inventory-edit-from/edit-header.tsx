@@ -1,20 +1,16 @@
 import { Button } from "@/components/button/button";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import React from "react";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
 
 type Props = {
   features?: any[];
   handleAddVariant?: () => void;
 };
 const EditHeader = ({ features, handleAddVariant }: Props) => {
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasCreatePermission = hasPermission(["CREATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
 
   return (
     <div className="mt-1 flex flex-col gap-2">

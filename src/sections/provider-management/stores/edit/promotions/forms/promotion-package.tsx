@@ -32,7 +32,8 @@ import { PackageFormData, packageSchema } from "../schemas/package-schema";
 import { navigateAfterSave } from "../utils/promotion-helpers";
 import { usePromotionPackageMutations } from "../hooks/mutations/usePromotionPackageMutations";
 import ProductSelect from "../components/form-fields/product-multi-select";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface OrderValueFormProps {
   storeId: number;
@@ -74,13 +75,8 @@ export default function PackageForm({
   const { handleSubmit } = methods;
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const onFormSubmit = handleSubmit(async (data) => {
     // Usar la función reutilizable para construir FormData

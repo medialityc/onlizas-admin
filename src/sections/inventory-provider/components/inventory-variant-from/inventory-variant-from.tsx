@@ -11,7 +11,8 @@ import { UseFieldArrayRemove, useFormContext } from "react-hook-form";
 import InventoryProviderDetailSection from "../inventory-provider-detail-section/inventory-provider-detail-section";
 import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
 import { ProductVariant } from "../../schemas/inventory-provider.schema";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 type Props = {
   variantIndex: number;
@@ -22,13 +23,8 @@ type Props = {
 const InventoryVariantFrom = ({ variantIndex, remove, isPacking }: Props) => {
   const { watch } = useFormContext<ProductVariant>();
   const [isWarranty, isLimit] = watch(["warranty.isWarranty", "isLimit"]);
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasDeletePermission = hasPermission(["DELETE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasDeletePermission = hasPermission([PERMISSION_ENUM.DELETE]);
 
   return (
     <div className="flex flex-col gap-2 mt-4 p-4 border dark:border-gray-600 border-dashed rounded-lg bg-slate-50 dark:bg-slate-900">

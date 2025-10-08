@@ -9,7 +9,8 @@ import { useStoreCategories } from "./hooks/useStoreCategories";
 import { useRouter } from "next/navigation";
 import LoaderButton from "@/components/loaders/loader-button";
 import { toast } from "react-toastify";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface Props {
   storeId: number;
@@ -47,13 +48,8 @@ function CategoriesContent({ storeId, initialItems }: Props) {
     }
   };
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   return (
     <div className="p-6 text-lg bg-white dark:bg-gray-900">

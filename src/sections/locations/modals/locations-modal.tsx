@@ -1,4 +1,3 @@
-//@ts-nocheck
 "use client";
 
 import { ILocation, LocationType } from "@/types/locations";
@@ -19,8 +18,10 @@ import {
   extractLocationFields,
 } from "../utils/address-parser";
 import { useLocationSubmit } from "../hooks/use-location-submit";
-import { usePermissions } from "zas-sso-client";
+
 import { RHFCountrySelect } from "@/components/react-hook-form/rhf-country-code-select";
+import { PERMISSION_ENUM } from "@/lib/permissions";
+import { usePermissions } from "@/hooks/use-permissions";
 
 interface LocationsModalProps {
   open: boolean;
@@ -35,20 +36,14 @@ export default function LocationsModal({
   open,
   onClose,
   location,
-  isDetailsView = false,
   loading,
   onSuccess,
 }: LocationsModalProps) {
   const { submitLocation } = useLocationSubmit(onSuccess);
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const methods = useForm<LocationFormData>({
     resolver: zodResolver(locationSchema),
