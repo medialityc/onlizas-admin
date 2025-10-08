@@ -23,7 +23,9 @@ import { Label } from "@/components/label/label";
 
 import LoaderButton from "@/components/loaders/loader-button";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import { usePermissions } from "zas-sso-client";
+
+import { PERMISSION_ENUM } from "@/lib/permissions";
+import { usePermissions } from "@/hooks/use-permissions";
 interface NotificationCreateFormProps {
   onClose: () => void;
 }
@@ -49,12 +51,8 @@ export const NotificationCreateForm = ({
   });
 
   // Control de permisos
-      const { data: permissions = [] } = usePermissions();
-      const hasPermission = (requiredPerms: string[]) => {
-        return requiredPerms.every(perm => permissions.some(p => p.code === perm));
-      };
-      const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
-    
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const { watch } = methods;
 
@@ -246,14 +244,15 @@ export const NotificationCreateForm = ({
 
         {/* Botón de envío */}
         <div className="mt-8">
-          {hasUpdatePermission&&
-          <LoaderButton
-            type="submit"
-            className="w-full bg-primary hover:bg-primary-dark text-white py-3 px-4 rounded-md transition"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Enviando..." : "Enviar notificación"}
-          </LoaderButton>}
+          {hasUpdatePermission && (
+            <LoaderButton
+              type="submit"
+              className="w-full bg-primary hover:bg-primary-dark text-white py-3 px-4 rounded-md transition"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Enviando..." : "Enviar notificación"}
+            </LoaderButton>
+          )}
         </div>
       </div>
     </FormProvider>

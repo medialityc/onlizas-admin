@@ -6,7 +6,8 @@ import {
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
 import { getPromotionTypeName } from "../index-refactored";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface PromotionRowProps {
   p: Promotion;
@@ -24,15 +25,10 @@ export default function PromotionRow({
   const isExpired = p.endDate && new Date(p.endDate) < new Date();
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasReadPermission = hasPermission(["READ_ALL"]);
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
-  const hasDeletePermission = hasPermission(["DELETE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasDeletePermission = hasPermission([PERMISSION_ENUM.DELETE]);
 
   const getDiscountText = (type: number, value: number) => {
     return type === 0 ? `-${value}%` : `-$${value}`;

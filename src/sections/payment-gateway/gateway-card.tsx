@@ -1,7 +1,8 @@
 import type { gateways } from "@/services/data-for-gateway-settings/mock-datas";
 import { Badge, Button, Card, Group, Text } from "@mantine/core";
 import { CreditCard, Edit, Eye, EyeOff, Trash2 } from "lucide-react";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 export const GatewayCard = ({
   gateway,
@@ -13,15 +14,11 @@ export const GatewayCard = ({
   toggleCredentialVisibility: () => void;
 }) => {
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasReadPermission = hasPermission(["READ_ALL"]);
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
-  const hasDeletePermission = hasPermission(["DELETE_ALL"]);
+  const { hasPermission } = usePermissions();
+
+  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasDeletePermission = hasPermission([PERMISSION_ENUM.DELETE]);
 
   return (
     <Card

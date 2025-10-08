@@ -14,6 +14,7 @@ import { useCallback, useMemo } from "react";
 import RoleCreateModal from "../create/role-create-modal";
 import { RoleDetailsModal } from "../details/role-details-modal";
 import { RoleEditModal } from "../edit/role-edit-modal";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface RoleListProps {
   data?: GetAllRolesResponse;
@@ -39,7 +40,7 @@ export function RoleList({
   const selectedRole = useMemo(() => {
     const id = editRoleId || viewRoleId;
     if (!id || !data?.data) return null;
-    return data.data.find(role => role.id === parseInt(id));
+    return data.data.find((role) => role.id === parseInt(id));
   }, [editRoleId, viewRoleId, data?.data]);
 
   // Modal handlers
@@ -101,7 +102,7 @@ export function RoleList({
         accessor: "name",
         title: "Nombre",
         sortable: true,
-        render: role => (
+        render: (role) => (
           <div className="flex flex-col">
             <span className="font-medium text-dark dark:text-white">
               {role.name}
@@ -116,17 +117,17 @@ export function RoleList({
         accessor: "description",
         title: "Descripción",
         sortable: true,
-        render: role => (
-          <span  className="text-sm text-gray-600 dark:text-gray-300 truncate max-w-[200px] block">
+        render: (role) => (
+          <span className="text-sm text-gray-600 dark:text-gray-300 truncate max-w-[200px] block">
             {role.description}
           </span>
         ),
       },
-      
+
       {
         accessor: "permissions",
         title: "Permisos",
-        render: role => (
+        render: (role) => (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
             {role.permissions?.length || 0} permisos
           </span>
@@ -135,15 +136,15 @@ export function RoleList({
       {
         accessor: "actions",
         textAlign: "center",
-        render: role => (
+        render: (role) => (
           <div className="flex justify-center">
             <ActionsMenu
               onViewDetails={() => handleViewRole(role)}
               onEdit={() => handleEditRole(role)}
               onDelete={() => handleDeleteRole(role)}
-              viewPermissions={["READ_ROLES",]}
-              editPermissions={["UPDATE_ROLES"]}
-              deletePermissions={["DELETE_ALL", "DELETE_ROLES"]}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              deletePermissions={[PERMISSION_ENUM.DELETE]}
             />
           </div>
         ),

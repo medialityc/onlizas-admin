@@ -13,7 +13,7 @@ import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
 import { CalendarIcon, PackageIcon, Users2Icon } from "lucide-react";
 import Badge from "@/components/badge/badge";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
 import { Button } from "@/components/button/button";
 import { cn } from "@/lib/utils";
 import {
@@ -23,6 +23,7 @@ import {
   CardHeader,
 } from "@/components/cards/card";
 import Link from "next/link";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface WarehouseCardProps {
   warehouse: WarehouseFormData;
@@ -36,14 +37,9 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
   const router = useRouter();
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasEditPermission = hasPermission(["UPDATE_ALL"]);
-  const hasTransferPermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasEditPermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasTransferPermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const handleView = () => router.push(`warehouses/${type}/${warehouse.id!}`);
   const handleEdit = () => {

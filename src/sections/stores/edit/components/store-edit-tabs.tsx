@@ -18,7 +18,8 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { Store } from "@/types/stores";
 import styles from "./store-edit-tabs.module.css";
 import TabsWithErrorIndicators from "@/components/tab/tabs-with-error-indicators";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface TabsProps {
   store: Store;
@@ -28,13 +29,8 @@ const StoreTabs = ({ store }: TabsProps) => {
   const { formState } = useFormContext();
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   return (
     <div className={`store-edit-tabs ${styles.tabsUnderline}`}>

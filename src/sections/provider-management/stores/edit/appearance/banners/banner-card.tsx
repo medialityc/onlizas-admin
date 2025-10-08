@@ -5,7 +5,8 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/cards/card";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { BannerItem } from "@/types/stores";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface BannerCardProps {
   banner: BannerItem;
@@ -118,14 +119,9 @@ function BannerActions({
   onEdit: (banner: BannerItem) => void;
 }) {
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
-  const hasDeletePermission = hasPermission(["DELETE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasDeletePermission = hasPermission([PERMISSION_ENUM.DELETE]);
 
   return (
     <div className="flex items-center gap-3">

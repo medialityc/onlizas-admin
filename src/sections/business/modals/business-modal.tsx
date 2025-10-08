@@ -16,7 +16,9 @@ import { getAllLocations } from "@/services/locations";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import { processImageFile } from "@/utils/image-helpers";
-import { usePermissions } from "zas-sso-client";
+
+import { PERMISSION_ENUM } from "@/lib/permissions";
+import { usePermissions } from "@/hooks/use-permissions";
 
 interface BusinessModalProps {
   open: boolean;
@@ -61,13 +63,8 @@ export default function BusinessModal({
   });
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const {
     reset,

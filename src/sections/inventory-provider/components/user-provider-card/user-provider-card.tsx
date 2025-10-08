@@ -15,7 +15,8 @@ import { ChevronDownIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import React, { useState } from "react";
 import AnimateHeight from "react-animate-height";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 type Props = {
   item: IUser;
@@ -23,13 +24,8 @@ type Props = {
 };
 
 const UserProviderCard = ({ item, className }: Props) => {
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasReadPermission = hasPermission(["READ_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
 
   return (
     <Card

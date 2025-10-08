@@ -10,8 +10,9 @@ import ImagePreview from "@/components/image/image-preview";
 import { InventoryProvider } from "@/types/inventory";
 import { Edit, EyeIcon, Package } from "lucide-react";
 import Link from "next/link";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
 import { Button } from "@/components/button/button";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 type Props = {
   item: InventoryProvider;
@@ -19,16 +20,9 @@ type Props = {
 };
 
 const InventoryProviderCard = ({ item }: Props) => {
-  const { data: permissions = [] } = usePermissions();
-
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-
-  const hasReadPermission = hasPermission(["READ_ALL"]);
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   return (
     <Card className="group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full dark:border-slate-700">

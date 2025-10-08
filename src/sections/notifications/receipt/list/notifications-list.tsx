@@ -7,7 +7,6 @@ import { DataTableColumn } from "mantine-datatable";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { SearchParams } from "@/types/fetch/request";
-import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import { deleteNotification } from "@/services/notifications/notification-service";
 import { useModalState } from "@/hooks/use-modal-state";
@@ -16,7 +15,8 @@ import ActionsMenu from "@/components/menu/actions-menu";
 import { Notification } from "../../../../types/notifications";
 import showToast from "@/config/toast/toastConfig";
 import NotificationCreateModal from "../create/notification-create-modal";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface NotificationsListProps {
   data?: GetAllNotificationByUserResponse;
@@ -29,20 +29,14 @@ export function UserNotificationsList({
   searchParams,
   onSearchParamsChange,
 }: NotificationsListProps) {
-  const router = useRouter();
   const { getModalState, openModal, closeModal } = useModalState();
   const viewModal = getModalState<number>("view");
   const createModal = getModalState("create");
   const handleCreateUser = useCallback(() => openModal("create"), [openModal]);
 
   // Permission hooks
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasCreatePermission = hasPermission(["CREATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
 
   const selectedNotificationUser = useMemo(() => {
     console.log(data);
@@ -174,13 +168,13 @@ export function UserNotificationsList({
               handleViewNotification(notification);
             }}
             onDelete={() => handleDeleteNotification(notification)}
-            viewPermissions={["READ_ALL"]}
-            deletePermissions={["DELETE_ALL"]}
+            viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+            deletePermissions={[PERMISSION_ENUM.DELETE]}
           />
         ),
       },
     ],
-    [handleViewNotification]
+    [handleDeleteNotification, handleViewNotification]
   );
 
   return (

@@ -1,8 +1,8 @@
 import React, { HTMLAttributes } from "react";
-
 import Badge from "@/components/badge/badge";
 import { StoreCategory } from "@/types/store-categories";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 type Props = {
   category: StoreCategory;
@@ -19,13 +19,8 @@ export default function CategoryListItem({
   ...dndProps
 }: Props) {
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   return (
     <div

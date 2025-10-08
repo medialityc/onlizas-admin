@@ -10,7 +10,8 @@ import SimpleModal from "@/components/modal/modal";
 import BusinessLogDetail from "./businesslog-detail";
 import { InformationCircleIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { extractRecord } from "../utils";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 function BusinessLogsContent({
   data,
@@ -25,13 +26,8 @@ function BusinessLogsContent({
   const [selected, setSelected] = useState<BusinessLogs | null>(null);
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasReadPermission = hasPermission(["READ_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
 
   const handleRowClick = useCallback((rowOrWrapper: any) => {
     const row = extractRecord<BusinessLogs>(rowOrWrapper);

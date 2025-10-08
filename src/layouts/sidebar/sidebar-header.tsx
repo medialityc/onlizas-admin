@@ -1,7 +1,7 @@
 "use client";
 import IconCaretsDown from "@/components/icon/icon-carets-down";
-import Logo from "@/components/logo/logo";
 import { toggleSidebar } from "@/store/themeConfigSlice";
+import Image from "next/image";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 
@@ -13,8 +13,14 @@ const SidebarHeader = () => {
       <Link href="/" className="main-logo flex shrink-0 items-center">
         <div className="py-4 border-b border-gray-100 dark:border-gray-800">
           <div className="flex items-center space-x-3">
-            <div className="w-16 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-              <Logo className="h-6 w-auto text-primary" />
+            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+              <Image
+                className="ml-[5px] w-8 flex-none pt-3"
+                src="/assets/images/ZAS.svg"
+                alt="logo"
+                width={32}
+                height={32}
+              />
             </div>
             <div>
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white">

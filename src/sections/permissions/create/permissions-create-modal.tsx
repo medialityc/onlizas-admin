@@ -22,7 +22,8 @@ import {
   CreatePermissionSchema,
   defaultPermissionForm,
 } from "./permissions-schemas";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface PermissionCreateModalProps {
   open: boolean;
@@ -55,13 +56,8 @@ export default function PermissionCreateModal({
     onClose();
   };
   // Control de permisos
-  const { data: permission = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permission.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const onSubmit = async (data: CreatePermissionSchema) => {
     setError(null);

@@ -18,6 +18,7 @@ import UserCreateModal from "../create/user-create-container";
 import { toast } from "react-toastify";
 import { activateUser, deactivateUser } from "@/services/users";
 import UserDetailsModal from "../details/user-details";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface UserListProps {
   data?: GetAllUsersResponse;
@@ -84,7 +85,6 @@ export function UserList({
     [openModal]
   );
 
- 
   const columns = useMemo<DataTableColumn<IUser>[]>(
     () => [
       {
@@ -245,12 +245,15 @@ export function UserList({
               router.push(paths.dashboard.users.documents.list(user.id))
             }
             isActive={user.isActive}
-            onActive={() => toggleActive(user)}           
-            viewPermissions={["READ_ALL"]}
-            editPermissions={["UPDATE_ALL"]}            
-            activePermissions={["UPDATE_ALL"]}
-            documentsPermissions={["READ_ALL", "DOCUMENT_VALIDATE"]}
-                      />
+            onActive={() => toggleActive(user)}
+            viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+            editPermissions={[PERMISSION_ENUM.UPDATE]}
+            activePermissions={[PERMISSION_ENUM.UPDATE]}
+            documentsPermissions={[
+              PERMISSION_ENUM.RETRIEVE,
+              "DOCUMENT_VALIDATE",
+            ]}
+          />
         ),
       },
     ],
@@ -268,7 +271,7 @@ export function UserList({
         searchPlaceholder="Buscar..."
         emptyText="No se encontraron usuarios"
         className="mt-6"
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={[PERMISSION_ENUM.CREATE]}
       />
       <UserCreateModal
         open={createModal.open}

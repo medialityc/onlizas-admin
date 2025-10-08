@@ -1,12 +1,13 @@
 "use client";
-import { usePermissions } from "zas-sso-client";
+ 
+import { usePermissions } from "@/hooks/use-permissions";
 import { SidebarSection } from "./types";
 
 export const useFilteredSidebar = (
   sections: SidebarSection[]
 ): SidebarSection[] => {
   // Obtener permisos del usuario
-  const { data: permissions = [] } = usePermissions();
+  const { permissions } = usePermissions();
 
   // Función para filtrar items dentro de una sección
   const filterSectionItems = (
@@ -15,7 +16,7 @@ export const useFilteredSidebar = (
     const filteredItems = section.items.filter((item) => {
       const hasAccess =
         item.permissions?.every((perm) =>
-          permissions.some((p) => p.code === perm)
+          permissions?.some((p) => p.code === perm)
         ) ?? true;
       return hasAccess;
     });

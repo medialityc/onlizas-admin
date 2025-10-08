@@ -15,6 +15,7 @@ import StatusBadge from "@/components/badge/status-badge";
 import { PaginatedResponse } from "@/types/common";
 import RegionModalContainer from "../../modals/region-modal-container";
 import { Cog6ToothIcon } from "@heroicons/react/24/solid";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface RegionListProps {
   data?: PaginatedResponse<Region>;
@@ -29,7 +30,6 @@ export function RegionList({
 }: RegionListProps) {
   const { getModalState, openModal, closeModal } = useRegionModalState();
   const queryClient = useQueryClient();
- 
 
   const createModal = getModalState("create");
   const editModal = getModalState("edit");
@@ -41,7 +41,7 @@ export function RegionList({
     if (!id || !data?.data) return null;
     return data.data.find((region) => region.id === id) ?? null;
   }, [editModal, viewModal, configureModal, data?.data]);
-    
+
   const handleCreateRegion = useCallback(() => {
     openModal("create");
   }, [openModal]);
@@ -67,30 +67,37 @@ export function RegionList({
     [openModal]
   );
 
-  const handleDeleteRegion = useCallback(async (region: Region) => {
-    try {
-      const res = await deleteRegion(region.id);
-      if (res?.error && res.message) {
-        console.error(res);
-        showToast(res.message, "error");
-      } else {
-        showToast("Región eliminada exitosamente", "success");
-        // Invalidar queries para refrescar desde el backend
-        queryClient.invalidateQueries({ queryKey: ["regions"] });
+  const handleDeleteRegion = useCallback(
+    async (region: Region) => {
+      try {
+        const res = await deleteRegion(region.id);
+        if (res?.error && res.message) {
+          console.error(res);
+          showToast(res.message, "error");
+        } else {
+          showToast("Región eliminada exitosamente", "success");
+          // Invalidar queries para refrescar desde el backend
+          queryClient.invalidateQueries({ queryKey: ["regions"] });
+        }
+      } catch (error) {
+        console.error(error);
+        showToast("Ocurrió un error, por favor intenta de nuevo", "error");
       }
-    } catch (error) {
-      console.error(error);
-      showToast("Ocurrió un error, por favor intenta de nuevo", "error");
-    }
-  }, [queryClient]);
+    },
+    [queryClient]
+  );
 
   // Helper function to get status text
-  const getStatusText = (status: Region['status']) => {
+  const getStatusText = (status: Region["status"]) => {
     switch (status) {
-      case 0: return "Activa";
-      case 1: return "Inactiva";
-      case 2: return "Eliminada";
-      default: return "Desconocido";
+      case 0:
+        return "Activa";
+      case 1:
+        return "Inactiva";
+      case 2:
+        return "Eliminada";
+      default:
+        return "Desconocido";
     }
   };
 
@@ -166,15 +173,20 @@ export function RegionList({
         title: "Acciones",
         textAlign: "center",
         render: (region) => (
-          
           <div className="flex justify-center items-center gap-2">
             <ActionsMenu
               onViewDetails={() => handleViewRegion(region)}
-              onEdit={region.status != 2 ? () => handleEditRegion(region):undefined}
-              onDelete={region.status === 1 ? () => handleDeleteRegion(region) : undefined}
-              viewPermissions={["READ_ALL"]}
-              editPermissions={["UPDATE_ALL"]}
-              deletePermissions={["DELETE_ALL"]}
+              onEdit={
+                region.status != 2 ? () => handleEditRegion(region) : undefined
+              }
+              onDelete={
+                region.status === 1
+                  ? () => handleDeleteRegion(region)
+                  : undefined
+              }
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              deletePermissions={[PERMISSION_ENUM.DELETE]}
             />
             {region.status === 0 && (
               <button
@@ -189,7 +201,7 @@ export function RegionList({
         ),
       },
     ],
-    [handleViewRegion, handleEditRegion, handleDeleteRegion, getStatusText]
+    [handleViewRegion, handleEditRegion, handleDeleteRegion, handleConfigureRegion]
   );
 
   return (
@@ -202,7 +214,7 @@ export function RegionList({
         searchPlaceholder="Buscar regiones..."
         emptyText="No se encontraron regiones"
         onCreate={handleCreateRegion}
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={[PERMISSION_ENUM.CREATE]}
       />
 
       {/* Create Modal */}
@@ -253,8 +265,6 @@ export function RegionList({
           }}
         />
       )}
-
-      
     </>
   );
 }

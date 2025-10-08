@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { toast } from "react-toastify";
 import { answerApprovalProcess } from "@/services/supplier";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
 
 interface ApprovalControlsProps {
   approvalProcessId: string;
@@ -18,12 +18,7 @@ export default function ApprovalControls({
   const [isPending, startTransition] = useTransition();
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
+  const { hasPermission } = usePermissions();
   const canApproveReject = hasPermission(["APPROVALPROCESS_APPROVE_REJECT"]);
 
   const submit = (isApproved: boolean) => {

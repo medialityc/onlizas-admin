@@ -9,7 +9,7 @@ import { Badge } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { addPaymentGatewaysToRegion } from "@/services/regions";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
 
 import FormProvider from "@/components/react-hook-form/form-provider";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
@@ -22,6 +22,7 @@ import {
   PaymentGateway,
   AVAILABLE_PAYMENT_METHODS,
 } from "@/sections/regions/schemas/region-modal-schemas";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface EditPaymentModalProps {
   open: boolean;
@@ -37,15 +38,9 @@ export default function EditPaymentModal({
   regionId,
 }: EditPaymentModalProps) {
   const queryClient = useQueryClient();
-  const { data: permissions = [] } = usePermissions();
+  const { hasPermission } = usePermissions();
 
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.some((perm) =>
-      permissions.some((p: any) => p.code === perm)
-    );
-  };
-
-  const canEdit = hasPermission(["UPDATE_ALL"]);
+  const canEdit = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const methods = useForm<PaymentGatewayFormData>({
     resolver: zodResolver(paymentGatewaySchema),
@@ -86,7 +81,9 @@ export default function EditPaymentModal({
       if (!response.error) {
         toast.success("Configuración de pasarela de pago actualizada");
         queryClient.invalidateQueries({ queryKey: ["regions"] });
-        queryClient.invalidateQueries({ queryKey: ["region-details", regionId] });
+        queryClient.invalidateQueries({
+          queryKey: ["region-details", regionId],
+        });
         onClose();
       } else {
         toast.error(response.message || "Error al actualizar configuración");
@@ -211,10 +208,11 @@ export default function EditPaymentModal({
                       onClick={() => handleMethodToggle(method.value)}
                       className={`
                                                 p-3 rounded-lg border cursor-pointer transition-all
-                                                ${isSelected
-                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                          : "border-gray-300 dark:border-gray-600 hover:border-gray-400"
-                        }
+                                                ${
+                                                  isSelected
+                                                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                                                    : "border-gray-300 dark:border-gray-600 hover:border-gray-400"
+                                                }
                                                 ${!canEdit || isSubmitting ? "cursor-not-allowed opacity-50" : ""}
                                             `}
                     >
@@ -222,10 +220,11 @@ export default function EditPaymentModal({
                         <div
                           className={`
                                                     w-4 h-4 rounded border-2 flex items-center justify-center
-                                                    ${isSelected
-                              ? "border-blue-500 bg-blue-500"
-                              : "border-gray-300 dark:border-gray-600"
-                            }
+                                                    ${
+                                                      isSelected
+                                                        ? "border-blue-500 bg-blue-500"
+                                                        : "border-gray-300 dark:border-gray-600"
+                                                    }
                                                 `}
                         >
                           {isSelected && (

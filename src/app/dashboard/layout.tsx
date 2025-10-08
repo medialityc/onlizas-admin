@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-
 import "tippy.js/dist/tippy.css";
 import DashboardGeneric from "@/layouts/dashboard-generic";
 import Sidebar from "@/layouts/sidebar/sidebar";

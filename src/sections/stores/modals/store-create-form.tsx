@@ -7,7 +7,8 @@ import React, { useEffect } from "react";
 import { StoreFormData } from "./stores-schema";
 import { useFormContext } from "react-hook-form";
 import { getAllSupplierUsers } from "@/services/users";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 type Props = {
   isSubmitting: boolean;
   handleClose: VoidFunction;
@@ -17,13 +18,8 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
   const ownerId = watch("ownerId");
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasCreatePermission = hasPermission(["CREATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
 
   // Clear business when owner changes
   useEffect(() => {

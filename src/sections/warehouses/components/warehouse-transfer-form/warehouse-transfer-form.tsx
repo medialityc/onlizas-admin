@@ -13,7 +13,9 @@ import { AlertBox } from "@/components/alert/alert-box";
 import { CircleAlertIcon } from "lucide-react";
 import { useWarehouseInventoryActions } from "../../contexts/warehouse-inventory-transfer.stote";
 import { generateWarehouseTransferNumber } from "../../utils/warehouse";
-import { usePermissions } from "zas-sso-client";
+import { getAllWarehouses } from "@/services/warehouses";
+import { PERMISSION_ENUM } from "@/lib/permissions";
+import { usePermissions } from "@/hooks/use-permissions";
 
 type Props = {
   warehouse: WarehouseFormData;
@@ -34,13 +36,8 @@ export function WarehouseTransferForm({ warehouse }: Props) {
   const { form, isPending, onSubmit } = useWarehouseTransferForm(initValue);
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   return (
     <FormProvider

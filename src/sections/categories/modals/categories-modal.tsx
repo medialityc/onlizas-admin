@@ -6,7 +6,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Category } from "@/types/categories";
 import Link from "next/link";
-import { usePermissions } from "zas-sso-client";
+
+import { PERMISSION_ENUM } from "@/lib/permissions";
+import { usePermissions } from "@/hooks/use-permissions";
 
 interface CategoriesModalProps {
   open: boolean;
@@ -24,14 +26,8 @@ export default function CategoriesModal({
   const [error, setError] = useState<string | null>(null);
   useQueryClient();
 
-  // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const handleClose = () => {
     setError(null);

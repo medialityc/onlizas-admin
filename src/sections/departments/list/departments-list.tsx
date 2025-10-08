@@ -12,6 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Department, GetAllDepartments } from "@/types/departments";
 import DepartmentsModalContainer from "../modals/department-modal-container";
 import { deleteDepartment } from "@/services/department";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface Props {
   data?: GetAllDepartments;
@@ -170,9 +171,9 @@ export function DepartmentsList({
                   ? () => handleDeleteDepartment(department)
                   : undefined
               }
-              viewPermissions={["READ_ALL"]}
-              editPermissions={["UPDATE_ALL"]}
-              deletePermissions={["DELETE_ALL"]}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              deletePermissions={[PERMISSION_ENUM.DELETE]}
             />
           </div>
         ),
@@ -190,7 +191,7 @@ export function DepartmentsList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar departamentos..."
         onCreate={handleCreateDepartment}
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={[PERMISSION_ENUM.CREATE]}
         emptyText="No se encontraron departamentos"
       />
       {/* Create Modal */}

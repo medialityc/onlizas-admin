@@ -9,7 +9,7 @@ import { Button } from "@/components/button/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { addShippingMethodsToRegion } from "@/services/regions";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
 
 import FormProvider from "@/components/react-hook-form/form-provider";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
@@ -21,6 +21,7 @@ import {
   ShippingMethodFormData,
   ShippingMethod,
 } from "@/sections/regions/schemas/region-modal-schemas";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface EditShippingModalProps {
   open: boolean;
@@ -36,15 +37,8 @@ export default function EditShippingModal({
   regionId,
 }: EditShippingModalProps) {
   const queryClient = useQueryClient();
-  const { data: permissions = [] } = usePermissions();
-
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.some((perm) =>
-      permissions.some((p: any) => p.code === perm)
-    );
-  };
-
-  const canEdit = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const canEdit = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const methods = useForm<ShippingMethodFormData>({
     resolver: zodResolver(shippingMethodSchema),
@@ -96,7 +90,9 @@ export default function EditShippingModal({
       if (!response.error) {
         toast.success("Configuración de método de envío actualizada");
         queryClient.invalidateQueries({ queryKey: ["regions"] });
-        queryClient.invalidateQueries({ queryKey: ["region-details", regionId] });
+        queryClient.invalidateQueries({
+          queryKey: ["region-details", regionId],
+        });
         onClose();
       } else {
         toast.error(response.message || "Error al actualizar configuración");

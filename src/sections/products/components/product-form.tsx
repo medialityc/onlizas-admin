@@ -13,7 +13,8 @@ import ProductDimensionSection from "./product-dimension-section";
 import AboutProductSection from "./about-product-section";
 import ProductDetailsSection from "./product-details-section";
 import { ProductCustomsInfoSection } from "./product-custom-info";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 type Props = {
   initValue?: ProductFormData;
@@ -28,13 +29,8 @@ const ProductForm = ({ initValue }: Props) => {
   const handleCancel = useCallback(() => push("/dashboard/products"), [push]);
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   return (
     <FormProvider methods={form} onSubmit={onSubmit} id="product-form">

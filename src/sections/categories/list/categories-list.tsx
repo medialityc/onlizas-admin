@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { Category, GetAllCategories } from "@/types/categories";
 import { toggleStatusCategory } from "@/services/categories";
 import { paths } from "@/config/paths";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface CategoriesListProps {
   data?: GetAllCategories;
@@ -145,9 +146,9 @@ export function CategoriesList({
               onActive={() => handleToggleActiveCategory(category)}
               onViewDetails={() => handleViewCategory(category)}
               onEdit={() => handleEditCategory(category)}
-              viewPermissions={["READ_ALL"]}
-              editPermissions={["UPDATE_ALL"]}
-              activePermissions={["UPDATE_ALL"]}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              activePermissions={[PERMISSION_ENUM.UPDATE]}
             />
           </div>
         ),
@@ -165,7 +166,7 @@ export function CategoriesList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar categorías..."
         onCreate={handleCreateCategory}
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={[PERMISSION_ENUM.CREATE]}
         emptyText="No se encontraron categorías"
         createText="Crear categoría"
       />

@@ -1,4 +1,4 @@
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
 import LoaderButton from "@/components/loaders/loader-button";
 import {
   RHFFileUpload,
@@ -12,6 +12,7 @@ import { IUser } from "@/types/users";
 import { DocumentIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 import React, { useEffect, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
   const {
@@ -51,13 +52,8 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
     name: "documents",
   });
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every((perm) =>
-      permissions.some((p) => p.code === perm)
-    );
-  };
-  const hasCreate = hasPermission(["CREATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasCreate = hasPermission([PERMISSION_ENUM.CREATE]);
 
   return (
     <>

@@ -1,6 +1,7 @@
 import { PlusIcon } from "@heroicons/react/24/solid";
 import FilterSearch from "./header-search";
-import { usePermissions } from "zas-sso-client";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "../../../lib/permissions";
 
 interface DataGridHeaderProps {
   enableSearch: boolean;
@@ -29,11 +30,10 @@ export function Header({
   const hideHeader = enableSearch || isActions;
 
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
-  };
-  const hasCreatePermission = hasPermission(createPermissions || ["CREATE_ALL"]);
+  const { hasPermission } = usePermissions();
+  const hasCreatePermission = hasPermission(
+    createPermissions || [PERMISSION_ENUM.CREATE]
+  );
 
   if (!hideHeader) return null;
   return (
