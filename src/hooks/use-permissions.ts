@@ -42,7 +42,6 @@ export const usePermissions = () => {
   const safePermissionCodes = Array.isArray(permissions)
     ? permissions.map((p: Permission) => p?.code).filter(Boolean)
     : [];
-  console.log("safePermissionCodes", safePermissionCodes);
 
   /**
    * Verifica si el usuario tiene los permisos requeridos

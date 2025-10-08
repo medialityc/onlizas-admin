@@ -91,7 +91,6 @@ interface FormData {
 
 function MyForm() {
   const methods = useForm<FormData>()
-  
   const onSubmit = (data: FormData) => {
     console.log(data)
   }
