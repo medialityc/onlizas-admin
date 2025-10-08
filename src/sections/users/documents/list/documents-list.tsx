@@ -109,8 +109,14 @@ export function UserDocumentsList({ documentsPromise, userId }: Props) {
           <ActionsMenu
             onEdit={() => handleEdit(document)}
             onDownload={() => handleDownload(document)}
-            editPermissions={["DOCUMENT_VALIDATE"]}
-            downloadPermissions={[PERMISSION_ENUM.RETRIEVE]}
+            editPermissions={[
+              PERMISSION_ENUM.RETRIEVE,
+              PERMISSION_ENUM.RETRIEVE_SECTION,
+            ]}
+            downloadPermissions={[
+              PERMISSION_ENUM.RETRIEVE,
+              PERMISSION_ENUM.RETRIEVE_SECTION,
+            ]}
           />
         ),
       },

@@ -14,7 +14,7 @@ const CategoryFeatureSection = () => {
     <div>
       <label className="block font-semibold mb-2">Características</label>
       {fields.map((field, idx) => (
-        <div key={field.id} className="border rounded p-4 mb-4 bg-gray-50">
+        <div key={field.id} className="border rounded p-4 mb-4 bg-gray-50 dark:bg-gray-900 dark:border-gray-700">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <RHFInputWithLabel
               name={`features.${idx}.featureName`}

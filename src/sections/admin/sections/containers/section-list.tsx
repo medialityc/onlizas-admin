@@ -16,6 +16,8 @@ import {
   TARGET_USER_DEVICE_OPTIONS,
   TARGET_USER_SEGMENT_OPTIONS,
 } from "../constants/section.options";
+import { PERMISSION_ENUM } from "@/lib/permissions";
+import { usePermissions } from "@/hooks/use-permissions";
 
 interface Props {
   data?: IGetAllAdminsSection;
@@ -29,39 +31,51 @@ export function SectionList({
   onSearchParamsChange,
 }: Props) {
   const router = useRouter();
+  const { hasPermission } = usePermissions();
 
   const handleCreateSection = useCallback(() => {
-    router.push(paths.content.sections.new);
-  }, [router]);
+    if (hasPermission([PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE])) {
+      router.push(paths.content.sections.new);
+    }
+  }, [router, hasPermission]);
 
   const handleEditSection = useCallback(
     (section: ISection) => {
-      router.push(paths.content.sections.edit(section.id));
+      if (hasPermission([PERMISSION_ENUM.UPDATE_SECTION, PERMISSION_ENUM.UPDATE])) {
+        router.push(paths.content.sections.edit(section.id));
+      }
     },
-    [router]
+    [router, hasPermission]
   );
 
   const handleViewSection = useCallback(
     (section: ISection) => {
-      return router.push(paths.content.sections.view(section.id));
+      if (hasPermission([PERMISSION_ENUM.RETRIEVE_SECTION, PERMISSION_ENUM.RETRIEVE])) {
+        return router.push(paths.content.sections.view(section.id));
+      }
     },
-    [router]
+    [router, hasPermission]
   );
 
-  const handleDeleteSection = useCallback(async (banner: ISection) => {
+  const handleDeleteSection = useCallback(async (section: ISection) => {
+    if (!hasPermission([PERMISSION_ENUM.DELETE_SECTION, PERMISSION_ENUM.DELETE])) {
+      showToast("No tienes permisos para realizar esta acción", "error");
+      return;
+    }
+
     try {
-      const res = await deleteSectionById(banner.id);
+      const res = await deleteSectionById(section.id);
       if (res?.error && res.message) {
         console.error(res);
         showToast(res.message, "error");
       } else {
-        showToast("Sección desactivada exitosamente", "success");
+        showToast("Sección eliminada exitosamente", "success");
       }
     } catch (error) {
       console.error(error);
       showToast("Ocurrió un error, por favor intenta de nuevo", "error");
     }
-  }, []);
+  }, [hasPermission]);
 
   const columns = useMemo<DataTableColumn<ISection>[]>(
     () => [
@@ -168,6 +182,9 @@ export function SectionList({
               onViewDetails={() => handleViewSection(section)}
               onEdit={() => handleEditSection(section)}
               onDelete={() => handleDeleteSection(section)}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE_SECTION, PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE_SECTION, PERMISSION_ENUM.UPDATE]}
+              deletePermissions={[PERMISSION_ENUM.DELETE_SECTION, PERMISSION_ENUM.DELETE]}
             />
           </div>
         ),
@@ -187,6 +204,7 @@ export function SectionList({
         onCreate={handleCreateSection}
         emptyText="No se encontraron secciones"
         createText="Crear Sección"
+        createPermissions={[PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]}
       />
     </>
   );

@@ -142,9 +142,9 @@ export function RoleList({
               onViewDetails={() => handleViewRole(role)}
               onEdit={() => handleEditRole(role)}
               onDelete={() => handleDeleteRole(role)}
-              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
-              editPermissions={[PERMISSION_ENUM.UPDATE]}
-              deletePermissions={[PERMISSION_ENUM.DELETE]}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
+              editPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
+              deletePermissions={[PERMISSION_ENUM.DELETE,PERMISSION_ENUM.DELETE_SECTION]}
             />
           </div>
         ),

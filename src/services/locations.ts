@@ -5,7 +5,12 @@ import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
-import { GetAllLocations, ILocation, CreateLocationData, UpdateLocationData, LocationStatus } from "@/types/locations";
+import {
+  GetAllLocations,
+  ILocation,
+  CreateLocationData,
+  UpdateLocationData,
+} from "@/types/locations";
 import { revalidateTag } from "next/cache";
 
 export async function getAllLocations(
@@ -34,7 +39,7 @@ export async function getLocationById(
     useAuth: true,
     next: { tags: ["locations", String(id)] },
   });
-  console.log(res)
+  console.log(res);
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<ILocation>(res);
 }
@@ -46,10 +51,9 @@ export async function deleteLocation(
     url: backendRoutes.locations.delete(id),
     method: "DELETE",
     useAuth: true,
-    data: JSON.stringify({id}),
-    
-    headers: { "Content-Type": "application/json" },
+    data: JSON.stringify({ id }),
 
+    headers: { "Content-Type": "application/json" },
   });
   if (!res.ok) return handleApiServerError(res);
   revalidateTag("locations");
@@ -59,12 +63,10 @@ export async function deleteLocation(
 export async function updateLocationStatus(
   id: string | number
 ): Promise<ApiResponse<ILocation>> {
-  
   const res = await nextAuthFetch({
     url: backendRoutes.locations.toggleStatus(id),
     method: "PATCH",
     useAuth: true,
-
   });
   if (!res.ok) return handleApiServerError(res);
   revalidateTag("locations");
@@ -74,7 +76,6 @@ export async function updateLocationStatus(
 export async function createLocation(
   data: CreateLocationData
 ): Promise<ApiResponse<ILocation>> {
-  
   const res = await nextAuthFetch({
     url: backendRoutes.locations.create,
     method: "POST",
@@ -90,7 +91,6 @@ export async function updateLocation(
   id: string | number,
   data: UpdateLocationData
 ): Promise<ApiResponse<ILocation>> {
-  
   const res = await nextAuthFetch({
     url: backendRoutes.locations.update(id),
     method: "PUT",

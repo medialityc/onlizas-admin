@@ -21,8 +21,8 @@ type Props = {
 
 const InventoryProviderCard = ({ item }: Props) => {
   const { hasPermission } = usePermissions();
-  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
 
   return (
     <Card className="group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full dark:border-slate-700">

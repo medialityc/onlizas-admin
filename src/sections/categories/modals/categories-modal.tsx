@@ -27,7 +27,7 @@ export default function CategoriesModal({
   useQueryClient();
 
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
 
   const handleClose = () => {
     setError(null);

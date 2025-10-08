@@ -27,7 +27,7 @@ function RegionsLogsContent({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
 
   const handleRowClick = useCallback((rowOrWrapper: any) => {
     const row = extractRecord<RegionLogs>(rowOrWrapper);

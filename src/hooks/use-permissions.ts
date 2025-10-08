@@ -2,22 +2,47 @@ import { usePermissions as useSSO } from "zas-sso-client";
 
 // Tipo Permission de zas-sso-client
 interface Permission {
-  id: number;
+  id: string;
   name: string;
   code: string;
+  subsystemId: string;
   description: string;
-  entity: string;
-  type: number;
-  roleId: number;
-  roleName: string;
-  roleCode: string;
+  subsystem: any;
+}
+
+// Tipo de respuesta de useSSO
+interface UseSSOResponse {
+  data: Permission[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
 }
 
 export const usePermissions = () => {
-  const { data: permissions, isLoading, error, isError } = useSSO();
+  const {
+    data: response,
+    isLoading,
+    error,
+    isError,
+  } = useSSO() as {
+    data: UseSSOResponse | undefined;
+    isLoading: boolean;
+    error: any;
+    isError: boolean;
+  };
 
-  // Asegurar que permissions sea siempre un array válido
-  const safePermissions = Array.isArray(permissions) ? permissions : [];
+  console.log("permissions response", response);
+
+  // Extraer el array de permisos de la respuesta
+  const permissions = response?.data || [];
+
+  // Asegurar que permissions sea siempre un array válido de códigos
+  const safePermissionCodes = Array.isArray(permissions)
+    ? permissions.map((p: Permission) => p?.code).filter(Boolean)
+    : [];
+  console.log("safePermissionCodes", safePermissionCodes);
 
   /**
    * Verifica si el usuario tiene los permisos requeridos
@@ -26,13 +51,11 @@ export const usePermissions = () => {
    */
   const hasPermission = (requiredPermissions?: string[]): boolean => {
     if (!requiredPermissions || requiredPermissions.length === 0) return true;
-    if (!Array.isArray(safePermissions) || safePermissions.length === 0)
+    if (!Array.isArray(safePermissionCodes) || safePermissionCodes.length === 0)
       return false;
 
-    return requiredPermissions.every((perm) =>
-      safePermissions.some(
-        (p: Permission) => p && typeof p.code === "string" && p.code === perm
-      )
+    return requiredPermissions.some((perm) =>
+      safePermissionCodes.includes(perm)
     );
   };
 
@@ -43,13 +66,11 @@ export const usePermissions = () => {
    */
   const hasAnyPermission = (requiredPermissions?: string[]): boolean => {
     if (!requiredPermissions || requiredPermissions.length === 0) return true;
-    if (!Array.isArray(safePermissions) || safePermissions.length === 0)
+    if (!Array.isArray(safePermissionCodes) || safePermissionCodes.length === 0)
       return false;
 
     return requiredPermissions.some((perm) =>
-      safePermissions.some(
-        (p: Permission) => p && typeof p.code === "string" && p.code === perm
-      )
+      safePermissionCodes.includes(perm)
     );
   };
 
@@ -59,12 +80,9 @@ export const usePermissions = () => {
    * @returns true si tiene el permiso, false si no
    */
   const hasSpecificPermission = (permission: string): boolean => {
-    if (!Array.isArray(safePermissions) || safePermissions.length === 0)
+    if (!Array.isArray(safePermissionCodes) || safePermissionCodes.length === 0)
       return false;
-    return safePermissions.some(
-      (p: Permission) =>
-        p && typeof p.code === "string" && p.code === permission
-    );
+    return safePermissionCodes.includes(permission);
   };
 
   /**
@@ -72,10 +90,7 @@ export const usePermissions = () => {
    * @returns Array de códigos de permisos
    */
   const getPermissionCodes = (): string[] => {
-    if (!Array.isArray(safePermissions)) return [];
-    return safePermissions
-      .map((p: Permission) => p?.code)
-      .filter((code): code is string => typeof code === "string");
+    return safePermissionCodes;
   };
 
   /**
@@ -103,7 +118,8 @@ export const usePermissions = () => {
 
   return {
     // Datos de permisos
-    permissions: safePermissions,
+    permissions: safePermissionCodes,
+    allPermissions: permissions,
 
     // Estados de React Query
     isLoading,

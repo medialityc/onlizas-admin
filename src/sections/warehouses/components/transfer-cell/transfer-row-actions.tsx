@@ -35,9 +35,9 @@ const TransferActionsMenu = ({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasApprovePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
-  const hasExecutePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
-  const hasCancelPermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasApprovePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasExecutePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasCancelPermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
 
   const handleCancelTransfer = async () => {
     if (onCancelTransfer) {

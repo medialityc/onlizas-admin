@@ -11,6 +11,7 @@ import { Category, GetAllCategories } from "@/types/categories";
 import { toggleStatusCategory } from "@/services/categories";
 import { paths } from "@/config/paths";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { usePermissions } from "@/hooks/use-permissions";
 
 interface CategoriesListProps {
   data?: GetAllCategories;
@@ -24,16 +25,25 @@ export function CategoriesList({
   onSearchParamsChange,
 }: CategoriesListProps) {
   const router = useRouter();
+  const { hasPermission } = usePermissions();
 
   const handleCreateCategory = useCallback(() => {
-    router.push("/dashboard/categories/new");
-  }, [router]);
+    if (
+      hasPermission([PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE])
+    ) {
+      router.push("/dashboard/categories/new");
+    }
+  }, [router, hasPermission]);
 
   const handleEditCategory = useCallback(
     (cat: Category) => {
-      router.push(`/dashboard/categories/${cat.id}/edit`);
+      if (
+        hasPermission([PERMISSION_ENUM.UPDATE_SECTION, PERMISSION_ENUM.UPDATE])
+      ) {
+        router.push(`/dashboard/categories/${cat.id}/edit`);
+      }
     },
-    [router]
+    [router, hasPermission]
   );
 
   const handleViewCategory = useCallback(
@@ -43,23 +53,33 @@ export function CategoriesList({
     [router]
   );
 
-  const handleToggleActiveCategory = useCallback(async (category: Category) => {
-    try {
-      const res = await toggleStatusCategory(category?.id as number);
-      if (res?.error && res.message) {
-        console.error(res);
-        showToast(res.message, "error");
-      } else {
-        showToast(
-          `Categoría ${(res.data as unknown as Category)?.isActive ? "activada" : "desactivada"}  correctamente`,
-          "success"
-        );
+  const handleToggleActiveCategory = useCallback(
+    async (category: Category) => {
+      if (
+        !hasPermission([PERMISSION_ENUM.UPDATE_SECTION, PERMISSION_ENUM.UPDATE])
+      ) {
+        showToast("No tienes permisos para realizar esta acción", "error");
+        return;
       }
-    } catch (error) {
-      console.error(error);
-      showToast("Ocurrió un error, intente nuevamente", "error");
-    }
-  }, []);
+
+      try {
+        const res = await toggleStatusCategory(category?.id as number);
+        if (res?.error && res.message) {
+          console.error(res);
+          showToast(res.message, "error");
+        } else {
+          showToast(
+            `Categoría ${(res.data as unknown as Category)?.isActive ? "activada" : "desactivada"}  correctamente`,
+            "success"
+          );
+        }
+      } catch (error) {
+        console.error(error);
+        showToast("Ocurrió un error, intente nuevamente", "error");
+      }
+    },
+    [hasPermission]
+  );
 
   const columns = useMemo<DataTableColumn<Category>[]>(
     () => [
@@ -146,9 +166,18 @@ export function CategoriesList({
               onActive={() => handleToggleActiveCategory(category)}
               onViewDetails={() => handleViewCategory(category)}
               onEdit={() => handleEditCategory(category)}
-              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
-              editPermissions={[PERMISSION_ENUM.UPDATE]}
-              activePermissions={[PERMISSION_ENUM.UPDATE]}
+              viewPermissions={[
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION,
+              ]}
+              editPermissions={[
+                PERMISSION_ENUM.UPDATE,
+                PERMISSION_ENUM.UPDATE_SECTION,
+              ]}
+              activePermissions={[
+                PERMISSION_ENUM.UPDATE,
+                PERMISSION_ENUM.UPDATE_SECTION,
+              ]}
             />
           </div>
         ),
@@ -166,7 +195,10 @@ export function CategoriesList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar categorías..."
         onCreate={handleCreateCategory}
-        createPermissions={[PERMISSION_ENUM.CREATE]}
+        createPermissions={[
+          PERMISSION_ENUM.CREATE_SECTION,
+          PERMISSION_ENUM.CREATE,
+        ]}
         emptyText="No se encontraron categorías"
         createText="Crear categoría"
       />

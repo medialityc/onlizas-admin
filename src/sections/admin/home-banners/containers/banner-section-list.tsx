@@ -17,6 +17,8 @@ import {
 import showToast from "@/config/toast/toastConfig";
 import Badge from "@/components/badge/badge";
 import DateValue from "@/components/format-vales/date-value";
+import { PERMISSION_ENUM } from "@/lib/permissions";
+import { usePermissions } from "@/hooks/use-permissions";
 
 interface Props {
   data?: IGetAllHomeBanner;
@@ -30,16 +32,33 @@ export function HomeBannerList({
   onSearchParamsChange,
 }: Props) {
   const router = useRouter();
+  const { hasPermission } = usePermissions();
 
   const handleCreateHomeBanner = useCallback(() => {
-    router.push(paths.content.banners.new);
-  }, [router]);
+    if (
+      hasPermission([
+        PERMISSION_ENUM.CREATE_BANNER,
+        PERMISSION_ENUM.CREATE,
+        PERMISSION_ENUM.CREATE_SECTION,
+      ])
+    ) {
+      router.push(paths.content.banners.new);
+    }
+  }, [router, hasPermission]);
 
   const handleEditHomeBanner = useCallback(
     (banner: IHomeBanner) => {
-      router.push(paths.content.banners.edit(banner.id));
+      if (
+        hasPermission([
+          PERMISSION_ENUM.UPDATE_BANNER,
+          PERMISSION_ENUM.UPDATE,
+          PERMISSION_ENUM.UPDATE_SECTION,
+        ])
+      ) {
+        router.push(paths.content.banners.edit(banner.id));
+      }
     },
-    [router]
+    [router, hasPermission]
   );
 
   /* const handleViewHomeBanner = useCallback(
@@ -49,23 +68,44 @@ export function HomeBannerList({
     [router]
   );
  */
-  const handleDeleteHomeBanner = useCallback(async (banner: IHomeBanner) => {
-    try {
-      const res = await deleteHomeBannerById(banner.id);
-      if (res?.error && res.message) {
-        console.error(res);
-        showToast(res.message, "error");
-      } else {
-        showToast("Banner desactivado exitosamente", "success");
+  const handleDeleteHomeBanner = useCallback(
+    async (banner: IHomeBanner) => {
+      if (
+        !hasPermission([
+          PERMISSION_ENUM.DELETE_BANNER,
+          PERMISSION_ENUM.DELETE,
+          PERMISSION_ENUM.DELETE_SECTION,
+        ])
+      ) {
+        showToast("No tienes permisos para realizar esta acción", "error");
+        return;
       }
-    } catch (error) {
-      console.error(error);
-      showToast("Ocurrió un error, por favor intenta de nuevo", "error");
-    }
-  }, []);
+
+      try {
+        const res = await deleteHomeBannerById(banner.id);
+        if (res?.error && res.message) {
+          console.error(res);
+          showToast(res.message, "error");
+        } else {
+          showToast("Banner eliminado exitosamente", "success");
+        }
+      } catch (error) {
+        console.error(error);
+        showToast("Ocurrió un error, por favor intenta de nuevo", "error");
+      }
+    },
+    [hasPermission]
+  );
 
   const handleToggleActiveCategory = useCallback(
     async (banner: IHomeBanner) => {
+      if (
+        !hasPermission([PERMISSION_ENUM.UPDATE_BANNER, PERMISSION_ENUM.UPDATE, PERMISSION_ENUM.UPDATE_SECTION])
+      ) {
+        showToast("No tienes permisos para realizar esta acción", "error");
+        return;
+      }
+
       try {
         const res = await toggleStatusHomeBanner(banner?.id as number);
         if (res?.error && res.message) {
@@ -73,7 +113,7 @@ export function HomeBannerList({
           showToast(res.message, "error");
         } else {
           showToast(
-            `Banner ${(res.data as unknown as IHomeBanner)?.isActive ? "activada" : "desactivada"}  correctamente`,
+            `Banner ${(res.data as unknown as IHomeBanner)?.isActive ? "activado" : "desactivado"} correctamente`,
             "success"
           );
         }
@@ -82,7 +122,7 @@ export function HomeBannerList({
         showToast("Ocurrió un error, intente nuevamente", "error");
       }
     },
-    []
+    [hasPermission]
   );
 
   const columns = useMemo<DataTableColumn<IHomeBanner>[]>(
@@ -185,6 +225,27 @@ export function HomeBannerList({
               onEdit={() => handleEditHomeBanner(banner)}
               onDelete={() => handleDeleteHomeBanner(banner)}
               onActive={() => handleToggleActiveCategory(banner)}
+              viewPermissions={[
+                PERMISSION_ENUM.RETRIEVE_BANNER,
+                PERMISSION_ENUM.READ_BANNER,
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION
+              ]}
+              editPermissions={[
+                PERMISSION_ENUM.UPDATE_BANNER,
+                PERMISSION_ENUM.UPDATE,
+                PERMISSION_ENUM.UPDATE_SECTION,
+              ]}
+              deletePermissions={[
+                PERMISSION_ENUM.DELETE_BANNER,
+                PERMISSION_ENUM.DELETE,
+                PERMISSION_ENUM.DELETE_SECTION,
+              ]}
+              activePermissions={[
+                PERMISSION_ENUM.UPDATE_BANNER,
+                PERMISSION_ENUM.UPDATE,
+                PERMISSION_ENUM.UPDATE_SECTION,
+              ]}
             />
           </div>
         ),
@@ -204,6 +265,11 @@ export function HomeBannerList({
         onCreate={handleCreateHomeBanner}
         emptyText="No se encontraron banners"
         createText="Crear banner"
+        createPermissions={[
+          PERMISSION_ENUM.CREATE_BANNER,
+          PERMISSION_ENUM.CREATE,
+          PERMISSION_ENUM.CREATE_SECTION,
+        ]}
       />
     </>
   );

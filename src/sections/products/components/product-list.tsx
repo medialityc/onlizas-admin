@@ -13,6 +13,7 @@ import useFiltersUrl from "@/hooks/use-filters-url";
 import { toggleActiveProduct } from "@/services/products";
 import showToast from "@/config/toast/toastConfig";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { usePermissions } from "@/hooks/use-permissions";
 
 interface ProductListProps {
   data?: GetAllProducts;
@@ -26,29 +27,40 @@ export function ProductList({
   onSearchParamsChange,
 }: ProductListProps) {
   const router = useRouter();
-
+  const { hasPermission } = usePermissions();
   const { updateFiltersInUrl } = useFiltersUrl();
 
   const handleCreateProduct = useCallback(() => {
-    router.push("/dashboard/products/new");
-  }, [router]);
+    if (hasPermission([PERMISSION_ENUM.CREATE, PERMISSION_ENUM.CREATE_SECTION])) {
+      router.push("/dashboard/products/new");
+    }
+  }, [router, hasPermission]);
 
   const handleView = (product: Product) => {
-    router.push(paths.dashboard.products.view(product.id));
+    if (hasPermission([PERMISSION_ENUM.RETRIEVE, PERMISSION_ENUM.RETRIEVE_SECTION])) {
+      router.push(paths.dashboard.products.view(product.id));
+    }
   };
 
   const handleEdit = (product: Product) => {
-    router.push(paths.dashboard.products.edit(product.id));
+    if (hasPermission([PERMISSION_ENUM.UPDATE, PERMISSION_ENUM.UPDATE_SECTION])) {
+      router.push(paths.dashboard.products.edit(product.id));
+    }
   };
 
   const handleToggleActiveProduct = useCallback(async (product: Product) => {
+    if (!hasPermission([PERMISSION_ENUM.UPDATE, PERMISSION_ENUM.UPDATE_SECTION])) {
+      showToast("No tienes permisos para realizar esta acción", "error");
+      return;
+    }
+
     try {
       const res = await toggleActiveProduct(product?.id as number);
       if (res?.error && res.message) {
         showToast(res.message, "error");
       } else {
         showToast(
-          `Producto ${(res.data as unknown as Product)?.aduanaCategory.isActive ? "activado" : "desactivado"}  correctamente`,
+          `Producto ${(res.data as unknown as Product)?.state ? "activado" : "desactivado"} correctamente`,
           "success"
         );
       }
@@ -56,7 +68,7 @@ export function ProductList({
       console.error(error);
       showToast("Ocurrió un error, intente nuevamente", "error");
     }
-  }, []);
+  }, [hasPermission]);
 
   const columns: DataTableColumn<Product>[] = [
     {
@@ -121,9 +133,18 @@ export function ProductList({
           onEdit={() => handleEdit(product)}
           isActive={product.state}
           onActive={() => handleToggleActiveProduct(product)}
-          viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
-          editPermissions={[PERMISSION_ENUM.UPDATE]}
-          activePermissions={[PERMISSION_ENUM.UPDATE]}
+          viewPermissions={[
+            PERMISSION_ENUM.RETRIEVE,
+            PERMISSION_ENUM.RETRIEVE_SECTION,
+          ]}
+          editPermissions={[
+            PERMISSION_ENUM.UPDATE,
+            PERMISSION_ENUM.UPDATE_SECTION,
+          ]}
+          activePermissions={[
+            PERMISSION_ENUM.UPDATE,
+            PERMISSION_ENUM.UPDATE_SECTION,
+          ]}
         />
       ),
     },
@@ -145,7 +166,10 @@ export function ProductList({
           emptyText="No se encontraron productos"
           createText="Nuevo Producto"
           className="mt-6"
-          createPermissions={[PERMISSION_ENUM.CREATE]}
+          createPermissions={[
+            PERMISSION_ENUM.CREATE_SECTION,
+            PERMISSION_ENUM.CREATE,
+          ]}
         />
       </div>
     </>

@@ -21,7 +21,7 @@ const modules = [
     icon: BuildingOfficeIcon,
     color: "text-blue-600 dark:text-blue-400",
     bg: "bg-blue-50 dark:bg-blue-900/20",
-    permissions: [PERMISSION_ENUM.RETRIEVE], // Admin puede ver todos los logs
+    permissions: [PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION], // Admin puede ver todos los logs
   },
   {
     name: "Categorías",
@@ -29,7 +29,7 @@ const modules = [
     icon: TagIcon,
     color: "text-purple-600 dark:text-purple-400",
     bg: "bg-purple-50 dark:bg-purple-900/20",
-    permissions: [PERMISSION_ENUM.RETRIEVE],
+    permissions: [PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION],
   },
   {
     name: "Monedas",
@@ -37,7 +37,7 @@ const modules = [
     icon: CurrencyDollarIcon,
     color: "text-emerald-600 dark:text-emerald-400",
     bg: "bg-emerald-50 dark:bg-emerald-900/20",
-    permissions: [PERMISSION_ENUM.RETRIEVE],
+    permissions: [PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION],
   },
   {
     name: "Departamento",
@@ -45,7 +45,7 @@ const modules = [
     icon: BuildingOffice2Icon,
     color: "text-orange-600 dark:text-orange-400",
     bg: "bg-orange-50 dark:bg-orange-900/20",
-    permissions: [PERMISSION_ENUM.RETRIEVE],
+    permissions: [PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION],
   },
   {
     name: "Usuarios",
@@ -53,7 +53,7 @@ const modules = [
     icon: UserGroupIcon,
     color: "text-pink-600 dark:text-pink-400",
     bg: "bg-pink-50 dark:bg-pink-900/20",
-    permissions: [PERMISSION_ENUM.RETRIEVE],
+    permissions: [PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION],
   },
   {
     name: "Permisos",
@@ -61,7 +61,7 @@ const modules = [
     icon: KeyIcon,
     color: "text-amber-600 dark:text-amber-400",
     bg: "bg-amber-50 dark:bg-amber-900/20",
-    permissions: [PERMISSION_ENUM.RETRIEVE],
+    permissions: [PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION],
   },
   {
     name: "Regiones",
@@ -69,7 +69,7 @@ const modules = [
     icon: GlobeAmericasIcon,
     color: "text-cyan-600 dark:text-cyan-400",
     bg: "bg-cyan-50 dark:bg-cyan-900/20",
-    permissions: [PERMISSION_ENUM.RETRIEVE],
+    permissions: [PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION],
   },
   {
     name: "Roles",
@@ -77,7 +77,7 @@ const modules = [
     icon: UserGroupIcon,
     color: "text-indigo-600 dark:text-indigo-400",
     bg: "bg-indigo-50 dark:bg-indigo-900/20",
-    permissions: [PERMISSION_ENUM.RETRIEVE],
+    permissions: [PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION],
   },
   {
     name: "Ubicaciones",
@@ -85,7 +85,7 @@ const modules = [
     icon: MapPinIcon,
     color: "text-red-600 dark:text-red-400",
     bg: "bg-red-50 dark:bg-red-900/20",
-    permissions: [PERMISSION_ENUM.RETRIEVE],
+    permissions: [PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION],
   },
   // Agrega más módulos aquí cuando estén disponibles
 ];
