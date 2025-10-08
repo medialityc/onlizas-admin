@@ -25,7 +25,7 @@ export function PaymentMethodRow({ method, onToggleEnabled }: Props) {
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),

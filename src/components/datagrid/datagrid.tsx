@@ -21,7 +21,6 @@ export function DataGrid<T extends Record<string, any>>({
   enableColumnToggle = true,
   minHeight = 400,
   onCreate,
-  
   className = "",
   emptyText,
   createLoading = false,
@@ -98,7 +97,6 @@ export function DataGrid<T extends Record<string, any>>({
         leftActions={leftActions}
         rightActions={rightActions}
         customActions={customActions}
-       
       />
 
       {/* Data Table */}

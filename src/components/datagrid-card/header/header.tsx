@@ -32,7 +32,7 @@ export function Header({
   // Control de permisos
   const { hasPermission } = usePermissions();
   const hasCreatePermission = hasPermission(
-    createPermissions || [PERMISSION_ENUM.CREATE]
+    createPermissions || [PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]
   );
 
   if (!hideHeader) return null;

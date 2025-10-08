@@ -16,7 +16,7 @@ export const useFilteredSidebar = (
     const filteredItems = section.items.filter((item) => {
       const hasAccess =
         item.permissions?.every((perm) =>
-          permissions?.some((p) => p.code === perm)
+          permissions?.some((p) => p === perm)
         ) ?? true;
       return hasAccess;
     });

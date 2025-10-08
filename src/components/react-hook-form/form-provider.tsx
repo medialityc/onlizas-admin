@@ -28,7 +28,7 @@ export default function FormProvider({
   return (
     <Form {...methods}>
       <form
-        onSubmit={onSubmit}
+        onSubmit={methods.handleSubmit(onSubmit)}
         autoComplete={autocomplete}
         className={className}
         noValidate={noValidate}

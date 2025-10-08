@@ -156,7 +156,7 @@ export function ConfigurationsList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar configuraciones..."
         onCreate={handleCreate}
-        createPermissions={[PERMISSION_ENUM.CREATE]}
+        createPermissions={[PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]}
         emptyText="No se encontraron configuraciones"
       />
       <SystemConfigurationCreateModal

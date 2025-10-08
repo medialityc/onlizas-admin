@@ -77,7 +77,7 @@ export default function GetYForm({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
 
   const onFormSubmit = handleSubmit(async (data) => {
     // Usar la función reutilizable para construir FormData

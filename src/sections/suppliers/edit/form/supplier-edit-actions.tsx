@@ -18,7 +18,7 @@ export default function SupplierEditActions({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
 
   // Consider only meaningful fields for the dirty indicator (ignore temp pickers, etc.)
   const hasMeaningfulDirty = useMemo(() => {

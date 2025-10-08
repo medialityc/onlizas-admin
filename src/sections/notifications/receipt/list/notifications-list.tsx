@@ -36,7 +36,7 @@ export function UserNotificationsList({
 
   // Permission hooks
   const { hasPermission } = usePermissions();
-  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
+  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]);
 
   const selectedNotificationUser = useMemo(() => {
     console.log(data);
@@ -168,8 +168,8 @@ export function UserNotificationsList({
               handleViewNotification(notification);
             }}
             onDelete={() => handleDeleteNotification(notification)}
-            viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
-            deletePermissions={[PERMISSION_ENUM.DELETE]}
+            viewPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
+            deletePermissions={[PERMISSION_ENUM.DELETE,PERMISSION_ENUM.DELETE_SECTION]}
           />
         ),
       },

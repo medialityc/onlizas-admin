@@ -49,7 +49,7 @@ function CategoriesContent({ storeId, initialItems }: Props) {
   };
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
 
   return (
     <div className="p-6 text-lg bg-white dark:bg-gray-900">

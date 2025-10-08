@@ -38,10 +38,14 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasEditPermission = hasPermission([PERMISSION_ENUM.UPDATE]);
-  const hasTransferPermission = hasPermission([PERMISSION_ENUM.UPDATE]);
-
-  const handleView = () => router.push(`warehouses/${type}/${warehouse.id!}`);
+  const hasEditPermission = hasPermission([
+    PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.RETRIEVE_SECTION,
+  ]);
+  const hasTransferPermission = hasPermission([
+    PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.RETRIEVE_SECTION,
+  ]);
   const handleEdit = () => {
     if (onEdit) {
       onEdit();

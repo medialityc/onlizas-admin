@@ -1,7 +1,15 @@
 "use server";
 
-import { ApiResponse } from '@/types/fetch/api';
-import { Region, RegionFormData, GetAllRegions, AddCurrenciesPayload, AddPaymentGatewaysPayload, UpdatePaymentPriorityPayload, AddShippingMethodsPayload } from '@/types/regions';
+import { ApiResponse } from "@/types/fetch/api";
+import {
+  Region,
+  RegionFormData,
+  GetAllRegions,
+  AddCurrenciesPayload,
+  AddPaymentGatewaysPayload,
+  UpdatePaymentPriorityPayload,
+  AddShippingMethodsPayload,
+} from "@/types/regions";
 import { IQueryable } from "@/types/fetch/request";
 import { QueryParamsURLFactory } from "@/lib/request";
 import { backendRoutes } from "@/lib/endpoint";
@@ -12,7 +20,6 @@ import {
   getErrorMessage,
 } from "@/lib/api";
 import { revalidateTag } from "next/cache";
-
 
 interface RegionResolution {
   region: Region;
@@ -49,16 +56,16 @@ export async function getRegions(
   return buildApiResponseAsync<GetAllRegions>(res);
 }
 
-export async function getRegionById(id: number): Promise<ApiResponse<Region | null>> {
+export async function getRegionById(
+  id: number
+): Promise<ApiResponse<Region | null>> {
   const baseUrl = backendRoutes.regions.listById(id);
-  let url = `${baseUrl}?include= `;
-
+  const url = `${baseUrl}?include=`;
 
   const res = await nextAuthFetch({
     url,
     method: "GET",
     useAuth: true,
-
   });
 
   if (!res.ok) {
@@ -142,8 +149,7 @@ export async function removeCurrencyFromRegion(
     method: "DELETE",
     useAuth: true,
     data: JSON.stringify({ regionId, currencyId }),
-    headers: { 'Content-Type': 'application/json' },
-
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!res.ok) {
@@ -163,7 +169,7 @@ export async function addCurrenciesToRegion(
     method: "PUT",
     useAuth: true,
     data: JSON.stringify(payload),
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!res.ok) {
@@ -203,7 +209,7 @@ export async function removePaymentGatewayFromRegion(
     method: "DELETE",
     useAuth: true,
     data: JSON.stringify({ regionId, gatewayId }),
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!res.ok) {
@@ -223,7 +229,7 @@ export async function addPaymentGatewaysToRegion(
     method: "PUT",
     useAuth: true,
     data: JSON.stringify(payload),
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!res.ok) {
@@ -244,7 +250,7 @@ export async function updatePaymentGatewayPriority(
     method: "PUT",
     useAuth: true,
     data: JSON.stringify(payload),
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!res.ok) {
@@ -265,7 +271,7 @@ export async function removeShippingMethodFromRegion(
     method: "DELETE",
     useAuth: true,
     data: JSON.stringify({ regionId, shippingId }),
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!res.ok) {
@@ -285,7 +291,7 @@ export async function addShippingMethodsToRegion(
     method: "PUT",
     useAuth: true,
     data: JSON.stringify(payload),
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!res.ok) {

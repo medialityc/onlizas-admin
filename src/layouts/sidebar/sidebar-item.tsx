@@ -176,28 +176,27 @@ const SidebarItem = ({
                   {subsection.label}
                 </h4>
                 <ul className="space-y-1">
-                  {filterByPermissions(subsection.items)
-                    .map((subItem) => (
-                      <li key={subItem.id}>
-                        <Link
-                          href={subItem.path}
-                          className={`flex items-center px-3 py-2 text-sm rounded-lg transition-all duration-200 hover:shadow-sm relative ${
+                  {filterByPermissions(subsection.items).map((subItem) => (
+                    <li key={subItem.id}>
+                      <Link
+                        href={subItem.path}
+                        className={`flex items-center px-3 py-2 text-sm rounded-lg transition-all duration-200 hover:shadow-sm relative ${
+                          isActiveLink(subItem.path)
+                            ? "bg-primary/10 text-primary border-l-2 border-primary font-medium ring-1 ring-primary/20"
+                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200"
+                        } ${subItem.disabled ? "pointer-events-none opacity-50" : ""}`}
+                      >
+                        <div
+                          className={`w-1.5 h-1.5 rounded-full mr-3 transition-colors ${
                             isActiveLink(subItem.path)
-                              ? "bg-primary/10 text-primary border-l-2 border-primary font-medium ring-1 ring-primary/20"
-                              : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200"
-                          } ${subItem.disabled ? "pointer-events-none opacity-50" : ""}`}
-                        >
-                          <div
-                            className={`w-1.5 h-1.5 rounded-full mr-3 transition-colors ${
-                              isActiveLink(subItem.path)
-                                ? "bg-primary"
-                                : "bg-current opacity-50 group-hover:opacity-70"
-                            }`}
-                          ></div>
-                          {subItem.label}
-                        </Link>
-                      </li>
-                    ))}
+                              ? "bg-primary"
+                              : "bg-current opacity-50 group-hover:opacity-70"
+                          }`}
+                        ></div>
+                        {subItem.label}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
             ))}

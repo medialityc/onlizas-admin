@@ -65,9 +65,8 @@ export function DepartmentsList({
       }
 
       try {
-       
         const res = await deleteDepartment(department.id);
-        
+
         if (res?.error) {
           showToast("Error al eliminar departamento", "error");
         } else {
@@ -171,9 +170,18 @@ export function DepartmentsList({
                   ? () => handleDeleteDepartment(department)
                   : undefined
               }
-              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
-              editPermissions={[PERMISSION_ENUM.UPDATE]}
-              deletePermissions={[PERMISSION_ENUM.DELETE]}
+              viewPermissions={[
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION,
+              ]}
+              editPermissions={[
+                PERMISSION_ENUM.UPDATE,
+                PERMISSION_ENUM.UPDATE_SECTION,
+              ]}
+              deletePermissions={[
+                PERMISSION_ENUM.DELETE,
+                PERMISSION_ENUM.DELETE_SECTION,
+              ]}
             />
           </div>
         ),
@@ -191,11 +199,13 @@ export function DepartmentsList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar departamentos..."
         onCreate={handleCreateDepartment}
-        createPermissions={[PERMISSION_ENUM.CREATE]}
+        createPermissions={[
+          PERMISSION_ENUM.CREATE_SECTION,
+          PERMISSION_ENUM.CREATE,
+        ]}
         emptyText="No se encontraron departamentos"
       />
       {/* Create Modal */}
-
       <DepartmentsModalContainer
         open={createDepartmentModal.open}
         onClose={() => closeModal("create")}

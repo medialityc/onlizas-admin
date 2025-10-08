@@ -184,9 +184,9 @@ export function RegionList({
                   ? () => handleDeleteRegion(region)
                   : undefined
               }
-              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
-              editPermissions={[PERMISSION_ENUM.UPDATE]}
-              deletePermissions={[PERMISSION_ENUM.DELETE]}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
+              editPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
+              deletePermissions={[PERMISSION_ENUM.DELETE,PERMISSION_ENUM.DELETE_SECTION]}
             />
             {region.status === 0 && (
               <button
@@ -214,7 +214,7 @@ export function RegionList({
         searchPlaceholder="Buscar regiones..."
         emptyText="No se encontraron regiones"
         onCreate={handleCreateRegion}
-        createPermissions={[PERMISSION_ENUM.CREATE]}
+        createPermissions={[PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]}
       />
 
       {/* Create Modal */}

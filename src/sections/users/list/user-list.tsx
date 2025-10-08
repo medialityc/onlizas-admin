@@ -246,9 +246,9 @@ export function UserList({
             }
             isActive={user.isActive}
             onActive={() => toggleActive(user)}
-            viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
-            editPermissions={[PERMISSION_ENUM.UPDATE]}
-            activePermissions={[PERMISSION_ENUM.UPDATE]}
+            viewPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
+            editPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
+            activePermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
             documentsPermissions={[
               PERMISSION_ENUM.RETRIEVE,
               "DOCUMENT_VALIDATE",
@@ -271,7 +271,7 @@ export function UserList({
         searchPlaceholder="Buscar..."
         emptyText="No se encontraron usuarios"
         className="mt-6"
-        createPermissions={[PERMISSION_ENUM.CREATE]}
+        createPermissions={[PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]}
       />
       <UserCreateModal
         open={createModal.open}

@@ -120,8 +120,8 @@ function BannerActions({
 }) {
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
-  const hasDeletePermission = hasPermission([PERMISSION_ENUM.DELETE]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasDeletePermission = hasPermission([PERMISSION_ENUM.DELETE,PERMISSION_ENUM.DELETE_SECTION]);
 
   return (
     <div className="flex items-center gap-3">
