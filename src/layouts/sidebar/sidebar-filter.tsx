@@ -7,6 +7,7 @@ export const useFilteredSidebar = (
 ): SidebarSection[] => {
   // Obtener permisos del usuario
   const { data: permissions = [] } = usePermissions();
+  console.log(permissions)
 
   // Función para filtrar items dentro de una sección
   const filterSectionItems = (

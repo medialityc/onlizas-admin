@@ -88,7 +88,7 @@ export default function DepartmentModal({
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const canSave = department ? hasPermission(["Update"]) : hasPermission(["Create"]);
 
   const onSubmit = async (data: DepartmentFormData) => {
     setError(null);
@@ -227,7 +227,7 @@ export default function DepartmentModal({
             >
               Cancelar
             </button>
-            {hasUpdatePermission && (
+            {canSave && (
               <LoaderButton
                 type="submit"
                 loading={isSubmitting}

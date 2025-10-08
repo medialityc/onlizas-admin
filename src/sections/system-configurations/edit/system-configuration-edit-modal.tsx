@@ -21,6 +21,7 @@ import {
 } from "@/types/system-configuration";
 import { updateSystemConfiguration } from "@/services/system-configuration";
 import { getCountries } from "@/services/countries";
+import { usePermissions } from "zas-sso-client";
 
 interface SystemConfigurationEditModalProps {
   open: boolean;
@@ -37,6 +38,16 @@ export default function SystemConfigurationEditModal({
 }: SystemConfigurationEditModalProps) {
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canUpdate = hasPermission(["Update"]);
+
   const methods = useForm<CreateSystemConfigurationSchema>({
     resolver: zodResolver(createSystemConfigurationSchema),
     defaultValues: {
@@ -162,6 +173,7 @@ export default function SystemConfigurationEditModal({
                 type="submit"
                 loading={isSubmitting}
                 className="btn btn-primary "
+                disabled={!canUpdate}
               >
                 Guardar Cambios
               </LoaderButton>

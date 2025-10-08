@@ -133,11 +133,8 @@ export function ConfigurationsList({
             <ActionsMenu
               onEdit={() => handleEdit(r)}
               onSetDefault={!r.isActive ? () => handleSetDefault(r) : undefined}
-              editPermissions={["UPDATE_SYSTEM_CONFIGURATIONS", "UPDATE_ALL"]}
-              setDefaultPermissions={[
-                "UPDATE_SYSTEM_CONFIGURATIONS",
-                "UPDATE_ALL",
-              ]}
+              editPermissions={["Update"]}
+              setDefaultPermissions={["Update"]}
             />
           </div>
         ),
@@ -155,7 +152,7 @@ export function ConfigurationsList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar configuraciones..."
         onCreate={handleCreate}
-        createPermissions={["CREATE_SYSTEM_CONFIGURATIONS", "CREATE_ALL"]}
+        createPermissions={["Create"]}
         emptyText="No se encontraron configuraciones"
       />
       <SystemConfigurationCreateModal

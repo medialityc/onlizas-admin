@@ -141,9 +141,9 @@ export function RoleList({
               onViewDetails={() => handleViewRole(role)}
               onEdit={() => handleEditRole(role)}
               onDelete={() => handleDeleteRole(role)}
-              viewPermissions={["READ_ROLES",]}
-              editPermissions={["UPDATE_ROLES"]}
-              deletePermissions={["DELETE_ALL", "DELETE_ROLES"]}
+              viewPermissions={["Retrieve"]}
+              editPermissions={["Update"]}
+              deletePermissions={["Delete"]}
             />
           </div>
         ),
@@ -161,7 +161,7 @@ export function RoleList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar roles..."
         onCreate={handleCreateRole}
-        createPermissions={["CREATE_ROLES"]}
+        createPermissions={["Create"]}
         emptyText="No se encontraron roles"
       />
       {/* Create Modal */}

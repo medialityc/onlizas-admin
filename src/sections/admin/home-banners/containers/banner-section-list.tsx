@@ -17,6 +17,7 @@ import {
 import showToast from "@/config/toast/toastConfig";
 import Badge from "@/components/badge/badge";
 import DateValue from "@/components/format-vales/date-value";
+import { usePermissions } from "zas-sso-client";
 
 interface Props {
   data?: IGetAllHomeBanner;
@@ -30,6 +31,15 @@ export function HomeBannerList({
   onSearchParamsChange,
 }: Props) {
   const router = useRouter();
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canCreate = hasPermission(["Create"]);
+  const canUpdate = hasPermission(["Update"]);
+  const canDelete = hasPermission(["Delete"]);
 
   const handleCreateHomeBanner = useCallback(() => {
     router.push(paths.content.banners.new);
@@ -182,9 +192,9 @@ export function HomeBannerList({
             <ActionsMenu
               isActive={banner?.isActive}
               // onViewDetails={() => handleViewHomeBanner(banner)}
-              onEdit={() => handleEditHomeBanner(banner)}
-              onDelete={() => handleDeleteHomeBanner(banner)}
-              onActive={() => handleToggleActiveCategory(banner)}
+              onEdit={canUpdate ? () => handleEditHomeBanner(banner) : undefined}
+              onDelete={canDelete ? () => handleDeleteHomeBanner(banner) : undefined}
+              onActive={canUpdate ? () => handleToggleActiveCategory(banner) : undefined}
             />
           </div>
         ),
@@ -201,7 +211,7 @@ export function HomeBannerList({
         searchParams={searchParams}
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar banner..."
-        onCreate={handleCreateHomeBanner}
+        onCreate={canCreate ? handleCreateHomeBanner : undefined}
         emptyText="No se encontraron banners"
         createText="Crear banner"
       />

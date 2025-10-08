@@ -65,7 +65,7 @@ export default function CurrenciesModal({
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const canSave = hasPermission(["Update","Create"]);
 
   const handleClose = () => {
     reset();
@@ -224,7 +224,7 @@ export default function CurrenciesModal({
             >
               Cancelar
             </button>
-            {hasUpdatePermission && (
+            {canSave && (
               <LoaderButton
                 type="submit"
                 loading={isSubmitting}

@@ -22,7 +22,7 @@ export default function SupplierEditActions({
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const hasUpdatePermission = hasPermission([ "Update"]);
 
   // Consider only meaningful fields for the dirty indicator (ignore temp pickers, etc.)
   const hasMeaningfulDirty = useMemo(() => {

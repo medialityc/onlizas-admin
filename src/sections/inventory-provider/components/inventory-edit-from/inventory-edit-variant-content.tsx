@@ -2,6 +2,7 @@ import IconSettings from "@/components/icon/icon-settings";
 import InventoryVariantFrom from "../inventory-variant-from/inventory-variant-from";
 import LoaderButton from "@/components/loaders/loader-button";
 import { useFormContext } from "react-hook-form";
+import { usePermissions } from "zas-sso-client";
 
 type Props = {
   index?: number;
@@ -20,6 +21,14 @@ const InventoryEditVariantContent = ({
     formState: { isDirty, isValid },
   } = useFormContext();
 
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canUpdate = hasPermission(["Update"]);
+
   return (
     <div>
       <div className="flex gap-4 pb-6 mb-6 border-b justify-between">
@@ -27,14 +36,16 @@ const InventoryEditVariantContent = ({
           <IconSettings className="mr-2 w-5 h-5" /> Configuración del inventario
         </h3>
         <div className="flex gap-4">
-          <LoaderButton
-            className="h-8"
-            type="submit"
-            loading={isPending}
-            disabled={isPending || !isDirty || !isValid}
-          >
-            Guardar
-          </LoaderButton>
+          {canUpdate && (
+            <LoaderButton
+              className="h-8"
+              type="submit"
+              loading={isPending}
+              disabled={isPending || !isDirty || !isValid}
+            >
+              Guardar
+            </LoaderButton>
+          )}
         </div>
       </div>
       <div className="gap-2">

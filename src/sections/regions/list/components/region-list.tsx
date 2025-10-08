@@ -15,6 +15,7 @@ import StatusBadge from "@/components/badge/status-badge";
 import { PaginatedResponse } from "@/types/common";
 import RegionModalContainer from "../../modals/region-modal-container";
 import { Cog6ToothIcon } from "@heroicons/react/24/solid";
+import { usePermissions } from "zas-sso-client";
 
 interface RegionListProps {
   data?: PaginatedResponse<Region>;
@@ -29,7 +30,12 @@ export function RegionList({
 }: RegionListProps) {
   const { getModalState, openModal, closeModal } = useRegionModalState();
   const queryClient = useQueryClient();
- 
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
 
   const createModal = getModalState("create");
   const editModal = getModalState("edit");
@@ -172,11 +178,11 @@ export function RegionList({
               onViewDetails={() => handleViewRegion(region)}
               onEdit={region.status != 2 ? () => handleEditRegion(region):undefined}
               onDelete={region.status === 1 ? () => handleDeleteRegion(region) : undefined}
-              viewPermissions={["READ_ALL"]}
-              editPermissions={["UPDATE_ALL"]}
-              deletePermissions={["DELETE_ALL"]}
+              viewPermissions={["Retrieve"]}
+              editPermissions={["Update"]}
+              deletePermissions={["Delete"]}
             />
-            {region.status === 0 && (
+            {region.status === 0 && hasPermission(["Update"]) && (
               <button
                 onClick={() => handleConfigureRegion(region)}
                 className=" btn-sm  flex items-center justify-center"
@@ -202,7 +208,7 @@ export function RegionList({
         searchPlaceholder="Buscar regiones..."
         emptyText="No se encontraron regiones"
         onCreate={handleCreateRegion}
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={["Create"]}
       />
 
       {/* Create Modal */}

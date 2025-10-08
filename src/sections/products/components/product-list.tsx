@@ -12,6 +12,7 @@ import Link from "next/link";
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { toggleActiveProduct } from "@/services/products";
 import showToast from "@/config/toast/toastConfig";
+import { usePermissions } from "zas-sso-client";
 
 
 interface ProductListProps {
@@ -26,6 +27,13 @@ export function ProductList({
   onSearchParamsChange,
 }: ProductListProps) {
   const router = useRouter();
+
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
 
   const { updateFiltersInUrl } = useFiltersUrl();
 
@@ -121,9 +129,9 @@ export function ProductList({
           onEdit={() => handleEdit(product)}
           isActive={product.state}
           onActive={() => handleToggleActiveProduct(product)}
-          viewPermissions={["READ_ALL"]}
-          editPermissions={["UPDATE_ALL"]}
-          activePermissions={["UPDATE_ALL"]}
+          viewPermissions={["Retrieve"]}
+          editPermissions={["Update"]}
+          activePermissions={["Update"]}
         />
       ),
     },
@@ -145,7 +153,7 @@ export function ProductList({
           emptyText="No se encontraron productos"
           createText="Nuevo Producto"
           className="mt-6"
-          createPermissions={["CREATE_ALL"]}
+          createPermissions={["Create"]}
         />
       </div>
     </>

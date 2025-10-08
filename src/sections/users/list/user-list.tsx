@@ -246,10 +246,10 @@ export function UserList({
             }
             isActive={user.isActive}
             onActive={() => toggleActive(user)}           
-            viewPermissions={["READ_ALL"]}
-            editPermissions={["UPDATE_ALL"]}            
-            activePermissions={["UPDATE_ALL"]}
-            documentsPermissions={["READ_ALL", "DOCUMENT_VALIDATE"]}
+            viewPermissions={["Retrieve"]}
+            editPermissions={["Update"]}            
+            activePermissions={["Update"]}
+            documentsPermissions={["Retrieve"]}
                       />
         ),
       },
@@ -268,7 +268,7 @@ export function UserList({
         searchPlaceholder="Buscar..."
         emptyText="No se encontraron usuarios"
         className="mt-6"
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={["Create"]}
       />
       <UserCreateModal
         open={createModal.open}

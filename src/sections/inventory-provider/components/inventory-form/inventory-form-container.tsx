@@ -5,6 +5,7 @@ import { Button } from "@/components/button/button";
 import LoaderButton from "@/components/loaders/loader-button";
 import { useInventoryCreateForm } from "../../hooks/use-inventory-easy-create";
 import InventoryForm from "./inventory-form";
+import { usePermissions } from "zas-sso-client";
 
 type Props = {
   provider?: number;
@@ -17,6 +18,14 @@ const InventoryProviderForm = ({ provider, onClose }: Props) => {
     onClose
   );
 
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canCreate = hasPermission(["Create"]);
+
   return (
     <section>
       <FormProvider methods={form} onSubmit={onSubmit}>
@@ -26,9 +35,11 @@ const InventoryProviderForm = ({ provider, onClose }: Props) => {
           <Button type="button" variant="secondary" outline onClick={onClose}>
             Cancelar
           </Button>
-          <LoaderButton type="submit" loading={isPending} disabled={isPending}>
-            Crear Inventario
-          </LoaderButton>
+          {canCreate && (
+            <LoaderButton type="submit" loading={isPending} disabled={isPending}>
+              Crear Inventario
+            </LoaderButton>
+          )}
         </div>
       </FormProvider>
     </section>

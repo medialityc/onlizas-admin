@@ -16,7 +16,7 @@ export default function BannerHeader({ onNew }: BannerHeaderProps) {
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasCreatePermission = hasPermission(["CREATE_ALL"]);
+  const hasCreatePermission = hasPermission(["Create","UpdateStore"]);
 
   return (
     <div className="flex items-center justify-between mt-2">

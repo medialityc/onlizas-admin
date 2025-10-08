@@ -27,8 +27,8 @@ const InventoryProviderCard = ({ item }: Props) => {
     );
   };
 
-  const hasReadPermission = hasPermission(["READ_ALL"]);
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const hasReadPermission = hasPermission(["Retrieve"]);
+  const hasUpdatePermission = hasPermission(["Update"]);
 
   return (
     <Card className="group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full dark:border-slate-700">

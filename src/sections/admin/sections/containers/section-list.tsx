@@ -16,6 +16,7 @@ import {
   TARGET_USER_DEVICE_OPTIONS,
   TARGET_USER_SEGMENT_OPTIONS,
 } from "../constants/section.options";
+import { usePermissions } from "zas-sso-client";
 
 interface Props {
   data?: IGetAllAdminsSection;
@@ -29,6 +30,16 @@ export function SectionList({
   onSearchParamsChange,
 }: Props) {
   const router = useRouter();
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canCreateSection = hasPermission(["CreateSection", "Create"]);
+  const canUpdateSection = hasPermission(["UpdateSection", "Update"]);
+  const canDeleteSection = hasPermission(["DeleteSection", "Delete"]);
+  const canRetrieveSection = hasPermission(["RetrieveSection", "Retrieve"]);
 
   const handleCreateSection = useCallback(() => {
     router.push(paths.content.sections.new);
@@ -165,9 +176,9 @@ export function SectionList({
             <ActionsMenu
               /*  isActive={section.isActive}
               onActive={() => handleToggleActiveSection(section)} */
-              onViewDetails={() => handleViewSection(section)}
-              onEdit={() => handleEditSection(section)}
-              onDelete={() => handleDeleteSection(section)}
+              onViewDetails={canRetrieveSection ? () => handleViewSection(section) : undefined}
+              onEdit={canUpdateSection ? () => handleEditSection(section) : undefined}
+              onDelete={canDeleteSection ? () => handleDeleteSection(section) : undefined}
             />
           </div>
         ),
@@ -184,7 +195,7 @@ export function SectionList({
         searchParams={searchParams}
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar sección..."
-        onCreate={handleCreateSection}
+        onCreate={canCreateSection ? handleCreateSection : undefined}
         emptyText="No se encontraron secciones"
         createText="Crear Sección"
       />

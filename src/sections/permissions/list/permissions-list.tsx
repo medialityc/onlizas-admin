@@ -12,6 +12,7 @@ import { useCallback, useMemo } from "react";
 import PermissionCreateModal from "../create/permissions-create-modal";
 import { PermissionDetailsModal } from "../details/permissions-details-modal";
 import { PermissionEditModal } from "../edit/permissions-edit-modal";
+import { usePermissions } from "zas-sso-client";
 
 interface PermissionListProps {
   data?: GetAllPermissionsResponse;
@@ -24,6 +25,13 @@ export function PermissionList({
   onSearchParamsChange,
 }: PermissionListProps) {
   const { getModalState, openModal, closeModal } = useModalState();
+
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
 
   // Modal states controlled by URL
   const createPermissionModal = getModalState("create");
@@ -126,9 +134,9 @@ export function PermissionList({
               onViewDetails={() => handleViewPermission(permission)}
               onEdit={() => handleEditPermission(permission)}
               onDelete={() => handleDeletePermission(permission)}
-              viewPermissions={["READ_PERMISSIONS", "READ_ALL"]}
-              editPermissions={["UPDATE_PERMISSION", "UPDATE_ALL"]}
-              deletePermissions={["DELETE_ALL"]}
+              viewPermissions={["Retrieve"]}
+              editPermissions={["Update"]}
+              deletePermissions={["Delete"]}
             />
           </div>
         ),
@@ -146,7 +154,7 @@ export function PermissionList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar permisos..."
         onCreate={handleCreatePermission}
-        createPermissions={["CREATE_PERMISSION", "CREATE_ALL"]}
+        createPermissions={["Create"]}
         emptyText="No se encontraron permisos"
       />
       {/* Create Modal */}

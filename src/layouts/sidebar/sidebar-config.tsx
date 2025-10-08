@@ -28,7 +28,7 @@ import {
   WarehouseIcon,
 } from "lucide-react";
 
-const permissionsAdmin = ["READ_ALL", "CREATE_ALL", "UPDATE_ALL"];
+const permissionsAdmin = ["Create", "Retrieve", "Update"];
 
 export const sidebarSections: SidebarSection[] = [
   {

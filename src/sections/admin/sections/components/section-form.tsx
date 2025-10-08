@@ -17,6 +17,7 @@ import {
   TARGET_USER_SEGMENT_OPTIONS,
   TEMPLATE_TYPE_ENUM_OPTIONS,
 } from "../constants/section.options";
+import { usePermissions } from "zas-sso-client";
 
 interface Props {
   initValue?: SectionFormData;
@@ -30,6 +31,14 @@ export default function SectionForm({ initValue }: Props) {
     () => push("/dashboard/content/sections"),
     [push]
   );
+
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canSave = initValue ? hasPermission(["UpdateSection"]) : hasPermission(["CreateSection"]);
 
   return (
     <section className="w-full px-2 sm:px-4 py-6">
@@ -139,15 +148,17 @@ export default function SectionForm({ initValue }: Props) {
         >
           Cancelar
         </Button>
-        <LoaderButton
-          type="submit"
-          form="section-form"
-          loading={isPending}
-          disabled={isPending}
-          className="btn btn-primary w-full sm:w-auto"
-        >
-          Guardar
-        </LoaderButton>
+        {canSave && (
+          <LoaderButton
+            type="submit"
+            form="section-form"
+            loading={isPending}
+            disabled={isPending}
+            className="btn btn-primary w-full sm:w-auto"
+          >
+            Guardar
+          </LoaderButton>
+        )}
       </div>
     </section>
   );

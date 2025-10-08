@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { Category, GetAllCategories } from "@/types/categories";
 import { toggleStatusCategory } from "@/services/categories";
 import { paths } from "@/config/paths";
+import { usePermissions } from "zas-sso-client";
 
 interface CategoriesListProps {
   data?: GetAllCategories;
@@ -23,6 +24,13 @@ export function CategoriesList({
   onSearchParamsChange,
 }: CategoriesListProps) {
   const router = useRouter();
+
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
 
   const handleCreateCategory = useCallback(() => {
     router.push("/dashboard/categories/new");
@@ -145,9 +153,9 @@ export function CategoriesList({
               onActive={() => handleToggleActiveCategory(category)}
               onViewDetails={() => handleViewCategory(category)}
               onEdit={() => handleEditCategory(category)}
-              viewPermissions={["READ_ALL"]}
-              editPermissions={["UPDATE_ALL"]}
-              activePermissions={["UPDATE_ALL"]}
+              viewPermissions={["Retrieve"]}
+              editPermissions={["Update"]}
+              activePermissions={["Update"]}
             />
           </div>
         ),
@@ -165,7 +173,7 @@ export function CategoriesList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar categorías..."
         onCreate={handleCreateCategory}
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={["Create"]}
         emptyText="No se encontraron categorías"
         createText="Crear categoría"
       />

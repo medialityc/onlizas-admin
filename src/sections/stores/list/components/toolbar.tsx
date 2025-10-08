@@ -23,7 +23,7 @@ export function StoreListToolbar({
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasCreatePermission = hasPermission(["CREATE_ALL"]);
+  const hasCreatePermission = hasPermission(["CreateStore", "Create"]);
 
   return (
     <DataGridHeader

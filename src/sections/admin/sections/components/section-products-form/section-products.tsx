@@ -9,6 +9,7 @@ import { useState } from "react";
 import Badge from "@/components/badge/badge";
 import { AlertBox } from "@/components/alert/alert-box";
 import { isValidUrl } from "@/utils/format";
+import { usePermissions } from "zas-sso-client";
 
 export default function SectionProducts() {
   const { control, formState } = useFormContext();
@@ -18,6 +19,15 @@ export default function SectionProducts() {
   });
 
   const [modalOpen, setModalOpen] = useState(false);
+
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canAdd = hasPermission(["Update"]);
+  const canDelete = hasPermission(["Delete"]);
 
   return (
     <>
@@ -31,13 +41,15 @@ export default function SectionProducts() {
         )}
         <div className="mb-4 mt-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold ">Productos de la sección</h2>
-          <button
-            className="btn btn-primary px-4 py-2 rounded-lg text-white"
-            type="button"
-            onClick={() => setModalOpen(true)}
-          >
-            Añadir producto
-          </button>
+          {canAdd && (
+            <button
+              className="btn btn-primary px-4 py-2 rounded-lg text-white"
+              type="button"
+              onClick={() => setModalOpen(true)}
+            >
+              Añadir producto
+            </button>
+          )}
         </div>
 
         {/* Lista moderna y responsive de productos añadidos */}
@@ -123,7 +135,7 @@ export default function SectionProducts() {
                   >
                     <ArrowDown className="w-4 h-4" />
                   </button>
-                  <button
+                  {canDelete&&<button
                     className="px-3 py-1 rounded-lg text-red-600 hover:bg-red-50 dark:!hover:bg-red-900 border border-red-200 dark:!border-red-700 text-xs font-semibold transition"
                     type="button"
                     onClick={() => remove(idx)}
@@ -131,7 +143,7 @@ export default function SectionProducts() {
                   >
                     <span className="hidden md:inline">Eliminar</span>
                     <span className="md:hidden">✕</span>
-                  </button>
+                  </button>}
                 </div>
               </li>
             ))}

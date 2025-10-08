@@ -14,7 +14,7 @@ export default function PromotionsToolbar({ onNew }: PromotionsToolbarProps) {
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasCreatePermission = hasPermission(["CREATE_ALL"]);
+  const hasCreatePermission = hasPermission(["Create"]);
 
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">

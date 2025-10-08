@@ -124,8 +124,8 @@ function BannerActions({
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
-  const hasDeletePermission = hasPermission(["DELETE_ALL"]);
+  const hasUpdatePermission = hasPermission(["Update","UpdateStore"]);
+  const hasDeletePermission = hasPermission(["Delete","DeleteStore"]);
 
   return (
     <div className="flex items-center gap-3">

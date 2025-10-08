@@ -75,7 +75,12 @@ export function LocationsList({
     null
   );
   const { data: permissions = [] } = usePermissions();
-  const hasReadPermission = permissions.some((p) => p.code === "READ_ALL");
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const hasReadPermission = hasPermission(["Retrieve"]);
   const queryClient = useQueryClient();
 
   const createLocationModal = getModalState("create");
@@ -249,10 +254,10 @@ export function LocationsList({
                   ? () => handleToggleStatus(location)
                   : undefined
               }
-              viewPermissions={["READ_ALL"]}
-              editPermissions={["UPDATE_ALL"]}
-              deletePermissions={["DELETE_ALL"]}
-              activePermissions={["UPDATE_ALL"]}
+              viewPermissions={["Retrieve"]}
+              editPermissions={["Update"]}
+              deletePermissions={["Delete"]}
+              activePermissions={["Update"]}
             />
           </div>
         ),
@@ -276,7 +281,7 @@ export function LocationsList({
         searchPlaceholder="Buscar localizaciones..."
         emptyText="No se encontraron localizaciones"
         onCreate={handleCreateLocation}
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={["Create"]}
         rightActions={
           //poner lo del read luegp que se defina la ofrma
           hasReadPermission && (

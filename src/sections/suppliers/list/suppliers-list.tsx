@@ -198,9 +198,9 @@ export function SuppliersList({
               onActive={() => handleToggleActiveSupplier(supplier)}
               onViewDetails={() => handleViewSupplier(supplier)}
               onEdit={() => handleEditFullSupplier(supplier)}
-              viewPermissions={["READ_ALL"]}
-              editPermissions={["UPDATE_ALL"]}
-              activePermissions={["UPDATE_ALL","DELETE_ALL"]}
+              viewPermissions={["Retrieve"]}
+              editPermissions={["Update"]}
+              activePermissions={["Update"]}
             />
           </div>
         ),
@@ -219,7 +219,7 @@ export function SuppliersList({
         searchPlaceholder="Buscar solicitudes..."
         onCreate={handleCreateSupplier}
         emptyText="No se encontraron solicitudes"
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={["Create"]}
       />
 
       {/* Create Modal */}

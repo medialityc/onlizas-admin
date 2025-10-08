@@ -17,6 +17,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { usePermissions } from "zas-sso-client";
 
 interface RoleCreateModalProps {
   open: boolean;
@@ -33,6 +34,15 @@ export default function RoleCreateModal({
 }: RoleCreateModalProps) {
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canCreate = hasPermission(["Create"]);
 
   const methods = useForm<CreateRoleSchema>({
     resolver: zodResolver(createRoleSchema(roles)),
@@ -116,6 +126,7 @@ export default function RoleCreateModal({
                 type="submit"
                 loading={isSubmitting}
                 className="btn btn-primary "
+                disabled={!canCreate}
               >
                 Crear Rol
               </LoaderButton>

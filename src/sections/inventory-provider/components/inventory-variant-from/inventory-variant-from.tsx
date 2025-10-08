@@ -28,7 +28,7 @@ const InventoryVariantFrom = ({ variantIndex, remove, isPacking }: Props) => {
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasDeletePermission = hasPermission(["DELETE_ALL"]);
+  const hasDeletePermission = hasPermission(["Delete"]);
 
   return (
     <div className="flex flex-col gap-2 mt-4 p-4 border dark:border-gray-600 border-dashed rounded-lg bg-slate-50 dark:bg-slate-900">

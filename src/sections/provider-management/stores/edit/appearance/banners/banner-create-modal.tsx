@@ -13,6 +13,7 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { BannerSchema, type BannerForm } from "./banner-schema";
 import { BannerItem } from "@/types/stores";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
+import { usePermissions } from "zas-sso-client";
 
 type Props = {
   open: boolean;
@@ -30,6 +31,17 @@ export default function BannerCreateModal({
   editingBanner,
 }: Props) {
   const isEditing = !!editingBanner;
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canSave = isEditing 
+    ? hasPermission(["UpdateStore", "Update"]) 
+    : hasPermission(["CreateStore", "Create"]);
   const todayLocal = () => {
     const t = new Date();
     return new Date(t.getFullYear(), t.getMonth(), t.getDate());
@@ -159,13 +171,15 @@ export default function BannerCreateModal({
           <button type="button" className="btn btn-outline" onClick={onClose}>
             Cancelar
           </button>
-          <LoaderButton
-            type="button"
-            className="btn btn-dark"
-            onClick={handleSubmit}
-          >
-            {submitButtonText}
-          </LoaderButton>
+          {canSave && (
+            <LoaderButton
+              type="button"
+              className="btn btn-dark"
+              onClick={handleSubmit}
+            >
+              {submitButtonText}
+            </LoaderButton>
+          )}
         </div>
       </RHFFormProvider>
     </SimpleModal>

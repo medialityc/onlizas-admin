@@ -53,7 +53,7 @@ function CategoriesContent({ storeId, initialItems }: Props) {
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const hasUpdatePermission = hasPermission(["Update"]);
 
   return (
     <div className="p-6 text-lg bg-white dark:bg-gray-900">

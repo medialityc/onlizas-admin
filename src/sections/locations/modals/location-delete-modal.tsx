@@ -10,6 +10,7 @@ import { ILocation } from "@/types/locations";
 import { deleteLocation } from "@/services/locations";
 import { getAllWarehouses } from "@/services/warehouses";
 import { getAllBusiness } from "@/services/business";
+import { usePermissions } from "zas-sso-client";
 
 interface LocationDeleteModalProps {
   open: boolean;
@@ -39,6 +40,14 @@ export default function LocationDeleteModal({
   });
   const [reason, setReason] = useState("");
   const queryClient = useQueryClient();
+
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canDeleteLocation = hasPermission(["Delete"]);
 
   // Check references when modal opens
   useEffect(() => {
@@ -108,7 +117,7 @@ export default function LocationDeleteModal({
 
   if (!open || !location) return null;
 
-  const canDelete = references.totalReferences === 0 && !checkingReferences;
+  const canDelete = references.totalReferences === 0 && !checkingReferences && canDeleteLocation;
   const hasReferences = references.totalReferences > 0;
 
   return (

@@ -44,8 +44,8 @@ export const SoreCard = ({ store }: DataCardProps) => {
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasReadPermission = hasPermission(["READ_ALL"]);
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const hasReadPermission = hasPermission(["Retrieve", "RetrieveStore"]);
+  const hasUpdatePermission = hasPermission(["Update", "UpdateStore"]);
 
   // Prefer https:// if not present
   const viewUrl = (() => {

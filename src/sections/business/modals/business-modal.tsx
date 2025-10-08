@@ -67,7 +67,9 @@ export default function BusinessModal({
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const canSave = business 
+    ? hasPermission(["UpdateBusiness", "Update"]) 
+    : hasPermission(["CreateBusiness", "Create"]); 
 
   const {
     reset,
@@ -315,7 +317,7 @@ export default function BusinessModal({
               >
                 Cancelar
               </button>
-              {hasUpdatePermission && (
+              {canSave && (
                 <LoaderButton
                   type="submit"
                   loading={isSubmitting}

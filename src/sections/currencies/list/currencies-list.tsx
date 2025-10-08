@@ -16,6 +16,7 @@ import {
   setAsDefaultCurrency,
 } from "@/services/currencies";
 import CurrenciesModalContainer from "../modals/currencies-modal-container";
+import { usePermissions } from "zas-sso-client";
 
 interface CurrenciesListProps {
   data?: GetAllCurrencies;
@@ -30,6 +31,13 @@ export function CurrenciesList({
 }: CurrenciesListProps) {
   const { getModalState, openModal, closeModal } = useModalState();
   const queryClient = useQueryClient();
+
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
 
   const createCurrencyModal = getModalState("create");
   const editCurrencyModal = getModalState<number>("edit");
@@ -201,10 +209,10 @@ export function CurrenciesList({
               onPay={!currency.default ? () => handleSetAsDefault(currency) : undefined}
               isActive={currency.isActive}
               onActive={!currency.default ? () => handleDeleteCurrency(currency) : undefined}
-              viewPermissions={["READ_ALL"]}
-              editPermissions={["UPDATE_ALL"]}
-              payPermissions={["UPDATE_ALL", "CURRENCY_SET_DEFAULT"]}
-              activePermissions={["DELETE_ALL"]}
+              viewPermissions={["Retrieve"]}
+              editPermissions={["Update"]}
+              payPermissions={["Update"]}
+              activePermissions={["Delete"]}
             />
           </div>
         ),
@@ -227,7 +235,7 @@ export function CurrenciesList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar monedas..."
         onCreate={handleCreateCurrency}
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={["Create"]}
         emptyText="No se encontraron monedas"
       />
       {/* Create Modal */}

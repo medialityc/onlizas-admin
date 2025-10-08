@@ -31,7 +31,7 @@ export default function CategoriesModal({
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const canEdit = hasPermission(["Update","Create"]) ;
 
   const handleClose = () => {
     setError(null);
@@ -59,7 +59,7 @@ export default function CategoriesModal({
           >
             Cerrar
           </button>
-          {hasUpdatePermission && (
+          {canEdit && (
             <Link
               href={
                 category

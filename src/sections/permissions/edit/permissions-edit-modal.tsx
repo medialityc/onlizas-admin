@@ -37,7 +37,7 @@ export function PermissionEditModal({
       userPermissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const canSave = hasPermission(["Update"]);
   const methods = useForm<PermissionUpdateData>({
     resolver: zodResolver(permissionUpdateSchema(permissions)),
     mode: "onChange",
@@ -138,7 +138,7 @@ export function PermissionEditModal({
             >
               Cancelar
             </button>
-            {hasUpdatePermission && (
+            {canSave && (
               <LoaderButton
                 type="submit"
                 className="btn btn-primary"

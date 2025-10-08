@@ -54,7 +54,7 @@ export function RoleEditModal({
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const hasUpdatePermission = hasPermission(["Update"]);
 
   useEffect(() => {
     if (role && open) {

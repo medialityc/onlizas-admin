@@ -29,7 +29,7 @@ export function PaymentMethodRow({ method, onToggleEnabled }: Props) {
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const hasUpdatePermission = hasPermission(["Update"]);
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),

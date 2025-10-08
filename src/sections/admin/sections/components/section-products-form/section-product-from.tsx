@@ -23,6 +23,7 @@ import TabsWithIcons from "@/components/tab/tabs";
 import { Boxes, UsersRound } from "lucide-react";
 import { Supplier } from "@/types/suppliers";
 import { getAllSuppliers } from "@/services/supplier";
+import { usePermissions } from "zas-sso-client";
 
 type Props = {
   append: any;
@@ -47,6 +48,14 @@ const SectionProductFrom = ({ append }: Props) => {
   };
 
   const { form, onSubmit } = useSectionProductItemAddForm(addProduct);
+
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canAdd = hasPermission(["UpdateSection"]);
 
   // Limpiar productos seleccionados y variants cada vez que cambia supplier
   React.useEffect(() => {
@@ -268,13 +277,15 @@ const SectionProductFrom = ({ append }: Props) => {
           <RHFSwitch name={"isFeatured"} label="Destacado" />
           {/* actions */}
           <div className="flex justify-end gap-3 pt-2">
-            <LoaderButton
-              type="button"
-              className="btn btn-primary "
-              onClick={() => onSubmit()}
-            >
-              Adicionar
-            </LoaderButton>
+            {canAdd && (
+              <LoaderButton
+                type="button"
+                className="btn btn-primary "
+                onClick={() => onSubmit()}
+              >
+                Adicionar
+              </LoaderButton>
+            )}
           </div>
         </div>
       </FormProvider>

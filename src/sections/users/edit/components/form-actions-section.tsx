@@ -14,7 +14,7 @@ export const FormActions = ({ isSubmitting, onCancel }: FormActionsProps) => {
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const hasUpdatePermission = hasPermission(["Update"]);
 
   return (
     <div className="flex justify-end gap-4 pt-6">

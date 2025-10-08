@@ -61,7 +61,7 @@ export default function PermissionCreateModal({
       permission.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const canSave = hasPermission(["Create"]);
 
   const onSubmit = async (data: CreatePermissionSchema) => {
     setError(null);
@@ -164,7 +164,7 @@ export default function PermissionCreateModal({
             >
               Cancelar
             </button>
-            {hasUpdatePermission && (
+            {canSave && (
               <LoaderButton
                 type="submit"
                 loading={isSubmitting}

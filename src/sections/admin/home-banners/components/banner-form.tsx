@@ -14,6 +14,7 @@ import { useHomeBannerCreateForm } from "../hooks/use-banner-create-form";
 import { RHFSwitch } from "@/components/react-hook-form";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getRegions } from "@/services/regions";
+import { usePermissions } from "zas-sso-client";
 
 interface Props {
   initValue?: HomeBannerFormData;
@@ -26,6 +27,14 @@ export default function HomeBannerForm({ initValue }: Props) {
     () => push("/dashboard/content/home-banners"),
     [push]
   );
+
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canSave = initValue ? hasPermission(["Update"]) : hasPermission(["Create"]);
 
   return (
     <section>
@@ -92,15 +101,17 @@ export default function HomeBannerForm({ initValue }: Props) {
         >
           Cancelar
         </Button>
-        <LoaderButton
-          type="submit"
-          form="home-banner-from"
-          loading={isPending}
-          disabled={isPending}
-          className="btn btn-primary "
-        >
-          Guardar
-        </LoaderButton>
+        {canSave && (
+          <LoaderButton
+            type="submit"
+            form="home-banner-from"
+            loading={isPending}
+            disabled={isPending}
+            className="btn btn-primary "
+          >
+            Guardar
+          </LoaderButton>
+        )}
       </div>
     </section>
   );

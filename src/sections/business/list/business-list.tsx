@@ -11,6 +11,7 @@ import BusinessModalContainer from "../modals/business-modal-container";
 import { Business, GetAllBusiness } from "@/types/business";
 import { deleteBusiness } from "@/services/business";
 import StatusBadge from "@/components/badge/status-badge";
+import { usePermissions } from "zas-sso-client";
 
 interface BusinessListProps {
   data?: GetAllBusiness;
@@ -24,6 +25,15 @@ export function BusinessList({
   onSearchParamsChange,
 }: BusinessListProps) {
   const { getModalState, openModal, closeModal } = useModalState();
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canRetrieveBusiness = hasPermission(["RetrieveBusiness", "Retrieve"]);
+  const canUpdateBusiness = hasPermission(["UpdateBusiness", "Update"]);
+  const canDeleteBusiness = hasPermission(["DeleteBusiness", "Delete"]);
 
   const editBusinessModal = getModalState<number>("edit");
   const viewBusinessModal = getModalState<number>("view");
@@ -150,12 +160,9 @@ export function BusinessList({
           <div className="flex justify-center">
             <ActionsMenu
               isActive={business.isActive}
-              onViewDetails={() => handleViewBusiness(business)}
-              onEdit={() => handleEditBusiness(business)}
-              onActive={() => handleDeleteBusiness(business)}
-              viewPermissions={["READ_ALL"]}
-              editPermissions={["UPDATE_ALL"]}
-              activePermissions={["DELETE_ALL", "BUSINESS_DEACTIVATE"]}
+              onViewDetails={canRetrieveBusiness ? () => handleViewBusiness(business) : undefined}
+              onEdit={canUpdateBusiness ? () => handleEditBusiness(business) : undefined}
+              onActive={canDeleteBusiness ? () => handleDeleteBusiness(business) : undefined}
             />
           </div>
         ),

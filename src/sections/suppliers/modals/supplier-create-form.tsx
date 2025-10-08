@@ -57,7 +57,7 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasCreate = hasPermission(["CREATE_ALL"]);
+  const hasCreate = hasPermission(["Create"]);
 
   return (
     <>

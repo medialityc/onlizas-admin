@@ -24,7 +24,7 @@ export default function AppearanceContainer({ store }: Props) {
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const hasUpdatePermission = hasPermission(["Update"]);
 
   return (
     <FormProvider id="appearance-form" methods={methods} onSubmit={onSubmit}>

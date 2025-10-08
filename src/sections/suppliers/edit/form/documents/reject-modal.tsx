@@ -2,6 +2,7 @@ import { Button } from "@/components/button/button";
 import LoaderButton from "@/components/loaders/loader-button";
 import SimpleModal from "@/components/modal/modal";
 import React from "react";
+import { usePermissions } from "zas-sso-client";
 type Props = {
   rejectIdx: number | null;
   setRejectIdx: (idx: number | null) => void;
@@ -18,6 +19,15 @@ function RejectModal({
   rejectLoading,
   handleConfirmReject,
 }: Props) {
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canReject = hasPermission([ "Update"]);
+
   return (
     <SimpleModal
       open={rejectIdx !== null}
@@ -39,13 +49,15 @@ function RejectModal({
           <Button type="button" onClick={() => setRejectIdx(null)}>
             Cancelar
           </Button>
-          <LoaderButton
-            onClick={handleConfirmReject}
-            className="btn btn-danger"
-            disabled={rejectLoading || rejectReason.trim().length === 0}
-          >
-            Rechazar
-          </LoaderButton>
+          {canReject && (
+            <LoaderButton
+              onClick={handleConfirmReject}
+              className="btn btn-danger"
+              disabled={rejectLoading || rejectReason.trim().length === 0}
+            >
+              Rechazar
+            </LoaderButton>
+          )}
         </div>
       </div>
     </SimpleModal>

@@ -118,7 +118,7 @@ export function WarehouseVirtualTypeList({
               isActive={type.isActive}
               onActive={() => handleToggleActiveWarehouseType(type)}
               // onEdit={() => handleEditCategory(type)}
-              activePermissions={["UPDATE_ALL"]}
+              activePermissions={["Update"]}
             />
           </div>
         ),
@@ -138,7 +138,7 @@ export function WarehouseVirtualTypeList({
         onCreate={handleCreateType}
         emptyText="No se encontraron tipos de almacén virtual"
         createText="Crear Tipo"
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={["Create"]}
       />
 
       <WarehouseVirtualTypeModal

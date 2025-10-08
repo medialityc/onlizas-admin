@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { RHFCountrySelect } from "@/components/react-hook-form/rhf-country-code-select";
 import { Label } from "@/components/label/label";
 import { CreateSystemConfigurationDto } from "@/types/system-configuration";
+import { usePermissions } from "zas-sso-client";
 
 interface SystemConfigurationCreateModalProps {
   open: boolean;
@@ -32,6 +33,15 @@ export default function SystemConfigurationCreateModal({
 }: SystemConfigurationCreateModalProps) {
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canCreate = hasPermission(["Create"]);
 
   const methods = useForm<CreateSystemConfigurationSchema>({
     resolver: zodResolver(createSystemConfigurationSchema),
@@ -126,6 +136,7 @@ export default function SystemConfigurationCreateModal({
                 type="submit"
                 loading={isSubmitting}
                 className="btn btn-primary "
+                disabled={!canCreate}
               >
                 Crear Configuración
               </LoaderButton>

@@ -23,7 +23,7 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasCreatePermission = hasPermission(["CREATE_ALL"]);
+  const hasCreatePermission = hasPermission(["CreateStore", "Create"]);
 
   // Clear business when owner changes
   useEffect(() => {

@@ -81,7 +81,7 @@ export default function GetYForm({
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const hasUpdatePermission = hasPermission(["UpdateStore", "Update"]);
 
   const onFormSubmit = handleSubmit(async (data) => {
     // Usar la función reutilizable para construir FormData

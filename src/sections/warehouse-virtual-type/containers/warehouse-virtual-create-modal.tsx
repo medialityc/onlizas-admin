@@ -8,6 +8,7 @@ import SimpleModal from "@/components/modal/modal";
 
 import { WarehouseVirtualTypeFormData } from "../schemas/warehouse-virtual-type-schema";
 import { useWarehouseVirtualTypeCreateForm } from "../hooks/use-warehouse-virtual-type-create-form";
+import { usePermissions } from "zas-sso-client";
 
 interface Props {
   open: boolean;
@@ -25,6 +26,15 @@ export default function WarehouseVirtualTypeModal({
   loading,
 }: Props) {
   const [error, setError] = useState<string | null>(null);
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canSave = initValue?.id ? hasPermission(["Update"]) : hasPermission(["Create"]);
 
   const { form, isPending, onSubmit } = useWarehouseVirtualTypeCreateForm(
     initValue,
@@ -93,7 +103,7 @@ export default function WarehouseVirtualTypeModal({
                 type="submit"
                 loading={isPending}
                 className="btn btn-primary "
-                disabled={isPending}
+                disabled={isPending || !canSave}
               >
                 {initValue?.id ? "Guardar Cambios" : "Crear Tipo"}
               </LoaderButton>

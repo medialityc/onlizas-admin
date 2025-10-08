@@ -31,7 +31,7 @@ export default function CategoryForm({ initValue }: CategoryFormProps) {
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const canSave = hasPermission(["Update","Create"]) ;
 
   return (
     <section>
@@ -84,7 +84,7 @@ export default function CategoryForm({ initValue }: CategoryFormProps) {
         >
           Cancelar
         </Button>
-        {hasUpdatePermission && (
+        {canSave && (
           <LoaderButton
             type="submit"
             form="category-from"

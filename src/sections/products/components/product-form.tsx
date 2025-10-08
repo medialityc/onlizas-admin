@@ -34,7 +34,7 @@ const ProductForm = ({ initValue }: Props) => {
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const canSave = isEdit ? hasPermission(["Update"]) : hasPermission(["Create"]);
 
   return (
     <FormProvider methods={form} onSubmit={onSubmit} id="product-form">
@@ -70,7 +70,7 @@ const ProductForm = ({ initValue }: Props) => {
         >
           Cancelar
         </Button>
-        {hasUpdatePermission && (
+        {canSave && (
           <LoaderButton
             form="product-form"
             type="submit"

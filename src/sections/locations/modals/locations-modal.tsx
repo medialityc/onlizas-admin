@@ -48,7 +48,7 @@ export default function LocationsModal({
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const canSave = location ? hasPermission([ "Update"]) : hasPermission(["CreateLocation", "Create"]);
 
   const methods = useForm<LocationFormData>({
     resolver: zodResolver(locationSchema),
@@ -243,7 +243,7 @@ export default function LocationsModal({
             >
               Cancelar
             </button>
-            {hasUpdatePermission && (
+            {canSave && (
               <LoaderButton
                 type="submit"
                 loading={isSubmitting}

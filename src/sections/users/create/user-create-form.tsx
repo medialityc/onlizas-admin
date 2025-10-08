@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { CreateUserSchema, createUserSchema } from "./create-user-schema";
+import { usePermissions } from "zas-sso-client";
 
 interface Props {
   onSuccess?: () => void;
@@ -21,6 +22,15 @@ interface Props {
 const UserCreateForm = ({ onSuccess }: Props) => {
   const [method, setMethod] = useState<"email" | "phone">("email");
   const [error, setError] = useState<string | null>(null);
+
+  // Control de permisos
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canCreate = hasPermission(["Create"]);
 
   const currentSchema = useMemo(() => {
     const schema = createUserSchema(method);
@@ -176,7 +186,7 @@ const UserCreateForm = ({ onSuccess }: Props) => {
         <LoaderButton
           type="submit"
           className="btn btn-primary mt-6! w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]"
-          disabled={!form.formState.isValid || form.formState.isSubmitting}
+          disabled={!form.formState.isValid || form.formState.isSubmitting || !canCreate}
           loading={form.formState.isSubmitting}
         >
           Crear Usuario

@@ -25,6 +25,7 @@ export function InventoryCardGrid({
         searchPlaceholder="Buscar inventario..."
         onCreate={onCreate}
         createText="Crear inventario"
+        createPermissions={["Create"]}
         enableColumnToggle={false}
         component={
           <InventoryProviderList

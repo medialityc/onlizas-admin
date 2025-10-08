@@ -5,6 +5,7 @@ import { Button } from "@/components/button/button";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { InventoryProvider } from "@/types/inventory";
 import { useModalState } from "@/hooks/use-modal-state";
+import { usePermissions } from "zas-sso-client";
 
 type Props = {
   data?: InventoryProvider[];
@@ -13,6 +14,14 @@ type Props = {
 const InventoryProviderList = ({ data, searchParams }: Props) => {
   const id = useId();
   const { openModal } = useModalState();
+
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
+  const canCreate = hasPermission(["Create"]);
 
   // Modal states controlled by URL
   const handleOpen = () => {
@@ -26,7 +35,7 @@ const InventoryProviderList = ({ data, searchParams }: Props) => {
             ? "No se encontraron inventarios que coincidan con tu búsqueda"
             : "No se encontraron inventarios"}
         </div>
-        {!searchParams?.search && (
+        {!searchParams?.search && canCreate && (
           <Button variant="primary" className="mx-auto" onClick={handleOpen}>
             <PlusIcon className="h-4 w-4 mr-2" />
             Crear un inventario

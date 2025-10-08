@@ -34,7 +34,7 @@ export default function WithLoginModal({
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
+  const hasUpdatePermission = hasPermission([ "Update"]);
 
   if (!open) return null;
 

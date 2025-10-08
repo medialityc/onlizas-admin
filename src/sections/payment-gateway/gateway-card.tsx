@@ -19,9 +19,9 @@ export const GatewayCard = ({
       permissions.some((p) => p.code === perm)
     );
   };
-  const hasReadPermission = hasPermission(["READ_ALL"]);
-  const hasUpdatePermission = hasPermission(["UPDATE_ALL"]);
-  const hasDeletePermission = hasPermission(["DELETE_ALL"]);
+  const hasReadPermission = hasPermission(["Retrieve"]);
+  const hasUpdatePermission = hasPermission(["Update"]);
+  const hasDeletePermission = hasPermission(["Delete"]);
 
   return (
     <Card

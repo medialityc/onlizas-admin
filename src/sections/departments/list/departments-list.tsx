@@ -12,6 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Department, GetAllDepartments } from "@/types/departments";
 import DepartmentsModalContainer from "../modals/department-modal-container";
 import { deleteDepartment } from "@/services/department";
+import { usePermissions } from "zas-sso-client";
 
 interface Props {
   data?: GetAllDepartments;
@@ -26,6 +27,13 @@ export function DepartmentsList({
 }: Props) {
   const { getModalState, openModal, closeModal } = useModalState();
   const queryClient = useQueryClient();
+
+  const { data: permissions = [] } = usePermissions();
+  const hasPermission = (requiredPerms: string[]) => {
+    return requiredPerms.every((perm) =>
+      permissions.some((p) => p.code === perm)
+    );
+  };
 
   const createDepartmentModal = getModalState("create");
   const editDepartmentModal = getModalState<number>("edit");
@@ -170,9 +178,9 @@ export function DepartmentsList({
                   ? () => handleDeleteDepartment(department)
                   : undefined
               }
-              viewPermissions={["READ_ALL"]}
-              editPermissions={["UPDATE_ALL"]}
-              deletePermissions={["DELETE_ALL"]}
+              viewPermissions={["Retrieve"]}
+              editPermissions={["Update"]}
+              deletePermissions={["Delete"]}
             />
           </div>
         ),
@@ -190,7 +198,7 @@ export function DepartmentsList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar departamentos..."
         onCreate={handleCreateDepartment}
-        createPermissions={["CREATE_ALL"]}
+        createPermissions={["Create"]}
         emptyText="No se encontraron departamentos"
       />
       {/* Create Modal */}
