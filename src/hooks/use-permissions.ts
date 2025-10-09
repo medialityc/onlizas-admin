@@ -33,8 +33,6 @@ export const usePermissions = () => {
     isError: boolean;
   };
 
-  console.log("permissions response", permissions);
-
   // Asegurar que permissions sea siempre un array válido de códigos
   const safePermissionCodes = Array.isArray(permissions)
     ? permissions.map((p: Permission) => p?.code).filter(Boolean)
