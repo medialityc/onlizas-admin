@@ -30,8 +30,8 @@ function CountryFlag({ code, className, height = 20, width = 30 }: CountryFlagPr
 }
 
 interface MultiCountrySelectProps {
-  selectedCountryIds: number[];
-  onSelectionChange: (countryIds: number[]) => void;
+  selectedCountryIds: string[];
+  onSelectionChange: (countryIds: string[]) => void;
   placeholder?: string;
   label?: string;
   required?: boolean;
@@ -67,7 +67,7 @@ export default function MultiCountrySelect({
   });
 
   // Notify parent when selection changes in the hook
-  const prevHookSelectedIds = useRef<number[]>([]);
+  const prevHookSelectedIds = useRef<string[]>([]);
   useEffect(() => {
     // Only notify if the hook's selection actually changed
     if (!arraysEqual(hookSelectedIds, prevHookSelectedIds.current)) {
@@ -77,7 +77,7 @@ export default function MultiCountrySelect({
   }, [hookSelectedIds, onSelectionChange]);
 
   // Sync external changes with hook state - use ref to avoid infinite loop
-  const prevSelectedCountryIds = useRef<number[]>([]);
+  const prevSelectedCountryIds = useRef<string[]>([]);
   useEffect(() => {
     if (!arraysEqual(selectedCountryIds, prevSelectedCountryIds.current)) {
       // Only update if external prop actually changed
@@ -89,10 +89,10 @@ export default function MultiCountrySelect({
   }, [selectedCountryIds, setSelectedCountryIds]);
 
   // Helper function to compare arrays
-  function arraysEqual(a: number[], b: number[]): boolean {
+  function arraysEqual(a: string[], b: string[]): boolean {
     if (a.length !== b.length) return false;
-    const sortedA = [...a].sort((x, y) => x - y);
-    const sortedB = [...b].sort((x, y) => x - y);
+    const sortedA = [...a].sort((x, y) => x.localeCompare(y));
+    const sortedB = [...b].sort((x, y) => x.localeCompare(y));
     return sortedA.every((val, index) => val === sortedB[index]);
   }
 
@@ -108,11 +108,11 @@ export default function MultiCountrySelect({
     setSearchTerm(e.target.value);
   }, [setSearchTerm]);
 
-  const handleCountrySelect = useCallback((countryId: number) => {
+  const handleCountrySelect = useCallback((countryId: string) => {
     toggleCountry(countryId);
   }, [toggleCountry]);
 
-  const handleRemoveCountry = useCallback((countryId: number) => {
+  const handleRemoveCountry = useCallback((countryId: string) => {
     removeCountry(countryId);
   }, [removeCountry]);
 
@@ -121,12 +121,12 @@ export default function MultiCountrySelect({
   const maxVisibleTags = 2;
 
   // Debug logs
-  console.log('MultiCountrySelect Debug:', {
-    selectedCountriesCount: selectedCountries.length,
-    shouldShowCompactMode,
-    selectedCountryIds,
-    hookSelectedIds,
-  });
+  // console.log('MultiCountrySelect Debug:', {
+  //   selectedCountriesCount: selectedCountries.length,
+  //   shouldShowCompactMode,
+  //   selectedCountryIds,
+  //   hookSelectedIds,
+  // });
 
   return (
     <div className="w-full">
@@ -172,6 +172,7 @@ export default function MultiCountrySelect({
                               handleRemoveCountry(country.id);
                             }}
                             className="ml-1 text-blue-600 hover:text-blue-800"
+                            title="Quitar país"
                           >
                             <XMarkIcon className="h-3 w-3" />
                           </button>
@@ -218,6 +219,7 @@ export default function MultiCountrySelect({
                             handleRemoveCountry(country.id);
                           }}
                           className="ml-1 text-blue-600 hover:text-blue-800"
+                          title="Quitar país"
                         >
                           <XMarkIcon className="h-3 w-3" />
                         </button>
@@ -304,6 +306,7 @@ export default function MultiCountrySelect({
                 <button
                   onClick={() => setShowExpandedView(false)}
                   className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  title="Cerrar modal"
                 >
                   <XMarkIcon className="h-6 w-6" />
                 </button>

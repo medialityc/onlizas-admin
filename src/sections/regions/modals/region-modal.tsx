@@ -136,8 +136,8 @@ export default function RegionModal({
               {/* Estado - fila completa */}
               <div className="flex items-center space-x-3">
                 <RHFSwitch
-                  name="status"
-                  label="Estado"
+                  name="moveCountries"
+                  label="Mover Países asociados"
                   disabled={isDetailsView || !canEdit}
                 />
               </div>

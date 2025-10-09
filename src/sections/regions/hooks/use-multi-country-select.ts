@@ -4,7 +4,7 @@ import { Country } from "@/types/countries";
 import { ApiResponse } from "@/types/fetch/api";
 
 export interface UseMultiCountrySelectOptions {
-  initialCountryIds?: number[];
+  initialCountryIds?: string[];
 }
 
 export interface UseMultiCountrySelectReturn {
@@ -15,10 +15,10 @@ export interface UseMultiCountrySelectReturn {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   filteredCountries: Country[];
-  toggleCountry: (countryId: number) => void;
-  removeCountry: (countryId: number) => void;
-  selectedCountryIds: number[];
-  setSelectedCountryIds: (ids: number[]) => void;
+  toggleCountry: (countryId: string) => void;
+  removeCountry: (countryId: string) => void;
+  selectedCountryIds: string[];
+  setSelectedCountryIds: (ids: string[]) => void;
 }
 
 export function useMultiCountrySelect({
@@ -30,12 +30,12 @@ export function useMultiCountrySelect({
   const [searchTerm, setSearchTerm] = useState("");
   
   // Initialize selectedCountryIds with initialCountryIds
-  const [selectedCountryIds, setSelectedCountryIds] = useState<number[]>(() => {
+  const [selectedCountryIds, setSelectedCountryIds] = useState<string[]>(() => {
     return initialCountryIds || [];
   });
   
   // Track the previous initialCountryIds to detect changes
-  const prevInitialCountryIds = useRef<number[]>([]);
+  const prevInitialCountryIds = useRef<string[]>([]);
 
   // Fetch countries only once on mount
   useEffect(() => {
@@ -87,10 +87,10 @@ export function useMultiCountrySelect({
   }, [initialCountryIds]);
 
   // Helper function to compare arrays
-  function arraysEqual(a: number[], b: number[]): boolean {
+  function arraysEqual(a: string[], b: string[]): boolean {
     if (a.length !== b.length) return false;
-    const sortedA = [...a].sort((x, y) => x - y);
-    const sortedB = [...b].sort((x, y) => x - y);
+    const sortedA = [...a].sort((x, y) => x.localeCompare(y));
+    const sortedB = [...b].sort((x, y) => x.localeCompare(y));
     return sortedA.every((val, index) => val === sortedB[index]);
   }
 
@@ -111,7 +111,7 @@ export function useMultiCountrySelect({
   }, [countries, searchTerm]);
 
   // Toggle country selection
-  const toggleCountry = useCallback((countryId: number) => {
+  const toggleCountry = useCallback((countryId: string) => {
     setSelectedCountryIds(prev => {
       if (prev.includes(countryId)) {
         return prev.filter(id => id !== countryId);
@@ -122,12 +122,12 @@ export function useMultiCountrySelect({
   }, []);
 
   // Remove country from selection
-  const removeCountry = useCallback((countryId: number) => {
+  const removeCountry = useCallback((countryId: string) => {
     setSelectedCountryIds(prev => prev.filter(id => id !== countryId));
   }, []);
 
   // Stable wrapper for setSelectedCountryIds
-  const setSelectedCountryIdsWrapper = useCallback((ids: number[]) => {
+  const setSelectedCountryIdsWrapper = useCallback((ids: string[]) => {
     setSelectedCountryIds(ids);
   }, []);
 
