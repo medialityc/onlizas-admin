@@ -1,6 +1,7 @@
 // Minimal types for Regions: keep surface small so it's easy to evolve.
 
 import { PaginatedResponse } from './common';
+import { Country } from './countries';
 
 export interface RegionCurrency {
   currencyId: number;
@@ -57,7 +58,7 @@ export interface RegionShippingConfig {
 
 // Interfaz que coincide exactamente con la respuesta del backend
 export interface Region {
-  id: number;
+  id: number|number;
   name: string;
   code: string;
   description: string;
@@ -66,7 +67,7 @@ export interface Region {
   updatedAt: string;
   active: boolean;
   countries: Array<{
-    id: number;
+    id: string;
     code: string;
     name: string;
     phoneNumberCode?: number;
@@ -83,7 +84,7 @@ export interface RegionFormData {
   name: string;
   description?: string;
   status: number; // 0: active, 1: inactive
-  countryIds: number[]; // Países asociados
+  countryIds: string[]; // Países asociados
   moveCountries?: boolean; // Para mover países desde otras regiones
 }
 
