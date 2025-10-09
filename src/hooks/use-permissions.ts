@@ -22,7 +22,7 @@ interface UseSSOResponse {
 
 export const usePermissions = () => {
   const {
-    data: response,
+    data: permissions,
     isLoading,
     error,
     isError,
@@ -33,10 +33,7 @@ export const usePermissions = () => {
     isError: boolean;
   };
 
-  console.log("permissions response", response);
-
-  // Extraer el array de permisos de la respuesta
-  const permissions = response?.data || [];
+  console.log("permissions response", permissions);
 
   // Asegurar que permissions sea siempre un array válido de códigos
   const safePermissionCodes = Array.isArray(permissions)
