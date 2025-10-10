@@ -62,38 +62,38 @@ export interface IDocument {
 }
 
 type UserAddressCountry = BaseCountry & {
-	active: boolean;
-	region: {
-		name: string;
-		code: string;
-	};
+  active: boolean;
+  region: {
+    name: string;
+    code: string;
+  };
 };
 
 export type UserAddress = {
-	name: string;
-	annotations: string;
-	mainStreet: string;
-	number: string;
-	otherStreets: string;
-	city: string;
-	state: string;
-	zipCode: string;
-	latitude: number;
-	longitude: number;
-	countryId: string;
-	country: UserAddressCountry;
+  name: string;
+  annotations: string;
+  mainStreet: string;
+  number: string;
+  otherStreets: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  latitude: number;
+  longitude: number;
+  countryId: string;
+  country: UserAddressCountry;
 };
 
 export type UserPhoneNumber = {
-	id: string;
-	number: string;
-	isVerified: boolean;
-	countryId: string;
-	country: UserAddressCountry;
+  id: string;
+  number: string;
+  isVerified: boolean;
+  countryId: string;
+  country: UserAddressCountry;
 };
 
 export interface BaseUser {
-  id: string;
+  id: number;
   firstName: string;
   lastName: string;
   profilePicturePath?: string | null;
