@@ -11,8 +11,8 @@ import { PERMISSION_ENUM } from "@/lib/permissions";
 interface BannerCardProps {
   banner: BannerItem;
   positionLabel: string;
-  onToggle: (id: number) => void;
-  onDelete: (id: number) => void;
+  onToggle: (id: string | number) => void;
+  onDelete: (id: string | number) => void;
   onEdit: (banner: BannerItem) => void;
 }
 
@@ -114,8 +114,8 @@ function BannerActions({
   onEdit,
 }: {
   banner: BannerItem;
-  onToggle: (id: number) => void;
-  onDelete: (id: number) => void;
+  onToggle: (id: string | number) => void;
+  onDelete: (id: string | number) => void;
   onEdit: (banner: BannerItem) => void;
 }) {
   // Control de permisos

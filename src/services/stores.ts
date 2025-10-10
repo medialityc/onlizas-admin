@@ -31,7 +31,7 @@ export async function getAllStores(
   return buildApiResponseAsync<GetAllStores>(res);
 }
 export async function getAllProviderStores(
-  providerId: number,
+  providerId: number|string,
   params: IQueryable
 ): Promise<ApiResponse<GetAllStores>> {
   const url = new QueryParamsURLFactory(
@@ -108,7 +108,7 @@ export async function deleteStore(
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 export async function getStoreById(
-  id: number
+  id: number|string
 ): Promise<ApiResponse<Store | undefined>> {
   const url = backendRoutes.store.storeById(id);
   const res = await nextAuthFetch({
@@ -139,7 +139,7 @@ export async function createStore(data: FormData): Promise<ApiResponse<Store>> {
 }
 
 export async function updateSupplierStore(
-  id: number,
+  id: number|string,
   data: FormData
 ): Promise<ApiResponse<Store | undefined>> {
   const res = await nextAuthFetch({
@@ -155,7 +155,7 @@ export async function updateSupplierStore(
   return buildApiResponseAsync<Store>(res);
 }
 export async function updateAdminStore(
-  storeId: number,
+  storeId: number|string,
   data: FormData
 ): Promise<ApiResponse<Store | undefined>> {
   const res = await nextAuthFetch({
@@ -204,7 +204,7 @@ export async function createBannersStore(
 }
 
 export async function getStoreDetails(
-  storeId: number
+  storeId: number|string
 ): Promise<ApiResponse<Store | undefined>> {
   const url = backendRoutes.store.details(storeId);
   const res = await nextAuthFetch({
@@ -220,7 +220,7 @@ export async function getStoreDetails(
 }
 
 export async function getStoreSupplierDetails(
-  storeId: number
+  storeId: number|string
 ): Promise<ApiResponse<Store | undefined>> {
   const url = backendRoutes.store.storeDetails(storeId);
   const res = await nextAuthFetch({
@@ -234,14 +234,14 @@ export async function getStoreSupplierDetails(
 }
 
 export type StoreFollower = {
-  id: number;
+  id: number|string;
   name: string;
   email: string;
   phoneNumber: string;
 };
 
 export async function getStoreFollowers(
-  storeId: number,
+  storeId: number|string,
   params: IQueryable
 ): Promise<ApiResponse<PaginatedResponse<StoreFollower>>> {
   const url = new QueryParamsURLFactory(

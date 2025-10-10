@@ -1,7 +1,7 @@
 import { PaginatedResponse } from "./common";
 
 export type Currency = {
-  id: number;
+  id: number | string;
   name: string;
   codIso: string;
   rate: number;
@@ -23,12 +23,12 @@ export type UpdateCurrency = {
 };
 
 export type CurrenciesLogs = {
-  id: number;
+  id: number | string;
   timestamp: string;
   description: string;
-  currencyId: number;
+  currencyId: number | string;
   currencyName: string;
-  userId: number;
+  userId: number | string;
   userName: string;
   codIso: string;
   symbol: string;

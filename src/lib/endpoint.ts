@@ -251,8 +251,8 @@ export const backendRoutes = {
     // Admin delete
     deleteAdmin: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
-    update: (id: number) => `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
-    updateAdminStore: (id: number) =>
+    update: (id: number|string) => `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
+    updateAdminStore: (id: number|string) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
   },
   storeBanner: {

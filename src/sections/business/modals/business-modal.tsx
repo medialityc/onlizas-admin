@@ -168,7 +168,7 @@ export default function BusinessModal({
   console.log(methods.formState.errors);
 
   // Use locations fetcher to select a Location (integrates with RHF and backend)
-  const isLocationAssigned = !!business?.locationId && business.locationId > 0;
+  const isLocationAssigned = !!business?.locationId && business.locationId !== undefined;
   return (
     <SimpleModal
       className="w-full max-w-2xl"

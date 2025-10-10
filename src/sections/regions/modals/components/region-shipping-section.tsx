@@ -27,7 +27,7 @@ export default function RegionShippingSection({
 }: RegionShippingSectionProps) {
   const [deleteDialog, setDeleteDialog] = useState<{
     open: boolean;
-    shippingMethodId: number | null;
+    shippingMethodId: number|string | null;
     shippingMethodName: string;
   }>({
     open: false,
@@ -74,7 +74,7 @@ export default function RegionShippingSection({
     }
   };
 
-  const openDeleteDialog = (shippingMethodId: number, shippingMethodName: string) => {
+  const openDeleteDialog = (shippingMethodId: number|string, shippingMethodName: string) => {
     setDeleteDialog({
       open: true,
       shippingMethodId,

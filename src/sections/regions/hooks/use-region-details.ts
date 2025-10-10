@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getRegionById } from "@/services/regions";
 import { Region } from "@/types/regions";
 
-export function useRegionDetails(id: number | undefined, enabled: boolean = true) {
+export function useRegionDetails(id: number|string | undefined, enabled: boolean = true) {
   return useQuery({
     queryKey: ["region-details", id],
     queryFn: () => getRegionById(id!),

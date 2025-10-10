@@ -6,9 +6,9 @@ import { PERMISSION_ENUM } from "@/lib/permissions";
 
 type Props = {
   category: StoreCategory;
-  onToggleActive: (id: number, checked: boolean) => void;
-  onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
+  onToggleActive: (id: string | number, checked: boolean) => void;
+  onEdit: (id: string | number) => void;
+  onDelete: (id: string | number) => void;
 } & HTMLAttributes<HTMLDivElement>;
 
 export default function CategoryListItem({

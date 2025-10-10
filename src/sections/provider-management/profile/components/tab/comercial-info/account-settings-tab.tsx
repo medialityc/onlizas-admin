@@ -35,8 +35,8 @@ interface AccountSettingsTabProps {
 export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
   const { getModalState, openModal, closeModal } = useModalState();
   const createBusinessModal = getModalState("createBusiness");
-  const editBusinessModal = getModalState<number>("editBusiness");
-  const deleteBusinessModal = getModalState<number>("deleteBusiness");
+  const editBusinessModal = getModalState<number|string>("editBusiness");
+  const deleteBusinessModal = getModalState<number|string>("deleteBusiness");
   const { data: business, isLoading } = useBusiness();
 
   // Hook para eliminar business
@@ -158,7 +158,7 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
                             className="p-1.5 rounded-full text-sky-600 hover:bg-sky-600/10 transition"
                             onClick={() => {
                               if (b?.id) {
-                                openModal<number>("editBusiness", b.id);
+                                openModal<number|string>("editBusiness", b.id);
                               }
                             }}
                           >
@@ -169,7 +169,7 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
                             className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
                             onClick={() => {
                               if (b?.id) {
-                                openModal<number>("deleteBusiness", b.id);
+                                openModal<number|string>("deleteBusiness", b.id);
                               }
                             }}
                           >

@@ -13,7 +13,7 @@ export const AppearanceSchema = z.object({
 
   // Banners - validación condicional solo si hay banners
   banners: z.array(z.object({
-    id: z.number().int().nonnegative().optional(),
+    id: z.union([z.string(), z.number().nonnegative()]).optional(),
     title: z.string().optional(), // Solo requerido si hay contenido
     urlDestinity: z.string().optional(), // Solo requerido si hay contenido
     position: z.coerce.number().int().nonnegative({ message: "La posición debe ser un número entero" }).optional(),
@@ -38,7 +38,7 @@ export interface AppearanceFormData {
   font: string;
   template: string;
   banners: Array<{
-    id?: number;
+    id?: number | string;
     title?: string;
     urlDestinity?: string;
     position?: number;

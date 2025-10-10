@@ -19,8 +19,8 @@ interface LocationDeleteModalProps {
 }
 
 interface LocationReferences {
-  warehouses: Array<{ id: number; name: string }>;
-  businesses: Array<{ id: number; name: string }>;
+  warehouses: Array<{ id: number|string; name: string }>;
+  businesses: Array<{ id: number|string; name: string }>;
   totalReferences: number;
 }
 

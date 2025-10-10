@@ -14,7 +14,7 @@ import { getAllCurrencies } from '@/services/currencies';
 import { useRegionDetails } from '@/sections/regions/hooks/use-region-details';
 
 interface CurrenciesSectionProps {
-  regionId: number;
+  regionId: number|string;
   regionName: string;
   onClose: () => void;
 }
@@ -42,7 +42,7 @@ export const CurrenciesSection: React.FC<CurrenciesSectionProps> = ({
 
   // Mutations
   const addCurrencyMutation = useMutation({
-    mutationFn: ({ currencyId, isPrimary }: { currencyId: number; isPrimary?: boolean }) => 
+    mutationFn: ({ currencyId, isPrimary }: { currencyId: number|string; isPrimary?: boolean }) => 
       addCurrenciesToRegion(regionId, { 
         currencies: [{ 
           currencyId, 
@@ -57,14 +57,14 @@ export const CurrenciesSection: React.FC<CurrenciesSectionProps> = ({
   });
 
   const removeCurrencyMutation = useMutation({
-    mutationFn: (currencyId: number) => removeCurrencyFromRegion(regionId, currencyId),
+    mutationFn: (currencyId: number|string) => removeCurrencyFromRegion(regionId, currencyId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['region-details', regionId] });
     }
   });
 
   const setPrimaryMutation = useMutation({
-    mutationFn: (currencyId: number) => setPrimaryCurrency(regionId, currencyId),
+    mutationFn: (currencyId: number|string) => setPrimaryCurrency(regionId, currencyId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['region-details', regionId] });
     }
@@ -80,11 +80,11 @@ export const CurrenciesSection: React.FC<CurrenciesSectionProps> = ({
     }
   };
 
-  const handleRemoveCurrency = (currencyId: number) => {
+  const handleRemoveCurrency = (currencyId: number|string) => {
     removeCurrencyMutation.mutate(currencyId);
   };
 
-  const handleSetPrimary = (currencyId: number) => {
+  const handleSetPrimary = (currencyId: number|string) => {
     setPrimaryMutation.mutate(currencyId);
   };
 

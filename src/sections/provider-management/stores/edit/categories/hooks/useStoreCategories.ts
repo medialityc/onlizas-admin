@@ -7,7 +7,7 @@ import { adaptStoreCategories } from "../utils/adapter";
 import { toast } from "react-toastify";
 import { StoreCategory } from "@/types/store-categories";
 
-export function useStoreCategories(storeId: number, initialItems?: StoreCategory[]) {
+export function useStoreCategories(storeId: string | number, initialItems?: StoreCategory[]) {
 	const [items, setItems] = useState<StoreCategory[]>(initialItems ?? []);
 	const [loading, setLoading] = useState(!initialItems);
 	const [saving, setSaving] = useState(false);
@@ -75,7 +75,7 @@ export function useStoreCategories(storeId: number, initialItems?: StoreCategory
 	}, [items, storeId]);
 
 	// Toggle activo/inactivo
-	const handleToggle = useCallback(async (id: number, checked: boolean) => {
+	const handleToggle = useCallback(async (id: string | number, checked: boolean) => {
 		// Optimistic update
 		setItems(prev => prev.map(x => x.id === id ? { ...x, active: checked } : x));
 		

@@ -12,7 +12,7 @@ import { Fragment, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
 type Country = {
-  id: number;
+  id: number|string;
   name: string;
   code: string;
   phoneNumberCode: number;

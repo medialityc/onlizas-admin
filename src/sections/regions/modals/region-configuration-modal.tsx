@@ -83,7 +83,7 @@ export default function RegionConfigurationModal({
 
   // Mutations
   const addCurrencyMutation = useMutation({
-    mutationFn: async (config: { currencyId: number; isPrimary: boolean }) => {
+    mutationFn: async (config: { currencyId: number|string; isPrimary: boolean }) => {
       const response = await addCurrenciesToRegion(region.id, {
         currencies: [
           { currencyId: config.currencyId, isEnabled: true, isPrimary: false },
@@ -108,7 +108,7 @@ export default function RegionConfigurationModal({
 
   const addPaymentMutation = useMutation({
     mutationFn: async (config: {
-      paymentGatewayId: number;
+      paymentGatewayId: number|string;
       priority: number;
     }) => {
       const response = await addPaymentGatewaysToRegion(region.id, {
@@ -145,7 +145,7 @@ export default function RegionConfigurationModal({
   });
 
   const addShippingMutation = useMutation({
-    mutationFn: async (shippingMethodId: number) => {
+    mutationFn: async (shippingMethodId: number|string) => {
       const response = await addShippingMethodsToRegion(region.id, {
         shippingMethods: [
           {

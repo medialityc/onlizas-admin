@@ -8,8 +8,8 @@ import { BannerItem } from "@/types/stores";
 interface BannersListProps {
   banners: BannerItem[];
   getPositionLabel: (position: number) => string;
-  onToggle: (id: number) => void;
-  onDelete: (id: number) => void;
+  onToggle: (id: string | number) => void;
+  onDelete: (id: string | number) => void;
   onEdit: (banner: BannerItem) => void;
 }
 

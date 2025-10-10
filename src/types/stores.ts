@@ -14,7 +14,7 @@ export type StoreAddress = {
 };
 
 export type BannerItem = {
-  id?: number; // ID opcional - puede ser temporal local o del backend
+  id?: number | string; 
   title: string;
   urlDestinity: string;
   position: number | string; // integer position
@@ -39,7 +39,7 @@ export type StoreAppearance = {
 };
 
 export type StoreBanner = {
-  id: number;
+  id: number | string;
   title: string;
   image: string;
   url: string;
@@ -62,8 +62,8 @@ type StoreMetrics = {
 // Para crear tienda
 export type CreateStoreRequest = {
   name: string;
-  ownerId: number;
-  businessId: number;
+  ownerId: number | string;
+  businessId: number | string;
   url: string;
   description?: string;
   logoStyle?: string;
@@ -93,9 +93,9 @@ export type StoreSearchParams = {
 // Respuesta paginada
 
 export type Store = {
-  id: number;
+  id: number | string;
   active: boolean;
-  supplierId: number;
+  supplierId: number | string;
   metrics: StoreMetrics;
   name: string;
   description: string;
@@ -114,7 +114,7 @@ export type Store = {
   template: string;
   followers: [
     {
-      id: number;
+      id: number | string;
       name: string;
       email: string;
       phoneNumber: string;
@@ -124,7 +124,7 @@ export type Store = {
     {
       title: string;
       urlDestinity: string;
-      position: number;
+      position: number | string;
       initDate: string;
       endDate: string;
       image: string;
@@ -137,7 +137,7 @@ export type Store = {
 export type GetAllStores = PaginatedResponse<Store>;
 
 export type StoreMetric = {
-  id: number;
+  id: number | string;
   title: string;
   active: boolean;
   logo?: string | null;

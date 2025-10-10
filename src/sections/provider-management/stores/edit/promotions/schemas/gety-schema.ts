@@ -24,8 +24,8 @@ export const getySchema = z
 
         
 
-        productIdX: z.number().min(1,{message:"Seleccione el producto X requerido"}),
-        productIdY: z.number().min(1,{message:"Seleccione el producto Y obtenido"}),
+        productIdX: z.union([z.string().min(1), z.number().min(1)],{message:"Seleccione el producto X requerido"}),
+        productIdY: z.union([z.string().min(1), z.number().min(1)],{message:"Seleccione el producto Y obtenido"}),
 
         usageLimit: z.number().optional(),
         usageLimitPerUser: z.number().optional(),

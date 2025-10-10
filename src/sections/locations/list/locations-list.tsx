@@ -91,14 +91,14 @@ export function LocationsList({
 
   const handleEditLocation = useCallback(
     (location: ILocation) => {
-      openModal<number>("edit", location.id);
+      openModal<number|string>("edit", location.id);
     },
     [openModal]
   );
 
   const handleViewLocation = useCallback(
     (location: ILocation) => {
-      openModal<number>("view", location.id);
+      openModal<number|string>("view", location.id);
     },
     [openModal]
   );

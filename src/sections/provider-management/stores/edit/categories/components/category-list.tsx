@@ -8,9 +8,9 @@ import { StoreCategory } from "@/types/store-categories";
 type Props = {
   items: StoreCategory[];
   onItemsChange: (next: StoreCategory[]) => void;
-  onToggle?: (id: number, checked: boolean) => void;
-  onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
+  onToggle?: (id: string | number, checked: boolean) => void;
+  onEdit: (id: string | number) => void;
+  onDelete: (id: string | number) => void;
   loading: boolean;
 };
 
@@ -25,10 +25,10 @@ export default function CategoryList({
 
   if (loading) return <CategoryListSkeleton />;
 
-  const nodeRefs = useRef<Map<number, HTMLDivElement | null>>(new Map());
+  const nodeRefs = useRef<Map<string|number, HTMLDivElement | null>>(new Map());
 
   const measureRects = () => {
-    const map = new Map<number, DOMRect>();
+    const map = new Map<string|number, DOMRect>();
     nodeRefs.current.forEach((el, id) => {
       if (el) map.set(id, el.getBoundingClientRect());
     });
@@ -61,7 +61,7 @@ export default function CategoryList({
         >
           <CategoryListItem
             category={c}
-            onToggleActive={(id: number, checked: boolean) => {
+            onToggleActive={(id: string | number, checked: boolean) => {
               // Optimistic local change
               onItemsChange(items.map((x) => (x.categoryId === id ? { ...x, active: checked } : x)));
               onToggle?.(id, checked);

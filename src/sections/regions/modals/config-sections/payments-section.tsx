@@ -14,7 +14,7 @@ import {
 import { RegionPaymentGateway } from '@/types/regions';
 
 interface PaymentsSectionProps {
-  regionId: number;
+  regionId: number|string;
   regionName: string;
   onClose: () => void;
 }
@@ -25,7 +25,7 @@ export const PaymentsSection: React.FC<PaymentsSectionProps> = ({
   onClose
 }) => {
   const [selectedGatewayId, setSelectedGatewayId] = useState<string>('');
-  const [editingPriority, setEditingPriority] = useState<{ id: number; priority: number } | null>(null);
+  const [editingPriority, setEditingPriority] = useState<{ id: number|string; priority: number } | null>(null);
   const queryClient = useQueryClient();
 
   // Mock payment gateways - replace with actual API call
@@ -48,7 +48,7 @@ export const PaymentsSection: React.FC<PaymentsSectionProps> = ({
 
   // Mutations
   const addPaymentMutation = useMutation({
-    mutationFn: ({ gatewayId }: { gatewayId: number }) => 
+    mutationFn: ({ gatewayId }: { gatewayId: number|string }) => 
       addPaymentGatewaysToRegion(regionId, { 
         paymentGateways: [{
           paymentGatewayId: gatewayId,
@@ -65,14 +65,14 @@ export const PaymentsSection: React.FC<PaymentsSectionProps> = ({
   });
 
   const removePaymentMutation = useMutation({
-    mutationFn: (gatewayId: number) => removePaymentGatewayFromRegion(regionId, gatewayId),
+    mutationFn: (gatewayId: number|string) => removePaymentGatewayFromRegion(regionId, gatewayId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['region-details', regionId] });
     }
   });
 
   const updatePriorityMutation = useMutation({
-    mutationFn: ({ gatewayId, priority }: { gatewayId: number; priority: number }) => 
+    mutationFn: ({ gatewayId, priority }: { gatewayId: number|string; priority: number }) => 
       updatePaymentGatewayPriority(regionId, gatewayId, { paymentGatewayId: gatewayId, newPriority: priority }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['region-details', regionId] });
@@ -88,7 +88,7 @@ export const PaymentsSection: React.FC<PaymentsSectionProps> = ({
     }
   };
 
-  const handleRemovePayment = (gatewayId: number) => {
+  const handleRemovePayment = (gatewayId: number|string) => {
     removePaymentMutation.mutate(gatewayId);
   };
 
