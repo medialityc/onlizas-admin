@@ -12,7 +12,7 @@ const initValues: HomeBannerFormData = {
   link: "/products",
   imageMobileUrl: "",
   imageDesktopUrl: "",
-  isActive: true,
+  active: true,
   regionIds: [],
 };
 

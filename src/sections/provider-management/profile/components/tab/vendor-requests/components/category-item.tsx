@@ -11,7 +11,7 @@ interface CategoryFeature {
 interface Category {
   id: number | string;
   name: string;
-  isActive?: boolean;
+  active?: boolean;
   departmentId?: number;
   departmentName?: string;
   description?: string;

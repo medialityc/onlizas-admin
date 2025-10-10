@@ -17,7 +17,7 @@ export interface Business {
   parentBusiness: { id: number; name: string }; // Parent business ID
   childBusinessIds: number[]; // Child business IDs
   photoObjectCodes: string[]; // Image URLs (details)
-  isActive: boolean; // Active status
+  active: boolean; // Active status
 }
 
 /**
@@ -105,7 +105,7 @@ export type BusinessProviderResponse = {
   childrenCount: number;
   usersCount: number;
   subSystemsCount: number;
-  isActive: boolean;
+  active: boolean;
   address: string;
   email: string;
   phone: string;

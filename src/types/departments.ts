@@ -5,7 +5,7 @@ export type Department = {
   name: string;
   description: string;
   image: string;
-  isActive: boolean;
+  active: boolean;
   categoriesCount: number;
   canDelete: boolean;
   canEdit: boolean;
@@ -15,7 +15,7 @@ export type CreateDepartment = {
   name: string;
   description: string;
   image: File | string;
-  isActive: boolean;
+  active: boolean;
 };
 
 export type GetAllDepartments = PaginatedResponse<Department>;

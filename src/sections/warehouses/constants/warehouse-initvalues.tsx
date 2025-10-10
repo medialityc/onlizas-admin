@@ -5,7 +5,7 @@ import { WAREHOUSE_TYPE_ENUM } from "./warehouse-type";
 export const initValueWarehouse: WarehouseFormData = {
   name: "",
   type: WAREHOUSE_TYPE_ENUM.virtual,
-  isActive: false,
+  active: false,
   locationId: 0,
   capacity: 0,
   capacityUnit: "KG",
@@ -15,7 +15,7 @@ export const initValueWarehouse: WarehouseFormData = {
 };
 export const initValueMeWarehouse: MeWarehouseFormData = {
   name: "",
-  isActive: false,
+  active: false,
   locationId: 0,
   rules: "",
   virtualTypeId: 0,

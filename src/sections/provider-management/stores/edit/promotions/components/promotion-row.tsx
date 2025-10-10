@@ -54,7 +54,7 @@ export default function PromotionRow({
             <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
               {p.name}
             </h4>
-            {p.isActive && !isExpired && (
+            {p.active && !isExpired && (
               <Badge
                 variant="outline-primary"
                 className="!text-[11px] !px-2 !py-0.5"
@@ -72,7 +72,7 @@ export default function PromotionRow({
                 Vencida
               </Badge>
             )}
-            {!p.isActive && !isExpired && (
+            {!p.active && !isExpired && (
               <Badge
                 variant="outline-secondary"
                 className="!text-[11px] !px-2 !py-0.5"

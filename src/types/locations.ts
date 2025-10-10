@@ -39,7 +39,7 @@ export type ILocation = {
   createdAt: string;
   updatedAt: string;
   deletedAt?: string;
-  isActive: boolean;
+  active: boolean;
 };
 
 export type GetAllLocations = PaginatedResponse<ILocation>;

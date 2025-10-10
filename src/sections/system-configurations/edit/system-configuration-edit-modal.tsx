@@ -90,7 +90,7 @@ export default function SystemConfigurationEditModal({
           additionalSettings: data.additionalSettings,
           countryId: data.countryId,
           countryCode,
-          isActive: item.isActive,
+          active: item.active,
         },
       };
       const response = await updateSystemConfiguration(item.id, body);

@@ -32,7 +32,7 @@ export const getySchema = z
 
         // mediaFile obligatorio (puede ser una URL string o un File cuando se sube nueva imagen)
         mediaFile: z.union([z.string().min(1, { message: "La imagen es obligatoria" }), z.instanceof(File)]),
-        isActive: z.boolean(),
+        active: z.boolean(),
 
         // Requisitos de compra: opcionales en el esquema; si vienen, deben ser > 0.
         // El componente `PurchaseRequirements` limpia estos campos cuando no aplican,

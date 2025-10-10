@@ -16,19 +16,19 @@ type Props = {
 export default function CategoryModal({ open, onClose, onSubmit, title = "Nueva Categoría", initial }: Props) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [isActive, setIsActive] = useState(true);
+  const [active, setIsActive] = useState(true);
 
   useEffect(() => {
     if (open) {
       setName(initial?.name ?? "");
       setDescription(initial?.description ?? "");
-      setIsActive(initial?.isActive ?? true);
+      setIsActive(initial?.active ?? true);
     }
   }, [open, initial]);
 
   const handleSave = () => {
     if (!name.trim()) return;
-    onSubmit({ name: name.trim(), description: description.trim(), isActive });
+    onSubmit({ name: name.trim(), description: description.trim(), active });
     onClose();
   };
 
@@ -63,7 +63,7 @@ export default function CategoryModal({ open, onClose, onSubmit, title = "Nueva 
               className="absolute w-full h-full opacity-0 z-10 cursor-pointer peer"
               id="cat-active"
               aria-labelledby="cat-active-label"
-              checked={isActive}
+              checked={active}
               onChange={(e) => setIsActive(e.currentTarget.checked)}
             />
             <span

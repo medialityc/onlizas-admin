@@ -4,7 +4,7 @@ interface ToggleStatusDialogProps {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  isActive?: boolean;
+  active?: boolean;
   itemName?: string;
   title?: string;
   description?: string;
@@ -16,25 +16,25 @@ const ToggleStatusDialog: React.FC<ToggleStatusDialogProps> = ({
   open,
   onClose,
   onConfirm,
-  isActive,
+  active,
   itemName = "este elemento",
   title,
   description,
   warningMessage,
   loading,
 }) => {
-  const actionText = isActive ? "desactivar" : "activar";
-  const actionTextCapitalized = isActive ? "Desactivar" : "Activar";
-  const actionColor = isActive
+  const actionText = active ? "desactivar" : "activar";
+  const actionTextCapitalized = active ? "Desactivar" : "Activar";
+  const actionColor = active
     ? "bg-red-600 hover:bg-red-700"
     : "bg-green-600 hover:bg-green-700";
-  const loadingText = isActive ? "Desactivando..." : "Activando...";
+  const loadingText = active ? "Desactivando..." : "Activando...";
 
   const defaultTitle =
     title || `¿Estás seguro de que quieres ${actionText} ${itemName}?`;
   const defaultDescription =
     description ||
-    (isActive
+    (active
       ? `Esta acción desactivará ${itemName}. Podrás reactivarlo más tarde si es necesario.`
       : `Esta acción activará ${itemName} y estará disponible para su uso.`);
 
@@ -46,14 +46,14 @@ const ToggleStatusDialog: React.FC<ToggleStatusDialogProps> = ({
         {warningMessage && (
           <div
             className={`border rounded p-3 ${
-              isActive
+              active
                 ? "bg-orange-50 border-orange-200"
                 : "bg-green-50 border-green-200"
             }`}
           >
             <p
               className={`text-sm ${
-                isActive ? "text-orange-800" : "text-green-800"
+                active ? "text-orange-800" : "text-green-800"
               }`}
             >
               {warningMessage}

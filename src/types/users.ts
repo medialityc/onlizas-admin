@@ -1,5 +1,5 @@
 import { Attributes, PaginatedResponse } from "./common";
-import { Country } from "./countries";
+import { BaseCountry, Country } from "./countries";
 import { IRole } from "./roles";
 
 // User-related types and interfaces
@@ -61,9 +61,48 @@ export interface IDocument {
   objectCode: string;
 }
 
+type UserAddressCountry = BaseCountry & {
+	active: boolean;
+	region: {
+		name: string;
+		code: string;
+	};
+};
+
+export type UserAddress = {
+	name: string;
+	annotations: string;
+	mainStreet: string;
+	number: string;
+	otherStreets: string;
+	city: string;
+	state: string;
+	zipCode: string;
+	latitude: number;
+	longitude: number;
+	countryId: string;
+	country: UserAddressCountry;
+};
+
+export type UserPhoneNumber = {
+	id: string;
+	number: string;
+	isVerified: boolean;
+	countryId: string;
+	country: UserAddressCountry;
+};
+
+export interface BaseUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  profilePicturePath?: string | null;
+  phoneNumbers: UserPhoneNumber[] | null;
+}
+
 // User types
-export interface IUser {
-  id: number;
+export interface IUser extends BaseUser {
+  // id: number;
   name: string;
   approvalProcessId?: number;
   hasPassword: boolean;
@@ -73,7 +112,7 @@ export interface IUser {
   phones: Phone[];
   isBlocked: boolean;
   isVerified: boolean;
-  isActive: boolean;
+  active: boolean;
   photoUrl: string;
   apiRole: string;
   roles: IRole[];
@@ -93,7 +132,7 @@ export interface IUserResponseMe {
   phones: Phone[];
   isBlocked: boolean;
   isVerified: boolean;
-  isActive: boolean;
+  active: boolean;
   photoUrl: string;
   addresses: Address[];
   businesses: Business[];

@@ -14,7 +14,7 @@ export function useStoreCategories(storeId: number, initialItems?: StoreCategory
 
 	const totals = useMemo(() => {
 		const total = items.length;
-		const active = items.filter((c) => c.isActive).length;
+		const active = items.filter((c) => c.active).length;
 		const products = 100/* items.reduce((acc, c) => acc + (c.productCount ?? 0), 0); */
 		return { total, active, products  };
 	}, [items]);
@@ -77,20 +77,20 @@ export function useStoreCategories(storeId: number, initialItems?: StoreCategory
 	// Toggle activo/inactivo
 	const handleToggle = useCallback(async (id: number, checked: boolean) => {
 		// Optimistic update
-		setItems(prev => prev.map(x => x.id === id ? { ...x, isActive: checked } : x));
+		setItems(prev => prev.map(x => x.id === id ? { ...x, active: checked } : x));
 		
 		try {
 			const res = await toggleStoreCategoryStatus(id);
 			if (res?.error) {
 				// Revertir cambio optimista si hay error
-				setItems(prev => prev.map(x => x.id === id ? { ...x, isActive: !checked } : x));
+				setItems(prev => prev.map(x => x.id === id ? { ...x, active: !checked } : x));
 				toast.error(res?.message || "No se pudo actualizar el estado");
 			} else {
 				toast.success(checked ? "Categoría activada" : "Categoría desactivada");
 			}
 		} catch (error) {
 			// Revertir cambio optimista si hay excepción
-			setItems(prev => prev.map(x => x.id === id ? { ...x, isActive: !checked } : x));
+			setItems(prev => prev.map(x => x.id === id ? { ...x, active: !checked } : x));
 			toast.error("Error al actualizar el estado de la categoría");
 		}
 	}, []);

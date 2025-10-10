@@ -215,11 +215,11 @@ export function LocationsList({
         title: "Estado",
         render: (location) => {
           const statusLabel = getLocationStatusLabel(location.status);
-          const isActive = isLocationActive(location);
+          const active = isLocationActive(location);
 
           return (
             <StatusBadge
-              isActive={isActive}
+              active={active}
               activeText={statusLabel}
               inactiveText={statusLabel}
             />
@@ -233,7 +233,7 @@ export function LocationsList({
         render: (location) => (
           <div className="flex justify-center">
             <ActionsMenu
-              isActive={isLocationActive(location)}
+              active={isLocationActive(location)}
               onViewDetails={() => handleViewLocation(location)}
               onEdit={() => handleEditLocation(location)}
               onDelete={

@@ -13,7 +13,7 @@ export type SystemConfiguration = {
   countryName: string;
   createdAt: string;
   updatedAt: string;
-  isActive: boolean;
+  active: boolean;
 };
 
 export type UpdateSystemConfiguration = {
@@ -22,6 +22,6 @@ export type UpdateSystemConfiguration = {
     configurationType: string;
     additionalSettings: string;
     countryId: number;
-    isActive: boolean;
+    active: boolean;
   };
 };

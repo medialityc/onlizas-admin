@@ -15,7 +15,7 @@ export default function PromotionDetailsModal({ open, onClose, promotion }: Prom
   if (!promotion) return null;
 
   const isExpired = promotion.endDate && new Date(promotion.endDate) < new Date();
-  const isActive = promotion.isActive && !isExpired;
+  const active = promotion.active && !isExpired;
 
   const formatDate = (dateString: string) => {
     try {
@@ -56,7 +56,7 @@ export default function PromotionDetailsModal({ open, onClose, promotion }: Prom
               )}
             </div>
             <div className="flex flex-wrap gap-2">
-              {isActive && (
+              {active && (
                 <Badge variant="outline-success" rounded className="px-3 py-1">
                   ✓ Activa
                 </Badge>
@@ -66,7 +66,7 @@ export default function PromotionDetailsModal({ open, onClose, promotion }: Prom
                   ⏰ Vencida
                 </Badge>
               )}
-              {!promotion.isActive && !isExpired && (
+              {!promotion.active && !isExpired && (
                 <Badge variant="outline-secondary" rounded className="px-3 py-1">
                   ⏸️ Inactiva
                 </Badge>

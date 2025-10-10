@@ -20,7 +20,7 @@ export default function HomeBannersTab() {
         startDate: b.initDate ?? null,
         endDate: b.endDate ?? null,
         image: b.image ?? null,
-        isActive: true,
+        active: true,
       }))
     : mockHomeBanners;
   const [items, setItems] = useState<HomeBannerItem[]>(initial);
@@ -53,7 +53,7 @@ export default function HomeBannersTab() {
 
   const metrics = useMemo(() => {
     const total = items.length;
-    const active = items.filter((x) => x.isActive).length;
+    const active = items.filter((x) => x.active).length;
     const positions = new Set(items.map((x) => x.position)).size;
     return { total, active, positions };
   }, [items]);
@@ -74,7 +74,7 @@ export default function HomeBannersTab() {
       {/* List */}
       <div className="space-y-3">
         {items.map((b) => (
-          <HomeBannerRow key={b.id} b={b} onToggle={(id) => setItems((prev) => prev.map((x) => (x.id === id ? { ...x, isActive: !x.isActive } : x)))} onDelete={(id) => setItems((prev) => prev.filter((x) => x.id !== id))} />
+          <HomeBannerRow key={b.id} b={b} onToggle={(id) => setItems((prev) => prev.map((x) => (x.id === id ? { ...x, active: !x.active } : x)))} onDelete={(id) => setItems((prev) => prev.filter((x) => x.id !== id))} />
         ))}
       </div>
 
@@ -92,7 +92,7 @@ export default function HomeBannersTab() {
               startDate: toISO(banner.startDate),
               endDate: toISO(banner.endDate),
               image: banner.image ?? null,
-              isActive: banner.isActive ?? true,
+              active: banner.active ?? true,
             },
             ...prev,
           ]);
@@ -132,7 +132,7 @@ function HomeBannerRow({ b, onToggle, onDelete }: { b: HomeBannerItem; onToggle:
             <div>
               <div className="flex items-center gap-2">
                 <div className="text-sm font-medium text-gray-900">{b.title}</div>
-                {b.isActive && (
+                {b.active && (
                   <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
                     Activo
                   </span>
@@ -154,10 +154,10 @@ function HomeBannerRow({ b, onToggle, onDelete }: { b: HomeBannerItem; onToggle:
             <button
               type="button"
               aria-label="Cambiar estado"
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${b.isActive ? "bg-gradient-to-r from-secondary to-indigo-600" : "bg-gray-300"}`}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${b.active ? "bg-gradient-to-r from-secondary to-indigo-600" : "bg-gray-300"}`}
               onClick={() => onToggle(b.id)}
             >
-              <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${b.isActive ? "translate-x-5" : "translate-x-1"}`} />
+              <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${b.active ? "translate-x-5" : "translate-x-1"}`} />
             </button>
             <button className="text-gray-500 hover:text-gray-700" aria-label="Editar" onClick={() => { /* TODO */ }}>
               <PencilSquareIcon className="w-5 h-5" />

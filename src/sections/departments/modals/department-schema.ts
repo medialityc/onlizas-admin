@@ -14,7 +14,7 @@ export const departmentSchema = z.object({
         z.string().url("Debe ser una URL válida."),
         z.instanceof(File, { message: "La imagen es obligatoria." }),
       ]),
-  isActive: z.boolean({ required_error: "El estado activo es obligatorio." }),
+  active: z.boolean({ required_error: "El estado activo es obligatorio." }),
 });
 
 export type DepartmentFormData = z.infer<typeof departmentSchema>;

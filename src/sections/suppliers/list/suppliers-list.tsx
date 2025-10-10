@@ -72,7 +72,7 @@ export function SuppliersList({
         showToast(res.message, "error");
       } else {
         showToast(
-          `Proveedor ${res.data?.isActive ? "activado" : "desactivado"} eliminado correctamente`,
+          `Proveedor ${res.data?.active ? "activado" : "desactivado"} eliminado correctamente`,
           "success"
         );
       }
@@ -152,19 +152,19 @@ export function SuppliersList({
         ),
       },
       {
-        accessor: "isActive",
+        accessor: "active",
         title: "Estado",
         sortable: true,
         width: 100,
         render: (supplier) => (
           <span
             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              supplier.isActive
+              supplier.active
                 ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                 : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
             }`}
           >
-            {supplier.isActive ? "Activo" : "Inactivo"}
+            {supplier.active ? "Activo" : "Inactivo"}
           </span>
         ),
       },
@@ -195,7 +195,7 @@ export function SuppliersList({
         render: (supplier) => (
           <div className="flex justify-center">
             <ActionsMenu
-              isActive={supplier.isActive}
+              active={supplier.active}
               onActive={() => handleToggleActiveSupplier(supplier)}
               onViewDetails={() => handleViewSupplier(supplier)}
               onEdit={() => handleEditFullSupplier(supplier)}

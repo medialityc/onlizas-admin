@@ -43,13 +43,13 @@ export function usePromotionFilters(initialParams: PromotionSearchParams = {}) {
     
     switch (status) {
       case "active":
-        updateSearchParams({ isActive: true });
+        updateSearchParams({ active: true });
         break;
       case "inactive":
-        updateSearchParams({ isActive: false });
+        updateSearchParams({ active: false });
         break;
       default:
-        updateSearchParams({ isActive: undefined });
+        updateSearchParams({ active: undefined });
         break;
     }
   }, [updateSearchParams]);

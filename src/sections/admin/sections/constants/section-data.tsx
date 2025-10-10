@@ -9,7 +9,7 @@ export const setSectionFormData = async (
   formData.append("name", String(section.name));
   formData.append("description", String(section.description));
   formData.append("viewMoreUrl", String(section.viewMoreUrl));
-  formData.append("isActive", String(section.isActive));
+  formData.append("active", String(section.active));
   formData.append("displayOrder", String(section.displayOrder));
 
   formData.append("templateType", String(0)); // todo section.templateType

@@ -16,7 +16,7 @@ export interface BackendBanner {
   initDate?: string;
   endDate?: string;
   image?: File | string | null;
-  isActive?: boolean;
+  active?: boolean;
 }
 
 interface UseBannersProps {
@@ -50,7 +50,7 @@ export function useBanners({ backendBanners, setValue }: UseBannersProps) {
         initDate: b.initDate,
         endDate: b.endDate,
         image: b.image,
-        isActive: true,
+        active: true,
       }));
       setItems(initial);
     }
@@ -68,7 +68,7 @@ export function useBanners({ backendBanners, setValue }: UseBannersProps) {
       endDate: b.endDate ?? "",
       
       image: (b.image instanceof File || typeof b.image === "string") ? b.image : null,
-      isActive: b.isActive,
+      active: b.active,
     }));
     setValue("banners", payload, { shouldDirty: true });
   }, [items, setValue]);
@@ -102,7 +102,7 @@ export function useBanners({ backendBanners, setValue }: UseBannersProps) {
       initDate: banner.initDate.toISOString().split('T')[0], // Solo la fecha YYYY-MM-DD
       endDate: banner.endDate.toISOString().split('T')[0],   // Solo la fecha YYYY-MM-DD
       image: banner.image,
-      isActive: banner.isActive ?? true,
+      active: banner.active ?? true,
     };
 
     setItems((prev) => [newBanner, ...prev]);
@@ -122,7 +122,7 @@ export function useBanners({ backendBanners, setValue }: UseBannersProps) {
             endDate: banner.endDate.toISOString().split('T')[0],   // Solo la fecha YYYY-MM-DD
             // MANTENER imagen existente si no se cambió
             image: banner.image || item.image,
-            isActive: banner.isActive ?? true,
+            active: banner.active ?? true,
           }
           : item
       );
@@ -132,7 +132,7 @@ export function useBanners({ backendBanners, setValue }: UseBannersProps) {
   };
 
   const handleToggleBanner = (id: number) => {
-    setItems((prev) => prev.map((x) => (x.id === id ? { ...x, isActive: !x.isActive } : x)));
+    setItems((prev) => prev.map((x) => (x.id === id ? { ...x, active: !x.active } : x)));
   };
 
   const handleDeleteBanner = (id: number) => {

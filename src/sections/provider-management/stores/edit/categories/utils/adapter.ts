@@ -12,7 +12,7 @@ export function adaptStoreCategories(raw: any[]): StoreCategory[] {
       storeId: Number(c?.storeId ?? 0),
       //productCount: Number(c?.productCount ?? 0),
       //views: Number(c?.views ?? 0),
-      isActive: Boolean(c?.isActive ?? true),
+      active: Boolean(c?.active ?? true),
       order: Number(c?.order ?? idx + 1),
     }))
     .sort((a, b) => a.order - b.order);

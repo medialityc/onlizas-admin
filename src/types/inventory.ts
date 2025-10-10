@@ -26,7 +26,7 @@ export type InventoryProductItem = {
 // Tipos para Currency
 export type InventoryProvider = {
   id: number;
-  isActive: boolean;
+  active: boolean;
   parentProductId: number;
   parentProductName: string;
   storeId: number;

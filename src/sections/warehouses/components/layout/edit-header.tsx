@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 function EditHeader({ warehouse }: { warehouse: WarehouseFormData }) {
   const getStatusInfo = () => {
-    switch (warehouse.isActive) {
+    switch (warehouse.active) {
       case true:
         return {
           label: "Activo",

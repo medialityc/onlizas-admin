@@ -50,7 +50,7 @@ export const categorySchema = z.object({
     ],
     { required_error: "La imagen es obligatoria." }
   ),
-  isActive: z
+  active: z
     .boolean({ required_error: "El estado activo es obligatorio." })
     .default(false),
   features: z

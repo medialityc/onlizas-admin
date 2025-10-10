@@ -28,7 +28,7 @@ interface MenuProps {
   onPay?: () => void;
   onDownload?: () => void;
   onActive?: () => void;
-  isActive?: boolean;
+  active?: boolean;
   onSetDefault?: () => void; // nueva acción para establecer como actual
   onBlocked?: () => void;
   isBlocked?: boolean;
@@ -60,7 +60,7 @@ const ActionsMenu = ({
   onViewDetails,
   onPay,
   onActive,
-  isActive,
+  active,
   isBlocked,
   isVerify,
   onDownload,
@@ -247,11 +247,11 @@ const ActionsMenu = ({
           {onActive && hasPermission(activePermissions) && (
             <>
               <Menu.Item
-                className={`p-1 text-sm ${isActive ? "hover:bg-red-500" : "hover:bg-green-500"}`}
+                className={`p-1 text-sm ${active ? "hover:bg-red-500" : "hover:bg-green-500"}`}
                 leftSection={<CheckIcon className="h-4 w-4 " />}
                 onClick={() => setToggleStatusDialogOpen(true)}
               >
-                {isActive ? "Desactivar" : "Activar"}
+                {active ? "Desactivar" : "Activar"}
               </Menu.Item>
             </>
           )}
@@ -280,7 +280,7 @@ const ActionsMenu = ({
       )}
       {onActive && hasPermission(activePermissions) && (
         <ToggleStatusDialog
-          isActive={isActive}
+          active={active}
           onClose={() => setToggleStatusDialogOpen(false)}
           onConfirm={handleActive}
           open={toggleStatusDialogOpen}

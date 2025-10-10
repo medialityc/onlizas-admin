@@ -106,24 +106,24 @@ function NavigationLogs() {
       <div className="flex items-center gap-2 overflow-x-auto py-1 -mx-2 px-2">
         {accessibleModules.map((m) => {
           const Icon = m.icon;
-          const isActive = pathname === m.href;
+          const active = pathname === m.href;
           return (
             <Link
               key={m.name}
               href={m.href}
               title={m.name}
-              aria-current={isActive ? "page" : undefined}
+              aria-current={active ? "page" : undefined}
               className={`group inline-flex items-center gap-2 rounded-full border bg-white dark:bg-gray-800 px-3 py-1.5 text-xs transition whitespace-nowrap
-                ${isActive ? "border-primary/70 ring-1 ring-primary/10 bg-primary/5" : "border-gray-200 dark:border-gray-700 hover:border-primary/60 hover:shadow-sm"}
+                ${active ? "border-primary/70 ring-1 ring-primary/10 bg-primary/5" : "border-gray-200 dark:border-gray-700 hover:border-primary/60 hover:shadow-sm"}
               `}
             >
               <span className={`rounded-full ${m.bg} p-1.5`}>
                 <Icon
-                  className={`h-4 w-4 ${isActive ? "text-primary" : m.color}`}
+                  className={`h-4 w-4 ${active ? "text-primary" : m.color}`}
                 />
               </span>
               <span
-                className={`font-medium ${isActive ? "text-primary" : "text-gray-800 dark:text-gray-200 group-hover:text-primary"}`}
+                className={`font-medium ${active ? "text-primary" : "text-gray-800 dark:text-gray-200 group-hover:text-primary"}`}
               >
                 {m.name}
               </span>

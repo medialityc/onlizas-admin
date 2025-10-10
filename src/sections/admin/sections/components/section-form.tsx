@@ -116,7 +116,7 @@ export default function SectionForm({ initValue }: Props) {
           {/* Card 3: Switches */}
           <div className="bg-white dark:bg-slate-900 rounded-xl shadow p-6 flex flex-col gap-4 col-span-1 md:col-span-2 xl:col-span-3">
             <div className="flex flex-col sm:flex-row gap-4">
-              <RHFSwitch name="isActive" label="Sección activa" />
+              <RHFSwitch name="active" label="Sección activa" />
               <RHFSwitch name="isPersonalized" label="Sección personalizada" />
             </div>
           </div>

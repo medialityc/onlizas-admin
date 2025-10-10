@@ -8,7 +8,7 @@ export const productTransformData = (product: Product): ProductFormData => {
 
     // Normalizamos isDurable
     isDurable: product.isDurable ?? false,
-    isActive: product.state ?? false,
+    active: product.state ?? false,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-expect-error
     about: product?.aboutThis?.map((a) => ({ value: a })) ?? [],

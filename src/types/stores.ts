@@ -21,7 +21,7 @@ export type BannerItem = {
   initDate?: string | null; // ISO date string - usar nombres del backend
   endDate?: string | null;   // ISO date string - usar nombres del backend
   image?: File | string | null;
-  isActive: boolean;
+  active: boolean;
 };
 
 export type StorePolicy = {
@@ -46,7 +46,7 @@ export type StoreBanner = {
   position: "hero" | "sidebar";
   startDate: string;
   endDate: string;
-  isActive: boolean;
+  active: boolean;
 };
 
 type StoreMetrics = {
@@ -87,14 +87,14 @@ export type StoreSearchParams = {
   page?: number;
   pageSize?: number;
   search?: string;
-  isActive?: boolean;
+  active?: boolean;
 };
 
 // Respuesta paginada
 
 export type Store = {
   id: number;
-  isActive: boolean;
+  active: boolean;
   supplierId: number;
   metrics: StoreMetrics;
   name: string;
@@ -139,7 +139,7 @@ export type GetAllStores = PaginatedResponse<Store>;
 export type StoreMetric = {
   id: number;
   title: string;
-  isActive: boolean;
+  active: boolean;
   logo?: string | null;
   url?: string | null;
   description?: string | null;

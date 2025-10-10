@@ -39,7 +39,7 @@ export function ApprovalProcessStatus({
     const categoryDetails: CategoryDetails = {
       id: category.id,
       name: category.name,
-      isActive: category.isActive || false,
+      active: category.active || false,
       departmentId: category.departmentId || 0,
       departmentName: category.departmentName || "",
       description: category.description || "",

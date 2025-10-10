@@ -1,24 +1,22 @@
 "use client";
 
-import ActionsMenu from "@/components/menu/actions-menu";
 import { DataGrid } from "@/components/datagrid/datagrid";
+import ActionsMenu from "@/components/menu/actions-menu";
 import { paths } from "@/config/paths";
 import { cn } from "@/lib/utils";
-
 import { SearchParams } from "@/types/fetch/request";
 import { GetAllUsersResponse, IUser } from "@/types/users";
 import { DataTableColumn } from "mantine-datatable";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
-import UserAttributesModal from "./components/user-attributes-modal";
-import { useModalState } from "@/hooks/use-modal-state";
 import UserCreateModal from "../create/user-create-container";
+import { useRouter } from "next/navigation";
+import { useModalState } from "@/hooks/use-modal-state";
+import { usePermissions } from "zas-sso-client";
 import { toast } from "react-toastify";
-import { activateUser, deactivateUser } from "@/services/users";
-import UserDetailsModal from "../details/user-details";
-import { PERMISSION_ENUM } from "@/lib/permissions";
+import { revalidateTagFn } from "@/services/revalidate";
+import { activateUser } from "@/services/users";
 
 interface UserListProps {
   data?: GetAllUsersResponse;
@@ -33,77 +31,60 @@ export function UserList({
 }: UserListProps) {
   const router = useRouter();
   const { getModalState, openModal, closeModal } = useModalState();
-
+  const permisos = usePermissions();
   const createModal = getModalState("create");
-  const viewModal = getModalState<number>("view");
-  const editAttributesModal = getModalState<number>("edit_attributes");
-
-  const selectedUser = useMemo(() => {
-    const userId = editAttributesModal.id || viewModal.id;
-    if (!userId || !data?.data) return null;
-    return data.data.find((user) => user.id == userId);
-  }, [editAttributesModal.id, data?.data, viewModal.id]);
 
   const handleCreateUser = useCallback(() => openModal("create"), [openModal]);
 
   const toggleActive = useCallback(async (user: IUser) => {
     try {
-      let response;
-      if (user.isActive) {
-        response = await deactivateUser(user.id);
-      } else {
-        response = await activateUser(user.id);
-      }
+      const response = await activateUser(user.id);
+
       if (!response.error) {
+        revalidateTagFn("users");
+      } else if (response.message) {
         toast.error(response.message);
       } else {
         toast.error(
-          user.isActive
+          user.active
             ? "Error al desactivar el usuario"
             : "Error al activar el usuario"
         );
       }
     } catch (error) {
       console.error(
-        user.isActive
-          ? "Error desactivando usuario"
-          : "Error activando usuario",
+        user.active ? "Error desactivando usuario" : "Error activando usuario",
         error
       );
       toast.error(
-        user.isActive
+        user.active
           ? "Error al desactivar el usuario"
           : "Error al activar el usuario"
       );
     }
   }, []);
 
-  const handleView = useCallback(
-    (user: IUser) => {
-      openModal<number>("view", user.id);
-    },
-    [openModal]
-  );
+  // Log en el handler de editar atributos
 
   const columns = useMemo<DataTableColumn<IUser>[]>(
     () => [
       {
         title: " ",
-        accessor: "photoUrl",
+        accessor: "profilePicturePath",
         width: 60,
         render: (user) => (
           <div className="flex items-center justify-center">
-            {user.photoUrl ? (
+            {user.profilePicturePath ? (
               <Image
-                src={user.photoUrl}
-                alt={`${user.name}`}
+                src={user.profilePicturePath}
+                alt={`${user.firstName} ${user.lastName}`}
                 width={64}
                 height={64}
                 className="rounded-full object-cover"
               />
             ) : (
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-sm font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                {user.name?.[0]?.toUpperCase() || "?"}
+                {user.firstName?.[0]?.toUpperCase() || "?"}
               </div>
             )}
           </div>
@@ -119,13 +100,13 @@ export function UserList({
               href={paths.dashboard.users.edit(user.id)}
               className="hover:text-primary"
             >
-              {user.name}
+              {user.firstName} {user.lastName}
             </Link>
           </div>
         ),
       },
       {
-        accessor: "isActive",
+        accessor: "active",
         title: "Estado",
         sortable: true,
         render: (user) => (
@@ -133,10 +114,10 @@ export function UserList({
             <span
               className={cn(
                 "badge",
-                user.isActive ? "badge-outline-success" : "badge-outline-danger"
+                user.active ? "badge-outline-success" : "badge-outline-danger"
               )}
             >
-              {user.isActive ? "Activo" : "Inactivo"}
+              {user.active ? "Activo" : "Inactivo"}
             </span>
           </div>
         ),
@@ -148,11 +129,11 @@ export function UserList({
         sortable: true,
         render: (user) => (
           <div className="flex flex-col gap-1">
-            {user.emails.length > 0 ? (
+            {user.emails && user.emails.length > 0 ? (
               user.emails.map(({ address, isVerified }, index) => (
                 <p
                   key={index}
-                  className="text-sm flex items-center justify-between  gap-2"
+                  className="flex items-center justify-between gap-2 text-sm"
                 >
                   <span>{address}</span>
                   <span
@@ -180,11 +161,11 @@ export function UserList({
         sortable: true,
         render: (user) => (
           <div className="flex flex-col gap-1">
-            {user.phones.length > 0 ? (
-              user.phones.map(({ number, isVerified }, index) => (
+            {user.phoneNumbers && user.phoneNumbers.length > 0 ? (
+              user.phoneNumbers.map(({ number, isVerified }, index) => (
                 <p
                   key={index}
-                  className="text-sm flex items-center justify-between gap-2"
+                  className="flex items-center justify-between gap-2 text-sm"
                 >
                   <span>{number}</span>
                   <span
@@ -211,7 +192,7 @@ export function UserList({
         width: 200,
         render: (user) => (
           <div className="flex flex-wrap gap-1">
-            {user.roles.length > 0 ? (
+            {user.roles && user.roles.length > 0 ? (
               user.roles.slice(0, 2).map((role, index) => (
                 <span
                   key={index}
@@ -223,7 +204,7 @@ export function UserList({
             ) : (
               <span className="text-sm text-gray-500">No roles</span>
             )}
-            {user.roles.length > 2 && (
+            {user.roles && user.roles.length > 2 && (
               <span className="text-xs text-gray-500">
                 +{user.roles.length - 2} more
               </span>
@@ -236,28 +217,18 @@ export function UserList({
         accessor: "actions",
         title: "Acciones",
         titleClassName: "bg-gray-500 dark:bg-gray-800",
+
         width: 100,
         render: (user) => (
           <ActionsMenu
-            onViewDetails={() => handleView(user)}
             onEdit={() => router.push(paths.dashboard.users.edit(user.id))}
-            onViewDocuments={() =>
-              router.push(paths.dashboard.users.documents.list(user.id))
-            }
-            isActive={user.isActive}
+            active={user.active}
             onActive={() => toggleActive(user)}
-            viewPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-            editPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-            activePermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-            documentsPermissions={[
-              PERMISSION_ENUM.RETRIEVE,
-              "DOCUMENT_VALIDATE",
-            ]}
           />
         ),
       },
     ],
-    [router, handleView, toggleActive]
+    [router, toggleActive]
   );
 
   return (
@@ -271,26 +242,11 @@ export function UserList({
         searchPlaceholder="Buscar..."
         emptyText="No se encontraron usuarios"
         className="mt-6"
-        createPermissions={[PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]}
       />
       <UserCreateModal
         open={createModal.open}
         onClose={() => closeModal("create")}
       />
-      {selectedUser && (
-        <UserDetailsModal
-          onClose={() => closeModal("view")}
-          open={viewModal.open}
-          user={selectedUser}
-        />
-      )}
-      {selectedUser && (
-        <UserAttributesModal
-          onClose={() => closeModal("edit_attributes")}
-          open={editAttributesModal.open}
-          user={selectedUser}
-        />
-      )}
     </>
   );
 }

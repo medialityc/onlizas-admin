@@ -28,7 +28,7 @@ const UserHeader: React.FC<UserHeaderProps> = ({ user }) => {
             <h1 className="text-2xl font-bold text-white">{user.name}</h1>
             <div className="flex items-center space-x-3 mt-2">
               <StatusBadge
-                isActive={user.isVerified}
+                active={user.isVerified}
                 activeText="Verified"
                 inactiveText="Unverified"
                 className="bg-opacity-20 text-white"

@@ -50,7 +50,7 @@ export function useBanners({ backendBanners, setValue }: UseBannersParams) {
         initDate: b.initDate ?? null,
         endDate: b.endDate ?? null,
         image: b.image ?? null,
-        isActive: true,
+        active: true,
       }))
     : [];
 
@@ -66,7 +66,7 @@ export function useBanners({ backendBanners, setValue }: UseBannersParams) {
       initDate: b.initDate || "",
       endDate: b.endDate || "",
       image: b.image,
-      isActive:b.isActive??true
+      active:b.active??true
     }));
     setValue("banners", payload, { shouldDirty: true });
   }, [items, setValue]);
@@ -100,7 +100,7 @@ export function useBanners({ backendBanners, setValue }: UseBannersParams) {
         initDate: toISO(banner.initDate) as any,
         endDate: toISO(banner.endDate) as any,
         image: banner.image ?? null,
-        isActive: banner.isActive ?? true,
+        active: banner.active ?? true,
       },
       ...prev,
     ]);
@@ -122,7 +122,7 @@ export function useBanners({ backendBanners, setValue }: UseBannersParams) {
               initDate: toISO(banner.initDate) as any,
               endDate: toISO(banner.endDate) as any,
               image: banner.image ?? item.image,
-              isActive: banner.isActive ?? true,
+              active: banner.active ?? true,
             }
           : item
       )
@@ -131,7 +131,7 @@ export function useBanners({ backendBanners, setValue }: UseBannersParams) {
 
   const handleToggleBanner = (id: number) => {
     setItems((prev) =>
-      prev.map((x) => (x.id === id ? { ...x, isActive: !x.isActive } : x))
+      prev.map((x) => (x.id === id ? { ...x, active: !x.active } : x))
     );
   };
 

@@ -22,7 +22,7 @@ export const setProductFormData = async (
 
   formData.append("name", product.name);
   formData.append("description", product.description);
-  formData.append("isActive", String(product.isActive));
+  formData.append("active", String(product.active));
   formData.append("supplierUserIds", JSON.stringify(product.supplierUserIds));
   formData.append("categoryIds", JSON.stringify(product.categoryIds));
   /* dimensions */

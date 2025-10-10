@@ -8,7 +8,7 @@ import { CheckCircle } from "lucide-react";
 export interface CategoryDetails {
   id: number;
   name: string;
-  isActive: boolean;
+  active: boolean;
   departmentId: number;
   departmentName: string;
   description: string;
@@ -83,12 +83,12 @@ export function CategoryDetailsModal({
                   <span className="flex items-center">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        category.isActive
+                        category.active
                           ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
                           : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
                       }`}
                     >
-                      {category.isActive ? "Activa" : "Inactiva"}
+                      {category.active ? "Activa" : "Inactiva"}
                     </span>
                   </span>
                 </div>

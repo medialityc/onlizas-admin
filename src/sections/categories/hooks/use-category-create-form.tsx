@@ -12,7 +12,7 @@ const initValues: CategoryFormData = {
   name: "",
   description: "",
   image: "",
-  isActive: false,
+  active: false,
   features: [
     {
       featureName: "",

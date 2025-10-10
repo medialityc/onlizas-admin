@@ -53,7 +53,7 @@ export function WarehouseVirtualTypeList({
           showToast(res.message, "error");
         } else {
           showToast(
-            `Tipo de almacén virtual ${(res.data as unknown as WarehouseVirtualTypeFormData)?.isActive ? "activada" : "desactivada"}  correctamente`,
+            `Tipo de almacén virtual ${(res.data as unknown as WarehouseVirtualTypeFormData)?.active ? "activada" : "desactivada"}  correctamente`,
             "success"
           );
         }
@@ -92,19 +92,19 @@ export function WarehouseVirtualTypeList({
       },
 
       {
-        accessor: "isActive",
+        accessor: "active",
         title: "Estado",
         sortable: true,
         width: 100,
         render: (type) => (
           <span
             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              type.isActive
+              type.active
                 ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                 : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
             }`}
           >
-            {type.isActive ? "Activa" : "Inactiva"}
+            {type.active ? "Activa" : "Inactiva"}
           </span>
         ),
       },
@@ -116,7 +116,7 @@ export function WarehouseVirtualTypeList({
         render: (type) => (
           <div className="flex justify-center">
             <ActionsMenu
-              isActive={type.isActive}
+              active={type.active}
               onActive={() => handleToggleActiveWarehouseType(type)}
               // onEdit={() => handleEditCategory(type)}
               activePermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}

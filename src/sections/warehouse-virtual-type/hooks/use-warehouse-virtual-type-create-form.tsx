@@ -15,7 +15,7 @@ import {
 
 const initValues: WarehouseVirtualTypeFormData = {
   name: "",
-  isActive: true,
+  active: true,
   defaultRules: "",
 };
 

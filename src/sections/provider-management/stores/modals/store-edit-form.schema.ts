@@ -23,7 +23,7 @@ const promotionSchema = z.object({
     .refine((v) => !v || !Number.isNaN(Date.parse(v)), {
       message: "Fecha de fin inválida",
     }),
-  isActive: z.boolean().optional(),
+  active: z.boolean().optional(),
   badge: z.string().optional(),
 });
 
@@ -49,7 +49,7 @@ const homeBannerSchema = z.array(z.object({
     z.string(),
     z.null(),
   ]).optional(),
-  isActive: z.boolean().optional(),
+  active: z.boolean().optional(),
 }))
 
 const categoryItemSchema = z.object({
@@ -59,7 +59,7 @@ const categoryItemSchema = z.object({
 
 export const storeEditSchema = z.object({
   id:z.number().optional(),
-  isActive: z.boolean().optional(),
+  active: z.boolean().optional(),
 
   // Datos básicos
   name: z

@@ -128,11 +128,11 @@ export const SoreCard = ({ store }: DataCardProps) => {
             </div>
           </div>
           <div className="shrink-0">
-            <Badge variant={store.isActive ? "primary" : "outline-primary"}>
+            <Badge variant={store.active ? "primary" : "outline-primary"}>
               <span
-                className={`mr-1 inline-block h-2 w-2 rounded-full ${store.isActive ? "bg-green-500" : "bg-gray-400"}`}
+                className={`mr-1 inline-block h-2 w-2 rounded-full ${store.active ? "bg-green-500" : "bg-gray-400"}`}
               />
-              {store.isActive ? "Activa" : "Inactiva"}
+              {store.active ? "Activa" : "Inactiva"}
             </Badge>
           </div>
         </div>

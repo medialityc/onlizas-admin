@@ -69,7 +69,7 @@ export function CategoriesList({
           showToast(res.message, "error");
         } else {
           showToast(
-            `Categoría ${(res.data as unknown as Category)?.isActive ? "activada" : "desactivada"}  correctamente`,
+            `Categoría ${(res.data as unknown as Category)?.active ? "activada" : "desactivada"}  correctamente`,
             "success"
           );
         }
@@ -123,19 +123,19 @@ export function CategoriesList({
         ),
       },
       {
-        accessor: "isActive",
+        accessor: "active",
         title: "Estado",
         sortable: true,
         width: 100,
         render: (category) => (
           <span
             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              category.isActive
+              category.active
                 ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                 : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
             }`}
           >
-            {category.isActive ? "Activa" : "Inactiva"}
+            {category.active ? "Activa" : "Inactiva"}
           </span>
         ),
       },
@@ -162,7 +162,7 @@ export function CategoriesList({
         render: (category) => (
           <div className="flex justify-center">
             <ActionsMenu
-              isActive={category.isActive}
+              active={category.active}
               onActive={() => handleToggleActiveCategory(category)}
               onViewDetails={() => handleViewCategory(category)}
               onEdit={() => handleEditCategory(category)}

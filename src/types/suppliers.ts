@@ -9,7 +9,7 @@ export type Supplier = {
   type: string;
   currentRating: number;
   lastEvaluationDate: string;
-  isActive: boolean;
+  active: boolean;
   isAproved: boolean;
   state: SupplierState;
   expirationDate: string;
@@ -120,7 +120,7 @@ export type UpdateSupplier = {
   address: string;
   message: string;
   type: string;
-  isActive: boolean;
+  active: boolean;
   pendingDocuments: { fileName: string; content: File | string }[];
 };
 
@@ -175,7 +175,7 @@ export type CategoryFeature = {
 export type EnhancedCategory = {
   id: number;
   name: string;
-  isActive: boolean;
+  active: boolean;
   departmentId: number;
   departmentName: string;
   description: string;

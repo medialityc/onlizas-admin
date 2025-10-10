@@ -5,17 +5,17 @@ import { useForm, FormProvider as RHFFormProvider, useWatch } from "react-hook-f
 import { RHFSwitch } from "@/components/react-hook-form";
 
 export default function PromotionRow({ p, onToggle }: { p: Promotion; onToggle: (id: number, checked: boolean) => void }) {
-  const methods = useForm<{ active: boolean }>({ defaultValues: { active: p.isActive } });
+  const methods = useForm<{ active: boolean }>({ defaultValues: { active: p.active } });
   const active = useWatch({ control: methods.control, name: "active" });
 
   // Solo sincroniza el form si el prop cambió respecto al valor actual
   React.useEffect(() => {
     const current = methods.getValues("active");
-    if (current !== p.isActive) {
-      methods.reset({ active: p.isActive });
+    if (current !== p.active) {
+      methods.reset({ active: p.active });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [p.isActive]);
+  }, [p.active]);
 
   // Llama al callback solo cuando el usuario realmente cambia el switch
   const prev = React.useRef<boolean | undefined>(methods.getValues("active"));
@@ -33,7 +33,7 @@ export default function PromotionRow({ p, onToggle }: { p: Promotion; onToggle: 
         <div>
           <div className="flex items-center gap-2">
             <h4 className="text-sm font-semibold text-gray-900">{p.name}</h4>
-            {p.isActive && <Badge variant="outline-primary" className="!text-[11px] !px-2 !py-0.5" rounded>Activa</Badge>}
+            {p.active && <Badge variant="outline-primary" className="!text-[11px] !px-2 !py-0.5" rounded>Activa</Badge>}
             
           </div>
           {p.description && <p className="text-xs text-gray-500">{p.description}</p>}

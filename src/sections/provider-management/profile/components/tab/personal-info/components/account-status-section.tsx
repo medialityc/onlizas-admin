@@ -14,7 +14,7 @@ export function AccountStatusSection({ user }: AccountStatusSectionProps) {
     if (user?.isBlocked) {
       return (
         <StatusBadge
-          isActive={false}
+          active={false}
           activeText=""
           inactiveText="Bloqueado"
           className="bg-red-100 text-red-800"
@@ -25,7 +25,7 @@ export function AccountStatusSection({ user }: AccountStatusSectionProps) {
     if (user?.isVerified === false) {
       return (
         <StatusBadge
-          isActive={false}
+          active={false}
           activeText=""
           inactiveText="Requiere verificación"
           className="bg-yellow-100 text-yellow-800"
@@ -35,7 +35,7 @@ export function AccountStatusSection({ user }: AccountStatusSectionProps) {
 
     return (
       <StatusBadge
-        isActive={user?.isActive ?? false}
+        active={user?.active ?? false}
         activeText="Activo"
         inactiveText="Inactivo"
       />

@@ -5,7 +5,7 @@ export type Promotion = {
   id: number;
   storeId: number;
   storeName: string;
-  isActive: boolean;
+  active: boolean;
   name: string;
   description: string;
   promotionType?: number; // Campo del backend que indica el tipo de promoción (0-5)
@@ -40,7 +40,7 @@ export type PromotionSearchParams = {
   page?: number;
   pageSize?: number;
   search?: string;
-  isActive?: boolean;
+  active?: boolean;
   type?: "percent" | "amount";
   status?: "active" | "inactive" | "expired";
 };

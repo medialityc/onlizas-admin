@@ -11,7 +11,7 @@ export default function GeneralStatusCard() {
       </div>
       <div className="flex items-center gap-2">
         <RHFSwitch
-          name="isActive"
+          name="active"
           label="Tienda activa y visible para clientes"
           checkedClassName="peer-checked:bg-gradient-to-r peer-checked:from-secondary peer-checked:to-indigo-600"
         />

@@ -5,7 +5,7 @@ export type Category = {
   name: string;
   description: string;
   image: string;
-  isActive: boolean;
+  active: boolean;
   department: {
     id: number;
     name: string;
@@ -32,7 +32,7 @@ export type CreateCategory = {
   departmentId: number;
   description: string;
   image: string;
-  isActive: boolean;
+  active: boolean;
   features: Feature[];
 };
 

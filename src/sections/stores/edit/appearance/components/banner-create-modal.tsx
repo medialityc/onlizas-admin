@@ -25,7 +25,7 @@ export default function HomeBannerCreateModal({ open, onClose, onCreate }: Props
 			startDate: undefined,
 			endDate: undefined,
 			image: null,
-			isActive: true,
+			active: true,
 		},
 		mode: "onBlur",
 	});

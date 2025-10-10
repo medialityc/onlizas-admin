@@ -14,7 +14,7 @@ export function buildThemeFormData({ store, data }: BuildAppearanceFormDataParam
   formData.append("id", String(store.id));
   formData.append("name", store.name || "");
   formData.append("supplierId", String(store.supplierId));
-  formData.append("isActive", store.isActive ? "true" : "false");
+  formData.append("active", store.active ? "true" : "false");
 
   // Campos de apariencia/tema - LO IMPORTANTE
   formData.append("primaryColor", data.primaryColor || "");
@@ -71,7 +71,7 @@ export function buildBannersFormData({ banners, storeId, filter }: BuildBannersF
     position: typeof b.position === "number" ? b.position : Number(b.position ?? 0),
     initDate: toIsoOrUndefined(b.initDate),
     endDate: toIsoOrUndefined(b.endDate),
-    isActive: b.isActive ?? true,
+    active: b.active ?? true,
   }));
   const formData = new FormData();
   const bannersPayload = bannersData.length === 1 ? bannersData[0] : bannersData;

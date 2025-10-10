@@ -67,9 +67,9 @@ const CategoryDetailsContainer = ({ category }: Props) => {
                       Estado:
                     </p>
                     <Badge
-                      variant={category.isActive ? "success" : "secondary"}
+                      variant={category.active ? "success" : "secondary"}
                     >
-                      {category.isActive ? "Activo" : "Inactivo"}
+                      {category.active ? "Activo" : "Inactivo"}
                     </Badge>
                   </div>
 

@@ -48,7 +48,7 @@ export default function BannerCreateModal({
       initDate: todayLocal(),
       endDate: todayLocal(),
       image: "",
-      isActive: true,
+      active: true,
     },
     mode: "onBlur",
   });
@@ -69,7 +69,7 @@ export default function BannerCreateModal({
           initDate: fixDate(editingBanner.initDate ?? todayLocal()),
           endDate: fixDate(editingBanner.initDate ?? todayLocal()),
           image: editingBanner.image ?? "",
-          isActive: editingBanner.isActive ?? true,
+          active: editingBanner.active ?? true,
         });
       } else {
         methods.reset({
@@ -79,7 +79,7 @@ export default function BannerCreateModal({
           initDate: new Date(),
           endDate: new Date(),
           image: "",
-          isActive: true,
+          active: true,
         });
       }
     }

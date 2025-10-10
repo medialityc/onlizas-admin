@@ -66,7 +66,7 @@ export interface Product {
   state: boolean;
   categories: Category[];
   suppliers: Category[];
-  isActive: boolean;
+  active: boolean;
 }
 export interface AduanaCategory {
   id: number;
@@ -75,7 +75,7 @@ export interface AduanaCategory {
   chapter: string;
   chapterName: string;
   specificRule: string;
-  isActive: boolean;
+  active: boolean;
   suppliers: ProductSupplier[];
   categories: ProductCategory[];
   dimensions?: ProductDimensions;
@@ -100,7 +100,7 @@ export interface Details {
 export type CreateProductRequest = {
   name: string;
   description: string;
-  isActive: boolean;
+  active: boolean;
   supplierIds: number[];
   categoryIds: number[];
   dimensions?: ProductDimensions;
@@ -136,7 +136,7 @@ export type GetAllProductVariant = Omit<ProductApiResponse, "data"> & {
 export type ProductFilter = {
   search?: string;
   categoryId?: number;
-  isActive?: boolean;
+  active?: boolean;
   supplierId?: number;
   page?: number;
   pageSize?: number;
@@ -148,7 +148,7 @@ export interface ProductSearchParams {
   pageSize?: number;
   search?: string;
   categoryId?: number;
-  isActive?: boolean;
+  active?: boolean;
   supplierId?: number;
 }
 

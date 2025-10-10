@@ -3,7 +3,7 @@ import { z } from "zod";
 export const meWarehouseSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(1, "El nombre del almacén es requerido"),
-  isActive: z.boolean().default(true),
+  active: z.boolean().default(true),
 
   // virtual
   virtualTypeId: z

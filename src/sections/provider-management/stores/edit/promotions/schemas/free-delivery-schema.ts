@@ -38,7 +38,7 @@ export const freeDeliverySchema = z
   mediaFile:  z.union([z.string().min(1, { message: "La imagen es obligatoria" }), z.instanceof(File,{message:"Seleccione una imagen"})]),
 
     // Estado
-    isActive: z.boolean(),
+    active: z.boolean(),
     code:z.string({required_error:"Debe establecer un código"}),
 
     // Campos para requisitos de compra

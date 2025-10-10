@@ -41,7 +41,7 @@ export default function CreatePromotionModal({ open, onClose, onCreate }: { open
       usedCount: 0,
       startDate: toYMD(data.startDate),
       endDate: toYMD(data.endDate),
-      isActive: true,
+      active: true,
 
       // Propiedades adicionales requeridas por la interfaz Promotion
       storeId: 0,

@@ -32,9 +32,9 @@ export async function WarehouseDetails({
               {w.name}
               <Badge
                 className="ml-2"
-                variant={w.isActive ? "success" : "secondary"}
+                variant={w.active ? "success" : "secondary"}
               >
-                {w.isActive ? "Activo" : "Inactivo"}
+                {w.active ? "Activo" : "Inactivo"}
               </Badge>
             </h1>
           </div>

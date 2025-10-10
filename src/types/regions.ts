@@ -64,7 +64,7 @@ export interface Region {
   status: number | string;
   createdAt: string;
   updatedAt: string;
-  isActive: boolean;
+  active: boolean;
   countries: Array<{
     id: number;
     code: string;

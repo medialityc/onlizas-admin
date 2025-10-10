@@ -32,7 +32,7 @@ export default function SupplierEditForm({
       address: supplierDetails.address,
       message: supplierDetails.message || "",
       type: supplierDetails.type,
-      isActive: supplierDetails.isActive,
+      active: supplierDetails.active,
       sellerType: supplierDetails.sellerType ?? "",
       nacionalityType: supplierDetails.nacionality ?? "",
       mincexCode: supplierDetails.mincexCode ?? "",
@@ -70,7 +70,7 @@ export default function SupplierEditForm({
       formData.append("address", data.address);
       formData.append("message", data.message || "");
       formData.append("type", data.type);
-      formData.append("isActive", data.isActive.toString());
+      formData.append("active", data.active.toString());
       formData.append("sellerType", String(data.sellerType));
       formData.append("nacionalityType", String(data.nacionalityType));
       if ((data.mincexCode ?? "").length > 0) {

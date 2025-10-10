@@ -23,7 +23,7 @@ const VirtualSection = () => {
             label="Tipo de almacén virtual"
             placeholder="Seleccionar un tipo de almacén"
             onFetch={(params) =>
-              getAllWarehousesVirtualType({ ...params, isActive: true })
+              getAllWarehousesVirtualType({ ...params, active: true })
             }
             objectValueKey="id"
             objectKeyLabel="name"

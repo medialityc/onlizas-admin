@@ -48,7 +48,7 @@ export default function PromotionBasicInfo({
             
                 <h3 className="text-md font-semibold text-gray-900 dark:text-gray-100">Información básica</h3>
             <div className="mt-4">
-                <FormToggle name="isActive" label="Activo" />
+                <FormToggle name="active" label="Activo" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="md:col-span-2">

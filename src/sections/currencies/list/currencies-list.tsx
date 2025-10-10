@@ -154,19 +154,19 @@ export function CurrenciesList({
         ),
       },
       {
-        accessor: "isActive",
+        accessor: "active",
         title: "Estado",
         sortable: true,
         width: 100,
         render: (currency) => (
           <span
             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              currency.isActive
+              currency.active
                 ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                 : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
             }`}
           >
-            {currency.isActive ? "Activa" : "Inactiva"}
+            {currency.active ? "Activa" : "Inactiva"}
           </span>
         ),
       },
@@ -203,7 +203,7 @@ export function CurrenciesList({
                   ? () => handleSetAsDefault(currency)
                   : undefined
               }
-              isActive={currency.isActive}
+              active={currency.active}
               onActive={
                 !currency.default
                   ? () => handleDeleteCurrency(currency)

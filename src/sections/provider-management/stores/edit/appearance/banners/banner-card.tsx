@@ -83,7 +83,7 @@ function BannerInfo({
         <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
           {banner.title}
         </div>
-        {banner.isActive && (
+        {banner.active && (
           <span className="inline-flex items-center rounded-md bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-300 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-600/30">
             Activo
           </span>
@@ -131,7 +131,7 @@ function BannerActions({
           type="button"
           aria-label="Cambiar estado"
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-            banner.isActive
+            banner.active
               ? "bg-gradient-to-r from-secondary to-indigo-600"
               : "bg-gray-300 dark:bg-gray-600"
           }`}
@@ -139,7 +139,7 @@ function BannerActions({
         >
           <span
             className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
-              banner.isActive ? "translate-x-5" : "translate-x-1"
+              banner.active ? "translate-x-5" : "translate-x-1"
             }`}
           />
         </button>

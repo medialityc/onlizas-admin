@@ -5,7 +5,7 @@ export type IHomeBanner = {
   link: string;
   imageDesktopUrl: string;
   imageMobileUrl: string;
-  isActive: boolean;
+  active: boolean;
 
   //details
   regionNames?: string[];

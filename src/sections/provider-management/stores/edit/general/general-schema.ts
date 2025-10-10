@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const GeneralStoreSchema = z.object({
   // Estado
-  isActive: z.boolean().optional(),
+  active: z.boolean().optional(),
 
   // Información básica
   name: z.string().min(1, "Nombre requerido"),

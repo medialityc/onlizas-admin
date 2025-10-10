@@ -1,13 +1,13 @@
 import React from "react";
 
 interface CircleIndicatorProps {
-  isActive: boolean;
+  active: boolean;
   size?: "sm" | "md" | "lg";
   className?: string;
 }
 
 const CircleIndicator: React.FC<CircleIndicatorProps> = ({
-  isActive,
+  active,
   size = "md",
   className = "",
 }) => {
@@ -20,7 +20,7 @@ const CircleIndicator: React.FC<CircleIndicatorProps> = ({
   return (
     <div 
       className={`rounded-full ${sizeClasses[size]} ${
-        isActive ? "bg-green-500" : "bg-red-500"
+        active ? "bg-green-500" : "bg-red-500"
       } ${className}`}
     />
   );

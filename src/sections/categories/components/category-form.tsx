@@ -65,7 +65,7 @@ export default function CategoryForm({ initValue }: CategoryFormProps) {
             size="full"
           />
 
-          <RHFCheckbox name="isActive" label="Categoría activa" />
+          <RHFCheckbox name="active" label="Categoría activa" />
 
           <CategoryFeatureSection />
         </div>

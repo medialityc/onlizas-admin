@@ -45,7 +45,7 @@ export default function DepartmentModal({
     defaultValues: {
       description: department?.description ?? "",
       image: department?.image,
-      isActive: department?.isActive ?? true,
+      active: department?.active ?? true,
       name: department?.name ?? "",
     },
   });
@@ -97,7 +97,7 @@ export default function DepartmentModal({
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("description", data.description);
-      formData.append("isActive", String(data.isActive));
+      formData.append("active", String(data.active));
 
       // Procesar imagen
       if (data.image) {
@@ -211,8 +211,8 @@ export default function DepartmentModal({
 
             {/* IsActive Checkbox */}
             <RHFCheckbox
-              name="isActive"
-              id="isActive"
+              name="active"
+              id="active"
               label="¿Está activo?"
               className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
             />

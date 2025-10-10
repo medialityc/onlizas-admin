@@ -107,11 +107,11 @@ export function SectionList({
       },
 
       {
-        accessor: "isActive",
+        accessor: "active",
         title: "Estado",
         sortable: true,
         width: 100,
-        render: (section) => <StatusBadgeCell value={section.isActive} />,
+        render: (section) => <StatusBadgeCell value={section.active} />,
       },
       {
         accessor: "isPersonalized",
@@ -177,7 +177,7 @@ export function SectionList({
         render: (section) => (
           <div className="flex justify-center">
             <ActionsMenu
-              /*  isActive={section.isActive}
+              /*  active={section.active}
               onActive={() => handleToggleActiveSection(section)} */
               onViewDetails={() => handleViewSection(section)}
               onEdit={() => handleEditSection(section)}
