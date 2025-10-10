@@ -41,7 +41,6 @@ export async function getAllUsers(
     useAuth: true,
     next: { tags: ["users"] },
   });
-
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<GetAllUsersResponse>(res);
 }
@@ -178,7 +177,7 @@ export async function updateUserAttributes(
   return buildApiResponseAsync<UpdateUserAttributesResponse>(res);
 }
 export async function activateUser(
-  id: number
+  id: number | string
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.users.activateUser(id),
@@ -399,7 +398,7 @@ export async function updateProviderPersonalInfo(
     const emailsFormatted = data.emails.map((email) => ({
       address: email.address,
       isVerified: email.isVerified,
-      isActive: true, // Siempre activo por defecto
+      active: true, // Siempre activo por defecto
     }));
     formData.append("emails", JSON.stringify(emailsFormatted));
   }
@@ -410,7 +409,7 @@ export async function updateProviderPersonalInfo(
       number: phone.number,
       countryId: phone.countryId,
       isVerified: phone.isVerified,
-      isActive: true, // Siempre activo por defecto
+      active: true, // Siempre activo por defecto
     }));
     formData.append("phones", JSON.stringify(phonesFormatted));
   }

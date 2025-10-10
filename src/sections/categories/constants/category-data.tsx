@@ -30,7 +30,7 @@ export const setCategoryFormData = async (
   formData.append("departmentId", String(category.departmentId));
   formData.append("name", category.name);
   formData.append("description", category.description);
-  formData.append("isActive", String(category.isActive));
+  formData.append("active", String(category.active));
 
   formData.append(`features`, JSON.stringify(features));
 

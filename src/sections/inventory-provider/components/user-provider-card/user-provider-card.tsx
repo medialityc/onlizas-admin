@@ -61,9 +61,9 @@ const UserProviderCard = ({ item, className }: Props) => {
               </CardTitle>
             </Link>
             <Badge
-              variant={item?.isActive ? "outline-success" : "outline-danger"}
+              variant={item?.active ? "outline-success" : "outline-danger"}
             >
-              {item?.isActive ? "Activo" : "Inactivo"}
+              {item?.active ? "Activo" : "Inactivo"}
             </Badge>
           </div>
         </div>

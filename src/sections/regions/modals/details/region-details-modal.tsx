@@ -230,14 +230,14 @@ export default function RegionDetailsModal({
           <nav className="flex flex-wrap gap-2">
             {tabs.map((tab) => {
               const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
+              const active = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`
                     flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200
-                    ${isActive 
+                    ${active 
                       ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700' 
                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }
@@ -248,7 +248,7 @@ export default function RegionDetailsModal({
                   {tab.count !== undefined && (
                     <span className={`
                       px-2 py-1 rounded-full text-xs font-medium
-                      ${isActive 
+                      ${active 
                         ? 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300' 
                         : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                       }

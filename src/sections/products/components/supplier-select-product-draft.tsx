@@ -75,7 +75,7 @@ const SupplierSelectProductDraft = () => {
     setValue("width", product?.width);
     setValue("height", product?.height);
     setValue("weight", product?.weight);
-    setValue("isActive", product?.isActive);
+    setValue("active", product?.active);
     setValue(
       "categoryIds",
       product?.categories?.map((cat: any) => cat?.id || cat)

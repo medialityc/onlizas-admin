@@ -72,7 +72,7 @@ function CategoriesGeneralInfo({ category }: { category: Category }) {
 
         <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            {category.isActive ? (
+            {category.active ? (
               <CheckCircleIcon className="size-5 text-green-500" />
             ) : (
               <XCircleIcon className="size-5 text-red-500" />
@@ -83,12 +83,12 @@ function CategoriesGeneralInfo({ category }: { category: Category }) {
           </div>
           <span
             className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-              category.isActive
+              category.active
                 ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                 : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
             }`}
           >
-            {category.isActive ? "Activa" : "Inactiva"}
+            {category.active ? "Activa" : "Inactiva"}
           </span>
         </div>
 

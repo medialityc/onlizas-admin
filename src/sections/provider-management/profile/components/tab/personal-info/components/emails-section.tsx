@@ -66,7 +66,7 @@ export function EmailsSection({
               </div>
               <div className="flex items-center gap-3 mt-9">
                 <StatusBadge
-                  isActive={field.isVerified}
+                  active={field.isVerified}
                   activeText="Verificado"
                   inactiveText="No Verificado"
                 />

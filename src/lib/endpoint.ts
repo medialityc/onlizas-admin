@@ -17,7 +17,7 @@ export const backendRoutes = {
     blockToggle: `${process.env.NEXT_PUBLIC_API_URL}admin/users/block-toggle`,
     updateAttributes: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${id}/attributes`,
-    activateUser: (id: number) =>
+    activateUser: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${id}/activate`,
     getAttributeHistory: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${id}/attributes/history`,

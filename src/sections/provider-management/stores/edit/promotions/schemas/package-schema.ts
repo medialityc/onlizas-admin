@@ -27,7 +27,7 @@ export const packageSchema = z
 
         // mediaFile obligatorio (puede ser una URL string o un File cuando se sube nueva imagen)
         mediaFile: z.union([z.string().min(1, { message: "La imagen es obligatoria" }), z.instanceof(File)]),
-        isActive: z.boolean(),
+        active: z.boolean(),
 
         // Discount fields
         discountType: z.number().min(0).max(2), // 0=percent, 1=amount, 2=free

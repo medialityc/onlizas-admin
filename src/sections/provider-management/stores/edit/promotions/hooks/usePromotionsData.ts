@@ -35,7 +35,7 @@ export function usePromotionsData(storeId: number, searchParams: PromotionSearch
     const source = summaryPromotions.length > 0 ? summaryPromotions : promotions;
 
     const total = summaryQuery.data?.data?.totalCount ?? source.length;
-    const active = source.filter(p => p.isActive).length;
+    const active = source.filter(p => p.active).length;
     const uses = source.reduce((acc, p) => acc + (p.usedCount || 0), 0);
     const expired = source.filter(p => p.endDate && new Date(p.endDate) < new Date()).length;
 

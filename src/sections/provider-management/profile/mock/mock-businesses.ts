@@ -19,7 +19,7 @@ export const mockBusinesses: Business[] = [
     parentBusiness: { id: 0, name: "" },
     childBusinessIds: [],
     photoObjectCodes: ["/files/mock-business-10-1.jpg"],
-    isActive: true,
+    active: true,
   },
 ];
 

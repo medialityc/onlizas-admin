@@ -24,7 +24,7 @@ export const updateSupplierSchema = z.object({
   type: z
     .string({ required_error: "El tipo es obligatorio." })
     .min(1, "El tipo no puede estar vacío."),
-  isActive: z.boolean({
+  active: z.boolean({
     required_error: "Debes especificar si el proveedor está activo.",
   }),
   pendingCategories: z

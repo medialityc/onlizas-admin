@@ -8,7 +8,7 @@ export interface UpdateProviderPersonalInfoRequest {
   apiRole: number;
   attributesJson?: string;
   inaccessible: boolean;
-  isActive: boolean;
+  active: boolean;
   photoFile?: File;
   removePhoto: boolean;
   contents?: File[];
@@ -17,13 +17,13 @@ export interface UpdateProviderPersonalInfoRequest {
   emails: Array<{
     address: string;
     isVerified: boolean;
-    isActive: boolean;
+    active: boolean;
   }>;
   phones: Array<{
     number: string;
     countryId: number;
     isVerified: boolean;
-    isActive: boolean;
+    active: boolean;
   }>;
   roleGuids?: string[];
   businessIds?: number[];

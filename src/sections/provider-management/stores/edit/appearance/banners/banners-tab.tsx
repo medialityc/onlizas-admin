@@ -37,7 +37,7 @@ export default function BannersTab() {
   // Calcular métricas
   const metrics = useMemo(() => {
     const total = items.length;
-    const active = items.filter((x) => x.isActive).length;
+    const active = items.filter((x) => x.active).length;
     const positions = new Set(items.map((x) => x.position)).size;
     return { total, active, positions };
   }, [items]);

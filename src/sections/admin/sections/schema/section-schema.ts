@@ -32,7 +32,7 @@ export const sectionHomeBannerSchema = z.object({
   displayOrder: z.number(),
   startDate: z.union([z.date(), z.string()]),
   endDate: z.union([z.date(), z.string()]),
-  isActive: z.literal(true),
+  active: z.literal(true),
 });
 
 export const sectionSchema = z
@@ -40,7 +40,7 @@ export const sectionSchema = z
     name: z.string(),
     description: z.string(),
     viewMoreUrl: z.string(),
-    isActive: z.boolean().default(true),
+    active: z.boolean().default(true),
     displayOrder: z.number(),
     templateType: z.number(),
     defaultItemCount: z.number(),

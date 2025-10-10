@@ -13,7 +13,7 @@ const initValues: SectionFormData = {
   name: "",
   description: "",
   viewMoreUrl: "",
-  isActive: true,
+  active: true,
   isPersonalized: true,
   displayOrder: 0,
   createdAt: "",

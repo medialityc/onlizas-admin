@@ -68,7 +68,7 @@ export interface SidebarSectionProps {
 
 export interface SidebarItemProps {
   item: SidebarMenuItem;
-  isActive: boolean;
+  active: boolean;
   isExpanded?: boolean;
   onToggle?: () => void;
   isActiveLink: (path: string) => boolean;

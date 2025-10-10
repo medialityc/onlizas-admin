@@ -23,7 +23,7 @@ export default function CategoriesContainer({ store }: Props) {
         name: c.name ?? `Cat ${idx + 1}`,
         productCount: c.productCount ?? 0,
         views: c.views ?? 0,
-        isActive: Boolean(c.isActive ?? true),
+        active: Boolean(c.active ?? true),
         order: c.order ?? idx + 1,
       }))
     : mockCategories;
@@ -34,7 +34,7 @@ export default function CategoriesContainer({ store }: Props) {
 
   const totals = useMemo(() => {
     const total = items.length;
-    const active = items.filter((c) => c.isActive).length;
+    const active = items.filter((c) => c.active).length;
     const products = items.reduce((acc, c) => acc + c.productCount, 0);
     return { total, active, products };
   }, [items]);
@@ -46,7 +46,7 @@ export default function CategoriesContainer({ store }: Props) {
 
   // Keep the RHF value in sync whenever items change
   useEffect(() => {
-    const payload = items.map((c, i) => ({ id: c.id, isActive: c.isActive, order: i + 1 }));
+    const payload = items.map((c, i) => ({ id: c.id, active: c.active, order: i + 1 }));
     setValue("categoriesPayload", payload, { shouldDirty: true, shouldTouch: false });
   }, [items, setValue]);
 

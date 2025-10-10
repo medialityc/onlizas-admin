@@ -79,7 +79,7 @@ export function PhonesSection({
               </div>
               <div className="flex items-center gap-3 mt-7">
                 <StatusBadge
-                  isActive={field?.isVerified ?? false}
+                  active={field?.isVerified ?? false}
                   activeText="Verificado"
                   inactiveText="No Verificado"
                 />

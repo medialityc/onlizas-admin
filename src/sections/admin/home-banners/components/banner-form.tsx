@@ -77,7 +77,7 @@ export default function HomeBannerForm({ initValue }: Props) {
           </div>
 
           <div className="col-span-1 md:col-span-2">
-            <RHFSwitch name="isActive" label="Activar banner" />{" "}
+            <RHFSwitch name="active" label="Activar banner" />{" "}
           </div>
         </div>
       </FormProvider>

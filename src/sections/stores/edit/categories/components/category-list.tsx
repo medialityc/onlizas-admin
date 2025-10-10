@@ -50,7 +50,7 @@ export default function CategoryList({
             onToggleActive={(id, checked) =>
               onItemsChange(
                 items.map((x) =>
-                  x.id === id ? { ...x, isActive: checked } : x
+                  x.id === id ? { ...x, active: checked } : x
                 )
               )
             }

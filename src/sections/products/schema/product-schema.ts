@@ -11,7 +11,7 @@ export const productSchema = z.object({
     .string()
     .max(500, "La descripción no puede tener más de 500 caracteres.")
     .default(""),
-  isActive: z.boolean(),
+  active: z.boolean(),
   supplierUserIds: z
     .array(z.number())
     .min(1, "Debe seleccionar al menos un proveedor."),

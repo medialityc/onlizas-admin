@@ -66,7 +66,7 @@ export function getCommonDefaultValues(promotionData?: Promotion) {
     usageLimitPerUser: promotionData?.usageLimitPerUser ?? 0,
 
     // Estado
-    isActive: promotionData?.isActive ?? true,
+    active: promotionData?.active ?? true,
 
     // Requisitos de compra
     minimumAmount: promotionData?.minPurchaseAmount ?? 0,

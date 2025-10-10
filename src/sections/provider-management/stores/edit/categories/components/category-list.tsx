@@ -63,7 +63,7 @@ export default function CategoryList({
             category={c}
             onToggleActive={(id: number, checked: boolean) => {
               // Optimistic local change
-              onItemsChange(items.map((x) => (x.categoryId === id ? { ...x, isActive: checked } : x)));
+              onItemsChange(items.map((x) => (x.categoryId === id ? { ...x, active: checked } : x)));
               onToggle?.(id, checked);
             }}
             onEdit={onEdit}

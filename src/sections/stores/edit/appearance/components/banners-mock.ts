@@ -6,7 +6,7 @@ export type HomeBannerItem = {
   startDate?: string | null; // ISO date string
   endDate?: string | null;   // ISO date string
   image?: File | string | null;
-  isActive: boolean;
+  active: boolean;
 };
 
 export const mockHomeBanners: HomeBannerItem[] = [
@@ -18,7 +18,7 @@ export const mockHomeBanners: HomeBannerItem[] = [
     startDate: "2024-01-01",
     endDate: "2024-03-31",
     image: null,
-    isActive: true,
+    active: true,
   },
   {
     id: 2,
@@ -28,6 +28,6 @@ export const mockHomeBanners: HomeBannerItem[] = [
     startDate: "2024-01-15",
     endDate: "2024-02-15",
     image: null,
-    isActive: false,
+    active: false,
   },
 ];

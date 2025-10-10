@@ -44,8 +44,8 @@ const InventoryProviderCard = ({ item }: Props) => {
               <span>{item.totalQuantity} unidades</span>
             </div>
           </div>
-          <Badge variant={item.isActive ? "info" : "danger"} className="h-fit">
-            {item.isActive ? "Activo" : "Inactivo"}
+          <Badge variant={item.active ? "info" : "danger"} className="h-fit">
+            {item.active ? "Activo" : "Inactivo"}
           </Badge>
         </div>
       </CardHeader>

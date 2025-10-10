@@ -49,7 +49,7 @@ export function SupplierProductList({
         showToast(res.message, "error");
       } else {
         showToast(
-          `Producto ${(res.data as unknown as Product)?.aduanaCategory.isActive ? "activado" : "desactivado"}  correctamente`,
+          `Producto ${(res.data as unknown as Product)?.aduanaCategory.active ? "activado" : "desactivado"}  correctamente`,
           "success"
         );
       }
@@ -128,7 +128,7 @@ export function SupplierProductList({
         <ActionsMenu
           onViewDetails={() => handleView(product)}
           onEdit={() => handleEdit(product)}
-          isActive={product.state}
+          active={product.state}
           // onDelete={() => handleDeleteSupplierProduct(product)}
           onActive={() => handleToggleActiveProduct(product)}
         />

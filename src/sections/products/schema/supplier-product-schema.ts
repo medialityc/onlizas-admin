@@ -15,7 +15,7 @@ export const supplierProductSchema = z
       .string()
       .max(500, "La descripción no puede tener más de 500 caracteres.")
       .default(""),
-    isActive: z.boolean().default(false).optional(),
+    active: z.boolean().default(false).optional(),
 
     categoryIds: z
       .array(z.number())

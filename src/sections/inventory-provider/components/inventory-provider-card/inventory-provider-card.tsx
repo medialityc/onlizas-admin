@@ -52,10 +52,10 @@ const InventoryProviderCard = ({ item }: Props) => {
           </div>
           <div className="flex flex-col items-end gap-2">
             <Badge
-              variant={item.isActive ? "info" : "danger"}
+              variant={item.active ? "info" : "danger"}
               className="size-fit"
             >
-              {item.isActive ? "Activo" : "Inactivo"}
+              {item.active ? "Activo" : "Inactivo"}
             </Badge>
             {item.isPacking && (
               <Badge variant="outline-warning" className="size-fit">

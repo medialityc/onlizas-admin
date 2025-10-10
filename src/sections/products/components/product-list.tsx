@@ -131,7 +131,7 @@ export function ProductList({
         <ActionsMenu
           onViewDetails={() => handleView(product)}
           onEdit={() => handleEdit(product)}
-          isActive={product.state}
+          active={product.state}
           onActive={() => handleToggleActiveProduct(product)}
           viewPermissions={[
             PERMISSION_ENUM.RETRIEVE,

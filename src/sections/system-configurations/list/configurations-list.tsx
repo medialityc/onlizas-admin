@@ -112,17 +112,17 @@ export function ConfigurationsList({
         ),
       },
       {
-        accessor: "isActive",
+        accessor: "active",
         title: "Actual",
         render: (r) => (
           <span
             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              r.isActive
+              r.active
                 ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                 : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
             }`}
           >
-            {r.isActive ? "Actual" : "Disponible"}
+            {r.active ? "Actual" : "Disponible"}
           </span>
         ),
       },
@@ -133,7 +133,7 @@ export function ConfigurationsList({
           <div className="flex justify-center">
             <ActionsMenu
               onEdit={() => handleEdit(r)}
-              onSetDefault={!r.isActive ? () => handleSetDefault(r) : undefined}
+              onSetDefault={!r.active ? () => handleSetDefault(r) : undefined}
               editPermissions={["UPDATE_SYSTEM_CONFIGURATIONS", PERMISSION_ENUM.UPDATE]}
               setDefaultPermissions={[
                 "UPDATE_SYSTEM_CONFIGURATIONS",

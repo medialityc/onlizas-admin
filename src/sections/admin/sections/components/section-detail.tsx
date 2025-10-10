@@ -49,7 +49,7 @@ const SectionDetailsView = ({ section }: Props) => {
                   <span className="inline-flex items-center gap-2">
                     Activo:
                     <StatusBadge
-                      isActive={section?.isActive}
+                      active={section?.active}
                       activeText="Activa"
                       inactiveText="Inactiva"
                     />
@@ -58,7 +58,7 @@ const SectionDetailsView = ({ section }: Props) => {
                   <span className="inline-flex items-center gap-2">
                     Personalizada:
                     <StatusBadge
-                      isActive={section?.isPersonalized}
+                      active={section?.isPersonalized}
                       activeText="Activa"
                       inactiveText="Inactiva"
                     />

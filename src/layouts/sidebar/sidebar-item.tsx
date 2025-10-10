@@ -7,7 +7,7 @@ import { usePermissions } from "@/hooks/use-permissions";
 
 const SidebarItem = ({
   item,
-  isActive,
+  active,
   isExpanded,
   onToggle,
   isActiveLink,
@@ -49,7 +49,7 @@ const SidebarItem = ({
           <Link href={item.path}>
             <div
               className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-primary/5 hover:shadow-sm ${
-                isActive
+                active
                   ? "bg-primary/10 text-primary border-l-[3px] border-l-primary shadow-sm"
                   : "text-gray-700 dark:text-gray-300 hover:text-primary"
               }`}
@@ -57,14 +57,14 @@ const SidebarItem = ({
               <div className="flex items-center space-x-3 ">
                 <div
                   className={`shrink-0  transition-colors duration-200 flex items-center justify-center ${
-                    isActive
+                    active
                       ? "text-primary "
                       : "text-gray-400 dark:text-gray-500 group-hover:text-primary"
                   }`}
                 >
                   <div
                     className={`  ${
-                      isActive
+                      active
                         ? "text-primary "
                         : "border-current/40 group-hover:border-primary/60"
                     }`}
@@ -74,7 +74,7 @@ const SidebarItem = ({
                 </div>
                 <span
                   className={`text-sm font-medium transition-colors duration-200 ${
-                    isActive
+                    active
                       ? "text-primary"
                       : "text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
                   }`}
@@ -105,7 +105,7 @@ const SidebarItem = ({
         ) : (
           <div
             className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-primary/5 hover:shadow-sm ${
-              isActive
+              active
                 ? "bg-primary/10 text-primary border-l-3 border-primary shadow-sm"
                 : "text-gray-700 dark:text-gray-300 hover:text-primary"
             }`}
@@ -113,14 +113,14 @@ const SidebarItem = ({
             <div className="flex items-center space-x-3">
               <div
                 className={`shrink-0 transition-colors duration-200 flex items-center justify-center ${
-                  isActive
+                  active
                     ? "text-primary"
                     : "text-gray-400 dark:text-gray-500 group-hover:text-primary"
                 }`}
               >
                 <div
                   className={`h-2 w-2 rounded-full border ${
-                    isActive
+                    active
                       ? "border-primary bg-primary/80 shadow-[0_0_0_3px_rgba(var(--color-primary-rgb),0.15)]"
                       : "border-current/40 group-hover:border-primary/60"
                   }`}
@@ -128,7 +128,7 @@ const SidebarItem = ({
               </div>
               <span
                 className={`text-sm font-medium transition-colors duration-200 ${
-                  isActive
+                  active
                     ? "text-primary"
                     : "text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
                 }`}

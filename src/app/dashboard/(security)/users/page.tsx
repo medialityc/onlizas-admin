@@ -19,9 +19,14 @@ interface PageProps {
 async function UserListPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const users = await getAllUsers(query);
+  const usersPromise = await getAllUsers(query);
 
-  return <UserListContainer users={users} query={params} />;
+  console.log("Users Promise:", usersPromise);
+  if (usersPromise.error || !usersPromise.data) {
+    throw new Error(usersPromise.message);
+  }
+
+  return <UserListContainer usersPromise={usersPromise.data} query={params} />;
 }
 
 export default UserListPage;

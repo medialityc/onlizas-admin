@@ -30,7 +30,7 @@ export default function SupplierEditActions({
       df?.address ||
       df?.message ||
       df?.type ||
-      df?.isActive ||
+      df?.active ||
       df?.sellerType ||
       df?.nacionalityType ||
       df?.mincexCode ||

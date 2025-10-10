@@ -49,7 +49,7 @@ export default function RHFMultiSelectCategories({
         if (res && !res.error) {
           const adaptedCategories = adaptStoreCategories(raw);
           // Solo categorías activas
-          setCategories(adaptedCategories.filter(cat => cat.isActive));
+          setCategories(adaptedCategories.filter(cat => cat.active));
         }
       } catch (error) {
         console.error("Error loading categories:", error);

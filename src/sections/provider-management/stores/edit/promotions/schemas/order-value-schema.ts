@@ -33,7 +33,7 @@ export const orderValueSchema = z
    
     // Media obligatorio (url o File)
     mediaFile: z.union([z.string().min(1, { message: "La imagen es obligatoria" }), z.instanceof(File)]),
-    isActive: z.boolean(),
+    active: z.boolean(),
 
     // Requisitos de compra mínima (un spinner numérico en la UI)
       // Requisitos de compra mínima: opcional en el form; si presente debe ser > 0.

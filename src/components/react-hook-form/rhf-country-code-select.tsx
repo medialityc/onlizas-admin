@@ -17,7 +17,7 @@ type Country = {
   code: string;
   phoneNumberCode: number;
   region: string;
-  isActive: boolean;
+  active: boolean;
 };
 
 type Props = {

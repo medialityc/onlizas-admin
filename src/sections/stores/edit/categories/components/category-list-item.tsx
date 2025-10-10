@@ -22,7 +22,7 @@ export default function CategoryListItem({ category: c, onToggleActive, onEdit, 
           <div>
             <div className="flex items-center gap-2">
               <h4 className="text-medium font-semibold text-gray-900">{c.name}</h4>
-              {c.isActive && (
+              {c.active && (
                 <Badge variant="outline-primary" className="!text-[11px] !px-2 !py-0.5" rounded>
                   Activa
                 </Badge>
@@ -41,11 +41,11 @@ export default function CategoryListItem({ category: c, onToggleActive, onEdit, 
             <button
               type="button"
               aria-label="Cambiar estado"
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${c.isActive ? "bg-gradient-to-r from-secondary to-indigo-600" : "bg-gray-300"}`}
-              onClick={() => onToggleActive(c.id, !c.isActive)}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${c.active ? "bg-gradient-to-r from-secondary to-indigo-600" : "bg-gray-300"}`}
+              onClick={() => onToggleActive(c.id, !c.active)}
             >
               <span
-                className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${c.isActive ? "translate-x-5" : "translate-x-1"}`}
+                className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${c.active ? "translate-x-5" : "translate-x-1"}`}
               />
             </button>
           </div>

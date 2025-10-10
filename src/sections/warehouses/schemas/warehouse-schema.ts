@@ -11,7 +11,7 @@ export const warehouseSchema = z
       },
     }),
     locationId: z.number({ required_error: "Requerido" }),
-    isActive: z.boolean().default(true),
+    active: z.boolean().default(true),
 
     // physical
     capacity: z.coerce.number().optional(),

@@ -9,7 +9,7 @@ export const HomeBannerSchema = z.object({
   startDate: z.date().optional().nullable(),
   endDate: z.date().optional().nullable(),
   image: z.any().optional().nullable(),
-  isActive: z.boolean().default(true),
+  active: z.boolean().default(true),
 });
 
 export type HomeBannerForm = z.infer<typeof HomeBannerSchema>;

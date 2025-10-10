@@ -24,7 +24,7 @@ export const AppearanceSchema = z.object({
       z.string(),
       z.null(),
     ]).optional(),
-    isActive: z.boolean().optional(),
+    active: z.boolean().optional(),
   })).default([]),
 });
 
@@ -45,7 +45,7 @@ export interface AppearanceFormData {
     initDate?: string;
     endDate?: string;
     image?: File | string | null;
-    isActive?: boolean;
+    active?: boolean;
   }>;
 }
 

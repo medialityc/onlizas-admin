@@ -28,7 +28,7 @@ export default function GeneralContainer({ store }: Props) {
     resolver: zodResolver(GeneralStoreSchema),
     mode: "onBlur",
     defaultValues: {
-      isActive: store.isActive ?? true,
+      active: store.active ?? true,
       name: store.name ?? "",
       description: store.description ?? "",
       url: store.url ?? "",

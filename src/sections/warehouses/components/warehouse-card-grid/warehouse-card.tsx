@@ -91,10 +91,10 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
               </Badge>
               <Badge
                 variant={
-                  warehouse?.isActive ? "outline-info" : "outline-danger"
+                  warehouse?.active ? "outline-info" : "outline-danger"
                 }
               >
-                {warehouse?.isActive ? "Activo" : "Inactivo"}
+                {warehouse?.active ? "Activo" : "Inactivo"}
               </Badge>
               {warehouse?.isDeleted && (
                 <Badge variant="danger">Eliminado</Badge>

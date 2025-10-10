@@ -40,7 +40,7 @@ export const ProductCustomsInfoSection = () => {
       {/* Producto Duradero */}
 
       {!pathname.endsWith("edit") && (
-        <RHFCheckbox name="isActive" label="Producto activo" />
+        <RHFCheckbox name="active" label="Producto activo" />
       )}
 
       {/* Categoría Aduanal */}

@@ -133,11 +133,11 @@ export function BusinessList({
         ),
       },
       {
-        accessor: "isActive",
+        accessor: "active",
         title: "Estado",
         render: (business) => (
           <StatusBadge
-            isActive={business.isActive}
+            active={business.active}
             activeText="Activo"
             inactiveText="Inactivo"
           />
@@ -150,7 +150,7 @@ export function BusinessList({
         render: (business) => (
           <div className="flex justify-center">
             <ActionsMenu
-              isActive={business.isActive}
+              active={business.active}
               onViewDetails={() => handleViewBusiness(business)}
               onEdit={() => handleEditBusiness(business)}
               onActive={() => handleDeleteBusiness(business)}

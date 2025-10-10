@@ -34,7 +34,7 @@ export default function PromotionsContainer({ store }: Props) {
 
   const stats = useMemo(() => {
     const total = items.length;
-    const active = items.filter((x) => x.isActive).length;
+    const active = items.filter((x) => x.active).length;
     const uses = items.reduce((acc, x) => acc + (x.usedCount ?? 0), 0);
     const expired = items.filter((x) => x.endDate && new Date(x.endDate) < new Date()).length;
     return { total, active, uses, expired };
@@ -67,7 +67,7 @@ export default function PromotionsContainer({ store }: Props) {
             key={p.id}
             p={p}
             onToggle={(id, checked) =>
-              setItems((prev) => prev.map((x) => (x.id === id ? { ...x, isActive: checked } : x)))
+              setItems((prev) => prev.map((x) => (x.id === id ? { ...x, active: checked } : x)))
             }
           />
         ))}

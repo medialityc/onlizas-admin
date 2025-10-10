@@ -4,7 +4,7 @@ export type StoreCategory = {
   categoryId: number;
   id: number;
   categoryName: string;
-  isActive: boolean;
+  active: boolean;
   order: number; // prioridad/posición
 };
 
@@ -13,7 +13,7 @@ export type StoreCategorySearchParams = {
   page?: number;
   pageSize?: number;
   search?: string;
-  isActive?: boolean;
+  active?: boolean;
 };
 
 // Para crear/actualizar orden de categorías

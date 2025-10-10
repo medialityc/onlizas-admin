@@ -6,7 +6,7 @@ import { SidebarItemProps } from "../types";
 
 const SidebarProviderItem = ({
   item,
-  isActive,
+  active,
   isExpanded,
   onToggle,
   isActiveLink,
@@ -41,7 +41,7 @@ const SidebarProviderItem = ({
           <Link href={item.path}>
             <div
               className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-primary/5 hover:shadow-sm ${
-                isActive
+                active
                   ? "bg-primary/10 text-primary border-l-3 border-primary shadow-sm"
                   : "text-gray-700 dark:text-gray-300 hover:text-primary"
               }`}
@@ -49,7 +49,7 @@ const SidebarProviderItem = ({
               <div className="flex items-center space-x-3">
                 <div
                   className={`shrink-0 transition-colors duration-200 ${
-                    isActive
+                    active
                       ? "text-primary"
                       : "text-gray-500 dark:text-gray-400 group-hover:text-primary"
                   }`}
@@ -58,7 +58,7 @@ const SidebarProviderItem = ({
                 </div>
                 <span
                   className={`text-sm font-medium transition-colors duration-200 ${
-                    isActive
+                    active
                       ? "text-primary"
                       : "text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
                   }`}
@@ -89,7 +89,7 @@ const SidebarProviderItem = ({
         ) : (
           <div
             className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-primary/5 hover:shadow-sm ${
-              isActive
+              active
                 ? "bg-primary/10 text-primary border-l-3 border-primary shadow-sm"
                 : "text-gray-700 dark:text-gray-300 hover:text-primary"
             }`}
@@ -97,7 +97,7 @@ const SidebarProviderItem = ({
             <div className="flex items-center space-x-3">
               <div
                 className={`shrink-0 transition-colors duration-200 ${
-                  isActive
+                  active
                     ? "text-primary"
                     : "text-gray-500 dark:text-gray-400 group-hover:text-primary"
                 }`}
@@ -106,7 +106,7 @@ const SidebarProviderItem = ({
               </div>
               <span
                 className={`text-sm font-medium transition-colors duration-200 ${
-                  isActive
+                  active
                     ? "text-primary"
                     : "text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
                 }`}

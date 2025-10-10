@@ -6,7 +6,7 @@ export type Currency = {
   codIso: string;
   rate: number;
   default: boolean;
-  isActive: boolean;
+  active: boolean;
 };
 
 export type CreateCurrency = {

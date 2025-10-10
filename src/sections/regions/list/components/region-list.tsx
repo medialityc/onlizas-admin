@@ -152,7 +152,7 @@ export function RegionList({
         title: "Estado",
         render: (region) => (
           <StatusBadge
-            isActive={region.status === 0}
+            active={region.status === 0}
             activeText="Activa"
             inactiveText={getStatusText(region.status)}
           />

@@ -12,7 +12,7 @@ export type ISection = {
   name: string;
   description: string;
   viewMoreUrl: string;
-  isActive: true;
+  active: true;
   displayOrder: number;
   createdAt: Date | string;
   updatedAt: Date | string;
@@ -48,7 +48,7 @@ export type ISection = {
       displayOrder: number;
       startDate: Date | string;
       endDate: Date | string;
-      isActive: true;
+      active: true;
     },
   ];
   criteria: [

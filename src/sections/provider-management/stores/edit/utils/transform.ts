@@ -49,7 +49,7 @@ export function buildStoreFormData({ store, data }: BuildStoreFormDataParams) {
   formData.append("businessName", store.businessName ?? "");
   formData.append("supplierId", String(store.supplierId));
   formData.append("supplierName", store.supplierName ?? "");
-  formData.append("isActive", (data?.isActive ?? store.isActive) ? "true" : "false");
+  formData.append("active", (data?.active ?? store.active) ? "true" : "false");
 
   // Arreglos como JSON
   //formData.append("followers", JSON.stringify(Array.isArray(store.followers) ? store.followers : []));

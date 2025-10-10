@@ -32,7 +32,7 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ user }) => {
                     <EnvelopeIcon className="w-5 h-5 text-gray-400 mr-2" />
                     <span className="text-gray-900">{email.address}</span>
                   </div>
-                  <StatusBadge isActive={email.isVerified} />
+                  <StatusBadge active={email.isVerified} />
                 </div>
               ))}
             </div>
@@ -55,7 +55,7 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ user }) => {
                     <PhoneIcon className="w-5 h-5 text-gray-400 mr-2" />
                     <span className="text-gray-900">{phone.number}</span>
                   </div>
-                  <StatusBadge isActive={phone.isVerified} />
+                  <StatusBadge active={phone.isVerified} />
                 </div>
               ))}
             </div>

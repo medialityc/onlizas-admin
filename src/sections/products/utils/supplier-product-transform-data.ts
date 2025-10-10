@@ -9,7 +9,7 @@ export const supplierProductTransformData = (
   console.log(product, "SIN EDITAR");
   return {
     ...product,
-    isActive: product?.state,
+    active: product?.state,
     isDraft: true, // define si es un formulario common y no link
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-expect-error

@@ -124,7 +124,7 @@ export function usePromotions(storeId: number, initialParams: PromotionSearchPar
     const source = summaryPromotions.length > 0 ? summaryPromotions : promotions;
 
     const total = (summaryResponse?.data?.totalCount) ?? source.length;
-    const active = source.filter((p: Promotion) => p.isActive).length;
+    const active = source.filter((p: Promotion) => p.active).length;
     const uses = source.reduce((acc: number, p: Promotion) => acc + (p.usedCount || 0), 0);
     const expired = source.filter((p: Promotion) => p.endDate && new Date(p.endDate) < new Date()).length;
 
@@ -165,8 +165,8 @@ export function usePromotions(storeId: number, initialParams: PromotionSearchPar
   // Toggle con optimistic update inteligente que respeta filtros
   const handleToggle = useCallback(async (id: number, checked: boolean) => {
     // Verificar si hay filtro activo que afecte el resultado
-    const hasActiveFilter = searchParams.isActive !== undefined;
-    const willMatchFilter = hasActiveFilter ? searchParams.isActive === checked : true;
+    const hasActiveFilter = searchParams.active !== undefined;
+    const willMatchFilter = hasActiveFilter ? searchParams.active === checked : true;
 
     // Si hay filtro y la promoción no va a coincidir después del cambio, 
     // usar invalidación simple para que desaparezca correctamente
@@ -200,7 +200,7 @@ export function usePromotions(storeId: number, initialParams: PromotionSearchPar
           ...old.data,
           data: old.data.data.map((promotion: Promotion) =>
             promotion.id === id
-              ? { ...promotion, isActive: checked }
+              ? { ...promotion, active: checked }
               : promotion
           ),
         },
@@ -217,7 +217,7 @@ export function usePromotions(storeId: number, initialParams: PromotionSearchPar
           ...old.data,
           data: old.data.data.map((promotion: Promotion) =>
             promotion.id === id
-              ? { ...promotion, isActive: checked }
+              ? { ...promotion, active: checked }
               : promotion
           ),
         },
@@ -237,7 +237,7 @@ export function usePromotions(storeId: number, initialParams: PromotionSearchPar
               ...old.data,
               data: old.data.data.map((promotion: Promotion) =>
                 promotion.id === id
-                  ? { ...promotion, isActive: !checked }
+                  ? { ...promotion, active: !checked }
                   : promotion
               ),
             },
@@ -262,7 +262,7 @@ export function usePromotions(storeId: number, initialParams: PromotionSearchPar
             ...old.data,
             data: old.data.data.map((promotion: Promotion) =>
               promotion.id === id
-                ? { ...promotion, isActive: !checked }
+                ? { ...promotion, active: !checked }
                 : promotion
             ),
           },

@@ -113,7 +113,7 @@ export function HomeBannerList({
           showToast(res.message, "error");
         } else {
           showToast(
-            `Banner ${(res.data as unknown as IHomeBanner)?.isActive ? "activado" : "desactivado"} correctamente`,
+            `Banner ${(res.data as unknown as IHomeBanner)?.active ? "activado" : "desactivado"} correctamente`,
             "success"
           );
         }
@@ -192,12 +192,12 @@ export function HomeBannerList({
         ),
       },
       {
-        accessor: "isActive",
+        accessor: "active",
         title: "Estado",
         sortable: true,
         width: 100,
         render: (banner) =>
-          banner.isActive ? (
+          banner.active ? (
             <Badge rounded>Activo</Badge>
           ) : (
             <Badge rounded variant="danger">
@@ -220,7 +220,7 @@ export function HomeBannerList({
         render: (banner) => (
           <div className="flex justify-center">
             <ActionsMenu
-              isActive={banner?.isActive}
+              active={banner?.active}
               // onViewDetails={() => handleViewHomeBanner(banner)}
               onEdit={() => handleEditHomeBanner(banner)}
               onDelete={() => handleDeleteHomeBanner(banner)}

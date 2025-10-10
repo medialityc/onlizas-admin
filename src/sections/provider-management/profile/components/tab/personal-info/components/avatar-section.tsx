@@ -38,7 +38,7 @@ export function AvatarSection({ user, errors, isLoading }: AvatarSectionProps) {
           <CardDescription>
             <div className="mt-2">
               <StatusBadge
-                isActive={user?.isActive ?? false}
+                active={user?.active ?? false}
                 activeText="Proveedor verificado"
                 inactiveText="No verificado"
               />

@@ -100,7 +100,7 @@ export default function OrderValueForm({
       if (
         mode === "edit" &&
         promotionData &&
-        data.isActive !== promotionData.isActive
+        data.active !== promotionData.active
       ) {
         const statusRes = await togglePromotionStatus(promotionData.id);
         if (statusRes.error) {

@@ -37,7 +37,7 @@ export default function CategoryListItem({
               <h4 className="text-medium font-semibold text-gray-900 dark:text-gray-100">
                 {c.categoryName}
               </h4>
-              {c.isActive && (
+              {c.active && (
                 <Badge
                   variant="outline-primary"
                   className="!text-[11px] !px-2 !py-0.5"
@@ -61,11 +61,11 @@ export default function CategoryListItem({
               <button
                 type="button"
                 aria-label="Cambiar estado"
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${c.isActive ? "bg-gradient-to-r from-secondary to-indigo-600" : "bg-gray-300 dark:bg-gray-600"}`}
-                onClick={() => onToggleActive(c.id, !c.isActive)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${c.active ? "bg-gradient-to-r from-secondary to-indigo-600" : "bg-gray-300 dark:bg-gray-600"}`}
+                onClick={() => onToggleActive(c.id, !c.active)}
               >
                 <span
-                  className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${c.isActive ? "translate-x-5" : "translate-x-1"}`}
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${c.active ? "translate-x-5" : "translate-x-1"}`}
                 />
               </button>
             )}
