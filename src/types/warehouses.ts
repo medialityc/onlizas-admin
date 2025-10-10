@@ -113,8 +113,8 @@ export type WarehouseFilter = {
   search?: string;
   type?: WarehouseType;
   status?: WarehouseStatus;
-  locationId?: number;
-  supplierId?: number;
+  locationId?: number|string;
+  supplierId?: number|string;
 };
 
 export type GetAllWarehouses = PaginatedResponse<WarehouseFormData>;
@@ -128,7 +128,7 @@ export type InventoryStatus =
   | "transferred";
 
 export type ProductBatch = {
-  id: number;
+  id: number|string;
   batchNumber: string;
   expirationDate?: string;
   manufacturingDate?: string;
@@ -137,10 +137,10 @@ export type ProductBatch = {
 };
 
 export type InventoryItem = {
-  id: number;
-  productId: number;
-  warehouseId: number;
-  supplierId: number;
+  id: number|string;
+  productId: number|string;
+  warehouseId: number|string ;
+  supplierId: number|string;
   totalQuantity: number;
   availableQuantity: number;
   reservedQuantity: number;
@@ -148,25 +148,25 @@ export type InventoryItem = {
   batches: ProductBatch[];
   lastUpdate: string;
   product?: {
-    id: number;
+    id: number|string;
     name: string;
     upcCode?: string;
     npnCode?: string;
-    categoryId: number;
+    categoryId: number|string;
     categoryName?: string;
   };
   warehouse?: Warehouse;
   supplier?: {
-    id: number;
+    id: number |string;
     name: string;
   };
 };
 
 export type InventoryFilter = {
   search?: string;
-  warehouseId?: number;
-  supplierId?: number;
-  productId?: number;
+  warehouseId?: number|string;
+  supplierId?: number|string;
+  productId?: number|string;
   status?: InventoryStatus;
   availability?: "available" | "low_stock" | "out_of_stock";
   expirationDateFrom?: string;
@@ -185,14 +185,14 @@ export type TransferStatus =
   | "failed";
 
 export type TransferItem = {
-  productId: number;
-  batchIds: number[];
+  productId: number|string;
+  batchIds: (number|string)[];
   quantity: number;
   notes?: string;
 };
 
 export type TransportationService = {
-  id: number;
+  id: number|string;
   name: string;
   type: "internal" | "external";
   estimatedTime?: string;
@@ -200,10 +200,10 @@ export type TransportationService = {
 };
 
 export type Transfer = {
-  id: number;
+  id: number|string;
   transferNumber: string;
-  sourceWarehouseId: number;
-  destinationWarehouseId: number;
+  sourceWarehouseId: number|string;
+  destinationWarehouseId: number|string;
   status: TransferStatus;
   requestedBy: string;
   approvedBy?: string;
@@ -211,7 +211,7 @@ export type Transfer = {
   justification: string;
   estimatedDeliveryDate?: string;
   actualDeliveryDate?: string;
-  transportationServiceId?: number;
+  transportationServiceId?: number|string;
   transportationDetails?: {
     trackingNumber?: string;
     driverName?: string;
@@ -224,7 +224,7 @@ export type Transfer = {
     };
   };
   documents: {
-    id: number;
+    id: number|string;
     name: string;
     url: string;
     type: "transfer_guide" | "receipt" | "evidence" | "other";
@@ -254,8 +254,8 @@ export type UpdateTransfer = Partial<
 export type TransferFilter = {
   search?: string;
   status?: TransferStatus;
-  sourceWarehouseId?: number;
-  destinationWarehouseId?: number;
+  sourceWarehouseId?: number|string;
+  destinationWarehouseId?: number|string;
   requestedBy?: string;
   dateFrom?: string;
   dateTo?: string;
@@ -278,8 +278,8 @@ export type LocationFilter = {
 export type GetAllLocations = PaginatedResponse<Location>;
 
 export type WarehouseAuditLog = {
-  id: string;
-  warehouseId: number;
+  id: string|string;
+  warehouseId: number|string;
   action: "DELETE" | "DEACTIVATE" | "ACTIVATE";
   at: string;
   by: string;
