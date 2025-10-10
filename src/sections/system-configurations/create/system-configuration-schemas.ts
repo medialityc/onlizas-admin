@@ -6,10 +6,13 @@ export const createSystemConfigurationSchema = z.object({
     .trim()
     .min(2, "Debe tener al menos 2 caracteres"),
   additionalSettings: z.string().trim(),
-  countryId: z.coerce
-    .number({ required_error: "El país es requerido" })
-    .int("Debe ser un entero")
-    .positive("Debe ser un número positivo"),
+  countryId: z.union([
+    z.coerce
+      .number({ required_error: "El país es requerido" })
+      .int("Debe ser un entero")
+      .positive("Debe ser un número positivo"),
+    z.string(),
+  ]),
 });
 
 export type CreateSystemConfigurationSchema = z.infer<

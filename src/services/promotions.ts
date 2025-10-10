@@ -14,7 +14,7 @@ import {
 } from "@/types/promotions";
 
 export async function getStorePromotions(
-  storeId: number,
+  storeId: string | number,
   params: IQueryable
 ): Promise<ApiResponse<GetStorePromotions>> {
 

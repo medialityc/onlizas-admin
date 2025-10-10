@@ -25,8 +25,8 @@ export const codeSchema = z
   // Apply-to selector (products|categories|orders)
   appliesTo: z.enum(["products", "categories", "orders"]).optional(),
   // Product/category lists are optional but validated conditionally in superRefine below
-  productVariantsIds: z.array(z.number().min(1)).optional(),
-  promotionCategoriesDTOs: z.array(z.number()).optional(),
+  productVariantsIds: z.array(z.union([z.string().min(1), z.number().min(1)])).optional(),
+  promotionCategoriesDTOs: z.array(z.union([z.string(), z.number()])).optional(),
 
     usageLimit: z.number().optional(),
     usageLimitPerUser: z.number().optional(),

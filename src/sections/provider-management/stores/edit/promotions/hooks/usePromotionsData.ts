@@ -8,7 +8,7 @@ import { useMemo } from "react";
  * Hook separado para la gestión de datos y métricas de promociones
  * Se enfoca únicamente en la obtención y cálculo de datos
  */
-export function usePromotionsData(storeId: number, searchParams: PromotionSearchParams) {
+export function usePromotionsData(storeId: string | number, searchParams: PromotionSearchParams) {
   // Query principal con filtros - CONFIGURACIÓN BÁSICA
   const promotionsQuery = useQuery({
     queryKey: ["store-promotions", storeId, searchParams],

@@ -22,12 +22,13 @@ import {
   Currency,
 } from "@/sections/regions/schemas/region-modal-schemas";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { CreateCurrency } from "@/types/currencies";
 
 interface EditCurrencyModalProps {
   open: boolean;
   onClose: () => void;
   currency: Currency | null;
-  regionId: number;
+  regionId: number|string;
 }
 
 export default function EditCurrencyModal({
@@ -55,7 +56,7 @@ export default function EditCurrencyModal({
   useEffect(() => {
     if (currency && open) {
       reset({
-        currencyId: currency.currencyId,
+        currencyId: currency.id,
         isEnabled: currency.isEnabled,
         rate: currency.rate,
         isPrimary: currency.isPrimary,

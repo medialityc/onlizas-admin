@@ -25,12 +25,12 @@ interface RegionResolution {
   region: Region;
   primaryCurrency: string;
   enabledPaymentGateways: Array<{
-    gatewayId: number;
-    priority: number;
+    gatewayId: number|string;
+    priority: number|string;
     isFallback: boolean;
   }>;
   enabledShippingMethods: Array<{
-    methodId: number;
+    methodId: number|string;
     metadata: Record<string, any>;
   }>;
 }
@@ -57,7 +57,7 @@ export async function getRegions(
 }
 
 export async function getRegionById(
-  id: number
+  id: number|string
 ): Promise<ApiResponse<Region | null>> {
   const baseUrl = backendRoutes.regions.listById(id);
   const url = `${baseUrl}?include=`;
@@ -103,7 +103,7 @@ export async function createRegion(
 }
 
 export async function updateRegion(
-  id: number,
+  id: number|string,
   data: Partial<RegionFormData>
 ): Promise<ApiResponse<Region | null>> {
   const res = await nextAuthFetch({
@@ -122,7 +122,7 @@ export async function updateRegion(
   return buildApiResponseAsync<Region>(res);
 }
 
-export async function deleteRegion(id: number): Promise<ApiResponse<boolean>> {
+export async function deleteRegion(id: number|string): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
     url: backendRoutes.regions.delete(id),
     method: "DELETE",
@@ -141,8 +141,8 @@ export async function deleteRegion(id: number): Promise<ApiResponse<boolean>> {
 
 // Currency management services
 export async function removeCurrencyFromRegion(
-  regionId: number,
-  currencyId: number
+  regionId: number|string,
+  currencyId: number|string
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
     url: backendRoutes.regions.currencies.remove(regionId, currencyId),
@@ -161,7 +161,7 @@ export async function removeCurrencyFromRegion(
 }
 
 export async function addCurrenciesToRegion(
-  regionId: number,
+  regionId: number|string,
   payload: AddCurrenciesPayload
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
@@ -181,8 +181,8 @@ export async function addCurrenciesToRegion(
 }
 
 export async function setPrimaryCurrency(
-  regionId: number,
-  currencyId: number
+  regionId: number|string,
+  currencyId: number|string
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
     url: backendRoutes.regions.currencies.setPrimary(regionId, currencyId),
@@ -201,8 +201,8 @@ export async function setPrimaryCurrency(
 
 // Payment gateway management services
 export async function removePaymentGatewayFromRegion(
-  regionId: number,
-  gatewayId: number
+  regionId: number|string,
+  gatewayId: number|string
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
     url: backendRoutes.regions.payments.remove(regionId, gatewayId),
@@ -221,7 +221,7 @@ export async function removePaymentGatewayFromRegion(
 }
 
 export async function addPaymentGatewaysToRegion(
-  regionId: number,
+  regionId: number|string,
   payload: AddPaymentGatewaysPayload
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
@@ -241,8 +241,8 @@ export async function addPaymentGatewaysToRegion(
 }
 
 export async function updatePaymentGatewayPriority(
-  regionId: number,
-  gatewayId: number,
+  regionId: number|string,
+  gatewayId: number|string,
   payload: UpdatePaymentPriorityPayload
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
@@ -263,8 +263,8 @@ export async function updatePaymentGatewayPriority(
 
 // Shipping methods management services
 export async function removeShippingMethodFromRegion(
-  regionId: number,
-  shippingId: number
+  regionId: number|string,
+  shippingId: number|string
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({
     url: backendRoutes.regions.shipping.remove(regionId, shippingId),
@@ -283,7 +283,7 @@ export async function removeShippingMethodFromRegion(
 }
 
 export async function addShippingMethodsToRegion(
-  regionId: number,
+  regionId: number|string,
   payload: AddShippingMethodsPayload
 ): Promise<ApiResponse<boolean>> {
   const res = await nextAuthFetch({

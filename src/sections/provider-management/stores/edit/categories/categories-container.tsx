@@ -13,7 +13,7 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface Props {
-  storeId: number;
+  storeId: string | number;
   initialItems?: StoreCategory[];
 }
 
@@ -39,7 +39,7 @@ function CategoriesContent({ storeId, initialItems }: Props) {
     }
   };
 
-  const onToggleItem = async (id: number, checked: boolean) => {
+  const onToggleItem = async (id: string | number, checked: boolean) => {
     try {
       await handleToggle(id, checked);
       router.refresh();

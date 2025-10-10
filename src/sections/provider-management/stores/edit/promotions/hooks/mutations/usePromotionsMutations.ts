@@ -11,7 +11,7 @@ import {
  * Hook para mutations de promociones
  * Maneja create, update, delete y toggle por separado
  */
-export function usePromotionsMutations(storeId: number) {
+export function usePromotionsMutations(storeId: string | number) {
   const queryClient = useQueryClient();
 
   // Función helper para invalidar queries

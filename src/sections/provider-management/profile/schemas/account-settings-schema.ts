@@ -4,7 +4,7 @@ export const accountSettingsSchema = z.object({
   businesses: z
     .array(
       z.object({
-        id: z.number(),
+        id: z.union ([z.string(), z.number()]),
         name: z.string().optional(),
         code: z.string().optional(),
       })

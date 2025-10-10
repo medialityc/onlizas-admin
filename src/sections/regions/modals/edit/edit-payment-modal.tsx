@@ -18,9 +18,9 @@ import RHFSwitch from "@/components/react-hook-form/rhf-switch";
 // Importar schemas y tipos desde el archivo centralizado
 import {
   paymentGatewaySchema,
-  PaymentGatewayFormData,
-  PaymentGateway,
+  PaymentGatewayFormData, 
   AVAILABLE_PAYMENT_METHODS,
+  PaymentGateway
 } from "@/sections/regions/schemas/region-modal-schemas";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
@@ -28,7 +28,7 @@ interface EditPaymentModalProps {
   open: boolean;
   onClose: () => void;
   paymentGateway: PaymentGateway | null;
-  regionId: number;
+  regionId: number|string;
 }
 
 export default function EditPaymentModal({

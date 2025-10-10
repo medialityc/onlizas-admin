@@ -37,8 +37,14 @@ export const storeSchema = z.object({
     .regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/, "Formato de color inválido").optional(),
   font: z.number().int().optional(),
   template: z.number().int().optional(), */
-   businessId: z.number().int("Debe ser un entero").positive(),
-  ownerId: z.number().int("Debe ser un entero").positive(), 
+   businessId: z.union([z.string(), z.number()]).refine((val) => {
+     const num = typeof val === 'string' ? parseFloat(val) : val;
+     return !isNaN(num) && num > 0;
+   }, "Debe ser un número positivo"),
+  ownerId: z.union([z.string(), z.number()]).refine((val) => {
+     const num = typeof val === 'string' ? parseFloat(val) : val;
+     return !isNaN(num) && num > 0;
+   }, "Debe ser un número positivo"), 
 });
 
 export type StoreFormData = z.infer<typeof storeSchema>;

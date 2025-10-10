@@ -12,7 +12,7 @@ import {
 import { RegionShippingConfig, RegionShippingMethod } from '@/types/regions';
 
 interface ShippingSectionProps {
-  regionId: number;
+  regionId: number|string;
   regionName: string;
   onClose: () => void;
 }
@@ -48,7 +48,7 @@ export const ShippingSection: React.FC<ShippingSectionProps> = ({
 
   // Mutations
   const addShippingMutation = useMutation({
-    mutationFn: (config: { shippingMethodId: number; baseCost?: number; estimatedDaysMin?: number; estimatedDaysMax?: number; carrier?: string }) => 
+    mutationFn: (config: { shippingMethodId: number|string; baseCost?: number; estimatedDaysMin?: number; estimatedDaysMax?: number; carrier?: string }) => 
       addShippingMethodsToRegion(regionId, {
         shippingMethods: [{
           shippingMethodId: config.shippingMethodId,

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const colorRegex = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
 const promotionSchema = z.object({
-	id: z.number().int().nonnegative().optional(),
+	id: z.union([z.string(), z.number()]).optional(),
 	name: z.string().min(1, "El nombre de la promoción es obligatorio"),
 	description: z.string().optional(),
 	type: z.enum(["percent", "amount"]),
@@ -28,7 +28,7 @@ const promotionSchema = z.object({
 
 // HomeBanners in the form follow backend contract
 const homeBannerSchema = z.object({
-	id: z.number().int().nonnegative().optional(),
+	id: z.union([z.string(), z.number().nonnegative()]).optional(),
 	title: z.string().min(1, "El título es obligatorio"),
 	urlDestinity: z.string().min(1, "La URL de destino es obligatoria"),
 	position: z.coerce.number().int().nonnegative({ message: "La posición debe ser un número entero" }),
@@ -49,7 +49,7 @@ const homeBannerSchema = z.object({
 });
 
 const categoryItemSchema = z.object({
-	id: z.number().int().positive(),
+	id: z.union([z.string(), z.number().nonnegative()]),
 	name: z.string().optional(),
 });
 

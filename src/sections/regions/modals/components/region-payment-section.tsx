@@ -34,7 +34,7 @@ export default function RegionPaymentSection({
 }: RegionPaymentSectionProps) {
   const [deleteDialog, setDeleteDialog] = useState<{
     open: boolean;
-    paymentGatewayId: number | null;
+    paymentGatewayId: number |string| null;
     paymentGatewayName: string;
   }>({
     open: false,
@@ -63,7 +63,7 @@ export default function RegionPaymentSection({
 
   const { gateways, enabledCount, totalCount } = region.paymentConfig;
 
-  const handleChangePriority = async (paymentGatewayId: number, direction: "increase" | "decrease", paymentGatewayName: string) => {
+  const handleChangePriority = async (paymentGatewayId: number|string, direction: "increase" | "decrease", paymentGatewayName: string) => {
     if (!canEdit) return;
     
     const currentGateway = gateways?.find(g => g.paymentGatewayId === paymentGatewayId);
@@ -108,7 +108,7 @@ export default function RegionPaymentSection({
     }
   };
 
-  const openDeleteDialog = (paymentGatewayId: number, paymentGatewayName: string) => {
+  const openDeleteDialog = (paymentGatewayId: number|string, paymentGatewayName: string) => {
     setDeleteDialog({
       open: true,
       paymentGatewayId,

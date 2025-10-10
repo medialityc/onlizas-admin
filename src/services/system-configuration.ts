@@ -33,7 +33,7 @@ export async function getSystemConfigurations(
 }
 
 export async function updateSystemConfiguration(
-  id: number,
+  id: number|string,
   data: UpdateSystemConfiguration
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
@@ -64,7 +64,7 @@ export async function createSystemConfiguration(
 }
 
 export async function setSystemConfigurationAsDefault(
-  id: number
+  id: number|string
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.systemConfigurations.setCurrent(id),
