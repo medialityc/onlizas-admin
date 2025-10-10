@@ -4,7 +4,7 @@ import { PaginatedResponse } from './common';
 import { Country } from './countries';
 
 export interface RegionCurrency {
-  currencyId: number;
+  currencyId: number|string;
   code: string;
   name: string;
   symbol: string;
@@ -21,7 +21,7 @@ export interface RegionCurrencyConfig {
 }
 
 export interface RegionPaymentGateway {
-  paymentGatewayId: number;
+  paymentGatewayId: number|string;
   code: string;
   name: string;
   priority: number;
@@ -38,7 +38,7 @@ export interface RegionPaymentConfig {
 }
 
 export interface RegionShippingMethod {
-  shippingMethodId: number;
+  shippingMethodId: number|string;
   code: string;
   name: string;
   carrier: string;
@@ -58,7 +58,7 @@ export interface RegionShippingConfig {
 
 // Interfaz que coincide exactamente con la respuesta del backend
 export interface Region {
-  id: number|number;
+  id: number|string;
   name: string;
   code: string;
   description: string;
@@ -67,7 +67,7 @@ export interface Region {
   updatedAt: string;
   active: boolean;
   countries: Array<{
-    id: string;
+    id: string|number;
     code: string;
     name: string;
     phoneNumberCode?: number;
@@ -84,7 +84,7 @@ export interface RegionFormData {
   name: string;
   description?: string;
   status: number; // 0: active, 1: inactive
-  countryIds: string[]; // Países asociados
+  countryIds: string|number[]; // Países asociados
   moveCountries?: boolean; // Para mover países desde otras regiones
 }
 
@@ -94,17 +94,17 @@ export type GetAllRegions = PaginatedResponse<Region>;
 
 // Region logs types
 export type RegionLogs = {
-  id: number;
+  id: number|string;
   timestamp: string;
   description: string;
-  regionId: number;
+  regionId: number|string;
   regionName: string;
   regionCode: string;
-  userId: number;
+  userId: number|string;
   userName: string;
   action: string;
   entityType: string;
-  entityId?: number;
+  entityId?: number|string;
   metadata?: Record<string, any>;
 };
 
@@ -113,7 +113,7 @@ export type GetAllRegionLogs = PaginatedResponse<RegionLogs>;
 // Payloads for API operations
 export interface AddCurrenciesPayload {
   currencies: Array<{
-    currencyId: number;
+    currencyId: number|string;
     isPrimary: boolean;
     isEnabled: boolean;
   }>;
@@ -121,7 +121,7 @@ export interface AddCurrenciesPayload {
 
 export interface AddPaymentGatewaysPayload {
   paymentGateways: Array<{
-    paymentGatewayId: number;
+    paymentGatewayId: number|string;
     priority: number;
     isFallback: boolean;
     isEnabled: boolean;
@@ -131,13 +131,13 @@ export interface AddPaymentGatewaysPayload {
 }
 
 export interface UpdatePaymentPriorityPayload {
-  paymentGatewayId: number;
+  paymentGatewayId: number|string;
   newPriority: number;
 }
 
 export interface AddShippingMethodsPayload {
   shippingMethods: Array<{
-    shippingMethodId: number;
+    shippingMethodId: number|string;
     baseCost: number;
     estimatedDaysMin: number;
     estimatedDaysMax: number;

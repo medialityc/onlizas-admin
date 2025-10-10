@@ -33,8 +33,8 @@ export function CurrenciesList({
   const queryClient = useQueryClient();
 
   const createCurrencyModal = getModalState("create");
-  const editCurrencyModal = getModalState<number>("edit");
-  const viewCurrencyModal = getModalState<number>("view");
+  const editCurrencyModal = getModalState<string | number>("edit");
+  const viewCurrencyModal = getModalState<string | number>("view");
 
   const selectedCurrency = useMemo(() => {
     const id = editCurrencyModal.id || viewCurrencyModal.id;
@@ -49,14 +49,14 @@ export function CurrenciesList({
 
   const handleEditCurrency = useCallback(
     (currency: Currency) => {
-      openModal<number>("edit", currency.id);
+      openModal<string | number>("edit", currency.id);
     },
     [openModal]
   );
 
   const handleViewCurrency = useCallback(
     (currency: Currency) => {
-      openModal<number>("view", currency.id);
+      openModal<string | number>("view", currency.id);
     },
     [openModal]
   );

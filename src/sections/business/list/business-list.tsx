@@ -37,14 +37,14 @@ export function BusinessList({
 
   const handleEditBusiness = useCallback(
     (business: Business) => {
-      openModal<number>("edit", business.id);
+      openModal<number|string>("edit", business.id);
     },
     [openModal]
   );
 
   const handleViewBusiness = useCallback(
     (business: Business) => {
-      openModal<number>("view", business.id);
+      openModal<number|string>("view", business.id);
     },
     [openModal]
   );

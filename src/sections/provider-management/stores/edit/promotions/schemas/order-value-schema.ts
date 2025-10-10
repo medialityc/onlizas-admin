@@ -41,8 +41,8 @@ export const orderValueSchema = z
         message: "El monto mínimo debe ser mayor a 0",
       }),
     appliesTo: z.enum(["products", "categories", "orders"]).optional(),
-    products: z.array(z.number().min(1)).optional(),
-    categories: z.array(z.number().min(1)).optional(),
+    products: z.array(z.union([z.string().min(1), z.number().min(1)])).optional(),
+    categories: z.array(z.union([z.string().min(1), z.number().min(1)])).optional(),
 
     // Discount: tipo numérico y valor
     discountType: z.number().min(0).max(2), // 0=percent,1=amount,2=free (free unlikely here)

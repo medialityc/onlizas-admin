@@ -13,7 +13,7 @@ import { Region } from "@/types/regions";
 
 // Tipos para Currency
 export type Currency = {
-  id: number;
+  id: number|string;
   name: string;
   codIso: string;
   rate: number;
@@ -28,14 +28,14 @@ export type CreateCurrency = {
   codIso: string;
   symbol: string;
   rate: number;
-  regionsId: number[];
+  regionsId: (number|string)[];
 };
 
 export type UpdateCurrency = {
   name: string;
   symbol: string;
   rate: number;
-  regionsId: number[];
+  regionsId: (number|string)[];
 };
 
 export type GetAllCurrencies = {

@@ -27,7 +27,7 @@ export const freeDeliverySchema = z
   })).min(1, { message: "Debe seleccionar al menos una fecha" }),
 
     // Arrays de ids (numéricos)
-    productVariantsIds: z.array(z.number().min(1)).min(1, {message: "Debe seleccionar al menos un producto"}),
+    productVariantsIds: z.array(z.union([z.string().min(1), z.number().min(1)])).min(1, {message: "Debe seleccionar al menos un producto"}),
    
 
     // Límites de uso

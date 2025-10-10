@@ -14,7 +14,7 @@ import {
 } from "@/types/store-categories";
 
 export async function getStoreCategories(
-  storeId: number
+  storeId: number|string
 ): Promise<ApiResponse<GetStoreCategories>> {
   const url = backendRoutes.storeCategories.list(storeId);
   const res = await nextAuthFetch({
@@ -29,7 +29,7 @@ export async function getStoreCategories(
 
 // Para autocomplete infinito - adaptador que simula paginación
 export async function getStoreCategoriesForSelect(
-  storeId: number,
+  storeId: number|string,
   params?: IQueryable
 ): Promise<ApiResponse<PaginatedResponse<StoreCategory>>> {
   const res = await getStoreCategories(storeId);
@@ -62,7 +62,7 @@ export async function getStoreCategoriesForSelect(
 }
 
 export async function toggleStoreCategoryStatus(
-  storeCategoryId: number
+  storeCategoryId: number|string
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.storeCategories.toggle,
@@ -77,7 +77,7 @@ export async function toggleStoreCategoryStatus(
 }
 
 export async function updateStoreCategoriesOrder(
-  storeId: number,
+  storeId: number|string,
   orders: UpdateStoreCategoriesOrderRequest
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({

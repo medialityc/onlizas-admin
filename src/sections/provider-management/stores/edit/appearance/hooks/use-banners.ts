@@ -131,11 +131,11 @@ export function useBanners({ backendBanners, setValue }: UseBannersProps) {
     });
   };
 
-  const handleToggleBanner = (id: number) => {
+  const handleToggleBanner = (id: string | number) => {
     setItems((prev) => prev.map((x) => (x.id === id ? { ...x, active: !x.active } : x)));
   };
 
-  const handleDeleteBanner = (id: number) => {
+  const handleDeleteBanner = (id: string | number) => {
     setItems((prev) => prev.filter((x) => x.id !== id));
   };
 

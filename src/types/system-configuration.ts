@@ -1,15 +1,15 @@
 export type CreateSystemConfigurationDto = {
   configurationType: string;
   additionalSettings: string;
-  countryId: number;
+  countryId: number|string;
 };
 
 export type SystemConfiguration = {
-  id: number;
+  id: number|string;
   countryCode: string;
   configurationType: string;
   additionalSettings: string;
-  countryId: number;
+  countryId: number|string;
   countryName: string;
   createdAt: string;
   updatedAt: string;
@@ -21,7 +21,7 @@ export type UpdateSystemConfiguration = {
     countryCode: string;
     configurationType: string;
     additionalSettings: string;
-    countryId: number;
+    countryId: number|string;
     active: boolean;
   };
 };

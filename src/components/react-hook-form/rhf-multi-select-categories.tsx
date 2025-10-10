@@ -65,9 +65,9 @@ export default function RHFMultiSelectCategories({
 
   const selectedIds = field.value || [];
   
-  const handleToggleCategory = (categoryId: number) => {
+  const handleToggleCategory = (categoryId: string | number) => {
     const newSelected = selectedIds.includes(categoryId)
-      ? selectedIds.filter((id: number) => id !== categoryId)
+      ? selectedIds.filter((id: string | number) => id !== categoryId)
       : [...selectedIds, categoryId];
     
     field.onChange(newSelected);

@@ -1,8 +1,8 @@
 // Tipos para categorías asociadas a una tienda (Store)
 export type StoreCategory = {
-  storeId: number;
-  categoryId: number;
-  id: number;
+  storeId: number | string;
+  categoryId: number | string;
+  id: number | string;
   categoryName: string;
   active: boolean;
   order: number; // prioridad/posición
@@ -18,7 +18,7 @@ export type StoreCategorySearchParams = {
 
 // Para crear/actualizar orden de categorías
 export type UpdateStoreCategoriesOrderRequest = Array<{
-  categoryId: number;
+  categoryId: number | string;
   order: number;
 }>;
 

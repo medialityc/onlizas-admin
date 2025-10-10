@@ -17,7 +17,7 @@ export enum LocationType {
 }
 
 export type ILocation = {
-  id: number;
+  id: number|string;
   globalId: string;
   name: string;
   countryCode?: string;
@@ -56,12 +56,12 @@ export type LocationLogs = {
   id: number;
   timestamp: string;
   description: string;
-  locationId: number;
+  locationId: number|string;
   locationName: string;
   locationAddress: string;
   locationType?: string;
   locationStatus: string;
-  changedById: number;
+  changedById: number|string;
   changedByName: string;
 };
 

@@ -36,7 +36,7 @@ export function buildThemeFormData({ store, data }: BuildAppearanceFormDataParam
 
 type BuildBannersFormDataParams = {
   banners: AppearanceForm["banners"];
-  storeId?: number; // 🔧 Opcional - solo para CREATE
+  storeId?: string | number;
   filter?: (banner: AppearanceForm["banners"][number], index: number) => boolean;
 };
 
@@ -61,10 +61,10 @@ export function buildBannersFormData({ banners, storeId, filter }: BuildBannersF
 
   const bannersData = entries.map(({ b }) => ({
     // Solo incluir ID si es positivo (del backend), ignorar IDs temporales negativos
-    ...(b.id && b.id > 0 ? { id: b.id } : {}),
+    ...(b.id && typeof b.id === 'number' && b.id > 0 ? { id: b.id } : {}),
 
     // 🔧 IMPORTANTE: Agregar storeId SOLO para banners nuevos (CREATE)
-    ...(storeId && (!b.id || b.id < 0) ? { storeId } : {}),
+    ...(storeId && (!b.id || (typeof b.id === 'number' && b.id < 0)) ? { storeId } : {}),
 
     title: b.title,
     urlDestinity: b.urlDestinity,

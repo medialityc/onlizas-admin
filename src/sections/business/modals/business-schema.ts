@@ -17,10 +17,15 @@ export const businessSchema = z.object({
 
     .max(30, "Máximo 30 caracteres."),
 
-  locationId: z.coerce
-    .number()
-    .int()
-    .positive({ message: "Debe ser un numero" }),
+  locationId: z.union(
+    [
+      z.string(),
+      z.coerce.number().int().positive({ message: "Debe ser un numero" }),
+    ],
+    {
+      required_error: "La ubicación es obligatoria.",
+    }
+  ),
 
   description: z.string().max(500).optional(),
   address: z.string().max(200).optional(),

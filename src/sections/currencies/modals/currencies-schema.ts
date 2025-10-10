@@ -22,7 +22,7 @@ export const currencySchema = z.object({
     .positive("La tasa de cambio debe ser un número positivo.")
     .min(0.01, "La tasa de cambio debe ser mayor a 0.01.")
     .max(999999.99, "La tasa de cambio no puede exceder 999,999.99."),
-    regionsId:z.array(z.number()),
+    regionsId:z.array(z.union([z.number(),z.string()])),
 });
 
 export type CurrencyFormData = z.infer<typeof currencySchema>;

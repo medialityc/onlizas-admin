@@ -32,13 +32,13 @@ export const packageSchema = z
         // Discount fields
         discountType: z.number().min(0).max(2), // 0=percent, 1=amount, 2=free
         discountValue: z.number(),
-        productVariantsIds: z.array(z.number().min(1)).min(1, { message: "Seleccione al menos un producto" }),
+        productVariantsIds: z.array(z.union([z.string().min(1), z.number().min(1)])).min(1, { message: "Seleccione al menos un producto" }),
         // Requisitos de compra (opcionales, validados si vienen)
         minimumAmount: z.number().optional().refine((val) => val === undefined || val > 0, { message: "La cantidad mínima debe ser mayor a 0" }),
         minimumItems: z.number().optional().refine((val) => val === undefined || val > 0, { message: "La cantidad mínima debe ser mayor a 0" }),
     appliesTo: z.enum(["products", "categories", "orders"]).optional(),
-    products: z.array(z.number().min(1)).optional(),
-    categories: z.array(z.number().min(1)).optional(),
+    products: z.array(z.union([z.string().min(1), z.number().min(1)])).optional(),
+    categories: z.array(z.union([z.string().min(1), z.number().min(1)])).optional(),
 
 
     })

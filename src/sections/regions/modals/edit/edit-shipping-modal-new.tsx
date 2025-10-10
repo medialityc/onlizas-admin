@@ -27,7 +27,7 @@ interface EditShippingModalProps {
   open: boolean;
   onClose: () => void;
   shippingMethod: ShippingMethod | null;
-  regionId: number;
+  regionId: number|string;
 }
 
 export default function EditShippingModal({

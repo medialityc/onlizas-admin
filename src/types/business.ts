@@ -1,11 +1,11 @@
 import { PaginatedResponse } from "./common";
 
 export interface Business {
-  id: number;
+  id: number|string;
   code: string;
   name: string;
   description: string;
-  locationId: number; // Reference to location
+  locationId: number|string; // Reference to location
   hblInitial: string; // Initial HBL code
   address: string;
   email: string;
@@ -34,7 +34,7 @@ export type CreateBusiness = {
   name: string;
   code: string;
   description: string;
-  locationId: number;
+  locationId: number|string;
   hblInitial: string;
   address: string;
   email: string;
@@ -43,7 +43,7 @@ export type CreateBusiness = {
   fixedRate: number;
   invoiceText: string;
   /* users: number[]; */
-  parentId?: number;
+  parentId?: number|string;
   //childBusinessIds: number[];
   photoObjectCodes: string[]; // Files to upload
 };
@@ -54,7 +54,7 @@ export type CreateBusiness = {
 export type UpdateBusiness = {
   name?: string;
   description?: string;
-  locationId?: string;
+  locationId?: string|number;
   initialHbl?: string;
   address?: string;
   email?: string;
@@ -77,31 +77,31 @@ export type BusinessDetails = Pick<
 >;
 
 export type BusinessLogs = {
-  id: number;
+  id: number|string;
   timestamp: string;
   description: string;
   businessGuid: string;
   businessName: string;
   businessCode: string;
-  userId: number;
+  userId: number|string;
   userName: string;
-  ownerId: number;
+  ownerId: number|string;
   ownerName: string;
-  locationId: number;
+  locationId: number|string;
   locationName: string;
 };
 
 export type BusinessProviderResponse = {
-  id: number;
+  id: number|string;
   guid: string;
   name: string;
   code: string;
   description: string;
   isPrimary: boolean;
-  ownerId: number;
+  ownerId: number|string;
   ownerName: string;
-  locationId: number;
-  parentId?: number | null;
+  locationId: number|string;
+  parentId?: number|string;
   childrenCount: number;
   usersCount: number;
   subSystemsCount: number;
