@@ -16,6 +16,7 @@ export type Currency = {
   id: number|string;
   name: string;
   codIso: string;
+  symbol: string;
   rate: number;
   default: boolean;
   active: boolean;

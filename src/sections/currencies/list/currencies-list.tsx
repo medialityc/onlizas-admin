@@ -117,22 +117,38 @@ export function CurrenciesList({
         sortable: true,
         width: 80,
         render: (currency) => (
-          <span className="font-medium text-dark dark:text-white">
-            #{currency.id}
-          </span>
+          <div className="max-w-full">
+            <span className="font-medium text-dark dark:text-white truncate block">
+              #{currency.id}
+            </span>
+          </div>
         ),
       },
       {
         accessor: "name",
         title: "Moneda",
         sortable: true,
+        width: 80,
         render: (currency) => (
-          <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+          <div className="flex flex-col max-w-full">
+            <span className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate block">
               {currency.name}
             </span>
-            <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
+            <span className="text-xs text-gray-500 dark:text-gray-400 font-mono truncate block">
               {currency.codIso}
+            </span>
+          </div>
+        ),
+      },
+      {
+        accessor: "symbol",
+        title: "Símbolo",
+        sortable: true,
+        width: 100,
+        render: (currency) => (
+          <div className="text-center max-w-full">
+            <span className="text-sm font-mono text-gray-800 dark:text-gray-200 truncate block">
+              {currency.symbol}
             </span>
           </div>
         ),
@@ -141,9 +157,9 @@ export function CurrenciesList({
         accessor: "rate",
         title: "Tasa de Cambio",
         sortable: true,
-        width: 140,
+        width: 80,
         render: (currency) => (
-          <div className="text-right">
+          <div className="text-center max-w-full">
             <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
               {currency.rate.toLocaleString("es-CO", {
                 minimumFractionDigits: 2,
@@ -159,15 +175,17 @@ export function CurrenciesList({
         sortable: true,
         width: 100,
         render: (currency) => (
-          <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              currency.active
-                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-            }`}
-          >
-            {currency.active ? "Activa" : "Inactiva"}
-          </span>
+          <div className="max-w-full">
+            <span
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${
+                currency.active
+                  ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                  : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+              }`}
+            >
+              {currency.active ? "Activa" : "Inactiva"}
+            </span>
+          </div>
         ),
       },
       {
@@ -176,9 +194,9 @@ export function CurrenciesList({
         sortable: true,
         width: 120,
         render: (currency) => (
-          <div className="text-center">
+          <div className="text-center max-w-full">
             {currency.default ? (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 whitespace-nowrap">
                 Sí
               </span>
             ) : (
@@ -193,8 +211,9 @@ export function CurrenciesList({
         accessor: "actions",
         title: "Acciones",
         textAlign: "center",
+        width: 80,
         render: (currency) => (
-          <div className="flex justify-center">
+          <div className="flex justify-center max-w-full">
             <ActionsMenu
               onViewDetails={() => handleViewCurrency(currency)}
               onEdit={() => handleEditCurrency(currency)}
