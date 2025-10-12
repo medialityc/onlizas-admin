@@ -16,8 +16,9 @@ export const regionSchema = z.object({
 
   status: z.boolean(),
   moveCountries: z.boolean(),
+  symbol: z.string().min(1).max(4),
 
-  countryIds: z.array(z.union([z.string(),z.number()])),
+  countryIds: z.array(z.union([z.string(),z.number()])).optional(),
 
 });
 

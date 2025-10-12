@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, FormProvider, Resolver } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Region } from "@/types/regions";
 import { regionSchema, CreateRegionSchema } from "../schemas/region-schema";
@@ -16,6 +16,7 @@ import RHFSwitch from "@/components/react-hook-form/rhf-switch";
 import { useRegionDetails } from "../hooks/use-region-details";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { FormProvider } from "@/components/react-hook-form";
 
 interface RegionModalProps {
   open: boolean;
@@ -50,12 +51,18 @@ export default function RegionModal({
   const fullRegion = regionData?.data || region;
 
   // Permisos específicos (después de definir fullRegion)
-  const hasCreate = hasPermission([PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]);
-  const hasUpdate = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasCreate = hasPermission([
+    PERMISSION_ENUM.CREATE_SECTION,
+    PERMISSION_ENUM.CREATE,
+  ]);
+  const hasUpdate = hasPermission([
+    PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.RETRIEVE_SECTION,
+  ]);
   const canEdit = fullRegion ? hasUpdate : hasCreate;
 
   const methods = useForm<CreateRegionSchema>({
-    resolver: zodResolver(regionSchema) as Resolver<CreateRegionSchema>,
+    resolver: zodResolver(regionSchema),
     defaultValues: {
       code: fullRegion?.code || "",
       name: fullRegion?.name || "",
@@ -77,8 +84,12 @@ export default function RegionModal({
     setError(null);
     onClose();
   };
+  console.log(methods.formState);
+console.log("Messi");
 
   const onSubmit = async (data: any) => {
+    console.log("Entro");
+    
     setError(null);
     try {
       // Convertir el valor booleano del status a numérico para el backend
@@ -124,83 +135,77 @@ export default function RegionModal({
         loading={loading || isLoadingRegion || permissionsLoading}
         title={fullRegion ? "Editar Región" : "Crear Región"}
       >
-        <div className="p-5">
-          {error && (
-            <div className="mb-4">
-              <div className="alert alert-danger">{error}</div>
+        <FormProvider methods={methods} onSubmit={onSubmit}>
+          <div className="p-5">
+            {error && (
+              <div className="mb-4">
+                <div className="alert alert-danger">{error}</div>
+              </div>
+            )}
+
+            {/* Estado - fila completa */}
+            <div className="flex items-center space-x-3">
+              <RHFSwitch name="moveCountries" label="Mover Países asociados" />
             </div>
-          )}
 
-          <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              {/* Estado - fila completa */}
-              <div className="flex items-center space-x-3">
-                <RHFSwitch
-                  name="moveCountries"
-                  label="Mover Países asociados"
-                  disabled={isDetailsView || !canEdit}
-                />
-              </div>
-
-              {/* Segunda fila: Código y Nombre */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <RHFInputWithLabel
-                  name="code"
-                  label="Código"
-                  placeholder="Ej: LATAM"
-                  required
-                  disabled={isDetailsView || !!fullRegion || !canEdit}
-                />
-                <RHFInputWithLabel
-                  name="name"
-                  label="Nombre"
-                  placeholder="Nombre de la región"
-                  required
-                  disabled={isDetailsView || !canEdit}
-                />
-              </div>
-
-              {/* Descripción */}
+            {/* Segunda fila: Código y Nombre */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <RHFInputWithLabel
-                name="description"
-                label="Descripción"
-                placeholder="Describe la región"
-                type="textarea"
-                rows={3}
+                name="code"
+                label="Código"
+                placeholder="Ej: LATAM"
+                required
+                disabled={isDetailsView || !!fullRegion || !canEdit}
+              />
+              <RHFInputWithLabel
+                name="name"
+                label="Nombre"
+                placeholder="Nombre de la región"
+                required
                 disabled={isDetailsView || !canEdit}
               />
+            </div>
 
-              {/* Países asociados */}
-              <RHFMultiCountrySelect
-                name="countryIds"
-                label="Países asociados"
-                placeholder="Selecciona los países de esta región"
-                disabled={isDetailsView || !canEdit}
-              />
-              {/* Botones */}
-              <div className="flex justify-end gap-3 pt-6">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="btn btn-outline-secondary"
-                  disabled={isSubmitting}
+            {/* Descripción */}
+            <RHFInputWithLabel
+              name="description"
+              label="Descripción"
+              placeholder="Describe la región"
+              type="textarea"
+              rows={3}
+              disabled={isDetailsView || !canEdit}
+            />
+
+            {/* Países asociados */}
+            <RHFMultiCountrySelect
+              name="countryIds"
+              label="Países asociados"
+              placeholder="Selecciona los países de esta región"
+              disabled={isDetailsView || !canEdit}
+            />
+            {/* Botones */}
+            <div className="flex justify-end gap-3 pt-6">
+              <button
+                type="button"
+                onClick={handleClose}
+                className="btn btn-outline-secondary"
+                disabled={isSubmitting}
+              >
+                Cancelar
+              </button>
+              {!isDetailsView && (
+                <LoaderButton
+                  type="submit"
+                  loading={isSubmitting || permissionsLoading}
+                  className="btn btn-primary"
+                  disabled={isSubmitting || permissionsLoading || !canEdit}
                 >
-                  Cancelar
-                </button>
-                {!isDetailsView && (
-                  <LoaderButton
-                    type="submit"
-                    loading={isSubmitting || permissionsLoading}
-                    className="btn btn-primary"
-                    disabled={isSubmitting || permissionsLoading || !canEdit}
-                  >
-                    {fullRegion ? "Guardar Cambios" : "Crear Región"}
-                  </LoaderButton>
-                )}
-              </div>
-            </form>
-          </FormProvider>
-        </div>
+                  {fullRegion ? "Guardar Cambios" : "Crear Región"}
+                </LoaderButton>
+              )}
+            </div>
+          </div>
+        </FormProvider>
       </SimpleModal>
     </>
   );

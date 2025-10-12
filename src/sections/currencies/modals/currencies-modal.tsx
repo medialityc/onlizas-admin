@@ -48,7 +48,7 @@ export default function CurrenciesModal({
     defaultValues: {
       name: currency?.name ?? "",
       codIso: currency?.codIso ?? "",
-      symbol: "", // Nuevo campo que no existe en Currency base
+      symbol: currency?.symbol ?? "",
       rate: currency?.rate ?? 1,
       regionsId: currency?.regions?.map((r) => r.id) ?? [],
     },

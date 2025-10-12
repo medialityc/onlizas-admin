@@ -41,8 +41,8 @@ export function RHFCountrySelect({
   const selectedValue = watch(name);
   const selectedCountry = countries.find(
     (country) => storeCode 
-      ? country.code === selectedValue 
-      : country.id === Number(selectedValue)
+      ? country.code.toLowerCase() === selectedValue?.toLowerCase() 
+      : country.id === selectedValue
   );
 
   useEffect(() => {
