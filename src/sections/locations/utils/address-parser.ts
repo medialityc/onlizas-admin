@@ -67,7 +67,7 @@ export const extractLocationFields = (
   addressComponents: AddressComponent[]
 ) => {
   return {
-    countryCode: getAddressComponent(addressComponents, 'country'),
+    countryCode: getAddressComponent(addressComponents, 'country').toUpperCase(),
     state: getAddressComponent(addressComponents, 'administrative_area_level_1'),
     district: getAddressComponent(addressComponents, 'locality') || 
               getAddressComponent(addressComponents, 'administrative_area_level_2'),
