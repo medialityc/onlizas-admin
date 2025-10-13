@@ -37,14 +37,14 @@ export function BusinessList({
 
   const handleEditBusiness = useCallback(
     (business: Business) => {
-      openModal<number|string>("edit", business.id);
+      openModal<number | string>("edit", business.id);
     },
     [openModal]
   );
 
   const handleViewBusiness = useCallback(
     (business: Business) => {
-      openModal<number|string>("view", business.id);
+      openModal<number | string>("view", business.id);
     },
     [openModal]
   );
@@ -66,17 +66,6 @@ export function BusinessList({
 
   const columns = useMemo<DataTableColumn<Business>[]>(
     () => [
-      {
-        accessor: "id",
-        title: "ID",
-        sortable: true,
-        width: 80,
-        render: (business) => (
-          <span className="font-medium text-dark dark:text-white">
-            #{business.id}
-          </span>
-        ),
-      },
       {
         accessor: "name",
         title: "Nombre",
@@ -154,9 +143,18 @@ export function BusinessList({
               onViewDetails={() => handleViewBusiness(business)}
               onEdit={() => handleEditBusiness(business)}
               onActive={() => handleDeleteBusiness(business)}
-              viewPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-              editPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-              activePermissions={[PERMISSION_ENUM.DELETE, PERMISSION_ENUM.UPDATE_BUSINESS]}
+              viewPermissions={[
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION,
+              ]}
+              editPermissions={[
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION,
+              ]}
+              activePermissions={[
+                PERMISSION_ENUM.DELETE,
+                PERMISSION_ENUM.UPDATE_BUSINESS,
+              ]}
             />
           </div>
         ),

@@ -104,17 +104,6 @@ export function RegionList({
   const columns = useMemo<DataTableColumn<Region>[]>(
     () => [
       {
-        accessor: "id",
-        title: "ID",
-        sortable: true,
-        width: 80,
-        render: (region) => (
-          <span className="font-medium text-dark dark:text-white">
-            #{region.id}
-          </span>
-        ),
-      },
-      {
         accessor: "code",
         title: "Código",
         sortable: true,
@@ -184,9 +173,18 @@ export function RegionList({
                   ? () => handleDeleteRegion(region)
                   : undefined
               }
-              viewPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-              editPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-              deletePermissions={[PERMISSION_ENUM.DELETE,PERMISSION_ENUM.DELETE_SECTION]}
+              viewPermissions={[
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION,
+              ]}
+              editPermissions={[
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION,
+              ]}
+              deletePermissions={[
+                PERMISSION_ENUM.DELETE,
+                PERMISSION_ENUM.DELETE_SECTION,
+              ]}
             />
             {region.status === 0 && (
               <button
@@ -201,7 +199,12 @@ export function RegionList({
         ),
       },
     ],
-    [handleViewRegion, handleEditRegion, handleDeleteRegion, handleConfigureRegion]
+    [
+      handleViewRegion,
+      handleEditRegion,
+      handleDeleteRegion,
+      handleConfigureRegion,
+    ]
   );
 
   return (
@@ -214,7 +217,10 @@ export function RegionList({
         searchPlaceholder="Buscar regiones..."
         emptyText="No se encontraron regiones"
         onCreate={handleCreateRegion}
-        createPermissions={[PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]}
+        createPermissions={[
+          PERMISSION_ENUM.CREATE_SECTION,
+          PERMISSION_ENUM.CREATE,
+        ]}
       />
 
       {/* Create Modal */}

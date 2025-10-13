@@ -71,7 +71,10 @@ export function LocationsList({
     null
   );
   const { hasPermission } = usePermissions();
-  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasReadPermission = hasPermission([
+    PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.RETRIEVE_SECTION,
+  ]);
 
   const queryClient = useQueryClient();
 
@@ -91,14 +94,14 @@ export function LocationsList({
 
   const handleEditLocation = useCallback(
     (location: ILocation) => {
-      openModal<number|string>("edit", location.id);
+      openModal<number | string>("edit", location.id);
     },
     [openModal]
   );
 
   const handleViewLocation = useCallback(
     (location: ILocation) => {
-      openModal<number|string>("view", location.id);
+      openModal<number | string>("view", location.id);
     },
     [openModal]
   );
@@ -140,17 +143,6 @@ export function LocationsList({
 
   const columns = useMemo<DataTableColumn<ILocation>[]>(
     () => [
-      {
-        accessor: "id",
-        title: "ID",
-        sortable: true,
-        width: 80,
-        render: (location) => (
-          <span className="font-medium text-dark dark:text-white">
-            #{location.id}
-          </span>
-        ),
-      },
       {
         accessor: "name",
         title: "Nombre",
@@ -246,10 +238,22 @@ export function LocationsList({
                   ? () => handleToggleStatus(location)
                   : undefined
               }
-              viewPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-              editPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-              deletePermissions={[PERMISSION_ENUM.DELETE,PERMISSION_ENUM.DELETE_SECTION]}
-              activePermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
+              viewPermissions={[
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION,
+              ]}
+              editPermissions={[
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION,
+              ]}
+              deletePermissions={[
+                PERMISSION_ENUM.DELETE,
+                PERMISSION_ENUM.DELETE_SECTION,
+              ]}
+              activePermissions={[
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION,
+              ]}
             />
           </div>
         ),
@@ -273,7 +277,10 @@ export function LocationsList({
         searchPlaceholder="Buscar localizaciones..."
         emptyText="No se encontraron localizaciones"
         onCreate={handleCreateLocation}
-        createPermissions={[PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]}
+        createPermissions={[
+          PERMISSION_ENUM.CREATE_SECTION,
+          PERMISSION_ENUM.CREATE,
+        ]}
         rightActions={
           //poner lo del read luegp que se defina la ofrma
           hasReadPermission && (

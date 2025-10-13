@@ -208,11 +208,10 @@ export async function countSuppliers(): Promise<
 }
 
 export async function answerApprovalProcess(
-  id: string,
   data: AnswerApprovalProcess
 ): Promise<ApiResponse<AnswerApprovalProcess>> {
   const res = await nextAuthFetch({
-    url: `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${id}/approve`,
+    url: `${process.env.NEXT_PUBLIC_API_URL}approval-processes/approve`,
     method: "PUT",
     contentType: "application/json",
     data,

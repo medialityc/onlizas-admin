@@ -84,17 +84,6 @@ export function CategoriesList({
   const columns = useMemo<DataTableColumn<Category>[]>(
     () => [
       {
-        accessor: "id",
-        title: "ID",
-        sortable: true,
-        width: 80,
-        render: (category) => (
-          <span className="font-medium text-dark dark:text-white">
-            #{category.id}
-          </span>
-        ),
-      },
-      {
         accessor: "name",
         title: "Nombre",
         sortable: true,

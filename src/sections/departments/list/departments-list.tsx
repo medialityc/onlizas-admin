@@ -84,17 +84,6 @@ export function DepartmentsList({
   const columns = useMemo<DataTableColumn<Department>[]>(
     () => [
       {
-        accessor: "id",
-        title: "ID",
-        sortable: true,
-        width: 80,
-        render: (department) => (
-          <span className="font-medium text-dark dark:text-white">
-            #{department.id}
-          </span>
-        ),
-      },
-      {
         accessor: "name",
         title: "Nombre",
         sortable: true,

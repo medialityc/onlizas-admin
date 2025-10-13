@@ -53,7 +53,10 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
   });
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasCreate = hasPermission([PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]);
+  const hasCreate = hasPermission([
+    PERMISSION_ENUM.CREATE_SECTION,
+    PERMISSION_ENUM.CREATE,
+  ]);
 
   return (
     <>
@@ -210,6 +213,29 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
               maxLength={20}
               required
             />
+            {/* Password fields for new user creation */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <RHFInputWithLabel
+                name="password"
+                label="Contraseña"
+                type="password"
+                placeholder="Mínimo 8 caracteres"
+                required
+              />
+              <RHFInputWithLabel
+                name="confirmPassword"
+                label="Confirmar Contraseña"
+                type="password"
+                placeholder="Repite la contraseña"
+                required
+              />
+            </div>
+            <div className="pt-1">
+              <RHFSwitch
+                name="requiredPasswordChange"
+                label="Requerir cambio de contraseña en el primer inicio de sesión"
+              />
+            </div>
           </>
         )}
         {/* Seller Type */}

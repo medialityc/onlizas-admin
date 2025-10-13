@@ -21,7 +21,6 @@ async function UserListPage({ searchParams }: PageProps) {
   const query: IQueryable = buildQueryParams(params);
   const usersPromise = await getAllUsers(query);
 
-  console.log("Users Promise:", usersPromise);
   if (usersPromise.error || !usersPromise.data) {
     throw new Error(usersPromise.message);
   }

@@ -35,6 +35,8 @@ export async function getAllUsers(
     params,
     backendRoutes.users.getAll
   ).build();
+  console.log(url);
+
   const res = await nextAuthFetch({
     url,
     method: "GET",

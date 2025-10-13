@@ -15,6 +15,7 @@ import {
 import { Supplier } from "@/types/suppliers";
 import { createSupplier } from "@/services/supplier";
 import SupplierCreateForm from "./supplier-create-form";
+import { redirect } from "next/dist/server/api-utils";
 
 interface SuppliersModalProps {
   open: boolean;
@@ -48,6 +49,9 @@ export default function SuppliersModal({
       sellerType: "",
       nacionalityType: "",
       mincexCode: "",
+      password: "",
+      confirmPassword: "",
+      requiredPasswordChange: false,
     },
   });
 
@@ -70,12 +74,22 @@ export default function SuppliersModal({
           if (data.email) formData.append("email", data.email);
           if (data.phone) formData.append("phone", data.phone);
           if (data.address) formData.append("address", data.address);
+          formData.append("createUserAutomatically", "false");
+          formData.append("requirePasswordChange", "false");
         }
       } else {
         if (data.name) formData.append("name", data.name);
         if (data.email) formData.append("email", data.email);
         if (data.phone) formData.append("phone", data.phone);
         if (data.address) formData.append("address", data.address);
+        formData.append("createUserAutomatically", "true");
+        formData.append(
+          "requirePasswordChange",
+          data.requiredPasswordChange ? "true" : "false"
+        );
+        if (data.password) {
+          formData.append("password", data.password);
+        }
       }
 
       // Enums y condicionales
@@ -93,13 +107,16 @@ export default function SuppliersModal({
         }
       });
 
-      let response = null;
-      response = await createSupplier(formData);
-      if (response && response.status === 200) {
+      const response = await createSupplier(formData);
+      console.log(response);
+
+      if (response && !response.error) {
         onSuccess?.();
         reset();
         toast.success("Proveedor creado exitosamente");
         handleClose();
+      } else {
+        toast.error(response.message ?? "Error al crear el proveedor");
       }
     } catch (err) {
       const errorMessage =

@@ -85,17 +85,6 @@ export function SuppliersList({
   const columns = useMemo<DataTableColumn<Supplier>[]>(
     () => [
       {
-        accessor: "id",
-        title: "ID",
-        sortable: true,
-        width: 80,
-        render: (supplier) => (
-          <span className="font-medium text-dark dark:text-white">
-            #{supplier.id}
-          </span>
-        ),
-      },
-      {
         accessor: "name",
         title: "Nombre",
         sortable: true,
@@ -199,9 +188,18 @@ export function SuppliersList({
               onActive={() => handleToggleActiveSupplier(supplier)}
               onViewDetails={() => handleViewSupplier(supplier)}
               onEdit={() => handleEditFullSupplier(supplier)}
-              viewPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-              editPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-              activePermissions={[PERMISSION_ENUM.UPDATE,PERMISSION_ENUM.DELETE]}
+              viewPermissions={[
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION,
+              ]}
+              editPermissions={[
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION,
+              ]}
+              activePermissions={[
+                PERMISSION_ENUM.UPDATE,
+                PERMISSION_ENUM.DELETE,
+              ]}
             />
           </div>
         ),
@@ -220,7 +218,10 @@ export function SuppliersList({
         searchPlaceholder="Buscar solicitudes..."
         onCreate={handleCreateSupplier}
         emptyText="No se encontraron solicitudes"
-        createPermissions={[PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]}
+        createPermissions={[
+          PERMISSION_ENUM.CREATE_SECTION,
+          PERMISSION_ENUM.CREATE,
+        ]}
       />
 
       {/* Create Modal */}

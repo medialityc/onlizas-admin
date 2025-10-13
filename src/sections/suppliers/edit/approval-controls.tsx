@@ -19,17 +19,19 @@ export default function ApprovalControls({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const canApproveReject = hasPermission(["APPROVALPROCESS_APPROVE_REJECT"]);
+  const canApproveReject = hasPermission([
+    "APPROVALPROCESS_APPROVE_REJECT",
+    "Update",
+  ]);
 
   const submit = (isApproved: boolean) => {
     const data = { approvalProcessId, isApproved, comments };
     startTransition(async () => {
-      const res = await answerApprovalProcess(approvalProcessId, data);
+      const res = await answerApprovalProcess(data);
       if (res?.error) {
         toast.error(res?.message || "No se pudo procesar la solicitud");
         return;
       }
-      console.log(res);
 
       if (res.data) {
         toast.success(

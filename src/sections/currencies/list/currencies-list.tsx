@@ -112,17 +112,6 @@ export function CurrenciesList({
   const columns = useMemo<DataTableColumn<Currency>[]>(
     () => [
       {
-        accessor: "id",
-        title: "ID",
-        sortable: true,
-        width: 80,
-        render: (currency) => (
-          <span className="font-medium text-dark dark:text-white">
-            #{currency.id}
-          </span>
-        ),
-      },
-      {
         accessor: "name",
         title: "Moneda",
         sortable: true,
@@ -209,10 +198,22 @@ export function CurrenciesList({
                   ? () => handleDeleteCurrency(currency)
                   : undefined
               }
-              viewPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-              editPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-              payPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-              activePermissions={[PERMISSION_ENUM.DELETE,PERMISSION_ENUM.DELETE_SECTION]}
+              viewPermissions={[
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION,
+              ]}
+              editPermissions={[
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION,
+              ]}
+              payPermissions={[
+                PERMISSION_ENUM.RETRIEVE,
+                PERMISSION_ENUM.RETRIEVE_SECTION,
+              ]}
+              activePermissions={[
+                PERMISSION_ENUM.DELETE,
+                PERMISSION_ENUM.DELETE_SECTION,
+              ]}
             />
           </div>
         ),
@@ -235,7 +236,10 @@ export function CurrenciesList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar monedas..."
         onCreate={handleCreateCurrency}
-        createPermissions={[PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]}
+        createPermissions={[
+          PERMISSION_ENUM.CREATE_SECTION,
+          PERMISSION_ENUM.CREATE,
+        ]}
         emptyText="No se encontraron monedas"
       />
       {/* Create Modal */}
