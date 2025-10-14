@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { deleteBusinessBySupplier } from "@/services/business";
 
 interface UseProviderBusinessDeleteMutationProps {
-  userId?: number;
+  userId?: number | string;
   onSuccess?: () => void;
 }
 

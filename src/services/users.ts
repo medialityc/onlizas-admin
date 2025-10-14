@@ -135,20 +135,19 @@ export async function deactivateUser(
 }
 
 // - [ ] GET USER BY ID
-export async function getUserById(id: number): Promise<ApiResponse<IUser>> {
+export async function getUserById(id: string): Promise<ApiResponse<IUser>> {
   const res = await nextAuthFetch({
     url: backendRoutes.users.getById(id),
     method: "GET",
     useAuth: true,
+    next: { tags: [`user-${id}`] },
   });
-
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<IUser>(res);
 }
-
 // - [ ] GET USER PROVIDER BY ID
 export async function getUserProviderById(
-  id: number
+  id: string
 ): Promise<ApiResponse<IUser>> {
   const res = await nextAuthFetch({
     url: backendRoutes.users.getById(id),
@@ -240,7 +239,7 @@ export async function uploadOrUpdateUserDocument(data: {
   description?: string;
   file: File;
   documentId?: number;
-  userId: number;
+  userId: number | string;
 }): Promise<ApiResponse<any>> {
   const formData = new FormData();
   formData.append("name", data.name);

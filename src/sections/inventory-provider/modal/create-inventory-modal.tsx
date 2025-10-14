@@ -9,7 +9,7 @@ import InventoryProviderForm from "../components/inventory-form/inventory-form-c
 interface CreateInventoryModalProps {
   open: boolean;
   onClose: () => void;
-  provider?: number;
+  provider?: string;
 }
 
 export default function CreateInventoryModal({

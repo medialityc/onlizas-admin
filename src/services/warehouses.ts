@@ -186,7 +186,7 @@ export async function deleteWarehouse(
 }
 
 export async function getAllWarehousesBySupplier(
-  supplierId: number,
+  supplierId: string,
   params: IQueryable
 ): Promise<ApiResponse<GetAllWarehouses>> {
   const url = new QueryParamsURLFactory(

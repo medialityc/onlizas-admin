@@ -10,16 +10,6 @@ interface Permission {
   subsystem: any;
 }
 
-// Tipo de respuesta de useSSO
-interface UseSSOResponse {
-  data: Permission[];
-  totalCount: number;
-  page: number;
-  pageSize: number;
-  hasNext: boolean;
-  hasPrevious: boolean;
-}
-
 export const usePermissions = () => {
   const {
     data: permissions,
@@ -27,7 +17,7 @@ export const usePermissions = () => {
     error,
     isError,
   } = useSSO() as {
-    data: UseSSOResponse | undefined;
+    data: Permission[] | undefined;
     isLoading: boolean;
     error: any;
     isError: boolean;

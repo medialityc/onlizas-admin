@@ -13,7 +13,6 @@ import { Button } from "@/components/button/button";
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
-
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import { usePermissions } from "@/hooks/use-permissions";
 
@@ -23,12 +22,12 @@ interface CategoryFormProps {
 
 export default function CategoryForm({ initValue }: CategoryFormProps) {
   const { form, isPending, onSubmit } = useCategoryCreateForm(initValue);
-  const { push } = useRouter();
-  const handleCancel = useCallback(() => push("/dashboard/categories"), [push]);
-
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+
+  const { push } = useRouter();
+  const handleCancel = useCallback(() => push("/dashboard/categories"), [push]);
 
   return (
     <section>

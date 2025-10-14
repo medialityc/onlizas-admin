@@ -11,7 +11,7 @@ import { getAllSupplierUsers } from "@/services/users";
 import { RenderWarehouseField } from "./render-warehouse-field";
 
 type Props = {
-  provider?: number;
+  provider?: string;
 };
 
 function InventoryForm({ provider }: Props) {

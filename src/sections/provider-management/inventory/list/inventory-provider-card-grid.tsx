@@ -50,7 +50,7 @@ export function InventoryProviderCardGrid({
       <CreateInventoryModal
         open={createModal.open}
         onClose={handleClose}
-        provider={provider?.id}
+        provider={provider?.id as string}
       />
     </>
   );

@@ -12,6 +12,8 @@ import { toggleStatusCategory } from "@/services/categories";
 import { paths } from "@/config/paths";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import { usePermissions } from "@/hooks/use-permissions";
+import ImagePreview from "@/components/image/image-preview";
+import { isValidUrl } from "@/utils/format";
 
 interface CategoriesListProps {
   data?: GetAllCategories;

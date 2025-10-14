@@ -1,6 +1,7 @@
 import { processImageFile } from "@/utils/image-helpers";
 import { CategoryFormData } from "../schemas/category-schema";
 import { toast } from "react-toastify";
+import { isFileLike } from "@/utils/is-file";
 
 export const setCategoryFormData = async (
   category: CategoryFormData
@@ -17,7 +18,7 @@ export const setCategoryFormData = async (
   }));
 
   // Procesar imagen
-  if (category.image) {
+  if (isFileLike(category.image)) {
     const processedImage = await processImageFile(category.image);
     if (processedImage) {
       formData.append("image", processedImage);

@@ -23,6 +23,7 @@ export const roleUpdateSchema = (existingRoles: IRole[]) =>
                 { message: 'El código ya está en uso' }
             ),
         description: z.string().optional(),
+        permissions: z.array(z.string()).min(1, 'Seleccione al menos un permiso'),
     });
 
 // To infer the schema, use the return type of the function

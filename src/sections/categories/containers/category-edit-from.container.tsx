@@ -1,7 +1,6 @@
 "use client";
 
 import CategoryForm from "../components/category-form";
-// import { setCategoryAdapter } from "../constants/category-adapter";
 import { CategoryFormData } from "../schemas/category-schema";
 
 type Props = {

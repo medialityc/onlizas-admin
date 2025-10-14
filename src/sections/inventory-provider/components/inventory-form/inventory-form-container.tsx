@@ -7,7 +7,7 @@ import { useInventoryCreateForm } from "../../hooks/use-inventory-easy-create";
 import InventoryForm from "./inventory-form";
 
 type Props = {
-  provider?: number;
+  provider?: string;
   onClose: () => void;
 };
 

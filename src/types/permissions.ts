@@ -2,7 +2,7 @@ import { PaginatedResponse } from "./common";
 
 // Permission types
 export interface IPermission {
-  id: number;
+  id: string;
   name: string;
   code: string;
   description: string;

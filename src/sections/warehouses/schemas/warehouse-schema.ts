@@ -19,7 +19,7 @@ export const warehouseSchema = z
 
     // virtual
     virtualTypeId: z.coerce.number().optional(),
-    supplierId: z.coerce.number().optional(),
+    supplierId: z.string().optional(),
     rules: z.any().optional(),
   })
   .refine(
@@ -124,22 +124,6 @@ export const warehouseSchema = z
     {
       message: "El tipo virtual debe ser un número válido",
       path: ["virtualTypeId"],
-    }
-  )
-  // Validación adicional: supplierId debe ser un número positivo
-  .refine(
-    (data) => {
-      if (
-        data.type === WAREHOUSE_TYPE_ENUM.virtual &&
-        data.supplierId !== undefined
-      ) {
-        return data.supplierId > 0;
-      }
-      return true;
-    },
-    {
-      message: "El proveedor debe ser un número válido",
-      path: ["supplierId"],
     }
   );
 

@@ -13,10 +13,12 @@ import { useCallback, useMemo } from "react";
 import UserCreateModal from "../create/user-create-container";
 import { useRouter } from "next/navigation";
 import { useModalState } from "@/hooks/use-modal-state";
-import { usePermissions } from "zas-sso-client";
+
 import { toast } from "react-toastify";
 import { revalidateTagFn } from "@/services/revalidate";
 import { activateUser } from "@/services/users";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM, PERMISSIONS } from "@/lib/permissions";
 
 interface UserListProps {
   data?: GetAllUsersResponse;
@@ -31,7 +33,6 @@ export function UserList({
 }: UserListProps) {
   const router = useRouter();
   const { getModalState, openModal, closeModal } = useModalState();
-  const permisos = usePermissions();
   const createModal = getModalState("create");
 
   const handleCreateUser = useCallback(() => openModal("create"), [openModal]);
@@ -84,7 +85,7 @@ export function UserList({
               />
             ) : (
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-sm font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                {user.firstName?.[0]?.toUpperCase() || "?"}
+                {user.name?.[0]?.toUpperCase() || "?"}
               </div>
             )}
           </div>
@@ -100,7 +101,7 @@ export function UserList({
               href={paths.dashboard.users.edit(user.id)}
               className="hover:text-primary"
             >
-              {user.firstName} {user.lastName}
+              {user.name}
             </Link>
           </div>
         ),
@@ -242,6 +243,7 @@ export function UserList({
         searchPlaceholder="Buscar..."
         emptyText="No se encontraron usuarios"
         className="mt-6"
+        createPermissions={[PERMISSION_ENUM.CREATE]}
       />
       <UserCreateModal
         open={createModal.open}

@@ -12,7 +12,7 @@ import { WarehouseFilter } from "@/types/warehouses";
 interface RenderWarehouseFieldProps {
   meWarehouse?: boolean;
   isPaqueteria?: boolean;
-  supplierId?: number;
+  supplierId?: string;
 }
 
 interface WarehouseFieldConfig {

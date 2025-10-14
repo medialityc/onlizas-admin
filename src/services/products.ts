@@ -38,7 +38,7 @@ export async function getAllProducts(
 }
 
 export async function getAllProductsBySupplier(
-  supplierId: number,
+  supplierId: string,
   params: IQueryable
 ): Promise<ApiResponse<GetAllProducts>> {
   const url = new QueryParamsURLFactory(

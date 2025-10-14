@@ -28,7 +28,7 @@ interface DocumentModalProps {
   open: boolean;
   onClose: () => void;
   document?: IDocument;
-  userId: number;
+  userId: number | string;
   onSuccess?: () => void;
 }
 

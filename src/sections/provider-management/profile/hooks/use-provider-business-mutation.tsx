@@ -10,7 +10,7 @@ import { isValidUrl, urlToFile } from "@/utils/format";
 
 interface UseProviderBusinessMutationProps {
   business?: Business;
-  userId?: number;
+  userId?: number | string;
   onSuccess?: (data?: Business) => void;
   onClose?: () => void;
 }

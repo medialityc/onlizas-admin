@@ -16,7 +16,7 @@ export default async function InventoryEditPage({ params }: EditPageProps) {
   const { id } = await params;
   const res = await getInventoryById(id);
   if (!res || res.error || !res.data) notFound();
-  const resSupplier = await getUserProviderById(Number(res.data?.supplierId));
+  const resSupplier = await getUserProviderById(res.data?.supplierId);
   if (!resSupplier || resSupplier.error || !resSupplier.data) notFound();
   const resFeatures = await getCategoryFeatures(res.data?.categoryIds ?? []);
 

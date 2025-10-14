@@ -10,7 +10,7 @@ export const sectionProductSchema = z.object({
   categoriesIds: z
     .array(z.number())
     .min(1, "Seleccione al menos una categoría"),
-  supplierId: z.number().optional(),
+  supplierId: z.string().optional(),
 });
 
 export const sectionCriterionSchema = z.object({

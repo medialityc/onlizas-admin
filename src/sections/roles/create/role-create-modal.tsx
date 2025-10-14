@@ -3,6 +3,7 @@
 import { AlertBox } from "@/components/alert/alert-box";
 import LoaderButton from "@/components/loaders/loader-button";
 import SimpleModal from "@/components/modal/modal";
+import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import RHFInput from "@/components/react-hook-form/rhf-input";
 
 import {
@@ -10,6 +11,7 @@ import {
   createRoleSchema,
   defaultRoleForm,
 } from "@/sections/roles/create/role-schemas";
+import { getAllPermissions } from "@/services/permissions";
 import { createRole } from "@/services/roles";
 import { IRole } from "@/types/roles";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -95,13 +97,21 @@ export default function RoleCreateModal({
               name="code"
               label="Código del Rol"
               placeholder="Ej: ADMIN_ROLE"
-            />{" "}
+            />
             <RHFInput
               name="description"
               label="Descripción"
               placeholder="Describe las responsabilidades de este rol"
               type="textarea"
               className="h-24"
+            />
+
+            <RHFAutocompleteFetcherInfinity
+              name="permissions"
+              label="Permisos"
+              required
+              onFetch={getAllPermissions}
+              multiple
             />
             <div className="flex justify-end gap-3 pt-4">
               <button

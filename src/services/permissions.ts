@@ -77,3 +77,23 @@ export async function deletePermission(
   revalidateTag("permissions");
   return buildApiResponseAsync<DeletePermissionResponse>(res);
 }
+
+
+export async function getAllPermissionsBySubsystemId(
+	id: string,
+	params: IQueryable,
+): Promise<ApiResponse<GetAllPermissionsResponse>> {
+	const url = new QueryParamsURLFactory(
+		params,
+		backendRoutes.permissions.getBySubsystemId(id),
+	).build();
+	const res = await nextAuthFetch({
+		url,
+		method: 'GET',
+		useAuth: true,
+		next: { tags: ['permissions'] },
+	});
+
+	if (!res.ok) return handleApiServerError(res);
+	return buildApiResponseAsync<GetAllPermissionsResponse>(res);
+}

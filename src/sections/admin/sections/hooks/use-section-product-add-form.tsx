@@ -15,7 +15,7 @@ export const sectionProductInitValues: SectionProductItemFormData = {
   customBackgroundColor: "",
   products: [],
   categoriesIds: [],
-  supplierId: 0
+  supplierId: ''
 };
 
 export const useSectionProductItemAddForm = (

@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { toast } from "react-toastify";
 import { answerApprovalProcess } from "@/services/supplier";
 import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface ApprovalControlsProps {
   approvalProcessId: string;
@@ -20,8 +21,8 @@ export default function ApprovalControls({
   // Control de permisos
   const { hasPermission } = usePermissions();
   const canApproveReject = hasPermission([
-    "APPROVALPROCESS_APPROVE_REJECT",
-    "Update",
+    PERMISSION_ENUM.UPDATE,
+    PERMISSION_ENUM.UPDATE_APPROVAL_PROCESS,
   ]);
 
   const submit = (isApproved: boolean) => {

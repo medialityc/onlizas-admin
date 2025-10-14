@@ -9,7 +9,7 @@ import { EnhancedDocument } from "@/types/suppliers";
 import Link from "next/link";
 
 interface Props {
-  userId: number;
+  userId: number | string;
   documents: EnhancedDocument[];
 }
 

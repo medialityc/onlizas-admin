@@ -145,7 +145,8 @@ export const PERMISSIONS = [
   },
   {
     code: PERMISSION_ENUM.CREATE_USER_BEFORE_APPROVE,
-    description: "This permission allows to create a user before approving an approval process",
+    description:
+      "This permission allows to create a user before approving an approval process",
   },
   {
     code: PERMISSION_ENUM.CREATE_BANNER,

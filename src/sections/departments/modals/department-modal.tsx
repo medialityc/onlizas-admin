@@ -20,6 +20,7 @@ import RHFCheckbox from "@/components/react-hook-form/rhf-checkbox";
 import { urlToFile, isValidUrl } from "@/utils/format";
 import { processImageFile } from "@/utils/image-helpers";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { isFileLike } from "@/utils/is-file";
 
 interface ModalProps {
   open: boolean;
@@ -50,27 +51,6 @@ export default function DepartmentModal({
     },
   });
 
-  useEffect(() => {
-    const loadImageFromUrl = async () => {
-      if (department?.image && isValidUrl(department.image)) {
-        setLoadingImage(true);
-        try {
-          const imageFile = await urlToFile(department.image);
-          methods.setValue("image", imageFile);
-        } catch (error) {
-          console.error("Error loading image from URL:", error);
-          // No mostrar toast aquí ya que es una carga inicial
-        } finally {
-          setLoadingImage(false);
-        }
-      }
-    };
-
-    if (open && department?.image) {
-      loadImageFromUrl();
-    }
-  }, [open, department?.image, methods]);
-
   const {
     reset,
     formState: { isSubmitting },
@@ -89,7 +69,10 @@ export default function DepartmentModal({
     PERMISSION_ENUM.CREATE_SECTION,
   ]);
 
-  const onSubmit = async (data: DepartmentFormData, event?: React.BaseSyntheticEvent) => {
+  const onSubmit = async (
+    data: DepartmentFormData,
+    event?: React.BaseSyntheticEvent
+  ) => {
     event?.preventDefault();
     setError(null);
     let response;
@@ -99,8 +82,7 @@ export default function DepartmentModal({
       formData.append("description", data.description);
       formData.append("active", String(data.active));
 
-      // Procesar imagen
-      if (data.image) {
+      if (isFileLike(data.image)) {
         const processedImage = await processImageFile(data.image);
         if (processedImage) {
           formData.append("image", processedImage);

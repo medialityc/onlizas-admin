@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 interface PageProps {
   searchParams: Promise<SearchParams>;
-  params: Promise<{ provider: number }>;
+  params: Promise<{ provider: string }>;
 }
 
 async function InventoryProviderPage({ searchParams, params }: PageProps) {
@@ -27,7 +27,7 @@ async function InventoryProviderPage({ searchParams, params }: PageProps) {
 
   const inventories = getAllInventoryByUserProvider(supplierId, query);
 
-  const provider = await getUserProviderById(Number(supplierId));
+  const provider = await getUserProviderById(supplierId);
 
   return (
     <Suspense fallback={<InventoryListSkeleton />}>

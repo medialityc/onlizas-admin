@@ -38,7 +38,6 @@ export function InventoryProviderCardGrid({
         onCreate={handleOpen}
         createText="Crear inventario"
         enableColumnToggle={false}
-        
         component={
           <InventoryProviderCardList
             data={data?.data as any[]}
@@ -50,7 +49,7 @@ export function InventoryProviderCardGrid({
       <CreateInventoryModal
         open={createModal.open}
         onClose={handleClose}
-        provider={provider?.id as number}
+        provider={provider?.id as string}
       />
     </>
   );
