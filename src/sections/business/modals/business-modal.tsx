@@ -64,7 +64,10 @@ export default function BusinessModal({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasUpdatePermission = hasPermission([
+    PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.RETRIEVE_SECTION,
+  ]);
 
   const {
     reset,
@@ -83,7 +86,6 @@ export default function BusinessModal({
           setValue("photoObjectCodes", business.photoObjectCodes);
         } finally {
           setLoadingImage(false);
-          console.log(business.photoObjectCodes);
         }
       }
     };
@@ -165,10 +167,10 @@ export default function BusinessModal({
   };
 
   if (!open) return null;
-  console.log(methods.formState.errors);
 
   // Use locations fetcher to select a Location (integrates with RHF and backend)
-  const isLocationAssigned = !!business?.locationId && business.locationId !== undefined;
+  const isLocationAssigned =
+    !!business?.locationId && business.locationId !== undefined;
   return (
     <SimpleModal
       className="w-full max-w-2xl"

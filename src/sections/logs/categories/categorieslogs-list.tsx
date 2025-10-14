@@ -27,11 +27,14 @@ function CategoriesLogsContent({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasReadPermission = hasPermission([
+    PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.RETRIEVE_SECTION,
+  ]);
 
   const handleRowClick = useCallback((rowOrWrapper: any) => {
     const row = extractRecord<CategoryLogs>(rowOrWrapper);
-    console.log(row);
+
     setSelected(row);
     setOpen(true);
   }, []);
