@@ -28,8 +28,8 @@ export function PermissionList({
 
   // Modal states controlled by URL
   const createPermissionModal = getModalState("create");
-  const editPermissionModal = getModalState<number>("edit");
-  const viewPermissionModal = getModalState<number>("view");
+  const editPermissionModal = getModalState<string>("edit");
+  const viewPermissionModal = getModalState<string>("view");
 
   // Get selected roles for modals
   const selectedPermission = useMemo(() => {
@@ -46,14 +46,14 @@ export function PermissionList({
 
   const handleEditPermission = useCallback(
     (role: IPermission) => {
-      openModal<number>("edit", role.id);
+      openModal<string>("edit", role.id);
     },
     [openModal]
   );
 
   const handleViewPermission = useCallback(
     (role: IPermission) => {
-      openModal<number>("view", role.id);
+      openModal<string>("view", role.id);
     },
     [openModal]
   );
