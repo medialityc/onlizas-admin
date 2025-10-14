@@ -6,7 +6,7 @@ interface ProviderBusinessModalContainerProps {
   onClose: () => void;
   onSuccess?: (data?: Business) => void;
   business?: Business;
-  userId?: number;
+  userId?: number | string;
 }
 
 export default function ProviderBusinessModalContainer({

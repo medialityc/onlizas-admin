@@ -14,6 +14,8 @@ import { toast } from "react-toastify";
 import { RoleUpdateData, roleUpdateSchema } from "./role-update-schema";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
+import { getAllPermissions } from "@/services/permissions";
 
 interface RoleEditModalProps {
   role: IRole;
@@ -30,6 +32,8 @@ export function RoleEditModal({
 }: RoleEditModalProps) {
   const queryClient = useQueryClient();
 
+  console.log("RoleEditModal roles:", role);
+
   const methods = useForm<RoleUpdateData>({
     resolver: zodResolver(
       roleUpdateSchema(roles.filter((r) => r.id !== role.id))
@@ -38,6 +42,7 @@ export function RoleEditModal({
       name: "",
       code: "",
       description: "",
+      permissions: [],
     },
     mode: "onChange",
     reValidateMode: "onChange",
@@ -50,7 +55,10 @@ export function RoleEditModal({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasUpdatePermission = hasPermission([
+    PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.RETRIEVE_SECTION,
+  ]);
 
   useEffect(() => {
     if (role && open) {
@@ -58,6 +66,7 @@ export function RoleEditModal({
         name: role.name,
         code: role.code,
         description: role.description || "",
+        permissions: role?.permissions?.map((perm) => perm.id) || [],
       });
     }
   }, [role, open, reset]);
@@ -112,6 +121,14 @@ export function RoleEditModal({
               placeholder="Ingrese una descripción para el rol"
               type="textarea"
               className="h-24"
+            />
+
+            <RHFAutocompleteFetcherInfinity
+              name="permissions"
+              label="Permisos"
+              required
+              onFetch={getAllPermissions}
+              multiple
             />
           </div>
 

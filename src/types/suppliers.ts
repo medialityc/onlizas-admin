@@ -185,7 +185,7 @@ export type EnhancedCategory = {
 
 export type SupplierEvaluation = {
   id: number;
-  supplierId: number;
+  supplierId: string;
   rating: number;
   evaluationDate: string;
   comments: string;

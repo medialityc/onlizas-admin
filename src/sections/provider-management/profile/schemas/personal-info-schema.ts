@@ -18,7 +18,7 @@ export const phoneSchema = z.object({
 });
 
 export const personalInfoSchema = z.object({
-  id: z.number().optional(),
+  id: z.string().optional(),
   name: z.string().min(1, "El nombre es requerido").max(100),
   photoFile: z
     .union([

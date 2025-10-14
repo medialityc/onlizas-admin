@@ -158,8 +158,8 @@ export const inventoryProviderArraySchema = z
 // ---------- PROVIDER SCHEMA ----------
 export const inventoryProviderSchema = z.object({
   storesWarehouses: inventoryProviderArraySchema,
-  productId: z.number({ required_error: "Requerido" }),
-  supplierId: z.number({ required_error: "Requerido" }),
+  productId: z.string({ required_error: "Requerido" }),
+  supplierId: z.string({ required_error: "Requerido" }),
   categoryFeatures: z.array(featureSchema),
 });
 

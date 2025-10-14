@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const inventoryEasySchema = z
   .object({
-    supplierId: z.number(),
+    supplierId: z.string(),
     productId: z.number(),
     storeId: z.number(),
     physicalWarehouseId: z.number().optional(),

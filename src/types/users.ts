@@ -124,7 +124,7 @@ export interface IUser extends BaseUser {
 }
 //
 export interface IUserResponseMe {
-  id: number;
+  id: string | number;
   name: string;
   globalId: string;
   approvalProcessId?: number;

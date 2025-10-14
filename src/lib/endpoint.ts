@@ -9,7 +9,7 @@ export const backendRoutes = {
     resendPhone: `${process.env.NEXT_PUBLIC_API_URL}users/me/phone/resend-verification`,
     getAll: `${process.env.NEXT_PUBLIC_API_URL}users`,
     create: `${process.env.NEXT_PUBLIC_API_URL}users`,
-    getById: (id: number) => `${process.env.NEXT_PUBLIC_API_URL}users/${id}`,
+    getById: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}users/${id}`,
     update: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}users/${id}`,
     delete: (id: number) =>
@@ -25,7 +25,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${id}/documents`,
     getDocumentsById: (userId: number, documentId: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${userId}/documents/${documentId}`,
-    uploadDocument: (userId: number) =>
+    uploadDocument: (userId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${userId}/documents`,
     downloadDocument: (userId: number, documentId: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/users/${userId}/documents/${documentId}/download`,
@@ -36,8 +36,8 @@ export const backendRoutes = {
   roles: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}roles`,
     create: `${process.env.NEXT_PUBLIC_API_URL}roles`,
-    update: (id: number) => `${process.env.NEXT_PUBLIC_API_URL}roles/${id}`,
-    delete: (id: number) => `${process.env.NEXT_PUBLIC_API_URL}roles/${id}`,
+    update: (id: number | string) => `${process.env.NEXT_PUBLIC_API_URL}roles/${id}`,
+    delete: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}roles/${id}`,
     listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/roles`, // GET
   },
   permissions: {
@@ -48,7 +48,10 @@ export const backendRoutes = {
     delete: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}roles/permissions/${id}`,
     listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/permissions`, // GET
+    getBySubsystemId: (id: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}permissions/${id}`,
   },
+
   categories: {
     create: `${process.env.NEXT_PUBLIC_API_URL}categories`, // POST
     list: `${process.env.NEXT_PUBLIC_API_URL}admin/categories`, // GET
@@ -251,8 +254,9 @@ export const backendRoutes = {
     // Admin delete
     deleteAdmin: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
-    update: (id: number|string) => `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
-    updateAdminStore: (id: number|string) =>
+    update: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
+    updateAdminStore: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}stores/${id}`,
   },
   storeBanner: {
@@ -417,5 +421,24 @@ export const backendRoutes = {
   },
   unit: {
     list: `${process.env.NEXT_PUBLIC_API_URL}units`,
+  },
+
+  subsystems: {
+    create: `${process.env.NEXT_PUBLIC_API_URL}sub-systems`,
+    delete: (id: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}sub-systems/${id}`,
+    updateAttributes: (id: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}sub-systems/${id}/attributes`,
+    getAttributeHistory: (id: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}sub-systems/${id}/attributes/history`,
+    deleteUser: (userId: string, businessId: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}sub-systems/${businessId}/users/${userId}`,
+    update: (id: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}sub-systems/${id}`,
+    activate: (id: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}sub-systems/${id}/activate`,
+    getAll: `${process.env.NEXT_PUBLIC_API_URL}subsystems`,
+    addBusinesses: (id: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}sub-systems/${id}/businesses`,
   },
 };

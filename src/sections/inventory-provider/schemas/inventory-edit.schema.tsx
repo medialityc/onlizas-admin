@@ -8,7 +8,7 @@ export const InventoryStoreSchema = z.object({
   warehouseName: z.string(),
   supplierName: z.string(),
   storeName: z.string(),
-  supplierId: z.number(),
+  supplierId: z.string(),
   storeId: z.number(),
   warehouseId: z.number(),
   parentProductId: z.number(),

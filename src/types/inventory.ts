@@ -31,7 +31,7 @@ export type InventoryProvider = {
   parentProductName: string;
   storeId: number;
   storeName: string;
-  supplierId: number;
+  supplierId: string;
   supplierName: string;
   warehouseId: number;
   warehouseName: string;
@@ -57,7 +57,7 @@ export type CreateEasyInventory = {
   storeId: number;
   warehouseId?: number;
   productId: number;
-  supplierId: number;
+  supplierId: string;
   isPaqueteria?: boolean;
 };
 

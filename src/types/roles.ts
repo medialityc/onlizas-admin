@@ -1,9 +1,14 @@
 import { PaginatedResponse } from "./common";
 import { IPermission } from "./permissions";
 
+export type BaseSubsystem = {
+	id: string;
+	name: string;
+	code: string;
+};
 // Role types
 export interface IRole {
-  id: number;
+  id: string;
   name: string;
   code: string;
   description: string;
@@ -11,6 +16,7 @@ export interface IRole {
   subSystemName: string;
   subSystemCode: string;
   permissions: IPermission[];
+  subsystem: BaseSubsystem;
 }
 
 // Response types

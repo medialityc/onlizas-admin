@@ -7,7 +7,7 @@ import { EnhancedDocument } from "@/types/suppliers";
 
 interface DocumentsSectionProps {
   documents: EnhancedDocument[];
-  userId: number;
+  userId: number | string;
 }
 
 export function DocumentsSection({ documents, userId }: DocumentsSectionProps) {

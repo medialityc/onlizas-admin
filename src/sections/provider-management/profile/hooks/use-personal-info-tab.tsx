@@ -31,7 +31,7 @@ export function usePersonalInfoTab({ user }: Props) {
   const methods = useForm<PersonalInfoFormData>({
     resolver: zodResolver(personalInfoSchema),
     defaultValues: {
-      id: user?.id,
+      id: user?.id as string,
       name: user?.name || "",
       photoFile: user?.photoUrl || "",
       emails:

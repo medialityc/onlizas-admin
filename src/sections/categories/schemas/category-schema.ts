@@ -28,7 +28,7 @@ export const featureSchema = z.object({
 
 export const categorySchema = z.object({
   /* inmutable data */
-  id: z.number().optional(),
+  id: z.string().optional(),
   departmentName: z.string().optional(),
 
   /* fields */
@@ -36,9 +36,11 @@ export const categorySchema = z.object({
     .string({ required_error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")
     .max(100, "El nombre no puede tener más de 100 caracteres."),
-  departmentId: z.coerce.number({
-    required_error: "Debes seleccionar un departamento.",
-  }),
+  departmentId: z
+    .string({
+      required_error: "Debes seleccionar un departamento.",
+    })
+    .uuid("El ID del departamento debe ser un UUID válido."),
   description: z
     .string({ required_error: "La descripción es obligatoria." })
     .min(1, "La descripción no puede estar vacía.")

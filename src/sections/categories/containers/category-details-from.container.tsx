@@ -23,7 +23,7 @@ const CategoryDetailsContainer = ({ category }: Props) => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Detalles de la categoría</h1>
         <div className="flex gap-2">
-          <Link href={paths.dashboard.categories.edit(category?.id as number)}>
+          <Link href={paths.dashboard.categories.edit(category?.id as string)}>
             <Button>Editar</Button>
           </Link>
           <Link href={paths.dashboard.categories.list}>

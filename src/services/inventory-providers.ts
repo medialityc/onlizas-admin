@@ -70,7 +70,7 @@ export async function getAllInventoryProvider(
 }
 
 export async function getAllInventoryByUserProvider(
-  supplierId: number,
+  supplierId: string,
   params: IQueryable
 ): Promise<ApiResponse<GetAllInventoryProviderResponse>> {
   const url = new QueryParamsURLFactory(

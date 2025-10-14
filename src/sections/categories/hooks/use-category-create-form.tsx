@@ -22,7 +22,7 @@ const initValues: CategoryFormData = {
       suggestions: [],
     },
   ],
-  departmentId: 0,
+  departmentId: ''
 };
 
 export const useCategoryCreateForm = (

@@ -20,6 +20,7 @@ type TabsWithIconsProps = {
    * @param index The index of the newly selected tab.
    */
   handleChange?: (index: number) => void;
+  index?: number;
 };
 
 /**
@@ -49,6 +50,7 @@ const TabsWithIcons: React.FC<TabsWithIconsProps> = ({
   activeColorClass = "bg-primary text-white",
   handleChange,
   tabListClassName,
+  index,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -60,7 +62,7 @@ const TabsWithIcons: React.FC<TabsWithIconsProps> = ({
 
   return (
     <div className="mb-5">
-      <TabGroup onChange={handleChange}>
+      <TabGroup selectedIndex={index} onChange={handleChange}>
         <TabList className={cn("mt-3 flex flex-wrap gap-2", tabListClassName)}>
           {tabs.map((tab, index) =>
             tab.disabled ? (

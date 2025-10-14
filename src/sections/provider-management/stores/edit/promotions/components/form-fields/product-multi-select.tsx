@@ -14,7 +14,7 @@ export default function ProductSelect({ name, multiple,storeId, label }: Product
       name={name}
       label={label}
       placeholder="Buscar productos..."
-      onFetch={(params) => getAllProductsBySupplier(1, params)}
+      onFetch={(params) => getAllProductsBySupplier('1', params)}
       objectValueKey="id"
       objectKeyLabel="name"
       multiple={multiple}

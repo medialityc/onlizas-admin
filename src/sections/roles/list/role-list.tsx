@@ -3,17 +3,18 @@
 import { DataGrid } from "@/components/datagrid/datagrid";
 import ActionsMenu from "@/components/menu/actions-menu";
 import { paths } from "@/config/paths";
-import showToast from "@/config/toast/toastConfig";
-import { deleteRole } from "@/services/roles";
 import { SearchParams } from "@/types/fetch/request";
 import { GetAllRolesResponse, IRole } from "@/types/roles";
-import { useQueryClient } from "@tanstack/react-query";
 import { DataTableColumn } from "mantine-datatable";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo } from "react";
-import RoleCreateModal from "../create/role-create-modal";
 import { RoleDetailsModal } from "../details/role-details-modal";
+import { useQueryClient } from "@tanstack/react-query";
 import { RoleEditModal } from "../edit/role-edit-modal";
+import RoleCreateModal from "../create/role-create-modal";
+import { deleteRole } from "@/services/roles";
+import showToast from "@/config/toast/toastConfig";
+import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface RoleListProps {
@@ -30,6 +31,7 @@ export function RoleList({
   const router = useRouter();
   const urlSearchParams = useSearchParams();
   const queryClient = useQueryClient();
+  console.log(data, "ROLES");
 
   // Modal states controlled by URL
   const isCreateModalOpen = urlSearchParams.get("create") === "true";
@@ -40,7 +42,7 @@ export function RoleList({
   const selectedRole = useMemo(() => {
     const id = editRoleId || viewRoleId;
     if (!id || !data?.data) return null;
-    return data.data.find((role) => role.id === parseInt(id));
+    return data.data.find((role) => role.id === id);
   }, [editRoleId, viewRoleId, data?.data]);
 
   // Modal handlers
@@ -61,20 +63,14 @@ export function RoleList({
 
   const handleDeleteRole = useCallback(
     async (role: IRole) => {
-      try {
-        const res = await deleteRole(role.id);
+      const res = await deleteRole(role.id);
 
-        if (res?.error && res.message) {
-          console.error(res);
-          showToast(res.message, "error");
-        } else {
-          showToast("Eliminado correctamente", "success");
-          queryClient.invalidateQueries({ queryKey: ["roles"] });
-        }
-      } catch (error) {
-        console.error(error);
-        showToast("Ocurrió un error, intente nuevamente", "error");
+      if (res?.error && res.message) {
+        showToast(res.message, "error");
+        return;
       }
+      showToast("Eliminado correctamente", "success");
+      queryClient.invalidateQueries({ queryKey: ["roles"] });
     },
     [queryClient]
   );
@@ -118,17 +114,29 @@ export function RoleList({
         title: "Descripción",
         sortable: true,
         render: (role) => (
-          <span className="text-sm text-gray-600 dark:text-gray-300 truncate max-w-[200px] block">
+          <span className="block max-w-[200px] truncate text-sm text-gray-600 dark:text-gray-300">
             {role.description}
           </span>
         ),
       },
-
+      {
+        accessor: "subSystem",
+        title: "Subsistema",
+        sortable: true,
+        render: (role) => (
+          <div className="flex flex-col">
+            <span className="text-sm font-medium">{role?.subsystem?.name}</span>
+            <span className="text-xs text-gray-500">
+              ({role.subsystem?.code})
+            </span>
+          </div>
+        ),
+      },
       {
         accessor: "permissions",
         title: "Permisos",
         render: (role) => (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+          <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
             {role.permissions?.length || 0} permisos
           </span>
         ),
@@ -142,15 +150,15 @@ export function RoleList({
               onViewDetails={() => handleViewRole(role)}
               onEdit={() => handleEditRole(role)}
               onDelete={() => handleDeleteRole(role)}
-              viewPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-              editPermissions={[PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]}
-              deletePermissions={[PERMISSION_ENUM.DELETE,PERMISSION_ENUM.DELETE_SECTION]}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              activePermissions={[PERMISSION_ENUM.UPDATE]}
             />
           </div>
         ),
       },
     ],
-    [handleViewRole, handleEditRole, handleDeleteRole]
+    [handleDeleteRole, handleEditRole, handleViewRole]
   );
 
   return (
@@ -162,8 +170,8 @@ export function RoleList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar roles..."
         onCreate={handleCreateRole}
-        createPermissions={["CREATE_ROLES"]}
         emptyText="No se encontraron roles"
+        createPermissions={[PERMISSION_ENUM.CREATE]}
       />
       {/* Create Modal */}
       <RoleCreateModal

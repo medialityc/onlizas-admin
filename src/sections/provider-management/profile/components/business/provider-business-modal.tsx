@@ -22,7 +22,7 @@ interface ProviderBusinessModalProps {
   open: boolean;
   onClose: () => void;
   business?: Business;
-  userId?: number;
+  userId?: number | string;
   loading: boolean;
   onSuccess?: (data?: Business) => void;
 }

@@ -86,7 +86,7 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
         businesses: [],
       });
     }
-  }, [business]);
+  }, [business, reset]);
 
   const {
     fields: beneficiaryFields,

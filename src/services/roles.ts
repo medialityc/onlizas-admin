@@ -8,7 +8,6 @@ import { RoleUpdateData } from "@/sections/roles/edit/role-update-schema";
 import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import {
-  CreateRoleRequest,
   CreateRoleResponse,
   DeleteRoleResponse,
   GetAllRolesResponse,
@@ -16,6 +15,7 @@ import {
 } from "@/types/roles";
 import { revalidateTag } from "next/cache";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
+import { CreateRoleSchema } from "@/sections/roles/create/role-schemas";
 
 export async function getAllRoles(
   params: IQueryable
@@ -35,7 +35,7 @@ export async function getAllRoles(
 }
 
 export async function createRole(
-  data: CreateRoleRequest
+  data: Omit<CreateRoleSchema, "subsystemId">
 ): Promise<ApiResponse<CreateRoleResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.roles.create,
@@ -45,12 +45,13 @@ export async function createRole(
   });
 
   if (!res.ok) return handleApiServerError(res);
+
   revalidateTag("roles");
   return buildApiResponseAsync<CreateRoleResponse>(res);
 }
 
 export async function deleteRole(
-  id: number
+  id: string
 ): Promise<ApiResponse<DeleteRoleResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.roles.delete(id),
@@ -63,7 +64,7 @@ export async function deleteRole(
 }
 
 export async function updateRole(
-  id: number,
+  id: number | string,
   data: RoleUpdateData
 ): Promise<ApiResponse<UpdateRoleResponse>> {
   const res = await nextAuthFetch({

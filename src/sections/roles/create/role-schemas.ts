@@ -21,9 +21,7 @@ export const createRoleSchema = (existingRoles: IRole[]) =>
         .string()
         .min(1, "La descripción es requerida")
         .max(255, "La descripción no puede exceder 255 caracteres"),
-      subSystemId: z
-        .number({ required_error: "El subsistema es requerido" })
-        .min(1, "Debe seleccionar un subsistema"),
+      permissions: z.array(z.string()).optional(), // Array of permission IDs
     })
     .refine(
       (data) =>
@@ -43,47 +41,7 @@ export const createRoleSchema = (existingRoles: IRole[]) =>
     );
 
 export type CreateRoleSchema = z.infer<ReturnType<typeof createRoleSchema>>;
-
-// Role update schema (partial)
-export const updateRoleSchema = (existingRoles: IRole[]) =>
-  z
-    .object({
-      name: z
-        .string()
-        .min(1, "El nombre es requerido")
-        .max(50, "El nombre no puede exceder 50 caracteres"),
-      code: z
-        .string()
-        .min(1, "El código es requerido")
-        .max(20, "El código no puede exceder 20 caracteres")
-        .regex(
-          /^[A-Z_]+$/,
-          "El código debe contener solo letras mayúsculas y guiones bajos"
-        ),
-      description: z
-        .string()
-        .min(1, "La descripción es requerida")
-        .max(255, "La descripción no puede exceder 255 caracteres"),
-      subSystemId: z
-        .number({ required_error: "El subsistema es requerido" })
-        .min(1, "Debe seleccionar un subsistema"),
-    })
-    .refine(
-      (data) =>
-        !existingRoles.some(
-          (role) =>
-            role.name.trim().toLowerCase() === data.name.trim().toLowerCase()
-        ),
-      { message: "El nombre ya existe", path: ["name"] }
-    )
-    .refine(
-      (data) =>
-        !existingRoles.some(
-          (role) =>
-            role.code.trim().toUpperCase() === data.code.trim().toUpperCase()
-        ),
-      { message: "El código ya existe", path: ["code"] }
-    );
+export type UpdateRoleSchema = Partial<CreateRoleSchema> & { id: string };
 
 // Role search/filter schema
 export const roleSearchSchema = z.object({
@@ -92,10 +50,9 @@ export const roleSearchSchema = z.object({
   pageSize: z.number().min(1).max(100).default(10),
   sortBy: z.string().optional(),
   isDescending: z.boolean().optional(),
-  subSystemId: z.number().optional(),
+  permissions: z.array(z.string()).optional(),
 });
 // Export types
-export type UpdateRoleSchema = z.infer<ReturnType<typeof updateRoleSchema>>;
 export type RoleSearchSchema = z.infer<typeof roleSearchSchema>;
 
 // Default values
@@ -103,5 +60,4 @@ export const defaultRoleForm: Partial<CreateRoleSchema> = {
   name: "",
   code: "",
   description: "",
-  subSystemId: 1,
 };
