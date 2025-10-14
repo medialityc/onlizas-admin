@@ -43,9 +43,9 @@ export const backendRoutes = {
   permissions: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}roles/permissions`,
     create: `${process.env.NEXT_PUBLIC_API_URL}permissions`,
-    update: (id: number) =>
+    update: (id: string) =>
       `${process.env.NEXT_PUBLIC_API_URL}permissions/${id}`,
-    delete: (id: number) =>
+    delete: (id: string) =>
       `${process.env.NEXT_PUBLIC_API_URL}roles/permissions/${id}`,
     listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/permissions`, // GET
     getBySubsystemId: (id: string) =>

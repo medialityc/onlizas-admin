@@ -48,7 +48,7 @@ export async function createPermission(
 }
 
 export async function updatePermission(
-  id: number,
+  id: string,
   data: PermissionUpdateData
 ): Promise<ApiResponse<CreatePermissionResponse>> {
   const res = await nextAuthFetch({
@@ -66,7 +66,7 @@ export async function updatePermission(
 }
 
 export async function deletePermission(
-  id: number
+  id: string
 ): Promise<ApiResponse<DeletePermissionResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.permissions.delete(id),
