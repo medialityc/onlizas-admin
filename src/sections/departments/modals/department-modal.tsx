@@ -133,94 +133,92 @@ export default function DepartmentModal({
       loading={loading}
       title={department ? "Editar Departamento" : "Crear Nuevo Departamento"}
     >
-      <div className="p-5">
-        {error && (
-          <div className="mb-4">
-            <AlertBox title="Error" variant="danger" message={error} />
-          </div>
-        )}
+      {error && (
+        <div className="mb-4">
+          <AlertBox title="Error" variant="danger" message={error} />
+        </div>
+      )}
 
-        <FormProvider methods={methods} onSubmit={onSubmit}>
-          <div className="space-y-4 w-full">
-            {/* Name Input */}
-            <RHFInputWithLabel
-              name="name"
-              label="Nombre de la Categoría"
-              placeholder="Ej: Frutas y Verduras"
-              autoFocus
-              maxLength={100}
-            />
+      <FormProvider methods={methods} onSubmit={onSubmit}>
+        <div className="space-y-4 w-full">
+          {/* Name Input */}
+          <RHFInputWithLabel
+            name="name"
+            label="Nombre de la Categoría"
+            placeholder="Ej: Frutas y Verduras"
+            autoFocus
+            maxLength={100}
+          />
 
-            {/* Description Textarea */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Descripción *
-              </label>
-              <div className="relative">
-                <textarea
-                  {...methods.register("description")}
-                  placeholder="Descripción detallada de la categoría..."
-                  maxLength={500}
-                  rows={4}
-                  className="form-textarea"
-                />
-                {methods.formState.errors.description && (
-                  <div className="text-red-500 text-sm mt-1">
-                    {methods.formState.errors.description.message}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Image URL Input */}
+          {/* Description Textarea */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Descripción *
+            </label>
             <div className="relative">
-              <RHFImageUpload
-                name="image"
-                label="URL de la Imagen"
-                variant="rounded"
-                size="full"
-                disabled={loadingImage}
+              <textarea
+                {...methods.register("description")}
+                placeholder="Descripción detallada de la categoría..."
+                maxLength={500}
+                rows={4}
+                className="form-textarea"
               />
-              {loadingImage && (
-                <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 flex items-center justify-center rounded-lg">
-                  <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                    <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></div>
-                    <span>Cargando imagen...</span>
-                  </div>
+              {methods.formState.errors.description && (
+                <div className="text-red-500 text-sm mt-1">
+                  {methods.formState.errors.description.message}
                 </div>
               )}
             </div>
-
-            {/* IsActive Checkbox */}
-            <RHFCheckbox
-              name="active"
-              id="active"
-              label="¿Está activo?"
-              className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
-            />
           </div>
 
-          <div className="flex justify-end gap-3 pt-6">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="btn btn-outline-secondary"
-              disabled={isSubmitting}
-            >
-              Cancelar
-            </button>
-            {hasUpdatePermission && (
-              <LoaderButton
-                type="submit"
-                loading={isSubmitting}
-                className="btn btn-primary"
-              >
-                {department ? "Editar" : "Crear"} Departamento
-              </LoaderButton>
+          {/* Image URL Input */}
+          <div className="relative">
+            <RHFImageUpload
+              name="image"
+              label="URL de la Imagen"
+              variant="rounded"
+              size="full"
+              disabled={loadingImage}
+            />
+            {loadingImage && (
+              <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 flex items-center justify-center rounded-lg">
+                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                  <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                  <span>Cargando imagen...</span>
+                </div>
+              </div>
             )}
           </div>
-        </FormProvider>
-      </div>
+
+          {/* IsActive Checkbox */}
+          <RHFCheckbox
+            name="active"
+            id="active"
+            label="¿Está activo?"
+            className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
+          />
+        </div>
+
+        <div className="flex justify-end gap-3 pt-4">
+          <button
+            type="button"
+            onClick={handleClose}
+            className="btn btn-outline-secondary"
+            disabled={isSubmitting}
+          >
+            Cancelar
+          </button>
+          {hasUpdatePermission && (
+            <LoaderButton
+              type="submit"
+              loading={isSubmitting}
+              className="btn btn-primary"
+            >
+              {department ? "Editar" : "Crear"} Departamento
+            </LoaderButton>
+          )}
+        </div>
+      </FormProvider>
     </SimpleModal>
   );
 }

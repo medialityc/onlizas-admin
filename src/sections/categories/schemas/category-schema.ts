@@ -23,12 +23,12 @@ export const featureSchema = z.object({
     ),
   isPrimary: z.boolean().default(false),
   isRequired: z.boolean().default(false),
-  featureId: z.number().optional(),
+  featureId: z.string().uuid().optional(),
 });
 
 export const categorySchema = z.object({
   /* inmutable data */
-  id: z.string().optional(),
+  id: z.string().uuid().optional(),
   departmentName: z.string().optional(),
 
   /* fields */

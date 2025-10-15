@@ -315,7 +315,7 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
 
     return (
       <>
-        <div className={cn("flex flex-col gap-3", className)}>
+        <div className={cn("flex flex-col gap-1", className)}>
           {label && (
             <label className="font-medium text-sm dark:text-white" htmlFor={field.name}>
               {label}

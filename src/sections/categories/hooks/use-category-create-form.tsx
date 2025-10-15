@@ -34,6 +34,8 @@ export const useCategoryCreateForm = (
     resolver: zodResolver(categorySchema),
   });
 
+  console.log("Default Values:", form.formState.errors);
+
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: CategoryFormData) => {
       const formData = await setCategoryFormData(payload);
