@@ -15,7 +15,10 @@ import {
 import { Supplier } from "@/types/suppliers";
 import { createSupplier } from "@/services/supplier";
 import SupplierCreateForm from "./supplier-create-form";
-import { redirect } from "next/dist/server/api-utils";
+import {
+  SUPPLIER_NATIONALITY,
+  SUPPLIER_TYPE_SELLER,
+} from "../constants/supplier.options";
 
 interface SuppliersModalProps {
   open: boolean;
@@ -39,15 +42,16 @@ export default function SuppliersModal({
       name: "",
       email: "",
       phone: "",
+      countryCode: "",
       address: "",
       documents: [],
-      useExistingUser: false,
+      createUserAutomatically: false,
       userId: undefined,
       userMissingEmail: false,
       userMissingPhone: false,
       userMissingAddress: false,
-      sellerType: "",
-      nacionalityType: "",
+      sellerType: SUPPLIER_TYPE_SELLER.Mayorista,
+      nacionalityType: SUPPLIER_NATIONALITY.Nacional,
       mincexCode: "",
       password: "",
       confirmPassword: "",
@@ -68,11 +72,13 @@ export default function SuppliersModal({
     try {
       const formData = new FormData();
 
-      if (data.useExistingUser) {
+      if (data.createUserAutomatically) {
         if (data.userId !== undefined && data.userId !== null) {
           formData.append("userId", String(data.userId));
           if (data.email) formData.append("email", data.email);
           if (data.phone) formData.append("phone", data.phone);
+          if (data.countryCode)
+            formData.append("countryCode", data.countryCode);
           if (data.address) formData.append("address", data.address);
           formData.append("createUserAutomatically", "false");
           formData.append("requirePasswordChange", "false");
@@ -80,6 +86,7 @@ export default function SuppliersModal({
       } else {
         if (data.name) formData.append("name", data.name);
         if (data.email) formData.append("email", data.email);
+        if (data.countryCode) formData.append("countryCode", data.countryCode);
         if (data.phone) formData.append("phone", data.phone);
         if (data.address) formData.append("address", data.address);
         formData.append("createUserAutomatically", "true");
@@ -108,7 +115,6 @@ export default function SuppliersModal({
       });
 
       const response = await createSupplier(formData);
-      console.log(response);
 
       if (response && !response.error) {
         onSuccess?.();

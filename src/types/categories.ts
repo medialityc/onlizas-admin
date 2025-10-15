@@ -1,7 +1,7 @@
 import { PaginatedResponse } from "./common";
 
 export type Category = {
-  id: number;
+  id: string;
   name: string;
   description: string;
   image: string;

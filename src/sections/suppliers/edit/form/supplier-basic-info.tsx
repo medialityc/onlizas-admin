@@ -2,12 +2,17 @@ import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import RHFSelectWithLabel from "@/components/react-hook-form/rhf-select";
 import { useFormContext } from "react-hook-form";
 import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
+import {
+  SUPPLIER_NATIONALITY_OPTIONS,
+  SUPPLIER_TYPE_SELLER_OPTIONS,
+} from "../../constants/supplier.options";
 
 export default function SupplierBasicInfo() {
   const {
     formState: { errors },
     register,
     watch,
+    setValue,
   } = useFormContext<any>();
   const nacionalityType = watch("nacionalityType");
   return (
@@ -29,18 +34,17 @@ export default function SupplierBasicInfo() {
       <RHFInputWithLabel
         name="phone"
         label="Teléfono"
-        placeholder="Ingresa el número de teléfono"
+        placeholder="+1234567890"
         type="tel"
         required
+        onCountryChange={(countryCode) => {
+          setValue("countryCode", countryCode ?? "");
+        }}
       />
       <RHFSelectWithLabel
         name="sellerType"
         label="Tipo de vendedor"
-        options={[
-          { value: "Mayorista", label: "Mayorista" },
-          { value: "Minorista", label: "Minorista" },
-          { value: "Ambos", label: "Ambos" },
-        ]}
+        options={SUPPLIER_TYPE_SELLER_OPTIONS}
         placeholder="Seleccionar..."
         required
         variant="custom"
@@ -48,11 +52,7 @@ export default function SupplierBasicInfo() {
       <RHFSelectWithLabel
         name="nacionalityType"
         label="Nacionalidad"
-        options={[
-          { value: "Nacional", label: "Nacional" },
-          { value: "Extranjero", label: "Extranjero" },
-          { value: "Ambos", label: "Ambos" },
-        ]}
+        options={SUPPLIER_NATIONALITY_OPTIONS}
         placeholder="Seleccionar..."
         required
         variant="custom"

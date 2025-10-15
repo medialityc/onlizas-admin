@@ -30,8 +30,8 @@ type Props = {
 
 const SectionProductFrom = ({ append }: Props) => {
   const [variants, setVariants] = useState<InventoryProductItem[] | null>(null);
-  const [category, setCategory] = useState<number[] | null>(null);
-  const [supplier, setSupplier] = useState<number | null>(null);
+  const [category, setCategory] = useState<string[] | null>(null);
+  const [supplier, setSupplier] = useState<string | null>(null);
 
   const addProduct = (values: SectionProductItemFormData) => {
     variants?.forEach((variant) => {

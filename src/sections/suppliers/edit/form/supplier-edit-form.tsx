@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -16,6 +16,10 @@ import {
   UpdateSupplierFormData,
   updateSupplierSchemaWithRules,
 } from "./schema";
+import {
+  SUPPLIER_NATIONALITY,
+  SUPPLIER_TYPE_SELLER,
+} from "../../constants/supplier.options";
 
 export default function SupplierEditForm({
   supplierDetails,
@@ -23,22 +27,27 @@ export default function SupplierEditForm({
   supplierDetails: SupplierDetails;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const methods = useForm<UpdateSupplierFormData>({
-    resolver: zodResolver(updateSupplierSchemaWithRules),
-    defaultValues: {
+
+  const initValue = useMemo(
+    () => ({
       name: supplierDetails.name,
       email: supplierDetails.email,
       phone: supplierDetails.phone,
+      countryCode: supplierDetails.countryCode ?? "",
       address: supplierDetails.address,
       message: supplierDetails.message || "",
       type: supplierDetails.type,
       active: supplierDetails.active,
-      sellerType: supplierDetails.sellerType ?? "",
-      nacionalityType: supplierDetails.nacionality ?? "",
+      sellerType: supplierDetails.sellerType
+        ? Number(SUPPLIER_TYPE_SELLER[supplierDetails.sellerType])
+        : 0,
+      nacionalityType: supplierDetails.nacionality
+        ? Number(SUPPLIER_NATIONALITY[supplierDetails.nacionality])
+        : 0,
       mincexCode: supplierDetails.mincexCode ?? "",
       expirationDate: supplierDetails.expirationDate
         ? new Date(supplierDetails.expirationDate)
-        : undefined,
+        : new Date(),
       pendingCategories:
         supplierDetails.pendingCategories?.map((cat) => ({
           id: cat.id,
@@ -51,22 +60,36 @@ export default function SupplierEditForm({
           name: cat.name,
           departmentName: cat.departmentName ?? "",
         })) || [],
-    },
+    }),
+    [supplierDetails]
+  );
+  const methods = useForm<UpdateSupplierFormData>({
+    resolver: zodResolver(updateSupplierSchemaWithRules),
+    defaultValues: initValue,
   });
 
   const { handleSubmit, reset } = methods;
+
+  useEffect(() => {
+    if (initValue) {
+      reset(initValue);
+    }
+  }, [initValue, reset]);
 
   // Removed documents prefill; documents now managed outside RHF form
 
   const onSubmit = async (data: UpdateSupplierFormData) => {
     setIsLoading(true);
     try {
-      console.log(data, "Submit");
       const formData = new FormData();
-      formData.append("expirationDate", data.expirationDate.toISOString());
+      formData.append(
+        "expirationDate",
+        data?.expirationDate?.toISOString() || new Date().toISOString()
+      );
       formData.append("name", data.name);
       formData.append("email", data.email);
       formData.append("phone", data.phone);
+      formData.append("countryCode", data.countryCode);
       formData.append("address", data.address);
       formData.append("message", data.message || "");
       formData.append("type", data.type);
@@ -82,7 +105,7 @@ export default function SupplierEditForm({
       data.approvedCategories?.forEach((cat) => {
         formData.append("approvedCategoryIds", cat.id.toString());
       });
-      formData.append("approvalProcessId", supplierDetails.id.toString());
+      formData.append("approvalProcessId", supplierDetails.id);
 
       const response = await updateSupplierData(
         supplierDetails.userId,

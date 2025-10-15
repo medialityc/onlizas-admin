@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SUPPLIER_NATIONALITY } from "../../constants/supplier.options";
 
 export const updateSupplierSchema = z.object({
   name: z
@@ -13,6 +14,7 @@ export const updateSupplierSchema = z.object({
     .string({ required_error: "El teléfono es obligatorio." })
     .min(1, "El teléfono no puede estar vacío.")
     .max(20, "El teléfono no puede tener más de 20 caracteres."),
+  countryCode: z.string().min(1, "El código de país es obligatorio."),
   address: z
     .string({ required_error: "La dirección es obligatoria." })
     .min(1, "La dirección no puede estar vacía.")
@@ -30,7 +32,7 @@ export const updateSupplierSchema = z.object({
   pendingCategories: z
     .array(
       z.object({
-        id: z.number(),
+        id: z.string(),
         name: z.string().min(2).max(100),
       })
     )
@@ -39,28 +41,28 @@ export const updateSupplierSchema = z.object({
   approvedCategories: z
     .array(
       z.object({
-        id: z.number(),
+        id: z.string(),
         name: z.string().min(2).max(100),
       })
     )
     .default([])
     .optional(),
-  sellerType: z
-    .string({
+  sellerType: z.coerce
+    .number({
       required_error: "El tipo de vendedor es obligatorio.",
       invalid_type_error: "El tipo de vendedor es obligatorio.",
     })
-    .min(1)
+    .min(0, "El tipo de vendedor no puede estar vacío.")
     .max(100),
-  nacionalityType: z
-    .string({
+  nacionalityType: z.coerce
+    .number({
       required_error: "La nacionalidad es obligatoria.",
       invalid_type_error: "La nacionalidad es obligatoria.",
     })
-    .min(1),
+    .min(0, "La nacionalidad no puede estar vacía."),
   mincexCode: z.string().optional(),
   // Expiration date of the supplier account (ISO date string)
-  expirationDate: z.date(),
+  expirationDate: z.date().default(new Date()).optional(),
 });
 
 export type UpdateSupplierFormData = z.infer<typeof updateSupplierSchema>;
@@ -68,8 +70,9 @@ export type UpdateSupplierFormData = z.infer<typeof updateSupplierSchema>;
 export const updateSupplierSchemaWithRules = updateSupplierSchema.superRefine(
   (data, ctx) => {
     if (
-      data.nacionalityType === "Extranjero" ||
-      data.nacionalityType === "Ambos"
+      [SUPPLIER_NATIONALITY.Extranjero, SUPPLIER_NATIONALITY.Ambos].includes(
+        data.nacionalityType
+      )
     ) {
       if (!data.mincexCode || data.mincexCode.trim().length === 0) {
         ctx.addIssue({

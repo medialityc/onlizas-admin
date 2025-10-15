@@ -13,12 +13,11 @@ export default function SupplierEditActions({
   onCancel: () => void;
 }) {
   const {
-    formState: { isValid, dirtyFields },
+    formState: { isValid, dirtyFields, errors },
   } = useFormContext<UpdateSupplierFormData>();
-
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
 
   // Consider only meaningful fields for the dirty indicator (ignore temp pickers, etc.)
   const hasMeaningfulDirty = useMemo(() => {
@@ -27,6 +26,7 @@ export default function SupplierEditActions({
       df?.name ||
       df?.email ||
       df?.phone ||
+      df?.countryCode ||
       df?.address ||
       df?.message ||
       df?.type ||
@@ -54,7 +54,7 @@ export default function SupplierEditActions({
           <LoaderButton
             type="submit"
             loading={isLoading}
-            disabled={!hasMeaningfulDirty || isLoading || !isValid}
+            disabled={!hasMeaningfulDirty || isLoading}
             className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
           >
             {isLoading ? "Guardando..." : "Guardar Cambios"}

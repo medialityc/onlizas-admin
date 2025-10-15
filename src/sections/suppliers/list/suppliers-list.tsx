@@ -28,8 +28,8 @@ export function SuppliersList({
   const { openModal, getModalState, closeModal } = useModalState();
 
   const createSupplierModal = getModalState("create");
-  const editSupplierModal = getModalState<number>("edit");
-  const viewSupplierModal = getModalState<number>("view");
+  const editSupplierModal = getModalState<string>("edit");
+  const viewSupplierModal = getModalState<string>("view");
 
   const selectedSupplier = useMemo(() => {
     const editId = editSupplierModal.id;
@@ -39,8 +39,7 @@ export function SuppliersList({
     if (!targetId || !data?.data) return undefined;
 
     // Convertir targetId a número para comparación
-    const numericId =
-      typeof targetId === "string" ? parseInt(targetId, 10) : targetId;
+    const numericId = targetId;
 
     return data.data.find((supplier) => supplier.id === numericId);
   }, [editSupplierModal.id, viewSupplierModal.id, data?.data]);
@@ -52,7 +51,7 @@ export function SuppliersList({
 
   const handleViewSupplier = useCallback(
     (supplier: Supplier) => {
-      openModal<number>("view", supplier.id);
+      openModal<string>("view", supplier.id);
     },
     [openModal]
   );

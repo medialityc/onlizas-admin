@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SUPPLIER_NATIONALITY } from "../constants/supplier.options";
 
 export const suppliersSchema = z.object({
   // Manual supplier fields: make optional here and enforce conditionally in superRefine
@@ -11,12 +12,13 @@ export const suppliersSchema = z.object({
     .string()
     .max(20, "El teléfono no puede tener más de 20 caracteres.")
     .optional(),
+  countryCode: z.string().min(1, "El código de país es obligatorio."),
   address: z
     .string()
     .max(200, "La dirección no puede tener más de 200 caracteres.")
     .optional(),
   // When selecting an existing user
-  useExistingUser: z.boolean().optional(),
+  createUserAutomatically: z.boolean().optional(),
   userMissingEmail: z.boolean().optional(),
   userMissingPhone: z.boolean().optional(),
   userMissingAddress: z.boolean().optional(),
@@ -33,19 +35,19 @@ export const suppliersSchema = z.object({
       })
     )
     .min(1, "Debes agregar al menos un documento."),
-  sellerType: z
-    .string({
+  sellerType: z.coerce
+    .number({
       required_error: "El tipo de vendedor es obligatorio.",
       invalid_type_error: "El tipo de vendedor es obligatorio.",
     })
-    .min(1, "El tipo de vendedor no puede estar vacío.")
+    .min(0, "El tipo de vendedor no puede estar vacío.")
     .max(100),
-  nacionalityType: z
-    .string({
+  nacionalityType: z.coerce
+    .number({
       required_error: "La nacionalidad es obligatoria.",
       invalid_type_error: "La nacionalidad es obligatoria.",
     })
-    .min(1, "La nacionalidad no puede estar vacía."),
+    .min(0, "La nacionalidad no puede estar vacía."),
   mincexCode: z.string().optional(),
   requiredPasswordChange: z.boolean().optional(),
   password: z
@@ -60,7 +62,7 @@ export type SuppliersFormData = z.infer<typeof suppliersSchema>;
 
 export const suppliersSchemaWithRules = suppliersSchema.superRefine(
   (data, ctx) => {
-    const useExisting = !!data.useExistingUser;
+    const useExisting = !!data.createUserAutomatically;
 
     // If using an existing user, require userId
     if (useExisting) {
@@ -152,6 +154,14 @@ export const suppliersSchemaWithRules = suppliersSchema.superRefine(
         });
       }
 
+      if (!data.countryCode || data.countryCode.trim().length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["countryCode"],
+          message: "El código de país es obligatorio.",
+        });
+      }
+
       if (!data.address || data.address.trim().length === 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -163,8 +173,9 @@ export const suppliersSchemaWithRules = suppliersSchema.superRefine(
 
     // Existing rule for mincexCode depending on nationality
     if (
-      data.nacionalityType === "Extranjero" ||
-      data.nacionalityType === "Ambos"
+      [SUPPLIER_NATIONALITY.Extranjero, SUPPLIER_NATIONALITY.Ambos].includes(
+        data.nacionalityType
+      )
     ) {
       if (!data.mincexCode || data.mincexCode.trim().length === 0) {
         ctx.addIssue({
