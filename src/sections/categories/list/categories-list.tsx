@@ -65,7 +65,7 @@ export function CategoriesList({
       }
 
       try {
-        const res = await toggleStatusCategory(category?.id as number);
+        const res = await toggleStatusCategory(category?.id);
         if (res?.error && res.message) {
           console.error(res);
           showToast(res.message, "error");

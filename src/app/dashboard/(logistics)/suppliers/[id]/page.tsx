@@ -4,7 +4,6 @@ import ApprovalControls from "@/sections/suppliers/edit/approval-controls";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { getSupplierDetails } from "@/services/supplier";
 import SupplierEditForm from "@/sections/suppliers/edit/form/supplier-edit-form";
-import WithLoginGate from "@/sections/suppliers/edit/login-user/with-login-gate";
 
 export default async function Page({
   params,
@@ -21,10 +20,10 @@ export default async function Page({
   return (
     <div className="space-y-8">
       {/* Modal: Crear usuario cuando el estado sea WithLogin */}
-      <WithLoginGate
-        id={supplierDetails?.id.toString() ?? ""}
+      {/* <WithLoginGate
+        id={supplierDetails?.id ?? ""}
         supplierState={supplierDetails?.state}
-      />
+      /> */}
       <section
         id="general"
         className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-xl rounded-2xl border border-gray-200/50 dark:border-gray-700/50 animate-slideUp overflow-hidden"
@@ -88,9 +87,7 @@ export default async function Page({
             </p>
           </div>
           <div className="p-8">
-            <ApprovalControls
-              approvalProcessId={supplierDetails.id.toString()}
-            />
+            <ApprovalControls approvalProcessId={supplierDetails.id} />
           </div>
         </section>
       )}

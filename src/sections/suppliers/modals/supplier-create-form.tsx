@@ -13,16 +13,24 @@ import { DocumentIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 import React, { useEffect, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { AlertBox } from "@/components/alert/alert-box";
+import {
+  SUPPLIER_NATIONALITY,
+  SUPPLIER_NATIONALITY_OPTIONS,
+  SUPPLIER_TYPE_SELLER_OPTIONS,
+} from "../constants/supplier.options";
 
 function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
   const {
     watch,
     control,
     setValue,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useFormContext();
-  const useExisting = watch("useExistingUser") ?? false;
+  const useExisting = watch("createUserAutomatically") ?? false;
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+
+  const nationalType = watch("nacionalityType");
 
   useEffect(() => {
     // When switching to existing user, clear manual fields
@@ -30,6 +38,7 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
       setValue("name", undefined);
       setValue("email", undefined);
       setValue("phone", undefined);
+      setValue("countryCode", undefined);
       setValue("address", undefined);
       setValue("mincexCode", undefined);
       // ensure flags initialized
@@ -63,7 +72,10 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
       <div className="space-y-4">
         {/* Use existing user toggle */}
         <div>
-          <RHFSwitch name="useExistingUser" label="Usar usuario existente" />
+          <RHFSwitch
+            name="createUserAutomatically"
+            label="Usar usuario existente"
+          />
         </div>
         {useExisting && (
           <>
@@ -78,7 +90,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
               onOptionSelected={(option: any) => {
                 if (option && option.id) {
                   setValue("userId", option.id);
-                  console.log(option);
 
                   setSelectedUser(option);
                   // set missing flags for validation
@@ -154,15 +165,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                           required
                         />
                       )}
-                      {needEmail && (
-                        <RHFInputWithLabel
-                          name="email"
-                          label="Email"
-                          placeholder="contacto@usuario.com"
-                          type="email"
-                          required
-                        />
-                      )}
                       {needPhone && (
                         <RHFInputWithLabel
                           name="phone"
@@ -170,6 +172,9 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                           placeholder="+1234567890"
                           type="tel"
                           required
+                          onCountryChange={(countryCode) => {
+                            setValue("countryCode", countryCode ?? "");
+                          }}
                         />
                       )}
                       {needAddress && (
@@ -212,6 +217,9 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
               placeholder="+1234567890"
               maxLength={20}
               required
+              onCountryChange={(countryCode) => {
+                setValue("countryCode", countryCode ?? "");
+              }}
             />
             {/* Password fields for new user creation */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -242,11 +250,7 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
         <RHFSelectWithLabel
           name="sellerType"
           label="Tipo de vendedor"
-          options={[
-            { value: "Mayorista", label: "Mayorista" },
-            { value: "Minorista", label: "Minorista" },
-            { value: "Ambos", label: "Ambos" },
-          ]}
+          options={SUPPLIER_TYPE_SELLER_OPTIONS}
           placeholder="Seleccionar..."
           required
           variant="custom"
@@ -256,11 +260,7 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
         <RHFSelectWithLabel
           name="nacionalityType"
           label="Nacionalidad"
-          options={[
-            { value: "Nacional", label: "Nacional" },
-            { value: "Extranjero", label: "Extranjero" },
-            { value: "Ambos", label: "Ambos" },
-          ]}
+          options={SUPPLIER_NATIONALITY_OPTIONS}
           placeholder="Seleccionar..."
           required
           variant="custom"
@@ -281,16 +281,17 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
           />
         )}
         {/* Mincex Code (conditional) */}
-        {watch("nacionalityType") &&
-          watch("nacionalityType") !== "Nacional" && (
-            <RHFInputWithLabel
-              name="mincexCode"
-              label="Código Mincex"
-              placeholder="Ingresa el código Mincex"
-              type="text"
-              required
-            />
-          )}
+        {[SUPPLIER_NATIONALITY.Ambos, SUPPLIER_NATIONALITY.Extranjero].includes(
+          Number(nationalType)
+        ) && (
+          <RHFInputWithLabel
+            name="mincexCode"
+            label="Código Mincex"
+            placeholder="Ingresa el código Mincex"
+            type="text"
+            required
+          />
+        )}
 
         {/* Documents Section */}
         <div className="space-y-3">
@@ -320,6 +321,14 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                 Haz clic en &ldquo;Agregar Documento&rdquo; para comenzar
               </p>
             </div>
+          )}
+
+          {errors?.documents?.message && (
+            <AlertBox
+              message={errors?.documents?.message as string}
+              title="Error"
+              variant="danger"
+            />
           )}
 
           {fields.map((field, index) => (

@@ -30,6 +30,7 @@ interface Props
   containerClassname?: string;
   rows?: number;
   maskValue?: string;
+  onCountryChange?: (countryCode?: string) => void;
 }
 
 export default function RHFInputWithLabel({
@@ -49,6 +50,7 @@ export default function RHFInputWithLabel({
   showError = true,
   containerClassname,
   rows = 3,
+  onCountryChange,
   ...rest
 }: Props) {
   const { control } = useFormContext();
@@ -184,12 +186,20 @@ export default function RHFInputWithLabel({
                     const parsed = parsePhoneNumberFromString(trimmed, "US");
                     return parsed?.number as string | undefined;
                   })()}
-                  onChange={(val) => onChange(val)}
+                  onChange={(val) => {
+                    onChange(val);
+                    if (onCountryChange) {
+                      const parsed = parsePhoneNumberFromString(val || "", "US");
+                      const detectedCode = parsed?.country || undefined;
+                      onCountryChange(detectedCode);
+                    }
+                  }}
                   onBlur={onBlur as any}
                   defaultCountry="US"
                   disabled={disabled}
                   placeholder={placeholder}
                   className="w-full"
+                  onCountryChange={onCountryChange}
                   numberInputProps={{
                     id: name,
                     name,

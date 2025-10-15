@@ -25,8 +25,8 @@ function SupplierCategories({ state }: { state: SupplierState }) {
   const approvedValues = getValues("approvedCategories") ?? [];
   const pendingValues = getValues("pendingCategories") ?? [];
   const existingIds = [
-    ...approvedValues.map((c: { id: number }) => String(c.id)),
-    ...pendingValues.map((c: { id: number }) => String(c.id)),
+    ...approvedValues.map((c: { id: string }) => String(c.id)),
+    ...pendingValues.map((c: { id: string }) => String(c.id)),
   ];
 
   return (
@@ -57,10 +57,10 @@ function SupplierCategories({ state }: { state: SupplierState }) {
             const currentApproved = getValues("approvedCategories") ?? [];
             const currentPending = getValues("pendingCategories") ?? [];
             const alreadyInApproved = currentApproved.some(
-              (c: { id: number }) => c.id === (opt as any).id
+              (c: { id: string }) => c.id === (opt as any).id
             );
             const alreadyInPending = currentPending.some(
-              (c: { id: number }) => c.id === (opt as any).id
+              (c: { id: string }) => c.id === (opt as any).id
             );
             if (!alreadyInApproved && !alreadyInPending) {
               appendPending({
@@ -146,10 +146,10 @@ function SupplierCategories({ state }: { state: SupplierState }) {
               const currentApproved = getValues("approvedCategories") ?? [];
               const currentPending = getValues("pendingCategories") ?? [];
               const alreadyInApproved = currentApproved.some(
-                (c: { id: number }) => c.id === (opt as any).id
+                (c: { id: string }) => c.id === (opt as any).id
               );
               const alreadyInPending = currentPending.some(
-                (c: { id: number }) => c.id === (opt as any).id
+                (c: { id: string }) => c.id === (opt as any).id
               );
               if (!alreadyInApproved && !alreadyInPending) {
                 appendApproved({

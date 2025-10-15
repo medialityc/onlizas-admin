@@ -26,7 +26,12 @@ export default function ApprovalControls({
   ]);
 
   const submit = (isApproved: boolean) => {
-    const data = { approvalProcessId, isApproved, comments };
+    const data = {
+      approvalProcessId,
+      isApproved,
+      comments,
+      //  status: isApproved ? SUPPLIER_STATUS.Approved : SUPPLIER_STATUS.Rejected,
+    };
     startTransition(async () => {
       const res = await answerApprovalProcess(data);
       if (res?.error) {

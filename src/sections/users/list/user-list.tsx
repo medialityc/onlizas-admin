@@ -17,8 +17,7 @@ import { useModalState } from "@/hooks/use-modal-state";
 import { toast } from "react-toastify";
 import { revalidateTagFn } from "@/services/revalidate";
 import { activateUser } from "@/services/users";
-import { usePermissions } from "@/hooks/use-permissions";
-import { PERMISSION_ENUM, PERMISSIONS } from "@/lib/permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface UserListProps {
   data?: GetAllUsersResponse;

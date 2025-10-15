@@ -1,7 +1,8 @@
+import { SUPPLIER_NATIONALITY, SUPPLIER_TYPE_SELLER } from "@/sections/suppliers/constants/supplier.options";
 import { PaginatedResponse } from "./common";
 
 export type Supplier = {
-  id: number;
+  id: string;
   name: string;
   email: string;
   phone: string;
@@ -14,8 +15,8 @@ export type Supplier = {
   state: SupplierState;
   expirationDate: string;
   message: string;
-  sellerType?: "Persona" | "Empresa" | "";
-  nacionality?: "Nacional" | "Extranjero" | "Ambos" | "";
+  sellerType?: SUPPLIER_TYPE_SELLER;
+  nacionality?: SUPPLIER_NATIONALITY
   mincexCode?: string;
   pendingDocuments: Document[];
   approvedDocuments: Document[];
@@ -24,7 +25,7 @@ export type Supplier = {
 };
 
 export type Category = {
-  id: number;
+  id: string;
   name: string;
   state: boolean;
   departmentId: number;
@@ -32,7 +33,7 @@ export type Category = {
 };
 
 export type Document = {
-  id: number;
+  id: string;
   fileName: string;
   content: string;
 };
@@ -54,6 +55,7 @@ export const suppliersTypes = [
 
 export type PendingSupplier = Supplier & {
   phone: string;
+  countryCode: string;
   address: string;
   message: string;
   approvalProcessId: number;
@@ -100,6 +102,7 @@ export type SupplierState =
 
 export type SupplierDetails = Supplier & {
   phone: string;
+  countryCode: string;
   address: string;
   message: string;
   id: number;

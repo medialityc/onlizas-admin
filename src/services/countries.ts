@@ -8,7 +8,7 @@ import { PaginatedResponse } from "@/types/common";
 
 export async function getCountries(): Promise<ApiResponse<Country[]>> {
   const res = await nextAuthFetch({
-    url: `https://api.zasdistributor.com/api/countries`,
+    url: `https://api.zasdistributor.com/api/countries/all`,
     method: "GET",
     useAuth: false,
     cache: "no-store",
