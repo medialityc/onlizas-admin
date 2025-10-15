@@ -4,7 +4,6 @@ import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { backendRoutes } from "@/lib/endpoint";
 import { QueryParamsURLFactory } from "@/lib/request";
 
-import { RoleUpdateData } from "@/sections/roles/edit/role-update-schema";
 import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import {
@@ -15,7 +14,7 @@ import {
 } from "@/types/roles";
 import { revalidateTag } from "next/cache";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { CreateRoleSchema } from "@/sections/roles/create/role-schemas";
+import { CreateRoleSchema, UpdateRoleSchema } from "@/sections/roles/create/role-schemas";
 
 export async function getAllRoles(
   params: IQueryable
@@ -65,7 +64,7 @@ export async function deleteRole(
 
 export async function updateRole(
   id: number | string,
-  data: RoleUpdateData
+  data: UpdateRoleSchema
 ): Promise<ApiResponse<UpdateRoleResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.roles.update(id),

@@ -14,7 +14,7 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAllPermissions } from "@/services/permissions";
-import { CreateRoleSchema, UpdateRoleSchema } from "../create/role-schemas";
+import { UpdateRoleSchema } from "../create/role-schemas";
 import { roleUpdateSchema } from "./role-update-schema";
 
 interface RoleEditModalProps {
@@ -24,12 +24,7 @@ interface RoleEditModalProps {
   roles?: IRole[];
 }
 
-export function RoleEditModal({
-  role,
-  open,
-  onClose,
-  roles = [],
-}: RoleEditModalProps) {
+export function RoleEditModal({ role, open, onClose }: RoleEditModalProps) {
   const queryClient = useQueryClient();
 
   const methods = useForm({
