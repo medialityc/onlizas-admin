@@ -31,7 +31,6 @@ export function RoleList({
   const router = useRouter();
   const urlSearchParams = useSearchParams();
   const queryClient = useQueryClient();
-  console.log(data, "ROLES");
 
   // Modal states controlled by URL
   const isCreateModalOpen = urlSearchParams.get("create") === "true";
@@ -169,16 +168,16 @@ export function RoleList({
         searchParams={searchParams}
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar roles..."
-        onCreate={handleCreateRole}
+        // onCreate={handleCreateRole}
         emptyText="No se encontraron roles"
         createPermissions={[PERMISSION_ENUM.CREATE]}
       />
       {/* Create Modal */}
-      <RoleCreateModal
+      {/*  <RoleCreateModal
         open={isCreateModalOpen}
         onClose={handleCloseModal}
         roles={data?.data}
-      />
+      /> */}
       {/* Edit Modal */}
       {selectedRole && (
         <RoleEditModal
