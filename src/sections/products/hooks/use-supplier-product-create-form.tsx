@@ -54,10 +54,10 @@ export const useSupplierProductCreateForm = (
 
       let res = undefined;
       if (!payload?.isDraft) {
-        res = await createSupplierProductLink(payload?.id as number);
+        res = await createSupplierProductLink(payload?.id as string);
       } else {
         res = isEdit
-          ? await updateSupplierProduct(payload?.id as number, fromData)
+          ? await updateSupplierProduct(payload?.id as string, fromData)
           : await createSupplierProduct(fromData);
       }
 

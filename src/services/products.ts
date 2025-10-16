@@ -58,7 +58,7 @@ export async function getAllProductsBySupplier(
 }
 
 export async function getProductById(
-  id: number
+  id: string
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.byId(id),
@@ -89,7 +89,7 @@ export async function createProduct(
 }
 
 export async function updateProduct(
-  id: number,
+  id: string,
   data: FormData
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
@@ -241,7 +241,7 @@ export async function getCategoryFeatures(
 }
 
 export async function toggleActiveProduct(
-  typeId: number
+  typeId: string
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.toggleActive(typeId),
@@ -275,7 +275,7 @@ export async function getAllMyProducts(
 }
 
 export async function createSupplierProductLink(
-  productId: number | string
+  productId: string
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.createSupplierProductByLink,
@@ -309,7 +309,7 @@ export async function createSupplierProduct(
 }
 
 export async function updateSupplierProduct(
-  productId: number,
+  productId: string,
   data: FormData
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({

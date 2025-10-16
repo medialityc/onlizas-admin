@@ -44,7 +44,7 @@ export function SupplierProductList({
 
   const handleToggleActiveProduct = useCallback(async (product: Product) => {
     try {
-      const res = await meToggleActiveProduct(product?.id as number);
+      const res = await meToggleActiveProduct(product?.id);
       if (res?.error && res.message) {
         showToast(res.message, "error");
       } else {

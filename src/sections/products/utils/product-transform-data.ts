@@ -10,8 +10,8 @@ export const productTransformData = (product: Product): ProductFormData => {
     isDurable: product.isDurable ?? false,
     active: product.state ?? false,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-expect-error
-    about: product?.aboutThis?.map((a) => ({ value: a })) ?? [],
+
+    aboutThis: product?.aboutThis,
 
     categoryIds: product.categories?.map((c) => c.id) ?? [],
 
@@ -22,8 +22,8 @@ export const productTransformData = (product: Product): ProductFormData => {
     details: detailsObjectToArray(product.details) ?? [],
 
     // 👇 Valores de Aduana normalizados
-    customsValue: product.customsValue ?? 0,
-    valuePerUnit: product.customsValueAduanaUsd ?? 0,
-    customCategory: product.aduanaCategory?.chapterName ?? "",
+    /* customsValueAduanaUsd: product.customsValue ?? 0,
+    valuePerUnit: product.customsValueAduanaUsd ?? 0, */
+    aduanaCategoryGuid: product.aduanaCategoryGuid ?? "",
   };
 };

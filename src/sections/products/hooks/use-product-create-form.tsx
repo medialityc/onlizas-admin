@@ -7,8 +7,9 @@ import { createProduct, updateProduct } from "@/services/products";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { setProductFormData } from "../constants/product-data";
+
 const initValues: ProductFormData = {
-  id: undefined,
+  id: "",
   name: "",
   description: "",
   length: 0,
@@ -23,11 +24,11 @@ const initValues: ProductFormData = {
   image: "",
 
   // Aduanera
-  customsValueAduanaUsd: undefined,
-  valuePerUnit: undefined,
+  /* customsValueAduanaUsd: 0,
+  valuePerUnit: 0, */
   isDurable: false,
   aduanaCategoryGuid: "",
-  unitGuid: "",
+  // unitGuid: "",
 };
 
 export const useProductCreateForm = (
@@ -41,8 +42,6 @@ export const useProductCreateForm = (
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: ProductFormData) => {
-      console.log(payload);
-
       const fromData = await setProductFormData(payload);
 
       const res = payload?.id
