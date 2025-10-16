@@ -70,6 +70,7 @@ export function AdvancedSearchSelect<T>({
   const [isOpen, setIsOpen] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
+  const [isClickingOption, setIsClickingOption] = useState(false);
 
   // Dedupe options by objectValueKey (evita triples cuando llegan duplicados por paginación acumulada)
   const uniqueOptions = useMemo(() => {
@@ -116,6 +117,7 @@ export function AdvancedSearchSelect<T>({
     currentValue: any,
     onChange: (value: any) => void
   ) => {
+    setIsClickingOption(true);
     const value = option[objectValueKey];
 
     if (multiple) {
@@ -130,9 +132,10 @@ export function AdvancedSearchSelect<T>({
       if (setQuery) setQuery(getDisplayValue(option));
       setIsOpen(false);
     }
-    setIsTyping(false); // <- dejar de escribir cuando selecciona!
+    setIsTyping(false);
     onChangeOptional?.();
     onOptionSelected?.(option);
+    setTimeout(() => setIsClickingOption(false), 100);
   };
 
   const removeSelected = (
@@ -248,8 +251,11 @@ export function AdvancedSearchSelect<T>({
                   setIsTyping(true);
                 }}
                 onBlur={() => {
-                  setTimeout(() => setIsOpen(false), 200);
-                  setIsTyping(false); // <---- ya no está escribiendo!
+                  // Don't close if clicking on an option
+                  if (!isClickingOption) {
+                    setTimeout(() => setIsOpen(false), 200);
+                  }
+                  setIsTyping(false);
                 }}
                 placeholder={placeholder}
                 aria-invalid={!!error}

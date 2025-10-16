@@ -45,7 +45,7 @@ export async function createWarehouseVirtualType(
 }
 
 export async function updateWarehouseVirtualType(
-  typeId: number,
+  typeId: string,
   data: WarehouseVirtualTypeFormData
 ): Promise<ApiResponse<WarehouseVirtualTypeFormData>> {
   const res = await nextAuthFetch({
@@ -60,7 +60,7 @@ export async function updateWarehouseVirtualType(
 }
 
 export async function toggleStatusWarehouseVirtualType(
-  typeId: number
+  typeId: string
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.warehouseVirtualTypes.toggleStatus(typeId),

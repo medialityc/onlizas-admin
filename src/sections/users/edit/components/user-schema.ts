@@ -179,7 +179,7 @@ export const userFormSchema = z.object({
 
 // User update schema (for PATCH requests)
 export const userUpdateSchema = userFormSchema.partial().extend({
-  id: z.number().optional(),
+  id: z.string().optional(),
 });
 
 // User search/filter schema

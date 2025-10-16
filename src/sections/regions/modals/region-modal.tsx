@@ -67,7 +67,6 @@ export default function RegionModal({
       code: fullRegion?.code || "",
       name: fullRegion?.name || "",
       description: fullRegion?.description || "",
-      status: fullRegion?.status === 1 ? false : true, // 1 = inactive, 0 = active
       countryIds: fullRegion?.countries?.map((c) => c.id) || [],
       moveCountries: false,
     },
@@ -84,7 +83,7 @@ export default function RegionModal({
     setError(null);
     onClose();
   };
-  console.log(methods.formState);
+  console.log(methods.formState.errors);
 console.log("Messi");
 
   const onSubmit = async (data: any) => {

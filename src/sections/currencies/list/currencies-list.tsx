@@ -61,21 +61,24 @@ export function CurrenciesList({
     [openModal]
   );
 
-  const handleDeleteCurrency = useCallback(
+  const handleToggleCurrencyStatus = useCallback(
     async (currency: Currency) => {
       if (currency.default) {
-        showToast("No se puede eliminar la moneda por defecto", "error");
+        showToast("No se puede desactivar la moneda por defecto", "error");
         return;
       }
+
+      const action = currency.active ? "desactivar" : "activar";
+      const actionPast = currency.active ? "desactivada" : "activada";
 
       try {
         const res = await deleteCurrency(currency.id);
 
         if (res?.error) {
-          showToast("Error al eliminar moneda", "error");
+          showToast(`Error al ${action} moneda`, "error");
         } else {
           queryClient.invalidateQueries({ queryKey: ["currencies"] });
-          showToast("Moneda eliminada correctamente", "success");
+          showToast(`Moneda ${actionPast} correctamente`, "success");
         }
       } catch (error) {
         console.error(error);
@@ -216,14 +219,14 @@ export function CurrenciesList({
               onViewDetails={() => handleViewCurrency(currency)}
               onEdit={() => handleEditCurrency(currency)}
               onPay={
-                !currency.default
+                !currency.default && currency.active
                   ? () => handleSetAsDefault(currency)
                   : undefined
               }
               active={currency.active}
               onActive={
                 !currency.default
-                  ? () => handleDeleteCurrency(currency)
+                  ? () => handleToggleCurrencyStatus(currency)
                   : undefined
               }
               viewPermissions={[
@@ -251,7 +254,7 @@ export function CurrenciesList({
       handleViewCurrency,
       handleEditCurrency,
       handleSetAsDefault,
-      handleDeleteCurrency,
+      handleToggleCurrencyStatus,
     ]
   );
 

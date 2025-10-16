@@ -13,7 +13,7 @@ import { Region } from "@/types/regions";
 
 // Tipos para Currency
 export type Currency = {
-  id: number|string;
+  id: string;
   name: string;
   codIso: string;
   symbol: string;
@@ -33,6 +33,7 @@ export type CreateCurrency = {
 };
 
 export type UpdateCurrency = {
+  guidId:string,
   name: string;
   symbol: string;
   rate: number;
@@ -101,7 +102,7 @@ export async function getAllCurrencies(
 }
 
 export async function updateCurrency(
-  id: string | number,
+  id: string ,
   data: UpdateCurrency
 ): Promise<ApiResponse<Currency>> {
   const res = await nextAuthFetch({

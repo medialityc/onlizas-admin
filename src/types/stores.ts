@@ -62,8 +62,8 @@ type StoreMetrics = {
 // Para crear tienda
 export type CreateStoreRequest = {
   name: string;
-  ownerId: number | string;
-  businessId: number | string;
+  ownerId: string;
+  businessId: string;
   url: string;
   description?: string;
   logoStyle?: string;

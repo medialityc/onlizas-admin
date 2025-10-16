@@ -26,7 +26,7 @@ export function WarehouseVirtualTypeList({
 }: Props) {
   const { getModalState, openModal, closeModal } = useModalState();
 
-  const editTypeModal = getModalState<number>("edit");
+  const editTypeModal = getModalState<string | number>("edit");
   const createTypeModal = getModalState("create");
 
   const selectedType = useMemo(() => {
@@ -35,19 +35,16 @@ export function WarehouseVirtualTypeList({
 
     if (!targetId || !data?.data) return undefined;
 
-    // Convertir targetId a número para comparación
-    const numericId =
-      typeof targetId === "string" ? parseInt(targetId, 10) : targetId;
-
-    return data.data.find((type) => type.id === numericId);
+    return data.data.find((type) => type.id === targetId);
   }, [editTypeModal.id, data?.data]);
 
   const handleCreateType = useCallback(() => openModal("create"), [openModal]);
 
   const handleToggleActiveWarehouseType = useCallback(
     async (type: WarehouseVirtualTypeFormData) => {
+      if (!type.id) return;
       try {
-        const res = await toggleStatusWarehouseVirtualType(type?.id as number);
+        const res = await toggleStatusWarehouseVirtualType(type.id);
         if (res?.error && res.message) {
           console.error(res);
           showToast(res.message, "error");

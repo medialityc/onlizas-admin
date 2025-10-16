@@ -75,6 +75,7 @@ export default function CurrenciesModal({
     try {
       if (currency) {
         response = await updateCurrency(currency.id, {
+          guidId:currency.id,
           name: data.name,
           symbol: data.symbol,
           rate: data.rate,

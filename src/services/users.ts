@@ -161,7 +161,7 @@ export async function getUserProviderById(
 
 // - [ ] UPDATE USER ATTRIBUTES
 export async function updateUserAttributes(
-  id: number,
+  id: string,
   data: UpdateUserAttributesRequest
 ): Promise<ApiResponse<UpdateUserAttributesResponse>> {
   const res = await nextAuthFetch({
