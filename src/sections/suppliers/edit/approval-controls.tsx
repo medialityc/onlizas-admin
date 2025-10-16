@@ -20,10 +20,7 @@ export default function ApprovalControls({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const canApproveReject = hasPermission([
-    PERMISSION_ENUM.UPDATE,
-    PERMISSION_ENUM.UPDATE_APPROVAL_PROCESS,
-  ]);
+  const canApproveReject = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const submit = (isApproved: boolean) => {
     const data = {

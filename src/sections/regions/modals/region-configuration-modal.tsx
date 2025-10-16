@@ -77,7 +77,7 @@ export default function RegionConfigurationModal({
 
   // Permission hooks
   const { hasPermission, isLoading } = usePermissions();
-  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]);
+  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
 
   const queryClient = useQueryClient();
 

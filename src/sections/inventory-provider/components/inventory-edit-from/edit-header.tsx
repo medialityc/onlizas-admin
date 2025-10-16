@@ -10,7 +10,7 @@ type Props = {
 };
 const EditHeader = ({ features, handleAddVariant }: Props) => {
   const { hasPermission } = usePermissions();
-  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]);
+  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
 
   return (
     <div className="mt-1 flex flex-col gap-2">

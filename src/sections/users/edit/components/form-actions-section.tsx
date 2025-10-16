@@ -10,7 +10,7 @@ interface FormActionsProps {
 export const FormActions = ({ isSubmitting, onCancel }: FormActionsProps) => {
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
 
   return (
     <div className="flex justify-end gap-4 pt-6">

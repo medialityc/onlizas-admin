@@ -150,7 +150,7 @@ export function RoleList({
               onEdit={() => handleEditRole(role)}
               onDelete={() => handleDeleteRole(role)}
               viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
-              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE,PERMISSION_ENUM.ASSIGN_ROLE]}
               activePermissions={[PERMISSION_ENUM.UPDATE]}
             />
           </div>
@@ -170,7 +170,7 @@ export function RoleList({
         searchPlaceholder="Buscar roles..."
         // onCreate={handleCreateRole}
         emptyText="No se encontraron roles"
-        createPermissions={[PERMISSION_ENUM.CREATE]}
+        createPermissions={[PERMISSION_ENUM.CREATE,PERMISSION_ENUM.ASSIGN_ROLE]}
       />
       {/* Create Modal */}
       {/*  <RoleCreateModal

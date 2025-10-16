@@ -31,37 +31,26 @@ export function ProductList({
   const { updateFiltersInUrl } = useFiltersUrl();
 
   const handleCreateProduct = useCallback(() => {
-    if (
-      hasPermission([PERMISSION_ENUM.CREATE, PERMISSION_ENUM.CREATE_SECTION])
-    ) {
+    if (hasPermission([PERMISSION_ENUM.CREATE])) {
       router.push("/dashboard/products/new");
     }
   }, [router, hasPermission]);
 
   const handleView = (product: Product) => {
-    if (
-      hasPermission([
-        PERMISSION_ENUM.RETRIEVE,
-        PERMISSION_ENUM.RETRIEVE_SECTION,
-      ])
-    ) {
+    if (hasPermission([PERMISSION_ENUM.RETRIEVE])) {
       router.push(paths.dashboard.products.view(product.id));
     }
   };
 
   const handleEdit = (product: Product) => {
-    if (
-      hasPermission([PERMISSION_ENUM.UPDATE, PERMISSION_ENUM.UPDATE_SECTION])
-    ) {
+    if (hasPermission([PERMISSION_ENUM.UPDATE])) {
       router.push(paths.dashboard.products.edit(product.id));
     }
   };
 
   const handleToggleActiveProduct = useCallback(
     async (product: Product) => {
-      if (
-        !hasPermission([PERMISSION_ENUM.UPDATE, PERMISSION_ENUM.UPDATE_SECTION])
-      ) {
+      if (!hasPermission([PERMISSION_ENUM.UPDATE])) {
         showToast("No tienes permisos para realizar esta acción", "error");
         return;
       }
@@ -147,18 +136,9 @@ export function ProductList({
           onEdit={() => handleEdit(product)}
           active={product.state}
           onActive={() => handleToggleActiveProduct(product)}
-          viewPermissions={[
-            PERMISSION_ENUM.RETRIEVE,
-            PERMISSION_ENUM.RETRIEVE_SECTION,
-          ]}
-          editPermissions={[
-            PERMISSION_ENUM.UPDATE,
-            PERMISSION_ENUM.UPDATE_SECTION,
-          ]}
-          activePermissions={[
-            PERMISSION_ENUM.UPDATE,
-            PERMISSION_ENUM.UPDATE_SECTION,
-          ]}
+          viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+          editPermissions={[PERMISSION_ENUM.UPDATE]}
+          activePermissions={[PERMISSION_ENUM.UPDATE]}
         />
       ),
     },
@@ -180,10 +160,7 @@ export function ProductList({
           emptyText="No se encontraron productos"
           createText="Nuevo Producto"
           className="mt-6"
-          createPermissions={[
-            PERMISSION_ENUM.CREATE_SECTION,
-            PERMISSION_ENUM.CREATE,
-          ]}
+          createPermissions={[PERMISSION_ENUM.CREATE]}
         />
       </div>
     </>

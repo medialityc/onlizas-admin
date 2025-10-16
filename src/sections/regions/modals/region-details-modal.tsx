@@ -81,8 +81,8 @@ export function RegionDetailsModal({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const canEdit = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
-  const canDelete = hasPermission([PERMISSION_ENUM.DELETE,PERMISSION_ENUM.DELETE_SECTION]);
+  const canEdit = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const canDelete = hasPermission([PERMISSION_ENUM.DELETE]);
 
   // Obtener los datos completos de la región incluyendo configuraciones
   const { data: regionData, isLoading: isLoadingRegion } = useRegionDetails(

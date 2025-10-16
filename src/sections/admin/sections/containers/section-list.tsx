@@ -34,18 +34,14 @@ export function SectionList({
   const { hasPermission } = usePermissions();
 
   const handleCreateSection = useCallback(() => {
-    if (
-      hasPermission([PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE])
-    ) {
+    if (hasPermission([PERMISSION_ENUM.CREATE])) {
       router.push(paths.content.sections.new);
     }
   }, [router, hasPermission]);
 
   const handleEditSection = useCallback(
     (section: ISection) => {
-      if (
-        hasPermission([PERMISSION_ENUM.UPDATE_SECTION, PERMISSION_ENUM.UPDATE])
-      ) {
+      if (hasPermission([PERMISSION_ENUM.UPDATE])) {
         router.push(paths.content.sections.edit(section.id));
       }
     },
@@ -54,12 +50,7 @@ export function SectionList({
 
   const handleViewSection = useCallback(
     (section: ISection) => {
-      if (
-        hasPermission([
-          PERMISSION_ENUM.RETRIEVE_SECTION,
-          PERMISSION_ENUM.RETRIEVE,
-        ])
-      ) {
+      if (hasPermission([PERMISSION_ENUM.RETRIEVE])) {
         return router.push(paths.content.sections.view(section.id));
       }
     },
@@ -68,9 +59,7 @@ export function SectionList({
 
   const handleDeleteSection = useCallback(
     async (section: ISection) => {
-      if (
-        !hasPermission([PERMISSION_ENUM.DELETE_SECTION, PERMISSION_ENUM.DELETE])
-      ) {
+      if (!hasPermission([PERMISSION_ENUM.DELETE])) {
         showToast("No tienes permisos para realizar esta acción", "error");
         return;
       }
@@ -185,18 +174,9 @@ export function SectionList({
               onViewDetails={() => handleViewSection(section)}
               onEdit={() => handleEditSection(section)}
               onDelete={() => handleDeleteSection(section)}
-              viewPermissions={[
-                PERMISSION_ENUM.RETRIEVE_SECTION,
-                PERMISSION_ENUM.RETRIEVE,
-              ]}
-              editPermissions={[
-                PERMISSION_ENUM.UPDATE_SECTION,
-                PERMISSION_ENUM.UPDATE,
-              ]}
-              deletePermissions={[
-                PERMISSION_ENUM.DELETE_SECTION,
-                PERMISSION_ENUM.DELETE,
-              ]}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              deletePermissions={[PERMISSION_ENUM.DELETE]}
             />
           </div>
         ),
@@ -216,10 +196,7 @@ export function SectionList({
         onCreate={handleCreateSection}
         emptyText="No se encontraron secciones"
         createText="Crear Sección"
-        createPermissions={[
-          PERMISSION_ENUM.CREATE_SECTION,
-          PERMISSION_ENUM.CREATE,
-        ]}
+        createPermissions={[PERMISSION_ENUM.CREATE]}
       />
     </>
   );

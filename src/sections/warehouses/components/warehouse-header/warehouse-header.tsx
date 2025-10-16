@@ -20,8 +20,8 @@ const WarehouseHeader = () => {
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]);
-  const hasTransferPermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
+  const hasTransferPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
 
   return (
     <>

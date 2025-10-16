@@ -51,14 +51,8 @@ export default function RegionModal({
   const fullRegion = regionData?.data || region;
 
   // Permisos específicos (después de definir fullRegion)
-  const hasCreate = hasPermission([
-    PERMISSION_ENUM.CREATE_SECTION,
-    PERMISSION_ENUM.CREATE,
-  ]);
-  const hasUpdate = hasPermission([
-    PERMISSION_ENUM.RETRIEVE,
-    PERMISSION_ENUM.RETRIEVE_SECTION,
-  ]);
+  const hasCreate = hasPermission([PERMISSION_ENUM.CREATE]);
+  const hasUpdate = hasPermission([PERMISSION_ENUM.RETRIEVE]);
   const canEdit = fullRegion ? hasUpdate : hasCreate;
 
   const methods = useForm<CreateRegionSchema>({

@@ -143,18 +143,9 @@ export function BusinessList({
               onViewDetails={() => handleViewBusiness(business)}
               onEdit={() => handleEditBusiness(business)}
               onActive={() => handleDeleteBusiness(business)}
-              viewPermissions={[
-                PERMISSION_ENUM.RETRIEVE,
-                PERMISSION_ENUM.RETRIEVE_SECTION,
-              ]}
-              editPermissions={[
-                PERMISSION_ENUM.RETRIEVE,
-                PERMISSION_ENUM.RETRIEVE_SECTION,
-              ]}
-              activePermissions={[
-                PERMISSION_ENUM.DELETE,
-                PERMISSION_ENUM.UPDATE_BUSINESS,
-              ]}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              activePermissions={[PERMISSION_ENUM.DELETE]}
             />
           </div>
         ),

@@ -71,10 +71,7 @@ export function LocationsList({
     null
   );
   const { hasPermission } = usePermissions();
-  const hasReadPermission = hasPermission([
-    PERMISSION_ENUM.RETRIEVE,
-    PERMISSION_ENUM.RETRIEVE_SECTION,
-  ]);
+  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
 
   const queryClient = useQueryClient();
 
@@ -238,22 +235,10 @@ export function LocationsList({
                   ? () => handleToggleStatus(location)
                   : undefined
               }
-              viewPermissions={[
-                PERMISSION_ENUM.RETRIEVE,
-                PERMISSION_ENUM.RETRIEVE_SECTION,
-              ]}
-              editPermissions={[
-                PERMISSION_ENUM.RETRIEVE,
-                PERMISSION_ENUM.RETRIEVE_SECTION,
-              ]}
-              deletePermissions={[
-                PERMISSION_ENUM.DELETE,
-                PERMISSION_ENUM.DELETE_SECTION,
-              ]}
-              activePermissions={[
-                PERMISSION_ENUM.RETRIEVE,
-                PERMISSION_ENUM.RETRIEVE_SECTION,
-              ]}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              deletePermissions={[PERMISSION_ENUM.DELETE]}
+              activePermissions={[PERMISSION_ENUM.UPDATE]}
             />
           </div>
         ),
@@ -277,10 +262,7 @@ export function LocationsList({
         searchPlaceholder="Buscar localizaciones..."
         emptyText="No se encontraron localizaciones"
         onCreate={handleCreateLocation}
-        createPermissions={[
-          PERMISSION_ENUM.CREATE_SECTION,
-          PERMISSION_ENUM.CREATE,
-        ]}
+        createPermissions={[PERMISSION_ENUM.CREATE]}
         rightActions={
           //poner lo del read luegp que se defina la ofrma
           hasReadPermission && (
