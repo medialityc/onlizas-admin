@@ -40,7 +40,7 @@ export default function EditCurrencyModal({
   const queryClient = useQueryClient();
 
   const { hasPermission } = usePermissions();
-  const canEdit = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const canEdit = hasPermission([PERMISSION_ENUM.RETRIEVE]);
 
   const methods = useForm<CurrencyFormData>({
     resolver: zodResolver(currencySchema),

@@ -29,7 +29,7 @@ export function AddressModal({
   editingAddress,
 }: AddressModalProps) {
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
   const methods = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
     defaultValues: editingAddress || {

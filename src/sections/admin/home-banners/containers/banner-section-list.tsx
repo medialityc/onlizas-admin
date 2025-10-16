@@ -35,26 +35,14 @@ export function HomeBannerList({
   const { hasPermission } = usePermissions();
 
   const handleCreateHomeBanner = useCallback(() => {
-    if (
-      hasPermission([
-        PERMISSION_ENUM.CREATE_BANNER,
-        PERMISSION_ENUM.CREATE,
-        PERMISSION_ENUM.CREATE_SECTION,
-      ])
-    ) {
+    if (hasPermission([PERMISSION_ENUM.CREATE])) {
       router.push(paths.content.banners.new);
     }
   }, [router, hasPermission]);
 
   const handleEditHomeBanner = useCallback(
     (banner: IHomeBanner) => {
-      if (
-        hasPermission([
-          PERMISSION_ENUM.UPDATE_BANNER,
-          PERMISSION_ENUM.UPDATE,
-          PERMISSION_ENUM.UPDATE_SECTION,
-        ])
-      ) {
+      if (hasPermission([PERMISSION_ENUM.UPDATE])) {
         router.push(paths.content.banners.edit(banner.id));
       }
     },
@@ -70,13 +58,7 @@ export function HomeBannerList({
  */
   const handleDeleteHomeBanner = useCallback(
     async (banner: IHomeBanner) => {
-      if (
-        !hasPermission([
-          PERMISSION_ENUM.DELETE_BANNER,
-          PERMISSION_ENUM.DELETE,
-          PERMISSION_ENUM.DELETE_SECTION,
-        ])
-      ) {
+      if (!hasPermission([PERMISSION_ENUM.DELETE])) {
         showToast("No tienes permisos para realizar esta acción", "error");
         return;
       }
@@ -99,9 +81,7 @@ export function HomeBannerList({
 
   const handleToggleActiveCategory = useCallback(
     async (banner: IHomeBanner) => {
-      if (
-        !hasPermission([PERMISSION_ENUM.UPDATE_BANNER, PERMISSION_ENUM.UPDATE, PERMISSION_ENUM.UPDATE_SECTION])
-      ) {
+      if (!hasPermission([PERMISSION_ENUM.UPDATE])) {
         showToast("No tienes permisos para realizar esta acción", "error");
         return;
       }
@@ -225,27 +205,10 @@ export function HomeBannerList({
               onEdit={() => handleEditHomeBanner(banner)}
               onDelete={() => handleDeleteHomeBanner(banner)}
               onActive={() => handleToggleActiveCategory(banner)}
-              viewPermissions={[
-                PERMISSION_ENUM.RETRIEVE_BANNER,
-                PERMISSION_ENUM.READ_BANNER,
-                PERMISSION_ENUM.RETRIEVE,
-                PERMISSION_ENUM.RETRIEVE_SECTION
-              ]}
-              editPermissions={[
-                PERMISSION_ENUM.UPDATE_BANNER,
-                PERMISSION_ENUM.UPDATE,
-                PERMISSION_ENUM.UPDATE_SECTION,
-              ]}
-              deletePermissions={[
-                PERMISSION_ENUM.DELETE_BANNER,
-                PERMISSION_ENUM.DELETE,
-                PERMISSION_ENUM.DELETE_SECTION,
-              ]}
-              activePermissions={[
-                PERMISSION_ENUM.UPDATE_BANNER,
-                PERMISSION_ENUM.UPDATE,
-                PERMISSION_ENUM.UPDATE_SECTION,
-              ]}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              deletePermissions={[PERMISSION_ENUM.DELETE]}
+              activePermissions={[PERMISSION_ENUM.UPDATE]}
             />
           </div>
         ),
@@ -265,11 +228,7 @@ export function HomeBannerList({
         onCreate={handleCreateHomeBanner}
         emptyText="No se encontraron banners"
         createText="Crear banner"
-        createPermissions={[
-          PERMISSION_ENUM.CREATE_BANNER,
-          PERMISSION_ENUM.CREATE,
-          PERMISSION_ENUM.CREATE_SECTION,
-        ]}
+        createPermissions={[PERMISSION_ENUM.CREATE]}
       />
     </>
   );

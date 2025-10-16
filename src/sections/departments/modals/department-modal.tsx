@@ -64,10 +64,7 @@ export default function DepartmentModal({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([
-    PERMISSION_ENUM.CREATE,
-    PERMISSION_ENUM.CREATE_SECTION,
-  ]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const onSubmit = async (
     data: DepartmentFormData,

@@ -19,7 +19,7 @@ export function StoreListToolbar({
 }: StoreListToolbarProps) {
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE_SECTION, PERMISSION_ENUM.CREATE]);
+  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
 
   return (
     <DataGridHeader

@@ -62,10 +62,7 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
   });
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasCreate = hasPermission([
-    PERMISSION_ENUM.CREATE_SECTION,
-    PERMISSION_ENUM.CREATE,
-  ]);
+  const hasCreate = hasPermission([PERMISSION_ENUM.CREATE]);
 
   return (
     <>

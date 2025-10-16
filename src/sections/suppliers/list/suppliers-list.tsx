@@ -187,14 +187,8 @@ export function SuppliersList({
               onActive={() => handleToggleActiveSupplier(supplier)}
               onViewDetails={() => handleViewSupplier(supplier)}
               onEdit={() => handleEditFullSupplier(supplier)}
-              viewPermissions={[
-                PERMISSION_ENUM.RETRIEVE,
-                PERMISSION_ENUM.RETRIEVE_SECTION,
-              ]}
-              editPermissions={[
-                PERMISSION_ENUM.RETRIEVE,
-                PERMISSION_ENUM.RETRIEVE_SECTION,
-              ]}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
               activePermissions={[
                 PERMISSION_ENUM.UPDATE,
                 PERMISSION_ENUM.DELETE,
@@ -217,10 +211,7 @@ export function SuppliersList({
         searchPlaceholder="Buscar solicitudes..."
         onCreate={handleCreateSupplier}
         emptyText="No se encontraron solicitudes"
-        createPermissions={[
-          PERMISSION_ENUM.CREATE_SECTION,
-          PERMISSION_ENUM.CREATE,
-        ]}
+        createPermissions={[PERMISSION_ENUM.CREATE]}
       />
 
       {/* Create Modal */}

@@ -8,7 +8,7 @@ import { PERMISSION_ENUM } from "@/lib/permissions";
 
 export const GatewayTestCard = ({ test }: { test: GatewayTest }) => {
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border rounded-lg bg-slate-200/70 dark:bg-slate-950/50 dark:text-slate-100 space-y-3 sm:space-y-0">

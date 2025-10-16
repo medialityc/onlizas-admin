@@ -38,14 +38,8 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasEditPermission = hasPermission([
-    PERMISSION_ENUM.RETRIEVE,
-    PERMISSION_ENUM.RETRIEVE_SECTION,
-  ]);
-  const hasTransferPermission = hasPermission([
-    PERMISSION_ENUM.RETRIEVE,
-    PERMISSION_ENUM.RETRIEVE_SECTION,
-  ]);
+  const hasEditPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const hasTransferPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
   const handleEdit = () => {
     if (onEdit) {
       onEdit();

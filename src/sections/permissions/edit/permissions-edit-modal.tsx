@@ -33,7 +33,7 @@ export function PermissionEditModal({
 }: PermissionEditModalProps) {
   const queryClient = useQueryClient();
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
   const methods = useForm<PermissionUpdateData>({
     resolver: zodResolver(permissionUpdateSchema(permissions)),
     mode: "onChange",

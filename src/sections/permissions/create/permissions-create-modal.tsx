@@ -57,7 +57,7 @@ export default function PermissionCreateModal({
   };
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
 
   const onSubmit = async (data: CreatePermissionSchema) => {
     setError(null);

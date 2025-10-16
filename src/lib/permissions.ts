@@ -5,6 +5,9 @@ export enum PERMISSION_ENUM {
   UPDATE = "Update",
   DELETE = "Delete",
 
+  // Role permissions
+  ASSIGN_ROLE = "AssignRole",
+
   // Section permissions
   CREATE_SECTION = "CreateSection",
   UPDATE_SECTION = "UpdateSection",
@@ -48,6 +51,7 @@ export const PERMISSION_ADMIN = [
   PERMISSION_ENUM.UPDATE,
   PERMISSION_ENUM.RETRIEVE,
   PERMISSION_ENUM.DELETE,
+  PERMISSION_ENUM.ASSIGN_ROLE,
 ];
 
 export const PERMISSIONS = [
@@ -68,20 +72,24 @@ export const PERMISSIONS = [
     description: "This permission allows to delete an entity",
   },
   {
+    code: PERMISSION_ENUM.ASSIGN_ROLE,
+    description: "This permission allows to assign roles to users",
+  },
+  {
     code: PERMISSION_ENUM.CREATE_SECTION,
-    description: "This permission allows to delete a category",
+    description: "This permission allows to create a section",
   },
   {
     code: PERMISSION_ENUM.UPDATE_SECTION,
-    description: "This permission allows to delete a category",
+    description: "This permission allows to update a section",
   },
   {
     code: PERMISSION_ENUM.DELETE_SECTION,
-    description: "This permission allows to delete a category",
+    description: "This permission allows to delete a section",
   },
   {
     code: PERMISSION_ENUM.RETRIEVE_SECTION,
-    description: "This permission allows to delete a category",
+    description: "This permission allows to retrieve a section",
   },
   {
     code: PERMISSION_ENUM.CREATE_BUSINESS,

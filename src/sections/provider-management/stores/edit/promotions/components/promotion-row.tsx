@@ -26,9 +26,9 @@ export default function PromotionRow({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE,PERMISSION_ENUM.RETRIEVE_SECTION]);
-  const hasDeletePermission = hasPermission([PERMISSION_ENUM.DELETE,PERMISSION_ENUM.DELETE_SECTION]);
+  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasDeletePermission = hasPermission([PERMISSION_ENUM.DELETE]);
 
   const getDiscountText = (type: number, value: number) => {
     return type === 0 ? `-${value}%` : `-$${value}`;
