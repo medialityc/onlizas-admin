@@ -15,7 +15,7 @@ import { PERMISSION_ENUM } from "@/lib/permissions";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAllPermissions } from "@/services/permissions";
 import { UpdateRoleSchema } from "../create/role-schemas";
-import { roleUpdateSchema } from "./role-update-schema";
+import { IRoleUpdateSchema, roleUpdateSchema } from "./role-update-schema";
 
 interface RoleEditModalProps {
   role: IRole;
@@ -48,14 +48,20 @@ export function RoleEditModal({ role, open, onClose }: RoleEditModalProps) {
   useEffect(() => {
     if (role && open) {
       reset({
+        readPermissions: role?.permissions?.map((perm) => perm.id) || [],
         permissions: role?.permissions?.map((perm) => perm.id) || [],
+        addPermissionsIds: [],
+        removePermissionsIds: [],
       });
     }
   }, [role, open, reset]);
 
-  const onSubmit = async (data: UpdateRoleSchema) => {
+  const onSubmit = async (data: IRoleUpdateSchema) => {
     try {
-      const res = await updateRole(role.id, data);
+      const res = await updateRole(role.id, {
+        addPermissionsIds: data.addPermissionsIds,
+        removePermissionsIds: data.removePermissionsIds,
+      });
       if (res?.error) {
         console.error("Error updating role:", res);
         toast.error(res.message || "Error al actualizar el rol");
@@ -83,27 +89,7 @@ export function RoleEditModal({ role, open, onClose }: RoleEditModalProps) {
       onClose={handleClose}
     >
       <FormProvider methods={methods} onSubmit={onSubmit}>
-        <div className="space-y-4">
-          {/* <RHFInputWithLabel
-              name="name"
-              label="Nombre"
-              placeholder="Ingrese el nombre del rol"
-            />
-
-            <RHFInputWithLabel
-              name="code"
-              label="Código"
-              placeholder="Ingrese el código del rol (ej: ADMIN, USER, MODERATOR)"
-            />
-
-            <RHFInputWithLabel
-              name="description"
-              label="Descripción"
-              placeholder="Ingrese una descripción para el rol"
-              type="textarea"
-              className="h-24"
-            /> */}
-
+        <div className="space-y-4 min-h-1/2">
           <RHFAutocompleteFetcherInfinity
             name="permissions"
             label="Permisos"
