@@ -15,7 +15,7 @@ import { createStore } from "@/services/stores";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { useRouter } from "next/navigation";
-import { getAllUserBusiness } from "@/services/business";
+import { getAllBusinessByProvider } from "@/services/business";
 import { useAuth } from "zas-sso-client";
 import { processImageFile } from "@/utils/image-helpers";
 
@@ -185,7 +185,7 @@ export default function StoresCreateModal({
               label="Negocio"
               placeholder="Buscar negocio..."
               required
-              onFetch={(params) => getAllUserBusiness(user?.id ?? 0, params)}
+              onFetch={(params) => getAllBusinessByProvider(user?.id ?? 0, params)}
               objectKeyLabel="name"
               size="medium"
               params={{ pageSize: 10 }}
