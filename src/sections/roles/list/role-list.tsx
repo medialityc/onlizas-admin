@@ -11,10 +11,8 @@ import { useCallback, useMemo } from "react";
 import { RoleDetailsModal } from "../details/role-details-modal";
 import { useQueryClient } from "@tanstack/react-query";
 import { RoleEditModal } from "../edit/role-edit-modal";
-import RoleCreateModal from "../create/role-create-modal";
 import { deleteRole } from "@/services/roles";
 import showToast from "@/config/toast/toastConfig";
-import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface RoleListProps {
@@ -33,7 +31,6 @@ export function RoleList({
   const queryClient = useQueryClient();
 
   // Modal states controlled by URL
-  const isCreateModalOpen = urlSearchParams.get("create") === "true";
   const editRoleId = urlSearchParams.get("edit");
   const viewRoleId = urlSearchParams.get("view");
 
@@ -150,7 +147,10 @@ export function RoleList({
               onEdit={() => handleEditRole(role)}
               onDelete={() => handleDeleteRole(role)}
               viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
-              editPermissions={[PERMISSION_ENUM.UPDATE,PERMISSION_ENUM.ASSIGN_ROLE]}
+              editPermissions={[
+                PERMISSION_ENUM.UPDATE,
+                PERMISSION_ENUM.ASSIGN_ROLE,
+              ]}
               activePermissions={[PERMISSION_ENUM.UPDATE]}
             />
           </div>
@@ -170,7 +170,10 @@ export function RoleList({
         searchPlaceholder="Buscar roles..."
         // onCreate={handleCreateRole}
         emptyText="No se encontraron roles"
-        createPermissions={[PERMISSION_ENUM.CREATE,PERMISSION_ENUM.ASSIGN_ROLE]}
+        createPermissions={[
+          PERMISSION_ENUM.CREATE,
+          PERMISSION_ENUM.ASSIGN_ROLE,
+        ]}
       />
       {/* Create Modal */}
       {/*  <RoleCreateModal
