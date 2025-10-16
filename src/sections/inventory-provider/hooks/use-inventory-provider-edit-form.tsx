@@ -36,7 +36,7 @@ const initValue: ProductVariant = {
 export const useInventoryProviderEditForm = (
   defaultValues: ProductVariant = initValue,
   handleCancel: () => void,
-  inventoryId: number
+  inventoryId: string
 ) => {
   const form = useForm({
     defaultValues,

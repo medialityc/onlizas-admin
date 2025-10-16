@@ -67,7 +67,7 @@ const UserEditForm: React.FC<UserUpdateFormProps> = ({ initialData }) => {
   const methods = useForm<UserUpdateData>({
     resolver: zodResolver(userUpdateSchema),
     defaultValues: {
-      id: initialData?.id || 0,
+      id: initialData?.id || "",
       name: initialData?.name || "",
       roles: initialData?.roles?.map((r) => r.name) || [],
       addresses:

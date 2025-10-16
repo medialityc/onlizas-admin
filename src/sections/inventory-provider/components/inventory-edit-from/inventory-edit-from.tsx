@@ -8,8 +8,8 @@ import { ProductVariant } from "../../schemas/inventory-provider.schema";
 
 type Props = {
   initValue?: ProductVariant;
-  userProvider?: number;
-  inventoryId?: number;
+  userProvider?: string;
+  inventoryId?: string;
   index?: number;
   onRemove: () => void;
   isPacking: boolean;
@@ -32,7 +32,7 @@ const InventoryEditForm = ({
   const { form, isPending, onSubmit } = useInventoryProviderEditForm(
     initValue,
     handleCancel,
-    inventoryId ?? 0
+    inventoryId ?? ""
   );
 
   return (

@@ -7,5 +7,5 @@ export const warehouseVirtualTypeSchema = z.object({
 });
 
 export type WarehouseVirtualTypeFormData = z.infer<typeof warehouseVirtualTypeSchema> & {
-  id?: number;
+  id?: string;
 };

@@ -3,13 +3,13 @@ import { productVariants } from "./inventory-provider.schema";
 
 export const InventoryStoreSchema = z.object({
   /* inmutable */
-  id: z.number().optional(),
+  id: z.string().optional(),
   parentProductName: z.string(),
   warehouseName: z.string(),
   supplierName: z.string(),
   storeName: z.string(),
   supplierId: z.string(),
-  storeId: z.number(),
+  storeId: z.string(),
   warehouseId: z.number(),
   parentProductId: z.number(),
   /* adapter data */

@@ -45,8 +45,8 @@ export const storeSchema = z.object({
       message: "Los términos del servicio deben tener al menos 10 caracteres",
     })
     .max(200),
-  businessId: z.union([z.string(), z.number()]),
-  ownerId: z.union([z.string(), z.number()]),
+  businessId: z.string(),
+  ownerId: z.string(),
 });
 
 export type StoreFormData = z.infer<typeof storeSchema>;

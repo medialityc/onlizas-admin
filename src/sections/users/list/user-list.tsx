@@ -77,7 +77,7 @@ export function UserList({
             {user.profilePicturePath ? (
               <Image
                 src={user.profilePicturePath}
-                alt={`${user.firstName} ${user.lastName}`}
+                alt={`${user.name}`}
                 width={64}
                 height={64}
                 className="rounded-full object-cover"
