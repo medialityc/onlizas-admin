@@ -31,11 +31,7 @@ export const setProductFormData = async (
   formData.append("length", String(product.length));
   formData.append("weight", String(product.weight));
   formData.append("aduanaCategoryGuid", String(product.aduanaCategoryGuid));
-  formData.append(
-    "customsValueAduanaUsd",
-    String(product.customsValueAduanaUsd)
-  );
-  formData.append("rateXValue", String(product.valuePerUnit ?? 0));
+
   formData.append("isDurable", String(product.isDurable));
   formData.append("aboutThis", JSON.stringify(product.aboutThis));
   // Details: enviar como pares details[clave]

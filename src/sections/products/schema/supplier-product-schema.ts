@@ -4,7 +4,7 @@ import { z } from "zod";
 // Schema completo que coincide con la API real según product-apis.md
 export const supplierProductSchema = z
   .object({
-    id: z.number().optional(),
+    id: z.string().optional(),
     isDraft: z.boolean().default(false).optional(),
     isOwned: z.boolean().default(false).optional(), // define si es un producto del proveedor
     name: z
@@ -18,7 +18,7 @@ export const supplierProductSchema = z
     active: z.boolean().default(false).optional(),
 
     categoryIds: z
-      .array(z.number())
+      .array(z.string())
       .min(1, "Debe seleccionar al menos una categoría."),
 
     /* dimensions */
@@ -119,7 +119,7 @@ export const supplierProductSchema = z
 
 export type SupplierProductFormData = z.infer<typeof supplierProductSchema> & {
   categories?: {
-    id: number;
+    id: string;
     name: string;
   }[];
 };

@@ -8,7 +8,7 @@ export default async function EditProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const response = await getProductById(Number(id));
+  const response = await getProductById(id);
   if (!response?.data) notFound();
 
   const product = response.data;

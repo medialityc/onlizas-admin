@@ -2,7 +2,7 @@ import { detailsObjectToArray } from "@/utils/format";
 import { z } from "zod";
 
 export const productSchema = z.object({
-  id: z.number().optional(),
+  id: z.string().optional(),
   name: z
     .string({ required_error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")
@@ -13,12 +13,12 @@ export const productSchema = z.object({
     .default(""),
   active: z.boolean(),
   supplierUserIds: z
-    .array(z.number())
+    .array(z.string())
     .min(1, "Debe seleccionar al menos un proveedor."),
   categoryIds: z
-    .array(z.number())
+    .array(z.string())
     .min(1, "Debe seleccionar al menos una categoría."),
-  customsValueAduanaUsd: z
+  /*  customsValueAduanaUsd: z
     .number({
       required_error: "El valor aduanero es obligatorio",
       invalid_type_error: "El valor aduanero es obligatorio",
@@ -31,13 +31,13 @@ export const productSchema = z.object({
       invalid_type_error: "El valor por unidad es obligatorio",
     })
     .min(0, "El valor por unidad no puede ser negativo")
-    .optional(),
+    .optional(), */
   isDurable: z.boolean().default(false),
-  unitGuid: z
+  /*  unitGuid: z
     .union([z.string(), z.number()])
     .refine((val) => val !== "" && val !== undefined && val !== null, {
       message: "Debe seleccionar una unidad",
-    }),
+    }), */
   aduanaCategoryGuid: z
     .union([z.string(), z.number()])
     .refine((val) => val !== "" && val !== undefined && val !== null, {
@@ -119,14 +119,14 @@ export const productSchema = z.object({
 });
 
 export type ProductFormData = z.infer<typeof productSchema> & {
-  id?: number;
+  id?: string;
   state?: boolean;
   suppliers?: {
-    id: number;
+    id: string;
     name: string;
   }[];
   categories?: {
-    id: number;
+    id: string;
     name: string;
   }[];
 };

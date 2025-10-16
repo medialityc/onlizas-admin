@@ -6,7 +6,6 @@ import { ProductFormData } from "../schema/product-schema";
 export const supplierProductTransformData = (
   product: ProductFormData | Product
 ): SupplierProductFormData => {
-  console.log(product, "SIN EDITAR");
   return {
     ...product,
     active: product?.state,

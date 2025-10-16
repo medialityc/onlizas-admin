@@ -31,44 +31,58 @@ export function ProductList({
   const { updateFiltersInUrl } = useFiltersUrl();
 
   const handleCreateProduct = useCallback(() => {
-    if (hasPermission([PERMISSION_ENUM.CREATE, PERMISSION_ENUM.CREATE_SECTION])) {
+    if (
+      hasPermission([PERMISSION_ENUM.CREATE, PERMISSION_ENUM.CREATE_SECTION])
+    ) {
       router.push("/dashboard/products/new");
     }
   }, [router, hasPermission]);
 
   const handleView = (product: Product) => {
-    if (hasPermission([PERMISSION_ENUM.RETRIEVE, PERMISSION_ENUM.RETRIEVE_SECTION])) {
+    if (
+      hasPermission([
+        PERMISSION_ENUM.RETRIEVE,
+        PERMISSION_ENUM.RETRIEVE_SECTION,
+      ])
+    ) {
       router.push(paths.dashboard.products.view(product.id));
     }
   };
 
   const handleEdit = (product: Product) => {
-    if (hasPermission([PERMISSION_ENUM.UPDATE, PERMISSION_ENUM.UPDATE_SECTION])) {
+    if (
+      hasPermission([PERMISSION_ENUM.UPDATE, PERMISSION_ENUM.UPDATE_SECTION])
+    ) {
       router.push(paths.dashboard.products.edit(product.id));
     }
   };
 
-  const handleToggleActiveProduct = useCallback(async (product: Product) => {
-    if (!hasPermission([PERMISSION_ENUM.UPDATE, PERMISSION_ENUM.UPDATE_SECTION])) {
-      showToast("No tienes permisos para realizar esta acción", "error");
-      return;
-    }
-
-    try {
-      const res = await toggleActiveProduct(product?.id as number);
-      if (res?.error && res.message) {
-        showToast(res.message, "error");
-      } else {
-        showToast(
-          `Producto ${(res.data as unknown as Product)?.state ? "activado" : "desactivado"} correctamente`,
-          "success"
-        );
+  const handleToggleActiveProduct = useCallback(
+    async (product: Product) => {
+      if (
+        !hasPermission([PERMISSION_ENUM.UPDATE, PERMISSION_ENUM.UPDATE_SECTION])
+      ) {
+        showToast("No tienes permisos para realizar esta acción", "error");
+        return;
       }
-    } catch (error) {
-      console.error(error);
-      showToast("Ocurrió un error, intente nuevamente", "error");
-    }
-  }, [hasPermission]);
+
+      try {
+        const res = await toggleActiveProduct(product?.id);
+        if (res?.error && res.message) {
+          showToast(res.message, "error");
+        } else {
+          showToast(
+            `Producto ${(res.data as unknown as Product)?.state ? "activado" : "desactivado"} correctamente`,
+            "success"
+          );
+        }
+      } catch (error) {
+        console.error(error);
+        showToast("Ocurrió un error, intente nuevamente", "error");
+      }
+    },
+    [hasPermission]
+  );
 
   const columns: DataTableColumn<Product>[] = [
     {

@@ -7,7 +7,7 @@ import Image from "next/image";
 import { getProductById } from "@/services/products";
 
 async function ProductDetails({ id }: { id: string }) {
-  const response = await getProductById(Number(id));
+  const response = await getProductById(id);
   if (!response?.data) notFound();
 
   const { image: productImage, ...product } = response.data;

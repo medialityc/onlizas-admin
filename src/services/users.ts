@@ -356,7 +356,7 @@ export async function getAllSupplierUsers(
   params: IQueryable
 ): Promise<ApiResponse<GetAllUsersResponse>> {
   const url = new QueryParamsURLFactory(
-    { ...params, role: "ONL_SUPPLIER" },
+    { ...params, role: "OnlizasSupplier" },
     backendRoutes.users.listSuppliers
   ).build();
 

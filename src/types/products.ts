@@ -40,7 +40,7 @@ export type ProductSupplier = {
 
 // Producto según respuesta de la API
 export interface Product {
-  id: number;
+  id: string;
   name: string;
   description: string;
   image: string;
@@ -87,7 +87,7 @@ export interface AduanaCategory {
 }
 
 export interface Category {
-  id: number;
+  id: string;
   name: string;
 }
 
