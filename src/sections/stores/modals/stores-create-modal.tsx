@@ -40,6 +40,7 @@ export default function StoresCreateModal({
       url: store?.url ?? "",
       email: store?.email ?? "",
       phoneNumber: store?.phoneNumber ?? "",
+      countryCode: store?.countryCode ?? "",
       address: store?.address ?? "",
       logoStyle: store?.logoStyle ?? undefined,
       returnPolicy: store?.returnPolicy ?? "",
@@ -83,22 +84,19 @@ export default function StoresCreateModal({
 
       formData.append("ownerId", data.ownerId.toString());
       formData.append("businessId", data.businessId.toString());
-      console.log(formData.get("businessId"), "Esta es la data");
       // url es obligatorio según el schema
       formData.append("url", data.url);
       formData.append("name", data.name);
       formData.append("email", data.email);
       formData.append("phoneNumber", data.phoneNumber);
+      formData.append("countryCode", data.countryCode);
       formData.append("address", data.address);
       formData.append("returnPolicy", data.returnPolicy);
       formData.append("shippingPolicy", data.shippingPolicy);
       formData.append("termsOfService", data.termsOfService);
 
-      console.log(formData);
       let response = null;
       response = await createStore(formData);
-
-      console.log(response);
 
       if (response && response.status === 200) {
         //queryClient.invalidateQueries({ queryKey: ["stores"] });
@@ -106,7 +104,6 @@ export default function StoresCreateModal({
           (response.data as any)?.id ?? (response.data as any)?.storeId;
         toast.success("Tienda creada exitosamente");
         onSuccess?.();
-        console.log(createdId);
         if (createdId) {
           routerHook.push(`/stores/${createdId}`);
           return;
@@ -121,7 +118,6 @@ export default function StoresCreateModal({
         }
       }
     } catch (err) {
-      console.log(err);
       const errorMessage =
         err instanceof Error ? err.message : "Error al procesar la tienda";
       setError(errorMessage);

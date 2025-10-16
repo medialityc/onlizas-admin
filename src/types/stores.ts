@@ -69,6 +69,7 @@ export type CreateStoreRequest = {
   logoStyle?: string;
   email: string;
   phoneNumber: string;
+  countryCode: string;
   address: string;
   returnPolicy: string;
   shippingPolicy: string;

@@ -2,13 +2,14 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { RHFInputWithLabel } from "@/components/react-hook-form";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
-import { getAllUserBusiness } from "@/services/business";
+import { getAllBusinessByProvider } from "@/services/business";
 import React, { useEffect } from "react";
 import { StoreFormData } from "./stores-schema";
 import { useFormContext } from "react-hook-form";
 import { getAllSupplierUsers } from "@/services/users";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { RHFPhoneCountrySelect } from "@/components/react-hook-form/rhf-phone-country-select";
 type Props = {
   isSubmitting: boolean;
   handleClose: VoidFunction;
@@ -45,7 +46,7 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
           <RHFInputWithLabel
             name="url"
             label="URL de la Tienda"
-            placeholder="https://mi-tienda.com"
+            placeholder="tu-tienda-online"
             type="text"
             required
             size="medium"
@@ -70,7 +71,7 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
             label="Negocio"
             placeholder="Buscar negocio..."
             required
-            onFetch={(params) => getAllUserBusiness(ownerId, params)}
+            onFetch={(params) => getAllBusinessByProvider(ownerId, params)}
             size="medium"
           />
         )}
@@ -94,7 +95,7 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
         />
 
         {/* Phone Input */}
-        <RHFInputWithLabel
+        {/*   <RHFInputWithLabel
           name="phoneNumber"
           label="Teléfono"
           placeholder="+1234567890"
@@ -102,7 +103,22 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
           required
           size="medium"
           type="tel"
-        />
+        /> */}
+
+        <div>
+          <label
+            htmlFor="phoneNumber"
+            className="mb-[14px] block text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
+            Teléfono <span className="text-danger">*</span>
+          </label>
+          {/* Country prefix + phone input together (no separation) */}
+          <RHFPhoneCountrySelect
+            countryFieldName="countryCode"
+            countryValueKey="code"
+            phoneFieldName="phoneNumber"
+          />
+        </div>
 
         {/* Address Input */}
         <RHFInputWithLabel

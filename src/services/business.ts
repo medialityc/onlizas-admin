@@ -152,13 +152,13 @@ export async function deleteBusinessBySupplier(
   return buildApiResponseAsync(res);
 }
 
-export async function getAllUserBusiness(
+export async function getAllBusinessByProvider(
   id: string | number,
   params: IQueryable
 ): Promise<ApiResponse<GetAllBusiness>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.business.getByUser(id)
+    backendRoutes.business.getByProvider(id)
   ).build();
 
   const res = await nextAuthFetch({
