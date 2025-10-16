@@ -120,9 +120,11 @@ export function CurrenciesList({
         sortable: true,
         width: 80,
         render: (currency) => (
-          <span className="font-medium text-dark dark:text-white">
-            #{currency.id}
-          </span>
+          <div className="text-center max-w-full">
+            <span className="font-medium truncate block  text-dark dark:text-white ">
+              #{currency.id}
+            </span>
+          </div>
         ),
       },
       {
