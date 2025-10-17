@@ -17,10 +17,10 @@ export enum LocationType {
 }
 
 export type ILocation = {
-  id: number|string;
+  id: string;
   globalId: string;
   name: string;
-  countryCode?: string;
+  countryCode: string;
   state: string;
   district: string;
   addressRaw: string;
@@ -29,15 +29,15 @@ export type ILocation = {
   latitude: number;
   longitude: number;
   geohash: string;
-  placeId?: string;
+  placeId: string;
   type: number; // LocationType enum value
-  status: string | number; // Can be string enum or number
+  status: number; // Status as number
   partialAddress: boolean;
   hasManualCorrection: boolean;
   tags: string[];
   version: number;
-  createdAt: string;
-  updatedAt: string;
+  createdDatetime: string; // Actualizado para coincidir con la API
+  updatedDatetime: string; // Actualizado para coincidir con la API
   deletedAt?: string;
   active: boolean;
 };
