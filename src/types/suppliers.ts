@@ -1,4 +1,7 @@
-import { SUPPLIER_NATIONALITY, SUPPLIER_TYPE_SELLER } from "@/sections/suppliers/constants/supplier.options";
+import {
+  SUPPLIER_NATIONALITY,
+  SUPPLIER_TYPE_SELLER,
+} from "@/sections/suppliers/constants/supplier.options";
 import { PaginatedResponse } from "./common";
 
 export type Supplier = {
@@ -16,7 +19,7 @@ export type Supplier = {
   expirationDate: string;
   message: string;
   sellerType?: SUPPLIER_TYPE_SELLER;
-  nacionality?: SUPPLIER_NATIONALITY
+  nacionality?: SUPPLIER_NATIONALITY;
   mincexCode?: string;
   pendingDocuments: Document[];
   approvedDocuments: Document[];
@@ -114,6 +117,8 @@ export type SupplierDetails = Supplier & {
       content: string;
     },
   ];
+  businessName: string;
+  businessCode: string;
 };
 
 export type UpdateSupplier = {

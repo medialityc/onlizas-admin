@@ -112,10 +112,8 @@ export default function SuppliersModal({
       // Business data
       if (data.useExistingBusiness && data.businessId) {
         formData.append("businessId", String(data.businessId));
-        formData.append("createBusinessAutomatically", "false");
       } else {
-        // No business association
-        formData.append("createBusinessAutomatically", "false");
+        formData.append("businessId", "null");
       }
 
       // Agregar documentos como array de objetos

@@ -62,7 +62,13 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
       setValue("businessId", undefined);
       setSelectedBusiness(null);
     }
-  }, [useExistingBusiness, setValue]);
+    // If user switched off existing user, also force business association off
+    if (!useExistingUser && useExistingBusiness) {
+      setValue("useExistingBusiness", false);
+      setValue("businessId", undefined);
+      setSelectedBusiness(null);
+    }
+  }, [useExistingBusiness, useExistingUser, setValue]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -251,7 +257,71 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
             />
           </div>
         )}
-
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Negocio (opcional)
+            </label>
+          </div>
+          <div className="opacity-100">
+            <RHFSwitch
+              name="useExistingBusiness"
+              label="Asociar negocio existente"
+              disabled={!useExistingUser}
+            />
+            {!useExistingUser && (
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Activa primero &quot;Usar usuario existente&quot; para poder
+                asociar un negocio.
+              </p>
+            )}
+          </div>
+          {useExistingBusiness && (
+            <>
+              <RHFAutocompleteFetcherInfinity
+                name="businessId"
+                label="Seleccionar negocio"
+                placeholder="Buscar negocio por nombre o código..."
+                onFetch={getAllBusiness}
+                objectValueKey="id"
+                objectKeyLabel="name"
+                params={{ pageSize: 20 }}
+                onOptionSelected={(option: any) => {
+                  if (option && option.id) {
+                    setValue("businessId", option.id);
+                    setSelectedBusiness(option);
+                  }
+                }}
+              />
+              {selectedBusiness && (
+                <div className="mt-2 flex items-center gap-3 p-2 border rounded bg-gray-50 dark:bg-gray-800">
+                  <div className="w-10 h-10 rounded-full bg-blue-200 dark:bg-blue-700 flex items-center justify-center text-sm font-semibold text-blue-700 dark:text-blue-200">
+                    {selectedBusiness.code ||
+                      selectedBusiness.name.substring(0, 2).toUpperCase()}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
+                      {selectedBusiness.name}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      {selectedBusiness.code}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="ml-auto text-sm text-red-600 hover:underline"
+                    onClick={() => {
+                      setValue("businessId", undefined);
+                      setSelectedBusiness(null);
+                    }}
+                  >
+                    Quitar
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <RHFSelectWithLabel
             name="sellerType"
@@ -356,63 +426,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
               Formatos aceptados: PDF, DOC, DOCX, JPG, JPEG, PNG (máx. 10MB por
               archivo)
             </div>
-          )}
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Negocio (opcional)
-            </label>
-          </div>
-          <RHFSwitch
-            name="useExistingBusiness"
-            label="Asociar negocio existente"
-          />
-          {useExistingBusiness && (
-            <>
-              <RHFAutocompleteFetcherInfinity
-                name="businessId"
-                label="Seleccionar negocio"
-                placeholder="Buscar negocio por nombre o código..."
-                onFetch={getAllBusiness}
-                objectValueKey="id"
-                objectKeyLabel="name"
-                params={{ pageSize: 20 }}
-                onOptionSelected={(option: any) => {
-                  if (option && option.id) {
-                    setValue("businessId", option.id);
-                    setSelectedBusiness(option);
-                  }
-                }}
-              />
-              {selectedBusiness && (
-                <div className="mt-2 flex items-center gap-3 p-2 border rounded bg-gray-50 dark:bg-gray-800">
-                  <div className="w-10 h-10 rounded-full bg-blue-200 dark:bg-blue-700 flex items-center justify-center text-sm font-semibold text-blue-700 dark:text-blue-200">
-                    {selectedBusiness.code ||
-                      selectedBusiness.name.substring(0, 2).toUpperCase()}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
-                      {selectedBusiness.name}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                      {selectedBusiness.code}
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    className="ml-auto text-sm text-red-600 hover:underline"
-                    onClick={() => {
-                      setValue("businessId", undefined);
-                      setSelectedBusiness(null);
-                    }}
-                  >
-                    Quitar
-                  </button>
-                </div>
-              )}
-            </>
           )}
         </div>
       </div>

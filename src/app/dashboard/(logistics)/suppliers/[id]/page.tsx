@@ -70,6 +70,57 @@ export default async function Page({
         </div>
       </section>
 
+      {/* Información del Negocio asociado */}
+      <section
+        id="business"
+        className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-xl rounded-2xl border border-gray-200/50 dark:border-gray-700/50 animate-slideUp overflow-hidden"
+        style={{ animationDelay: "0.25s" }}
+      >
+        <div className="px-8 py-6 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/20 dark:to-teal-500/20 border-b border-gray-200/50 dark:border-gray-700/50">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
+                <span className="text-white text-sm font-semibold">Bz</span>
+              </div>
+            </div>
+            <div className="ml-4">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                Información del Negocio
+              </h2>
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                Datos del negocio asociado al proveedor (si aplica).
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="p-8">
+          {supplierDetails?.businessName && supplierDetails?.businessCode ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-1">
+                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Nombre del Negocio
+                </h3>
+                <p className="text-base font-semibold text-gray-900 dark:text-gray-100">
+                  {supplierDetails.businessName}
+                </p>
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Código
+                </h3>
+                <p className="text-base font-semibold text-gray-900 dark:text-gray-100">
+                  {supplierDetails.businessCode}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Este proveedor no tiene un negocio asociado.
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* Aprobación / Rechazo */}
       {(supplierDetails?.state === "Pending" ||
         supplierDetails?.state === "WaitingExtension") && (

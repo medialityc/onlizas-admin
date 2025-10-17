@@ -50,11 +50,8 @@ export const suppliersSchema = z.object({
     .min(0, "La nacionalidad no puede estar vacía."),
   mincexCode: z.string().optional(),
   requiredPasswordChange: z.boolean().optional(),
-  password: z
-    .string()
-    .min(8, "La contraseña debe tener al menos 8 caracteres.")
-    .max(100, "La contraseña no puede tener más de 100 caracteres.")
-    .optional(),
+  // Password fields: no base length constraints so they don't fail when using usuario existente
+  password: z.string().optional(),
   confirmPassword: z.string().optional(),
   // Optional existing business association
   useExistingBusiness: z.boolean().optional(),
@@ -191,37 +188,56 @@ export const suppliersSchemaWithRules = suppliersSchema.superRefine(
 
     // Password rules (only when creating a new user i.e., not using existing)
     if (!useExisting) {
-      if (!data.password || data.password.trim().length === 0) {
+      const pwd = data.password?.trim() ?? "";
+      const cpwd = data.confirmPassword?.trim() ?? "";
+      if (pwd.length === 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["password"],
           message: "La contraseña es obligatoria.",
         });
+      } else {
+        if (pwd.length < 8) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["password"],
+            message: "La contraseña debe tener al menos 8 caracteres.",
+          });
+        }
+        if (pwd.length > 100) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["password"],
+            message: "La contraseña no puede tener más de 100 caracteres.",
+          });
+        }
       }
-      if (!data.confirmPassword || data.confirmPassword.trim().length === 0) {
+      if (cpwd.length === 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["confirmPassword"],
           message: "La confirmación de contraseña es obligatoria.",
         });
-      }
-      if (
-        data.password &&
-        data.confirmPassword &&
-        data.password !== data.confirmPassword
-      ) {
+      } else if (pwd && cpwd && pwd !== cpwd) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["confirmPassword"],
           message: "Las contraseñas no coinciden.",
         });
       }
-    } else {
-      // If using existing user, ignore provided password/confirmPassword values (optional: could warn)
     }
 
     // Business: only validate if flag is set; otherwise ignore.
     if (data.useExistingBusiness) {
+      // Enforce dependency: only allowed if using existing user
+      if (!useExisting) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["useExistingBusiness"],
+          message:
+            "Solo puedes asociar un negocio existente cuando usas un usuario existente.",
+        });
+      }
       if (
         data.businessId === undefined ||
         data.businessId === null ||
