@@ -56,6 +56,9 @@ export const suppliersSchema = z.object({
     .max(100, "La contraseña no puede tener más de 100 caracteres.")
     .optional(),
   confirmPassword: z.string().optional(),
+  // Optional existing business association
+  useExistingBusiness: z.boolean().optional(),
+  businessId: z.union([z.number(), z.string()]).optional(),
 });
 
 export type SuppliersFormData = z.infer<typeof suppliersSchema>;
@@ -215,6 +218,22 @@ export const suppliersSchemaWithRules = suppliersSchema.superRefine(
       }
     } else {
       // If using existing user, ignore provided password/confirmPassword values (optional: could warn)
+    }
+
+    // Business: only validate if flag is set; otherwise ignore.
+    if (data.useExistingBusiness) {
+      if (
+        data.businessId === undefined ||
+        data.businessId === null ||
+        (typeof data.businessId === "string" && data.businessId.trim() === "")
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["businessId"],
+          message:
+            "Debes seleccionar un negocio existente o desactivar la opción.",
+        });
+      }
     }
   }
 );

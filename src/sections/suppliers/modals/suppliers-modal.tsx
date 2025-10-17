@@ -56,6 +56,8 @@ export default function SuppliersModal({
       password: "",
       confirmPassword: "",
       requiredPasswordChange: false,
+      useExistingBusiness: false,
+      businessId: undefined,
     },
   });
 
@@ -98,11 +100,23 @@ export default function SuppliersModal({
           formData.append("password", data.password);
         }
       }
+      if (data.useExistingBusiness) {
+        formData.append("businessId", String(data.businessId));
+      }
 
       // Enums y condicionales
       formData.append("sellerType", String(data.sellerType));
       formData.append("nacionalityType", String(data.nacionalityType));
       if (data.mincexCode) formData.append("mincexCode", data.mincexCode);
+
+      // Business data
+      if (data.useExistingBusiness && data.businessId) {
+        formData.append("businessId", String(data.businessId));
+        formData.append("createBusinessAutomatically", "false");
+      } else {
+        // No business association
+        formData.append("createBusinessAutomatically", "false");
+      }
 
       // Agregar documentos como array de objetos
       data.documents?.forEach((doc) => {

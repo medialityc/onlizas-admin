@@ -1,3 +1,5 @@
+import React from "react";
+// Clean corrected implementation below
 import { usePermissions } from "@/hooks/use-permissions";
 import LoaderButton from "@/components/loaders/loader-button";
 import {
@@ -8,10 +10,11 @@ import {
 } from "@/components/react-hook-form";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAllUsers } from "@/services/users";
+import { getAllBusiness } from "@/services/business";
 import { IUser } from "@/types/users";
+import { Business } from "@/types/business";
 import { DocumentIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
-import React, { useEffect, useState } from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { useFormContext, useFieldArray } from "react-hook-form";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import { AlertBox } from "@/components/alert/alert-box";
 import {
@@ -27,171 +30,171 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
     setValue,
     formState: { isSubmitting, errors },
   } = useFormContext();
-  const useExisting = watch("createUserAutomatically") ?? false;
-  const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+  const useExistingUser = watch("createUserAutomatically") ?? false;
+  const useExistingBusiness = watch("useExistingBusiness") ?? false;
+  const [selectedUser, setSelectedUser] = React.useState<IUser | null>(null);
+  const [selectedBusiness, setSelectedBusiness] =
+    React.useState<Business | null>(null);
+  const nacionalityType = watch("nacionalityType");
 
-  const nationalType = watch("nacionalityType");
-
-  useEffect(() => {
-    // When switching to existing user, clear manual fields
-    if (useExisting) {
+  React.useEffect(() => {
+    if (useExistingUser) {
       setValue("name", undefined);
       setValue("email", undefined);
       setValue("phone", undefined);
-      setValue("countryCode", undefined);
       setValue("address", undefined);
       setValue("mincexCode", undefined);
-      // ensure flags initialized
+      setValue("countryCode", undefined);
       setValue("userMissingEmail", false);
       setValue("userMissingPhone", false);
       setValue("userMissingAddress", false);
-      // keep selectedUser as-is
     } else {
-      // When switching off, clear selected userId
       setValue("userId", undefined);
+      setSelectedUser(null);
       setValue("userMissingEmail", false);
       setValue("userMissingPhone", false);
       setValue("userMissingAddress", false);
-      setSelectedUser(null);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [useExisting]);
+  }, [useExistingUser, setValue]);
+
+  React.useEffect(() => {
+    if (!useExistingBusiness) {
+      setValue("businessId", undefined);
+      setSelectedBusiness(null);
+    }
+  }, [useExistingBusiness, setValue]);
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "documents",
   });
-  // Control de permisos
   const { hasPermission } = usePermissions();
   const hasCreate = hasPermission([PERMISSION_ENUM.CREATE]);
 
   return (
     <>
-      <div className="space-y-4">
-        {/* Use existing user toggle */}
-        <div>
+      <div className="space-y-8">
+        <div className="space-y-3">
           <RHFSwitch
             name="createUserAutomatically"
             label="Usar usuario existente"
           />
-        </div>
-        {useExisting && (
-          <>
-            <RHFAutocompleteFetcherInfinity
-              name="userId"
-              label="Usuario existente"
-              placeholder="Buscar usuario por nombre, email o teléfono..."
-              onFetch={getAllUsers}
-              objectValueKey="id"
-              objectKeyLabel="name"
-              params={{ pageSize: 20 }}
-              onOptionSelected={(option: any) => {
-                if (option && option.id) {
-                  setValue("userId", option.id);
-
-                  setSelectedUser(option);
-                  // set missing flags for validation
-                  setValue("userMissingEmail", !option.hasEmail);
-                  setValue("userMissingPhone", !option.hasPhoneNumber);
-                  setValue(
-                    "userMissingAddress",
-                    !(option.addresses && option.addresses.length > 0)
+          {useExistingUser && (
+            <>
+              <RHFAutocompleteFetcherInfinity
+                name="userId"
+                label="Usuario existente"
+                placeholder="Buscar usuario por nombre, email o teléfono..."
+                onFetch={getAllUsers}
+                objectValueKey="id"
+                objectKeyLabel="name"
+                params={{ pageSize: 20 }}
+                onOptionSelected={(option: any) => {
+                  if (option && option.id) {
+                    setValue("userId", option.id);
+                    setSelectedUser(option);
+                    setValue("userMissingEmail", !option.hasEmail);
+                    setValue("userMissingPhone", !option.hasPhoneNumber);
+                    setValue(
+                      "userMissingAddress",
+                      !(option.addresses && option.addresses.length > 0)
+                    );
+                  }
+                }}
+              />
+              {selectedUser && (
+                <div className="mt-2 flex items-center gap-3 p-2 border rounded bg-gray-50 dark:bg-gray-800">
+                  <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-sm font-semibold text-gray-700 dark:text-gray-200">
+                    {selectedUser.name
+                      ? selectedUser.name
+                          .split(" ")
+                          .map((n: string) => n[0])
+                          .slice(0, 2)
+                          .join("")
+                          .toUpperCase()
+                      : String(selectedUser.id)}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
+                      {selectedUser.name}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      {selectedUser.emails[0]?.address ??
+                        selectedUser.phones[0]?.number ??
+                        ""}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="ml-auto text-sm text-red-600 hover:underline"
+                    onClick={() => {
+                      setValue("userId", undefined);
+                      setValue("userMissingEmail", false);
+                      setValue("userMissingPhone", false);
+                      setValue("userMissingAddress", false);
+                      setSelectedUser(null);
+                    }}
+                  >
+                    Quitar
+                  </button>
+                </div>
+              )}
+              {selectedUser &&
+                (() => {
+                  const needEmail = !selectedUser.hasEmail;
+                  const needPhone = !selectedUser.hasPhoneNumber;
+                  const needAddress = !(
+                    selectedUser.addresses && selectedUser.addresses.length > 0
                   );
-                }
-              }}
-            />
+                  const needName = !selectedUser.name;
+                  if (!needEmail && !needPhone && !needAddress && !needName)
+                    return null;
+                  return (
+                    <div className="mt-3 p-3 border rounded bg-white dark:bg-gray-900">
+                      <div className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                        Completar información del usuario
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {needName && (
+                          <RHFInputWithLabel
+                            name="name"
+                            label="Nombre"
+                            placeholder="Nombre del usuario"
+                            required
+                          />
+                        )}
+                        {needPhone && (
+                          <RHFInputWithLabel
+                            name="phone"
+                            label="Teléfono"
+                            placeholder="+1234567890"
+                            type="tel"
+                            required
+                            onCountryChange={(countryCode) => {
+                              setValue("countryCode", countryCode ?? "");
+                            }}
+                          />
+                        )}
+                        {needAddress && (
+                          <RHFInputWithLabel
+                            name="address"
+                            label="Dirección"
+                            placeholder="Calle, Ciudad, País"
+                            type="textarea"
+                            required
+                            rows={2}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
+            </>
+          )}
+        </div>
 
-            {selectedUser && (
-              <div className="mt-2 flex items-center gap-3 p-2 border rounded bg-gray-50 dark:bg-gray-800">
-                <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-sm font-semibold text-gray-700 dark:text-gray-200">
-                  {selectedUser.name
-                    ? selectedUser.name
-                        .split(" ")
-                        .map((n: string) => n[0])
-                        .slice(0, 2)
-                        .join("")
-                        .toUpperCase()
-                    : String(selectedUser.id)}
-                </div>
-                <div className="min-w-0">
-                  <div className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
-                    {selectedUser.name}
-                  </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                    {selectedUser.emails[0]?.address ??
-                      selectedUser.phones[0]?.number ??
-                      ""}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className="ml-auto text-sm text-red-600 hover:underline"
-                  onClick={() => {
-                    setValue("userId", undefined);
-                    setValue("userMissingEmail", undefined);
-                    setValue("userMissingPhone", undefined);
-                    setValue("userMissingAddress", undefined);
-                    setSelectedUser(null);
-                  }}
-                >
-                  Quitar
-                </button>
-              </div>
-            )}
-            {/* If selected user is missing data, allow completing it */}
-            {selectedUser &&
-              (() => {
-                const needEmail = !selectedUser.hasEmail;
-                const needPhone = !selectedUser.hasPhoneNumber;
-                const needAddress = !(
-                  selectedUser.addresses && selectedUser.addresses.length > 0
-                );
-                const needName = !selectedUser.name;
-                if (!needEmail && !needPhone && !needAddress && !needName)
-                  return null;
-                return (
-                  <div className="mt-3 p-3 border rounded bg-white dark:bg-gray-900">
-                    <div className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                      Completar información del usuario
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {needName && (
-                        <RHFInputWithLabel
-                          name="name"
-                          label="Nombre"
-                          placeholder="Nombre del usuario"
-                          required
-                        />
-                      )}
-                      {needPhone && (
-                        <RHFInputWithLabel
-                          name="phone"
-                          label="Teléfono"
-                          placeholder="+1234567890"
-                          type="tel"
-                          required
-                          onCountryChange={(countryCode) => {
-                            setValue("countryCode", countryCode ?? "");
-                          }}
-                        />
-                      )}
-                      {needAddress && (
-                        <RHFInputWithLabel
-                          name="address"
-                          label="Dirección"
-                          placeholder="Calle, Ciudad, País"
-                          type="textarea"
-                          required
-                          rows={2}
-                        />
-                      )}
-                    </div>
-                  </div>
-                );
-              })()}
-          </>
-        )}
-        {!useExisting && (
-          <>
+        {!useExistingUser && (
+          <div className="space-y-4">
             <RHFInputWithLabel
               name="name"
               label="Nombre del Proveedor"
@@ -206,7 +209,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
               type="email"
               required
             />
-
             <RHFInputWithLabel
               name="phone"
               label="Teléfono"
@@ -218,7 +220,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                 setValue("countryCode", countryCode ?? "");
               }}
             />
-            {/* Password fields for new user creation */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <RHFInputWithLabel
                 name="password"
@@ -235,51 +236,42 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                 required
               />
             </div>
-            <div className="pt-1">
-              <RHFSwitch
-                name="requiredPasswordChange"
-                label="Requerir cambio de contraseña en el primer inicio de sesión"
-              />
-            </div>
-          </>
+            <RHFSwitch
+              name="requiredPasswordChange"
+              label="Requerir cambio de contraseña en el primer inicio de sesión"
+            />
+            <RHFInputWithLabel
+              name="address"
+              label="Dirección"
+              placeholder="Calle Principal 123, Ciudad, País"
+              maxLength={200}
+              rows={3}
+              type="textarea"
+              required
+            />
+          </div>
         )}
-        {/* Seller Type */}
-        <RHFSelectWithLabel
-          name="sellerType"
-          label="Tipo de vendedor"
-          options={SUPPLIER_TYPE_SELLER_OPTIONS}
-          placeholder="Seleccionar..."
-          required
-          variant="custom"
-        />
 
-        {/* Nacionality Type */}
-        <RHFSelectWithLabel
-          name="nacionalityType"
-          label="Nacionalidad"
-          options={SUPPLIER_NATIONALITY_OPTIONS}
-          placeholder="Seleccionar..."
-          required
-          variant="custom"
-        />
-
-        {/* Usuario existente (buscar y seleccionar) */}
-
-        {/* Address Input */}
-        {!useExisting && (
-          <RHFInputWithLabel
-            name="address"
-            label="Dirección"
-            placeholder="Calle Principal 123, Ciudad, País"
-            maxLength={200}
-            rows={3}
-            type="textarea"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <RHFSelectWithLabel
+            name="sellerType"
+            label="Tipo de vendedor"
+            options={SUPPLIER_TYPE_SELLER_OPTIONS}
+            placeholder="Seleccionar..."
             required
+            variant="custom"
           />
-        )}
-        {/* Mincex Code (conditional) */}
+          <RHFSelectWithLabel
+            name="nacionalityType"
+            label="Nacionalidad"
+            options={SUPPLIER_NATIONALITY_OPTIONS}
+            placeholder="Seleccionar..."
+            required
+            variant="custom"
+          />
+        </div>
         {[SUPPLIER_NATIONALITY.Ambos, SUPPLIER_NATIONALITY.Extranjero].includes(
-          Number(nationalType)
+          Number(nacionalityType)
         ) && (
           <RHFInputWithLabel
             name="mincexCode"
@@ -290,7 +282,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
           />
         )}
 
-        {/* Documents Section */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -307,7 +298,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
               </button>
             )}
           </div>
-
           {fields.length === 0 && (
             <div className="text-center py-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
               <DocumentIcon className="size-12 text-gray-400 mx-auto mb-2" />
@@ -315,11 +305,10 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                 No hay documentos agregados
               </p>
               <p className="text-xs text-gray-400 dark:text-gray-500">
-                Haz clic en &ldquo;Agregar Documento&rdquo; para comenzar
+                Haz clic en “Agregar Documento” para comenzar
               </p>
             </div>
           )}
-
           {errors?.documents?.message && (
             <AlertBox
               message={errors?.documents?.message as string}
@@ -327,7 +316,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
               variant="danger"
             />
           )}
-
           {fields.map((field, index) => (
             <div
               key={field.id}
@@ -346,7 +334,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                   Eliminar
                 </button>
               </div>
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <RHFInputWithLabel
                   name={`documents.${index}.fileName`}
@@ -354,25 +341,78 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                   placeholder="Ej: Certificado_Calidad.pdf"
                   maxLength={100}
                 />
-
-                <div>
-                  <RHFFileUpload
-                    name={`documents.${index}.content`}
-                    label="Archivo"
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                    maxSize={10 * 1024 * 1024}
-                    placeholder="Seleccionar documento"
-                  />
-                </div>
+                <RHFFileUpload
+                  name={`documents.${index}.content`}
+                  label="Archivo"
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                  maxSize={10 * 1024 * 1024}
+                  placeholder="Seleccionar documento"
+                />
               </div>
             </div>
           ))}
-
           {fields.length > 0 && (
             <div className="text-xs text-gray-500 dark:text-gray-400">
               Formatos aceptados: PDF, DOC, DOCX, JPG, JPEG, PNG (máx. 10MB por
               archivo)
             </div>
+          )}
+        </div>
+
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Negocio (opcional)
+            </label>
+          </div>
+          <RHFSwitch
+            name="useExistingBusiness"
+            label="Asociar negocio existente"
+          />
+          {useExistingBusiness && (
+            <>
+              <RHFAutocompleteFetcherInfinity
+                name="businessId"
+                label="Seleccionar negocio"
+                placeholder="Buscar negocio por nombre o código..."
+                onFetch={getAllBusiness}
+                objectValueKey="id"
+                objectKeyLabel="name"
+                params={{ pageSize: 20 }}
+                onOptionSelected={(option: any) => {
+                  if (option && option.id) {
+                    setValue("businessId", option.id);
+                    setSelectedBusiness(option);
+                  }
+                }}
+              />
+              {selectedBusiness && (
+                <div className="mt-2 flex items-center gap-3 p-2 border rounded bg-gray-50 dark:bg-gray-800">
+                  <div className="w-10 h-10 rounded-full bg-blue-200 dark:bg-blue-700 flex items-center justify-center text-sm font-semibold text-blue-700 dark:text-blue-200">
+                    {selectedBusiness.code ||
+                      selectedBusiness.name.substring(0, 2).toUpperCase()}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
+                      {selectedBusiness.name}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      {selectedBusiness.code}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="ml-auto text-sm text-red-600 hover:underline"
+                    onClick={() => {
+                      setValue("businessId", undefined);
+                      setSelectedBusiness(null);
+                    }}
+                  >
+                    Quitar
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
