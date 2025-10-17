@@ -39,10 +39,10 @@ export function LocationsDetailsModal({
     >
       <div className="p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <InfoCard title="ID">#{location?.id}</InfoCard>
+          <InfoCard title="ID">{location?.id}</InfoCard>
+          <InfoCard title="Global ID">{location?.globalId || '—'}</InfoCard>
           <InfoCard title="Nombre">{location?.name || '—'}</InfoCard>
-          <InfoCard title="Dirección">{location?.addressRaw || '—'}</InfoCard>
-          <InfoCard title="País">
+          <InfoCard title="Código de País">
             <div className="flex items-center gap-2">
               <GlobeAltIcon className="size-5 text-purple-500" />
               <span>{location?.countryCode || '—'}</span>
@@ -50,6 +50,9 @@ export function LocationsDetailsModal({
           </InfoCard>
           <InfoCard title="Estado">{location?.state || '—'}</InfoCard>
           <InfoCard title="Distrito">{location?.district || '—'}</InfoCard>
+          <InfoCard title="Dirección Original">{location?.addressRaw || '—'}</InfoCard>
+          <InfoCard title="Dirección Normalizada">{location?.addressNormalized || '—'}</InfoCard>
+          <InfoCard title="Código Postal">{location?.postalCode || '—'}</InfoCard>
           <InfoCard title="Coordenadas">
             {typeof location?.latitude === 'number' && typeof location?.longitude === 'number' ? (
               <div className="flex flex-col">
@@ -67,8 +70,28 @@ export function LocationsDetailsModal({
               '—'
             )}
           </InfoCard>
-          <InfoCard title="Tipo">{location?.type || 'N/A'}</InfoCard>
-          <InfoCard title="Estado del Registro">{location?.status || '—'}</InfoCard>
+          <InfoCard title="Geohash">{location?.geohash || '—'}</InfoCard>
+          <InfoCard title="Place ID">{location?.placeId || '—'}</InfoCard>
+          <InfoCard title="Tipo">{location?.type !== undefined ? location.type : '—'}</InfoCard>
+          <InfoCard title="Estado">{location?.status !== undefined ? location.status : '—'}</InfoCard>
+          <InfoCard title="Dirección Parcial">{location?.partialAddress ? 'Sí' : 'No'}</InfoCard>
+          <InfoCard title="Corrección Manual">{location?.hasManualCorrection ? 'Sí' : 'No'}</InfoCard>
+          <InfoCard title="Tags">
+            {location?.tags && location.tags.length > 0 ? (
+              <div className="flex flex-wrap gap-1">
+                {location.tags.map((tag, index) => (
+                  <span key={index} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            ) : '—'}
+          </InfoCard>
+          <InfoCard title="Versión">{location?.version !== undefined ? location.version : '—'}</InfoCard>
+          <InfoCard title="Fecha de Creación">{location?.createdDatetime ? new Date(location.createdDatetime).toLocaleString() : '—'}</InfoCard>
+          <InfoCard title="Fecha de Actualización">{location?.updatedDatetime ? new Date(location.updatedDatetime).toLocaleString() : '—'}</InfoCard>
+          <InfoCard title="Fecha de Eliminación">{location?.deletedAt ? new Date(location.deletedAt).toLocaleString() : '—'}</InfoCard>
+          <InfoCard title="Activo">{location?.active ? 'Sí' : 'No'}</InfoCard>
         </div>
                         
         <div className="pt-4 flex justify-end">
