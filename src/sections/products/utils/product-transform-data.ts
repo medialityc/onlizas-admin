@@ -7,7 +7,7 @@ export const productTransformData = (product: Product): ProductFormData => {
     ...product,
 
     // Normalizamos isDurable
-    isDurable: product.isDurable ?? false,
+    // isDurable: product.isDurable ?? false,
     active: product.state ?? false,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 

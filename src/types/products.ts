@@ -50,7 +50,7 @@ export interface Product {
   weight: number;
   customsValue: number;
   quantityValue: string;
-  isDurable: boolean;
+  // isDurable: boolean;
   aduanaCategoryGuid: string;
   aduanaCategory: AduanaCategory;
   source: string;

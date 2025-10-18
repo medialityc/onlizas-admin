@@ -2,16 +2,12 @@
 
 import { DataGrid } from "@/components/datagrid/datagrid";
 import ActionsMenu from "@/components/menu/actions-menu";
-import showToast from "@/config/toast/toastConfig";
 import { useModalState } from "@/hooks/use-modal-state";
-import { deletePermission } from "@/services/permissions";
 import { SearchParams } from "@/types/fetch/request";
 import { GetAllPermissionsResponse, IPermission } from "@/types/permissions";
 import { DataTableColumn } from "mantine-datatable";
 import { useCallback, useMemo } from "react";
-import PermissionCreateModal from "../create/permissions-create-modal";
 import { PermissionDetailsModal } from "../details/permissions-details-modal";
-import { PermissionEditModal } from "../edit/permissions-edit-modal";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface PermissionListProps {
@@ -39,7 +35,7 @@ export function PermissionList({
   }, [editPermissionModal, viewPermissionModal, data?.data]);
 
   // Modal handlers
-  const handleCreatePermission = useCallback(
+  /* const handleCreatePermission = useCallback(
     () => openModal("create"),
     [openModal]
   );
@@ -49,7 +45,7 @@ export function PermissionList({
       openModal<string>("edit", role.id);
     },
     [openModal]
-  );
+  ); */
 
   const handleViewPermission = useCallback(
     (role: IPermission) => {
@@ -58,7 +54,7 @@ export function PermissionList({
     [openModal]
   );
 
-  const handleDeletePermission = useCallback(async (role: IPermission) => {
+  /* const handleDeletePermission = useCallback(async (role: IPermission) => {
     try {
       const res = await deletePermission(role.id);
 
@@ -72,7 +68,7 @@ export function PermissionList({
       console.error(error);
       showToast("Ocurrió un error, intente nuevamente", "error");
     }
-  }, []);
+  }, []); */
 
   const columns = useMemo<DataTableColumn<IPermission>[]>(
     () => [
@@ -125,17 +121,15 @@ export function PermissionList({
           <div className="flex justify-center">
             <ActionsMenu
               onViewDetails={() => handleViewPermission(permission)}
-              onEdit={() => handleEditPermission(permission)}
-              onDelete={() => handleDeletePermission(permission)}
+              /* onEdit={() => handleEditPermission(permission)}
+              onDelete={() => handleDeletePermission(permission)} */
               viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
-              editPermissions={[PERMISSION_ENUM.UPDATE]}
-              deletePermissions={[PERMISSION_ENUM.DELETE]}
             />
           </div>
         ),
       },
     ],
-    [handleViewPermission, handleEditPermission, handleDeletePermission]
+    [handleViewPermission]
   );
 
   return (
@@ -146,23 +140,23 @@ export function PermissionList({
         searchParams={searchParams}
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar permisos..."
-        onCreate={handleCreatePermission}
+        // onCreate={handleCreatePermission}
         createPermissions={["CREATE_PERMISSION", PERMISSION_ENUM.CREATE]}
         emptyText="No se encontraron permisos"
       />
       {/* Create Modal */}
-      <PermissionCreateModal
+      {/*  <PermissionCreateModal
         open={createPermissionModal.open}
         onClose={() => closeModal("create")}
-      />
+      /> */}
       {/* Edit Modal */}
-      {selectedPermission && (
+      {/* {selectedPermission && (
         <PermissionEditModal
           onClose={() => closeModal("edit")}
           open={editPermissionModal.open}
           permission={selectedPermission}
         />
-      )}
+      )} */}
       {/* Details Modal */}
       {selectedPermission && (
         <PermissionDetailsModal

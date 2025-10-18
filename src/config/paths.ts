@@ -27,8 +27,8 @@ export const paths = {
     users: {
       list: `${DASHBOARD}/users`,
       create: `${DASHBOARD}/users/create`,
-      edit: (id: string | number) => `${DASHBOARD}/users/${id}/edit/`,
-      view: (id: string | number) => `${DASHBOARD}/users/${id}/view/`,
+      edit: (id: string | number) => `${DASHBOARD}/users/${id}/edit`,
+      view: (id: string | number) => `${DASHBOARD}/users/${id}/view`,
       documents: {
         list: (id: string | number) => `${DASHBOARD}/users/${id}/documents`,
       },

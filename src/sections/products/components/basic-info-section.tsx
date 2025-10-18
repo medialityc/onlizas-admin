@@ -3,13 +3,8 @@
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import IconBox from "@/components/icon/icon-box";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
-import { RHFSwitch } from "@/components/react-hook-form";
-import { useFormContext } from "react-hook-form";
-import { Label } from "@/components/label/label";
 
 function BasicInfoSection() {
-  const { watch } = useFormContext();
-  const isDurable = watch("isDurable");
   return (
     <div className="bg-blur-card">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
@@ -37,7 +32,7 @@ function BasicInfoSection() {
             size="full"
           />
         </div>
-        <div className="flex flex-col space-y-1">
+        {/* <div className="flex flex-col space-y-1">
           <Label
             htmlFor="isDurable"
             className="text-gray-700 dark:text-gray-200 font-medium"
@@ -56,7 +51,7 @@ function BasicInfoSection() {
             Los productos duraderos son aquellos que tienen una vida útil
             prolongada y no se consumen inmediatamente.
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
