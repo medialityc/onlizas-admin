@@ -3,7 +3,6 @@ import UserEditForm from "@/sections/users/edit/user-edit-form";
 import { getUserById } from "@/services/users";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 interface PageProps {
   params: Promise<{
@@ -32,7 +31,6 @@ export async function generateMetadata({
 }
 
 async function UserEditPage({ params }: PageProps) {
-  // Usar datos mock para la vista de edición, similar al page de listado
   const p = await params;
   const id = p.id;
   const data = await getUserById(id);

@@ -32,7 +32,7 @@ export const setProductFormData = async (
   formData.append("weight", String(product.weight));
   formData.append("aduanaCategoryGuid", String(product.aduanaCategoryGuid));
 
-  formData.append("isDurable", String(product.isDurable));
+  // formData.append("isDurable", String(product.isDurable));
   formData.append("aboutThis", JSON.stringify(product.aboutThis));
   // Details: enviar como pares details[clave]
   if (product.details) {

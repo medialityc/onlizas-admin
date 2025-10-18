@@ -32,7 +32,7 @@ export const productSchema = z.object({
     })
     .min(0, "El valor por unidad no puede ser negativo")
     .optional(), */
-  isDurable: z.boolean().default(false),
+  // isDurable: z.boolean().default(false),
   /*  unitGuid: z
     .union([z.string(), z.number()])
     .refine((val) => val !== "" && val !== undefined && val !== null, {

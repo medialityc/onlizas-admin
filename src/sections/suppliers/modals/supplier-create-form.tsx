@@ -22,6 +22,7 @@ import {
   SUPPLIER_NATIONALITY_OPTIONS,
   SUPPLIER_TYPE_SELLER_OPTIONS,
 } from "../constants/supplier.options";
+import { RHFPhoneCountrySelect } from "@/components/react-hook-form/rhf-phone-country-select";
 
 function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
   const {
@@ -226,7 +227,23 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
               type="email"
               required
             />
-            <RHFInputWithLabel
+
+            <div>
+              <label
+                htmlFor="phoneNumber"
+                className="mb-[14px] block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Teléfono <span className="text-danger">*</span>
+              </label>
+              {/* Country prefix + phone input together (no separation) */}
+              <RHFPhoneCountrySelect
+                phoneFieldName="phone"
+                countryFieldName="countryCode"
+                countryValueKey="code"
+              />
+            </div>
+
+            {/*   <RHFInputWithLabel
               name="phone"
               label="Teléfono"
               type="tel"
@@ -236,7 +253,8 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
               onCountryChange={(countryCode) => {
                 setValue("countryCode", countryCode ?? "");
               }}
-            />
+            /> */}
+            {/* Password fields for new user creation */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <RHFInputWithLabel
                 name="password"

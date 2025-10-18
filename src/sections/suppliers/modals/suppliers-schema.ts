@@ -49,9 +49,12 @@ export const suppliersSchema = z.object({
     })
     .min(0, "La nacionalidad no puede estar vacía."),
   mincexCode: z.string().optional(),
-  requiredPasswordChange: z.boolean().optional(),
-  // Password fields: no base length constraints so they don't fail when using usuario existente
-  password: z.string().optional(),
+  // requiredPasswordChange: z.boolean().optional(),
+  password: z
+    .string()
+    .min(8, "La contraseña debe tener al menos 8 caracteres.")
+    .max(100, "La contraseña no puede tener más de 100 caracteres.")
+    .optional(),
   confirmPassword: z.string().optional(),
   // Optional existing business association
   useExistingBusiness: z.boolean().optional(),

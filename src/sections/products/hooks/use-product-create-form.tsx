@@ -26,7 +26,7 @@ const initValues: ProductFormData = {
   // Aduanera
   /* customsValueAduanaUsd: 0,
   valuePerUnit: 0, */
-  isDurable: false,
+  //  isDurable: false,
   aduanaCategoryGuid: "",
   // unitGuid: "",
 };

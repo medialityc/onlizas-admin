@@ -55,9 +55,7 @@ export default function SuppliersModal({
       mincexCode: "",
       password: "",
       confirmPassword: "",
-      requiredPasswordChange: false,
-      useExistingBusiness: false,
-      businessId: undefined,
+      // requiredPasswordChange: false,
     },
   });
 
@@ -91,10 +89,7 @@ export default function SuppliersModal({
         if (data.countryCode) formData.append("countryCode", data.countryCode);
         if (data.phone) formData.append("phone", data.phone);
         if (data.address) formData.append("address", data.address);
-        formData.append(
-          "requirePasswordChange",
-          data.requiredPasswordChange ? "true" : "false"
-        );
+        formData.append("createUserAutomatically", "true");
         if (data.password) {
           formData.append("password", data.password);
         }
