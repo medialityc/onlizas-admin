@@ -22,7 +22,7 @@ export const suppliersSchema = z.object({
   userMissingEmail: z.boolean().optional(),
   userMissingPhone: z.boolean().optional(),
   userMissingAddress: z.boolean().optional(),
-  userId: z.union([z.number(), z.string()]).optional(),
+  userId: z.string().optional(),
   documents: z
     .array(
       z.object({

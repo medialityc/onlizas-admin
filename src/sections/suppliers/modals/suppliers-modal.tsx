@@ -65,16 +65,15 @@ export default function SuppliersModal({
     setError(null);
     onClose();
   };
-
+  console.log(methods.formState.errors);
   const onSubmit = async (data: SuppliersFormData) => {
     setError(null);
     try {
       const formData = new FormData();
-      console.log(data);
 
       if (data.createUserAutomatically) {
         if (data.userId !== undefined && data.userId !== null) {
-          formData.append("userId", String(data.userId));
+          formData.append("userId", data.userId);
           if (data.email) formData.append("email", data.email);
           if (data.phone) formData.append("phone", data.phone);
           if (data.name) formData.append("name", data.name);
