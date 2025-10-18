@@ -54,6 +54,11 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
       setValue("userMissingEmail", false);
       setValue("userMissingPhone", false);
       setValue("userMissingAddress", false);
+      setValue("name", undefined);
+      setValue("email", undefined);
+      setValue("phone", undefined);
+      setValue("countryCode", undefined);
+      setValue("address", undefined);
     }
   }, [useExistingUser, setValue]);
 
@@ -97,8 +102,14 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                 params={{ pageSize: 20 }}
                 onOptionSelected={(option: any) => {
                   if (option && option.id) {
+                    console.log(option);
+
                     setValue("userId", option.id);
                     setSelectedUser(option);
+                    setValue("name", option.name);
+                    if (option.emails && option.emails.length > 0) {
+                      setValue("email", option.emails[0].address);
+                    }
                     setValue("userMissingEmail", !option.hasEmail);
                     setValue("userMissingPhone", !option.hasPhoneNumber);
                     setValue(

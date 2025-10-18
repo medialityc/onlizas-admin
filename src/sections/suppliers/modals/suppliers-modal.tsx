@@ -62,7 +62,6 @@ export default function SuppliersModal({
   });
 
   const { reset } = methods;
-
   const handleClose = () => {
     reset();
     setError(null);
@@ -73,16 +72,17 @@ export default function SuppliersModal({
     setError(null);
     try {
       const formData = new FormData();
+      console.log(data);
 
       if (data.createUserAutomatically) {
         if (data.userId !== undefined && data.userId !== null) {
           formData.append("userId", String(data.userId));
           if (data.email) formData.append("email", data.email);
           if (data.phone) formData.append("phone", data.phone);
+          if (data.name) formData.append("name", data.name);
           if (data.countryCode)
             formData.append("countryCode", data.countryCode);
           if (data.address) formData.append("address", data.address);
-          formData.append("createUserAutomatically", "false");
           formData.append("requirePasswordChange", "false");
         }
       } else {
@@ -91,7 +91,6 @@ export default function SuppliersModal({
         if (data.countryCode) formData.append("countryCode", data.countryCode);
         if (data.phone) formData.append("phone", data.phone);
         if (data.address) formData.append("address", data.address);
-        formData.append("createUserAutomatically", "true");
         formData.append(
           "requirePasswordChange",
           data.requiredPasswordChange ? "true" : "false"
