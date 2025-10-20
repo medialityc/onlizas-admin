@@ -115,7 +115,7 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
           {/* Country prefix + phone input together (no separation) */}
           <RHFPhoneCountrySelect
             countryFieldName="countryCode"
-            countryValueKey="id"
+            countryValueKey="code"
             phoneFieldName="phoneNumber"
           />
         </div>
