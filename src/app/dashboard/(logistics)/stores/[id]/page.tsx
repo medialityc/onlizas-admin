@@ -10,8 +10,7 @@ type PageProps = {
 
 export default async function StoreEditPage({ params }: PageProps) {
   const { id } = await params;
-  const storeID = Number(id);
-  const { data: store } = await getStoreById(storeID);
+  const { data: store } = await getStoreById(id);
 
   if (!store) return notFound();
 

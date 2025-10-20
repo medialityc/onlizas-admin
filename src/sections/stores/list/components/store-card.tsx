@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation";
 import { formatNumber, formatPercentage, isValidUrl } from "@/utils/format";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import Link from "next/link";
 
 type DataCardProps = {
   store: Store;
@@ -318,13 +319,11 @@ export const SoreCard = ({ store }: DataCardProps) => {
             </a>
           )}
           {hasUpdatePermission && (
-            <Button
-              onClick={() => router.push(`/dashboard/stores/${store.id}`)}
-              className="flex-1"
-              size="sm"
-            >
-              <Cog6ToothIcon className="w-4 h-4 mr-1" /> Configurar
-            </Button>
+            <Link href={`/dashboard/stores/${store.id}`}>
+              <Button className="flex-1" size="sm">
+                <Cog6ToothIcon className="w-4 h-4 mr-1" /> Configurar
+              </Button>
+            </Link>
           )}
         </div>
       </CardContent>
