@@ -49,6 +49,10 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
       setValue("userMissingEmail", false);
       setValue("userMissingPhone", false);
       setValue("userMissingAddress", false);
+      // Limpiar credenciales cuando se usa usuario existente
+      setValue("password", undefined);
+      setValue("confirmPassword", undefined);
+      setValue("requiredPasswordChange", false);
     } else {
       setValue("userId", undefined);
       setSelectedUser(null);

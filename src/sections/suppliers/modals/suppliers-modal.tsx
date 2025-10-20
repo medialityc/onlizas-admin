@@ -108,7 +108,10 @@ export default function SuppliersModal({
           toast.error("El documento debe tener un archivo asociado.");
         }
       });
-
+      console.log("FormData contents:");
+      Array.from(formData.entries()).forEach(([key, value]) => {
+        console.log(key, value);
+      });
       const response = await createSupplier(formData);
 
       if (response && !response.error) {
