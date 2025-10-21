@@ -115,19 +115,6 @@ export function CurrenciesList({
   const columns = useMemo<DataTableColumn<Currency>[]>(
     () => [
       {
-        accessor: "id",
-        title: "ID",
-        sortable: true,
-        width: 80,
-        render: (currency) => (
-          <div className="text-center max-w-full">
-            <span className="font-medium truncate block  text-dark dark:text-white ">
-              #{currency.id}
-            </span>
-          </div>
-        ),
-      },
-      {
         accessor: "name",
         title: "Moneda",
         sortable: true,

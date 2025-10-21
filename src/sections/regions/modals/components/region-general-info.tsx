@@ -68,7 +68,7 @@ export function RegionGeneralInfo({ region }: { region: Region }) {
             </label>
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-300">
-            {new Date(region.createdAt).toLocaleDateString('es-ES', {
+            {new Date(region.createdDatetime).toLocaleDateString('es-ES', {
               year: 'numeric',
               month: 'long',
               day: 'numeric'

@@ -153,7 +153,8 @@ export function RegionList({
         sortable: true,
         render: (region) => (
           <span className="text-sm text-gray-500 dark:text-gray-300">
-            {new Date(region.createdAt).toLocaleDateString()}
+            {new Date(region.createdDatetime).toLocaleDateString()}
+           
           </span>
         ),
       },

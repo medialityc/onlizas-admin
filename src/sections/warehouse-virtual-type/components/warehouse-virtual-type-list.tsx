@@ -65,17 +65,6 @@ export function WarehouseVirtualTypeList({
   const columns = useMemo<DataTableColumn<WarehouseVirtualTypeFormData>[]>(
     () => [
       {
-        accessor: "id",
-        title: "ID",
-        sortable: true,
-        width: 80,
-        render: (type) => (
-          <span className="font-medium text-dark dark:text-white">
-            #{type.id}
-          </span>
-        ),
-      },
-      {
         accessor: "name",
         title: "Nombre",
         sortable: true,
