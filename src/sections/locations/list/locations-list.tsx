@@ -56,9 +56,6 @@ const getLocationStatusLabel = (status: string | number): string => {
 const isLocationActive = (location: ILocation): boolean =>
   location.status === 0; // Solo verificamos el valor numérico
 
-const canToggleStatus = (location: ILocation): boolean =>
-  location.status !== 2; // Solo verificamos el valor numérico
-
 export function LocationsList({
   data,
   searchParams,
@@ -73,28 +70,13 @@ export function LocationsList({
 
   // const queryClient = useQueryClient(); // Comentado: Solo lectura
 
-  // const createLocationModal = getModalState("create"); // Comentado: Solo lectura
-  // const editLocationModal = getModalState<number>("edit"); // Comentado: Solo lectura
-  const viewLocationModal = getModalState<number>("view");
+  const viewLocationModal = getModalState<string>("view");
 
   const selectedLocation = useMemo(() => {
-    const id = viewLocationModal.id; // Solo para ver detalles
+    const id = viewLocationModal.id;
     if (!id || !data?.data) return null;
-    return data.data.find((location) => location.id === String(id));
+    return data.data.find((location) => location.id === id);
   }, [viewLocationModal, data?.data]);
-
-  // Comentado: Funcionalidad de crear localización
-  // const handleCreateLocation = useCallback(() => {
-  //   openModal("create");
-  // }, [openModal]);
-
-  // Comentado: Funcionalidad de editar localización
-  // const handleEditLocation = useCallback(
-  //   (location: ILocation) => {
-  //     openModal<number | string>("edit", location.id);
-  //   },
-  //   [openModal]
-  // );
 
   const handleViewLocation = useCallback(
     (location: ILocation) => {
@@ -103,43 +85,7 @@ export function LocationsList({
     [openModal]
   );
 
-  // Comentado: Funcionalidad de eliminar localización
-  // const handleDeleteLocation = useCallback((location: ILocation) => {
-  //   setLocationToDelete(location);
-  //   setShowDeleteModal(true);
-  // }, []);
-
-  // Comentado: Funcionalidad de cambiar estado de localización
-  // const handleToggleStatus = useCallback(
-  //   async (location: ILocation) => {
-  //     try {
-  //       const response = await updateLocationStatus(location.id);
-
-  //       if (response.error) {
-  //         showToast(
-  //           response.message || "Error al cambiar el estado de la ubicación",
-  //           "error"
-  //         );
-  //         return;
-  //       }
-
-  //       queryClient.invalidateQueries({ queryKey: ["locations"] });
-
-  //       // Determinar el nuevo estado basado en el estado actual
-  //       const newStatus = isLocationActive(location) ? "Inactivo" : "Activo";
-
-  //       showToast(
-  //         `Ubicación ${newStatus === "Activo" ? "activada" : "desactivada"} exitosamente`,
-  //         "success"
-  //       );
-  //     } catch (error) {
-  //       console.error("Error toggling location status:", error);
-  //       showToast("Error al cambiar el estado de la ubicación", "error");
-  //     }
-  //   },
-  //   [queryClient]
-  // );
-
+ 
   const columns = useMemo<DataTableColumn<ILocation>[]>(
     () => [
       {
@@ -226,22 +172,19 @@ export function LocationsList({
             <ActionsMenu
               active={isLocationActive(location)}
               onViewDetails={() => handleViewLocation(location)}
-              // Comentado: Funcionalidades de edición, eliminación y cambio de estado
-              // onEdit={() => handleEditLocation(location)}
-              // onDelete={
-              //   !isLocationActive(location)
-              //     ? () => handleDeleteLocation(location)
-              //     : undefined
-              // }
-              // onActive={
-              //   canToggleStatus(location)
-              //     ? () => handleToggleStatus(location)
-              //     : undefined
-              // }
+              /* onDelete={
+                !isLocationActive(location)
+                  ? () => handleDeleteLocation(location)
+                  : undefined
+              } */
+              /* onActive={
+                canToggleStatus(location)
+                  ? () => handleToggleStatus(location)
+                  : undefined
+              } */
               viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
-              // editPermissions={[PERMISSION_ENUM.UPDATE]}
-              // deletePermissions={[PERMISSION_ENUM.DELETE]}
-              // activePermissions={[PERMISSION_ENUM.UPDATE]}
+              //deletePermissions={[PERMISSION_ENUM.DELETE]}
+              //activePermissions={[PERMISSION_ENUM.UPDATE]}
             />
           </div>
         ),
@@ -249,10 +192,8 @@ export function LocationsList({
     ],
     [
       handleViewLocation,
-      // Comentado: dependencias de funciones de edición/eliminación
-      // handleEditLocation,
-      // handleDeleteLocation,
-      // handleToggleStatus,
+      //handleDeleteLocation,
+      //handleToggleStatus,
     ]
   );
 
@@ -265,9 +206,8 @@ export function LocationsList({
         onSearchParamsChange={onSearchParamsChange}
         searchPlaceholder="Buscar localizaciones..."
         emptyText="No se encontraron localizaciones"
-        // Comentado: Funcionalidad de crear localización
-        // onCreate={handleCreateLocation}
-        // createPermissions={[PERMISSION_ENUM.CREATE]}
+        //onCreate={handleCreateLocation}
+        //createPermissions={[PERMISSION_ENUM.CREATE]}
         rightActions={
           //poner lo del read luegp que se defina la ofrma
           hasReadPermission && (
@@ -293,12 +233,12 @@ export function LocationsList({
           )
         }
       />
-      {/* Comentado: Modal de creación */}
+      {/* Create Modal */}
       {/* <LocationsModalContainer
         onClose={() => closeModal("create")}
         open={createLocationModal.open}
       /> */}
-      {/* Comentado: Modal de edición */}
+      {/* Edit Modal */}
       {/* {selectedLocation && (
         <LocationsModalContainer
           onClose={() => closeModal("edit")}
@@ -306,7 +246,7 @@ export function LocationsList({
           location={selectedLocation}
         />
       )} */}
-      {/* Details Modal - Solo lectura */}
+      {/* Details Modal */}
       {selectedLocation && (
         <LocationsModalContainer
           onClose={() => closeModal("view")}

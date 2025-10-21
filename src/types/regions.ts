@@ -63,8 +63,8 @@ export interface Region {
   code: string;
   description: string;
   status: number | string;
-  createdAt: string;
-  updatedAt: string;
+  createdDatetime: string;
+  updateDatetime: string;
   active: boolean;
   countries: Array<{
     id: string|number;
