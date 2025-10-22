@@ -141,7 +141,7 @@ export async function getWarehouseById(
 }
 
 export async function createWarehouse(
-  data: WarehouseFormData
+  data: Partial<WarehouseFormData>
 ): Promise<ApiResponse<Warehouse>> {
   const res = await nextAuthFetch({
     url: `${backendRoutes.warehouses.create}/${data?.type ?? WAREHOUSE_TYPE_ENUM.physical}`,
@@ -155,7 +155,7 @@ export async function createWarehouse(
 }
 
 export async function updateWarehouse(
-  id: number,
+  id: string,
   type: WAREHOUSE_TYPE_ENUM,
   data: WarehouseFormData
 ): Promise<ApiResponse<Warehouse>> {

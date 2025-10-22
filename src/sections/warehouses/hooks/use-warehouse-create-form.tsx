@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { WAREHOUSE_TYPE_ENUM } from "../constants/warehouse-type";
 
 import { initValueWarehouse } from "../constants/warehouse-initvalues";
+import { warehouseAdapter } from "../constants/warehouse-adapter";
 
 export const useWarehouseCreateForm = (
   defaultValues: WarehouseFormData = initValueWarehouse
@@ -33,7 +34,7 @@ export const useWarehouseCreateForm = (
             payload?.type as WAREHOUSE_TYPE_ENUM,
             payload
           )
-        : await createWarehouse(payload);
+        : await createWarehouse(warehouseAdapter(payload));
 
       if (res.error) {
         throw res;
