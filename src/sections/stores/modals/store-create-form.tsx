@@ -94,17 +94,6 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
           containerClassname="[&>div>div>label]:text-base"
         />
 
-        {/* Phone Input */}
-        {/*   <RHFInputWithLabel
-          name="phoneNumber"
-          label="Teléfono"
-          placeholder="+1234567890"
-          maxLength={20}
-          required
-          size="medium"
-          type="tel"
-        /> */}
-
         <div>
           <label
             htmlFor="phoneNumber"

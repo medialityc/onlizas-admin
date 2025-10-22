@@ -105,7 +105,7 @@ export default function StoresCreateModal({
         toast.success("Tienda creada exitosamente");
         onSuccess?.();
         if (createdId) {
-          routerHook.push(`/stores/${createdId}`);
+          routerHook.push(`/dashboard/stores/${createdId}`);
           return;
         }
         reset();

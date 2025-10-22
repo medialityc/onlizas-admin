@@ -6,7 +6,7 @@ import RHFSelect from "@/components/react-hook-form/rhf-select";
 import { WAREHOUSE_TYPE_OPTIONS } from "../../../constants/warehouse-type";
 
 type Props = {
-  warehouseId?: number;
+  warehouseId?: string;
 };
 export default function BasicInfoSection({ warehouseId }: Props) {
   return (

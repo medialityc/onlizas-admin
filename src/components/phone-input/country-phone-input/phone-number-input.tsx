@@ -32,7 +32,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
       value={value}
       onChange={handleChange}
       placeholder={placeholder}
-      className="w-full rounded-l-none ps-3"
+      className="w-full   rounded-l-none ps-3  "
     />
   );
 };

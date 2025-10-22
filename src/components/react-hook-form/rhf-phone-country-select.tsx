@@ -92,7 +92,7 @@ export function RHFPhoneCountrySelect({
     <div className={cn("flex w-full flex-col gap-1")}>
       {countries.length === 0 ? (
         <div className="flex w-full items-center justify-center min-h-[40px]">
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-gray-700 dark:text-gray-200">
             No hay países disponibles
           </span>
         </div>

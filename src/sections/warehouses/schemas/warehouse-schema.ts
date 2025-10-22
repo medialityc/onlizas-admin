@@ -3,14 +3,14 @@ import { WAREHOUSE_TYPE_ENUM } from "../constants/warehouse-type";
 
 export const warehouseSchema = z
   .object({
-    id: z.number().optional(),
+    id: z.string().optional(),
     name: z.string().min(1, "El nombre del almacén es requerido"),
     type: z.enum(Object.keys(WAREHOUSE_TYPE_ENUM) as [string, ...string[]], {
       errorMap: () => {
         return { message: "Tipo de almacén inválido" };
       },
     }),
-    locationId: z.number({ required_error: "Requerido" }),
+    locationId: z.string({ required_error: "Requerido" }),
     active: z.boolean().default(true),
 
     // physical
@@ -128,7 +128,6 @@ export const warehouseSchema = z
   );
 
 export type WarehouseFormData = z.infer<typeof warehouseSchema> & {
-  id?: number;
   createdAt?: string | Date;
   updatedAt?: string | Date;
   locationName?: string;
