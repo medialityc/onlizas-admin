@@ -63,7 +63,7 @@ export async function getAllWarehousesByType(
  * inventarios de un almacén
  */
 export async function getAllWarehouseInventories(
-  warehouseId: string | number,
+  warehouseId: string,
   params?: IQueryable
 ): Promise<ApiResponse<PaginatedResponse<InventoryProviderFormData>>> {
   const url = new QueryParamsURLFactory(

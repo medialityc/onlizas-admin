@@ -2,12 +2,12 @@ import { z } from "zod";
 
 export const warehouseTransferSchema = z
   .object({
-    originWarehouseId: z.number({
+    originWarehouseId: z.string({
       required_error: "Almacén de origen es requerido",
     }),
     destinationWarehouseId: z
-      .number({ required_error: "Almacén de destino es requerido" })
-      .refine((val) => val > 0, {
+      .string({ required_error: "Almacén de destino es requerido" })
+      .refine((val) => !!val, {
         message: "Almacén de destino es requerido",
       }),
     transferNumber: z.coerce

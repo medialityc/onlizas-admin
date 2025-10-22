@@ -14,7 +14,7 @@ function EditWarehouseLoadingFallback() {
 }
 
 type Props = React.PropsWithChildren & {
-  onTabs?: (warehouseId: number, type: WAREHOUSE_TYPE_ENUM) => Tab[];
+  onTabs?: (warehouseId: string, type: WAREHOUSE_TYPE_ENUM) => Tab[];
   warehouse: WarehouseFormData;
 };
 function EditWarehouseLayout({ warehouse, children, onTabs }: Props) {

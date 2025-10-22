@@ -9,7 +9,7 @@ import { warehouseTabs } from "../../constants/warehouse-tabs";
 
 interface EditWarehouseTabsProps {
   warehouse: WarehouseFormData;
-  onTabs?: (warehouseId: number, type: WAREHOUSE_TYPE_ENUM) => Tab[];
+  onTabs?: (warehouseId: string, type: WAREHOUSE_TYPE_ENUM) => Tab[];
 }
 
 export function EditWarehouseTabs({

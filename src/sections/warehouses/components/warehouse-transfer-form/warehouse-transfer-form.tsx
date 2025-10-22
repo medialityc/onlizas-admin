@@ -21,12 +21,12 @@ type Props = {
   warehouse: WarehouseFormData;
 };
 export function WarehouseTransferForm({ warehouse }: Props) {
-  const warehouseId = warehouse?.id as number;
+  const warehouseId = warehouse?.id;
   const { items } = useWarehouseInventoryActions();
   const initValue = useMemo(
     (): WarehouseTransferFormData => ({
-      originWarehouseId: warehouseId,
-      destinationWarehouseId: 0,
+      originWarehouseId: warehouseId ?? "",
+      destinationWarehouseId: "",
       items: [],
       transferNumber: generateWarehouseTransferNumber(),
     }),

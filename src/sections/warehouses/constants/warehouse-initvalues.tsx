@@ -6,7 +6,7 @@ export const initValueWarehouse: WarehouseFormData = {
   name: "",
   type: WAREHOUSE_TYPE_ENUM.virtual,
   active: false,
-  locationId: 0,
+  locationId: "",
   capacity: 0,
   capacityUnit: "KG",
   rules: "",
