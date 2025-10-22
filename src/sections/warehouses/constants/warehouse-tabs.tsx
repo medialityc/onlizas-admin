@@ -3,7 +3,7 @@ import { Tab } from "@/types/tabs";
 import { WAREHOUSE_TYPE_ENUM } from "./warehouse-type";
 
 export const warehouseTabs = (
-  warehouseId: number,
+  warehouseId: string,
   warehouseType: WAREHOUSE_TYPE_ENUM
 ): Tab[] => [
   {

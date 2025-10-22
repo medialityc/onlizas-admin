@@ -16,7 +16,7 @@ const WarehouseCardList = ({ data, searchParams, forceType }: Props) => {
   const { openModal } = useModalState();
   const handleEditWarehouse = useCallback(
     (warehouse: WarehouseFormData) => {
-      openModal<number>("edit", warehouse.id);
+      openModal<string>("edit", warehouse.id);
     },
     [openModal]
   );

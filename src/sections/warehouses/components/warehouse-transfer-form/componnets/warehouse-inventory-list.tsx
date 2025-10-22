@@ -23,7 +23,7 @@ type Props = {
 };
 
 const WarehouseInventoryList = ({ warehouse }: Props) => {
-  const warehouseId = warehouse?.id as number;
+  const warehouseId = warehouse?.id;
   const { addNewInventory, remove, inventories } =
     useWarehouseInventoryActions();
 
@@ -87,7 +87,9 @@ const WarehouseInventoryList = ({ warehouse }: Props) => {
           name="virtualTypeId"
           label="Inventario del almacén actual"
           placeholder="Seleccionar un inventario"
-          onFetch={(params) => getAllWarehouseInventories(warehouseId, params)}
+          onFetch={(params) =>
+            getAllWarehouseInventories(warehouseId ?? "", params)
+          }
           objectValueKey="id"
           objectKeyLabel="parentProductName"
           queryKey="inventory-warehouse"
