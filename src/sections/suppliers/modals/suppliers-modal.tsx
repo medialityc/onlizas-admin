@@ -77,15 +77,14 @@ export default function SuppliersModal({
           if (data.email) formData.append("email", data.email);
           if (data.phone) formData.append("phone", data.phone);
           if (data.name) formData.append("name", data.name);
-          if (data.countryCode)
-            formData.append("countryCode", data.countryCode);
+          if (data.countryCode) formData.append("countryId", data.countryCode);
           if (data.address) formData.append("address", data.address);
           formData.append("requirePasswordChange", "false");
         }
       } else {
         if (data.name) formData.append("name", data.name);
         if (data.email) formData.append("email", data.email);
-        if (data.countryCode) formData.append("countryCode", data.countryCode);
+        if (data.countryCode) formData.append("countryId", data.countryCode);
         if (data.phone) formData.append("phone", data.phone);
         if (data.address) formData.append("address", data.address);
         formData.append("createUserAutomatically", "true");

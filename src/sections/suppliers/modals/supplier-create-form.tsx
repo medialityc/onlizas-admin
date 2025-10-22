@@ -176,7 +176,7 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                       <div className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Completar información del usuario
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 gap-3">
                         {needName && (
                           <RHFInputWithLabel
                             name="name"
@@ -186,15 +186,10 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                           />
                         )}
                         {needPhone && (
-                          <RHFInputWithLabel
-                            name="phone"
-                            label="Teléfono"
-                            placeholder="+1234567890"
-                            type="tel"
-                            required
-                            onCountryChange={(countryCode) => {
-                              setValue("countryCode", countryCode ?? "");
-                            }}
+                          <RHFPhoneCountrySelect
+                            countryFieldName="countryCode"
+                            countryValueKey="id"
+                            phoneFieldName="phone"
                           />
                         )}
                         {needAddress && (
@@ -241,9 +236,9 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
               </label>
               {/* Country prefix + phone input together (no separation) */}
               <RHFPhoneCountrySelect
-                phoneFieldName="phone"
                 countryFieldName="countryCode"
-                countryValueKey="code"
+                countryValueKey="id"
+                phoneFieldName="phone"
               />
             </div>
 
