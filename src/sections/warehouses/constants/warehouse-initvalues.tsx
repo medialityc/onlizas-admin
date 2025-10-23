@@ -11,7 +11,7 @@ export const initValueWarehouse: WarehouseFormData = {
   capacityUnit: "KG",
   rules: "",
   supplierId: undefined,
-  virtualTypeId: 1,
+  virtualTypeId: null,
 };
 export const initValueMeWarehouse: MeWarehouseFormData = {
   name: "",

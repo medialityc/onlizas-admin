@@ -18,7 +18,7 @@ export const warehouseSchema = z
     capacityUnit: z.string().nullable().optional(),
 
     // virtual
-    virtualTypeId: z.coerce.number().optional(),
+    virtualTypeId: z.coerce.string().optional().nullable(),
     supplierId: z.string().optional(),
     rules: z.any().optional(),
   })
@@ -108,22 +108,6 @@ export const warehouseSchema = z
       message:
         "Tipo virtual y proveedor son requeridos para almacenes virtuales",
       path: ["supplierId"],
-    }
-  )
-  // Validación adicional: virtualTypeId debe ser un número positivo
-  .refine(
-    (data) => {
-      if (
-        data.type === WAREHOUSE_TYPE_ENUM.virtual &&
-        data.virtualTypeId !== undefined
-      ) {
-        return data.virtualTypeId > 0;
-      }
-      return true;
-    },
-    {
-      message: "El tipo virtual debe ser un número válido",
-      path: ["virtualTypeId"],
     }
   );
 

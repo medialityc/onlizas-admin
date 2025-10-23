@@ -39,7 +39,7 @@ export default async function EditWarehouseInventoryPage({
 
   /* services */
   const inventory = await getAllWarehouseInventories(id, query);
-  const response = await getWarehouseById(Number(id), type);
+  const response = await getWarehouseById(id, type);
 
   if (!response?.data || !inventory?.data) {
     notFound();
