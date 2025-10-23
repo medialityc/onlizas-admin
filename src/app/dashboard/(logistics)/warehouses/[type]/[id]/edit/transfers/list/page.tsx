@@ -40,7 +40,7 @@ export default async function WarehousesPage({ searchParams, params }: Props) {
     warehouseId,
   });
 
-  const response = await getWarehouseById(Number(warehouseId), type);
+  const response = await getWarehouseById(warehouseId, type);
 
   if (!response?.data) {
     notFound();

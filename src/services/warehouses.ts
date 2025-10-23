@@ -127,7 +127,7 @@ export async function getAllSupplierWarehouses(
 }
 
 export async function getWarehouseById(
-  id: number,
+  id: string,
   type: string
 ): Promise<ApiResponse<WarehouseFormData>> {
   const res = await nextAuthFetch({

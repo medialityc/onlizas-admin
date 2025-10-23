@@ -24,7 +24,7 @@ export default async function EditWarehousePage({ params }: Props) {
   }
 
   /* services */
-  const response = await getWarehouseById(Number(id), type);
+  const response = await getWarehouseById(id, type);
 
   if (!response?.data) {
     notFound();

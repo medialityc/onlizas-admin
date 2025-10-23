@@ -25,7 +25,7 @@ export default async function EditWarehouseTransfersPage({
     notFound();
   }
 
-  const response = await getWarehouseById(Number(id), type);
+  const response = await getWarehouseById(id, type);
 
   if (!response?.data) {
     notFound();
