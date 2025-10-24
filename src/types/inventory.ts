@@ -54,9 +54,9 @@ export type GetAllInventoryProvider = {
 };
 
 export type CreateEasyInventory = {
-  storeId: number;
-  warehouseId?: number;
-  productId: number;
+  storeId: string;
+  warehouseId?: string;
+  productId: string;
   supplierId: string;
   isPaqueteria?: boolean;
 };

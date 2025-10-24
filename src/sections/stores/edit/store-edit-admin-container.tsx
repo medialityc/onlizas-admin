@@ -2,9 +2,7 @@
 
 import React from "react";
 import { Store } from "@/types/stores";
-import StoreTabs from "./components/store-edit-tabs";
-
-
+import StoreTabs from "@/sections/provider-management/stores/edit/components/store-edit-tabs";
 
 interface Props {
   store: Store;

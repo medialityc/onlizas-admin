@@ -6,7 +6,7 @@ import WarehouseSelectedModal from "../../containers/warehouse-transfer-modal";
 import { useCallback, useMemo } from "react";
 import CreateMeWarehouseModal from "../../containers/me-create-warehouse-modal";
 import { getAllWarehousesByType } from "@/services/warehouses";
-import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
+import { WAREHOUSE_TYPE_ROUTE_ENUM } from "../../constants/warehouse-type";
 import { MeWarehouseFormData } from "../../schemas/me-warehouse-schema";
 
 type Props = {
@@ -62,7 +62,7 @@ const MeWarehouseHeader = ({ data }: Props) => {
         onClose={() => closeModal("transfer")}
         open={transferModal.open}
         getWarehouse={(params: any) =>
-          getAllWarehousesByType(params, WAREHOUSE_TYPE_ENUM.virtual)
+          getAllWarehousesByType(params, WAREHOUSE_TYPE_ROUTE_ENUM.virtual)
         }
       />
 

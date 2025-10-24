@@ -6,7 +6,7 @@ import { SearchParams } from "@/types/fetch/request";
 
 import { GetAllWarehouses } from "@/types/warehouses";
 import { InventoryCardGrid } from "../components/warehouse-card-grid/warehouse-card-grid";
-import { WAREHOUSE_TYPE_ENUM } from "../constants/warehouse-type";
+import { WAREHOUSE_TYPE_ROUTE_ENUM } from "../constants/warehouse-type";
 import MeWarehouseHeader from "../components/warehouse-header/me-warehouse-header";
 
 interface Props {
@@ -34,7 +34,7 @@ export default function MeWarehouseListContainer({
           data={warehousesPromise.data}
           searchParams={query}
           onSearchParamsChange={handleSearchParamsChange}
-          forceType={WAREHOUSE_TYPE_ENUM.virtual}
+          forceType={WAREHOUSE_TYPE_ROUTE_ENUM.virtual}
         />
       </div>
     </div>

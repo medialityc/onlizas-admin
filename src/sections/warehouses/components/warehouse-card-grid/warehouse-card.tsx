@@ -32,7 +32,9 @@ interface WarehouseCardProps {
 }
 
 export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
-  const isPhysical = type === WAREHOUSE_TYPE_ENUM.physical;
+  const isPhysical =
+    type.toLocaleLowerCase() ===
+    WAREHOUSE_TYPE_ENUM.Warehouse.toLocaleLowerCase();
 
   const router = useRouter();
 
@@ -60,12 +62,12 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
           <div
             className={cn(
               "p-2 rounded-md w-16 h-16 flex flex-row items-center justify-center",
-              type === WAREHOUSE_TYPE_ENUM.physical
+              isPhysical
                 ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
                 : "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
             )}
           >
-            {type === WAREHOUSE_TYPE_ENUM.physical ? (
+            {!isPhysical ? (
               <BuildingStorefrontIcon className="h-10 w-10" />
             ) : (
               <BuildingOfficeIcon className="h-10 w-10" />
@@ -84,9 +86,7 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
                 {isPhysical ? "Físico" : "Virtual"}
               </Badge>
               <Badge
-                variant={
-                  warehouse?.active ? "outline-info" : "outline-danger"
-                }
+                variant={warehouse?.active ? "outline-info" : "outline-danger"}
               >
                 {warehouse?.active ? "Activo" : "Inactivo"}
               </Badge>

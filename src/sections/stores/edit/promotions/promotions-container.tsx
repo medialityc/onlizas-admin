@@ -1,10 +1,14 @@
 "use client";
 
-import  { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Promotion } from "@/types/promotions";
 import { Store } from "@/types/stores";
-import { GiftIcon, UsersIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
+import {
+  GiftIcon,
+  UsersIcon,
+  CalendarDaysIcon,
+} from "@heroicons/react/24/outline";
 
 import PromotionsToolbar from "./components/toolbar";
 import PromotionRow from "./components/promotion-row";
@@ -12,7 +16,9 @@ import { mockPromotions } from "./mock";
 import CreatePromotionModal from "./components/create-promotion-modal";
 import StatCard from "./components/stat-card";
 
-interface Props { store: Store }
+interface Props {
+  store: Store;
+}
 
 export default function PromotionsContainer({ store }: Props) {
   const [open, setOpen] = useState(false);
@@ -21,9 +27,10 @@ export default function PromotionsContainer({ store }: Props) {
     ? (getValues("promotionsPayload") as any[])
     : mockPromotions;
   const [items, setItems] = useState<Promotion[]>(initial);
-  const [source] = useState<string>((getValues("promotionsPayload") as any[])?.length ? "form" : "mock");
+  const [source] = useState<string>(
+    (getValues("promotionsPayload") as any[])?.length ? "form" : "mock"
+  );
 
-  
   useEffect(() => {
     register("promotionsPayload");
   }, [register]);
@@ -36,19 +43,39 @@ export default function PromotionsContainer({ store }: Props) {
     const total = items.length;
     const active = items.filter((x) => x.active).length;
     const uses = items.reduce((acc, x) => acc + (x.usedCount ?? 0), 0);
-    const expired = items.filter((x) => x.endDate && new Date(x.endDate) < new Date()).length;
+    const expired = items.filter(
+      (x) => x.endDate && new Date(x.endDate) < new Date()
+    ).length;
     return { total, active, uses, expired };
   }, [items]);
 
   return (
     <div className="p-6">
-  <div className="text-xs text-gray-500 mb-2">Fuente: {source === "form" ? "Formulario" : "Mock"}</div>
+      <div className="text-xs text-gray-500 mb-2">
+        Fuente: {source === "form" ? "Formulario" : "Mock"}
+      </div>
       {/* Breadcrumb/title area could be outside - kept minimal here */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-        <StatCard label="Total Promociones" value={stats.total} icon={<GiftIcon className="text-indigo-600" />} />
-        <StatCard label="Promociones Activas" value={stats.active} icon={<GiftIcon className="text-emerald-600" />} />
-        <StatCard label="Usos Totales" value={stats.uses} icon={<UsersIcon className="text-violet-600" />} />
-        <StatCard label="Promociones Vencidas" value={stats.expired} icon={<CalendarDaysIcon className="text-rose-600" />} />
+        <StatCard
+          label="Total Promociones"
+          value={stats.total}
+          icon={<GiftIcon className="text-indigo-600" />}
+        />
+        <StatCard
+          label="Promociones Activas"
+          value={stats.active}
+          icon={<GiftIcon className="text-emerald-600" />}
+        />
+        <StatCard
+          label="Usos Totales"
+          value={stats.uses}
+          icon={<UsersIcon className="text-violet-600" />}
+        />
+        <StatCard
+          label="Promociones Vencidas"
+          value={stats.expired}
+          icon={<CalendarDaysIcon className="text-rose-600" />}
+        />
       </div>
 
       <PromotionsToolbar onNew={() => setOpen(true)} />
@@ -67,7 +94,9 @@ export default function PromotionsContainer({ store }: Props) {
             key={p.id}
             p={p}
             onToggle={(id, checked) =>
-              setItems((prev) => prev.map((x) => (x.id === id ? { ...x, active: checked } : x)))
+              setItems((prev) =>
+                prev.map((x) => (x.id === id ? { ...x, active: checked } : x))
+              )
             }
           />
         ))}

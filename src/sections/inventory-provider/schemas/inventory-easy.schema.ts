@@ -3,10 +3,10 @@ import { z } from "zod";
 export const inventoryEasySchema = z
   .object({
     supplierId: z.string(),
-    productId: z.number(),
-    storeId: z.number(),
-    physicalWarehouseId: z.number().optional(),
-    virtualWarehouseId: z.number().optional(),
+    productId: z.string(),
+    storeId: z.string(),
+    physicalWarehouseId: z.string().optional(),
+    virtualWarehouseId: z.string().optional(),
     meWarehouse: z.boolean().default(false).optional(),
     isPaqueteria: z.boolean().default(false).optional(),
   })

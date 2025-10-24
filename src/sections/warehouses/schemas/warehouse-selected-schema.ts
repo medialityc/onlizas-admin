@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { WAREHOUSE_TYPE_ENUM } from "../constants/warehouse-type";
+import { WAREHOUSE_TYPE_ROUTE_ENUM } from "../constants/warehouse-type";
 
 export const warehouseOriginSelectedSchema = z.object({
   warehouseOriginId: z
@@ -8,7 +8,7 @@ export const warehouseOriginSelectedSchema = z.object({
       message: "Almacén de origen es requerido",
     }),
 
-  type: z.enum(Object.keys(WAREHOUSE_TYPE_ENUM) as [string, ...string[]], {
+  type: z.enum(Object.keys(WAREHOUSE_TYPE_ROUTE_ENUM) as [string, ...string[]], {
     errorMap: () => {
       return { message: "Tipo de almacén inválido" };
     },
