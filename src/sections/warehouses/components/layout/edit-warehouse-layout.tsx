@@ -3,7 +3,7 @@ import { EditWarehouseTabs } from "./edit-warehouse-tabs";
 import EditHeader from "./edit-header";
 import Loader from "@/components/loaders/loader";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
-import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
+import { WAREHOUSE_TYPE_ROUTE_ENUM } from "../../constants/warehouse-type";
 import { Tab } from "@/types/tabs";
 function EditWarehouseLoadingFallback() {
   return (
@@ -14,7 +14,7 @@ function EditWarehouseLoadingFallback() {
 }
 
 type Props = React.PropsWithChildren & {
-  onTabs?: (warehouseId: string, type: WAREHOUSE_TYPE_ENUM) => Tab[];
+  onTabs?: (warehouseId: string, type: WAREHOUSE_TYPE_ROUTE_ENUM) => Tab[];
   warehouse: WarehouseFormData;
 };
 function EditWarehouseLayout({ warehouse, children, onTabs }: Props) {

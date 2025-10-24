@@ -1,6 +1,6 @@
 import EditWarehouseLayout from "@/sections/warehouses/components/layout/edit-warehouse-layout";
 import { WarehouseForm } from "@/sections/warehouses/components/warehouse-form/warehouse-form";
-import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
+import { WAREHOUSE_TYPE_ROUTE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 import { getWarehouseById } from "@/services/warehouses";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -19,7 +19,7 @@ type Props = {
 export default async function EditWarehousePage({ params }: Props) {
   const { id, type } = await params;
 
-  if (!Object.keys(WAREHOUSE_TYPE_ENUM).includes(type)) {
+  if (!Object.keys(WAREHOUSE_TYPE_ROUTE_ENUM).includes(type)) {
     notFound();
   }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Cog6ToothIcon,
@@ -28,20 +28,23 @@ const StoreTabs = ({ store }: TabsProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   // Mapear nombres de tabs a índices
-  const tabMap = {
-    general: 0,
-    categories: 1,
-    appearance: 2,
-    promotions: 3,
-    followers: 4,
-  };
+  const tabMap = useMemo(
+    () => ({
+      general: 0,
+      categories: 1,
+      appearance: 2,
+      promotions: 3,
+      followers: 4,
+    }),
+    []
+  );
 
   useEffect(() => {
     const tab = searchParams.get("tab");
     if (tab && tabMap[tab as keyof typeof tabMap] !== undefined) {
       setSelectedIndex(tabMap[tab as keyof typeof tabMap]);
     }
-  }, [searchParams]);
+  }, [searchParams, tabMap]);
 
   return (
     <div className={`store-edit-tabs ${styles.tabsUnderline}`}>

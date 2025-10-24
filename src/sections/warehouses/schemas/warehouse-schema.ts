@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { WAREHOUSE_TYPE_ENUM } from "../constants/warehouse-type";
+import { WAREHOUSE_TYPE_ROUTE_ENUM } from "../constants/warehouse-type";
 
 export const warehouseSchema = z
   .object({
     id: z.string().optional(),
     name: z.string().min(1, "El nombre del almacén es requerido"),
-    type: z.enum(Object.keys(WAREHOUSE_TYPE_ENUM) as [string, ...string[]], {
+    type: z.enum(Object.keys(WAREHOUSE_TYPE_ROUTE_ENUM) as [string, ...string[]], {
       errorMap: () => {
         return { message: "Tipo de almacén inválido" };
       },
@@ -24,7 +24,7 @@ export const warehouseSchema = z
   })
   .refine(
     (data) => {
-      if (data.type === WAREHOUSE_TYPE_ENUM.physical) {
+      if (data.type === WAREHOUSE_TYPE_ROUTE_ENUM.physical) {
         return data.capacity !== undefined && data.capacityUnit !== undefined;
       }
       return true;
@@ -37,7 +37,7 @@ export const warehouseSchema = z
   )
   .refine(
     (data) => {
-      if (data.type === WAREHOUSE_TYPE_ENUM.physical) {
+      if (data.type === WAREHOUSE_TYPE_ROUTE_ENUM.physical) {
         return data.capacity !== undefined && data.capacityUnit !== undefined;
       }
       return true;
@@ -52,7 +52,7 @@ export const warehouseSchema = z
   .refine(
     (data) => {
       if (
-        data.type === WAREHOUSE_TYPE_ENUM.physical &&
+        data.type === WAREHOUSE_TYPE_ROUTE_ENUM.physical &&
         data.capacity !== undefined
       ) {
         return data.capacity > 0;
@@ -68,7 +68,7 @@ export const warehouseSchema = z
   .refine(
     (data) => {
       if (
-        data.type === WAREHOUSE_TYPE_ENUM.physical &&
+        data.type === WAREHOUSE_TYPE_ROUTE_ENUM.physical &&
         data.capacityUnit !== undefined
       ) {
         return data?.capacityUnit && data?.capacityUnit?.trim()?.length > 0;
@@ -82,7 +82,7 @@ export const warehouseSchema = z
   )
   .refine(
     (data) => {
-      if (data.type === WAREHOUSE_TYPE_ENUM.virtual) {
+      if (data.type === WAREHOUSE_TYPE_ROUTE_ENUM.virtual) {
         return (
           data.virtualTypeId !== undefined && data.supplierId !== undefined
         );
@@ -97,7 +97,7 @@ export const warehouseSchema = z
   )
   .refine(
     (data) => {
-      if (data.type === WAREHOUSE_TYPE_ENUM.virtual) {
+      if (data.type === WAREHOUSE_TYPE_ROUTE_ENUM.virtual) {
         return (
           data.virtualTypeId !== undefined && data.supplierId !== undefined
         );

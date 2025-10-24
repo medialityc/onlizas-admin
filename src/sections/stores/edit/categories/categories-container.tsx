@@ -19,12 +19,12 @@ export default function CategoriesContainer({ store }: Props) {
   const { register, setValue, getValues } = useFormContext();
   const initial = (getValues("categoriesPayload") as any[])?.length
     ? (getValues("categoriesPayload") as any[]).map((c: any, idx) => ({
-        id: c.id ?? idx + 1,
-        name: c.name ?? `Cat ${idx + 1}`,
-        productCount: c.productCount ?? 0,
-        views: c.views ?? 0,
-        active: Boolean(c.active ?? true),
-        order: c.order ?? idx + 1,
+        id: c?.id ?? idx + 1,
+        name: c?.name ?? `Cat ${idx + 1}`,
+        productCount: c?.productCount ?? 0,
+        views: c?.views ?? 0,
+        active: Boolean(c?.active ?? true),
+        order: c?.order ?? idx + 1,
       }))
     : mockCategories;
   const [items, setItems] = useState<StoreCategory[]>(initial);
@@ -33,9 +33,9 @@ export default function CategoriesContainer({ store }: Props) {
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
   const totals = useMemo(() => {
-    const total = items.length;
-    const active = items.filter((c) => c.active).length;
-    const products = items.reduce((acc, c) => acc + c.productCount, 0);
+    const total = items?.length;
+    const active = items?.filter((c) => c?.active)?.length;
+    const products = items?.reduce((acc, c) => acc + c?.productCount, 0);
     return { total, active, products };
   }, [items]);
 
@@ -46,7 +46,7 @@ export default function CategoriesContainer({ store }: Props) {
 
   // Keep the RHF value in sync whenever items change
   useEffect(() => {
-    const payload = items.map((c, i) => ({ id: c.id, active: c.active, order: i + 1 }));
+    const payload = items.map((c, i) => ({ id: c?.id, active: c?.active, order: i + 1 }));
     setValue("categoriesPayload", payload, { shouldDirty: true, shouldTouch: false });
   }, [items, setValue]);
 
@@ -57,17 +57,17 @@ export default function CategoriesContainer({ store }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <MetricStatCard
           label="Total Categorías"
-          value={totals.total}
+          value={totals?.total}
           icon={<ChartBarIcon className="w-6 h-6 text-indigo-500" />}
         />
         <MetricStatCard
           label="Categorías Activas"
-          value={totals.active}
+          value={totals?.active}
           icon={<EyeIcon className="w-6 h-6 text-emerald-600" />}
         />
         <MetricStatCard
           label="Total Productos"
-          value={totals.products}
+          value={totals?.products}
           icon={<ChartBarIcon className="w-6 h-6 text-violet-600" />}
         />
       </div>
@@ -87,7 +87,7 @@ export default function CategoriesContainer({ store }: Props) {
         open={deleteId !== null}
         onClose={() => setDeleteId(null)}
         onConfirm={() => {
-          setItems((prev) => prev.filter((x) => x.id !== deleteId));
+          setItems((prev) => prev?.filter((x) => x?.id !== deleteId));
           setDeleteId(null);
         }}
         title="Eliminar categoría"

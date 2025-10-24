@@ -11,6 +11,7 @@ import WarehouseHeader from "../components/warehouse-header/warehouse-header";
 import WarehouseMetric from "../components/warehouse-metric/warehouse-metric";
 import { NavigationTabs } from "@/components/tab/navigation-tabs";
 import { warehousesTabs } from "../config/tabs";
+import { WAREHOUSE_TYPE_ENUM } from "../constants/warehouse-type";
 
 interface Props {
   warehousesPromise: ApiResponse<GetAllWarehouses>;

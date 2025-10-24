@@ -1,10 +1,10 @@
 import { WarehouseFormData } from "../schemas/warehouse-schema";
-import { WAREHOUSE_TYPE_ENUM } from "./warehouse-type";
+import { WAREHOUSE_TYPE_ROUTE_ENUM } from "./warehouse-type";
 
 export const warehouseAdapter = (
   payload: WarehouseFormData
 ): Partial<WarehouseFormData> => {
-  if (payload.type === WAREHOUSE_TYPE_ENUM.physical) {
+  if (payload.type === WAREHOUSE_TYPE_ROUTE_ENUM.physical) {
     return {
       type: payload.type,
       id: payload.id,

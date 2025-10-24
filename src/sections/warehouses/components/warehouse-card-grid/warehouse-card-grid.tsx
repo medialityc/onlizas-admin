@@ -9,15 +9,14 @@ interface Props {
   data?: GetAllWarehouses;
   searchParams: SearchParams;
   onSearchParamsChange: (params: SearchParams) => void;
-  forceType?: WAREHOUSE_TYPE_ENUM
 }
 
 export function InventoryCardGrid({
   data,
   searchParams,
   onSearchParamsChange,
-  forceType
 }: Props) {
+  console.log(data, "data");
   return (
     <>
       <DataGridCard
@@ -27,7 +26,7 @@ export function InventoryCardGrid({
         searchPlaceholder="Buscar almacén..."
         enableColumnToggle={false}
         component={
-          <WarehouseCardList data={data?.data} searchParams={searchParams} forceType={forceType} />
+          <WarehouseCardList data={data?.data} searchParams={searchParams} />
         }
       />
     </>
