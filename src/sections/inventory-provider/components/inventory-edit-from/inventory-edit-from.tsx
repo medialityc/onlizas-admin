@@ -8,7 +8,7 @@ import { ProductVariant } from "../../schemas/inventory-provider.schema";
 
 type Props = {
   initValue?: ProductVariant;
-  userProvider?: string;
+  supplierId?: string;
   inventoryId?: string;
   index?: number;
   onRemove: () => void;
@@ -17,7 +17,7 @@ type Props = {
 
 const InventoryEditForm = ({
   initValue,
-  userProvider,
+  supplierId,
   inventoryId,
   index,
   onRemove,
@@ -25,8 +25,8 @@ const InventoryEditForm = ({
 }: Props) => {
   const { push } = useRouter();
   const handleCancel = useCallback(
-    () => push(`/dashboard/inventory/list/${userProvider}`),
-    [push, userProvider]
+    () => push(`/dashboard/inventory/list/${supplierId}`),
+    [push, supplierId]
   );
 
   const { form, isPending, onSubmit } = useInventoryProviderEditForm(

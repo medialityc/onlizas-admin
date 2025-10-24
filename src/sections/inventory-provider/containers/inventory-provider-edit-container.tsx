@@ -1,4 +1,3 @@
-import { IUser } from "@/types/users";
 import { InventoryStoreFormData } from "../schemas/inventory-edit.schema";
 import { getInventoryEditAdapter } from "../adapters/inventory-edit-adapter";
 import InventoryHeader from "../components/inventory-edit-from/inventory-info";
@@ -10,15 +9,10 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 type Props = {
-  userProvider: IUser;
   inventory: InventoryProvider;
   features: CategoryFeature[];
 };
-const InventoryProviderEditContainer = ({
-  userProvider,
-  inventory,
-  features,
-}: Props) => {
+const InventoryProviderEditContainer = ({ inventory, features }: Props) => {
   const adapted: InventoryStoreFormData = getInventoryEditAdapter(inventory);
 
   return (
@@ -36,21 +30,17 @@ const InventoryProviderEditContainer = ({
         <div>
           <h2 className="text-xl font-semibold text-dark dark:text-white-light">
             Editar Inventario
-            <span className="font-bold"> {userProvider?.name}</span>
+            <span className="font-bold"> {inventory?.supplierName}</span>
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Gestiona el inventario del proveedor
-            <span className="font-bold"> {userProvider?.name}</span>
+            <span className="font-bold"> {inventory?.supplierName}</span>
           </p>
         </div>
       </div>
       <div className="flex flex-col gap-8">
         <InventoryHeader inventory={adapted as InventoryStoreFormData} />
-        <EditContainer
-          userProvider={userProvider}
-          inventory={adapted}
-          features={features}
-        />
+        <EditContainer inventory={adapted} features={features} />
       </div>
     </div>
   );
