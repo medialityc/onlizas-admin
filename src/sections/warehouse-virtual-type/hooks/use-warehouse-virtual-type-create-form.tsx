@@ -30,10 +30,14 @@ export const useWarehouseVirtualTypeCreateForm = (
     resolver: zodResolver(warehouseVirtualTypeSchema),
   });
 
+  // Usar el ID de defaultValues para determinar si es edición o creación
+  const isEditing = !!defaultValues?.id;
+  const editingId = defaultValues?.id;
+
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: WarehouseVirtualTypeFormData) => {
-      const res = payload?.id
-        ? await updateWarehouseVirtualType(payload?.id, payload)
+      const res = isEditing && editingId
+        ? await updateWarehouseVirtualType(editingId, payload)
         : await createWarehouseVirtualType(payload);
       if (res.error) {
         throw res;
@@ -43,7 +47,7 @@ export const useWarehouseVirtualTypeCreateForm = (
     },
     onSuccess: () => {
       toast.success(
-        `Se ${defaultValues?.id ? "editó" : "creó"} correctamente el tipo`
+        `Se ${isEditing ? "editó" : "creó"} correctamente el tipo`
       );
       onSuccess?.();
       queryClient.invalidateQueries({ queryKey: ["warehouse-virtual-types"] });

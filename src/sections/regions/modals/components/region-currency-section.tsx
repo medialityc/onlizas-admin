@@ -34,7 +34,7 @@ export default function RegionCurrencySection({
 }: RegionCurrencySectionProps) {
   const [deleteDialog, setDeleteDialog] = useState<{
     open: boolean;
-    currencyId: number|string | null;
+    currencyId: string | null;
     currencyName: string;
   }>({
     open: false,
@@ -98,7 +98,7 @@ export default function RegionCurrencySection({
     }
   };
 
-  const openDeleteDialog = (currencyId: number|string, currencyName: string) => {
+  const openDeleteDialog = (currencyId: string, currencyName: string) => {
     setDeleteDialog({
       open: true,
       currencyId,

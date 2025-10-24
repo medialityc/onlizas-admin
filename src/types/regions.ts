@@ -4,7 +4,7 @@ import { PaginatedResponse } from './common';
 import { Country } from './countries';
 
 export interface RegionCurrency {
-  currencyId: number|string;
+  currencyId: string;
   code: string;
   name: string;
   symbol: string;

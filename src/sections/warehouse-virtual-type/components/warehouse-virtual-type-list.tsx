@@ -10,7 +10,7 @@ import { GetAllWarehousesVirtualType } from "../interfaces/warehouse-virtual-typ
 import { WarehouseVirtualTypeFormData } from "../schemas/warehouse-virtual-type-schema";
 import WarehouseVirtualTypeModal from "../containers/warehouse-virtual-create-modal";
 import { useModalState } from "@/hooks/use-modal-state";
-import { toggleStatusWarehouseVirtualType } from "@/services/warehouses-virtual-types";
+import { canDeleteWarehouseVirtualType, deleteWarehouseVirtualType, getWarehouseVirtualTypeById } from "@/services/warehouses-virtual-types";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface Props {
@@ -28,31 +28,62 @@ export function WarehouseVirtualTypeList({
 
   const editTypeModal = getModalState<string | number>("edit");
   const createTypeModal = getModalState("create");
+  const viewTypeModal = getModalState<string | number>("view");
 
   const selectedType = useMemo(() => {
     const editId = editTypeModal.id;
-    const targetId = editId;
+    const viewId = viewTypeModal.id;
+    const targetId = editId || viewId;
 
     if (!targetId || !data?.data) return undefined;
 
     return data.data.find((type) => type.id === targetId);
-  }, [editTypeModal.id, data?.data]);
+  }, [editTypeModal.id, viewTypeModal.id, data?.data]);
 
   const handleCreateType = useCallback(() => openModal("create"), [openModal]);
 
-  const handleToggleActiveWarehouseType = useCallback(
+  const handleViewType = useCallback(
+    (type: WarehouseVirtualTypeFormData) => {
+      openModal<string | number>("view", type.id);
+    },
+    [openModal]
+  );
+
+  const handleEditType = useCallback(
+    (type: WarehouseVirtualTypeFormData) => {
+      openModal<string | number>("edit", type.id);
+    },
+    [openModal]
+  );
+
+  const handleDeleteWarehouseType = useCallback(
     async (type: WarehouseVirtualTypeFormData) => {
       if (!type.id) return;
+      
       try {
-        const res = await toggleStatusWarehouseVirtualType(type.id);
-        if (res?.error && res.message) {
-          console.error(res);
-          showToast(res.message, "error");
-        } else {
+        // Primero verificamos si se puede eliminar
+        const canDeleteRes = await canDeleteWarehouseVirtualType(type.id);
+        
+        if (canDeleteRes?.error) {
+          showToast(canDeleteRes.message || "Error al verificar si se puede eliminar", "error");
+          return;
+        }
+
+        if (!canDeleteRes.data?.canDelete) {
           showToast(
-            `Tipo de almacén virtual ${(res.data as unknown as WarehouseVirtualTypeFormData)?.active ? "activada" : "desactivada"}  correctamente`,
-            "success"
+            canDeleteRes.data?.reason || "No se puede eliminar este tipo de almacén virtual",
+            "error"
           );
+          return;
+        }
+
+        // Si se puede eliminar, procedemos con la eliminación
+        const deleteRes = await deleteWarehouseVirtualType(type.id);
+        
+        if (deleteRes?.error) {
+          showToast(deleteRes.message || "Error al eliminar el tipo", "error");
+        } else {
+          showToast("Tipo de almacén virtual eliminado correctamente", "success");
         }
       } catch (error) {
         console.error(error);
@@ -72,6 +103,18 @@ export function WarehouseVirtualTypeList({
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
               {type.name}
+            </span>
+          </div>
+        ),
+      },
+{
+        accessor: "defaultRules",
+        title: "Reglas por Defecto",
+        sortable: true,
+        render: (type) => (
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+              {type.defaultRules}
             </span>
           </div>
         ),
@@ -102,16 +145,20 @@ export function WarehouseVirtualTypeList({
         render: (type) => (
           <div className="flex justify-center">
             <ActionsMenu
-              active={type.active}
-              onActive={() => handleToggleActiveWarehouseType(type)}
-              // onEdit={() => handleEditCategory(type)}
-              activePermissions={[PERMISSION_ENUM.RETRIEVE]}
+              onViewDetails={() => handleViewType(type)}
+              onEdit={() => handleEditType(type)}
+              onDelete={
+                type.active ? () => handleDeleteWarehouseType(type) : undefined
+              }
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+              deletePermissions={[PERMISSION_ENUM.DELETE]}
             />
           </div>
         ),
       },
     ],
-    [handleToggleActiveWarehouseType]
+    [handleViewType, handleEditType, handleDeleteWarehouseType]
   );
 
   return (
@@ -136,6 +183,12 @@ export function WarehouseVirtualTypeList({
       <WarehouseVirtualTypeModal
         onClose={() => closeModal("edit")}
         open={editTypeModal.open}
+        initValue={selectedType}
+      />
+
+      <WarehouseVirtualTypeModal
+        onClose={() => closeModal("view")}
+        open={viewTypeModal.open}
         initValue={selectedType}
         isDetailsView
       />

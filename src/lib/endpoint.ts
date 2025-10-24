@@ -108,10 +108,16 @@ export const backendRoutes = {
   warehouseVirtualTypes: {
     create: `${process.env.NEXT_PUBLIC_API_URL}virtual-warehouse-types`,
     list: `${process.env.NEXT_PUBLIC_API_URL}admin/virtual-warehouse-types`,
+    getById: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}virtual-warehouse-types/${id}`,
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}virtual-warehouse-types/${id}`,
     toggleStatus: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}virtual-warehouse-types/${id}/toggle-status`,
+    canDelete: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}virtual-warehouse-types/${id}/can-delete`,
+    delete: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}virtual-warehouse-types/${id}`,
   },
   warehouses: {
     create: `${process.env.NEXT_PUBLIC_API_URL}warehouses`,
