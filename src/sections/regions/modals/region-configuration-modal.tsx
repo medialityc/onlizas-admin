@@ -196,16 +196,16 @@ export default function RegionConfigurationModal({
   const handleSave = () => {
     if (selectedType === "currency" && selectedCurrency) {
       addCurrencyMutation.mutate({
-        currencyId: parseInt(selectedCurrency),
+        currencyId: selectedCurrency,
         ...currencyConfig,
       });
     } else if (selectedType === "payment-method" && selectedPaymentMethod) {
       addPaymentMutation.mutate({
-        paymentGatewayId: parseInt(selectedPaymentMethod),
+        paymentGatewayId: selectedPaymentMethod,
         ...paymentConfig,
       });
     } else if (selectedType === "shipping-method" && selectedShippingMethod) {
-      addShippingMutation.mutate(parseInt(selectedShippingMethod));
+      addShippingMutation.mutate(selectedShippingMethod);
     }
   };
 

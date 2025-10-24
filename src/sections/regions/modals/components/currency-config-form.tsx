@@ -28,7 +28,6 @@ export function CurrencyConfigForm({
   });
 
   const currencies = currenciesResp?.data?.data || [];
-
   return (
     <div className="space-y-4">
       <div className="space-y-2">

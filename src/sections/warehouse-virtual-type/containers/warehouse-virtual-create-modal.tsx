@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FormProvider } from "react-hook-form";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import LoaderButton from "@/components/loaders/loader-button";
@@ -8,6 +8,8 @@ import SimpleModal from "@/components/modal/modal";
 
 import { WarehouseVirtualTypeFormData } from "../schemas/warehouse-virtual-type-schema";
 import { useWarehouseVirtualTypeCreateForm } from "../hooks/use-warehouse-virtual-type-create-form";
+import { getWarehouseVirtualTypeById } from "@/services/warehouses-virtual-types";
+import { WarehouseVirtualTypeDetails } from "../interfaces/warehouse-virtual-type.interface";
 
 interface Props {
   open: boolean;
@@ -25,15 +27,52 @@ export default function WarehouseVirtualTypeModal({
   loading,
 }: Props) {
   const [error, setError] = useState<string | null>(null);
+  const [typeData, setTypeData] = useState<WarehouseVirtualTypeDetails | null>(null);
+  const [loadingData, setLoadingData] = useState(false);
 
   const { form, isPending, onSubmit } = useWarehouseVirtualTypeCreateForm(
     initValue,
     onClose
   );
 
+  // Cargar datos completos cuando hay un ID (editar o ver detalles)
+  useEffect(() => {
+    if (initValue?.id && open) {
+      setLoadingData(true);
+      setError(null);
+      
+      getWarehouseVirtualTypeById(initValue.id)
+        .then((response) => {
+          // Manejar respuesta anidada o directa
+          let data = response.data;
+          if (response.data && (response.data as any).virtualWarehouseType) {
+            data = (response.data as any).virtualWarehouseType;
+          }
+          
+          if (data) {
+            setTypeData(data);
+            // Actualizar formulario con datos completos
+            form.reset({
+              name: data.name,
+              active: data.active,
+              defaultRules: data.defaultRules,
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error loading data:", error);
+          setError("Error al cargar los datos");
+        })
+        .finally(() => {
+          setLoadingData(false);
+        });
+    }
+  }, [initValue?.id, open, form]);
+
   const handleClose = () => {
     form.reset();
     setError(null);
+    setTypeData(null);
     onClose();
   };
 
@@ -43,9 +82,11 @@ export default function WarehouseVirtualTypeModal({
     <SimpleModal
       open={open}
       onClose={handleClose}
-      loading={loading}
+      loading={loading || loadingData}
       title={
-        initValue
+        isDetailsView
+          ? "Detalles del Tipo de almacén virtual"
+          : initValue
           ? "Editar Tipo de almacén virtual"
           : "Crear Tipo de almacén virtual"
       }
@@ -79,6 +120,55 @@ export default function WarehouseVirtualTypeModal({
               />
             </div>
 
+            {/* Campos adicionales solo en modo detalles */}
+            {isDetailsView && typeData && (
+              <>
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Almacenes Virtuales Asociados
+                    </label>
+                    <input
+                      type="text"
+                      value={typeData.virtualWarehousesCount}
+                      disabled
+                      readOnly
+                      className="form-input bg-gray-50 dark:bg-gray-800"
+                      title="Número de almacenes virtuales asociados"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Fecha de Creación
+                    </label>
+                    <input
+                      type="text"
+                      value={new Date(typeData.createdDatetime).toLocaleString('es-ES')}
+                      disabled
+                      readOnly
+                      className="form-input bg-gray-50 dark:bg-gray-800"
+                      title="Fecha de creación del tipo"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Última Actualización
+                    </label>
+                    <input
+                      type="text"
+                      value={new Date(typeData.updatedDatetime).toLocaleString('es-ES')}
+                      disabled
+                      readOnly
+                      className="form-input bg-gray-50 dark:bg-gray-800"
+                      title="Fecha de última actualización"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
             {/* Botones */}
             <div className="flex justify-end gap-3 pt-6">
               <button
@@ -87,16 +177,18 @@ export default function WarehouseVirtualTypeModal({
                 className="btn btn-outline-secondary"
                 disabled={isPending}
               >
-                Cancelar
+                {isDetailsView ? "Cerrar" : "Cancelar"}
               </button>
-              <LoaderButton
-                type="submit"
-                loading={isPending}
-                className="btn btn-primary "
-                disabled={isPending}
-              >
-                {initValue?.id ? "Guardar Cambios" : "Crear Tipo"}
-              </LoaderButton>
+              {!isDetailsView && (
+                <LoaderButton
+                  type="submit"
+                  loading={isPending}
+                  className="btn btn-primary "
+                  disabled={isPending}
+                >
+                  {initValue?.id ? "Guardar Cambios" : "Crear Tipo"}
+                </LoaderButton>
+              )}
             </div>
           </form>
         </FormProvider>

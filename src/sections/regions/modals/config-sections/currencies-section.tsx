@@ -35,6 +35,14 @@ export const CurrenciesSection: React.FC<CurrenciesSectionProps> = ({
 
   const currencies = currenciesData?.data?.data || [];
 
+  // Debug: Log what's coming from the API
+  React.useEffect(() => {
+    if (currencies.length > 0) {
+      console.log('Currencies from API:', currencies);
+      console.log('First currency ID type:', typeof currencies[0]?.id, currencies[0]?.id);
+    }
+  }, [currencies]);
+
   // Fetch region configuration
   const { data: regionData, isLoading } = useRegionDetails(regionId);
 
@@ -73,25 +81,35 @@ export const CurrenciesSection: React.FC<CurrenciesSectionProps> = ({
   const handleAddCurrency = () => {
     if (selectedCurrencyId) {
       const isPrimary = regionCurrencies.length === 0; // First currency is primary by default
+      const currencyIdToSend = String(selectedCurrencyId);
+      
+      console.log('About to send currency:', {
+        selectedCurrencyId,
+        selectedType: typeof selectedCurrencyId,
+        currencyIdToSend,
+        sendType: typeof currencyIdToSend,
+        isPrimary
+      });
+      
       addCurrencyMutation.mutate({
-        currencyId: parseInt(selectedCurrencyId),
+        currencyId: currencyIdToSend, // Ensure it's always a string
         isPrimary
       });
     }
   };
 
   const handleRemoveCurrency = (currencyId: number|string) => {
-    removeCurrencyMutation.mutate(currencyId);
+    removeCurrencyMutation.mutate(String(currencyId));
   };
 
   const handleSetPrimary = (currencyId: number|string) => {
-    setPrimaryMutation.mutate(currencyId);
+    setPrimaryMutation.mutate(String(currencyId));
   };
 
   // Get available currencies (not already assigned)
-  const assignedCurrencyIds = regionCurrencies.map((rc: RegionCurrency) => rc.currencyId);
+  const assignedCurrencyIds = regionCurrencies.map((rc: RegionCurrency) => String(rc.currencyId));
   const availableCurrencies = currencies.filter((currency: any) => 
-    !assignedCurrencyIds.includes(currency.id)
+    !assignedCurrencyIds.includes(String(currency.id))
   );
 
   if (isLoading) {
@@ -116,13 +134,17 @@ export const CurrenciesSection: React.FC<CurrenciesSectionProps> = ({
           <div className="flex-1">
             <select
               value={selectedCurrencyId}
-              onChange={(e) => setSelectedCurrencyId(e.target.value)}
+              onChange={(e) => {
+                console.log('Selected currency ID:', e.target.value, 'Type:', typeof e.target.value);
+                setSelectedCurrencyId(e.target.value);
+              }}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={availableCurrencies.length === 0}
+              title="Seleccionar moneda para agregar a la región"
             >
               <option value="">Seleccionar moneda...</option>
               {availableCurrencies.map((currency: any) => (
-                <option key={currency.id} value={currency.id.toString()}>
+                <option key={currency.id} value={currency.id}>
                   {currency.codIso} - {currency.name}
                 </option>
               ))}
@@ -153,7 +175,7 @@ export const CurrenciesSection: React.FC<CurrenciesSectionProps> = ({
         ) : (
           <div className="space-y-2">
             {regionCurrencies.map((regionCurrency: RegionCurrency, index: number) => {
-              const currency = currencies.find((c: any) => c.id === regionCurrency.currencyId);
+              const currency = currencies.find((c: any) => String(c.id) === String(regionCurrency.currencyId));
               if (!currency) return null;
 
               return (
