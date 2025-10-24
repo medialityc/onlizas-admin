@@ -9,11 +9,10 @@ import { getCategoryFeature } from "../constants/category-feature";
 import { FeatureFormData } from "@/sections/categories/schemas/category-schema";
 
 type Props = {
-  userProvider: IUser;
   inventory: InventoryStoreFormData;
   features: CategoryFeature[];
 };
-function EditContainer({ userProvider, inventory, features }: Props) {
+function EditContainer({ inventory, features }: Props) {
   const [variants, setVariants] = React.useState(inventory.products);
   const featuresNormalized: Record<
     string,
@@ -65,7 +64,7 @@ function EditContainer({ userProvider, inventory, features }: Props) {
       {variants.map((product, index) => (
         <InventoryEditForm
           key={`product-${product.id}`}
-          userProvider={userProvider.id}
+          supplierId={inventory.supplierId}
           initValue={product}
           inventoryId={inventory.id}
           index={index}

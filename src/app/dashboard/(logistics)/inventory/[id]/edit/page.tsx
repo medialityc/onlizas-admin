@@ -16,14 +16,14 @@ export default async function InventoryEditPage({ params }: EditPageProps) {
   const { id } = await params;
   const res = await getInventoryById(id);
   if (!res || res.error || !res.data) notFound();
-  const resSupplier = await getUserProviderById(res.data?.supplierId);
-  if (!resSupplier || resSupplier.error || !resSupplier.data) notFound();
+
+  console.log(res.data, "inventory data");
+
   const resFeatures = await getCategoryFeatures(res.data?.categoryIds ?? []);
 
   return (
     <InventoryProviderEditContainer
       inventory={res.data}
-      userProvider={resSupplier?.data}
       features={resFeatures?.data?.features ?? []}
     />
   );
