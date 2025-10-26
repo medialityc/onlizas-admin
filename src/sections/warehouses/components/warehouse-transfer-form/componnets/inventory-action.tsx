@@ -6,7 +6,7 @@ import Tippy from "@tippyjs/react";
 import { ChevronsUp, RefreshCcwIcon } from "lucide-react";
 
 type Props = {
-  inventoryId: number;
+  inventoryId: string;
 };
 const InventoryActon = ({ inventoryId }: Props) => {
   const {

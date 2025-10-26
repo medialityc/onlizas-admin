@@ -30,7 +30,7 @@ export function WarehouseInventoryCard({ item }: { item: InventoryProvider }) {
             Cantidad total
           </div>
           <div className="text-2xl font-bold text-gray-900 dark:text-white">
-            {item?.totalStock}
+            {item?.totalQuantity}
           </div>
         </div>
       </div>

@@ -51,7 +51,7 @@ export const WarehouseInventoryItem = ({ inventory }: Props) => {
 
 type ProductProps = {
   product: Product;
-  inventoryId: number;
+  inventoryId: string;
   isLast?: boolean;
 };
 

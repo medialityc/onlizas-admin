@@ -4,7 +4,7 @@ import { Package, ArrowRight, CheckCircle, AlertTriangle } from "lucide-react";
 import { useWarehouseInventoryActions } from "../../contexts/warehouse-inventory-transfer.stote";
 
 interface GroupedInventory {
-  inventoryId: number;
+  inventoryId: string;
   parentProductName: string;
   products: {
     [key: string]: {
@@ -12,7 +12,7 @@ interface GroupedInventory {
       totalStock: number;
       unit: string;
       variants: {
-        variantId: number;
+        variantId: string;
         variantName: string;
         stock: number;
         allowPartialFulfillment: boolean;
@@ -27,7 +27,7 @@ const TransferSummary: React.FC = () => {
   const { items } = useWarehouseInventoryActions();
 
   // Agrupar productos por inventoryId
-  const groupedByInventory = items.reduce<Record<number, GroupedInventory>>(
+  const groupedByInventory = items.reduce<Record<string, GroupedInventory>>(
     (acc, item) => {
       const key = item.inventoryId;
       if (!acc[key]) {
