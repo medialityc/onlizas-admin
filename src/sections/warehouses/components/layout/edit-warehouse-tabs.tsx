@@ -6,6 +6,7 @@ import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { Tab } from "@/types/tabs";
 import { WAREHOUSE_TYPE_ROUTE_ENUM } from "../../constants/warehouse-type";
 import { warehouseTabs } from "../../constants/warehouse-tabs";
+import { getWarehouseRoute } from "../../utils/warehouse";
 
 interface EditWarehouseTabsProps {
   warehouse: WarehouseFormData;
@@ -19,9 +20,11 @@ export function EditWarehouseTabs({
   const router = useRouter();
   const pathname = usePathname();
   const warehouseId = warehouse.id;
-  const warehouseType = warehouse.type.toLowerCase();
+  const warehouseType = warehouse.type;
 
-  const tabs = onTabs(warehouseId!, warehouseType as WAREHOUSE_TYPE_ROUTE_ENUM);
+  console.log("warehouse", warehouse);
+
+  const tabs = onTabs(warehouseId!, getWarehouseRoute(warehouseType));
 
   const handleTabChange = (tab: Tab) => {
     if (!tab.disabled) {

@@ -97,7 +97,7 @@ const WarehouseInventoryList = ({ warehouse }: Props) => {
           onOptionSelected={onOptionSelected}
           renderMultiplesValues={(selectedOptions, removeSelected) => (
             <div className="flex flex-row gap-2 flex-wrap">
-              {selectedOptions.map((option) => (
+              {selectedOptions.map((option: any) => (
                 <Badge
                   className="dark:bg-slate-700 bg-slate-200 rounded-full text-gray-400 flex flex-row gap-2 p-1"
                   key={option.id}
@@ -107,7 +107,7 @@ const WarehouseInventoryList = ({ warehouse }: Props) => {
                     className="p-0 m-0 !bg-transparent border-0 [&>svg]:text-gray-400 [&>svg]:hover:text-gray-100"
                     onClick={() => {
                       removeSelected(option);
-                      remove(option.id as number);
+                      remove(option.id);
                     }}
                   >
                     <XCircleIcon className="h-4 w-4" />
