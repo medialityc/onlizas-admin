@@ -1,7 +1,4 @@
-import {
-  WAREHOUSE_TYPE_ENUM,
-  WAREHOUSE_TYPE_ROUTE_ENUM,
-} from "../constants/warehouse-type";
+import { WAREHOUSE_TYPE_ENUM } from "../constants/warehouse-type";
 
 export const generateWarehouseTransferNumber = (): string => {
   const now = new Date();
@@ -19,16 +16,17 @@ export const generateWarehouseTransferNumber = (): string => {
 
 export const getWarehouseRoute = (
   type: WAREHOUSE_TYPE_ENUM | string
-): WAREHOUSE_TYPE_ROUTE_ENUM => {
+): "physical" | "virtual" | string => {
   switch (type) {
-    case WAREHOUSE_TYPE_ENUM.Warehouse:
     case WAREHOUSE_TYPE_ENUM.warehouse:
-      return WAREHOUSE_TYPE_ROUTE_ENUM.physical;
+    case "Warehouse":
+      return "physical";
 
-    case WAREHOUSE_TYPE_ENUM.VirtualWarehouse:
     case WAREHOUSE_TYPE_ENUM.virtualwarehouse:
-      return WAREHOUSE_TYPE_ROUTE_ENUM.virtual;
+    case "Virtualwarehouse":
+      return "virtual";
+
     default:
-      return WAREHOUSE_TYPE_ROUTE_ENUM.physical;
+      return type;
   }
 };

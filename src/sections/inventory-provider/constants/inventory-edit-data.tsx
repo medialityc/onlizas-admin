@@ -27,8 +27,8 @@ export function buildCreateProductVariantFormData(
   }
 
   // Quantity & Price
-  if (input.quantity !== undefined)
-    fd.append("quantity", String(input.quantity));
+  if (input.stock !== undefined)
+    fd.append("stock", String(input.stock));
   if (input.price !== undefined) fd.append("price", String(input.price));
 
   // Purchase limit & flags

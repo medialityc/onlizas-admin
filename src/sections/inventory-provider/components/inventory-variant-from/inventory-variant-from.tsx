@@ -65,7 +65,7 @@ const InventoryVariantFrom = ({ variantIndex, remove, isPacking }: Props) => {
           </div>
           <div>
             <RHFInputWithLabel
-              name="quantity"
+              name="stock"
               label="Cantidad disponible"
               type="number"
               placeholder="0"

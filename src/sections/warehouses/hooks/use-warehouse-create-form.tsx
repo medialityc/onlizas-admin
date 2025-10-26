@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createWarehouse, updateWarehouse } from "@/services/warehouses";
 import { toast } from "react-toastify";
-import { WAREHOUSE_TYPE_ROUTE_ENUM } from "../constants/warehouse-type";
+import { WAREHOUSE_TYPE_ENUM } from "../constants/warehouse-type";
 
 import { initValueWarehouse } from "../constants/warehouse-initvalues";
 import { warehouseAdapter } from "../constants/warehouse-adapter";
@@ -31,7 +31,7 @@ export const useWarehouseCreateForm = (
       const res = payload?.id
         ? await updateWarehouse(
             payload?.id,
-            payload?.type as WAREHOUSE_TYPE_ROUTE_ENUM,
+            payload?.type as WAREHOUSE_TYPE_ENUM,
             payload
           )
         : await createWarehouse(warehouseAdapter(payload));

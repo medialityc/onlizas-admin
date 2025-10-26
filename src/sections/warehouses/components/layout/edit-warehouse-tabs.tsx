@@ -4,13 +4,13 @@ import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { Tab } from "@/types/tabs";
-import { WAREHOUSE_TYPE_ROUTE_ENUM } from "../../constants/warehouse-type";
+import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
 import { warehouseTabs } from "../../constants/warehouse-tabs";
 import { getWarehouseRoute } from "../../utils/warehouse";
 
 interface EditWarehouseTabsProps {
   warehouse: WarehouseFormData;
-  onTabs?: (warehouseId: string, type: WAREHOUSE_TYPE_ROUTE_ENUM) => Tab[];
+  onTabs?: (warehouseId: string, type: WAREHOUSE_TYPE_ENUM) => Tab[];
 }
 
 export function EditWarehouseTabs({
@@ -24,7 +24,7 @@ export function EditWarehouseTabs({
 
   console.log("warehouse", warehouse);
 
-  const tabs = onTabs(warehouseId!, getWarehouseRoute(warehouseType));
+  const tabs = onTabs(warehouseId!, warehouseType as WAREHOUSE_TYPE_ENUM);
 
   const handleTabChange = (tab: Tab) => {
     if (!tab.disabled) {

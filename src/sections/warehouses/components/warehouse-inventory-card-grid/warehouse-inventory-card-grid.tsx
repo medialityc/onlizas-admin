@@ -16,6 +16,8 @@ export function WarehouseInventoryCardGrid({
   searchParams,
   onSearchParamsChange,
 }: Props) {
+
+  console.log(data,'sss');
   return (
     <>
       <DataGridCard

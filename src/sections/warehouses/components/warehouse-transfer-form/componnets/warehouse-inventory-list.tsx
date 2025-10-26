@@ -38,7 +38,7 @@ const WarehouseInventoryList = ({ warehouse }: Props) => {
         id: option?.id,
         parentProductName: option?.parentProductName,
         supplierName: option?.supplierName,
-        totalQuantity: option?.totalQuantity,
+        totalStock: option?.totalStock,
         price: option?.price,
         products:
           option?.products?.map((product: InventoryProductItem) => ({
@@ -46,7 +46,7 @@ const WarehouseInventoryList = ({ warehouse }: Props) => {
             productName: product?.productName,
             details: detailsObjectToArray(product?.details),
             images: product?.images || [],
-            quantity: product?.quantity || 0,
+            stock: product?.stock || 0,
             count: 0,
             allowPartialFulfillment: false,
           })) || [],

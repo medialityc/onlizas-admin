@@ -47,7 +47,7 @@ export const productVariants = z
           }))
         );
       }),
-    quantity: z
+    stock: z
       .number({ required_error: "Requerido" })
       .min(1, "La cantidad debe ser al menos 1")
       .default(1),

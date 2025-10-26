@@ -16,7 +16,7 @@ export const warehouseTransferSchema = z
     items: z
       .array(
         z.object({
-          productVariantId: z.number({
+          productVariantId: z.string({
             required_error: "Producto es requerido",
           }),
           quantityRequested: z.coerce.number({

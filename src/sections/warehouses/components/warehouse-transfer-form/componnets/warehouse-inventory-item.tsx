@@ -64,8 +64,8 @@ const InventoryVariantItem = ({
     useWarehouseInventoryActions();
 
   const isLowStock =
-    (product?.quantity || 0) <= 5 && (product?.quantity || 0) > 0;
-  const isOutOfStock = (product?.quantity || 0) === 0;
+    (product?.stock || 0) <= 5 && (product?.stock || 0) > 0;
+  const isOutOfStock = (product?.stock || 0) === 0;
 
   return (
     <div
@@ -107,7 +107,7 @@ const InventoryVariantItem = ({
                       : "text-green-600 dark:text-green-400"
                 }`}
               >
-                {product?.quantity || 0}
+                {product?.stock || 0}
               </span>
             </div>
           </div>

@@ -9,10 +9,11 @@ import { useWarehouseCreateForm } from "../../hooks/use-warehouse-create-form";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { getAdapterWarehouse } from "../../adapter/warehouse-edit.adapter";
 import VirtualSection from "./components/virtual-section";
-import { WAREHOUSE_TYPE_ROUTE_ENUM } from "../../constants/warehouse-type";
+import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
 import Link from "next/link";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { getWarehouseRoute } from "../../utils/warehouse";
 
 type Props = {
   warehouse?: WarehouseFormData;
@@ -36,10 +37,10 @@ export function WarehouseForm({ warehouse }: Props) {
       <div className="grid grid-cols-1  gap-4">
         <div className="col-span-1  space-y-4">
           <BasicInfoSection warehouseId={warehouse?.id} />
-          {warehouseType === WAREHOUSE_TYPE_ROUTE_ENUM.physical && (
+          {warehouseType === WAREHOUSE_TYPE_ENUM.warehouse && (
             <CapacitySection />
           )}
-          {warehouseType === WAREHOUSE_TYPE_ROUTE_ENUM.virtual && <VirtualSection />}
+          {warehouseType === WAREHOUSE_TYPE_ENUM.virtualwarehouse && <VirtualSection />}
           <LocationSection />
         </div>
       </div>

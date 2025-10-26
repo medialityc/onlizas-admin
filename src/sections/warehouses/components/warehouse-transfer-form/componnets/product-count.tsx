@@ -40,7 +40,7 @@ const ProductCount = ({
   const maxAvailable = useInventoryStore((state) => {
     const inventory = state.inventories.find((inv) => inv.id === inventoryId);
     return (
-      inventory?.products?.find((p) => p.id === productId)?.quantity || max
+      inventory?.products?.find((p) => p.id === productId)?.stock || max
     );
   });
 

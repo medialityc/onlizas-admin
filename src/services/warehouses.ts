@@ -15,11 +15,12 @@ import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
 import { WarehouseFormData } from "@/sections/warehouses/schemas/warehouse-schema";
 import { GetAllUsersResponse } from "../types/users";
-import { WAREHOUSE_TYPE_ROUTE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
+import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 import { InventoryProviderFormData } from "@/sections/inventory-provider/schemas/inventory-provider.schema";
 import { PaginatedResponse } from "@/types/common";
 import { InventoryProductItem } from "@/types/inventory";
 import { MeWarehouseFormData } from "@/sections/warehouses/schemas/me-warehouse-schema";
+import { getWarehouseRoute } from "@/sections/warehouses/utils/warehouse";
 
 export async function getAllWarehouses(
   params: IQueryable & WarehouseFilter
@@ -43,11 +44,11 @@ export async function getAllWarehouses(
  */
 export async function getAllWarehousesByType(
   params: IQueryable & WarehouseFilter,
-  type: WAREHOUSE_TYPE_ROUTE_ENUM
+  type: WAREHOUSE_TYPE_ENUM
 ): Promise<ApiResponse<GetAllWarehouses>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.warehouses.listByType(type)
+    backendRoutes.warehouses.listByType(getWarehouseRoute(type))
   ).build();
   const res = await nextAuthFetch({
     url,
@@ -131,7 +132,7 @@ export async function getWarehouseById(
   type: string
 ): Promise<ApiResponse<WarehouseFormData>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.warehouses.edit(id, type),
+    url: backendRoutes.warehouses.edit(id, getWarehouseRoute(type)),
     method: "GET",
     useAuth: true,
     next: { tags: ["warehouses", String(id), type] },
@@ -144,7 +145,7 @@ export async function createWarehouse(
   data: Partial<WarehouseFormData>
 ): Promise<ApiResponse<Warehouse>> {
   const res = await nextAuthFetch({
-    url: `${backendRoutes.warehouses.create}/${data?.type ?? WAREHOUSE_TYPE_ROUTE_ENUM.physical}`,
+    url: `${backendRoutes.warehouses.create}/${getWarehouseRoute(data?.type as string)}`,
     method: "POST",
     data,
     useAuth: true,
@@ -156,11 +157,11 @@ export async function createWarehouse(
 
 export async function updateWarehouse(
   id: string,
-  type: WAREHOUSE_TYPE_ROUTE_ENUM,
+  type: WAREHOUSE_TYPE_ENUM,
   data: WarehouseFormData
 ): Promise<ApiResponse<Warehouse>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.warehouses.updateByType(id, type),
+    url: backendRoutes.warehouses.updateByType(id, getWarehouseRoute(type)),
     method: "PUT",
     data,
     useAuth: true,
