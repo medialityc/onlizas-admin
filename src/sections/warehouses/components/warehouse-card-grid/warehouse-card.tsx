@@ -10,7 +10,7 @@ import {
   ArrowsRightLeftIcon,
 } from "@heroicons/react/24/outline";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
-import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
+import { WAREHOUSE_TYPE_ENUM, WAREHOUSE_TYPE_ROUTE_ENUM } from "../../constants/warehouse-type";
 import { CalendarIcon, PackageIcon, Users2Icon } from "lucide-react";
 import Badge from "@/components/badge/badge";
 import { usePermissions } from "@/hooks/use-permissions";
@@ -27,16 +27,15 @@ import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface WarehouseCardProps {
   warehouse: WarehouseFormData;
-  type: WAREHOUSE_TYPE_ENUM;
+  route: WAREHOUSE_TYPE_ROUTE_ENUM;
   onEdit?: () => void;
 }
 
-export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
-  const isPhysical =
-    type.toLocaleLowerCase() ===
-    WAREHOUSE_TYPE_ENUM.Warehouse.toLocaleLowerCase();
-
+export function WarehouseCard({ warehouse, route, onEdit }: WarehouseCardProps) {
+  const isPhysical = route === WAREHOUSE_TYPE_ROUTE_ENUM.physical;
   const router = useRouter();
+
+  console.log(route, "route");
 
   // Control de permisos
   const { hasPermission } = usePermissions();
@@ -47,11 +46,11 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
       onEdit();
       return;
     }
-    router.replace(`/dashboard/warehouses/${type}/${warehouse.id!}/edit`);
+    router.replace(`/dashboard/warehouses/${route}/${warehouse.id!}/edit`);
   };
   const handleTransfer = () => {
     router.replace(
-      `/dashboard/warehouses/${type}/${warehouse.id!}/edit/transfers`
+      `/dashboard/warehouses/${route}/${warehouse.id!}/edit/transfers`
     );
   };
 
@@ -75,7 +74,7 @@ export function WarehouseCard({ warehouse, type, onEdit }: WarehouseCardProps) {
           </div>
           <div className="min-w-0">
             <Link
-              href={`/dashboard/warehouses/${type}/${warehouse.id!}`}
+              href={`/dashboard/warehouses/${route}/${warehouse.id!}`}
               className="text-base font-medium text-gray-900 dark:text-white hover:text-primary dark:hover:text-primary cursor-pointer truncate"
               title={warehouse.name}
             >

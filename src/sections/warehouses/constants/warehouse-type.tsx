@@ -4,7 +4,9 @@ export enum WAREHOUSE_TYPE_ROUTE_ENUM {
 }
 export enum WAREHOUSE_TYPE_ENUM {
   VirtualWarehouse = "VirtualWarehouse",
+  virtualwarehouse = "virtualwarehouse",
   Warehouse = "Warehouse",
+  warehouse = "warehouse",
 }
 
 export const WAREHOUSE_TYPE_OPTIONS = [

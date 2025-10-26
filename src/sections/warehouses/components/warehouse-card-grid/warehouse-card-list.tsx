@@ -5,6 +5,7 @@ import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { WarehouseCard } from "./warehouse-card";
 import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
 import { useModalState } from "@/hooks/use-modal-state";
+import { getWarehouseRoute } from "../../utils/warehouse";
 
 type Props = {
   data?: WarehouseFormData[];
@@ -13,6 +14,7 @@ type Props = {
 };
 const WarehouseCardList = ({ data, searchParams, forceType }: Props) => {
   const id = useId();
+
   const { openModal } = useModalState();
   const handleEditWarehouse = useCallback(
     (warehouse: WarehouseFormData) => {
@@ -38,7 +40,9 @@ const WarehouseCardList = ({ data, searchParams, forceType }: Props) => {
         <div className="col-span-1" key={`${id}-${warehouse?.id}`}>
           <WarehouseCard
             warehouse={warehouse}
-            type={forceType || (warehouse.type as WAREHOUSE_TYPE_ENUM)}
+            route={getWarehouseRoute(
+              forceType || (warehouse.type as WAREHOUSE_TYPE_ENUM)
+            )}
             onEdit={forceType && (() => handleEditWarehouse(warehouse))}
           />
         </div>

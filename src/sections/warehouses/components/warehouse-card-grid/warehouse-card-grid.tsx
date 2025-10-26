@@ -18,7 +18,6 @@ export function InventoryCardGrid({
   forceType,
   onSearchParamsChange,
 }: Props) {
-  console.log(data, "data");
   return (
     <>
       <DataGridCard
