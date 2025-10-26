@@ -11,8 +11,8 @@ type Props = {
   min?: number;
   max?: number;
   className?: string;
-  inventoryId: number;
-  productId: number;
+  inventoryId: string;
+  productId: string;
   allowPartialFulfillment: boolean;
 };
 

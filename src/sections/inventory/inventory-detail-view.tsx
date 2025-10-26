@@ -211,7 +211,7 @@ export default function InventoryDetailView({ inventory }: Props) {
                       <div className="mt-2 flex flex-col sm:flex-row sm:items-center justify-between">
                         <div className="text-sm text-gray-600 dark:text-gray-300 text-center sm:text-left">
                           <span className="inline-block px-2 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-md">
-                            Cantidad: {p.quantity}
+                            Cantidad: {p.stock}
                           </span>
                         </div>
                         <div className="text-sm text-gray-600 dark:text-gray-300 mt-2 sm:mt-0 text-center sm:text-right">
