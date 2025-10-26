@@ -40,9 +40,10 @@ const WarehouseCardList = ({ data, searchParams, forceType }: Props) => {
         <div className="col-span-1" key={`${id}-${warehouse?.id}`}>
           <WarehouseCard
             warehouse={warehouse}
-            route={getWarehouseRoute(
-              forceType || (warehouse.type as WAREHOUSE_TYPE_ENUM)
-            )}
+            route={
+              forceType ||
+              (warehouse.type?.toLocaleLowerCase() as WAREHOUSE_TYPE_ENUM)
+            }
             onEdit={forceType && (() => handleEditWarehouse(warehouse))}
           />
         </div>

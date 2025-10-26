@@ -1,17 +1,11 @@
-export enum WAREHOUSE_TYPE_ROUTE_ENUM {
-  virtual = "virtual",
-  physical = "physical",
-}
 export enum WAREHOUSE_TYPE_ENUM {
-  VirtualWarehouse = "VirtualWarehouse",
   virtualwarehouse = "virtualwarehouse",
-  Warehouse = "Warehouse",
   warehouse = "warehouse",
 }
 
 export const WAREHOUSE_TYPE_OPTIONS = [
-  { value: WAREHOUSE_TYPE_ROUTE_ENUM.physical, label: "Físico" },
-  { value: WAREHOUSE_TYPE_ROUTE_ENUM.virtual, label: "Virtual" },
+  { value: WAREHOUSE_TYPE_ENUM.warehouse, label: "Físico" },
+  { value: WAREHOUSE_TYPE_ENUM.virtualwarehouse, label: "Virtual" },
 ];
 
 export enum WAREHOUSE_VIRTUAL_SUBTYPE_ENUM {

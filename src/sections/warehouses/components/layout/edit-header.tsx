@@ -3,10 +3,7 @@ import BackButton from "./back-button";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { WarehouseIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  WAREHOUSE_TYPE_ENUM,
-  WAREHOUSE_TYPE_ROUTE_ENUM,
-} from "../../constants/warehouse-type";
+import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
 import { getWarehouseRoute } from "../../utils/warehouse";
 
 function EditHeader({ warehouse }: { warehouse: WarehouseFormData }) {
@@ -63,8 +60,7 @@ function EditHeader({ warehouse }: { warehouse: WarehouseFormData }) {
                   {statusInfo.label}
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium bg-gray-100 text-gray-700 ring-1 ring-inset ring-gray-300 dark:bg-gray-800/50 dark:text-gray-200 dark:ring-gray-700/50">
-                  {getWarehouseRoute(warehouse.type) ===
-                  WAREHOUSE_TYPE_ROUTE_ENUM.physical
+                  {warehouse.type === WAREHOUSE_TYPE_ENUM.warehouse
                     ? "Físico"
                     : "Virtual"}
                 </span>

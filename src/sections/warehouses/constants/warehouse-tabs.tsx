@@ -1,10 +1,10 @@
 "use client";
 import { Tab } from "@/types/tabs";
-import { WAREHOUSE_TYPE_ROUTE_ENUM } from "./warehouse-type";
+import { WAREHOUSE_TYPE_ENUM } from "./warehouse-type";
 
 export const warehouseTabs = (
   warehouseId: string,
-  warehouseType: WAREHOUSE_TYPE_ROUTE_ENUM
+  warehouseType: WAREHOUSE_TYPE_ENUM
 ): Tab[] => [
   {
     id: "general",
@@ -30,7 +30,7 @@ export const warehouseTabs = (
 
 export const meWarehouseTabs = (
   warehouseId: number,
-  warehouseType: WAREHOUSE_TYPE_ROUTE_ENUM
+  warehouseType: WAREHOUSE_TYPE_ENUM
 ): Tab[] => [
   {
     id: "inventory",

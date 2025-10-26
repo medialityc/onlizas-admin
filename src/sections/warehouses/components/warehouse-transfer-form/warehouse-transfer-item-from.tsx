@@ -9,17 +9,17 @@ interface GroupedInventory {
   products: {
     [key: string]: {
       productName: string;
-      totalQuantity: number;
+      totalStock: number;
       unit: string;
       variants: {
         variantId: number;
         variantName: string;
-        quantity: number;
+        stock: number;
         allowPartialFulfillment: boolean;
       }[];
     };
   };
-  totalQuantity: number;
+  totalStock: number;
   hasPartialFulfillment: boolean;
 }
 
@@ -35,7 +35,7 @@ const TransferSummary: React.FC = () => {
           inventoryId: item.inventoryId,
           parentProductName: item?.parentProductName,
           products: {},
-          totalQuantity: 0,
+          totalStock: 0,
           hasPartialFulfillment: false,
         };
       }
@@ -45,20 +45,20 @@ const TransferSummary: React.FC = () => {
       if (!acc[key].products[productKey]) {
         acc[key].products[productKey] = {
           productName: item.parentProductName,
-          totalQuantity: 0,
+          totalStock: 0,
           unit: item.unit,
           variants: [],
         };
       }
 
-      acc[key].products[productKey].totalQuantity += item.quantityRequested;
+      acc[key].products[productKey].totalStock += item.quantityRequested;
       acc[key].products[productKey].variants.push({
         variantId: item.productVariantId,
         variantName: item.variantName,
-        quantity: item.quantityRequested,
+        stock: item.quantityRequested,
         allowPartialFulfillment: item.allowPartialFulfillment,
       });
-      acc[key].totalQuantity += item.quantityRequested;
+      acc[key].totalStock += item.quantityRequested;
 
       // Verificar si hay cumplimiento parcial en este inventario
       if (item.allowPartialFulfillment) {
@@ -101,7 +101,7 @@ const TransferSummary: React.FC = () => {
                 )}
               </div>
               <div className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-sm font-medium">
-                Total: {inventory.totalQuantity} items
+                Total: {inventory.totalStock} items
               </div>
             </div>
 
@@ -120,7 +120,7 @@ const TransferSummary: React.FC = () => {
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
                               <span className="text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full font-medium">
-                                {variant.quantity} {product.unit}
+                                {variant.stock} {product.unit}
                               </span>
                               <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
                             </div>
@@ -163,7 +163,7 @@ const TransferSummary: React.FC = () => {
             </div>
             <div className="bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm font-medium">
               {inventoryList.reduce(
-                (total, inv) => total + inv.totalQuantity,
+                (total, inv) => total + inv.totalStock,
                 0
               )}{" "}
               productos totales

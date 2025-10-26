@@ -15,7 +15,7 @@ export type InventoryProductItem = {
     warrantyPrice: number;
   };
   isPrime: boolean;
-  quantity: number;
+  stock: number;
   inventoryId: number;
   storeId: number;
   storeName: string;

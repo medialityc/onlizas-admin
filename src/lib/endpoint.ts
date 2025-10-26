@@ -146,16 +146,16 @@ export const backendRoutes = {
     metrics: `${process.env.NEXT_PUBLIC_API_URL}warehouses/metrics`,
   },
   warehouse_transfers: {
-    create: `${process.env.NEXT_PUBLIC_API_URL}admin/transfers`,
-    list: `${process.env.NEXT_PUBLIC_API_URL}admin/transfers`,
+    create: `${process.env.NEXT_PUBLIC_API_URL}transfers`,
+    list: `${process.env.NEXT_PUBLIC_API_URL}transfers`,
     getById: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/transfers/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}transfers/${id}`,
     approve: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/transfers/${id}/approve`,
+      `${process.env.NEXT_PUBLIC_API_URL}transfers/${id}/approve`,
     cancel: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/transfers/${id}/cancel`,
+      `${process.env.NEXT_PUBLIC_API_URL}transfers/${id}/cancel`,
     execute: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}admin/transfers/${id}/execute`,
+      `${process.env.NEXT_PUBLIC_API_URL}transfers/${id}/execute`,
   },
   warehouse_me: {
     create: `${process.env.NEXT_PUBLIC_API_URL}suppliers/me/virtual-warehouses`,

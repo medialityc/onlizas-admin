@@ -22,6 +22,8 @@ export function MeWarehouseForm({ warehouse, onClose }: Props) {
     onClose
   );
 
+  console.log("warehouse form render", warehouse);
+
   const handleClose = useCallback(() => {
     onClose?.();
     form.reset();

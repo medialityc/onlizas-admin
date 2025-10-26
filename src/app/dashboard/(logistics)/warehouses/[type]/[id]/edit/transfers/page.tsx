@@ -1,5 +1,5 @@
 import EditWarehouseLayout from "@/sections/warehouses/components/layout/edit-warehouse-layout";
-import { WAREHOUSE_TYPE_ROUTE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
+import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 import WarehouseTransferContainer from "@/sections/warehouses/containers/warehouse-trasnfer-container";
 import { getWarehouseById } from "@/services/warehouses";
 import { Metadata } from "next";
@@ -21,19 +21,19 @@ export default async function EditWarehouseTransfersPage({
 }: PageProps) {
   const { id, type } = await params;
 
-  if (!Object.keys(WAREHOUSE_TYPE_ROUTE_ENUM).includes(type)) {
+  if (!Object.keys(WAREHOUSE_TYPE_ENUM).includes(type)) {
     notFound();
   }
 
-  const response = await getWarehouseById(id, type);
+  const warehouse = await getWarehouseById(id, type);
 
-  if (!response?.data) {
+  if (!warehouse?.data) {
     notFound();
   }
 
   return (
-    <EditWarehouseLayout warehouse={response.data}>
-      <WarehouseTransferContainer warehouse={response.data} />
+    <EditWarehouseLayout warehouse={warehouse.data}>
+      <WarehouseTransferContainer warehouse={warehouse.data} />
     </EditWarehouseLayout>
   );
 }

@@ -10,7 +10,7 @@ import {
   ArrowsRightLeftIcon,
 } from "@heroicons/react/24/outline";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
-import { WAREHOUSE_TYPE_ENUM, WAREHOUSE_TYPE_ROUTE_ENUM } from "../../constants/warehouse-type";
+import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
 import { CalendarIcon, PackageIcon, Users2Icon } from "lucide-react";
 import Badge from "@/components/badge/badge";
 import { usePermissions } from "@/hooks/use-permissions";
@@ -27,15 +27,17 @@ import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface WarehouseCardProps {
   warehouse: WarehouseFormData;
-  route: WAREHOUSE_TYPE_ROUTE_ENUM;
+  route: WAREHOUSE_TYPE_ENUM;
   onEdit?: () => void;
 }
 
-export function WarehouseCard({ warehouse, route, onEdit }: WarehouseCardProps) {
-  const isPhysical = route === WAREHOUSE_TYPE_ROUTE_ENUM.physical;
+export function WarehouseCard({
+  warehouse,
+  route,
+  onEdit,
+}: WarehouseCardProps) {
+  const isPhysical = route === WAREHOUSE_TYPE_ENUM.warehouse;
   const router = useRouter();
-
-  console.log(route, "route");
 
   // Control de permisos
   const { hasPermission } = usePermissions();

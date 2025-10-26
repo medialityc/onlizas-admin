@@ -35,7 +35,7 @@ function EditContainer({ inventory, features }: Props) {
       {
         sku: "",
         details: featuresNormalized,
-        quantity: 0,
+        stock: 0,
         price: 0,
         purchaseLimit: 0,
         isPrime: false,

@@ -7,11 +7,11 @@ interface ProductDetail {
 }
 
 export interface Product {
-  id: number;
+  id: string;
   productName: string;
   details: ProductDetail[];
   images: string[];
-  quantity: number;
+  stock: number;
   count: number;
   allowPartialFulfillment: boolean;
 }
@@ -19,15 +19,15 @@ export interface Product {
 export interface Inventory {
   parentProductName: string;
   supplierName: string;
-  totalQuantity: number;
+  totalStock: number;
   products: Product[];
   price: number;
-  id: number;
+  id: string;
 }
 
 export interface RequestItem {
-  productVariantId: number;
-  inventoryId: number;
+  productVariantId: string;
+  inventoryId: string;
   parentProductName: string;
   variantName: string;
   quantityRequested: number;
@@ -41,23 +41,23 @@ interface InventoryStore {
 
   // Acciones esenciales
   addInventory: (inventory: Inventory) => void;
-  removeInventory: (inventoryId: number) => void;
+  removeInventory: (inventoryId: string) => void;
   updateProductCount: (
-    inventoryId: number,
-    productId: number,
+    inventoryId: string,
+    productId: string,
     count: number
   ) => void;
-  selectAllProducts: (inventoryId?: number) => void;
-  resetInventory: (inventoryId?: number) => void;
+  selectAllProducts: (inventoryId?: string) => void;
+  resetInventory: (inventoryId?: string) => void;
   addSelectedProductsToItems: () => void;
-  removeItemsByInventory: (inventoryId: number) => void;
+  removeItemsByInventory: (inventoryId: string) => void;
   toggleAllowPartialFulfillment: (
-    inventoryId: number,
-    productId: number
+    inventoryId: string,
+    productId: string
   ) => void;
 
   // Getter esencial
-  getInventoryTotalSelected: (inventoryId: number) => number;
+  getInventoryTotalSelected: (inventoryId: string) => number;
 }
 
 export const useInventoryStore = create<InventoryStore>((set, get) => ({
@@ -98,7 +98,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
         if (inventory.id === inventoryId) {
           const updatedProducts = inventory.products.map((product) => {
             if (product.id === productId) {
-              const newCount = Math.max(0, Math.min(count, product.quantity));
+              const newCount = Math.max(0, Math.min(count, product.stock));
               return { ...product, count: newCount };
             }
             return product;
@@ -120,7 +120,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
             ...inventory,
             products: inventory.products.map((product) => ({
               ...product,
-              count: product.quantity,
+              count: product.stock,
             })),
           };
         }
@@ -274,17 +274,17 @@ export const useWarehouseInventoryActions = () => {
     getInventoryTotalSelected: store.getInventoryTotalSelected,
 
     // Helpers para incrementar/decrementar
-    incrementProduct: (inventoryId: number, productId: number) => {
+    incrementProduct: (inventoryId: string, productId: string) => {
       const inventory = store.inventories.find((inv) => inv.id === inventoryId);
       if (inventory) {
         const product = inventory.products.find((p) => p.id === productId);
-        if (product && product.count < product.quantity) {
+        if (product && product.count < product.stock) {
           store.updateProductCount(inventoryId, productId, product.count + 1);
         }
       }
     },
 
-    decrementProduct: (inventoryId: number, productId: number) => {
+    decrementProduct: (inventoryId: string, productId: string) => {
       const inventory = store.inventories.find((inv) => inv.id === inventoryId);
       if (inventory) {
         const product = inventory.products.find((p) => p.id === productId);

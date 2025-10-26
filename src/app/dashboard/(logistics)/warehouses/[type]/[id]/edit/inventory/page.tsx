@@ -1,6 +1,6 @@
 import { buildQueryParams } from "@/lib/request";
 import EditWarehouseLayout from "@/sections/warehouses/components/layout/edit-warehouse-layout";
-import { WAREHOUSE_TYPE_ROUTE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
+import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 import WarehouseInventoryListContainer from "@/sections/warehouses/containers/warehouse-inventory-container";
 
 import {
@@ -33,22 +33,20 @@ export default async function EditWarehouseInventoryPage({
   const search = await searchParams;
   const query = buildQueryParams(search);
 
-  if (!Object.keys(WAREHOUSE_TYPE_ROUTE_ENUM).includes(type)) {
+  if (!Object.keys(WAREHOUSE_TYPE_ENUM).includes(type)) {
     notFound();
   }
 
   /* services */
   const inventory = await getAllWarehouseInventories(id, query);
-  const response = await getWarehouseById(id, type);
+  const warehouse = await getWarehouseById(id, type);
 
-  if (!response?.data || !inventory?.data) {
+  if (!warehouse?.data || !inventory?.data) {
     notFound();
   }
 
-  const warehouse = response.data;
-
   return (
-    <EditWarehouseLayout warehouse={warehouse}>
+    <EditWarehouseLayout warehouse={warehouse.data}>
       <WarehouseInventoryListContainer
         inventoryPromise={inventory}
         query={query}

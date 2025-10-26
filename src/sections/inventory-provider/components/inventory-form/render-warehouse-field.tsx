@@ -4,7 +4,7 @@ import {
   getAllWarehousesBySupplier,
   getAllWarehousesByType,
 } from "@/services/warehouses";
-import { WAREHOUSE_TYPE_ROUTE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
+import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { IQueryable } from "@/types/fetch/request";
 import { WarehouseFilter } from "@/types/warehouses";
@@ -45,7 +45,7 @@ export const RenderWarehouseField = ({
       label: "Almacenes internacionales",
       placeholder: "Seleccionar almacenes internacionales",
       onFetch: (params) =>
-        getAllWarehousesByType(params, WAREHOUSE_TYPE_ROUTE_ENUM.virtual),
+        getAllWarehousesByType(params, WAREHOUSE_TYPE_ENUM.virtualwarehouse),
       queryKey: `warehouses-virtual-${supplierId}`,
       disabled: !supplierId,
     },
@@ -55,7 +55,7 @@ export const RenderWarehouseField = ({
       label: "Almacenes físicos",
       placeholder: "Seleccionar almacenes físicos",
       onFetch: (params) =>
-        getAllWarehousesByType(params, WAREHOUSE_TYPE_ROUTE_ENUM.physical),
+        getAllWarehousesByType(params, WAREHOUSE_TYPE_ENUM.warehouse),
       queryKey: `warehouses-physical-${supplierId}`,
       disabled: !supplierId,
     },

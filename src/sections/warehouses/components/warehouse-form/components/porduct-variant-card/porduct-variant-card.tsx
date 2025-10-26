@@ -30,7 +30,7 @@ const ProductVariantCard = ({ variant }: Props) => {
           <div className="flex flex-col gap-2 items-start">
             <h5 className="text-lg leading-none">{variant.productName}</h5>
             <Badge variant="outline-secondary">
-              Cantidad: {variant.quantity || 0}
+              Cantidad: {variant.stock || 0}
             </Badge>
           </div>
           <div className="flex flex-row gap-1 items-center mb-auto">
