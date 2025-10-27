@@ -33,7 +33,7 @@ export default function InventoryProviderCardListContainer({
     updateFiltersInUrl(params);
   };
   const handleCallBack = useCallback(() => {
-    push("/dashboard/inventory");
+    push("/dashboard/inventory/provider");
   }, [push]);
 
   return (

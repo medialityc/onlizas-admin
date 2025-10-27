@@ -37,6 +37,9 @@ export const useSectionCreateForm = (
     resolver: zodResolver(sectionSchema),
   });
 
+  console.log("Form errors:", form.formState.errors);
+  console.log("Form values:", form.getValues());
+
   const startDate = form.watch("startDate");
 
   const { mutate, isPending } = useMutation({

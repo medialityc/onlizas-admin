@@ -34,9 +34,6 @@ export const setHomeBannerFormData = async (
   formData.append("link", String(banner.link));
   formData.append("active", String(banner.active));
 
-  /* banner.regionIds.forEach((id, index) =>
-    formData.append(`regionIds[${index}]`, String(id))
-  ); */
   formData.append(`regionIds`, JSON.stringify(banner?.regionIds));
 
   return formData;

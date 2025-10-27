@@ -87,7 +87,7 @@ export function HomeBannerList({
       }
 
       try {
-        const res = await toggleStatusHomeBanner(banner?.id as number);
+        const res = await toggleStatusHomeBanner(banner?.id);
         if (res?.error && res.message) {
           console.error(res);
           showToast(res.message, "error");
@@ -107,18 +107,6 @@ export function HomeBannerList({
 
   const columns = useMemo<DataTableColumn<IHomeBanner>[]>(
     () => [
-      {
-        accessor: "id",
-        title: "ID",
-        sortable: true,
-        width: 80,
-        render: (banner) => (
-          <span className="font-medium text-dark dark:text-white">
-            #{banner.id}
-          </span>
-        ),
-      },
-
       {
         accessor: "imageDesktopUrl",
         title: "Banner Escritorio",
