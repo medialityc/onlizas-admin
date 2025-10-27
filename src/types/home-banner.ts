@@ -1,7 +1,7 @@
 import { PaginatedResponse } from "./common";
 
 export type IHomeBanner = {
-  id: number;
+  id: string;
   link: string;
   imageDesktopUrl: string;
   imageMobileUrl: string;

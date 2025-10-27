@@ -28,6 +28,7 @@ export const useSectionProductItemAddForm = (
   });
 
   console.log("Form errors:", form.formState.errors);
+  console.log("Form values:", form.getValues());
 
   return {
     form: form,

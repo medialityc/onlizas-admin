@@ -89,7 +89,7 @@ const InventoryProviderCard = ({ item }: Props) => {
 
       <CardFooter className="grid grid-cols-2 gap-2 pt-2">
         {hasReadPermission && (
-          <Link href={`inventory/${item?.id}/details`}>
+          <Link href={`/dashboard/inventory//${item?.id}/details`}>
             <Button
               outline
               variant="secondary"
@@ -102,7 +102,7 @@ const InventoryProviderCard = ({ item }: Props) => {
           </Link>
         )}
         {hasUpdatePermission && (
-          <Link href={`inventory/${item?.id}/edit`}>
+          <Link href={`/dashboard/inventory/${item?.id}/edit`}>
             <Button variant="primary" size="sm" className="w-full">
               <Edit className="mr-2 h-4 w-4" />
               Editar

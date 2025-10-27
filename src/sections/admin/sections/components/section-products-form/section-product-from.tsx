@@ -38,7 +38,7 @@ const SectionProductFrom = ({ append }: Props) => {
       append({
         customBackgroundColor: values.customBackgroundColor,
         customLabel: variant?.productName || "",
-        productGlobalId: variant.globalID,
+        productGlobalId: variant.id || variant.productId,
         displayOrder: values.displayOrder,
         isFeatured: values.isFeatured,
         product: variant,

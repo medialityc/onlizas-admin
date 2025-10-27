@@ -33,7 +33,7 @@ export default function SectionForm({ initValue }: Props) {
 
   return (
     <section className="w-full px-2 sm:px-4 py-6">
-      <FormProvider methods={form} onSubmit={onSubmit} id="section-form">
+      <FormProvider methods={form} onSubmit={onSubmit} id="section-form" noValidate>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {/* Card 1: Info principal */}
           <div className="bg-white dark:bg-slate-900 rounded-xl shadow p-6 flex flex-col gap-4 col-span-1 md:col-span-2 xl:col-span-3">
@@ -44,6 +44,7 @@ export default function SectionForm({ initValue }: Props) {
                 placeholder="Ej: Productos destacados"
                 autoFocus
                 maxLength={100}
+                required
               />
               <RHFInputWithLabel
                 name="description"
@@ -52,18 +53,21 @@ export default function SectionForm({ initValue }: Props) {
                 autoFocus
                 min={4}
                 maxLength={255}
+                required
               />
               <RHFInputWithLabel
                 name="viewMoreUrl"
                 label="Url"
                 placeholder="Ej: /products/view-more"
                 maxLength={50}
+                required
               />
               <RHFInputWithLabel
                 name="displayOrder"
                 label="Orden de visualización"
                 placeholder="Ej: 1,2,3"
                 type="number"
+                required
               />
               <RHFSelect
                 label="Tipo de plantilla"
@@ -77,20 +81,21 @@ export default function SectionForm({ initValue }: Props) {
                 label="Cantidad de elementos por defecto"
                 placeholder="Ej: 10,20,30"
                 type="number"
+                required
               />
               <RHFSelect
                 options={TARGET_USER_SEGMENT_OPTIONS}
                 name="targetUserSegment"
                 label="Segmento de usuarios"
                 placeholder="Ej: Jóvenes, Adultos"
-                autoFocus
+                required
               />
               <RHFSelect
                 options={TARGET_USER_DEVICE_OPTIONS}
                 name="targetDeviceType"
                 label="Tipo de dispositivo"
                 placeholder="Ej: Móvil, Escritorio"
-                autoFocus
+                required
               />
             </div>
           </div>
@@ -102,14 +107,24 @@ export default function SectionForm({ initValue }: Props) {
                 minDate={new Date()}
                 name="startDate"
                 label="Fecha de inicio"
+                required
               />
               <RHFDateInput
                 minDate={new Date(startDate)}
                 name="endDate"
                 label="Fecha de expiración"
+                required
               />
-              <RHFColorPicker name="backgroundColor" label="Color de banner" />
-              <RHFColorPicker name="textColor" label="Color de texto" />
+              <RHFColorPicker
+                name="backgroundColor"
+                label="Color de banner"
+                required
+              />
+              <RHFColorPicker
+                name="textColor"
+                label="Color de texto"
+                required
+              />
             </div>
           </div>
 
