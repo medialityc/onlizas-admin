@@ -22,7 +22,7 @@ import GetYForm from "../forms/promotion-x-get-y";
 import { mapBackendPromotionType, navigateAfterSave } from "../utils/promotion-helpers";
 
 interface PromotionFormContainerProps {
-  storeId: number;
+  storeId: string; // Cambiado a string para GUIDs
   mode: "create" | "edit";
   promotionType?: string;  // Solo para create
   //promotionId?: number;    // Solo para edit

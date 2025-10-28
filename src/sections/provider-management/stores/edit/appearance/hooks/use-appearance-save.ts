@@ -47,8 +47,6 @@ export function useAppearanceSave({ store }: UseAppearanceSaveProps) {
         throw new Error(themeResponse.message || "Error al guardar tema y colores");
       }
       
-      console.log("✅ Tema guardado correctamente");
-      
       // 2. Guardar banners solo si existen y tienen contenido válido
       if (data.banners && data.banners.length > 0) {
         // 🔧 NORMALIZAR: Crear array limpio sin prototipos anidados
@@ -76,7 +74,6 @@ export function useAppearanceSave({ store }: UseAppearanceSaveProps) {
 
             if (trulyMissingImage.length > 0) {
               const list = trulyMissingImage.map((b: any) => b.title || `[pos ${b.position}]`).join(", ");
-              console.warn("⏭️ Banners nuevos omitidos por no tener imagen:", trulyMissingImage);
               toast.info(`Se omitieron ${trulyMissingImage.length} banner(s) nuevos sin imagen: ${list}`, {
                 position: "top-right",
                 autoClose: 4000,
@@ -89,39 +86,27 @@ export function useAppearanceSave({ store }: UseAppearanceSaveProps) {
                 storeId: store.id, // 🔧 SOLO para CREATE
                 isUpdate: false
               });
-              console.log("Create FormData being sent to backend");
-              Array.from(createFormData.entries()).forEach(([key, value]) => {
-                console.log(`${key}:`, value);
-              });
   
               const createResponse = await createBannersStore(createFormData);
               
               if (createResponse.error) {
                 throw new Error(createResponse.message || "Error al crear nuevos banners");
               }
-              console.log("✅ Banners creados correctamente");
             }
           }
           
           // Actualizar banners existentes
           if (bannersToUpdate.length > 0) {
-            console.log("Banners to update:", bannersToUpdate);
             const updateFormData = await buildBannersFormData({ 
               banners: bannersToUpdate,
               isUpdate: true
               // 🔧 NO storeId para UPDATE - ya tienen ID del backend
-            });
-            console.log("Update FormData being sent to backend");
-            // Log the FormData contents (as much as possible)
-            Array.from(updateFormData.entries()).forEach(([key, value]) => {
-              console.log(`${key}:`, value);
             });
             const updateResponse = await updateBannersStore(updateFormData);
             
             if (updateResponse.error) {
               throw new Error(updateResponse.message || "Error al actualizar banners existentes");
             }
-            console.log("✅ Banners actualizados correctamente");
           }
         }
       }
@@ -133,7 +118,6 @@ export function useAppearanceSave({ store }: UseAppearanceSaveProps) {
       
       return { success: true };
     } catch (error) {
-      console.error("❌ Error al guardar apariencia:", error);
       const errorMessage = error instanceof Error ? error.message : "Error desconocido";
       toast.error(`Error al guardar la apariencia: ${errorMessage}`, {
         position: "top-right",

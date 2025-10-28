@@ -30,7 +30,6 @@ export function useBanners({ backendBanners, setValue }: UseBannersProps) {
   const [editingBanner, setEditingBanner] = React.useState<BannerItem | null>(null);
   const [open, setOpen] = React.useState(false);
   const initializedRef = React.useRef(false);
-console.log(backendBanners?.[2],"en el use")
   // Inicializar banners desde el backend
   React.useEffect(() => {
     if (backendBanners && backendBanners.length > 0 && !initializedRef.current) {
@@ -97,7 +96,6 @@ console.log(backendBanners?.[2],"en el use")
   };
 
   const handleCreateBanner = (banner: BannerForm) => {
-console.log("create banner")
     const newBanner = {
       // ID temporal para identificar localmente, pero no se enviará al backend
       id: -Date.now(), // ID temporal negativo único      

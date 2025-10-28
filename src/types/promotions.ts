@@ -47,8 +47,8 @@ export type PromotionSearchParams = {
 
 // Para crear promoción
 export type PromotionRequest = {
-  id?:number,
-  storeId?: number;
+  id?:string,
+  storeId?: string;
   name: string;
   description: string;
   discountType: number;
@@ -59,8 +59,8 @@ export type PromotionRequest = {
   startDate: string;
   endDate: string;
   usageLimitPerUser?: number,
-  categoriesIds?: number[];
-  productVariantsIds?: number[];
+  categoriesIds?: string[]; // Cambiado a string[] para GUIDs
+  productVariantsIds?: string[]; // Cambiado a string[] para GUIDs
 };
 
 // Para actualizar promoción

@@ -10,10 +10,10 @@ type ApplyMode = "orders" | "products" | "categories";
 interface ApplyToSelectorProps {
   name?: string;
   label?: string;
-  storeId?: number;
+  storeId?: string;
 }
 
-export function ApplyToSelector({ name = "appliesTo", label = "Aplica a", storeId = 0 }: ApplyToSelectorProps) {
+export function ApplyToSelector({ name = "appliesTo", label = "Aplica a", storeId = "" }: ApplyToSelectorProps) {
   const { formState, setValue } = useFormContext();
   const error = (formState.errors as any)?.[name]?.message;
 

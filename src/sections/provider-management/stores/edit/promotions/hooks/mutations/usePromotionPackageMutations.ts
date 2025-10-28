@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { createPromotionPackage, updatePromotionPackage } from "@/services/promotions";
 
-export function usePromotionPackageMutations(storeId: number) {
+export function usePromotionPackageMutations(storeId: string) { // Cambiado a string para GUIDs
 	const queryClient = useQueryClient();
 
 	const invalidate = () => {
