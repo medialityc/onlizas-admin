@@ -44,15 +44,16 @@ export default function BannerCard({
 }
 
 function BannerImage({ banner }: { banner: BannerItem }) {
-  if (banner.image) {
+  console.log(banner.desktopImage)
+  if (banner.desktopImage) {
     // Si es File, crear URL temporal
     return (
       <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
         <Image
           src={
-            banner.image instanceof File
-              ? URL.createObjectURL(banner.image)
-              : banner.image
+            banner.desktopImage instanceof File
+              ? URL.createObjectURL(banner.desktopImage)
+              : banner.desktopImage
           }
           alt={banner.title}
           width={48}

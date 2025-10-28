@@ -19,11 +19,8 @@ export const AppearanceSchema = z.object({
     position: z.coerce.number().int().nonnegative({ message: "La posición debe ser un número entero" }).optional(),
     initDate: z.string().optional(),
     endDate: z.string().optional(),
-    image: z.union([
-      z.instanceof(File, { message: "Debe ser un archivo válido." }),
-      z.string(),
-      z.null(),
-    ]).optional(),
+    desktopImage: z.union([z.instanceof(File), z.string()]).optional(),
+    mobileImage: z.union([z.instanceof(File), z.string()]).optional(),
     active: z.boolean().optional(),
   })).default([]),
 });
@@ -44,7 +41,8 @@ export interface AppearanceFormData {
     position?: number;
     initDate?: string;
     endDate?: string;
-    image?: File | string | null;
+    desktopImage?: File | string | null;
+    mobileImage?: File | string | null;
     active?: boolean;
   }>;
 }

@@ -38,15 +38,26 @@ type BuildBannersFormDataParams = {
   banners: AppearanceForm["banners"];
   storeId?: string | number;
   filter?: (banner: AppearanceForm["banners"][number], index: number) => boolean;
+  isUpdate?: boolean;
 };
 
 // Construye el FormData para banners
-export function buildBannersFormData({ banners, storeId, filter }: BuildBannersFormDataParams) {
-  
+export async function buildBannersFormData({ banners, storeId, filter, isUpdate = false }: BuildBannersFormDataParams) {
+  const formData = new FormData();
+
+  // Helper: convierte File a base64
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
   // Helper: asegura formato ISO-8601 con hora para el backend
   const toIsoOrUndefined = (value?: string | null): string | undefined => {
     if (!value) return undefined;
-    // Si ya parece ISO con tiempo, devuelve tal cual
     if (/[Tt].*Z$/.test(value)) return value;
     try {
       return new Date(value).toISOString();
@@ -55,49 +66,71 @@ export function buildBannersFormData({ banners, storeId, filter }: BuildBannersF
     }
   };
 
-  const entries = banners
-    .map((b, idx) => ({ b, idx }))
-    .filter(({ b, idx }) => (filter ? filter(b, idx) : true));
+  const filteredBanners = banners.filter((b, idx) => (filter ? filter(b, idx) : true));
 
-  const bannersData = entries.map(({ b }) => ({
-    // Solo incluir ID si es positivo (del backend), ignorar IDs temporales negativos
-    ...(b.id && typeof b.id === 'number' && b.id > 0 ? { id: b.id } : {}),
+  // Procesar banners para incluir imágenes en metadata si es update
+  const processedBanners = await Promise.all(filteredBanners.map(async (b) => {
+    const metadata: any = {
+      title: b.title ?? "",
+      urlDestinity: b.urlDestinity ?? "",
+      position: typeof b.position === "number" ? b.position : Number(b.position ?? 0),
+      active: b.active ?? true,
+    };
 
-    // 🔧 IMPORTANTE: Agregar storeId SOLO para banners nuevos (CREATE)
-    ...(storeId && (!b.id || (typeof b.id === 'number' && b.id < 0)) ? { storeId } : {}),
+    if (b.id) {
+      metadata.id = b.id;
+    }
 
-    title: b.title,
-    urlDestinity: b.urlDestinity,
-    position: typeof b.position === "number" ? b.position : Number(b.position ?? 0),
-    initDate: toIsoOrUndefined(b.initDate),
-    endDate: toIsoOrUndefined(b.endDate),
-    active: b.active ?? true,
+    if (storeId && (!b.id || (typeof b.id === "number" && b.id < 0))) {
+      metadata.storeId = String(storeId);
+    }
+
+    const initDate = toIsoOrUndefined(b.initDate);
+    if (initDate) {
+      metadata.initDate = initDate;
+    }
+    const endDate = toIsoOrUndefined(b.endDate);
+    if (endDate) {
+      metadata.endDate = endDate;
+    }
+
+    // Para update, incluir imágenes en metadata como base64 o string
+    if (isUpdate) {
+      if (b.desktopImage instanceof File) {
+        metadata.desktopImage = await fileToBase64(b.desktopImage);
+      } else if (typeof b.desktopImage === "string") {
+        metadata.desktopImage = b.desktopImage;
+      }
+
+      if (b.mobileImage instanceof File) {
+        metadata.mobileImage = await fileToBase64(b.mobileImage);
+      } else if (typeof b.mobileImage === "string") {
+        metadata.mobileImage = b.mobileImage;
+      }
+    }
+
+    return metadata;
   }));
-  const formData = new FormData();
-  const bannersPayload = bannersData.length === 1 ? bannersData[0] : bannersData;
-  formData.append("banners", JSON.stringify(bannersPayload));
-  // Agregar imágenes
-  let appended = 0;
-  entries.forEach(({ b }, i) => {
-    const isFile = b.image instanceof File;
-    
-    if (isFile) {
-      formData.append("images", b.image as File);
-      console.log("es file en el fomrdata")
-      appended++;
-    } /* else if (b.image != null) {
-      // If image is a URL/base64 string, append as text
-      formData.append("images",b.image);
-      appended++;
-    } */
-  });
 
-  // Use Array.from to avoid requiring --downlevelIteration or ES2015 target
-  Array.from(formData.entries()).forEach(([key, value]) => {
-    console.log(key, value);
-  });
+  // 1. Añadir el array de metadatos como un string JSON
+  formData.append("banners", JSON.stringify(processedBanners));
 
-  console.log("🖼️ Total images appended:", appended);
+  // 2. Añadir las imágenes por separado solo si no es update
+  if (!isUpdate) {
+    filteredBanners.forEach((b, i) => {
+      // Adjuntar imagen de escritorio si es un archivo
+      const desktopImage = b.desktopImage;
+      if (desktopImage instanceof File) {
+        formData.append(`desktopImage`, desktopImage);
+      }
+
+      // Adjuntar imagen móvil si es un archivo
+      const mobileImage = b.mobileImage;
+      if (mobileImage instanceof File) {
+        formData.append(`mobileImage`, mobileImage);
+      }
+    });
+  }
 
   return formData;
 }

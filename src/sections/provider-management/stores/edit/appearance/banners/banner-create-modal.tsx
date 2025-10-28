@@ -18,7 +18,7 @@ type Props = {
   open: boolean;
   onClose: () => void;
   onCreate: (banner: BannerForm) => void;
-  onUpdate?: (id: number, banner: BannerForm) => void;
+  onUpdate?: (id: string | number, banner: BannerForm) => void;
   editingBanner?: BannerItem | null; // Banner que se está editando
 };
 
@@ -44,10 +44,11 @@ export default function BannerCreateModal({
     defaultValues: {
       title: "",
       urlDestinity: "",
-      position: 1,
+      position: 0,
       initDate: todayLocal(),
       endDate: todayLocal(),
-      image: "",
+      desktopImage: "",
+      mobileImage: "",
       active: true,
     },
     mode: "onBlur",
@@ -67,18 +68,20 @@ export default function BannerCreateModal({
           urlDestinity: editingBanner.urlDestinity || "",
           position: position,
           initDate: fixDate(editingBanner.initDate ?? todayLocal()),
-          endDate: fixDate(editingBanner.initDate ?? todayLocal()),
-          image: editingBanner.image ?? "",
+          endDate: fixDate(editingBanner.endDate ?? todayLocal()),
+          desktopImage: editingBanner.desktopImage ?? "",
+          mobileImage: editingBanner.mobileImage ?? "",
           active: editingBanner.active ?? true,
         });
       } else {
         methods.reset({
           title: "",
           urlDestinity: "",
-          position: 1,
+          position: 0,
           initDate: new Date(),
           endDate: new Date(),
-          image: "",
+          desktopImage: "",
+          mobileImage: "",
           active: true,
         });
       }
@@ -90,7 +93,7 @@ export default function BannerCreateModal({
       isEditing &&
       editingBanner &&
       onUpdate &&
-      typeof editingBanner.id === "number"
+      editingBanner.id != null
     ) {
       onUpdate(editingBanner.id, data);
     } else {
@@ -116,7 +119,7 @@ export default function BannerCreateModal({
   return (
     <SimpleModal open={open} onClose={onClose} title={modalTitle}>
       <RHFFormProvider {...methods}>
-        <div className="grid grid-cols-1 gap-4">
+        <div className="space-y-4">
           <RHFInputWithLabel
             name="title"
             label="Título"
@@ -131,9 +134,9 @@ export default function BannerCreateModal({
             name="position"
             label="Posición"
             options={[
-              { label: "Hero (Principal)", value: "1" },
-              { label: "Sidebar", value: "2" },
-              { label: "Footer", value: "3" },
+              { label: "Hero (Principal)", value: "0" },
+              { label: "Sidebar", value: "1" },
+              { label: "Footer", value: "2" },
             ]}
           />
           <div className="grid grid-cols-1  dark:text-gray-100 sm:grid-cols-2 gap-4">
@@ -148,12 +151,20 @@ export default function BannerCreateModal({
               minDate={isEditing ? undefined : new Date()}
             />
           </div>
-          <RHFImageUpload
-            name="image"
-            label="Imagen del Banner"
-            variant="rounded"
-            className=" dark:text-gray-100"
-          />
+          <div>
+            <RHFImageUpload
+              name="desktopImage"
+              label="Imagen del Banner (Desktop)"
+              variant="rounded"
+              className=" dark:text-gray-100"
+            />
+            <RHFImageUpload
+              name="mobileImage"
+              label="Imagen del Banner (Mobile)"
+              variant="rounded"
+              className=" dark:text-gray-100"
+            />
+          </div>
         </div>
         <div className="mt-6 flex justify-end gap-3">
           <button type="button" className="btn btn-outline" onClick={onClose}>

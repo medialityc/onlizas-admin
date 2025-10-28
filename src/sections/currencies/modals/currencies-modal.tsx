@@ -50,7 +50,7 @@ export default function CurrenciesModal({
       codIso: currency?.codIso ?? "",
       symbol: currency?.symbol ?? "",
       rate: currency?.rate ?? 1,
-      regionsId: currency?.regions?.map((r) => r.id) ?? [],
+      regionIds: currency?.regions?.map((r) => r.id) ?? [],
     },
   });
 
@@ -68,6 +68,7 @@ export default function CurrenciesModal({
     setError(null);
     onClose();
   };
+  console.log(methods.formState.errors)
 
   const onSubmit = async (data: CurrencyFormData) => {
     setError(null);
@@ -79,7 +80,7 @@ export default function CurrenciesModal({
           name: data.name,
           symbol: data.symbol,
           rate: data.rate,
-          regionsId: data.regionsId,
+          regionIds: data.regionIds,
         });
       } else {
         response = await createCurrency(data);

@@ -14,7 +14,7 @@ export const BannerSchema = z.object({
     required_error: "La fecha de fin es requerida",
     invalid_type_error: "La fecha de fin debe ser válida"
   }),
-  image: z.union([
+  desktopImage: z.union([
     z.instanceof(File),
     z.string().min(1, "La imagen es obligatoria"),
   ]).refine((val) => {
@@ -22,6 +22,10 @@ export const BannerSchema = z.object({
   }, {
     message: "La imagen es obligatoria"
   }),
+  mobileImage: z.union([
+    z.instanceof(File),
+    z.string(),
+  ]).optional(),
   active: z.boolean()
 }).refine((data) => data.endDate > data.initDate, {
   message: "La fecha de fin debe ser posterior a la fecha de inicio",

@@ -1,8 +1,8 @@
 // Constantes y utilidades para banners
 export const POSITION_LABELS: Record<number, string> = {
-  1: "Hero (Principal)",
-  2: "Sidebar",
-  3: "Slideshow",
+  0: "Hero (Principal)",
+  1: "Sidebar",
+  2: "Footer",
 };
 
 export const normalizePosition = (pos: unknown): number => {
@@ -14,9 +14,9 @@ export const normalizePosition = (pos: unknown): number => {
 
     // Map string enums to numbers
     const normalized = pos.toLowerCase().trim();
-    if (normalized === "hero" || normalized === "1") return 1;
-    if (normalized === "sidebar" || normalized === "2") return 2;
-    if (normalized === "footer" || normalized === "3") return 3;
+    if (normalized === "hero" || normalized === "0") return 0;
+    if (normalized === "sidebar" || normalized === "1") return 1;
+    if (normalized === "footer" || normalized === "2") return 2;
   }
   return 1; // Default to Hero if can't parse
 };
