@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const sectionProductSchema = z.object({
   id: z.string().optional(),
-  productGlobalId: z.union([z.string(), z.number()]),
+  productGlobalId: z.string(),
   displayOrder: z.number(),
   isFeatured: z.boolean().default(true),
   customLabel: z.string(),
@@ -126,7 +126,7 @@ export const sectionSchema = z
   });
 
 export type SectionFormData = z.infer<typeof sectionSchema> & {
-  id?: number;
+  id?: string;
   createdAt?: string | Date;
   updatedAt?: string | Date;
 };

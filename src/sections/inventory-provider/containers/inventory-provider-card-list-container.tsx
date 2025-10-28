@@ -9,13 +9,12 @@ import { InventoryProviderCardGrid } from "../components/inventory-provider-card
 import { Button } from "@/components/button/button";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
-import { IUser, IUserResponseMe } from "@/types/users";
 import { GetAllInventoryProviderResponse } from "@/types/inventory";
 
 interface Props {
   inventories: Promise<ApiResponse<GetAllInventoryProviderResponse>>;
   query: SearchParams;
-  provider?: IUser | IUserResponseMe;
+  provider: { id: string; name: string };
   showBackButton?: boolean;
 }
 
@@ -54,12 +53,12 @@ export default function InventoryProviderCardListContainer({
             </h2>
             {showBackButton ? (
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Gestiona el inventario del proveedor -{" "}
+                Gestiona el inventario del proveedor
                 <span className="font-bold"> {provider?.name}</span>
               </p>
             ) : (
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Gestione el inventario de sus productos -{" "}
+                Gestione el inventario de sus productos
                 <span className="font-bold"> {provider?.name}</span>
               </p>
             )}

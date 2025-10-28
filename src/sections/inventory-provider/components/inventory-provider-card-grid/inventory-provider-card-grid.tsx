@@ -5,13 +5,12 @@ import InventoryProviderCardList from "../inventory-provider-card/inventory-prov
 import { GetAllInventoryProviderResponse } from "@/types/inventory";
 import { useModalState } from "@/hooks/use-modal-state";
 import CreateInventoryModal from "../../modal/create-inventory-modal";
-import { IUser, IUserResponseMe } from "@/types/users";
 
 interface Props {
   data?: GetAllInventoryProviderResponse;
   searchParams: SearchParams;
   onSearchParamsChange: (params: SearchParams) => void;
-  provider?: IUser | IUserResponseMe;
+  provider: { id: string; name: string };
 }
 
 export function InventoryProviderCardGrid({

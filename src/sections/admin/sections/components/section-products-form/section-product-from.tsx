@@ -36,11 +36,11 @@ const SectionProductFrom = ({ append }: Props) => {
   const addProduct = (values: SectionProductItemFormData) => {
     variants?.forEach((variant) => {
       append({
-        customBackgroundColor: values.customBackgroundColor,
-        customLabel: variant?.productName || "",
         productGlobalId: variant.id || variant.productId,
         displayOrder: values.displayOrder,
         isFeatured: values.isFeatured,
+        customBackgroundColor: values.customBackgroundColor,
+        customLabel: variant?.productName || "",
         product: variant,
       });
     });
@@ -126,6 +126,7 @@ const SectionProductFrom = ({ append }: Props) => {
                         extraFilters={{ categoriesIds: category }}
                         autoFocus
                         onOptionSelected={(product: InventoryProductItem) => {
+                          console.log(product,'product')
                           setVariants((prev) => {
                             const newArr = prev
                               ? [...prev, product]

@@ -11,5 +11,10 @@ export const sectionAdapterEdit = (session: SectionFormData) => {
       TEMPLATE_TYPE_ENUM[
         session.templateType as unknown as keyof typeof TEMPLATE_TYPE_ENUM
       ] || 0,
+    products:
+      session?.products?.map((item) => ({
+        ...item,
+        productGlobalId: item.id as string,
+      })) || [],
   };
 };
