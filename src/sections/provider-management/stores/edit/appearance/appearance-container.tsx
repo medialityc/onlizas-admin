@@ -21,7 +21,6 @@ export default function AppearanceContainer({ store }: Props) {
   // Control de permisos
   const { hasPermission } = usePermissions();
   const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
-console.log(store,"contendor apariencia")
   return (
     <FormProvider id="appearance-form" methods={methods} onSubmit={onSubmit}>
       <div className="p-6">

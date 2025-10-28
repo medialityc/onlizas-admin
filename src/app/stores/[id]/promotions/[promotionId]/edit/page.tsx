@@ -15,10 +15,10 @@ interface EditPromotionPageProps {
  */
 export default async function EditPromotionPage({ params }: EditPromotionPageProps) {
   const { id, promotionId } = await params;
-  const storeId = parseInt(id);
+  const storeId = id; // Mantener como string para GUIDs
   const promotionIdNum = parseInt(promotionId);
 
-  if (isNaN(storeId) || isNaN(promotionIdNum)) {
+  if (isNaN(promotionIdNum)) {
     notFound();
   }
 

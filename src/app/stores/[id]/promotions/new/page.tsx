@@ -16,7 +16,7 @@ export default async function CreatePromotionPage({ params, searchParams }: Crea
   const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
   
-  const storeId = parseInt(resolvedParams.id);
+  const storeId = resolvedParams.id; // Mantener como string para GUIDs
   const promotionType = resolvedSearchParams.type;
 
   // Validar que el tipo existe

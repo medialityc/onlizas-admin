@@ -38,7 +38,7 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface FreeDeliveryFormProps {
-  storeId: number;
+  storeId: string; // Cambiado a string para GUIDs
   mode: string;
   promotionData?: Promotion; //& { simpleDates: [] }; // Cambiado a Promotion para usar el objeto del backend directamente
   onCancel: () => void;
@@ -66,6 +66,8 @@ export default function FreeDeliveryForm({
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
 
+  
+
   const methods = useForm<FreeDeliveryFormData>({
     resolver: zodResolver(freeDeliverySchema),
     defaultValues: {
@@ -88,6 +90,7 @@ export default function FreeDeliveryForm({
   const { hasPermission } = usePermissions();
   const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
 
+  console.log(methods.formState.errors)
   const onFormSubmit = handleSubmit(async (data) => {
     // Usar la función reutilizable para construir FormData
     const formData = buildPromotionFormData(
@@ -208,7 +211,7 @@ export default function FreeDeliveryForm({
               <FormInput
                 name="usageLimit"
                 label="Límite de veces que se puede usar en total"
-                type="spinner"
+                type="number"
               />
               <FormInput
                 name="usageLimitPerUser"

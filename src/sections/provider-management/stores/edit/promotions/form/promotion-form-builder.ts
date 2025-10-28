@@ -7,7 +7,7 @@ import type { PromotionRequest, Promotion } from "@/types/promotions";
  */
 export function buildPromotionFormData(
   data: any,
-  storeId: number,
+  storeId: string, // Cambiado a string para GUIDs
   promotionType: string,
   promotionData?: Promotion
 ): FormData {
@@ -127,13 +127,13 @@ export function buildPromotionFormData(
     }
   }
 
-  // Normalize arrays
-  const productVariantsIds: number[] = Array.isArray((data as any).productVariantsIds)
-    ? (data as any).productVariantsIds.map((p: any) => Number(p)).filter((n: number) => !Number.isNaN(n))
+  // Normalize arrays - mantener como strings para GUIDs
+  const productVariantsIds: string[] = Array.isArray((data as any).productVariantsIds)
+    ? (data as any).productVariantsIds.map((p: any) => String(p)).filter(Boolean)
     : [];
 
   const categoriesIds = Array.isArray((data as any).categoriesIds)
-    ? (data as any).categoriesIds.map((c: any) => Number(c)).filter(Boolean)
+    ? (data as any).categoriesIds.map((c: any) => String(c)).filter(Boolean)
     : [];
 
   const usageLimit = Number((data as any).usageLimit ?? 0);
@@ -161,8 +161,8 @@ export function buildPromotionFormData(
 
   // Payload base (removed startDate/endDate since we use rangeDates array)
   const payload: Partial<PromotionRequest> = {
-    id: promotionData?.id,
-    storeId,
+    id: promotionData?.id ? String(promotionData.id) : undefined, // Convertir a string
+    storeId: storeId, // Ya es string
     name: String(data.name ?? ""),
     description: String(data.description ?? ""),
     discountType,

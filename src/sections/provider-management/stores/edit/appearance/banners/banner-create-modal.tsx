@@ -107,9 +107,9 @@ export default function BannerCreateModal({
     (data: BannerForm) => submitOnly(data),
     (errors) => {
       // Visible en consola para depurar rápidamente
-      try {
-        console.warn("Errores Banner:", JSON.stringify(errors));
-      } catch {}
+      // try {
+      //   console.warn("Errores Banner:", JSON.stringify(errors));
+      // } catch {}
     }
   );
 

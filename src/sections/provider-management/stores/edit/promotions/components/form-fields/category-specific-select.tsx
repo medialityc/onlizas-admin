@@ -3,7 +3,7 @@ import { getStoreCategoriesForSelect } from "@/services/store-categories";
 
 interface Props {
   name: string;
-  storeId: number;
+  storeId: string; // Cambiado a string para GUIDs
   label?: string;
 }
 

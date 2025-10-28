@@ -13,10 +13,9 @@ import { useBanners } from "../hooks/use-banners";
 
 export default function BannersTab() {
   const { register, setValue, getValues } = useFormContext<AppearanceFormData>(); // Usar any para evitar conflictos de tipos
-console.log(getValues("banners"))
+
   // Solo usar datos del formulario (backend) o array vacío
   const backendBanners = getValues("banners") || [];
-  console.log(backendBanners,"en bannertabs")
 
 
   // Register virtual field under appearance to sync into global form

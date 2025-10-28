@@ -16,7 +16,7 @@ import {
   togglePromotionStatus
 } from "@/services/promotions";
 
-export function usePromotions(storeId: number, initialParams: PromotionSearchParams = {}) {
+export function usePromotions(storeId: string, initialParams: PromotionSearchParams = {}) { // Cambiado a string para GUIDs
   const [searchParams, setSearchParams] = useState<PromotionSearchParams>(initialParams);
   const queryClient = useQueryClient();
 

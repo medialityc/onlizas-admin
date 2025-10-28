@@ -37,7 +37,7 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface OrderValueFormProps {
-  storeId: number;
+  storeId: string; // Cambiado a string para GUIDs
   mode: string;
   promotionData?: Promotion;
   onCancel: () => void;
