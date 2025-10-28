@@ -1,24 +1,28 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import BannerCreateModal from "./banner-create-modal";
 import BannerMetrics from "./banner-metrics";
 import BannerHeader from "./banner-header";
 import BannersList from "./banners-list";
 import { getPositionLabel } from "./banner-utils";
+import { AppearanceFormData } from "../schemas/appearance-schema";
 import { useBanners } from "../hooks/use-banners";
 
-export default function BannersTab() {
-  const { register, setValue, getValues } = useFormContext<any>(); // Usar any para evitar conflictos de tipos
 
+export default function BannersTab() {
+  const { register, setValue, getValues } = useFormContext<AppearanceFormData>(); // Usar any para evitar conflictos de tipos
+console.log(getValues("banners"))
   // Solo usar datos del formulario (backend) o array vacío
   const backendBanners = getValues("banners") || [];
+  console.log(backendBanners,"en bannertabs")
+
 
   // Register virtual field under appearance to sync into global form
-  useEffect(() => {
-    register("banners");
-  }, [register]);
+  // useEffect(() => {
+  //   register("banners");
+  // }, [register]);
 
   // Hook personalizado para manejar banners
   const {

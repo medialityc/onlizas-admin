@@ -29,7 +29,7 @@ export type CreateCurrency = {
   codIso: string;
   symbol: string;
   rate: number;
-  regionsId: (number|string)[];
+  regionIds: (number|string)[];
 };
 
 export type UpdateCurrency = {
@@ -37,7 +37,7 @@ export type UpdateCurrency = {
   name: string;
   symbol: string;
   rate: number;
-  regionsId: (number|string)[];
+  regionIds: (number|string)[];
 };
 
 export type GetAllCurrencies = {

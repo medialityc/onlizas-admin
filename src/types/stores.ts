@@ -20,7 +20,8 @@ export type BannerItem = {
   position: number | string; // integer position
   initDate?: string | null; // ISO date string - usar nombres del backend
   endDate?: string | null;   // ISO date string - usar nombres del backend
-  image?: File | string | null;
+  desktopImage?: File | string | null;
+  mobileImage?: File | string | null;
   active: boolean;
 };
 
@@ -47,6 +48,7 @@ export type StoreBanner = {
   startDate: string;
   endDate: string;
   active: boolean;
+  
 };
 
 type StoreMetrics = {
@@ -123,12 +125,14 @@ export type Store = {
   ];
   banners: [
     {
+      id:string,
       title: string;
       urlDestinity: string;
       position: number | string;
       initDate: string;
       endDate: string;
-      image: string;
+      desktopImage: string;
+      mobileImage?: string;
     },
   ];
   businessName: string;

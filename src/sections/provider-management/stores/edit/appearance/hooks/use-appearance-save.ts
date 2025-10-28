@@ -5,12 +5,23 @@ import { BannerItem, Store } from "@/types/stores";
 import { AppearanceSchema, type AppearanceFormData, DEFAULT_APPEARANCE } from "../schemas/appearance-schema";
 import { updateSupplierStore, createBannersStore, updateBannersStore } from "@/services/stores";
 import { buildThemeFormData, buildBannersFormData } from "../utils/appearance-form-data";
+import { normalizePosition } from "../banners/banner-utils";
 
 interface UseAppearanceSaveProps {
   store: Store;
 }
 
 export function useAppearanceSave({ store }: UseAppearanceSaveProps) {
+  // Normalizar banners del store para que coincidan con el schema
+  const normalizeBanners = (banners: any[]) => {
+    return banners.map(b => ({
+      ...b,
+      position: typeof b.position === "string" ? normalizePosition(b.position) : b.position,
+      desktopImage: b.desktopImage || "",
+      mobileImage: b.mobileImage || "",
+    }));
+  };
+
   const methods = useForm<any>({ // Tipo simple para evitar conflictos
     mode: "onBlur",
     defaultValues: {
@@ -21,15 +32,13 @@ export function useAppearanceSave({ store }: UseAppearanceSaveProps) {
       font: store.font ?? DEFAULT_APPEARANCE.font,
       template: store.template ?? DEFAULT_APPEARANCE.template,
       
-      // Banners desde store
-      banners: store.banners ?? DEFAULT_APPEARANCE.banners,
+      // Banners desde store, normalizados
+      banners: store.banners ? normalizeBanners(store.banners) : DEFAULT_APPEARANCE.banners,
     },
   });
 
   const onSubmit = async (data: any) => {
     try {
-     
-      
       // 1. Siempre guardar tema y colores (incluso si no hay banners)
       const themeFormData = buildThemeFormData({ store, data });
       const themeResponse = await updateSupplierStore(store.id, themeFormData);
@@ -55,14 +64,15 @@ export function useAppearanceSave({ store }: UseAppearanceSaveProps) {
        
         if (validBanners.length > 0) {
           // Separar banners nuevos y existentes
-          const bannersToCreate = validBanners.filter((b: any) => !b.id || b.id < 0);
-          const bannersToUpdate = validBanners.filter((b: any) => b.id && b.id > 0);
-                   // Crear nuevos banners (solo los que tienen imagen nueva)
+          const bannersToCreate = validBanners.filter((b: any) => !b.id || (typeof b.id === "number" && b.id < 0));
+          const bannersToUpdate = validBanners.filter((b: any) => b.id && typeof b.id === "string");
+          
+          // Crear nuevos banners (solo los que tienen imagen nueva)
           if (bannersToCreate.length > 0) {
-            // Heurística: si image es string, asumimos que proviene del backend (existente sin id)
-            const fromBackendNoId = bannersToCreate.filter((b: BannerItem) => typeof b.image === "string");
-            const toCreateWithImage = bannersToCreate.filter((b: BannerItem) => b.image instanceof File);
-            const trulyMissingImage = bannersToCreate.filter((b: BannerItem) => b.image == null);
+            // Heurística: si desktopImage es string, asumimos que proviene del backend (existente sin id)
+            const fromBackendNoId = bannersToCreate.filter((b: BannerItem) => typeof b.desktopImage === "string");
+            const toCreateWithImage = bannersToCreate.filter((b: BannerItem) => b.desktopImage instanceof File);
+            const trulyMissingImage = bannersToCreate.filter((b: BannerItem) => b.desktopImage == null);
 
             if (trulyMissingImage.length > 0) {
               const list = trulyMissingImage.map((b: any) => b.title || `[pos ${b.position}]`).join(", ");
@@ -74,9 +84,14 @@ export function useAppearanceSave({ store }: UseAppearanceSaveProps) {
             }
 
             if (toCreateWithImage.length > 0) {
-              const createFormData = buildBannersFormData({ 
+              const createFormData = await buildBannersFormData({ 
                 banners: toCreateWithImage, 
-                storeId: store.id // 🔧 SOLO para CREATE
+                storeId: store.id, // 🔧 SOLO para CREATE
+                isUpdate: false
+              });
+              console.log("Create FormData being sent to backend");
+              Array.from(createFormData.entries()).forEach(([key, value]) => {
+                console.log(`${key}:`, value);
               });
   
               const createResponse = await createBannersStore(createFormData);
@@ -90,10 +105,16 @@ export function useAppearanceSave({ store }: UseAppearanceSaveProps) {
           
           // Actualizar banners existentes
           if (bannersToUpdate.length > 0) {
-            console.log(bannersToUpdate)
-            const updateFormData = buildBannersFormData({ 
-              banners: bannersToUpdate
+            console.log("Banners to update:", bannersToUpdate);
+            const updateFormData = await buildBannersFormData({ 
+              banners: bannersToUpdate,
+              isUpdate: true
               // 🔧 NO storeId para UPDATE - ya tienen ID del backend
+            });
+            console.log("Update FormData being sent to backend");
+            // Log the FormData contents (as much as possible)
+            Array.from(updateFormData.entries()).forEach(([key, value]) => {
+              console.log(`${key}:`, value);
             });
             const updateResponse = await updateBannersStore(updateFormData);
             
