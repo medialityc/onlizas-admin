@@ -11,7 +11,7 @@ type PageProps = {
 export default async function StoreEditPage({ params }: PageProps) {
   const { id } = await params;
   const { data: store } = await getStoreById(id);
-  console.log(store)
+  //console.log(store)
 
   if (!store) return notFound();
 

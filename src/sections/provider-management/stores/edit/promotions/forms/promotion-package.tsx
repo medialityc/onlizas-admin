@@ -34,6 +34,8 @@ import { usePromotionPackageMutations } from "../hooks/mutations/usePromotionPac
 import ProductSelect from "../components/form-fields/product-multi-select";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { useQuery } from "@tanstack/react-query";
+import { getStoreById } from "@/services/stores";
 
 interface OrderValueFormProps {
   storeId: string; // Cambiado a string para GUIDs
@@ -77,6 +79,15 @@ export default function PackageForm({
   // Control de permisos
   const { hasPermission } = usePermissions();
   const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+
+  // Obtener información de la tienda para el supplierId
+  const { data: storeData } = useQuery({
+    queryKey: ["store", storeId],
+    queryFn: () => getStoreById(storeId),
+    enabled: !!storeId,
+  });
+
+  const supplierId = storeData?.data?.supplierId ? String(storeData.data.supplierId) : "";
 
   const onFormSubmit = handleSubmit(async (data) => {
     // Usar la función reutilizable para construir FormData
@@ -179,6 +190,7 @@ export default function PackageForm({
                 multiple={true}
                 name="productVariantsIds"
                 storeId={storeId}
+                supplierId={supplierId}
                 label="Productos aplicables"
               />
             </div>

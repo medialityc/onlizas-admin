@@ -3,7 +3,6 @@ import { useFormContext, Controller } from "react-hook-form";
 import ProductMultiSelect from "./product-multi-select";
 import CategorySpecificSelect from "./category-specific-select";
 import { RadioGroup, RadioGroupItem } from "@/components/radio/radio-group";
-import ProductSelect from "./product-multi-select";
 
 type ApplyMode = "orders" | "products" | "categories";
 
@@ -11,9 +10,10 @@ interface ApplyToSelectorProps {
   name?: string;
   label?: string;
   storeId?: string;
+  supplierId?: string;
 }
 
-export function ApplyToSelector({ name = "appliesTo", label = "Aplica a", storeId = "" }: ApplyToSelectorProps) {
+export function ApplyToSelector({ name = "appliesTo", label = "Aplica a", storeId = "", supplierId = "" }: ApplyToSelectorProps) {
   const { formState, setValue } = useFormContext();
   const error = (formState.errors as any)?.[name]?.message;
 
@@ -46,7 +46,7 @@ export function ApplyToSelector({ name = "appliesTo", label = "Aplica a", storeI
                   </div>
                   {field.value === "products" && (
                     <div className="mt-3">
-                      <ProductSelect multiple={true} name="productVariantsIds" storeId={storeId} label="Productos incluidos" />
+                      <ProductMultiSelect multiple={true} name="productVariantsIds" storeId={storeId} supplierId={supplierId} label="Productos incluidos" />
                     </div>
                   )}
                 </div>

@@ -34,6 +34,8 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { Button } from "@/components/button/button";
 import { Label } from "@/components/label/label";
 import { getCommonDefaultValues } from "../utils/default-values";
+import { useQuery } from "@tanstack/react-query";
+import { getStoreById } from "@/services/stores";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
@@ -85,6 +87,15 @@ export default function FreeDeliveryForm({
   const loading = mutations.isCreating || mutations.isUpdating || isLoading;
   const router = useRouter();
   const { handleSubmit } = methods;
+
+  // Obtener información de la tienda para el supplierId
+  const { data: storeData } = useQuery({
+    queryKey: ["store", storeId],
+    queryFn: () => getStoreById(storeId),
+    enabled: !!storeId,
+  });
+
+  const supplierId = storeData?.data?.supplierId ? String(storeData.data.supplierId) : "";
 
   // Control de permisos
   const { hasPermission } = usePermissions();
@@ -181,6 +192,7 @@ export default function FreeDeliveryForm({
                   multiple={true}
                   name="productVariantsIds"
                   storeId={storeId}
+                  supplierId={supplierId}
                   label="Productos aplicables"
                 />
               </div>
