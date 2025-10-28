@@ -35,6 +35,8 @@ import ProductSelect from "../components/form-fields/product-multi-select";
 import { RHFInputWithLabel } from "@/components/react-hook-form";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { useQuery } from "@tanstack/react-query";
+import { getStoreById } from "@/services/stores";
 
 interface GetYFormProps {
   storeId: string; // Cambiado a string para GUIDs
@@ -78,6 +80,15 @@ export default function GetYForm({
   // Control de permisos
   const { hasPermission } = usePermissions();
   const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+
+  // Obtener información de la tienda para el supplierId
+  const { data: storeData } = useQuery({
+    queryKey: ["store", storeId],
+    queryFn: () => getStoreById(storeId),
+    enabled: !!storeId,
+  });
+
+  const supplierId = storeData?.data?.supplierId ? String(storeData.data.supplierId) : "";
 
   const onFormSubmit = handleSubmit(async (data) => {
     // Usar la función reutilizable para construir FormData
@@ -179,12 +190,14 @@ export default function GetYForm({
               <ProductSelect
                 name="productIdX"
                 storeId={storeId}
+                supplierId={supplierId}
                 label="Producto X"
                 multiple={false}
               />
               <ProductSelect
                 name="productIdY"
                 storeId={storeId}
+                supplierId={supplierId}
                 label="Producto Y"
                 multiple={false}
               />
