@@ -28,7 +28,7 @@ export type ISection = {
   endDate: Date | string;
   products: [
     {
-      productGlobalId: string;
+      id: string;
       displayOrder: number;
       isFeatured: true;
       customLabel: string;

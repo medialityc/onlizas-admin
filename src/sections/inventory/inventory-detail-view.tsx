@@ -1,12 +1,14 @@
+"use client";
 import Badge from "@/components/badge/badge";
+import ImagePreview from "@/components/image/image-preview";
 import { InventoryProductItem, InventoryProvider } from "@/types/inventory";
-import React from "react";
 
 interface Props {
   inventory: InventoryProvider;
 }
 
 export default function InventoryDetailView({ inventory }: Props) {
+  console.log(inventory);
   return (
     <div className="space-y-6 px-4 sm:px-6 py-4">
       {/* Top header card with location + summary */}
@@ -173,20 +175,11 @@ export default function InventoryDetailView({ inventory }: Props) {
                     key={p.id}
                     className="flex flex-col sm:flex-row items-center sm:items-start gap-4 p-3 border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800"
                   >
-                    <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-md overflow-hidden flex-shrink-0">
-                      {p.images && p.images.length > 0 ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={p.images[0]}
-                          alt={p.productName}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
-                          No image
-                        </div>
-                      )}
-                    </div>
+                    <ImagePreview
+                      className="w-20 h-20 bg-gray-100"
+                      images={p.images || []}
+                      alt={p.productName}
+                    />
 
                     <div className="flex-1 w-full">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between">

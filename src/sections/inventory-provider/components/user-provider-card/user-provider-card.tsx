@@ -43,16 +43,6 @@ const UserProviderCard = ({ item, className }: Props) => {
             )}
           >
             <UserGroupIcon className="h-6 w-6" />
-            {/* {item?.photoUrl ? (
-              <Image
-                src={item?.photoUrl}
-                height={24}
-                width={24}
-                alt={item?.name ?? "provider-image"}
-              />
-            ) : (
-              <UserGroupIcon className="h-6 w-6" />
-            )} */}
           </div>
           <div>
             <Link href={`/dashboard/inventory/list/${item?.id}`}>
@@ -113,7 +103,7 @@ const UserProviderCard = ({ item, className }: Props) => {
         {/* actions */}
         <div className="flex justify-end w-full">
           {hasReadPermission && (
-            <Link href={`/dashboard/inventory/list/${item?.id}`}>
+            <Link href={`/dashboard/inventory/list/${item?.id}/${item?.name}`}>
               <Button outline className="w-full" variant="secondary">
                 Ver inventario
               </Button>
