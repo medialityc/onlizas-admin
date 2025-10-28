@@ -18,9 +18,7 @@ export const warehouseSchema = z
     capacityUnit: z.string().nullable().optional(),
 
     // virtual
-    virtualTypeId: z.coerce.string().optional().nullable(),
     supplierId: z.string().optional(),
-    rules: z.any().optional(),
   })
   .refine(
     (data) => {
@@ -83,30 +81,24 @@ export const warehouseSchema = z
   .refine(
     (data) => {
       if (data.type === WAREHOUSE_TYPE_ENUM.virtualwarehouse) {
-        return (
-          data.virtualTypeId !== undefined && data.supplierId !== undefined
-        );
+        return data.supplierId !== undefined;
       }
       return true;
     },
     {
-      message:
-        "Tipo virtual y proveedor son requeridos para almacenes virtuales",
-      path: ["virtualTypeId"],
+      message: "Proveedor es requerido para almacenes virtuales",
+      path: ["supplierId"],
     }
   )
   .refine(
     (data) => {
       if (data.type === WAREHOUSE_TYPE_ENUM.virtualwarehouse) {
-        return (
-          data.virtualTypeId !== undefined && data.supplierId !== undefined
-        );
+        return data.supplierId !== undefined;
       }
       return true;
     },
     {
-      message:
-        "Tipo virtual y proveedor son requeridos para almacenes virtuales",
+      message: "Proveedor son requeridos para almacenes virtuales",
       path: ["supplierId"],
     }
   );

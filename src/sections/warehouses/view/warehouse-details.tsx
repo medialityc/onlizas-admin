@@ -60,7 +60,7 @@ export async function WarehouseDetails({
               Tipo:
             </span>
             <span className="text-gray-600 dark:text-gray-300">
-              {w.type === "physical" ? "Físico" : "Virtual"}
+              {w.type === "physical" ? "General" : "Para proveedor"}
             </span>
           </div>
           {w.type === "physical" && (

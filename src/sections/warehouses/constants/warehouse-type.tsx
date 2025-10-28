@@ -4,8 +4,8 @@ export enum WAREHOUSE_TYPE_ENUM {
 }
 
 export const WAREHOUSE_TYPE_OPTIONS = [
-  { value: WAREHOUSE_TYPE_ENUM.warehouse, label: "Físico" },
-  { value: WAREHOUSE_TYPE_ENUM.virtualwarehouse, label: "Virtual" },
+  { value: WAREHOUSE_TYPE_ENUM.warehouse, label: "General" },
+  { value: WAREHOUSE_TYPE_ENUM.virtualwarehouse, label: "Para Proveedor" },
 ];
 
 export enum WAREHOUSE_VIRTUAL_SUBTYPE_ENUM {

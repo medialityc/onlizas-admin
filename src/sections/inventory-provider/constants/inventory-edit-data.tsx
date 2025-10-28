@@ -27,8 +27,7 @@ export function buildCreateProductVariantFormData(
   }
 
   // Quantity & Price
-  if (input.stock !== undefined)
-    fd.append("stock", String(input.stock));
+  if (input.stock !== undefined) fd.append("stock", String(input.stock));
   if (input.price !== undefined) fd.append("price", String(input.price));
 
   // Purchase limit & flags
@@ -38,6 +37,8 @@ export function buildCreateProductVariantFormData(
     fd.append("isLimit", input.isLimit ? "true" : "false");
   if (input.isPrime !== undefined)
     fd.append("isPrime", input.isPrime ? "true" : "false");
+  if (input.isActive !== undefined)
+    fd.append("isActive", input.isActive ? "true" : "false");
   if (input.packageDelivery !== undefined)
     fd.append("packageDelivery", input.packageDelivery ? "true" : "false");
 

@@ -63,6 +63,7 @@ const InventoryVariantFrom = ({ variantIndex, remove, isPacking }: Props) => {
               required
             />
           </div>
+
           <div>
             <RHFInputWithLabel
               name="stock"
@@ -123,6 +124,7 @@ const InventoryVariantFrom = ({ variantIndex, remove, isPacking }: Props) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           <RHFSwitch name={`isPrime`} label="Entrega express" />
+          <RHFSwitch name={`isActive`} label="Variante Activa?" />
         </div>
       </div>
 

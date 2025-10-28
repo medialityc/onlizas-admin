@@ -23,6 +23,8 @@ function EditContainer({ inventory, features }: Props) {
         const val = {
           value: feature?.value ?? "",
           isRequired: feature?.isRequired,
+          featureDescription: feature?.featureDescription,
+          suggestions: feature?.suggestions ?? [],
         };
 
         return [feature?.name ?? "", val];
@@ -35,11 +37,11 @@ function EditContainer({ inventory, features }: Props) {
       {
         sku: "",
         details: featuresNormalized,
+        isActive: true,
         stock: 0,
         price: 0,
         purchaseLimit: 0,
         isPrime: false,
-
         warranty: {
           isWarranty: false,
           warrantyTime: 0,

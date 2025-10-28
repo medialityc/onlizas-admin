@@ -10,7 +10,7 @@ import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-aut
 import { getAllWarehousesVirtualType } from "@/services/warehouses-virtual-types";
 import { MeWarehouseFormData } from "../../schemas/me-warehouse-schema";
 import { usePermissions } from "@/hooks/use-permissions";
-import { PERMISSION_ENUM } from '../../../../lib/permissions';
+import { PERMISSION_ENUM } from "../../../../lib/permissions";
 
 type Props = {
   warehouse?: MeWarehouseFormData;
@@ -48,26 +48,6 @@ export function MeWarehouseForm({ warehouse, onClose }: Props) {
               label="Nombre del Almacén"
               placeholder="Ej: Centro de Distribución Principal"
               required
-            />
-          </div>
-          <div>
-            <RHFAutocompleteFetcherInfinity
-              name="virtualTypeId"
-              label="Tipo de almacén virtual"
-              placeholder="Seleccionar un tipo de almacén"
-              onFetch={(params) =>
-                getAllWarehousesVirtualType({ ...params, active: true })
-              }
-              objectValueKey="id"
-              objectKeyLabel="name"
-              queryKey="warehouse-virtual-types"
-            />
-          </div>
-          <div className="col-span-1 md:col-span-2">
-            <RHFInputWithLabel
-              name="rules"
-              label="Reglas"
-              placeholder="Regla"
             />
           </div>
 

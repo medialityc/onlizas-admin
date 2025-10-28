@@ -6,6 +6,7 @@ export const productVariants = z
     limitPurchaseLimit: z.number().optional(),
     id: z.number(),
     sku: z.string({ required_error: "SKU es requerido" }),
+    isActive: z.boolean().default(true),
     details: z
       .union([
         z

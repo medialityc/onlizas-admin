@@ -7,13 +7,13 @@ export const warehousesTabs: TabItem[] = [
     icon: "buildingLibrary",
   },
   {
-    label: "Almacenes Físicos",
-    href: "/dashboard/warehouses/physical",
+    label: "Almacenes Generales",
+    href: "/dashboard/warehouses/warehouse",
     icon: "buildingStorefront",
   },
   {
-    label: "Almacenes Virtuales",
-    href: "/dashboard/warehouses/virtual",
+    label: "Almacenes para proveedores",
+    href: "/dashboard/warehouses/virtualwarehouse",
     icon: "buildingOffice",
   },
 ];

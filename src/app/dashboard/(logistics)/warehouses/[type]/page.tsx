@@ -16,10 +16,10 @@ export const generateMetadata = async ({
 }: PageProps): Promise<Metadata> => {
   const { type } = await params;
   const typeName =
-    type === WAREHOUSE_TYPE_ENUM.warehouse ? "Físicos" : "Virtual";
+    type === WAREHOUSE_TYPE_ENUM.warehouse ? "General" : "Para Proveedor";
   return {
     title: `Almacenes ${typeName} - Onlizas`,
-    description: "Gestión de almacenes físicos del sistema.",
+    description: "Gestión de almacenes del sistema.",
     icons: {
       icon: "/assets/images/NEWZAS.svg",
     },

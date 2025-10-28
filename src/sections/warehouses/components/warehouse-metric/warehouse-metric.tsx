@@ -40,7 +40,7 @@ const WarehouseMetric = () => {
           </div>
           <div>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Almacenes Físicos
+              Almacenes Generales
             </p>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
               <ValueBySkeleton
@@ -59,7 +59,7 @@ const WarehouseMetric = () => {
           </div>
           <div>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Almacenes Virtuales
+              Almacenes para proveedores
             </p>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
               <ValueBySkeleton

@@ -38,7 +38,7 @@ export default function HeaderBar() {
           }
         >
           <Cog6ToothIcon className="w-4 h-4" />
-          {watchedType === "virtual" ? "Virtual" : "Físico"}
+          {watchedType === "virtual" ? "Para proveedor" : "General"}
         </span>
         <span
           className={

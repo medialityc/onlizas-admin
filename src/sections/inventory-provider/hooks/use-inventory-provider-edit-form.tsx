@@ -17,6 +17,7 @@ const initValue: ProductVariant = {
   id: 0,
   sku: "",
   details: {},
+  isActive: true,
   stock: 0,
   price: 0,
   volume: 0,

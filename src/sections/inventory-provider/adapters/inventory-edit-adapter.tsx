@@ -11,6 +11,7 @@ export const getInventoryEditAdapter = (inventory: InventoryProvider): any => {
       warranty: prod.warranty ? prod.warranty : undefined,
       purchaseLimit: prod?.limitPurchaseLimit,
       packageDelivery: false,
+      isActive: prod?.isActive,
       isLimit:
         prod?.limitPurchaseLimit && prod?.limitPurchaseLimit > 0 ? true : false,
     })),

@@ -58,13 +58,6 @@ export const sidebarSections: SidebarSection[] = [
         permissions: PERMISSION_ADMIN, // Admin puede gestionar monedas
       },
       {
-        id: "virtual-warehouse-types",
-        label: "Tipos de almacenes virtuales",
-        path: paths.dashboard.virtualWarehouseTypes.list,
-        icon: <WarehouseIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ADMIN, // Admin puede gestionar tipos de almacenes
-      },
-      {
         id: "locations",
         label: "Localizaciones",
         path: paths.dashboard.locations.list,

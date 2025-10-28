@@ -27,7 +27,7 @@ const InventoryProviderCard = ({ item }: Props) => {
   return (
     <Card className="group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full dark:border-slate-700">
       <CardHeader className="space-y-0 pb-4">
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start justify-between gap-4 min-w-0">
           <div className="relative h-24 w-24 overflow-hidden rounded-lg">
             <ImagePreview
               alt={item?.parentProductName}
@@ -41,16 +41,18 @@ const InventoryProviderCard = ({ item }: Props) => {
               </Badge>
             )}
           </div>
-          <div className="flex-1 space-y-1">
-            <h3 className="font-medium line-clamp-2 text-foreground">
-              {item.parentProductName}
+          <div className="flex-1 space-y-1 min-w-0">
+            <h3 className="font-medium line-clamp-2 text-foreground truncate">
+              <span className="block w-full truncate">
+                {item.parentProductName}
+              </span>
             </h3>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              {item.totalQuantity}
               <Package className="h-4 w-4" />
-              <span>{item.totalQuantity} unidades</span>
             </div>
           </div>
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-col items-end gap-2 flex-shrink-0">
             <Badge
               variant={item.active ? "info" : "danger"}
               className="size-fit"

@@ -20,6 +20,7 @@ export type InventoryProductItem = {
   storeName: string;
   details: string[];
   images?: string[];
+  isActive?: boolean;
 };
 
 // Tipos para Currency

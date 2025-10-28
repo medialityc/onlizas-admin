@@ -77,14 +77,14 @@ export function WarehouseCard({
           <div className="min-w-0">
             <Link
               href={`/dashboard/warehouses/${route}/${warehouse.id!}`}
-              className="text-base font-medium text-gray-900 dark:text-white hover:text-primary dark:hover:text-primary cursor-pointer truncate"
+              className="block w-full text-base font-medium text-gray-900 dark:text-white hover:text-primary dark:hover:text-primary cursor-pointer truncate"
               title={warehouse.name}
             >
-              {warehouse.name}
+              <span className="block w-full truncate">{warehouse.name}</span>
             </Link>
             <div className="flex flex-wrap gap-1 mt-1">
               <Badge variant={isPhysical ? "info" : "success"}>
-                {isPhysical ? "Físico" : "Virtual"}
+                {isPhysical ? "General" : "Para proveedor"}
               </Badge>
               <Badge
                 variant={warehouse?.active ? "outline-info" : "outline-danger"}
@@ -102,7 +102,7 @@ export function WarehouseCard({
       {/* Body - contenido que crece */}
       <CardContent className="flex flex-col gap-2 flex-grow">
         {/* Tipo Virtual */}
-        {warehouse.virtualTypeId && (
+        {warehouse.virtualTypeName && (
           <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
             <BuildingOfficeIcon className="h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
             <div>

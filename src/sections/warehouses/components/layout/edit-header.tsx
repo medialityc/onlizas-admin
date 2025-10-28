@@ -61,8 +61,8 @@ function EditHeader({ warehouse }: { warehouse: WarehouseFormData }) {
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium bg-gray-100 text-gray-700 ring-1 ring-inset ring-gray-300 dark:bg-gray-800/50 dark:text-gray-200 dark:ring-gray-700/50">
                   {warehouse.type === WAREHOUSE_TYPE_ENUM.warehouse
-                    ? "Físico"
-                    : "Virtual"}
+                    ? "General"
+                    : "Para proveedor"}
                 </span>
               </div>
             </div>
