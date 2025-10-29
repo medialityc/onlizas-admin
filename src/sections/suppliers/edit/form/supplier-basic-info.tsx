@@ -5,6 +5,7 @@ import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
 import {
   SUPPLIER_NATIONALITY_OPTIONS,
   SUPPLIER_TYPE_SELLER_OPTIONS,
+  SUPPLIER_NATIONALITY,
 } from "../../constants/supplier.options";
 
 export default function SupplierBasicInfo() {
@@ -70,13 +71,13 @@ export default function SupplierBasicInfo() {
         type="text"
         required
       />
-      {nacionalityType !== "Nacional" && (
+      {nacionalityType !== undefined && (
         <RHFInputWithLabel
           name="mincexCode"
-          label="Código Mincex"
+          label={`Código Mincex${nacionalityType === SUPPLIER_NATIONALITY.Extranjero ? " *" : ""}`}
           placeholder="Ingresa el código Mincex"
           type="text"
-          required
+          required={nacionalityType === SUPPLIER_NATIONALITY.Extranjero}
         />
       )}
       <div className="space-y-2 md:col-span-2">

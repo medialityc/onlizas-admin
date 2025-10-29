@@ -9,11 +9,13 @@ import { PERMISSION_ENUM } from "@/lib/permissions";
 interface ApprovalControlsProps {
   approvalProcessId: string;
   className?: string;
+  pendingCategories?: { id: string; name: string }[];
 }
 
 export default function ApprovalControls({
   approvalProcessId,
   className,
+  pendingCategories = [],
 }: ApprovalControlsProps) {
   const [comments, setComments] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -23,6 +25,13 @@ export default function ApprovalControls({
   const canApproveReject = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const submit = (isApproved: boolean) => {
+    // Si se aprueba, comprobar que exista al menos 1 categoría pendiente
+    if (isApproved && (!pendingCategories || pendingCategories.length === 0)) {
+      toast.error(
+        "No se puede aprobar: el proveedor debe tener al menos 1 categoría pendiente seleccionada."
+      );
+      return;
+    }
     const data = {
       approvalProcessId,
       isApproved,

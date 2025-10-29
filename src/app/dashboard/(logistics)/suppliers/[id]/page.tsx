@@ -138,7 +138,10 @@ export default async function Page({
             </p>
           </div>
           <div className="p-8">
-            <ApprovalControls approvalProcessId={supplierDetails.id} />
+            <ApprovalControls
+              approvalProcessId={supplierDetails.id}
+              pendingCategories={supplierDetails.pendingCategories ?? []}
+            />
           </div>
         </section>
       )}

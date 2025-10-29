@@ -41,6 +41,14 @@ export default function SupplierEditActions({
 
   return (
     <div>
+      {/* Global form error summary */}
+      {Object.keys(errors || {}).length > 0 && (
+        <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-md p-3 mb-4">
+          <p className="text-sm text-red-700 dark:text-red-200">
+            Hay errores en el formulario. Por favor revisa los campos marcados.
+          </p>
+        </div>
+      )}
       <div className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
         <button
           type="button"

@@ -14,7 +14,7 @@ export const updateSupplierSchema = z.object({
     .string({ required_error: "El teléfono es obligatorio." })
     .min(1, "El teléfono no puede estar vacío.")
     .max(20, "El teléfono no puede tener más de 20 caracteres."),
-  countryCode: z.string().min(1, "El código de país es obligatorio."),
+  countryCode: z.string().optional(),
   address: z
     .string({ required_error: "La dirección es obligatoria." })
     .min(1, "La dirección no puede estar vacía.")
@@ -36,8 +36,7 @@ export const updateSupplierSchema = z.object({
         name: z.string().min(2).max(100),
       })
     )
-    .default([])
-    .optional(),
+    .min(1, "Debes seleccionar al menos una categoría pendiente."),
   approvedCategories: z
     .array(
       z.object({
@@ -47,6 +46,7 @@ export const updateSupplierSchema = z.object({
     )
     .default([])
     .optional(),
+  // .default([]) y .optional() removidos para requerir al menos una categoría
   sellerType: z.coerce
     .number({
       required_error: "El tipo de vendedor es obligatorio.",
@@ -69,16 +69,16 @@ export type UpdateSupplierFormData = z.infer<typeof updateSupplierSchema>;
 
 export const updateSupplierSchemaWithRules = updateSupplierSchema.superRefine(
   (data, ctx) => {
+    // El código Mincex es obligatorio únicamente cuando la nacionalidad es Extranjero
     if (
-      [SUPPLIER_NATIONALITY.Extranjero, SUPPLIER_NATIONALITY.Ambos].includes(
-        data.nacionalityType
-      )
+      data.nacionalityType === SUPPLIER_NATIONALITY.Extranjero ||
+      data.nacionalityType === SUPPLIER_NATIONALITY.Ambos
     ) {
       if (!data.mincexCode || data.mincexCode.trim().length === 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["mincexCode"],
-          message: "El código Mincex es obligatorio para extranjeros o ambos.",
+          message: "El código Mincex es obligatorio para extranjeros.",
         });
       }
     }

@@ -8,8 +8,12 @@ import { UpdateSupplierFormData } from "./schema";
 import { SupplierState } from "@/types/suppliers";
 
 function SupplierCategories({ state }: { state: SupplierState }) {
-  const { control, getValues, setValue } =
-    useFormContext<UpdateSupplierFormData>();
+  const {
+    control,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = useFormContext<UpdateSupplierFormData>();
 
   const {
     fields: approvedFields,
@@ -36,7 +40,7 @@ function SupplierCategories({ state }: { state: SupplierState }) {
       {/* Autocomplete to add Pending Categories */}
       <div className="space-y-2">
         <RHFAutocompleteFetcherInfinity<CategoryType>
-          label="Agregar a categorías pendientes"
+          label="Agregar a categorías pendientes *"
           name="__pendingCategoriesPicker"
           onFetch={getAllCategories}
           multiple
@@ -121,6 +125,11 @@ function SupplierCategories({ state }: { state: SupplierState }) {
             </ul>
           )}
         </div>
+        {errors?.pendingCategories && (
+          <p className="text-sm text-red-600 px-4 pt-2">
+            {errors.pendingCategories.message as string}
+          </p>
+        )}
       </div>
       {state !== "Pending" && (
         <div className="space-y-2">

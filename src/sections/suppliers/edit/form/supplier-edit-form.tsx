@@ -77,7 +77,7 @@ export default function SupplierEditForm({
   }, [initValue, reset]);
 
   // Removed documents prefill; documents now managed outside RHF form
-
+  console.log(methods.formState.errors);
   const onSubmit = async (data: UpdateSupplierFormData) => {
     setIsLoading(true);
     try {
@@ -89,15 +89,19 @@ export default function SupplierEditForm({
       formData.append("name", data.name);
       formData.append("email", data.email);
       formData.append("phone", data.phone);
-      formData.append("countryCode", data.countryCode);
+      if (data.countryCode) {
+        formData.append("countryCode", data.countryCode);
+      }
       formData.append("address", data.address);
       formData.append("message", data.message || "");
       formData.append("type", data.type);
       formData.append("active", data.active.toString());
       formData.append("sellerType", String(data.sellerType));
       formData.append("nacionalityType", String(data.nacionalityType));
-      if ((data.mincexCode ?? "").length > 0) {
-        formData.append("mincexCode", String(data.mincexCode));
+      if (data.mincexCode) {
+        console.log(data.mincexCode);
+
+        formData.append("mincexCode", data.mincexCode);
       }
       data.pendingCategories?.forEach((cat) => {
         formData.append("pendingCategoryIds", cat.id.toString());
