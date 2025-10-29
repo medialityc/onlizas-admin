@@ -9,9 +9,7 @@ export const initValueWarehouse: WarehouseFormData = {
   locationId: "",
   capacity: 0,
   capacityUnit: "KG",
-  rules: "",
   supplierId: undefined,
-  virtualTypeId: null,
 };
 export const initValueMeWarehouse: MeWarehouseFormData = {
   name: "",
