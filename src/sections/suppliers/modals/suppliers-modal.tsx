@@ -70,7 +70,6 @@ export default function SuppliersModal({
     setError(null);
     try {
       const formData = new FormData();
-
       if (data.createUserAutomatically) {
         if (data.userId !== undefined && data.userId !== null) {
           formData.append("userId", data.userId);

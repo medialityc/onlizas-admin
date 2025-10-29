@@ -107,13 +107,14 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                 params={{ pageSize: 20 }}
                 onOptionSelected={(option: any) => {
                   if (option && option.id) {
-                    console.log(option);
-
                     setValue("userId", option.id);
                     setSelectedUser(option);
                     setValue("name", option.name);
                     if (option.emails && option.emails.length > 0) {
                       setValue("email", option.emails[0].address);
+                    }
+                    if (option.phones && option.phones.length > 0) {
+                      setValue("countryCode", option.phones[0].countryId);
                     }
                     setValue("userMissingEmail", !option.hasEmail);
                     setValue("userMissingPhone", !option.hasPhoneNumber);
