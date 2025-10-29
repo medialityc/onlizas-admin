@@ -5,6 +5,7 @@ import { useFormContext } from "react-hook-form";
 
 type Props = {
   index?: number;
+  onDelete: () => void;
   onRemove: () => void;
   isPending: boolean;
   isPacking: boolean;
@@ -12,6 +13,7 @@ type Props = {
 
 const InventoryEditVariantContent = ({
   index,
+  onDelete,
   onRemove,
   isPending,
   isPacking,
@@ -31,7 +33,7 @@ const InventoryEditVariantContent = ({
             className="h-8"
             type="submit"
             loading={isPending}
-            disabled={isPending || !isDirty || !isValid}
+            // disabled={!isDirty }
           >
             Guardar
           </LoaderButton>
@@ -40,7 +42,8 @@ const InventoryEditVariantContent = ({
       <div className="gap-2">
         <InventoryVariantFrom
           variantIndex={index ?? 0}
-          remove={onRemove}
+          onDelete={onDelete}
+          onRemove={onRemove}
           isPacking={isPacking}
         />
       </div>

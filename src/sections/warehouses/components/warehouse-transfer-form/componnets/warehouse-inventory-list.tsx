@@ -1,7 +1,6 @@
 "use client";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { detailsObjectToArray } from "../../../../../utils/format";
-
 import { Button } from "@/components/button/button";
 import { ArrowRightLeft, XCircleIcon } from "lucide-react";
 import Badge from "@/components/badge/badge";
@@ -84,11 +83,13 @@ const WarehouseInventoryList = ({ warehouse }: Props) => {
       {/* inventories */}
       <div className="bg-white items-center dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 flex flex-col md:flex-row gap-4">
         <RHFAutocompleteFetcherInfinity
+          key={warehouseId}
           name="virtualTypeId"
           label="Inventario del almacén actual"
           placeholder="Seleccionar un inventario"
+          extraFilters={{ id: warehouseId }}
           onFetch={(params) =>
-            getAllWarehouseInventories(warehouseId ?? "", params)
+            getAllWarehouseInventories(warehouseId as string, params)
           }
           objectValueKey="id"
           objectKeyLabel="parentProductName"

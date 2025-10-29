@@ -1,45 +1,39 @@
 "use client";
-import React, { useCallback } from "react";
 import { FormProvider } from "@/components/react-hook-form";
-import { useRouter } from "next/navigation";
 import { useInventoryProviderEditForm } from "../../hooks/use-inventory-provider-edit-form";
 import InventoryEditVariantContent from "./inventory-edit-variant-content";
 import { ProductVariant } from "../../schemas/inventory-provider.schema";
+import { useInventoryVariantDelete } from "../../hooks/use-inventory-variant-delete";
 
 type Props = {
   initValue?: ProductVariant;
   supplierId?: string;
   inventoryId?: string;
   index?: number;
-  onRemove: () => void;
   isPacking: boolean;
+  onRemove: () => void;
 };
 
 const InventoryEditForm = ({
   initValue,
-  supplierId,
   inventoryId,
   index,
-  onRemove,
   isPacking,
+  onRemove
 }: Props) => {
-  const { push } = useRouter();
-  const handleCancel = useCallback(
-    () => push(`/dashboard/inventory/list/${supplierId}`),
-    [push, supplierId]
-  );
-
   const { form, isPending, onSubmit } = useInventoryProviderEditForm(
     initValue,
-    handleCancel,
-    inventoryId ?? ""
+    inventoryId as string
   );
+
+  const { onDelete } = useInventoryVariantDelete(inventoryId as string);
 
   return (
     <section>
       {/* details */}
       <FormProvider methods={form} onSubmit={onSubmit}>
         <InventoryEditVariantContent
+          onDelete={() => onDelete(initValue?.id as string)}
           onRemove={onRemove}
           index={index}
           isPending={isPending}

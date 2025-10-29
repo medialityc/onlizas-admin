@@ -152,6 +152,22 @@ export async function editVariantInventory(
 
   return buildApiResponseAsync<InventoryProvider>(res);
 }
+
+export async function deleteVariantInventory(
+  inventoryId: string | number,
+  variantId: string | number
+): Promise<ApiResponse<InventoryProvider>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.inventoryProvider.removeVariant(inventoryId, variantId),
+    method: "DELETE",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag(INVENTORY_TAG_KEY);
+
+  return buildApiResponseAsync<InventoryProvider>(res);
+}
 export async function getAllMyInventoryProvider(
   params: IQueryable
 ): Promise<ApiResponse<GetAllInventoryProviderResponse>> {

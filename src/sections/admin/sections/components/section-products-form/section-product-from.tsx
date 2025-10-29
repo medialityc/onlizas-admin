@@ -126,7 +126,6 @@ const SectionProductFrom = ({ append }: Props) => {
                         extraFilters={{ categoriesIds: category }}
                         autoFocus
                         onOptionSelected={(product: InventoryProductItem) => {
-                          console.log(product,'product')
                           setVariants((prev) => {
                             const newArr = prev
                               ? [...prev, product]
