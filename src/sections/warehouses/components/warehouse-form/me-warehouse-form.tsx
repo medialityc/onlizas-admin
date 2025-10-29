@@ -1,13 +1,11 @@
 "use client";
 
-import { FormProvider, RHFInputWithLabel } from "@/components/react-hook-form";
+import { FormProvider } from "@/components/react-hook-form";
 import { Button } from "@/components/button/button";
 import LocationSection from "./components/location-section";
 import { useMeWarehouseCreateForm } from "../../hooks/use-me-warehouse-create-form";
 import { useCallback } from "react";
 import RHFInput from "@/components/react-hook-form/rhf-input";
-import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import { getAllWarehousesVirtualType } from "@/services/warehouses-virtual-types";
 import { MeWarehouseFormData } from "../../schemas/me-warehouse-schema";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "../../../../lib/permissions";
@@ -21,8 +19,6 @@ export function MeWarehouseForm({ warehouse, onClose }: Props) {
     warehouse,
     onClose
   );
-
-  console.log("warehouse form render", warehouse);
 
   const handleClose = useCallback(() => {
     onClose?.();
