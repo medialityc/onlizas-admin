@@ -13,31 +13,63 @@ import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-imag
 import { ProductVariant } from "../../schemas/inventory-provider.schema";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import DeleteDialog from "@/components/modal/delete-modal";
+import { useToggle } from "@/hooks/use-toggle";
 
 type Props = {
   variantIndex: number;
-  remove: UseFieldArrayRemove;
+  onRemove: UseFieldArrayRemove;
+  onDelete: UseFieldArrayRemove;
   isPacking: boolean;
 };
 
-const InventoryVariantFrom = ({ variantIndex, remove, isPacking }: Props) => {
+const InventoryVariantFrom = ({
+  variantIndex,
+  onRemove,
+  onDelete,
+  isPacking,
+}: Props) => {
   const { watch } = useFormContext<ProductVariant>();
-  const [isWarranty, isLimit] = watch(["warranty.isWarranty", "isLimit"]);
+  const [isWarranty, isLimit, id] = watch([
+    "warranty.isWarranty",
+    "isLimit",
+    "id",
+  ]);
   const { hasPermission } = usePermissions();
   const hasDeletePermission = hasPermission([PERMISSION_ENUM.DELETE]);
+  const { open, onOpen, onClose } = useToggle(false);
 
   return (
     <div className="flex flex-col gap-2 mt-4 p-4 border dark:border-gray-600 border-dashed rounded-lg bg-slate-50 dark:bg-slate-900">
       <div className="flex flex-row gap-2 items-center justify-between col-span-2 mb-5">
         <h3 className="font-bold">Variante {variantIndex + 1}</h3>
         {hasDeletePermission && (
-          <Button
-            onClick={() => remove()}
-            className="bg-transparent rounded-full text-black p-0 border-0 shadow-none"
-            iconOnly
-          >
-            <XMarkIcon className={"h-4 w-4 text-black"} />
-          </Button>
+          <>
+            {!!id ? (
+              <div>
+                <Button
+                  onClick={onOpen}
+                  className="bg-transparent rounded-full text-black p-0 border-0 shadow-none"
+                  iconOnly
+                >
+                  <XMarkIcon className={"h-4 w-4 text-black"} />
+                </Button>
+                <DeleteDialog
+                  onClose={onClose}
+                  open={open}
+                  onConfirm={() => onDelete()}
+                />
+              </div>
+            ) : (
+              <Button
+                onClick={() => onRemove()}
+                className="bg-transparent rounded-full text-black p-0 border-0 shadow-none"
+                iconOnly
+              >
+                <XMarkIcon className={"h-4 w-4 text-black"} />
+              </Button>
+            )}
+          </>
         )}
       </div>
 
@@ -46,7 +78,7 @@ const InventoryVariantFrom = ({ variantIndex, remove, isPacking }: Props) => {
       <Separator className="my-2" />
 
       {/* Imágenes */}
-      <RHFMultiImageUpload name={`images`} label="Images de producto" />
+      <RHFMultiImageUpload name={"images"} label="Images de producto" />
       <Separator className="my-2" />
 
       {/* inventory info */}

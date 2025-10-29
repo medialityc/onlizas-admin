@@ -3,8 +3,8 @@ import { detailsArrayToObject } from "@/utils/format";
 import { z } from "zod";
 export const productVariants = z
   .object({
+    id: z.string().optional(),
     limitPurchaseLimit: z.number().optional(),
-    id: z.number(),
     sku: z.string({ required_error: "SKU es requerido" }),
     isActive: z.boolean().default(true),
     details: z

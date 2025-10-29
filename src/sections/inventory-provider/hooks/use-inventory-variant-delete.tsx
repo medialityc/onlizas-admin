@@ -10,6 +10,7 @@ import {
 import { buildCreateProductVariantFormData } from "../constants/inventory-edit-data";
 import {
   addVariantToInventory,
+  deleteVariantInventory,
   editVariantInventory,
 } from "@/services/inventory-providers";
 
@@ -34,21 +35,10 @@ const initValue: ProductVariant = {
   images: [],
 };
 
-export const useInventoryProviderEditForm = (
-  defaultValues: ProductVariant = initValue,
-  inventoryId: string
-) => {
-  const form = useForm({
-    defaultValues,
-    resolver: zodResolver(productVariants),
-  });
-
+export const useInventoryVariantDelete = (inventoryId: string) => {
   const { mutate, isPending } = useMutation({
-    mutationFn: async (payload: ProductVariant) => {
-      const fromData = await buildCreateProductVariantFormData(payload);
-      const res = await (payload.id
-        ? editVariantInventory(payload.id, fromData)
-        : addVariantToInventory(inventoryId, fromData));
+    mutationFn: async (variantId: string) => {
+      const res = await deleteVariantInventory(inventoryId, variantId);
 
       if (res.error) {
         throw res;
@@ -56,10 +46,8 @@ export const useInventoryProviderEditForm = (
 
       return;
     },
-    onSuccess(data) {
-      toast.success(`Se editó el inventario correctamente`);
-      console.log({ data });
-      // onRedirect?.();
+    onSuccess() {
+      toast.success(`Se eliminó la variante de el inventario correctamente`);
     },
     onError: (error: unknown) => {
       let msg = "Ocurrió un error al guardar el inventario";
@@ -73,10 +61,7 @@ export const useInventoryProviderEditForm = (
   });
 
   return {
-    form: form,
     isPending,
-    onSubmit: form.handleSubmit((values) => {
-      mutate(values);
-    }),
+    onDelete: mutate,
   };
 };

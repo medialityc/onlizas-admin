@@ -5,7 +5,7 @@ import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
 
 import { GetAllWarehouseTransfers } from "@/types/warehouses-transfers";
-import { WarehouseTransferList } from "../components/warehouse-trasfer-list/warehouse-trasfer-list";
+import { WarehouseTransferList } from "../components/warehouse-transfer-list/warehouse-transfer-list";
 
 interface Props {
   warehousesTransferPromise: ApiResponse<GetAllWarehouseTransfers>;

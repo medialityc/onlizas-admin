@@ -75,7 +75,7 @@ export async function getAllWarehouseInventories(
     url,
     method: "GET",
     useAuth: true,
-    next: { tags: ["warehouses-inventories"] },
+    next: { tags: ["warehouses-inventories", warehouseId] },
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<PaginatedResponse<InventoryProviderFormData>>(

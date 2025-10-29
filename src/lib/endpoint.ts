@@ -36,7 +36,8 @@ export const backendRoutes = {
   roles: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}roles`,
     create: `${process.env.NEXT_PUBLIC_API_URL}roles`,
-    update: (id: number | string) => `${process.env.NEXT_PUBLIC_API_URL}roles/${id}`,
+    update: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}roles/${id}`,
     delete: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}roles/${id}`,
     listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/roles`, // GET
   },
@@ -312,6 +313,8 @@ export const backendRoutes = {
     listByProvider: `${process.env.NEXT_PUBLIC_API_URL}suppliers/inventories`,
     delete: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/${id}`,
+    removeVariant: (inventoryId: number | string, variantId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}inventories/remove-variant/${inventoryId}/${variantId}`,
     listByUserProvider: (supplierId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}inventories/admin/list/${supplierId}`,
 
@@ -323,7 +326,7 @@ export const backendRoutes = {
     AddVariantToInventory: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}inventories/${id}/variants`,
     editVariantInventory: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}variants/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}inventories/variants/${id}`,
 
     variantByCategory: `${process.env.NEXT_PUBLIC_API_URL}inventories/variants/by-categories`,
     variantBySupplier: `${process.env.NEXT_PUBLIC_API_URL}inventories/variants/by-supplier`,

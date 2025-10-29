@@ -13,7 +13,6 @@ import { AlertBox } from "@/components/alert/alert-box";
 import { CircleAlertIcon } from "lucide-react";
 import { useWarehouseInventoryActions } from "../../contexts/warehouse-inventory-transfer.stote";
 import { generateWarehouseTransferNumber } from "../../utils/warehouse";
-import { getAllWarehouses } from "@/services/warehouses";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import { usePermissions } from "@/hooks/use-permissions";
 

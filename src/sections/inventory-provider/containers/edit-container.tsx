@@ -49,14 +49,14 @@ function EditContainer({ inventory, features }: Props) {
         },
         packageDelivery: false,
         images: [],
-        id: 0,
+        id: "",
         isLimit: false,
       },
       ...variants,
     ]);
   };
 
-  const handleDeleteVariant = (id: number) => {
+  const handleRemoveVariant = (id: string) => {
     setVariants(variants.filter((variant) => variant.id !== id));
   };
 
@@ -70,7 +70,7 @@ function EditContainer({ inventory, features }: Props) {
           initValue={product}
           inventoryId={inventory.id}
           index={index}
-          onRemove={() => handleDeleteVariant(product.id)}
+          onRemove={() => handleRemoveVariant(product.id as string)}
           isPacking={inventory.isPacking}
         />
       ))}

@@ -1,8 +1,11 @@
+import { isFileLike } from "@/utils/is-file";
 import { ProductVariant } from "../schemas/inventory-provider.schema";
+import { processImageFile } from "@/utils/image-helpers";
+import { toast } from "react-toastify";
 
-export function buildCreateProductVariantFormData(
+export async function buildCreateProductVariantFormData(
   input: ProductVariant
-): FormData {
+): Promise<FormData> {
   const fd = new FormData();
 
   // ID del producto variante
@@ -57,27 +60,20 @@ export function buildCreateProductVariantFormData(
     });
   }
 
+  console.log("input images", input.images);
+
   // Images
-  const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
-  if (Array.isArray(input.images)) {
-    const oversized: string[] = [];
-    input.images.forEach((f) => {
-      if (f instanceof File) {
-        if (f.size > MAX_IMAGE_SIZE) {
-          oversized.push(f.name ?? "unnamed");
+  if (input?.images?.length) {
+    for (let index = 0; index < input.images.length; index++) {
+      const f = input.images[index];
+      if (isFileLike(f)) {
+        const processedImage = await processImageFile(f);
+        if (processedImage) {
+          fd.append(`images[${index}]`, processedImage);
         } else {
-          fd.append("images", f);
+          toast.error("Error al procesar la imagen");
         }
-      } else if (typeof f === "string") {
-        fd.append("imagesUrls", f); // si el backend acepta URLs
       }
-    });
-    if (oversized.length) {
-      throw new Error(
-        `Las siguientes imágenes exceden el tamaño máximo de 5MB: ${oversized.join(
-          ", "
-        )}`
-      );
     }
   }
 
