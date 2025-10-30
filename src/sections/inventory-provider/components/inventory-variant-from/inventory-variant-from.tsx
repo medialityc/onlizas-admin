@@ -21,6 +21,7 @@ type Props = {
   onRemove: UseFieldArrayRemove;
   onDelete: UseFieldArrayRemove;
   isPacking: boolean;
+  deleteLoading?: boolean;
 };
 
 const InventoryVariantFrom = ({
@@ -28,6 +29,7 @@ const InventoryVariantFrom = ({
   onRemove,
   onDelete,
   isPacking,
+  deleteLoading,
 }: Props) => {
   const { watch } = useFormContext<ProductVariant>();
   const [isWarranty, isLimit, id] = watch([
@@ -58,6 +60,7 @@ const InventoryVariantFrom = ({
                   onClose={onClose}
                   open={open}
                   onConfirm={() => onDelete()}
+                  loading={deleteLoading}
                 />
               </div>
             ) : (

@@ -5,7 +5,7 @@ import { getUserProviderById } from "@/services/users";
 import { notFound } from "next/navigation";
 
 export const metadata = {
-  title: "Editar Inventario - ZAS Express",
+  title: "Editar Inventario - Onlizas",
 };
 
 interface EditPageProps {

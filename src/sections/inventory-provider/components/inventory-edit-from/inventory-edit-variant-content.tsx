@@ -9,6 +9,7 @@ type Props = {
   onRemove: () => void;
   isPending: boolean;
   isPacking: boolean;
+  deleteLoading?: boolean;
 };
 
 const InventoryEditVariantContent = ({
@@ -17,6 +18,7 @@ const InventoryEditVariantContent = ({
   onRemove,
   isPending,
   isPacking,
+  deleteLoading,
 }: Props) => {
   const {
     formState: { isDirty, isValid },
@@ -45,6 +47,7 @@ const InventoryEditVariantContent = ({
           onDelete={onDelete}
           onRemove={onRemove}
           isPacking={isPacking}
+          deleteLoading={deleteLoading}
         />
       </div>
     </div>
