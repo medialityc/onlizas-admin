@@ -39,7 +39,8 @@ export default function VariantsManager({
     onOpen();
   };
 
-  console.log("variants", variants);
+  console.log(variants);
+
   return (
     <div className="w-full">
       {/* Header */}
@@ -72,7 +73,7 @@ export default function VariantsManager({
               className="group relative bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg overflow-hidden transition-all hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-slate-900/50"
             >
               {/* Imagen y estado */}
-              <div className="relative h-32 bg-gradient-to-br from-gray-100 to-gray-50 dark:from-slate-800 dark:to-slate-900 overflow-hidden">
+              <div className="relative h-24 bg-gradient-to-br from-gray-100 to-gray-50 dark:from-slate-800 dark:to-slate-900 overflow-hidden">
                 <div className="flex flex-row gap-2 p-2">
                   <ImagePreview
                     alt={variant?.id || "variant"}
@@ -81,9 +82,12 @@ export default function VariantsManager({
                     className="w-20 h-20  "
                   />
                   <div className="flex flex-col ">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate ">
-                      {variant.sku || "Sin SKU"}
+                    <h3 className="font-bold text-gray-900 dark:text-white truncate ">
+                      {variant.productName}
                     </h3>
+                    <p className=" text-gray-900 dark:text-white truncate ">
+                      SKU: {variant.sku || "Sin SKU"}
+                    </p>
 
                     <div className="flex flex-row gap-1 flex-wrap">
                       {(
@@ -123,7 +127,7 @@ export default function VariantsManager({
                     <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Stock
                     </p>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <p className="font-semibold text-gray-900 dark:text-white">
                       {variant.stock}
                     </p>
                   </div>
@@ -131,7 +135,7 @@ export default function VariantsManager({
                     <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Precio
                     </p>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <p className="font-semibold text-gray-900 dark:text-white">
                       ${variant.price.toFixed(2)}
                     </p>
                   </div>
@@ -139,23 +143,42 @@ export default function VariantsManager({
                     <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Límite de compras
                     </p>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                      {variant.purchaseLimit || "∞"}
+                    {}
+                    <p className="font-semibold text-gray-900 dark:text-white">
+                      {variant.purchaseLimit || "ilimitado"}
                     </p>
                   </div>
-                  <div>
+                  <div className="flex flex-col gap-1">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                      Entrega express
+                    </p>
+                    <p
+                      className={`font-semibold ${
+                        variant.isPacking
+                          ? "text-amber-600 dark:text-amber-400"
+                          : "text-gray-400 dark:text-gray-600"
+                      }`}
+                    >
+                      {variant.isPacking ? (
+                        <Badge variant="success">Si</Badge>
+                      ) : (
+                        <Badge variant="danger">No</Badge>
+                      )}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
                     <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Prime
                     </p>
                     <p
-                      className={`text-lg font-semibold ${
+                      className={`font-semibold ${
                         variant.isPrime
                           ? "text-amber-600 dark:text-amber-400"
                           : "text-gray-400 dark:text-gray-600"
                       }`}
                     >
                       {variant.isPrime ? (
-                        <Badge>Si</Badge>
+                        <Badge variant="success">Si</Badge>
                       ) : (
                         <Badge variant="danger">No</Badge>
                       )}
@@ -221,7 +244,7 @@ export default function VariantsManager({
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
             No hay variantes
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">

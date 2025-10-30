@@ -181,4 +181,5 @@ export type InventoryProviderFormData = z.infer<
 export type ProductVariant = z.infer<typeof productVariants> & {
   productName?: string;
   storeName?: string;
+  isPacking?: boolean
 };
