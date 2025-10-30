@@ -56,24 +56,26 @@ function EditContainer({ inventory, features }: Props) {
     ]);
   };
 
-  const handleRemoveVariant = (id: string) => {
-    setVariants(variants.filter((variant) => variant.id !== id));
+  const handleRemoveVariant = (indexToRemove: number) => {
+    setVariants((prev) => prev.filter((_, i) => i !== indexToRemove));
   };
 
   return (
     <>
       <EditHeader handleAddVariant={handleAddVariant} />
-      {variants.map((product, index) => (
-        <InventoryEditForm
-          key={`product-${product.id}`}
-          supplierId={inventory.supplierId}
-          initValue={product}
-          inventoryId={inventory.id}
-          index={index}
-          onRemove={() => handleRemoveVariant(product.id as string)}
-          isPacking={inventory.isPacking}
-        />
-      ))}
+      {variants.map((product, index) => {
+        return (
+          <InventoryEditForm
+            key={`product-${product.id}`}
+            supplierId={inventory.supplierId}
+            initValue={product}
+            inventoryId={inventory.id}
+            index={index}
+            onRemove={() => handleRemoveVariant(index)}
+            isPacking={inventory.isPacking}
+          />
+        );
+      })}
     </>
   );
 }

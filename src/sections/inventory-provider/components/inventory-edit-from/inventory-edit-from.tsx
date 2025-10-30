@@ -19,25 +19,36 @@ const InventoryEditForm = ({
   inventoryId,
   index,
   isPacking,
-  onRemove
+  onRemove,
 }: Props) => {
   const { form, isPending, onSubmit } = useInventoryProviderEditForm(
     initValue,
     inventoryId as string
   );
 
-  const { onDelete } = useInventoryVariantDelete(inventoryId as string);
+  const { onDelete, isPending: isDeleting } = useInventoryVariantDelete(
+    inventoryId as string
+  );
 
   return (
     <section>
       {/* details */}
       <FormProvider methods={form} onSubmit={onSubmit}>
         <InventoryEditVariantContent
-          onDelete={() => onDelete(initValue?.id as string)}
+          onDelete={async () => {
+            try {
+              await onDelete(initValue?.id as string);
+              // after successful delete, call onRemove to remove from UI
+              onRemove();
+            } catch (err) {
+              // error handling is done in the hook
+            }
+          }}
           onRemove={onRemove}
           index={index}
           isPending={isPending}
           isPacking={isPacking}
+          deleteLoading={isDeleting}
         />
       </FormProvider>
     </section>

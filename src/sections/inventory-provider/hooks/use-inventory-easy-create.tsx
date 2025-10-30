@@ -20,9 +20,9 @@ export const useInventoryCreateForm = (
     defaultValues: initValues,
   });
   const pathanme = usePathname();
-  const { replace } = useRouter();
+  const { push } = useRouter();
   const onRedirect = (id: number) => {
-    replace(`${pathanme}/${id}/edit`);
+    push(`/dashboard/inventory/${id}/edit`);
   };
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: InventoryEasy) => {
@@ -43,7 +43,6 @@ export const useInventoryCreateForm = (
     },
     onSuccess({ data }) {
       toast.success(`Se creó el inventario correctamente`);
-      console.log({ data });
       if (data) {
         onRedirect(data.id);
         return;

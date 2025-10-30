@@ -59,7 +59,6 @@ export const useInventoryProviderEditForm = (
     onSuccess(data) {
       toast.success(`Se editó el inventario correctamente`);
       console.log({ data });
-      // onRedirect?.();
     },
     onError: (error: unknown) => {
       let msg = "Ocurrió un error al guardar el inventario";

@@ -36,7 +36,7 @@ const initValue: ProductVariant = {
 };
 
 export const useInventoryVariantDelete = (inventoryId: string) => {
-  const { mutate, isPending } = useMutation({
+  const { mutate, mutateAsync, isPending } = useMutation({
     mutationFn: async (variantId: string) => {
       const res = await deleteVariantInventory(inventoryId, variantId);
 
@@ -62,6 +62,9 @@ export const useInventoryVariantDelete = (inventoryId: string) => {
 
   return {
     isPending,
-    onDelete: mutate,
+    // expose the async version so callers can await and react to success
+    onDelete: mutateAsync,
+    // keep mutate for compatibility if needed
+    mutate,
   };
 };
