@@ -35,6 +35,7 @@ export type CreateCurrency = {
 export type UpdateCurrency = {
   guidId:string,
   name: string;
+  codIso:string,
   symbol: string;
   rate: number;
   regionIds: (number|string)[];
