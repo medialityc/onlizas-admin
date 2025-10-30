@@ -13,7 +13,6 @@ import {
   editVariantInventory,
 } from "@/services/inventory-providers";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 const initValue: ProductVariant = {
   id: "",
@@ -38,14 +37,13 @@ const initValue: ProductVariant = {
 
 export const useInventoryProviderEditForm = (
   defaultValues: ProductVariant = initValue,
-  inventoryId: string
+  inventoryId: string,
+  handleClose?: () => void
 ) => {
   const { reset, ...form } = useForm({
     defaultValues,
     resolver: zodResolver(productVariants),
   });
-
-  const { push } = useRouter();
 
   useEffect(() => {
     if (defaultValues) {
@@ -62,12 +60,9 @@ export const useInventoryProviderEditForm = (
 
       if (res.error) throw res;
     },
-    async onSuccess(data, variable) {
+    async onSuccess() {
       toast.success(`Se editó el inventario correctamente`);
-      console.log("variable", variable);
-      if (variable.id === "") {
-        push('/dashboard/inventory');
-      }
+      handleClose?.();
     },
     onError: (error: unknown) => {
       let msg = "Ocurrió un error al guardar el inventario";

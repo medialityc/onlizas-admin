@@ -1,7 +1,8 @@
-import { Button } from "../button/button";
+import { Button, ButtonProps } from "../button/button";
 
 interface LoaderButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    ButtonProps {
   className?: string;
   loading?: boolean;
   children: React.ReactNode;

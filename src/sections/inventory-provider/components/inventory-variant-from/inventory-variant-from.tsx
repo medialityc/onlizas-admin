@@ -1,81 +1,30 @@
-import { Button } from "@/components/button/button";
 import {
   RHFCheckbox,
   RHFInputWithLabel,
   RHFSwitch,
 } from "@/components/react-hook-form";
 import { Separator } from "@/components/ui/separator";
-import { XMarkIcon } from "@heroicons/react/24/outline";
 import React from "react";
-import { UseFieldArrayRemove, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import InventoryProviderDetailSection from "../inventory-provider-detail-section/inventory-provider-detail-section";
 import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
 import { ProductVariant } from "../../schemas/inventory-provider.schema";
-import { usePermissions } from "@/hooks/use-permissions";
-import { PERMISSION_ENUM } from "@/lib/permissions";
-import DeleteDialog from "@/components/modal/delete-modal";
-import { useToggle } from "@/hooks/use-toggle";
 
 type Props = {
   variantIndex: number;
-  onRemove: UseFieldArrayRemove;
-  onDelete: UseFieldArrayRemove;
   isPacking: boolean;
-  deleteLoading?: boolean;
 };
 
-const InventoryVariantFrom = ({
-  variantIndex,
-  onRemove,
-  onDelete,
-  isPacking,
-  deleteLoading,
-}: Props) => {
+const InventoryVariantFrom = ({ variantIndex, isPacking }: Props) => {
   const { watch } = useFormContext<ProductVariant>();
   const [isWarranty, isLimit, id] = watch([
     "warranty.isWarranty",
     "isLimit",
     "id",
   ]);
-  const { hasPermission } = usePermissions();
-  const hasDeletePermission = hasPermission([PERMISSION_ENUM.DELETE]);
-  const { open, onOpen, onClose } = useToggle(false);
 
   return (
-    <div className="flex flex-col gap-2 mt-4 p-4 border dark:border-gray-600 border-dashed rounded-lg bg-slate-50 dark:bg-slate-900">
-      <div className="flex flex-row gap-2 items-center justify-between col-span-2 mb-5">
-        <h3 className="font-bold">Variante {variantIndex + 1}</h3>
-        {hasDeletePermission && (
-          <>
-            {!!id ? (
-              <div>
-                <Button
-                  onClick={onOpen}
-                  className="bg-transparent rounded-full text-black p-0 border-0 shadow-none"
-                  iconOnly
-                >
-                  <XMarkIcon className={"h-4 w-4 text-black"} />
-                </Button>
-                <DeleteDialog
-                  onClose={onClose}
-                  open={open}
-                  onConfirm={() => onDelete()}
-                  loading={deleteLoading}
-                />
-              </div>
-            ) : (
-              <Button
-                onClick={() => onRemove()}
-                className="bg-transparent rounded-full text-black p-0 border-0 shadow-none"
-                iconOnly
-              >
-                <XMarkIcon className={"h-4 w-4 text-black"} />
-              </Button>
-            )}
-          </>
-        )}
-      </div>
-
+    <div className="flex flex-col gap-2  ">
       {/* details section */}
       <InventoryProviderDetailSection />
       <Separator className="my-2" />

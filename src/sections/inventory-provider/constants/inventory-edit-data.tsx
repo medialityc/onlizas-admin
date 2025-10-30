@@ -50,17 +50,14 @@ export async function buildCreateProductVariantFormData(
   if (input.weight !== undefined) fd.append("weight", String(input.weight));
 
   // Warranty
-  if (input.warranty && typeof input.warranty === "object") {
-    Object.entries(input.warranty).forEach(([k, v]) => {
-      if (v === undefined || v === null) {
-        fd.append(`warranty.${k}`, "");
-      } else {
-        fd.append(`warranty.${k}`, String(v));
-      }
-    });
-  }
-
-  console.log("input images", input.images);
+  fd.append(
+    "warranty",
+    JSON.stringify({
+      isWarranty: input.warranty?.isWarranty ?? false,
+      warrantyTime: input.warranty?.warrantyTime ?? 0,
+      warrantyPrice: input.warranty?.warrantyPrice ?? 0,
+    })
+  );
 
   // Images
   if (input?.images?.length) {

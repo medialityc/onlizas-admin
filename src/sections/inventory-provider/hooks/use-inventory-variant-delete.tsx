@@ -36,8 +36,8 @@ const initValue: ProductVariant = {
 };
 
 export const useInventoryVariantDelete = (
-  inventoryId: string,
-  onRemove: () => void
+  inventoryId: string
+  // onRemove: () => void
 ) => {
   const { mutate, mutateAsync, isPending } = useMutation({
     mutationFn: async (variantId: string) => {
@@ -51,7 +51,7 @@ export const useInventoryVariantDelete = (
     },
     onSuccess() {
       toast.success(`Se eliminó la variante de el inventario correctamente`);
-      onRemove();
+      // onRemove();
     },
     onError: (error: unknown) => {
       let msg = "Ocurrió un error al guardar el inventario";
@@ -66,9 +66,7 @@ export const useInventoryVariantDelete = (
 
   return {
     isPending,
-    // expose the async version so callers can await and react to success
     onDelete: mutateAsync,
-    // keep mutate for compatibility if needed
     mutate,
   };
 };
