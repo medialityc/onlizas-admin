@@ -128,14 +128,14 @@ export async function getAllSupplierWarehouses(
 }
 
 export async function getWarehouseById(
-  id: string,
+  warehouseId: string,
   type: string
 ): Promise<ApiResponse<WarehouseFormData>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.warehouses.edit(id, getWarehouseRoute(type)),
+    url: backendRoutes.warehouses.edit(warehouseId, getWarehouseRoute(type)),
     method: "GET",
     useAuth: true,
-    next: { tags: ["warehouses", String(id), type] },
+    next: { tags: ["warehouses", String(warehouseId), type] },
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<WarehouseFormData>(res);
