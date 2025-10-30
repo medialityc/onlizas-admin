@@ -15,6 +15,7 @@ import {
 } from "@/sections/warehouses/contexts/warehouse-inventory-transfer.stote";
 import { WarehouseFormData } from "@/sections/warehouses/schemas/warehouse-schema";
 import { InventoryProductItem } from "@/types/inventory";
+import { useEffect } from "react";
 
 // Componente principal del selector de productos
 type Props = {
@@ -23,8 +24,12 @@ type Props = {
 
 const WarehouseInventoryList = ({ warehouse }: Props) => {
   const warehouseId = warehouse?.id;
-  const { addNewInventory, remove, inventories } =
+  const { addNewInventory, remove, inventories, resetStore } =
     useWarehouseInventoryActions();
+
+  useEffect(() => {
+    resetStore();
+  }, [resetStore]);
 
   const onOptionSelected = (option: any) => {
     const exist = inventories?.find((o) => o.id === option.id);

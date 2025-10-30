@@ -13,11 +13,7 @@ import InventoryActon from "./inventory-action";
 import {
   Inventory,
   Product,
-  useWarehouseInventoryActions,
 } from "@/sections/warehouses/contexts/warehouse-inventory-transfer.stote";
-import { Switch } from "@/components/switch";
-import { InfoIcon } from "lucide-react";
-import Tippy from "@tippyjs/react";
 
 type Props = {
   inventory: Inventory;
@@ -60,11 +56,10 @@ const InventoryVariantItem = ({
   inventoryId,
   isLast = false,
 }: ProductProps) => {
-  const { toggleAllowPartialFulfillment, addSelectedProductsToItems } =
-    useWarehouseInventoryActions();
+  /*  const { toggleAllowPartialFulfillment, addSelectedProductsToItems } =
+    useWarehouseInventoryActions(); */
 
-  const isLowStock =
-    (product?.stock || 0) <= 5 && (product?.stock || 0) > 0;
+  const isLowStock = (product?.stock || 0) <= 5 && (product?.stock || 0) > 0;
   const isOutOfStock = (product?.stock || 0) === 0;
 
   return (
@@ -139,7 +134,7 @@ const InventoryVariantItem = ({
               allowPartialFulfillment={product?.allowPartialFulfillment}
             />
 
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <span className="text-xs flex flex-row gap-1 items-center text-gray-500 dark:text-gray-400">
                 Parcial
                 <Tippy
@@ -159,7 +154,7 @@ const InventoryVariantItem = ({
                 }}
                 label=""
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
