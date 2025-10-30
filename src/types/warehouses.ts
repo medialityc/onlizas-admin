@@ -202,8 +202,8 @@ export type TransportationService = {
 export type Transfer = {
   id: number | string;
   transferNumber: string;
-  sourceWarehouseId: number | string;
-  destinationWarehouseId: number | string;
+  originId: number | string;
+  destinationId: number | string;
   status: TransferStatus;
   requestedBy: string;
   approvedBy?: string;
@@ -248,14 +248,14 @@ export type CreateTransfer = Omit<
 >;
 
 export type UpdateTransfer = Partial<
-  Omit<CreateTransfer, "sourceWarehouseId" | "destinationWarehouseId">
+  Omit<CreateTransfer, "originId" | "destinationId">
 >;
 
 export type TransferFilter = {
   search?: string;
   status?: TransferStatus;
-  sourceWarehouseId?: number | string;
-  destinationWarehouseId?: number | string;
+  originId?: number | string;
+  destinationId?: number | string;
   requestedBy?: string;
   dateFrom?: string;
   dateTo?: string;

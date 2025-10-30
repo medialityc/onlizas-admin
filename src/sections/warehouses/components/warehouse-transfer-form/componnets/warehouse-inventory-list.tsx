@@ -67,7 +67,7 @@ const WarehouseInventoryList = ({ warehouse }: Props) => {
 
         <div className="flex-1">
           <RHFAutocompleteFetcherInfinity
-            name="destinationWarehouseId"
+            name="destinationId"
             label="Almacén de Destino"
             placeholder="Selecciona el almacén destino..."
             onFetch={getAllWarehouses}

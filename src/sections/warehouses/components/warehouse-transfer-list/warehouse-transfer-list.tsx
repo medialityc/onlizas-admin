@@ -84,17 +84,6 @@ export function WarehouseTransferList({
   const columns = useMemo<DataTableColumn<WarehouseTransfer>[]>(
     () => [
       {
-        accessor: "id",
-        title: "ID",
-        sortable: true,
-        width: 80,
-        render: (trans) => (
-          <span className="font-medium text-dark dark:text-white">
-            #{trans.id}
-          </span>
-        ),
-      },
-      {
         accessor: "name",
         title: "Nombre",
         sortable: true,
@@ -184,9 +173,7 @@ export function WarehouseTransferList({
   return (
     <>
       <DataGrid
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        data={{ ...data, data: data?.transfers }}
+        data={data}
         columns={columns}
         searchParams={searchParams}
         onSearchParamsChange={onSearchParamsChange}

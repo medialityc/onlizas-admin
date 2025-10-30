@@ -2,10 +2,10 @@ import { z } from "zod";
 
 export const warehouseTransferSchema = z
   .object({
-    originWarehouseId: z.string({
+    originId: z.string({
       required_error: "Almacén de origen es requerido",
     }),
-    destinationWarehouseId: z
+    destinationId: z
       .string({ required_error: "Almacén de destino es requerido" })
       .refine((val) => !!val, {
         message: "Almacén de destino es requerido",
@@ -27,9 +27,9 @@ export const warehouseTransferSchema = z
       )
       .min(1, "Debe seleccionar al menos un producto a transferir"),
   })
-  .refine((data) => data.originWarehouseId !== data.destinationWarehouseId, {
+  .refine((data) => data.originId !== data.destinationId, {
     message: "El almacén de origen y destino no pueden ser el mismo",
-    path: ["destinationWarehouseId"],
+    path: ["destinationId"],
   });
 
 export type WarehouseTransferFormData = z.infer<typeof warehouseTransferSchema>;

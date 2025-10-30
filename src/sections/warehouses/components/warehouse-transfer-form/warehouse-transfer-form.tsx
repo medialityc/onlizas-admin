@@ -24,8 +24,8 @@ export function WarehouseTransferForm({ warehouse }: Props) {
   const { items } = useWarehouseInventoryActions();
   const initValue = useMemo(
     (): WarehouseTransferFormData => ({
-      originWarehouseId: warehouseId ?? "",
-      destinationWarehouseId: "",
+      originId: warehouseId ?? "",
+      destinationId: "",
       items: [],
       transferNumber: generateWarehouseTransferNumber(),
     }),
