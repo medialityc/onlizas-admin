@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Package, ArrowRight, CheckCircle, AlertTriangle } from "lucide-react";
 import { useWarehouseInventoryActions } from "../../contexts/warehouse-inventory-transfer.stote";
 
@@ -24,7 +24,11 @@ interface GroupedInventory {
 }
 
 const TransferSummary: React.FC = () => {
-  const { items } = useWarehouseInventoryActions();
+  const { items, resetInventory } = useWarehouseInventoryActions();
+
+  useEffect(() => {
+    resetInventory();
+  }, [resetInventory]);
 
   // Agrupar productos por inventoryId
   const groupedByInventory = items.reduce<Record<string, GroupedInventory>>(
@@ -154,7 +158,7 @@ const TransferSummary: React.FC = () => {
               <span className="font-medium text-gray-900 dark:text-gray-100">
                 Total de inventarios: {inventoryList.length}
               </span>
-              {inventoryList.some(inv => inv.hasPartialFulfillment) && (
+              {inventoryList.some((inv) => inv.hasPartialFulfillment) && (
                 <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-2 py-1 rounded-full text-xs">
                   <AlertTriangle className="w-3 h-3" />
                   <span>Algunos con cumplimiento parcial</span>
@@ -162,10 +166,7 @@ const TransferSummary: React.FC = () => {
               )}
             </div>
             <div className="bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm font-medium">
-              {inventoryList.reduce(
-                (total, inv) => total + inv.totalStock,
-                0
-              )}{" "}
+              {inventoryList.reduce((total, inv) => total + inv.totalStock, 0)}{" "}
               productos totales
             </div>
           </div>

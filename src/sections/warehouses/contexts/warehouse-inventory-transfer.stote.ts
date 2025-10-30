@@ -1,6 +1,5 @@
 import { create } from "zustand";
 
-// Tipos para TypeScript
 interface ProductDetail {
   key: string;
   value: string;
@@ -55,6 +54,7 @@ interface InventoryStore {
     inventoryId: string,
     productId: string
   ) => void;
+  resetStore: () => void;
 
   // Getter esencial
   getInventoryTotalSelected: (inventoryId: string) => number;
@@ -238,6 +238,14 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     }));
   },
 
+  // NUEVA FUNCIÓN: Resetear el store completamente
+  resetStore: () => {
+    set({
+      inventories: [],
+      items: [],
+    });
+  },
+
   // Obtener el total de productos seleccionados en un inventario específico
   getInventoryTotalSelected: (inventoryId) => {
     const { inventories } = get();
@@ -269,6 +277,7 @@ export const useWarehouseInventoryActions = () => {
     addSelectedProductsToItems: store.addSelectedProductsToItems,
     removeItemsByInventory: store.removeItemsByInventory,
     toggleAllowPartialFulfillment: store.toggleAllowPartialFulfillment,
+    resetStore: store.resetStore,
 
     // Getter
     getInventoryTotalSelected: store.getInventoryTotalSelected,
