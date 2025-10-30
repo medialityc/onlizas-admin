@@ -1,8 +1,8 @@
 import AutoBreadcrumbs from "@/components/breadcrumbs/auto-breadcrumbs";
-import UserEditForm from "@/sections/users/edit/user-edit-form";
 import { getUserById } from "@/services/users";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import UserDetailsModal from "@/sections/users/details/user-details";
 
 interface PageProps {
   params: Promise<{
@@ -13,7 +13,6 @@ interface PageProps {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  // Usar datos mock para metadata igual que en la lista de usuarios
   const p = await params;
   const id = p.id;
   const user = await getUserById(id);
@@ -25,8 +24,8 @@ export async function generateMetadata({
   }
 
   return {
-    title: `Editar ${user.data.firstName} - ZAS Admin`,
-    description: `Editar información del usuario ${user.data.firstName} ${user.data.lastName}`,
+    title: `Usuario ${user.data.firstName} - ZAS Admin`,
+    description: `Detalles del usuario ${user.data.firstName} ${user.data.lastName}`,
   };
 }
 
@@ -43,10 +42,13 @@ async function UserEditPage({ params }: PageProps) {
       {/* Breadcrumb */}
       <AutoBreadcrumbs
         segmentOverrides={{ [id]: `${user.firstName} ${user.lastName}`.trim() }}
-        finalLabelOverride="Editar usuario"
+        finalLabelOverride="Detalles de usuario"
       />
 
-      <UserEditForm initialData={user} />
+      {/* Render read-only details (keeps modal-like component but rendered inline) */}
+      <div>
+        <UserDetailsModal user={user} open={true} onClose={() => {}} />
+      </div>
     </div>
   );
 }
