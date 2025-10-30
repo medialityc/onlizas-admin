@@ -40,7 +40,9 @@ export function WarehouseForm({ warehouse }: Props) {
           {warehouseType === WAREHOUSE_TYPE_ENUM.warehouse && (
             <CapacitySection />
           )}
-          {warehouseType === WAREHOUSE_TYPE_ENUM.virtualwarehouse && <VirtualSection />}
+          {warehouseType === WAREHOUSE_TYPE_ENUM.virtualwarehouse && (
+            <VirtualSection />
+          )}
           <LocationSection />
         </div>
       </div>

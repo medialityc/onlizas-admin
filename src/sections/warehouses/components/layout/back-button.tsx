@@ -8,20 +8,14 @@ interface BackButtonProps {
   className?: string;
 }
 
-export default function BackButton ({
+export default function BackButton({
   fallbackUrl = "/dashboard/warehouses",
   className = "",
 }: BackButtonProps) {
   const router = useRouter();
 
   const handleBack = () => {
-    // Si hay historial, regresar
-    if (window.history.length > 1) {
-      router.back();
-    } else {
-      // Si no hay historial, ir a la URL de respaldo
-      router.push(fallbackUrl);
-    }
+    router.push(fallbackUrl);
   };
 
   return (

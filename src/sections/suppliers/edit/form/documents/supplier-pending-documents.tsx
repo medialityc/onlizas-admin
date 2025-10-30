@@ -34,6 +34,8 @@ export default function SupplierPendingDocuments({
     rejectionReason?: string | null;
   }[];
 }) {
+  console.log(initialDocuments);
+
   const methods = useForm<PendingDocumentsForm>({
     resolver: zodResolver(pendingDocumentsFormSchema),
     defaultValues: {
@@ -65,7 +67,7 @@ export default function SupplierPendingDocuments({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const canValidateDocuments = hasPermission(["DOCUMENT_VALIDATE"]);
+  const canValidateDocuments = hasPermission(["Update"]);
 
   const onAdd = () => append({ fileName: "", content: undefined });
   const onRemove = (index: number) => remove(index);
@@ -346,92 +348,130 @@ export default function SupplierPendingDocuments({
                             const item = docs?.[index] as
                               | {
                                   id?: number;
-                                  content?: string;
+                                  content?: string | File;
                                   beApproved?: boolean;
                                   rejectionReason?: string | null;
                                 }
                               | undefined;
+
+                            const hasId =
+                              item?.id != null && String(item.id).trim() !== "";
+                            const hasFileSelected =
+                              item?.content instanceof File;
+                            const hasContentUrl =
+                              typeof item?.content === "string" && item.content;
+                            const isUploaded = hasContentUrl || hasId;
                             const canValidate =
-                              typeof item?.id === "number" &&
-                              item!.id > 0 &&
-                              canValidateDocuments;
+                              isUploaded && canValidateDocuments;
+
                             return (
                               <>
-                                <button
-                                  type="button"
-                                  onClick={() => onDownload(index)}
-                                  className="inline-flex items-center px-2 py-1 text-xs rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                                >
-                                  <ArrowDownTrayIcon className="h-4 w-4 mr-1" />{" "}
-                                  Descargar
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => onUpload(index)}
-                                  className="inline-flex items-center px-2 py-1 text-xs rounded-md border border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900"
-                                >
-                                  <ArrowDownTrayIcon className="h-4 w-4 mr-1" />{" "}
-                                  Subir
-                                </button>
-                                {canValidate ? (
-                                  <>
-                                    {!item.beApproved && (
-                                      <button
-                                        type="button"
-                                        onClick={() => onApprove(index)}
-                                        className="inline-flex items-center px-2 py-1 text-xs rounded-md border border-green-300 dark:border-green-600 text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-900 disabled:opacity-60"
-                                        disabled={!!approveLoading[index]}
-                                      >
-                                        {approveLoading[index] ? (
-                                          <>
-                                            <svg
-                                              className="animate-spin h-4 w-4 mr-1 text-green-600"
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="none"
-                                              viewBox="0 0 24 24"
-                                            >
-                                              <circle
-                                                className="opacity-25"
-                                                cx="12"
-                                                cy="12"
-                                                r="10"
-                                                stroke="currentColor"
-                                                strokeWidth="4"
-                                              ></circle>
-                                              <path
-                                                className="opacity-75"
-                                                fill="currentColor"
-                                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                                              ></path>
-                                            </svg>
-                                            Aprobando
-                                          </>
-                                        ) : (
-                                          <>
-                                            <CheckIcon className="h-4 w-4 mr-1" />{" "}
-                                            Aprobar
-                                          </>
-                                        )}
-                                      </button>
-                                    )}
-                                    {!item.rejectionReason && (
-                                      <button
-                                        type="button"
-                                        onClick={() => onReject(index)}
-                                        className="inline-flex items-center px-2 py-1 text-xs rounded-md border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900"
-                                      >
-                                        <XMarkIcon className="h-4 w-4 mr-1" />{" "}
-                                        Rechazar
-                                      </button>
-                                    )}
-                                  </>
+                                {/* Download if there's any content (file object or url) */}
+                                {(hasFileSelected ||
+                                  hasContentUrl ||
+                                  hasId) && (
+                                  <button
+                                    type="button"
+                                    onClick={() => onDownload(index)}
+                                    className="inline-flex items-center px-2 py-1 text-xs rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                                  >
+                                    <ArrowDownTrayIcon className="h-4 w-4 mr-1" />{" "}
+                                    Descargar
+                                  </button>
+                                )}
+
+                                {/* Show Upload only when a local File is selected (user must upload) */}
+                                {hasFileSelected && (
+                                  <button
+                                    type="button"
+                                    onClick={() => onUpload(index)}
+                                    className="inline-flex items-center px-2 py-1 text-xs rounded-md border border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900"
+                                  >
+                                    <ArrowDownTrayIcon className="h-4 w-4 mr-1" />{" "}
+                                    Subir
+                                  </button>
+                                )}
+
+                                {/* Approve / Reject when document is uploaded (has content url or id). If uploaded but no id, show buttons disabled with hint */}
+                                {isUploaded ? (
+                                  canValidate ? (
+                                    <>
+                                      {!item?.beApproved && (
+                                        <button
+                                          type="button"
+                                          onClick={() => onApprove(index)}
+                                          title={
+                                            hasId
+                                              ? undefined
+                                              : "El documento está subido pero no tiene id. Refresca o recarga para obtener el id antes de aprobar."
+                                          }
+                                          className={`inline-flex items-center px-2 py-1 text-xs rounded-md border border-green-300 dark:border-green-600 text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-900 disabled:opacity-60 ${!hasId ? "cursor-not-allowed" : ""}`}
+                                          disabled={
+                                            !hasId || !!approveLoading[index]
+                                          }
+                                        >
+                                          {approveLoading[index] ? (
+                                            <>
+                                              <svg
+                                                className="animate-spin h-4 w-4 mr-1 text-green-600"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                              >
+                                                <circle
+                                                  className="opacity-25"
+                                                  cx="12"
+                                                  cy="12"
+                                                  r="10"
+                                                  stroke="currentColor"
+                                                  strokeWidth="4"
+                                                ></circle>
+                                                <path
+                                                  className="opacity-75"
+                                                  fill="currentColor"
+                                                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                                ></path>
+                                              </svg>
+                                              Aprobando
+                                            </>
+                                          ) : (
+                                            <>
+                                              <CheckIcon className="h-4 w-4 mr-1" />{" "}
+                                              Aprobar
+                                            </>
+                                          )}
+                                        </button>
+                                      )}
+                                      {!item?.rejectionReason && (
+                                        <button
+                                          type="button"
+                                          onClick={() => onReject(index)}
+                                          title={
+                                            hasId
+                                              ? undefined
+                                              : "El documento está subido pero no tiene id. Refresca o recarga para obtener el id antes de rechazar."
+                                          }
+                                          className={`inline-flex items-center px-2 py-1 text-xs rounded-md border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900 ${!hasId ? "cursor-not-allowed opacity-60" : ""}`}
+                                          disabled={!hasId}
+                                        >
+                                          <XMarkIcon className="h-4 w-4 mr-1" />{" "}
+                                          Rechazar
+                                        </button>
+                                      )}
+                                    </>
+                                  ) : (
+                                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                                      No tienes permisos para validar documentos
+                                    </span>
+                                  )
                                 ) : (
-                                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                                    {typeof item?.id === "number" &&
-                                    item!.id > 0
-                                      ? "No tienes permisos para validar documentos"
-                                      : "Sube el archivo para habilitar aprobación/rechazo"}
-                                  </span>
+                                  // not uploaded: prompt to upload
+                                  !hasFileSelected && (
+                                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                                      Selecciona un archivo y haz clic en Subir
+                                      para cargarlo
+                                    </span>
+                                  )
                                 )}
                               </>
                             );
