@@ -78,6 +78,7 @@ export default function CurrenciesModal({
         response = await updateCurrency(currency.id, {
           guidId:currency.id,
           name: data.name,
+          codIso:data.codIso,
           symbol: data.symbol,
           rate: data.rate,
           regionIds: data.regionIds,
@@ -197,7 +198,7 @@ export default function CurrenciesModal({
             />
             {/* Regions Selector */}
             <RHFAutocompleteFetcherInfinity
-              name="regionsId"
+              name="regionIds"
               label="Regiones Asociadas"
               placeholder="Selecciona las regiones donde se usa esta moneda"
               multiple
