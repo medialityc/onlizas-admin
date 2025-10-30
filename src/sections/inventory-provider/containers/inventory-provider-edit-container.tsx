@@ -15,6 +15,8 @@ type Props = {
 const InventoryProviderEditContainer = ({ inventory, features }: Props) => {
   const adapted: InventoryStoreFormData = getInventoryEditAdapter(inventory);
 
+  console.log("Adapted inventory:", inventory);
+
   return (
     <div className="panel">
       <div className="mb-5 flex items-center justify-start gap-2">
