@@ -150,7 +150,7 @@ export default function VariantsManager({
                   </div>
                   <div className="flex flex-col gap-1">
                     <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                      Entrega express
+                      Paquetería
                     </p>
                     <p
                       className={`font-semibold ${
@@ -168,7 +168,7 @@ export default function VariantsManager({
                   </div>
                   <div className="flex flex-col gap-1">
                     <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                      Prime
+                      Entrega express
                     </p>
                     <p
                       className={`font-semibold ${
@@ -201,26 +201,34 @@ export default function VariantsManager({
 
                 {/* Acciones */}
                 <div className="flex justify-end gap-2 pt-3 border-t border-gray-100 dark:border-slate-800">
-                  <Button
-                    outline
-                    variant="info"
-                    size="sm"
-                    onClick={() => onEdit(variant.id as string)}
-                    className="gap-1.5"
-                  >
-                    <Edit2 className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">Editar</span>
-                  </Button>
-                  {hasDeletePermission && (
+                  <div className="flex items-center gap-2">
                     <Button
-                      variant="danger"
+                      outline
+                      variant="info"
                       size="sm"
-                      onClick={() => handleDelete(variant.id as string)}
-                      className="gap-1.5"
+                      onClick={() => onEdit(variant.id as string)}
+                      className="gap-2 px-3 py-1.5 rounded-md flex items-center transition"
+                      title="Editar variante"
+                      aria-label={`Editar variante ${variant.sku ?? variant.productName}`}
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Edit2 className="w-4 h-4" />
+                      <span className="hidden md:inline">Editar</span>
                     </Button>
-                  )}
+
+                    {hasDeletePermission && (
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => handleDelete(variant.id as string)}
+                        className="gap-2 px-3 py-1.5 rounded-md flex items-center transition"
+                        title="Eliminar variante"
+                        aria-label={`Eliminar variante ${variant.sku ?? variant.productName}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span className="hidden md:inline">Eliminar</span>
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
