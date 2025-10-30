@@ -12,6 +12,8 @@ import {
   addVariantToInventory,
   editVariantInventory,
 } from "@/services/inventory-providers";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const initValue: ProductVariant = {
   id: "",
@@ -38,27 +40,34 @@ export const useInventoryProviderEditForm = (
   defaultValues: ProductVariant = initValue,
   inventoryId: string
 ) => {
-  const form = useForm({
+  const { reset, ...form } = useForm({
     defaultValues,
     resolver: zodResolver(productVariants),
   });
 
+  const { push } = useRouter();
+
+  useEffect(() => {
+    if (defaultValues) {
+      reset(defaultValues);
+    }
+  }, [defaultValues, reset]);
+
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: ProductVariant) => {
-      const fromData = await buildCreateProductVariantFormData(payload);
-      const res = await (payload.id
-        ? editVariantInventory(payload.id, fromData)
-        : addVariantToInventory(inventoryId, fromData));
+      const formData = await buildCreateProductVariantFormData(payload);
+      const res = payload.id
+        ? await editVariantInventory(payload.id, formData)
+        : await addVariantToInventory(inventoryId, formData);
 
-      if (res.error) {
-        throw res;
-      }
-
-      return;
+      if (res.error) throw res;
     },
-    onSuccess(data) {
+    async onSuccess(data, variable) {
       toast.success(`Se editó el inventario correctamente`);
-      console.log({ data });
+      console.log("variable", variable);
+      if (variable.id === "") {
+        push('/dashboard/inventory');
+      }
     },
     onError: (error: unknown) => {
       let msg = "Ocurrió un error al guardar el inventario";
@@ -73,6 +82,7 @@ export const useInventoryProviderEditForm = (
 
   return {
     form: form,
+    reset,
     isPending,
     onSubmit: form.handleSubmit((values) => {
       mutate(values);

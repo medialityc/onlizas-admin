@@ -39,8 +39,9 @@ function InventoryForm({ provider }: Props) {
             label="Seleccionar un producto"
             onFetch={(params) => getAllProductsBySupplier(supplierId, params)}
             disabled={!supplierId}
+            extraFilters={{ supplierId }}
             required
-            queryKey={`products-${supplierId}`}
+            queryKey={'products'}
           />
 
           <RHFCheckbox name="isPaqueteria" label="¿Es paquetería?" />
@@ -51,7 +52,8 @@ function InventoryForm({ provider }: Props) {
             disabled={!supplierId}
             required
             onFetch={(params) => getAllProviderStores(supplierId, params)}
-            queryKey={`stores-${supplierId}`}
+            extraFilters={{ supplierId }}
+            queryKey={"stores"}
           />
 
           {!isPaqueteria && (

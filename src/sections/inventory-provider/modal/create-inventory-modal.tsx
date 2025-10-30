@@ -19,11 +19,17 @@ export default function CreateInventoryModal({
 }: CreateInventoryModalProps) {
   const [error, setError] = useState<string | null>(null);
 
-  useQueryClient();
+  const queryClient = useQueryClient();
 
   const handleClose = () => {
     setError(null);
     onClose();
+    queryClient.invalidateQueries({
+      predicate: (query) => {
+        const key = query.queryKey as string[];
+        return Array.isArray(key) && key[0] === "stores";
+      },
+    });
   };
 
   return (

@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { createInventoryProvider } from "@/services/inventory-providers";
 import {
@@ -9,7 +9,7 @@ import {
   inventoryEasySchema,
 } from "../schemas/inventory-easy.schema";
 import { CreateEasyInventory } from "@/types/inventory";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export const useInventoryCreateForm = (
   initValues: Partial<InventoryEasy>,
@@ -19,8 +19,8 @@ export const useInventoryCreateForm = (
     resolver: zodResolver(inventoryEasySchema),
     defaultValues: initValues,
   });
-  const pathanme = usePathname();
   const { push } = useRouter();
+  const queryClient = useQueryClient();
   const onRedirect = (id: number) => {
     push(`/dashboard/inventory/${id}/edit`);
   };
@@ -43,13 +43,17 @@ export const useInventoryCreateForm = (
     },
     onSuccess({ data }) {
       toast.success(`Se creó el inventario correctamente`);
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey as string[];
+          return Array.isArray(key) && key[0] === "stores";
+        },
+      });
       if (data) {
         onRedirect(data.id);
         return;
       }
-      {
-        onClose();
-      }
+      onClose();
     },
     onError: async (error: any) => {
       toast.error(error?.message);

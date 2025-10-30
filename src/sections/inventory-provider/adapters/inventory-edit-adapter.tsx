@@ -8,7 +8,13 @@ export const getInventoryEditAdapter = (inventory: InventoryProvider): any => {
       ...prod,
       isPacking: inventory.isPacking,
       details: detailsObjectToArray(prod?.details) as any,
-      warranty: prod.warranty ? prod.warranty : undefined,
+      warranty: prod.warranty
+        ? prod.warranty
+        : {
+            isWarranty: false,
+            warrantyTime: 0,
+            warrantyPrice: 0,
+          },
       purchaseLimit: prod?.limitPurchaseLimit,
       packageDelivery: false,
       isActive: prod?.isActive,
