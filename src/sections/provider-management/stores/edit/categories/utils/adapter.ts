@@ -6,14 +6,15 @@ import { StoreCategory } from "@/types/store-categories";
 export function adaptStoreCategories(raw: any[]): StoreCategory[] {
   const adapted: StoreCategory[] = (raw || [])
     .map((c: any, idx: number) => ({
-      categoryId: Number(c?.categoryId ?? 0),
+      // Preserve GUIDs as strings if provided; fallback to empty string instead of 0
+      categoryId: c?.categoryId ?? "",
       categoryName: c?.categoryName ?? `Cat ${idx + 1}`,
-      id: Number(c?.id ?? 0),
-      storeId: Number(c?.storeId ?? 0),
-      //productCount: Number(c?.productCount ?? 0),
-      //views: Number(c?.views ?? 0),
+      // Backend may send property 'id' for store-category identifier; keep original value (likely GUID)
+      id: c?.id ?? c?.categoryId ?? "",
+      storeId: c?.storeId ?? "",
       active: Boolean(c?.active ?? true),
-      order: Number(c?.order ?? idx + 1),
+      // 'order' should remain numeric for sorting; parseInt safely
+      order: typeof c?.order === "number" ? c.order : Number(c?.order ?? idx + 1),
     }))
     .sort((a, b) => a.order - b.order);
    

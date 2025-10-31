@@ -47,10 +47,10 @@ export default function CategoryList({
     <div className="space-y-3">
       {items.map((c, idx) => (
         <div
-          key={c.categoryId}
+          key={c.id}
           ref={(el) => {
             // store ref without returning the Map (avoid non-void return type)
-            nodeRefs.current.set(c.categoryId, el ?? null);
+            nodeRefs.current.set(c.id, el ?? null);
             return;
           }}
           // keep transform transitions inline to avoid adding global css
@@ -62,8 +62,8 @@ export default function CategoryList({
           <CategoryListItem
             category={c}
             onToggleActive={(id: string | number, checked: boolean) => {
-              // Optimistic local change
-              onItemsChange(items.map((x) => (x.categoryId === id ? { ...x, active: checked } : x)));
+              // Optimistic local change (match by store-category id)
+              onItemsChange(items.map((x) => (x.id === id ? { ...x, active: checked } : x)));
               onToggle?.(id, checked);
             }}
             onEdit={onEdit}
@@ -94,12 +94,12 @@ export default function CategoryList({
               requestAnimationFrame(() => {
                 const nextRects = measureRects();
                 next.forEach((item) => {
-                  const el = nodeRefs.current.get(item.categoryId) as
+                  const el = nodeRefs.current.get(item.id) as
                     | HTMLDivElement
                     | undefined
                     | null;
-                  const prev = prevRects.get(item.categoryId);
-                  const after = nextRects.get(item.categoryId);
+                  const prev = prevRects.get(item.id);
+                  const after = nextRects.get(item.id);
                   if (el && prev && after) {
                     const deltaY = prev.top - after.top;
                     if (deltaY) {
