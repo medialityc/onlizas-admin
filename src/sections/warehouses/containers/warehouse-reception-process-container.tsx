@@ -97,7 +97,7 @@ export default function WarehouseReceptionProcessContainer({
                 {reception.transferNumber}
               </p>
               <p className="text-xs text-blue-500 dark:text-blue-300">
-                Transferencia desde {reception.originWarehouseName}
+                Transferencia desde {reception.receivedByName}
               </p>
             </div>
           </div>
@@ -108,19 +108,19 @@ export default function WarehouseReceptionProcessContainer({
           <div>
             <p className="text-xs text-gray-500 dark:text-gray-400">Origen</p>
             <p className="font-medium text-dark dark:text-white-light">
-              {reception.originWarehouseName}
+              {reception.receivingWarehouseName}
             </p>
           </div>
           <div>
             <p className="text-xs text-gray-500 dark:text-gray-400">Destino</p>
             <p className="font-medium text-dark dark:text-white-light">
-              {reception.destinationWarehouseName}
+              {reception.receivedByName}
             </p>
           </div>
           <div>
             <p className="text-xs text-gray-500 dark:text-gray-400">Fecha de Envío</p>
             <p className="font-medium text-dark dark:text-white-light">
-              {new Date(reception.createdAt).toLocaleDateString("es-ES")}
+              {new Date(reception.createdDatetime).toLocaleDateString("es-ES")}
             </p>
           </div>
         </div>

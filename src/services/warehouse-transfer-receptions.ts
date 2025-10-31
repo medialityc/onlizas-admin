@@ -15,8 +15,8 @@ import {
   ReportDiscrepancyData,
   ResolveDiscrepancyData,
   GetReceptionLogs,
-  ReceptionComment,
-  NewInventoryFromReception
+  NewInventoryFromReception,
+  TransferReceptionComment
 } from "@/types/warehouse-transfer-receptions";
 
 const TRANSFER_RECEPTION_TAG = "transfer-receptions";
@@ -42,14 +42,15 @@ export async function getAllTransferReceptions(
 }
 
 // Obtener recepción por ID
+// Obtener recepción por ID (IDs ahora se manejan como string/GUID)
 export async function getTransferReceptionById(
-  id: number
+  id: string
 ): Promise<ApiResponse<TransferReception>> {
   const res = await nextAuthFetch({
     url: backendRoutes.transferReceptions.getById(id),
     method: "GET",
     useAuth: true,
-    next: { tags: [TRANSFER_RECEPTION_TAG, String(id)] },
+    next: { tags: [TRANSFER_RECEPTION_TAG, id] },
   });
   
   if (!res.ok) return handleApiServerError(res);
@@ -75,7 +76,7 @@ export async function receiveTransfer(
 // Reportar discrepancia
 export async function reportDiscrepancy(
   data: ReportDiscrepancyData
-): Promise<ApiResponse<{ success: boolean; discrepancyId: number }>> {
+): Promise<ApiResponse<{ success: boolean; discrepancyId: string }>> {
   const formData = new FormData();
   formData.append("receptionId", String(data.receptionId));
   formData.append("itemId", String(data.itemId));
@@ -101,7 +102,7 @@ export async function reportDiscrepancy(
   
   if (!res.ok) return handleApiServerError(res);
   revalidateTag(TRANSFER_RECEPTION_TAG);
-  return buildApiResponseAsync<{ success: boolean; discrepancyId: number }>(res);
+  return buildApiResponseAsync<{ success: boolean; discrepancyId: string }>(res);
 }
 
 // Resolver discrepancia
@@ -122,10 +123,10 @@ export async function resolveDiscrepancy(
 
 // Agregar comentario a recepción
 export async function addReceptionComment(
-  receptionId: number,
+  receptionId: string,
   message: string,
   attachments?: File[]
-): Promise<ApiResponse<ReceptionComment>> {
+): Promise<ApiResponse<TransferReceptionComment>> {
   const formData = new FormData();
   formData.append("message", message);
   
@@ -144,7 +145,7 @@ export async function addReceptionComment(
   
   if (!res.ok) return handleApiServerError(res);
   revalidateTag(TRANSFER_RECEPTION_TAG);
-  return buildApiResponseAsync<ReceptionComment>(res);
+  return buildApiResponseAsync<TransferReceptionComment>(res);
 }
 
 // Obtener logs de recepción
@@ -169,9 +170,9 @@ export async function getReceptionLogs(
 
 // Crear inventario nuevo desde productos no esperados
 export async function createNewInventoryFromReception(
-  receptionId: number,
+  receptionId: string,
   inventoryData: {
-    productVariantId: number;
+    productVariantId: string | number; // aceptar ambos temporalmente
     quantity: number;
     batchNumber?: string;
     expirationDate?: string;
@@ -188,4 +189,24 @@ export async function createNewInventoryFromReception(
   if (!res.ok) return handleApiServerError(res);
   revalidateTag(TRANSFER_RECEPTION_TAG);
   return buildApiResponseAsync<NewInventoryFromReception>(res);
+}
+
+// Subir evidencia/documentos asociados a la recepción
+export async function uploadReceptionEvidence(
+  receptionId: string,
+  files: File[]
+): Promise<ApiResponse<{ success: boolean; urls: string[] }>> {
+  const formData = new FormData();
+  files.forEach((file, idx) => formData.append(`file_${idx}`, file));
+
+  const res = await nextAuthFetch({
+    url: backendRoutes.transferReceptions.addComment(receptionId),
+    method: "POST",
+    data: formData,
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag(TRANSFER_RECEPTION_TAG);
+  return buildApiResponseAsync<{ success: boolean; urls: string[] }>(res);
 }

@@ -4,27 +4,27 @@ import { Button } from "@/components/button/button";
 import { Input } from "@/components/input/input";
 import { WarehouseTransfer } from "@/types/warehouses-transfers";
 import { useFormContext } from "react-hook-form";
-import { ReceptionFormData } from "@/types/transfer-reception";
+import { CreateTransferReceptionFormData } from "@/sections/warehouses/schemas/transfer-reception-schema";
 import { useState, useEffect } from "react";
-import { addReceptionComment } from "@/services/transfer-reception";
 import showToast from "@/config/toast/toastConfig";
+
 
 interface Props {
   transfer: WarehouseTransfer;
 }
 
 interface Comment {
-  id: number;
+  id: string;
   type: "general" | "discrepancy";
   message: string;
   author: string;
   createdAt: string;
-  discrepancyId?: number;
+  discrepancyId?: string;
 }
 
 interface Discrepancy {
-  id: number;
-  productId: number;
+  id: string;
+  productId: string;
   productName: string;
   type: string;
   status: "pending" | "resolved";
@@ -34,16 +34,16 @@ interface Discrepancy {
 }
 
 export default function IncidentsManagementTab({ transfer }: Props) {
-  const { watch } = useFormContext<ReceptionFormData>();
+  const { watch } = useFormContext<CreateTransferReceptionFormData>();
   const [comments, setComments] = useState<Comment[]>([]);
   const [discrepancies, setDiscrepancies] = useState<Discrepancy[]>([]);
   const [newComment, setNewComment] = useState("");
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [isSendingComment, setIsSendingComment] = useState(false);
-  const [selectedDiscrepancy, setSelectedDiscrepancy] = useState<number | null>(null);
+  const [selectedDiscrepancy, setSelectedDiscrepancy] = useState<string | null>(null);
   const [resolutionNote, setResolutionNote] = useState("");
 
-  const formDiscrepancies = watch("discrepancies") || {};
+  const formItems = watch("items") || [];
 
   // Cargar comentarios existentes
   useEffect(() => {
@@ -64,25 +64,28 @@ export default function IncidentsManagementTab({ transfer }: Props) {
     }
   };
 
-  // Generar discrepancias desde el formulario
+  // Generar discrepancias desde los items del formulario (schema tipado)
   useEffect(() => {
-    const generatedDiscrepancies = Object.entries(formDiscrepancies)
-      .filter(([_, discrepancy]) => discrepancy.type && discrepancy.type.trim())
-      .map(([productId, discrepancy], index) => {
-        const item = transfer.items?.find(item => item.id === Number(productId));
+    if (!Array.isArray(formItems)) {
+      setDiscrepancies([]);
+      return;
+    }
+    const generated = formItems
+      .filter((itm) => !!itm.discrepancyType)
+      .map((itm) => {
+        const transferItem = transfer.items?.find(ti => ti.id === itm.transferItemId);
         return {
-          id: index + 1,
-          productId: Number(productId),
-          productName: item?.productVariantName || "Producto desconocido",
-          type: discrepancy.type,
+          id: itm.transferItemId,
+          productId: itm.transferItemId,
+          productName: transferItem?.productVariantName || "Producto desconocido",
+          type: itm.discrepancyType || "",
           status: "pending" as const,
-          description: discrepancy.notes || "",
+          description: itm.discrepancyNotes || "",
           createdAt: new Date().toISOString(),
-        };
+        } as Discrepancy;
       });
-
-    setDiscrepancies(generatedDiscrepancies);
-  }, [formDiscrepancies, transfer.items]);
+    setDiscrepancies(generated);
+  }, [formItems, transfer.items]);
 
   const handleSendComment = async () => {
     if (!newComment.trim()) return;
@@ -113,7 +116,7 @@ export default function IncidentsManagementTab({ transfer }: Props) {
     }
   };
 
-  const handleResolveDiscrepancy = async (discrepancyId: number) => {
+  const handleResolveDiscrepancy = async (discrepancyId: string) => {
     if (!resolutionNote.trim()) {
       showToast("Debe agregar una nota de resolución", "error");
       return;
