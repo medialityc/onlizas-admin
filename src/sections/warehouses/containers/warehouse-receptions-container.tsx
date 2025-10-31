@@ -2,7 +2,7 @@
 
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { GetAllTransferReceptions } from "@/types/warehouse-transfer-receptions";
+import { GetAllTransferReceptions, TransferReceptionStatus, TransferReception } from "@/types/warehouse-transfer-receptions";
 import { WarehouseFormData } from "../schemas/warehouse-schema";
 import { DataGrid } from "@/components/datagrid/datagrid";
 import { DataTableColumn } from "mantine-datatable";
@@ -12,7 +12,7 @@ import DateValue from "@/components/format-vales/date-value";
 import Badge from "@/components/badge/badge";
 import { Button } from "@/components/button/button";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { TransferReception } from "@/types/warehouse-transfer-receptions";
+
 import { useCallback } from "react";
 
 interface Props {
@@ -29,7 +29,7 @@ export default function WarehouseReceptionsContainer({
   const router = useRouter();
   const hasError = receptionsPromise?.error;
 
-  const handleViewReception = useCallback((transferId: number) => {
+  const handleViewReception = useCallback((transferId: string) => {
     router.push(`/dashboard/warehouses/origin/${warehouse.id}/reception/${transferId}`);
   }, [router, warehouse.id]);
 
@@ -50,8 +50,8 @@ export default function WarehouseReceptionsContainer({
       width: 180,
       render: (reception: TransferReception) => (
         <Badge
-          text={reception.status}
-          color={getStatusColor(reception.status)}
+          children={reception.status}
+          variant={getStatusColor(reception.status)}
         />
       ),
     },
@@ -60,7 +60,7 @@ export default function WarehouseReceptionsContainer({
       title: "Fecha de Envío",
       width: 150,
       render: (reception: TransferReception) => (
-        <DateValue value={reception.createdAt} />
+        <DateValue value={reception.receivedAt} />
       ),
     },
     {
@@ -82,24 +82,16 @@ export default function WarehouseReceptionsContainer({
     },
   ], [handleViewReception]);
 
-  const getStatusColor = (status: string): "primary" | "success" | "warning" | "danger" | "info" => {
+  const getStatusColor = (status: TransferReceptionStatus): "primary" | "success" | "warning" | "danger" | "info" => {
     switch (status) {
-      case "pending":
-      case "AwaitingReception":
+      case "PENDING":
         return "warning";
-      case "in_progress":
-      case "PartiallyReceived":
-        return "info";
-      case "with_discrepancies":
-      case "ReceivedWithDiscrepancies":
-        return "danger";
-      case "completed":
-      case "resolved":
-      case "Completed":
-      case "Conciliated":
+      case "RECEIVED":
         return "success";
-      case "cancelled":
+      case "WITH_DISCREPANCY":
         return "danger";
+      case "DISCREPANCY_RESOLVED":
+        return "success";
       default:
         return "primary";
     }

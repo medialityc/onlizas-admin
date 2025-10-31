@@ -30,7 +30,7 @@ export const WAREHOUSE_TRANSFER_OPTIONS = [
 ];
 
 export type WarehouseTransfer = {
-  id: number;
+  id: string;
   transferNumber: string;
   originId: number;
   originWarehouseName: string;
@@ -41,7 +41,7 @@ export type WarehouseTransfer = {
   updatedAt: Date;
   items: [
     {
-      id: number;
+      id: string;
       productVariantId: number;
       productVariantName: string;
       quantityRequested: number;

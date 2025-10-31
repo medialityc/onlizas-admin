@@ -1,11 +1,12 @@
 "use client";
 
 import { Button } from "@/components/button/button";
-import { Input } from "@/components/input/input";
+import { Input } from "@/components/input/input"; // legacy input for few cases
 import { WarehouseTransfer } from "@/types/warehouses-transfers";
 
 import { useFormContext, useFieldArray } from "react-hook-form";
-import { ReceptionFormData } from "@/types/transfer-reception";
+import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
+import { CreateTransferReceptionFormData } from "@/sections/warehouses/schemas/transfer-reception-schema";
 import { useState } from "react";
 import UnexpectedProductForm from "./unexpected-product-form";
 
@@ -21,8 +22,8 @@ export default function ProductReceptionTab({
     isSubmitting,
     onSaveDraft,
 }: Props) {
-    const { register, watch, setValue, control } = useFormContext<ReceptionFormData>();
-    const [discrepancies, setDiscrepancies] = useState<Set<number>>(new Set());
+    const { register, watch, setValue, control } = useFormContext<CreateTransferReceptionFormData>();
+        const [discrepancies, setDiscrepancies] = useState<Set<string>>(new Set());
     const [showUnexpectedForm, setShowUnexpectedForm] = useState(false);
 
     const { fields: unexpectedProducts, append: addUnexpectedProduct, remove: removeUnexpectedProduct } =
@@ -31,16 +32,24 @@ export default function ProductReceptionTab({
             name: "unexpectedProducts",
         });
 
-    const receivedItems = watch("receivedItems");
+    const items = watch("items");
 
-    const handleDiscrepancyToggle = (itemId: number) => {
+    const handleDiscrepancyToggle = (index: number) => {
         const newDiscrepancies = new Set(discrepancies);
+        const itemId = transfer.items[index].id.toString();
+        
         if (newDiscrepancies.has(itemId)) {
             newDiscrepancies.delete(itemId);
-            setValue(`discrepancies.${itemId}` as any, { type: "", notes: "" });
+            // Al quitar discrepancia, resetear los campos relacionados
+            setValue(`items.${index}.discrepancyType`, undefined);
+            setValue(`items.${index}.discrepancyNotes`, "");
+            setValue(`items.${index}.isAccepted`, true);
         } else {
             newDiscrepancies.add(itemId);
-            setValue(`discrepancies.${itemId}` as any, { type: "Producto Incorrecto", notes: "" });
+            // Al marcar discrepancia, inicializar con valores por defecto
+            setValue(`items.${index}.discrepancyType`, "wrong_product");
+            setValue(`items.${index}.discrepancyNotes`, "");
+            setValue(`items.${index}.isAccepted`, false);
         }
         setDiscrepancies(newDiscrepancies);
     };
@@ -71,7 +80,7 @@ export default function ProductReceptionTab({
                 </div>
 
                 <div className="space-y-4">
-                    {transfer.items?.map((item) => (
+                    {transfer.items?.map((item, index) => (
                         <div
                             key={item.id}
                             className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700"
@@ -87,21 +96,18 @@ export default function ProductReceptionTab({
 
                                     {/* Input para cantidad recibida */}
                                     <div className="mt-3 max-w-xs">
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            Cantidad Recibida
-                                        </label>
-                                        <Input
-                                            type="number"
-                                            min="0"
-                                            max={item.quantityRequested}
-                                            placeholder="0"
-                                            {...register(`receivedItems.${item.id}` as any, { valueAsNumber: true })}
-                                            className="w-full"
+                                        <RHFInputWithLabel
+                                          name={`items.${index}.receivedQuantity`}
+                                          type="number"
+                                          label="Cantidad Recibida"
+                                          placeholder="0"
+                                          minMax={{ min: 0, max: item.quantityRequested }}
+                                          required
                                         />
                                     </div>
 
                                     {/* Sección de discrepancia */}
-                                    {discrepancies.has(item.id) && (
+                                    {discrepancies.has(item.id.toString()) && (
                                         <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                                             <h5 className="font-medium text-red-800 dark:text-red-200 mb-2">
                                                 Producto marcado con incidencias
@@ -111,25 +117,30 @@ export default function ProductReceptionTab({
                                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                                         Tipo de Discrepancia
                                                     </label>
-                                                    <select
-                                                        {...register(`discrepancies.${item.id}.type` as any)}
-                                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                                                    >
-                                                        <option value="Producto Incorrecto">Producto Incorrecto</option>
-                                                        <option value="Cantidad Incorrecta">Cantidad Incorrecta</option>
-                                                        <option value="Producto Dañado">Producto Dañado</option>
-                                                        <option value="Producto Faltante">Producto Faltante</option>
-                                                    </select>
+                                                                                                        <select
+                                                                                                            {...register(`items.${index}.discrepancyType`)}
+                                                                                                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                                                                                            aria-label="Tipo de Discrepancia"
+                                                                                                        >
+                                                                                                            <option value="wrong_product">Producto Incorrecto</option>
+                                                                                                            <option value="missing_quantity">Cantidad Faltante</option>
+                                                                                                            <option value="excess_quantity">Cantidad Sobrante</option>
+                                                                                                            <option value="wrong_batch">Lote Incorrecto</option>
+                                                                                                            <option value="damaged_product">Producto Dañado</option>
+                                                                                                            <option value="expired_product">Producto Vencido</option>
+                                                                                                            <option value="other">Otro</option>
+                                                                                                        </select>
                                                 </div>
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                                         Observaciones
                                                     </label>
-                                                    <Input
-                                                        placeholder="Describe la incidencia..."
-                                                        {...register(`discrepancies.${item.id}.notes` as any)}
-                                                        className="w-full"
-                                                    />
+                                                                                                        <RHFInputWithLabel
+                                                                                                            name={`items.${index}.discrepancyNotes`}
+                                                                                                            placeholder="Describe la incidencia..."
+                                                                                                            label="Observaciones"
+                                                                                                            showError={false}
+                                                                                                        />
                                                 </div>
                                             </div>
                                         </div>
@@ -140,11 +151,11 @@ export default function ProductReceptionTab({
                                 <div className="ml-4">
                                     <Button
                                         type="button"
-                                        variant={discrepancies.has(item.id) ? "danger" : "secondary"}
+                                        variant={discrepancies.has(item.id.toString()) ? "danger" : "secondary"}
                                         size="sm"
-                                        onClick={() => handleDiscrepancyToggle(item.id)}
+                                        onClick={() => handleDiscrepancyToggle(index)}
                                     >
-                                        {discrepancies.has(item.id) ? "Quitar Discrepancia" : "Marcar Discrepancia"}
+                                        {discrepancies.has(item.id) ? "Quitar Incidencia" : "Marcar Incidencia"}
                                     </Button>
                                 </div>
                             </div>
@@ -205,7 +216,7 @@ export default function ProductReceptionTab({
                                             {product.productName}
                                         </h4>
                                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                                            Cantidad: {product.quantityReceived} {product.unit}
+                                            Cantidad: {product.quantity} {product.unit}
                                             {product.batchNumber && ` | Lote: ${product.batchNumber}`}
                                         </p>
                                         {product.observations && (

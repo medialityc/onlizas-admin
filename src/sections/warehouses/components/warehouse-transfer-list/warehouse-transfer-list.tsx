@@ -44,7 +44,7 @@ export function WarehouseTransferList({
     push(newPath);
   }, [push]);
 
-  const handleCanceledTransfer = useCallback(async (transferId: number) => {
+  const handleCanceledTransfer = useCallback(async (transferId: string) => {
     try {
       const res = await cancelWarehouseTransfer(transferId);
       if (res?.error && res.message) {
@@ -58,7 +58,7 @@ export function WarehouseTransferList({
     }
   }, []);
 
-  const handleApprovedTransfer = useCallback(async (transferId: number) => {
+  const handleApprovedTransfer = useCallback(async (transferId: string) => {
     try {
       const res = await approveWarehouseTransfer(transferId);
       if (res?.error && res.message) {
@@ -71,7 +71,7 @@ export function WarehouseTransferList({
       showToast("Ocurrió un error, por favor intenta de nuevo", "error");
     }
   }, []);
-  const handleExecuteTransfer = useCallback(async (transferId: number) => {
+  const handleExecuteTransfer = useCallback(async (transferId: string) => {
     try {
       const res = await executeWarehouseTransfer(transferId);
       if (res?.error && res.message) {
@@ -85,7 +85,7 @@ export function WarehouseTransferList({
     }
   }, []);
 
-  const handleMarkAwaitingReception = useCallback(async (transferId: number) => {
+  const handleMarkAwaitingReception = useCallback(async (transferId: string) => {
     try {
       // Solicitar notas al usuario (temporalmente con prompt, idealmente sería un modal)
       const notes = window.prompt("Notas adicionales (opcional):", "") || "";
@@ -101,7 +101,7 @@ export function WarehouseTransferList({
     }
   }, []);
 
-  const handleViewReception = useCallback((transferId: number) => {
+  const handleViewReception = useCallback((transferId: string) => {
     // Construir la ruta de recepción basada en la ruta actual
     // pathname será algo como: /dashboard/warehouses/[type]/[id]/edit/transfers/list
     // Necesitamos extraer type e id para construir la ruta de recepción
@@ -117,7 +117,7 @@ export function WarehouseTransferList({
     }
   }, [pathname, push]);
 
-  const handleViewTransferDetails = useCallback((transferId: number) => {
+  const handleViewTransferDetails = useCallback((transferId: string) => {
     // Para transferencias completadas, ir a una página de solo lectura
     const pathParts = pathname.split('/');
     const typeIndex = pathParts.indexOf('warehouses') + 1;

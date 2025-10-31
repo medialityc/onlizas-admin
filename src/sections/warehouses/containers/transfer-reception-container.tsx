@@ -3,37 +3,14 @@
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { WarehouseTransfer } from "@/types/warehouses-transfers";
-
-import { CreateReceptionData } from "@/types/warehouse-transfer-receptions";
 import showToast from "@/config/toast/toastConfig";
+import { createTransferReceptionSchema, CreateTransferReceptionFormData } from "@/sections/warehouses/schemas/transfer-reception-schema";
 
 // Tipo para el formulario de recepción
-interface ReceptionFormData {
-    transferId: number;
-    notes?: string;
-    receivedItems: Record<string, number>; // transferItemId -> quantityReceived
-    discrepancies: Record<string, { type: string; notes: string }>; // transferItemId -> discrepancy
-    unexpectedProducts: Array<{
-        productName: string;
-        quantityReceived: number;
-        unit: string;
-        batchNumber?: string;
-        observations?: string;
-    }>;
-    evidence: Array<{
-        id?: string;
-        name: string;
-        type: string;
-        size: number;
-        url?: string;
-        uploadProgress?: number;
-        isUploading?: boolean;
-    }>;
-    documentationNotes?: string;
-    documentationComplete?: boolean;
-}
+// El container ahora utiliza el schema unificado `createTransferReceptionSchema`
+// Los campos legacy (receivedItems, discrepancies) se reemplazan por `items[]`
+// con propiedades tipadas: receivedQuantity, discrepancyType, discrepancyNotes.
 import { useRouter } from "next/navigation";
 import TransferReceptionTabs from "../components/transfer-reception/transfer-reception-tabs";
 
@@ -42,46 +19,28 @@ interface Props {
     transfer: WarehouseTransfer;
 }
 
-const receptionSchema = z.object({
-    transferId: z.number(),
-    notes: z.string().optional(),
-    receivedItems: z.record(z.number()),
-    discrepancies: z.record(z.object({
-        type: z.string(),
-        notes: z.string(),
-    })),
-    unexpectedProducts: z.array(z.object({
-        productName: z.string().min(1, "Nombre del producto requerido"),
-        quantityReceived: z.number().min(0, "Cantidad debe ser mayor a 0"),
-        unit: z.string().min(1, "Unidad requerida"),
-        batchNumber: z.string().optional(),
-        observations: z.string().optional(),
-    })),
-    evidence: z.array(z.object({
-        id: z.string().optional(),
-        name: z.string(),
-        type: z.string(),
-        size: z.number(),
-        url: z.string().optional(),
-        uploadProgress: z.number().optional(),
-        isUploading: z.boolean().optional(),
-    })),
-    documentationNotes: z.string().optional(),
-    documentationComplete: z.boolean().optional(),
-});
+// NOTA: El backend espera CreateReceptionData; se mapeará desde CreateTransferReceptionFormData al enviar.
 
 export default function TransferReceptionContainer({ transfer }: Props) {
     const [activeTab, setActiveTab] = useState("reception");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const router = useRouter();
 
-    const methods = useForm<ReceptionFormData>({
-        resolver: zodResolver(receptionSchema),
+    const methods = useForm<CreateTransferReceptionFormData>({
+        resolver: zodResolver(createTransferReceptionSchema),
         defaultValues: {
-            transferId: transfer.id,
+            transferId: String(transfer.id),
+            status: "PENDING", // estado inicial
             notes: "",
-            receivedItems: {},
-            discrepancies: {},
+            items: transfer.items?.map(itm => ({
+                transferItemId: String(itm.id),
+                receivedQuantity: 0, // valor inicial editable en UI
+                batchNumber: "",
+                expiryDate: "",
+                discrepancyType: undefined,
+                discrepancyNotes: "",
+                isAccepted: true,
+            })) || [],
             unexpectedProducts: [],
             evidence: [],
             documentationNotes: "",
@@ -91,19 +50,34 @@ export default function TransferReceptionContainer({ transfer }: Props) {
 
     const { handleSubmit, watch, reset } = methods;
 
-    const handleCompleteReception = async (data: ReceptionFormData) => {
+    const handleCompleteReception = async (data: CreateTransferReceptionFormData) => {
         setIsSubmitting(true);
         try {
-            // Convertir datos del formulario a FormData para la server action
-            const formData = new FormData();
-            formData.append("transferId", data.transferId.toString());
-            formData.append("notes", data.notes || "");
-            formData.append("receivedItems", JSON.stringify(data.receivedItems));
-            formData.append("discrepancies", JSON.stringify(data.discrepancies));
-            formData.append("unexpectedProducts", JSON.stringify(data.unexpectedProducts));
+            // Mapear al formato esperado por el backend (CreateReceptionData)
+            const payload = {
+                transferId: data.transferId,
+                status: data.status as any, // ajustar al tipo backend si difiere
+                notes: data.notes || "",
+                items: data.items.map(itm => ({
+                    transferItemId: itm.transferItemId,
+                    receivedQuantity: itm.receivedQuantity,
+                    batchNumber: itm.batchNumber || undefined,
+                    expiryDate: itm.expiryDate || undefined,
+                    discrepancyType: itm.discrepancyType || undefined,
+                    discrepancyNotes: itm.discrepancyNotes || undefined,
+                    isAccepted: itm.isAccepted ?? true,
+                })),
+                unexpectedProducts: data.unexpectedProducts?.map(up => ({
+                    productName: up.productName,
+                    quantity: up.quantity,
+                    unit: up.unit,
+                    batchNumber: up.batchNumber || undefined,
+                    observations: up.observations || undefined,
+                })) || [],
+            };
 
-            // TODO: Implementar llamada al servidor
-            console.log("Datos de recepción:", data);
+            // TODO: llamar a receiveTransfer(payload)
+            console.log("Payload recepción a enviar:", payload);
             const response = { success: true };
 
             if (!response.success) {

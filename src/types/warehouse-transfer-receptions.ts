@@ -2,12 +2,10 @@ import { PaginatedResponse } from "./common";
 
 // Estados de recepción de transferencia
 export type TransferReceptionStatus = 
-  | "pending"           // Pendiente de recepción
-  | "in_progress"       // En proceso de recepción
-  | "completed"         // Recepción completa
-  | "with_discrepancies" // Con incidencias/discrepancias
-  | "resolved"          // Discrepancias resueltas
-  | "cancelled";        // Recepción cancelada
+  | "PENDING"           // Pendiente de recepción
+  | "RECEIVED"         // Recepción completa
+  | "WITH_DISCREPANCY" // Con incidencias/discrepancias
+  | "DISCREPANCY_RESOLVED"  // Discrepancias resueltas
 
 // Tipos de discrepancias
 export type DiscrepancyType = 
@@ -20,26 +18,31 @@ export type DiscrepancyType =
   | "other";             // Otros
 
 // Item de recepción
-export interface ReceptionItem {
-  id: number;
-  transferItemId: number;
-  productVariantId: number;
+export interface TransferReceptionItem {
+  id: string;
+  transferReceptionId: string;
+  transferItemId: string;
+  productVariantId: string;
   productVariantName: string;
-  expectedQuantity: number;
-  receivedQuantity: number;
-  acceptedQuantity: number;
-  rejectedQuantity: number;
+  productName: string;
+  quantityExpected: number;
+  quantityReceived: number;
   unit: string;
-  batchNumber?: string;
-  expirationDate?: string;
-  notes?: string;
-  hasDiscrepancy: boolean;
+  expectedBatch: string;
+  receivedBatch: string;
+  expectedExpiryDate: string;
+  receivedExpiryDate: string;
+  discrepancyType: string;
+  discrepancyNotes: string;
+  isAccepted: boolean;
+  createdInventoryId: string;
+  hasDiscrepancy?: boolean;
   discrepancies?: Discrepancy[];
 }
 
 // Discrepancia específica
 export interface Discrepancy {
-  id: number;
+  id: string;
   type: DiscrepancyType;
   description: string;
   quantity?: number;
@@ -53,41 +56,52 @@ export interface Discrepancy {
 }
 
 // Comentario en la recepción
-export interface ReceptionComment {
-  id: number;
-  message: string;
-  author: string;
-  authorRole: string;
-  createdAt: string;
-  attachments?: string[];
+export interface TransferReceptionComment {
+  id: string;
+  transferReceptionId: string;
+  authorId: string;
+  authorName: string;
+  comment: string;
+  type: string;
+  parentCommentId: string;
+  attachmentUrls: string[];
+  createdDatetime: string;
+  active: boolean;
+  replies: string[];
 }
 
 // Recepción principal
 export interface TransferReception {
-  id: number;
-  transferId: number;
+  id: string;
+  transferId: string;
   transferNumber: string;
-  destinationWarehouseId: number;
-  destinationWarehouseName: string;
-  originWarehouseId: number;
-  originWarehouseName: string;
-  supplierId: number;
-  supplierName: string;
+  receivingWarehouseId: string;
+  receivingWarehouseName: string;
+  receivedById: string;
+  receivedByName: string;
+  receivedAt: string;
   status: TransferReceptionStatus;
-  receivedBy?: string;
-  receivedAt?: string;
-  completedAt?: string;
-  items: ReceptionItem[];
-  totalExpectedItems: number;
-  totalReceivedItems: number;
-  totalAcceptedItems: number;
-  totalRejectedItems: number;
-  hasDiscrepancies: boolean;
-  discrepanciesCount: number;
-  comments: ReceptionComment[];
+  notes: string;
+  evidenceUrls: string[];
+  discrepancyDescription: string;
+  isDiscrepancyResolved: boolean;
+  discrepancyResolvedAt: string;
+  discrepancyResolvedById: string;
+  discrepancyResolvedByName: string;
+  resolutionDescription: string;
+  createdDatetime: string;
+  updatedDatetime: string;
+  active: boolean;
+  items: TransferReceptionItem[];
+  comments: TransferReceptionComment[];
   documents: ReceptionDocument[];
-  createdAt: string;
-  updatedAt: string;
+  // Campos adicionales útiles del modelo anterior
+  totalExpectedItems?: number;
+  totalReceivedItems?: number;
+  totalAcceptedItems?: number;
+  totalRejectedItems?: number;
+  hasDiscrepancies?: boolean;
+  discrepanciesCount?: number;
 }
 
 // Documento de recepción
@@ -116,18 +130,30 @@ export interface TransferReceptionFilter {
   search?: string;
 }
 
+// Form data para la recepción
+export interface ReceptionFormItem {
+  transferItemId: string;
+  receivedQuantity: number;
+  batchNumber?: string;
+  expiryDate?: string;
+  discrepancyType?: DiscrepancyType;
+  discrepancyNotes?: string;
+  isAccepted?: boolean;
+}
+
+export interface UnexpectedProductFormData {
+  productName: string;
+  quantity: number;
+  unit: string;
+  batchNumber?: string;
+  observations?: string;
+}
+
 // Datos para crear/actualizar recepción
 export interface CreateReceptionData {
-  transferId: number;
-  items: {
-    transferItemId: number;
-    receivedQuantity: number;
-    acceptedQuantity: number;
-    rejectedQuantity: number;
-    batchNumber?: string;
-    expirationDate?: string;
-    notes?: string;
-  }[];
+  transferId: string;
+  items: ReceptionFormItem[];
+  unexpectedProducts?: UnexpectedProductFormData[];
   notes?: string;
   status: TransferReceptionStatus;
 }

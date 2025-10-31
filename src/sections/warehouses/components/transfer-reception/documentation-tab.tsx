@@ -4,9 +4,8 @@ import { Button } from "@/components/button/button";
 import { Input } from "@/components/input/input";
 import { WarehouseTransfer } from "@/types/warehouses-transfers";
 import { useFormContext, useFieldArray } from "react-hook-form";
-import { ReceptionFormData } from "@/types/transfer-reception";
+import { CreateTransferReceptionFormData, ReceptionEvidenceFormData } from "@/sections/warehouses/schemas/transfer-reception-schema";
 import { useState, useRef } from "react";
-import { uploadReceptionEvidence } from "@/services/transfer-reception";
 import showToast from "@/config/toast/toastConfig";
 
 interface Props {
@@ -25,14 +24,14 @@ interface DocumentFile {
 }
 
 export default function DocumentationTab({ transfer }: Props) {
-  const { control, register } = useFormContext<ReceptionFormData>();
+  // Usamos el schema unificado del flujo de recepción
+  const { control, register } = useFormContext<CreateTransferReceptionFormData>();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { fields: evidence, append: addEvidence, remove: removeEvidence } =
-    useFieldArray({
-      control,
-      name: "evidence",
-    });
+  const { fields: evidence, append: addEvidence, remove: removeEvidence } = useFieldArray({
+    control,
+    name: "evidence",
+  });
 
   const [isUploading, setIsUploading] = useState(false);
 
@@ -65,12 +64,12 @@ export default function DocumentationTab({ transfer }: Props) {
         continue;
       }
 
-      const documentFile: DocumentFile = {
+      // Estructura compatible con ReceptionEvidenceFormData en el schema
+      const documentFile: ReceptionEvidenceFormData = {
         id: `temp-${Date.now()}-${i}`,
         name: file.name,
         type: file.type,
         size: file.size,
-        file: file,
         uploadProgress: 0,
         isUploading: true,
       };
@@ -101,7 +100,7 @@ export default function DocumentationTab({ transfer }: Props) {
         clearInterval(progressInterval);
 
         // Actualizar con el resultado final
-        const updatedDocument = {
+        const updatedDocument: ReceptionEvidenceFormData = {
           ...documentFile,
           id: result.id,
           url: result.url,
@@ -111,7 +110,7 @@ export default function DocumentationTab({ transfer }: Props) {
 
         // Actualizar el documento en la lista
         const currentEvidence = evidence;
-        const index = currentEvidence.findIndex(doc => doc.id === documentFile.id);
+        const index = currentEvidence.findIndex((doc: any) => doc.id === documentFile.id);
         if (index !== -1) {
           // Usar replace no está disponible en useFieldArray, así que removemos y agregamos
           removeEvidence(index);
@@ -124,7 +123,7 @@ export default function DocumentationTab({ transfer }: Props) {
         showToast(`Error al subir ${file.name}`, "error");
 
         // Remover el archivo fallido
-        const index = evidence.findIndex(doc => doc.id === documentFile.id);
+        const index = evidence.findIndex((doc: any) => doc.id === documentFile.id);
         if (index !== -1) {
           removeEvidence(index);
         }
@@ -317,7 +316,7 @@ export default function DocumentationTab({ transfer }: Props) {
               Observaciones sobre la Documentación
             </label>
             <textarea
-              {...register("documentationNotes")}
+                {...register("documentationNotes")}
               rows={4}
               placeholder="Añade cualquier observación sobre los documentos, fotos o evidencia subida..."
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
