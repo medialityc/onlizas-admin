@@ -70,6 +70,7 @@
     "react-text-mask": "^5.5.0",
     "react-toastify": "^11.0.5",
     "react-webcam": "^7.2.0",
+    "recharts": "^2.6.2",
     "sharp": "^0.34.4",
     "sweetalert2": "^11.22.2",
     "swiper": "^11.2.8",
@@ -77,9 +78,8 @@
     "tippy.js": "^6.3.7",
     "typescript": "^5.3.3",
     "universal-cookie": "^7.2.0",
-    "zas-sso-client": "1.2.8",
+    "zas-sso-client": "^1.2.16",
     "zod": "^3.25.23",
-    "recharts": "^2.6.2",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
