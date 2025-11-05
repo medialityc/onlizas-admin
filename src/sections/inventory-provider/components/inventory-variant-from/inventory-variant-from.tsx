@@ -2,6 +2,7 @@ import {
   RHFCheckbox,
   RHFInputWithLabel,
   RHFSwitch,
+  RHFSelectWithLabel,
 } from "@/components/react-hook-form";
 import { Separator } from "@/components/ui/separator";
 import React from "react";
@@ -14,6 +15,17 @@ type Props = {
   variantIndex: number;
   isPacking: boolean;
 };
+
+// Opciones de condición de variante (enum VariantCondition del backend)
+const variantConditionOptions = [
+  { value: 1, label: "Usado: como nuevo" },
+  { value: 2, label: "Usado: muy bueno" },
+  { value: 3, label: "Usado: buen estado" },
+  { value: 4, label: "Usado: aceptable" },
+  { value: 5, label: "Usado: tal cual" },
+  { value: 6, label: "Nuevo" },
+  { value: 7, label: "Reacondicionado" },
+];
 
 const InventoryVariantFrom = ({ variantIndex, isPacking }: Props) => {
   const { watch } = useFormContext<ProductVariant>();
@@ -45,6 +57,36 @@ const InventoryVariantFrom = ({ variantIndex, isPacking }: Props) => {
               type="text"
               placeholder="Ingrese SKU"
               required
+            />
+          </div>
+          <div>
+            <RHFInputWithLabel
+              name="upc"
+              label="UPC"
+              type="text"
+              placeholder="Ingrese UPC"
+              required
+            />
+          </div>
+          <div>
+            <RHFInputWithLabel
+              name="ean"
+              label="EAN"
+              type="text"
+              placeholder="Ingrese EAN"
+              required
+            />
+          </div>
+
+          <div>
+            <RHFSelectWithLabel
+              name="condition"
+              label="Condición"
+              required
+              options={variantConditionOptions}
+              placeholder="Seleccionar..."
+              emptyOption="Seleccione condición"
+              variant="custom"
             />
           </div>
 

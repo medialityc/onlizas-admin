@@ -1,4 +1,14 @@
 export const backendRoutes = {
+  brands: {
+    getAll: `${process.env.NEXT_PUBLIC_API_URL}brands`,
+    create: `${process.env.NEXT_PUBLIC_API_URL}brands`,
+    getById: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}brands/${id}`,
+    update: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}brands/${id}`,
+    delete: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}brands/${id}`, // DELETE
+  },
   countries: { get: `${process.env.NEXT_PUBLIC_API_URL}countries` },
   users: {
     me: `${process.env.NEXT_PUBLIC_API_URL}me`,

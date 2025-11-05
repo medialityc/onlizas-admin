@@ -81,7 +81,7 @@ const InputWithLabel = forwardRef<HTMLInputElement, Props>(
               className="text-sm font-semibold text-gray-700 dark:text-gray-200"
             >
               {label}
-              {required && "*"}
+              {required && <span className="text-red-500"> *</span>}
             </label>
           )}
         </div>
@@ -153,7 +153,9 @@ const InputWithLabel = forwardRef<HTMLInputElement, Props>(
               {...rest}
             />
             {underLabel && (
-              <p className="font-normal text-xs text-gray-600 mt-1">{underLabel}</p>
+              <p className="font-normal text-xs text-gray-600 mt-1">
+                {underLabel}
+              </p>
             )}
           </div>
 

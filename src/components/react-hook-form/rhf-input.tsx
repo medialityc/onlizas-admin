@@ -17,7 +17,7 @@ interface Props
   type?: string;
   disabled?: boolean;
   size?: "small" | "medium";
-  label?: ReactNode |  string;
+  label?: ReactNode | string;
   placeholder?: string;
   underLabel?: string;
   width?: CSSProperties["width"];
@@ -109,7 +109,7 @@ export default function RHFInputWithLabel({
                 className="text-sm font-semibold text-gray-700 dark:text-gray-200"
               >
                 {label}
-                {required && " *"}
+                {required && <span className="text-red-500"> *</span>}
               </label>
             )}
             <TextArea
@@ -144,7 +144,7 @@ export default function RHFInputWithLabel({
                     className="text-sm font-semibold text-gray-700 dark:text-gray-200"
                   >
                     {label}
-                    {required && "*"}
+                    {required && <span className="text-red-500"> *</span>}
                   </label>
                 )}
                 {underLabel && (
@@ -189,7 +189,10 @@ export default function RHFInputWithLabel({
                   onChange={(val) => {
                     onChange(val);
                     if (onCountryChange) {
-                      const parsed = parsePhoneNumberFromString(val || "", "US");
+                      const parsed = parsePhoneNumberFromString(
+                        val || "",
+                        "US"
+                      );
                       const detectedCode = parsed?.country || undefined;
                       onCountryChange(detectedCode);
                     }

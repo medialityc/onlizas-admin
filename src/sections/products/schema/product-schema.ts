@@ -116,6 +116,8 @@ export const productSchema = z.object({
       z.instanceof(File, { message: "Debe ser un archivo válido." }),
     ])
     .optional(),
+  brandId: z.string().min(1, "Debe seleccionar al menos un proveedor."),
+  gtin: z.string().min(1, "Debe ingresar un GTIN válido."),
 });
 
 export type ProductFormData = z.infer<typeof productSchema> & {

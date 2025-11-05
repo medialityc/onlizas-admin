@@ -12,7 +12,7 @@ function ProductDimensionSection() {
       <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
         Dimensiones (cm)
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <RHFInputWithLabel
             name="width"
@@ -21,6 +21,7 @@ function ProductDimensionSection() {
             placeholder="0"
             min="0"
             step="0.1"
+            required
           />
         </div>
         <div>
@@ -31,6 +32,7 @@ function ProductDimensionSection() {
             placeholder="0"
             min="0"
             step="0.1"
+            required
           />
         </div>
         <div>
@@ -41,6 +43,7 @@ function ProductDimensionSection() {
             placeholder="0"
             min="0"
             step="0.1"
+            required
           />
         </div>
         <div>
@@ -51,6 +54,7 @@ function ProductDimensionSection() {
             placeholder="0"
             min="0"
             step="0.1"
+            required
           />
         </div>
       </div>

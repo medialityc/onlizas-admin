@@ -5,9 +5,35 @@ import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import Tippy from "@tippyjs/react";
 import { Tooltip } from "@mantine/core";
+import { getVariantConditionLabel } from "@/config/variant-condition-map";
 
 const InventoryProviderDetailSection = () => {
   const { control, watch, setValue } = useFormContext();
+
+  // Nuevas propiedades de variante que queremos mostrar en sección de detalles
+  const [
+    condition,
+    isPrime,
+    isActive,
+    purchaseLimit,
+    isLimit,
+    warranty,
+    volume,
+    weight,
+    packageDelivery,
+  ] = watch([
+    "condition",
+    "isPrime",
+    "isActive",
+    "purchaseLimit",
+    "isLimit",
+    "warranty",
+    "volume",
+    "weight",
+    "packageDelivery",
+  ]);
+
+  // Usamos mapa centralizado
 
   const detailName = `details`;
 
@@ -19,7 +45,55 @@ const InventoryProviderDetailSection = () => {
   if (Array.isArray(watchedDetails) && fields?.length > 0) {
     return (
       <div className="flex flex-col gap-2">
-        <p className="font-bold text-sm mb-2">Características del Producto</p>
+        <div className="flex flex-col gap-2 mb-2">
+          <p className="font-bold text-sm">Características del Producto</p>
+          {/* Bloque de propiedades nuevas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 bg-gray-50 dark:bg-gray-800/40 p-3 rounded-lg">
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500">Condición</span>
+              <span className="text-sm font-medium">
+                {getVariantConditionLabel(condition)}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500">Estado</span>
+              <span className="text-sm font-medium">
+                {isActive ? "Activa" : "Inactiva"}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500">Prime</span>
+              <span className="text-sm font-medium">
+                {isPrime ? "Sí" : "No"}
+              </span>
+            </div>
+            {isLimit && (
+              <div className="flex flex-col">
+                <span className="text-xs text-gray-500">Límite de compra</span>
+                <span className="text-sm font-medium">
+                  {purchaseLimit || 0}
+                </span>
+              </div>
+            )}
+            {warranty?.isWarranty && (
+              <div className="flex flex-col">
+                <span className="text-xs text-gray-500">Garantía</span>
+                <span className="text-sm font-medium">
+                  {warranty.warrantyTime} meses / ${warranty.warrantyPrice}
+                </span>
+              </div>
+            )}
+            {packageDelivery && (
+              <div className="flex flex-col">
+                <span className="text-xs text-gray-500">Paquetería</span>
+                <span className="text-sm font-medium">
+                  {volume ? `${volume} vol` : "-"}{" "}
+                  {weight ? ` / ${weight} lb` : ""}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {fields?.map((feat: any, detailIndex: number) => {
@@ -113,7 +187,55 @@ const InventoryProviderDetailSection = () => {
 
     return (
       <div className="flex flex-col gap-2">
-        <p className="font-bold text-sm mb-2">Características del Producto</p>
+        <div className="flex flex-col gap-2 mb-2">
+          <p className="font-bold text-sm">Características del Producto</p>
+          {/* Bloque de propiedades nuevas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 bg-gray-50 dark:bg-gray-800/40 p-3 rounded-lg">
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500">Condición</span>
+              <span className="text-sm font-medium">
+                {getVariantConditionLabel(condition)}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500">Estado</span>
+              <span className="text-sm font-medium">
+                {isActive ? "Activa" : "Inactiva"}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500">Prime</span>
+              <span className="text-sm font-medium">
+                {isPrime ? "Sí" : "No"}
+              </span>
+            </div>
+            {isLimit && (
+              <div className="flex flex-col">
+                <span className="text-xs text-gray-500">Límite de compra</span>
+                <span className="text-sm font-medium">
+                  {purchaseLimit || 0}
+                </span>
+              </div>
+            )}
+            {warranty?.isWarranty && (
+              <div className="flex flex-col">
+                <span className="text-xs text-gray-500">Garantía</span>
+                <span className="text-sm font-medium">
+                  {warranty.warrantyTime} meses / ${warranty.warrantyPrice}
+                </span>
+              </div>
+            )}
+            {packageDelivery && (
+              <div className="flex flex-col">
+                <span className="text-xs text-gray-500">Paquetería</span>
+                <span className="text-sm font-medium">
+                  {volume ? `${volume} vol` : "-"}{" "}
+                  {weight ? ` / ${weight} lb` : ""}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {entries.map(([key, value]) => {

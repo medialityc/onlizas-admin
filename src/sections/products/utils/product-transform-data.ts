@@ -10,6 +10,8 @@ export const productTransformData = (product: Product): ProductFormData => {
     // isDurable: product.isDurable ?? false,
     active: product.state ?? false,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    brandId: product.brand?.id ?? 0,
+    gtin: product.gtin ?? "",
 
     aboutThis: product?.aboutThis,
 

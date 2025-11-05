@@ -60,6 +60,9 @@ function EditContainer({ inventory, features }: Props) {
   const initValue = useMemo(
     () => ({
       sku: "",
+      upc: "",
+      ean: "",
+      condition: 0,
       details: featuresNormalized,
       isActive: true,
       stock: 0,

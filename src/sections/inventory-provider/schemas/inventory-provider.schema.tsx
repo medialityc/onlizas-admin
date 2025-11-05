@@ -5,7 +5,10 @@ export const productVariants = z
   .object({
     id: z.string().optional(),
     limitPurchaseLimit: z.number().optional(),
-    sku: z.string({ required_error: "SKU es requerido" }),
+    sku: z.string().min(1, "El SKU es requerida"),
+    upc: z.string().min(1, "EL UPC es requerida"),
+    ean: z.string().min(1, "EL EAN es requerida"),
+    condition: z.number().min(1, "La condición es requerida"),
     isActive: z.boolean().default(true),
     details: z
       .union([
@@ -181,5 +184,5 @@ export type InventoryProviderFormData = z.infer<
 export type ProductVariant = z.infer<typeof productVariants> & {
   productName?: string;
   storeName?: string;
-  isPacking?: boolean
+  isPacking?: boolean;
 };

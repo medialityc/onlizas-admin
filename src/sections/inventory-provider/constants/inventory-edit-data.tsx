@@ -7,6 +7,7 @@ export async function buildCreateProductVariantFormData(
   input: ProductVariant
 ): Promise<FormData> {
   const fd = new FormData();
+  console.log(input);
 
   // ID del producto variante
   if (input.id !== undefined) fd.append("id", String(input.id));
@@ -48,7 +49,10 @@ export async function buildCreateProductVariantFormData(
   // Volume & Weight (paquetería)
   if (input.volume !== undefined) fd.append("volume", String(input.volume));
   if (input.weight !== undefined) fd.append("weight", String(input.weight));
-
+  if (input.condition !== undefined)
+    fd.append("condition", String(input.condition));
+  if (input.ean) fd.append("ean", input.ean);
+  if (input.upc) fd.append("upc", input.upc);
   // Warranty
   fd.append(
     "warranty",
