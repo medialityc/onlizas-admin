@@ -17,6 +17,9 @@ import { useEffect } from "react";
 const initValue: ProductVariant = {
   id: "",
   sku: "",
+  upc: "",
+  ean: "",
+  condition: 0,
   details: {},
   isActive: true,
   stock: 0,

@@ -1,10 +1,11 @@
 "use client";
 
-import { RHFCheckbox } from "@/components/react-hook-form";
+import { RHFCheckbox, RHFInputWithLabel } from "@/components/react-hook-form";
 import IconBox from "@/components/icon/icon-box";
 import { usePathname } from "next/navigation";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAduanaCategories } from "@/services/categories";
+import { getAllBrands } from "@/services/brands";
 
 export const ProductCustomsInfoSection = () => {
   const pathname = usePathname();
@@ -49,6 +50,23 @@ export const ProductCustomsInfoSection = () => {
         objectKeyLabel="name"
         objectValueKey="guid"
         placeholder="Seleccione una categoría aduanal"
+        required
+      />
+      {/* Marca */}
+      <RHFAutocompleteFetcherInfinity
+        name="brandId"
+        onFetch={getAllBrands}
+        label="Marca"
+        objectKeyLabel="name"
+        objectValueKey="id"
+        placeholder="Seleccione una marca"
+        required
+      />
+      {/* GTIN */}
+      <RHFInputWithLabel
+        name="gtin"
+        label="GTIN"
+        placeholder="Ej: 1234567890123"
         required
       />
       {/* <RHFAutocompleteFetcherInfinity

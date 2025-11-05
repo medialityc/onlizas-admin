@@ -1,3 +1,4 @@
+import { Brand } from "./brands";
 import { InventoryProductItem } from "./inventory";
 
 // Tipos según la API real en product-apis.md
@@ -42,6 +43,9 @@ export type ProductSupplier = {
 export interface Product {
   id: string;
   name: string;
+  niso: string;
+  gtin: string;
+  brand: Brand;
   description: string;
   image: string;
   length: number;

@@ -22,6 +22,8 @@ const initValues: ProductFormData = {
   aboutThis: [],
   details: [],
   image: "",
+  brandId: "",
+  gtin: "",
 
   // Aduanera
   /* customsValueAduanaUsd: 0,

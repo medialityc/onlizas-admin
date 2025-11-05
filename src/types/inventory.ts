@@ -5,6 +5,10 @@ export type InventoryProductItem = {
   globalID: string;
   productId: number;
   productName: string;
+  upc: string;
+  ean: string;
+  sku: string;
+  condition: number;
   price: number;
   discountedPrice: number;
   limitPurchaseLimit: number;

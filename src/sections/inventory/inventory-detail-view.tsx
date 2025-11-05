@@ -2,6 +2,7 @@
 import Badge from "@/components/badge/badge";
 import ImagePreview from "@/components/image/image-preview";
 import { InventoryProductItem, InventoryProvider } from "@/types/inventory";
+import { getVariantConditionLabel } from "@/config/variant-condition-map";
 
 interface Props {
   inventory: InventoryProvider;
@@ -188,7 +189,18 @@ export default function InventoryDetailView({ inventory }: Props) {
                             {p.productName}
                           </div>
                           <div className="text-sm text-gray-500 dark:text-gray-400">
-                            SKU: {p.productId}
+                            SKU: {p.sku}
+                          </div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                            UPC: {p.upc}
+                          </div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                            EAN: {p.ean}
+                          </div>
+                          <div className="mt-1">
+                            <Badge variant="secondary" className="text-[10px]">
+                              {getVariantConditionLabel(p.condition)}
+                            </Badge>
                           </div>
                         </div>
                         <div className="text-center sm:text-right">
@@ -215,6 +227,16 @@ export default function InventoryDetailView({ inventory }: Props) {
                       {p.warranty && p.warranty.isWarranty && (
                         <div className="mt-2 text-sm text-green-600 dark:text-green-400 text-center sm:text-left">
                           Garantía: {p.warranty.warrantyTime} días
+                        </div>
+                      )}
+                      {p.isPrime && (
+                        <div className="mt-1 text-xs text-purple-600 dark:text-purple-400 text-center sm:text-left">
+                          Prime
+                        </div>
+                      )}
+                      {p.isActive !== undefined && (
+                        <div className="mt-1 text-xs text-gray-600 dark:text-gray-300 text-center sm:text-left">
+                          Estado: {p.isActive ? "Activo" : "Inactivo"}
                         </div>
                       )}
                     </div>
