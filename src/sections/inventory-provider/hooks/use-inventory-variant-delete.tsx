@@ -1,42 +1,7 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import {
-  ProductVariant,
-  productVariants,
-} from "../schemas/inventory-provider.schema";
-import { buildCreateProductVariantFormData } from "../constants/inventory-edit-data";
-import {
-  addVariantToInventory,
-  deleteVariantInventory,
-  editVariantInventory,
-} from "@/services/inventory-providers";
-
-const initValue: ProductVariant = {
-  id: "",
-  sku: "",
-  condition: 0,
-  upc: "",
-  ean: "",
-  details: {},
-  isActive: true,
-  stock: 0,
-  price: 0,
-  volume: 0,
-  weight: 0,
-  purchaseLimit: 0,
-  warranty: {
-    isWarranty: false,
-    warrantyTime: 0,
-    warrantyPrice: 0,
-  },
-  isLimit: false,
-  isPrime: false,
-  packageDelivery: false,
-  images: [],
-};
+import { deleteVariantInventory } from "@/services/inventory-providers";
 
 export const useInventoryVariantDelete = (
   inventoryId: string

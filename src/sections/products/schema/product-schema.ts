@@ -2,6 +2,7 @@ import { detailsObjectToArray } from "@/utils/format";
 import { z } from "zod";
 
 export const productSchema = z.object({
+  isDraft: z.boolean().default(false).optional(),
   id: z.string().optional(),
   name: z
     .string({ required_error: "El nombre es obligatorio." })

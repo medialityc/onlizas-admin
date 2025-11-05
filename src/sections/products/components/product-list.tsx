@@ -14,6 +14,8 @@ import { toggleActiveProduct } from "@/services/products";
 import showToast from "@/config/toast/toastConfig";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import { usePermissions } from "@/hooks/use-permissions";
+import ImagePreview from "@/components/image/image-preview";
+import { isValidUrl } from "@/utils/format";
 
 interface ProductListProps {
   data?: GetAllProducts;
@@ -31,10 +33,8 @@ export function ProductList({
   const { updateFiltersInUrl } = useFiltersUrl();
 
   const handleCreateProduct = useCallback(() => {
-    if (hasPermission([PERMISSION_ENUM.CREATE])) {
-      router.push("/dashboard/products/new");
-    }
-  }, [router, hasPermission]);
+    router.push("/dashboard/products/new");
+  }, [router]);
 
   const handleView = (product: Product) => {
     if (hasPermission([PERMISSION_ENUM.RETRIEVE])) {
@@ -74,6 +74,24 @@ export function ProductList({
   );
 
   const columns: DataTableColumn<Product>[] = [
+    {
+      accessor: "image",
+      title: "Imagen",
+      sortable: true,
+      render: (product, index) => (
+        <div className="font-medium" key={`image-${index}`}>
+          <ImagePreview
+            className="w-10 h-10"
+            alt={"product"}
+            images={
+              isValidUrl(product?.image as string)
+                ? [product?.image as string]
+                : []
+            }
+          />
+        </div>
+      ),
+    },
     {
       accessor: "name",
       title: "Nombre",
@@ -160,7 +178,10 @@ export function ProductList({
           emptyText="No se encontraron productos"
           createText="Nuevo Producto"
           className="mt-6"
-          createPermissions={[PERMISSION_ENUM.CREATE]}
+          createPermissions={[
+            PERMISSION_ENUM.CREATE,
+            PERMISSION_ENUM.CREATE_PRODUCT,
+          ]}
         />
       </div>
     </>

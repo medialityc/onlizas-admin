@@ -46,6 +46,9 @@ export const setSupplierProductFormData = async (
   formData.append("weight", String(product.weight));
 
   formData.append("aboutThis", JSON.stringify(product.aboutThis));
+  formData.append("aduanaCategoryGuid", String(product.aduanaCategoryGuid));
+  formData.append("brandId", String(product.brandId));
+  formData.append("gtin", String(product.gtin));
 
   if (product.details) {
     formData.append(
