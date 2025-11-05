@@ -17,6 +17,9 @@ import {
 const initValue: ProductVariant = {
   id: "",
   sku: "",
+  condition: 0,
+  upc: "",
+  ean: "",
   details: {},
   isActive: true,
   stock: 0,
