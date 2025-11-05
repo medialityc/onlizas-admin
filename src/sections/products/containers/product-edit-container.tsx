@@ -11,7 +11,7 @@ const ProductEditContainer = ({ product }: Props) => {
     <div className="panel">
       <div className="mb-5">
         <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-          Editar Product
+          Editar Producto
         </h2>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Define el producto y sus características

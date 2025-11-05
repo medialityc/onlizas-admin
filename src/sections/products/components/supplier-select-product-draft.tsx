@@ -1,6 +1,6 @@
 "use client";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import { getAllMyApprovedProducts } from "@/services/products";
+import { getAllMyApprovedProducts, getAllProducts } from "@/services/products";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import { cn } from "@/lib/utils";
@@ -56,7 +56,11 @@ const ProductOptionRender = ({
   );
 };
 
-const SupplierSelectProductDraft = () => {
+const SupplierSelectProductDraft = ({
+  isSupplier = true,
+}: {
+  isSupplier?: boolean;
+}) => {
   const { setValue } = useFormContext();
 
   const handleProductSelected = (
@@ -87,6 +91,9 @@ const SupplierSelectProductDraft = () => {
       "image",
       isValidUrl(product?.image as string) ? product?.image : null
     );
+    setValue("brandId", product?.brandId || "");
+    setValue("gtin", product?.gtin || "");
+    setValue("aduanaCategoryGuid", product?.aduanaCategoryGuid || "");
   };
 
   return (
@@ -95,7 +102,9 @@ const SupplierSelectProductDraft = () => {
         name="productId"
         label="Seleccionar Producto"
         placeholder="Buscar producto..."
-        onFetch={getAllMyApprovedProducts as any}
+        onFetch={
+          isSupplier ? (getAllMyApprovedProducts as any) : getAllProducts
+        }
         objectValueKey="id"
         objectKeyLabel="name"
         queryKey="products-draft"

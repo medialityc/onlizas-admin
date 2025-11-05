@@ -10,7 +10,7 @@ export const handleApiServerError = async <T>(
 ): Promise<ApiResponse<T>> => {
   try {
     const contentType = response.headers.get("content-type");
-
+    console.log(response);
     if (response.status === 401) {
       // await refreshServerSession();
       return {

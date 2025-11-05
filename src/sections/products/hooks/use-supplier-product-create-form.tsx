@@ -32,6 +32,9 @@ const initValues: SupplierProductFormData = {
   aboutThis: [],
   details: [],
   image: null,
+  brandId: "",
+  gtin: "",
+  aduanaCategoryGuid: "",
 };
 
 export const useSupplierProductCreateForm = (
@@ -71,7 +74,7 @@ export const useSupplierProductCreateForm = (
       toast.success(
         `Se ${defaultValues?.id ? "editó" : "creó"} correctamente el producto`
       );
-      push("/provider/products");
+      push("/dashboard/products");
     },
     onError: async (error: any) => {
       toast.error(error?.message);

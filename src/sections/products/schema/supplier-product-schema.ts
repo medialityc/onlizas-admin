@@ -93,6 +93,13 @@ export const supplierProductSchema = z
     additionalImages: z
       .array(z.union([z.string(), z.instanceof(File)]))
       .optional(),
+    aduanaCategoryGuid: z
+      .union([z.string(), z.number()])
+      .refine((val) => val !== "" && val !== undefined && val !== null, {
+        message: "Debe seleccionar una categoría aduanal",
+      }),
+    brandId: z.string().min(1, "Debe seleccionar al menos un proveedor."),
+    gtin: z.string().min(1, "Debe ingresar un GTIN válido."),
   })
   .superRefine((data, ctx) => {
     // Validar imagen y details cuando isDraft es true (producto es plantilla)

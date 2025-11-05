@@ -24,13 +24,7 @@ const initValues: ProductFormData = {
   image: "",
   brandId: "",
   gtin: "",
-
-  // Aduanera
-  /* customsValueAduanaUsd: 0,
-  valuePerUnit: 0, */
-  //  isDurable: false,
   aduanaCategoryGuid: "",
-  // unitGuid: "",
 };
 
 export const useProductCreateForm = (
@@ -41,6 +35,7 @@ export const useProductCreateForm = (
     defaultValues,
     resolver: zodResolver(productSchema),
   });
+  const isDraft = form.watch("isDraft");
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: ProductFormData) => {
@@ -73,5 +68,6 @@ export const useProductCreateForm = (
     onSubmit: form.handleSubmit((values) => {
       mutate(values);
     }),
+    isDraft,
   };
 };

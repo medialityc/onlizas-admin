@@ -31,15 +31,15 @@ export function SupplierProductList({
   const { updateFiltersInUrl } = useFiltersUrl();
 
   const handleCreateProduct = useCallback(() => {
-    router.push("/provider/products/new");
+    router.push("/dashboard/products/new");
   }, [router]);
 
   const handleView = (product: Product) => {
-    router.push(paths.provider.products.view(product.id));
+    router.push(paths.dashboard.products.view(product.id));
   };
 
   const handleEdit = (product: Product) => {
-    router.push(paths.provider.products.edit(product.id));
+    router.push(paths.dashboard.products.edit(product.id));
   };
 
   const handleToggleActiveProduct = useCallback(async (product: Product) => {

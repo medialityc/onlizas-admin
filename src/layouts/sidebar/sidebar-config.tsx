@@ -27,7 +27,7 @@ import {
   Wallet,
   WarehouseIcon,
 } from "lucide-react";
-import { PERMISSION_ADMIN } from "@/lib/permissions";
+import { PERMISSION_ADMIN, PERMISSION_PRODUCT } from "@/lib/permissions";
 
 export const sidebarSections: SidebarSection[] = [
   {
@@ -94,7 +94,7 @@ export const sidebarSections: SidebarSection[] = [
         label: "Productos",
         path: paths.dashboard.products.list,
         icon: <ShoppingBagIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ADMIN,
+        permissions: PERMISSION_PRODUCT,
       },
       {
         id: "content-sections",
