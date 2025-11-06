@@ -17,7 +17,7 @@ export interface ExtendApprovalProcessRequest {
 }
 
 export async function extendApprovalProcess(
-  id: number,
+  id: string | number,
   data: FormData
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({

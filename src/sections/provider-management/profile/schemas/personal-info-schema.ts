@@ -8,7 +8,7 @@ export const emailSchema = z.object({
 });
 
 export const phoneSchema = z.object({
-  countryId: z.number().int().optional(),
+  countryId: z.string().optional(),
   number: z
     .string()
     .min(7, "Teléfono inválido")

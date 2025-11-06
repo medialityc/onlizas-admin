@@ -58,11 +58,11 @@ export default function VendorRequestsTab({
     });
 
   const handleCategoryRequest = (data: any) => {
-    submitCategoryRequest(user?.approvalProcessId || 0, data);
+    submitCategoryRequest(user?.approvalProcessId || "", data);
   };
 
   const handleExpirationExtension = (data: any) => {
-    submitExpirationExtension(user?.approvalProcessId || 0, data);
+    submitExpirationExtension(user?.approvalProcessId || "", data);
   };
 
   const getStateColor = (state: string) => {

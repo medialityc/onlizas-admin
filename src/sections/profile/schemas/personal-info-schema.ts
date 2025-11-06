@@ -8,7 +8,7 @@ export const emailSchema = z.object({
 });
 
 export const phoneSchema = z.object({
-  countryId: z.number().int().optional(),
+  countryId: z.string().optional(),
   number: z
     .string()
     .min(7, "Teléfono inválido")
@@ -18,7 +18,7 @@ export const phoneSchema = z.object({
 });
 
 export const personalInfoSchema = z.object({
-  id: z.union([z.number().optional(), z.string().optional()]),
+  id: z.string().optional(),
   name: z.string().min(1, "El nombre es requerido").max(100),
   photoFile: z
     .union([

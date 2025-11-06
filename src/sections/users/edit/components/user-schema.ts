@@ -3,7 +3,7 @@ import { z } from "zod";
 // Address schema
 export const addressSchema = z
   .object({
-    id: z.number().positive("El ID debe ser un número positivo").optional(),
+    id: z.string().optional(),
 
     // Campos requeridos con validaciones mejoradas
     name: z
@@ -73,9 +73,9 @@ export const addressSchema = z
       }, "Formato de código postal inválido"),
 
     countryId: z
-      .number()
-      .positive("Debe seleccionar un país válido")
-      .int("El ID del país debe ser un número entero"),
+      .string()
+      .min(1, "El ID del país es requerido")
+      .max(100, "El ID del país no puede exceder 100 caracteres"),
 
     // Campos opcionales con validaciones
     otherStreets: z
@@ -230,7 +230,7 @@ export const defaultAddress: AddressFormData = {
   city: "",
   state: "",
   zipcode: "",
-  countryId: 0,
+  countryId: "",
   latitude: 0,
   longitude: 0,
   annotations: "",

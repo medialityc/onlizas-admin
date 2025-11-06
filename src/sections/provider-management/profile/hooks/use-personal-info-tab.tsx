@@ -41,7 +41,7 @@ export function usePersonalInfoTab({ user }: Props) {
         })) || [],
       phones:
         user?.phones?.map((p: any) => ({
-          countryId: Number(p.countryId ?? 0),
+          countryId: p.countryId ?? "",
           number: String(p.number ?? ""),
           isVerified: !!p.isVerified,
         })) || [],
@@ -54,7 +54,7 @@ export function usePersonalInfoTab({ user }: Props) {
           city: a.city ?? "",
           state: a.state ?? "",
           zipcode: a.zipcode ?? "",
-          countryId: Number(a.countryId ?? 0),
+          countryId: a.countryId ?? "",
           otherStreets: a.otherStreets ?? "",
           latitude: typeof a.latitude === "number" ? a.latitude : undefined,
           longitude: typeof a.longitude === "number" ? a.longitude : undefined,
@@ -99,7 +99,7 @@ export function usePersonalInfoTab({ user }: Props) {
     city: a.city ?? "",
     state: a.state ?? "",
     zipcode: a.zipcode ?? "",
-    countryId: a.countryId ?? 0,
+    countryId: a.countryId ?? "",
     otherStreets: a.otherStreets ?? "",
     latitude: a.latitude,
     longitude: a.longitude,
@@ -152,7 +152,7 @@ export function usePersonalInfoTab({ user }: Props) {
       updateAddress(editIndex, toPersonalAddress(address));
       closeModal("editAddress");
     } else {
-      const withId = { ...address, id: Date.now() } as UserAddressFormData;
+      const withId = { ...address, id: "" } as UserAddressFormData;
       appendAddress(toPersonalAddress(withId));
       closeModal("createAddress");
     }

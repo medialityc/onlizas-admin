@@ -22,7 +22,7 @@ export function useApprovalProcessRequest(onSuccess?: () => void) {
     const formData = new FormData();
 
     // approvalProcessId
-    formData.append("approvalProcessId", approvalProcessId.toString() );
+    formData.append("approvalProcessId", approvalProcessId.toString());
 
     // Extender categorías
     if (data.extendCategories) {
@@ -70,7 +70,7 @@ export function useApprovalProcessRequest(onSuccess?: () => void) {
       formData.append("comments", String(data.comments));
     }
 
-    return extendApprovalProcess( formData);
+    return extendApprovalProcess(approvalProcessId, formData);
   };
 
   /**
@@ -78,7 +78,7 @@ export function useApprovalProcessRequest(onSuccess?: () => void) {
    */
   const { mutate, isPending } = useMutation({
     mutationFn: async (params: {
-      approvalProcessId?: number|string;
+      approvalProcessId?: number | string;
       data: any;
     }) => {
       if (!params.approvalProcessId) {
@@ -110,7 +110,7 @@ export function useApprovalProcessRequest(onSuccess?: () => void) {
    * Función para enviar solicitud de categorías o expiracion
    */
   const submitApprovalRequest = (
-    approvalProcessId: number|string | undefined,
+    approvalProcessId: number | string | undefined,
     data: any,
     type: "category" | "expiration"
   ) => {
