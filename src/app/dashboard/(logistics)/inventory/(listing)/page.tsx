@@ -1,7 +1,5 @@
-import { buildQueryParams } from "@/lib/request";
-import InventoryCardListContainer from "@/sections/inventory-provider/containers/inventory-card-list-container";
-import { getAllInventoryProvider } from "@/services/inventory-providers";
-import { IQueryable, SearchParams } from "@/types/fetch/request";
+import { SearchParams } from "@/types/fetch/request";
+import InventoryPermissionWrapper from "@/sections/inventory-provider/containers/inventory-permission-wrapper";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -18,16 +16,7 @@ interface PageProps {
 
 async function InventoryProviderPage({ searchParams }: PageProps) {
   const search = await searchParams;
-  const query: IQueryable = buildQueryParams(search);
-  const inventories = await getAllInventoryProvider(query);
-
-  return (
-    <>
-      {inventories && (
-        <InventoryCardListContainer inventories={inventories} query={search} />
-      )}
-    </>
-  );
+  return <InventoryPermissionWrapper query={search} />;
 }
 
 export default InventoryProviderPage;

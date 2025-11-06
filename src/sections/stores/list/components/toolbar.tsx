@@ -4,7 +4,7 @@ import { DataGridHeader } from "@/components/datagrid";
 import { Button } from "@/components/button/button";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { usePermissions } from "@/hooks/use-permissions";
-import { PERMISSION_ENUM } from "@/lib/permissions";
+import { PERMISSION_ENUM, PERMISSIONS } from "@/lib/permissions";
 
 type StoreListToolbarProps = {
   searchValue: string;
@@ -19,7 +19,10 @@ export function StoreListToolbar({
 }: StoreListToolbarProps) {
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
+  const hasCreatePermission = hasPermission([
+    PERMISSION_ENUM.CREATE,
+    PERMISSION_ENUM.CREATE_STORE,
+  ]);
 
   return (
     <DataGridHeader

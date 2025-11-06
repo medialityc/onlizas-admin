@@ -35,10 +35,17 @@ export interface TabItem {
 interface NavigationTabsProps {
   tabs: TabItem[];
   className?: string;
+  hidden?: boolean; // if true, do not render tabs
 }
 
-export function NavigationTabs({ tabs, className }: NavigationTabsProps) {
+export function NavigationTabs({
+  tabs,
+  className,
+  hidden,
+}: NavigationTabsProps) {
   const pathname = usePathname();
+
+  if (hidden) return null;
 
   return (
     <div

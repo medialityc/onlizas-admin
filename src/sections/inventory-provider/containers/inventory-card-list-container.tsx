@@ -12,17 +12,22 @@ import { GetAllInventoryProviderResponse } from "@/types/inventory";
 interface Props {
   inventories: ApiResponse<GetAllInventoryProviderResponse>;
   query: SearchParams;
+  hideCreate?: boolean;
+  providerId?: string; // supplier id for supplier create mode
 }
 
 export default function InventoryCardListContainer({
   inventories: inventoriesResponse,
   query,
+  hideCreate = false,
+  providerId,
 }: Props) {
   const { getModalState, openModal, closeModal } = useModalState();
 
   // Modal states controlled by URL
   const createPermissionModal = getModalState("create");
   const handleOpen = () => {
+    if (hideCreate) return; // prevent opening if not allowed
     openModal("create");
   };
   const onCloseModal = () => {
@@ -51,12 +56,16 @@ export default function InventoryCardListContainer({
           data={inventoriesResponse.data}
           searchParams={query}
           onSearchParamsChange={handleSearchParamsChange}
-          onCreate={handleOpen}
+          // Pass a stable noop if hidden to satisfy type
+          onCreate={hideCreate ? () => {} : handleOpen}
         />
-        <CreateInventoryModal
-          open={createPermissionModal.open}
-          onClose={onCloseModal}
-        />
+        {!hideCreate && (
+          <CreateInventoryModal
+            open={createPermissionModal.open}
+            onClose={onCloseModal}
+            provider={providerId}
+          />
+        )}
       </div>
     </div>
   );

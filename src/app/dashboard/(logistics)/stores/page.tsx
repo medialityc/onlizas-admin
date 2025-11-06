@@ -1,7 +1,5 @@
-import { buildQueryParams } from "@/lib/request";
-import StoresListContainer from "@/sections/stores/list/stores-list-container";
-import { getAllStores } from "@/services/stores";
-import { IQueryable, SearchParams } from "@/types/fetch/request";
+import StoresPermissionWrapper from "@/sections/stores/list/stores-permission-wrapper";
+import { SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -18,10 +16,8 @@ interface PageProps {
 
 async function StoresListPage({ searchParams }: PageProps) {
   const params = await searchParams;
-  const query: IQueryable = buildQueryParams(params);
-  const storesPromise = await getAllStores(query);
-
-  return <StoresListContainer storesPromise={storesPromise} query={params} />;
+  // Delegamos la lógica de permisos y fetching al wrapper cliente
+  return <StoresPermissionWrapper query={params} />;
 }
 
 export default StoresListPage;

@@ -11,6 +11,18 @@ export enum PERMISSION_ENUM {
   UPDATE_PRODUCT = "UpdateProduct",
   DELETE_PRODUCT = "DeleteProduct",
 
+  // Inventory specific supplier creation and retrieve
+  CREATE_INVENTORY = "CreateInventory",
+  RETRIEVE_INVENTORY = "RetrieveInventory",
+  UPDATE_INVENTORY = "UpdateInventory",
+  DELETE_INVENTORY = "DeleteInventory",
+
+  // Store specific supplier retrieve (can only list own stores)
+  RETRIEVE_STORE = "RetrieveStore",
+  CREATE_STORE = "CreateStore",
+  UPDATE_STORE = "UpdateStore",
+  DELETE_STORE = "DeleteStore",
+
   // Role permissions
   ASSIGN_ROLE = "AssignRole",
 }
@@ -55,5 +67,19 @@ export const PERMISSIONS = [
   {
     code: PERMISSION_ENUM.ASSIGN_ROLE,
     description: "This permission allows to assign roles to users",
+  },
+  {
+    code: PERMISSION_ENUM.CREATE_INVENTORY,
+    description:
+      "Allows a supplier to create inventory records for own products",
+  },
+  {
+    code: PERMISSION_ENUM.RETRIEVE_INVENTORY,
+    description:
+      "Allows a supplier to retrieve only their own inventory records",
+  },
+  {
+    code: PERMISSION_ENUM.RETRIEVE_STORE,
+    description: "Allows a supplier to retrieve only their own stores",
   },
 ];
