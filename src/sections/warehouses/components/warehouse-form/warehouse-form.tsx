@@ -25,7 +25,10 @@ export function WarehouseForm({ warehouse }: Props) {
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const hasCreatePermission = hasPermission([
+    PERMISSION_ENUM.CREATE,
+    PERMISSION_ENUM.CREATE_WAREHOUSE,
+  ]);
 
   return (
     <FormProvider
@@ -53,7 +56,7 @@ export function WarehouseForm({ warehouse }: Props) {
             Cancelar
           </Button>
         </Link>
-        {hasUpdatePermission && (
+        {hasCreatePermission && (
           <Button
             form="warehouse-form"
             type="submit"
