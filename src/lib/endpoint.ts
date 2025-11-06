@@ -11,7 +11,7 @@ export const backendRoutes = {
   },
   countries: { get: `${process.env.NEXT_PUBLIC_API_URL}countries` },
   users: {
-    me: `${process.env.NEXT_PUBLIC_API_URL}me`,
+    me: `${process.env.NEXT_PUBLIC_API_URL}users/me`,
     register: `${process.env.NEXT_PUBLIC_API_URL}Users/register`,
     search: `${process.env.NEXT_PUBLIC_API_URL}users/search`,
     scan: `${process.env.NEXT_PUBLIC_API_URL}users/scan`,

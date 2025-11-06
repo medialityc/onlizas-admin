@@ -60,7 +60,7 @@ export default function UserProfileDropdown() {
         </li>
         <li>
           <a
-            href="/users/profile"
+            href="/dashboard/profile"
             className="dark:hover:text-white flex items-center"
           >
             <IconUser className="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2" />
