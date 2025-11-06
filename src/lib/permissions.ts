@@ -17,6 +17,12 @@ export enum PERMISSION_ENUM {
   UPDATE_INVENTORY = "UpdateInventory",
   DELETE_INVENTORY = "DeleteInventory",
 
+  // Variant
+  CREATE_VARIANT = "CreateVariant",
+  RETRIEVE_VARIANT = "RetrieveVariant",
+  UPDATE_VARIANT = "UpdateVariant",
+  DELETE_VARIANT = "DeleteVariant",
+
   // Store specific supplier retrieve (can only list own stores)
   RETRIEVE_STORE = "RetrieveStore",
   CREATE_STORE = "CreateStore",
@@ -28,6 +34,11 @@ export enum PERMISSION_ENUM {
   CREATE_WAREHOUSE = "CreateWarehouse",
   UPDATE_WAREHOUSE = "UpdateWarehouse",
   DELETE_WAREHOUSE = "DeleteWarehouse",
+
+  CREATE_TRANSFER = "CreateTransfer",
+  RETRIEVE_TRANSFER = "RetrieveTransfer",
+  UPDATE_TRANSFER = "UpdateTransfer",
+  DELETE_TRANSFER = "DeleteTransfer",
 
   // Role permissions
   ASSIGN_ROLE = "AssignRole",

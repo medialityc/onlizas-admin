@@ -56,7 +56,6 @@ export default function InventoryCardListContainer({
           data={inventoriesResponse.data}
           searchParams={query}
           onSearchParamsChange={handleSearchParamsChange}
-          // Pass a stable noop if hidden to satisfy type
           onCreate={hideCreate ? () => {} : handleOpen}
         />
         {!hideCreate && (

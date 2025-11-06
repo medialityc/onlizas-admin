@@ -19,7 +19,10 @@ const InventoryEditVariantContent = ({
   isPacking,
 }: Props) => {
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasUpdatePermission = hasPermission([
+    PERMISSION_ENUM.UPDATE,
+    PERMISSION_ENUM.UPDATE_VARIANT,
+  ]);
 
   return (
     <>

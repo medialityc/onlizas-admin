@@ -27,7 +27,18 @@ export default function VariantsManager({
     inventoryId as string
   );
   const { hasPermission } = usePermissions();
-  const hasDeletePermission = hasPermission([PERMISSION_ENUM.DELETE]);
+  const hasDeletePermission = hasPermission([
+    PERMISSION_ENUM.DELETE,
+    PERMISSION_ENUM.DELETE_VARIANT,
+  ]);
+  const hasCreatePermission = hasPermission([
+    PERMISSION_ENUM.CREATE_VARIANT,
+    PERMISSION_ENUM.CREATE,
+  ]);
+  const hasUpdatePermission = hasPermission([
+    PERMISSION_ENUM.UPDATE_VARIANT,
+    PERMISSION_ENUM.UPDATE,
+  ]);
   const { open, onOpen, onClose } = useToggle(false);
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     null
@@ -52,15 +63,17 @@ export default function VariantsManager({
             {variants.length} {variants.length === 1 ? "variante" : "variantes"}
           </p>
         </div>
-        <Button
-          variant="secondary"
-          onClick={onAdd}
-          className="gap-2 whitespace-nowrap"
-        >
-          <Plus className="w-4 h-4" />
-          <span className="hidden sm:inline">Agregar variante</span>
-          <span className="sm:hidden">Agregar</span>
-        </Button>
+        {hasCreatePermission && (
+          <Button
+            variant="secondary"
+            onClick={onAdd}
+            className="gap-2 whitespace-nowrap"
+          >
+            <Plus className="w-4 h-4" />
+            <span className="hidden sm:inline">Agregar variante</span>
+            <span className="sm:hidden">Agregar</span>
+          </Button>
+        )}
       </div>
 
       {/* Grid de variantes */}
@@ -70,6 +83,7 @@ export default function VariantsManager({
             <VariantCard
               key={variant.id}
               variant={variant}
+              canEdit={hasUpdatePermission}
               onEdit={onEdit}
               canDelete={hasDeletePermission}
               onDelete={(id) => handleDelete(id)}
@@ -100,10 +114,12 @@ export default function VariantsManager({
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
             Crea tu primera variante para comenzar
           </p>
-          <Button onClick={onAdd} className="gap-2">
-            <Plus className="w-4 h-4" />
-            Crear variante
-          </Button>
+          {hasCreatePermission && (
+            <Button onClick={onAdd} className="gap-2">
+              <Plus className="w-4 h-4" />
+              Crear variante
+            </Button>
+          )}
         </div>
       )}
 

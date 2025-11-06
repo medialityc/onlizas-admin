@@ -2,6 +2,7 @@ import { SearchParams } from "@/types/fetch/request";
 import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
 import InventoryProviderList from "../inventory-provider-card/inventory-provider-list";
 import { GetAllInventoryProviderResponse } from "@/types/inventory";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface Props {
   data?: GetAllInventoryProviderResponse;
@@ -26,6 +27,7 @@ export function InventoryCardGrid({
         onCreate={onCreate}
         createText="Crear inventario"
         enableColumnToggle={false}
+        createPermissions={[PERMISSION_ENUM.CREATE_INVENTORY]}
         component={
           <InventoryProviderList
             data={data?.data}

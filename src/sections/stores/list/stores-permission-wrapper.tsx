@@ -7,20 +7,19 @@ import { getAllStores, getProviderStores } from "@/services/stores";
 import { SearchParams, IQueryable } from "@/types/fetch/request";
 import StoresListContainer from "./stores-list-container";
 import SkeletonStoreList from "./components/skeleton";
+import { useMemo, useState, useEffect } from "react";
 
-/**
- * Wrapper que decide qué servicio de listado de tiendas usar dependiendo de permisos.
- * - Admin (Retrieve): lista todas las tiendas.
- * - Supplier (RetrieveStore sin Retrieve): lista solo sus propias tiendas.
- * Si no tiene ninguno de los permisos, muestra mensaje de falta de permisos.
- */
+interface WrapperProps {
+  query?: SearchParams; // search params crudos
+  apiQuery?: IQueryable; // versión ya construida desde la page
+}
+
 export default function StoresPermissionWrapper({
   query,
-}: {
-  query: SearchParams;
-}) {
+  apiQuery: externalApiQuery,
+}: WrapperProps) {
   const { hasPermission, isLoading: permissionsLoading } = usePermissions();
-  // Evaluar permisos solo cuando ya cargaron para evitar flash de "sin permisos"
+
   const hasAdminRetrieve =
     !permissionsLoading && hasPermission([PERMISSION_ENUM.RETRIEVE]);
   const hasSupplierRetrieve =
@@ -29,7 +28,17 @@ export default function StoresPermissionWrapper({
     hasPermission([PERMISSION_ENUM.RETRIEVE_STORE]);
   const canList = hasAdminRetrieve || hasSupplierRetrieve;
 
-  const apiQuery: IQueryable = buildQueryParams(query as any);
+  // Memo de parámetros para evitar nueva identidad
+  const apiQuery: IQueryable = useMemo(
+    () =>
+      externalApiQuery
+        ? externalApiQuery
+        : buildQueryParams((query || {}) as any),
+    [externalApiQuery, query]
+  );
+  const serializedParams = useMemo(() => JSON.stringify(apiQuery), [apiQuery]);
+
+  const [stableData, setStableData] = useState<any | undefined>(undefined);
 
   const {
     data: storesResponse,
@@ -39,24 +48,31 @@ export default function StoresPermissionWrapper({
     queryKey: [
       "stores-list",
       hasAdminRetrieve ? "admin" : hasSupplierRetrieve ? "supplier" : "none",
-      apiQuery,
+      serializedParams,
     ],
     queryFn: async () => {
       if (hasAdminRetrieve) return await getAllStores(apiQuery);
       if (hasSupplierRetrieve) return await getProviderStores(apiQuery);
       return undefined;
     },
-    enabled: canList, // No ejecutar hasta conocer permisos válidos
+    enabled: canList,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
+    placeholderData: (prev) => prev,
+    retry: 1,
   });
 
-  // Mientras permisos están cargando mostrar skeleton inicial
-  if (permissionsLoading) {
+  useEffect(() => {
+    if (storesResponse) setStableData(storesResponse);
+  }, [storesResponse]);
+
+  // Estado inicial mientras cargan permisos y no hay datos previos
+  if (permissionsLoading && !stableData) {
     return <SkeletonStoreList />;
   }
 
-  if (!canList) {
+  // Sin permisos
+  if (!permissionsLoading && !canList) {
     return (
       <div className="panel p-6">
         <h2 className="text-lg font-semibold mb-2">Gestión de Tiendas</h2>
@@ -67,16 +83,22 @@ export default function StoresPermissionWrapper({
     );
   }
 
-  if (storesLoading && !storesResponse) {
+  // Cargando primera vez lista sin datos aún
+  if (canList && storesLoading && !storesResponse && !stableData) {
     return <SkeletonStoreList />;
   }
+
+  const effectiveData = storesResponse || stableData;
+
   return (
     <div className="relative">
-      <StoresListContainer
-        storesPromise={storesResponse as any}
-        query={query}
-      />
-      {isFetching && !storesLoading && storesResponse && (
+      {canList && effectiveData && (
+        <StoresListContainer
+          storesPromise={effectiveData as any}
+          query={(query || {}) as SearchParams}
+        />
+      )}
+      {isFetching && canList && effectiveData && (
         <div className="absolute top-2 right-2 text-xs px-2 py-1 bg-gray-800 text-white rounded shadow animate-pulse">
           Actualizando...
         </div>

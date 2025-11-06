@@ -41,7 +41,7 @@ const WarehouseHeader = () => {
             </Button>
           )}
           {hasCreatePermission && (
-            <Link href={"warehouses/new"}>
+            <Link href={"/dashboard/warehouses/new"}>
               <Button>
                 <PlusIcon className="h-4 w-4 mr-2" /> Nuevo almacén
               </Button>

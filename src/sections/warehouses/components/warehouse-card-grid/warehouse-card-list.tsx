@@ -4,8 +4,6 @@ import React, { useCallback, useId } from "react";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { WarehouseCard } from "./warehouse-card";
 import { WAREHOUSE_TYPE_ENUM } from "../../constants/warehouse-type";
-import { useModalState } from "@/hooks/use-modal-state";
-import { getWarehouseRoute } from "../../utils/warehouse";
 
 type Props = {
   data?: WarehouseFormData[];
@@ -14,14 +12,6 @@ type Props = {
 };
 const WarehouseCardList = ({ data, searchParams, forceType }: Props) => {
   const id = useId();
-
-  const { openModal } = useModalState();
-  const handleEditWarehouse = useCallback(
-    (warehouse: WarehouseFormData) => {
-      openModal<string>("edit", warehouse.id);
-    },
-    [openModal]
-  );
 
   if (data?.length === 0) {
     return (
@@ -44,7 +34,6 @@ const WarehouseCardList = ({ data, searchParams, forceType }: Props) => {
               forceType ||
               (warehouse.type?.toLocaleLowerCase() as WAREHOUSE_TYPE_ENUM)
             }
-            onEdit={forceType && (() => handleEditWarehouse(warehouse))}
           />
         </div>
       ))}
