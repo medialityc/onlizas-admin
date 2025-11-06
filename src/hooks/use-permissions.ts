@@ -1,3 +1,4 @@
+import { logs } from "./../services/data-for-gateway-settings/mock-datas";
 import { usePermissions as useSSO } from "zas-sso-client";
 
 // Tipo Permission de zas-sso-client
@@ -22,9 +23,10 @@ export const usePermissions = () => {
     error: any;
     isError: boolean;
   };
-
   // Asegurar que permissions sea siempre un array válido de códigos
-  const safePermissionCodes = Array.isArray(permissions)
+  const safePermissionCodes = Array.isArray(
+    permissions?.filter((p) => p.subsystem.code === "Onlizas")
+  )
     ? permissions.map((p: Permission) => p?.code).filter(Boolean)
     : [];
 
