@@ -33,6 +33,7 @@ export enum PERMISSION_ENUM {
   ASSIGN_ROLE = "AssignRole",
 
   UPDATE_BUSINESS = "UpdateBusiness",
+  UPDATE_APPROVAL_PROCESS = "UpdateApprovalProcess",
 }
 export const PERMISSION_PRODUCT = [
   PERMISSION_ENUM.CREATE_PRODUCT,
