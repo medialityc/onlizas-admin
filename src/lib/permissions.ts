@@ -23,6 +23,12 @@ export enum PERMISSION_ENUM {
   UPDATE_STORE = "UpdateStore",
   DELETE_STORE = "DeleteStore",
 
+  // Warehouse specific supplier retrieve
+  RETRIEVE_WAREHOUSE = "RetrieveWarehouse",
+  CREATE_WAREHOUSE = "CreateWarehouse",
+  UPDATE_WAREHOUSE = "UpdateWarehouse",
+  DELETE_WAREHOUSE = "DeleteWarehouse",
+
   // Role permissions
   ASSIGN_ROLE = "AssignRole",
 }
@@ -81,5 +87,9 @@ export const PERMISSIONS = [
   {
     code: PERMISSION_ENUM.RETRIEVE_STORE,
     description: "Allows a supplier to retrieve only their own stores",
+  },
+  {
+    code: PERMISSION_ENUM.RETRIEVE_WAREHOUSE,
+    description: "Allows a supplier to retrieve only their own warehouses",
   },
 ];
