@@ -7,6 +7,7 @@ import { getAllWarehouses, getAllMeWarehouses } from "@/services/warehouses";
 import { SearchParams, IQueryable } from "@/types/fetch/request";
 import WarehouseListContainer from "./warehouse-list-container";
 import MeWarehouseListContainer from "./me-warehouse-list-container";
+import { useMemo, useEffect, useState } from "react";
 
 /**
  * Wrapper de permisos para listado de almacenes.
@@ -28,7 +29,12 @@ export default function WarehousePermissionWrapper({
     hasPermission([PERMISSION_ENUM.RETRIEVE_WAREHOUSE]);
   const canList = hasAdminRetrieve || hasSupplierRetrieve;
 
-  const apiQuery: IQueryable = buildQueryParams(query as any);
+  const apiQuery: IQueryable = useMemo(
+    () => buildQueryParams(query as any),
+    [query]
+  );
+  const serializedParams = useMemo(() => JSON.stringify(apiQuery), [apiQuery]);
+  const [stableData, setStableData] = useState<any | undefined>(undefined);
 
   const {
     data: warehousesResponse,
@@ -40,7 +46,7 @@ export default function WarehousePermissionWrapper({
     queryKey: [
       "warehouses-list",
       hasAdminRetrieve ? "admin" : hasSupplierRetrieve ? "supplier" : "none",
-      apiQuery,
+      serializedParams,
     ],
     queryFn: async () => {
       if (hasAdminRetrieve) return await getAllWarehouses(apiQuery as any);
@@ -50,7 +56,13 @@ export default function WarehousePermissionWrapper({
     enabled: canList,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
+    placeholderData: (prev) => prev,
+    retry: 1,
   });
+
+  useEffect(() => {
+    if (warehousesResponse) setStableData(warehousesResponse);
+  }, [warehousesResponse]);
 
   // Skeleton mientras cargan permisos
   if (permissionsLoading) {
@@ -80,7 +92,7 @@ export default function WarehousePermissionWrapper({
     );
   }
 
-  if (warehousesLoading && !warehousesResponse) {
+  if (warehousesLoading && !warehousesResponse && !stableData) {
     return (
       <div className="space-y-4">
         <div className="h-10 w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
@@ -106,22 +118,37 @@ export default function WarehousePermissionWrapper({
     );
   }
 
-  if (!warehousesResponse) return null;
+  const effectiveData = warehousesResponse || stableData;
+  if (!effectiveData) {
+    return (
+      <div className="space-y-4">
+        <div className="h-10 w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-40 bg-gray-100 dark:bg-gray-800 animate-pulse rounded"
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative">
       {hasAdminRetrieve ? (
         <WarehouseListContainer
-          warehousesPromise={warehousesResponse as any}
+          warehousesPromise={effectiveData as any}
           query={query}
         />
       ) : (
         <MeWarehouseListContainer
-          warehousesPromise={warehousesResponse as any}
+          warehousesPromise={effectiveData as any}
           query={query}
         />
       )}
-      {isFetching && !warehousesLoading && warehousesResponse && (
+      {isFetching && !warehousesLoading && effectiveData && (
         <div className="absolute top-2 right-2 text-xs px-2 py-1 bg-gray-800 text-white rounded shadow animate-pulse">
           Actualizando...
         </div>

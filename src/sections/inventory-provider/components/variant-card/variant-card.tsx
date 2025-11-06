@@ -13,6 +13,7 @@ export interface VariantCardProps {
   onEdit: (id: string) => void;
   onDelete?: (id: string) => void;
   canDelete?: boolean;
+  canEdit?: boolean;
 }
 
 const conditionColorMap: Record<number, string> = {
@@ -30,6 +31,7 @@ function VariantCard({
   onEdit,
   onDelete,
   canDelete,
+  canEdit,
 }: VariantCardProps) {
   const details =
     (variant.details as unknown as { key: string; value: string }[]) || [];
@@ -188,18 +190,20 @@ function VariantCard({
 
         {/* Actions */}
         <div className="flex justify-end gap-2 pt-2 border-t border-gray-100 dark:border-slate-800">
-          <Button
-            outline
-            variant="info"
-            size="sm"
-            onClick={() => onEdit(variant.id as string)}
-            className="gap-1 px-2 py-1 rounded-md flex items-center"
-            title="Editar variante"
-            aria-label={`Editar variante ${variant.sku ?? variant.productName}`}
-          >
-            <Edit2 className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">Editar</span>
-          </Button>
+          {canEdit && onEdit && (
+            <Button
+              outline
+              variant="info"
+              size="sm"
+              onClick={() => onEdit(variant.id as string)}
+              className="gap-1 px-2 py-1 rounded-md flex items-center"
+              title="Editar variante"
+              aria-label={`Editar variante ${variant.sku ?? variant.productName}`}
+            >
+              <Edit2 className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">Editar</span>
+            </Button>
+          )}
           {canDelete && onDelete && (
             <Button
               variant="danger"
