@@ -27,7 +27,13 @@ import {
   Wallet,
   WarehouseIcon,
 } from "lucide-react";
-import { PERMISSION_ADMIN, PERMISSION_PRODUCT } from "@/lib/permissions";
+import {
+  PERMISSION_ADMIN,
+  PERMISSION_INVENTORY,
+  PERMISSION_PRODUCT,
+  PERMISSION_STORE,
+  PERMISSION_WAREHOUSE,
+} from "@/lib/permissions";
 
 export const sidebarSections: SidebarSection[] = [
   {
@@ -40,7 +46,6 @@ export const sidebarSections: SidebarSection[] = [
         label: "Dashboard",
         path: paths.dashboard.root,
         icon: <CubeIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ADMIN,
       },
     ],
   },
@@ -53,7 +58,7 @@ export const sidebarSections: SidebarSection[] = [
         label: "Tiendas",
         path: paths.dashboard.stores.list,
         icon: <ShoppingBagIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ADMIN,
+        permissions: PERMISSION_STORE,
       },
       {
         id: "suppliers",
@@ -121,21 +126,14 @@ export const sidebarSections: SidebarSection[] = [
         label: "Inventario",
         path: paths.dashboard.inventory.all,
         icon: <ClipboardDocumentIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ADMIN,
+        permissions: PERMISSION_INVENTORY,
       },
       {
         id: "warehouses",
         label: "Almacenes",
         path: paths.dashboard.warehouses.list,
         icon: <WarehouseIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ADMIN,
-      },
-      {
-        id: "virtual-warehouse-types",
-        label: "Tipos de almacenes",
-        path: paths.dashboard.virtualWarehouseTypes.list,
-        icon: <WarehouseIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ADMIN,
+        permissions: PERMISSION_WAREHOUSE,
       },
       {
         id: "locations",
