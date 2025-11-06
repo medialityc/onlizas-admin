@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { GetAllStores, Store } from "@/types/stores";
 import { SearchParams } from "@/types/fetch/request";
@@ -28,8 +28,6 @@ export function StoresList({
 }: StoresListProps) {
   const { getModalState, openModal, closeModal } = useModalState();
 
- 
-
   const createStoreModal = getModalState("create");
 
   const handleCreateStore = useCallback(() => openModal("create"), [openModal]);
@@ -56,10 +54,20 @@ export function StoresList({
     onSearchParamsChange: mergedOnSearchParamsChange,
   });
 
+  // Evitar doble fetch inicial: saltar primera ejecución y solo disparar si el valor realmente cambió
+  const firstRunRef = useRef(true);
   useEffect(() => {
+    const trimmed = searchValue.trim();
+    const current = (searchParams.search ?? "").trim();
+    // Saltar primera ejecución y evitar refetch si no cambió el valor
+    if (firstRunRef.current) {
+      firstRunRef.current = false;
+      return;
+    }
+    if (trimmed === current) return;
     mergedOnSearchParamsChange({
       ...searchParams,
-      search: searchValue.trim(),
+      search: trimmed,
       page: 1,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -27,9 +27,11 @@ export default function ProductsListPermissionWrapper({ query }: Props) {
     isLoading,
     isError,
     error,
+    isFetching,
   } = useQuery({
     queryKey: [
-      hasAdminRetrieve ? "products-admin" : "products-supplier",
+      "products-list",
+      hasAdminRetrieve ? "admin" : "supplier",
       apiQuery,
     ],
     queryFn: async () => {
@@ -37,9 +39,25 @@ export default function ProductsListPermissionWrapper({ query }: Props) {
         ? await getAllProducts(apiQuery)
         : await getAllMyProducts(apiQuery);
     },
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
   });
 
-  if (isLoading) return <Loader />;
+  if (isLoading && !productsResponse) {
+    return (
+      <div className="space-y-4">
+        <div className="h-10 w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-48 bg-gray-100 dark:bg-gray-800 animate-pulse rounded"
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
   if (isError)
     return (
       <div className="p-6 panel">
@@ -51,17 +69,21 @@ export default function ProductsListPermissionWrapper({ query }: Props) {
 
   if (!productsResponse) return null;
 
-  if (hasSupplierRetrieveOnly) {
-    return (
-      <SupplierProductsListContainer
-        productsPromise={productsResponse}
-        query={query}
-      />
-    );
-  }
+  const supplierView = hasSupplierRetrieveOnly;
+  const ContainerComponent = supplierView
+    ? SupplierProductsListContainer
+    : ProductsListContainer;
 
   // Admin (or user with full RETRIEVE) fallback
   return (
-    <ProductsListContainer productsPromise={productsResponse} query={query} />
+    <div className="relative">
+      {isFetching && productsResponse && (
+        <div className="absolute top-0 right-0 m-2 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+          <span className="inline-block w-2 h-2 rounded-full bg-blue-500 animate-ping" />
+          Actualizando...
+        </div>
+      )}
+      <ContainerComponent productsPromise={productsResponse} query={query} />
+    </div>
   );
 }

@@ -2,12 +2,16 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { RHFInputWithLabel } from "@/components/react-hook-form";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
-import { getAllBusinessByProvider } from "@/services/business";
+import {
+  getAllBusinessByProvider,
+  getAllBusinessByUser,
+} from "@/services/business";
 import React, { useEffect } from "react";
 import { StoreFormData } from "./stores-schema";
 import { useFormContext } from "react-hook-form";
 import { getAllSupplierUsers } from "@/services/users";
 import { usePermissions } from "@/hooks/use-permissions";
+import { useAuth } from "zas-sso-client";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import { RHFPhoneCountrySelect } from "@/components/react-hook-form/rhf-phone-country-select";
 type Props = {
@@ -15,19 +19,34 @@ type Props = {
   handleClose: VoidFunction;
 };
 function StoreCreateForm({ handleClose, isSubmitting }: Props) {
-  const { watch, resetField } = useFormContext<StoreFormData>();
+  const { watch, setValue } = useFormContext<StoreFormData>();
   const ownerId = watch("ownerId");
 
   // Control de permisos
   const { hasPermission } = usePermissions();
   const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
+  const hasCreateStorePermission = hasPermission([
+    PERMISSION_ENUM.CREATE_STORE,
+  ]);
+  const { user } = useAuth();
+  const isSupplierMode =
+    !hasCreatePermission && hasCreateStorePermission && user?.id;
 
   // Clear business when owner changes
   useEffect(() => {
     if (ownerId) {
-      resetField("businessId");
+      setValue("businessId", "");
     }
-  }, [ownerId, resetField]);
+  }, [ownerId, setValue]);
+  // Si modo proveedor: setear ownerId oculto y limpiar business cuando cambia usuario
+  useEffect(() => {
+    if (isSupplierMode && user?.id) {
+      // establecer ownerId interno si no está
+      if (!ownerId) {
+        setValue("ownerId", String(user.id));
+      }
+    }
+  }, [isSupplierMode, user, ownerId, setValue]);
 
   return (
     <>
@@ -53,16 +72,19 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
             containerClassname="[&>div>div>label]:text-base"
           />
         </div>
-        <RHFAutocompleteFetcherInfinity
-          name="ownerId"
-          label="Propietario"
-          placeholder="Buscar propietario..."
-          required
-          onFetch={getAllSupplierUsers}
-          size="medium"
-          key={`owner-${ownerId}`}
-        />
-        {ownerId && (
+        {!isSupplierMode && (
+          <RHFAutocompleteFetcherInfinity
+            name="ownerId"
+            label="Propietario"
+            placeholder="Buscar propietario..."
+            required
+            onFetch={getAllSupplierUsers}
+            size="medium"
+            key={`owner-${ownerId}`}
+          />
+        )}
+        {/* Negocio depende del modo */}
+        {!isSupplierMode && ownerId && (
           <RHFAutocompleteFetcherInfinity
             key={`business-${ownerId}`}
             queryKey={`business-by-owner-${ownerId}`}
@@ -75,10 +97,23 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
             size="medium"
           />
         )}
+        {isSupplierMode && (
+          <RHFAutocompleteFetcherInfinity
+            key={`business-by-user-${user?.id}`}
+            queryKey={`business-by-user-${user?.id}`}
+            enabled={!!user?.id}
+            name="businessId"
+            label="Negocio"
+            placeholder="Buscar negocio..."
+            required
+            onFetch={(params) => getAllBusinessByUser(params)}
+            size="medium"
+          />
+        )}
         {/* Logo Upload */}
         <RHFImageUpload
           name="logoStyle"
-          label="Logo de la tienda *"
+          label="Logo de la tienda "
           variant="rounded"
           size="full"
           className="[&>label]:text-base"

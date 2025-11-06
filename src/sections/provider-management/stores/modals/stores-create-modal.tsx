@@ -120,7 +120,7 @@ export default function StoresCreateModal({
         onSuccess?.();
         console.log(createdId);
         if (createdId) {
-          routerHook.push(`/provider/stores/${createdId}`);
+          routerHook.push(`/dashboard/stores/${createdId}`);
           return;
         }
         reset();
@@ -185,7 +185,9 @@ export default function StoresCreateModal({
               label="Negocio"
               placeholder="Buscar negocio..."
               required
-              onFetch={(params) => getAllBusinessByProvider(user?.id ?? 0, params)}
+              onFetch={(params) =>
+                getAllBusinessByProvider(user?.id ?? 0, params)
+              }
               objectKeyLabel="name"
               size="medium"
               params={{ pageSize: 10 }}
