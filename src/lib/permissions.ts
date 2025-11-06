@@ -31,6 +31,8 @@ export enum PERMISSION_ENUM {
 
   // Role permissions
   ASSIGN_ROLE = "AssignRole",
+
+  UPDATE_BUSINESS = "UpdateBusiness",
 }
 export const PERMISSION_PRODUCT = [
   PERMISSION_ENUM.CREATE_PRODUCT,
