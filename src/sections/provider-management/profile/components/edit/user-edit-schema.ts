@@ -30,7 +30,7 @@ export const phoneSchema = z.object({
 
 // Address schema
 export const addressSchema = z.object({
-  id: z.number().positive("El ID debe ser un número positivo").optional(),
+  id: z.string().optional(),
   name: z
     .string()
     .min(1, "El nombre es requerido")
@@ -58,9 +58,9 @@ export const addressSchema = z.object({
     .trim(),
   zipcode: z.string().min(1, "El código postal es requerido").trim(),
   countryId: z
-    .number()
-    .positive("Debe seleccionar un país válido")
-    .int("El ID del país debe ser un número entero"),
+    .string()
+    .min(1, "El ID del país es requerido")
+    .max(10, "El ID del país no puede exceder 10 caracteres"),
   otherStreets: z
     .string()
     .max(

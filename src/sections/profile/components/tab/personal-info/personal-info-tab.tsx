@@ -29,7 +29,6 @@ export function PersonalInfoTab({ user, documents }: PersonalInfoTabProps) {
     createAddressModal,
     editAddressModal,
     emailFields,
-    handleAddressModalSave,
     handleEditAddress,
     handleFormSubmit,
     handleRemoveEmail,
@@ -38,7 +37,6 @@ export function PersonalInfoTab({ user, documents }: PersonalInfoTabProps) {
     openModal,
     phoneFields,
     removeAddress,
-    selectedAddress,
     updateProviderMutation,
   } = usePersonalInfoTab({ user });
 

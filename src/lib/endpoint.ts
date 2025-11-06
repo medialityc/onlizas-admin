@@ -258,7 +258,7 @@ export const backendRoutes = {
   },
   approvalProcesses: {
     list: `${process.env.NEXT_PUBLIC_API_URL}admin/supplier/me`,
-    extend: (id: number) =>
+    extend: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${id}/extend`, // POST
   },
   store: {

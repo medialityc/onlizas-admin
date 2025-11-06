@@ -39,7 +39,7 @@ export function AddressModal({
       annotations: "",
       latitude: 0.0,
       longitude: 0.0,
-      countryId: -1,
+      countryId: "",
     },
     reValidateMode: "onChange",
     mode: "onChange",

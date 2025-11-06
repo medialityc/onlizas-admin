@@ -47,7 +47,7 @@ export interface Address {
   longitude: number;
   state: string;
   country: string;
-  countryId: number;
+  countryId: string;
   mainStreet: string;
 }
 
@@ -124,10 +124,10 @@ export interface IUser extends BaseUser {
 }
 //
 export interface IUserResponseMe {
-  id: string | number;
+  id: string;
   name: string;
   globalId: string;
-  approvalProcessId?: number;
+  approvalProcessId?: string;
   emails: Email[];
   phones: Phone[];
   isBlocked: boolean;
@@ -164,7 +164,7 @@ export type UserAttributeLogResponse = UserAttributeLog[];
 
 export type UserResponseMe = IUserResponseMe;
 export type Document = {
-  id: number;
+  id: string;
   name: string;
   description: string;
   objectCode: string;
@@ -172,7 +172,7 @@ export type Document = {
 
 // ORDER USER TYPES
 export type OrderUser = {
-  id: number;
+  id: string;
   name: string;
   isVerified: boolean;
   isBlocked: boolean;

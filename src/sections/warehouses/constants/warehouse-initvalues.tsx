@@ -14,7 +14,6 @@ export const initValueWarehouse: WarehouseFormData = {
 export const initValueMeWarehouse: MeWarehouseFormData = {
   name: "",
   active: false,
-  locationId: 0,
+  locationId: "",
   rules: "",
-  virtualTypeId: 0,
 };

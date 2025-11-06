@@ -16,7 +16,7 @@ export function useApprovalProcessRequest(onSuccess?: () => void) {
    * @returns Promise
    */
   const sendApprovalRequest = async (
-    userApprovalProcessId: number,
+    userApprovalProcessId: string,
     data: any
   ) => {
     const formData = new FormData();
@@ -62,7 +62,7 @@ export function useApprovalProcessRequest(onSuccess?: () => void) {
    * Mutation para manejar solicitudes de extensión con estados y notificaciones
    */
   const extendApprovalMutation = useMutation({
-    mutationFn: (params: { userApprovalProcessId: number; data: any }) =>
+    mutationFn: (params: { userApprovalProcessId: string; data: any }) =>
       sendApprovalRequest(params.userApprovalProcessId, params.data),
     onSuccess: () => {
       showToast("Solicitud enviada exitosamente", "success");
@@ -79,7 +79,7 @@ export function useApprovalProcessRequest(onSuccess?: () => void) {
   /**
    * Función para enviar solicitud de categorías
    */
-  const submitCategoryRequest = (userApprovalProcessId: number, data: any) => {
+  const submitCategoryRequest = (userApprovalProcessId: string, data: any) => {
     const categoryIds = data.categoryIds.map((id: string) => parseInt(id));
     extendApprovalMutation.mutate({
       userApprovalProcessId,
@@ -97,7 +97,7 @@ export function useApprovalProcessRequest(onSuccess?: () => void) {
    * Función para enviar solicitud de extensión de expiración
    */
   const submitExpirationExtension = (
-    userApprovalProcessId: number,
+    userApprovalProcessId: string,
     data: any
   ) => {
     extendApprovalMutation.mutate({

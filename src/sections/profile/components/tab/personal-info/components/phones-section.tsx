@@ -9,7 +9,7 @@ interface PhonesSectionProps {
   phoneFields: any[];
   errors: any;
   appendPhone: (phone: {
-    countryId: number;
+    countryId: string;
     number: string;
     isVerified: boolean;
   }) => void;
@@ -38,7 +38,7 @@ export function PhonesSection({
           size="sm"
           onClick={() =>
             appendPhone({
-              countryId: 40,
+              countryId: "",
               number: "",
               isVerified: false,
             })

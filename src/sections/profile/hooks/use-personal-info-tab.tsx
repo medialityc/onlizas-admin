@@ -5,7 +5,6 @@ import {
   PersonalInfoFormData,
   personalInfoSchema,
 } from "../schemas/personal-info-schema";
-import { AddressFormData as UserAddressFormData } from "@/sections/users/user-schema";
 
 import { useFieldArray, useForm } from "react-hook-form";
 import { UserResponseMe } from "@/types/users";
@@ -41,7 +40,7 @@ export function usePersonalInfoTab({ user }: Props) {
         })) || [],
       phones:
         user?.phones?.map((p: any) => ({
-          countryId: Number(p.countryId ?? 0),
+          countryId: p.countryId ?? "",
           number: String(p.number ?? ""),
           isVerified: !!p.isVerified,
         })) || [],
@@ -54,7 +53,7 @@ export function usePersonalInfoTab({ user }: Props) {
           city: a.city ?? "",
           state: a.state ?? "",
           zipcode: a.zipcode ?? "",
-          countryId: Number(a.countryId ?? 0),
+          countryId: a.countryId ?? "",
           otherStreets: a.otherStreets ?? "",
           latitude: typeof a.latitude === "number" ? a.latitude : undefined,
           longitude: typeof a.longitude === "number" ? a.longitude : undefined,
@@ -91,20 +90,6 @@ export function usePersonalInfoTab({ user }: Props) {
   } = useFieldArray({ control, name: "addresses", keyName: "_key" });
 
   type PersonalAddress = PersonalInfoFormData["addresses"][number];
-  const toPersonalAddress = (a: UserAddressFormData): PersonalAddress => ({
-    id: a.id,
-    name: a.name,
-    mainStreet: a.mainStreet,
-    number: a.number,
-    city: a.city ?? "",
-    state: a.state ?? "",
-    zipcode: a.zipcode ?? "",
-    countryId: a.countryId ?? 0,
-    otherStreets: a.otherStreets ?? "",
-    latitude: a.latitude,
-    longitude: a.longitude,
-    annotations: a.annotations ?? "",
-  });
 
   const handleResendEmail = async (email: string) => {
     if (!email) return;
@@ -146,28 +131,9 @@ export function usePersonalInfoTab({ user }: Props) {
 
   const handleRemovePhone = (index: number) => removePhone(index);
 
-  const handleAddressModalSave = (address: UserAddressFormData) => {
-    const editIndex = editAddressModal.id ?? null;
-    if (editIndex !== null) {
-      updateAddress(editIndex, toPersonalAddress(address));
-      closeModal("editAddress");
-    } else {
-      const withId = { ...address, id: Date.now() } as UserAddressFormData;
-      appendAddress(toPersonalAddress(withId));
-      closeModal("createAddress");
-    }
-  };
-
   const handleEditAddress = (_address: any, index: number) => {
     openModal<number>("editAddress", index);
   };
-
-  // Selected address by index when editing
-  const selectedAddress = useMemo(() => {
-    const idx = editAddressModal.id;
-    if (idx === undefined || idx === null) return null;
-    return (addressFields[idx] as unknown as UserAddressFormData) ?? null;
-  }, [editAddressModal, addressFields]);
 
   const handleFormSubmit = async (data: PersonalInfoFormData) => {
     updateProviderMutation.mutate(data);
@@ -187,7 +153,6 @@ export function usePersonalInfoTab({ user }: Props) {
     appendAddress,
     removeAddress,
     updateAddress,
-    selectedAddress,
     createAddressModal,
     editAddressModal,
     openModal,
@@ -197,12 +162,10 @@ export function usePersonalInfoTab({ user }: Props) {
     handleResendPhone,
     handleRemoveEmail,
     handleRemovePhone,
-    handleAddressModalSave,
     handleEditAddress,
     handleFormSubmit,
     updateProviderMutation,
     emailWatch,
     phoneWatch,
-    toPersonalAddress,
   };
 }
