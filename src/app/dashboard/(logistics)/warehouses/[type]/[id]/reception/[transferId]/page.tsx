@@ -4,6 +4,7 @@ import TransferReceptionContainer from "@/sections/warehouses/containers/transfe
 import BackButton from "@/components/button/back-button";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { WAREHOUSE_TRANSFER_OPTIONS } from "@/types/warehouses-transfers";
 
 export const metadata: Metadata = {
   title: "Recepcionar Transferencia - ZAS Express",
@@ -69,7 +70,7 @@ export default async function WarehouseReceptionProcessPage({
             </div>
             <div className="text-right">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
-                {transfer.status}
+                {WAREHOUSE_TRANSFER_OPTIONS.find(opt => opt.value === transfer.status)?.label || transfer.status}
               </span>
             </div>
           </div>
