@@ -36,7 +36,7 @@ export async function getAllTransfers(
 }
 
 export async function getWarehouseTransferById(
-  id: number
+  id: string
 ): Promise<ApiResponse<WarehouseTransfer>> {
   const res = await nextAuthFetch({
     url: backendRoutes.warehouse_transfers.getById(id),

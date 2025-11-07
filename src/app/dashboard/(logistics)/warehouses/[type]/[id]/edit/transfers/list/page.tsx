@@ -37,8 +37,8 @@ export default async function WarehousesPage({ searchParams, params }: Props) {
   const query = buildQueryParams(search);
   const warehousesTransferPromise = await getAllTransfers({
     ...query,
-    warehouseId: warehouseId,
-    direction: "Both", // Obtener todas las transferencias (enviadas y recibidas)
+    // warehouseId: warehouseId, // Remove to get all transfers and filter on frontend
+    // direction: "Both", // Not used
   });
 
   const response = await getWarehouseById(warehouseId, type);
@@ -53,7 +53,7 @@ export default async function WarehousesPage({ searchParams, params }: Props) {
         <WarehouseTransferListContainer
           warehousesTransferPromise={warehousesTransferPromise}
           query={search}
-          currentWarehouseId={Number(warehouseId)}
+          currentWarehouseId={warehouseId}
         />
       </Suspense>
     </EditWarehouseLayout>

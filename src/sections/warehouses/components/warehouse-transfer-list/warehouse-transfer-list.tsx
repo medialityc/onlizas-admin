@@ -28,7 +28,7 @@ interface Props {
   data?: WarehouseTransfer[]; // Array directo de transfers
   searchParams: SearchParams;
   onSearchParamsChange: (params: SearchParams) => void;
-  currentWarehouseId: number;
+  currentWarehouseId: string;
 }
 
 export function WarehouseTransferList({
@@ -117,8 +117,9 @@ export function WarehouseTransferList({
     }
   }, [pathname, push]);
 
-  const handleViewTransferDetails = useCallback((transferId: string) => {
-    // Para transferencias completadas, ir a una página de solo lectura
+  const handleViewTransferDetails = useCallback((trans: WarehouseTransfer) => {
+    // Construir la ruta de detalles basada en la ruta actual
+    // pathname será algo como: /dashboard/warehouses/[type]/[id]/edit/transfers/list
     const pathParts = pathname.split('/');
     const typeIndex = pathParts.indexOf('warehouses') + 1;
     const idIndex = typeIndex + 1;
@@ -126,7 +127,7 @@ export function WarehouseTransferList({
     if (typeIndex > 0 && idIndex < pathParts.length) {
       const type = pathParts[typeIndex];
       const warehouseId = pathParts[idIndex];
-      const detailsPath = `/dashboard/warehouses/${type}/${warehouseId}/transfers/${transferId}/details`;
+      const detailsPath = `/dashboard/warehouses/${type}/${warehouseId}/transfers/${trans.id}/details`;
       push(detailsPath);
     }
   }, [pathname, push]);
@@ -217,13 +218,14 @@ export function WarehouseTransferList({
               }
               onMarkAwaitingReception={() => handleMarkAwaitingReception(trans?.id)}
               isViewReceptionActive={[
+                WAREHOUSE_TRANSFER_STATUS.InTransit,
                 WAREHOUSE_TRANSFER_STATUS.AwaitingReception,
                 WAREHOUSE_TRANSFER_STATUS.PartiallyReceived,
                 WAREHOUSE_TRANSFER_STATUS.ReceivedWithDiscrepancies,
               ].includes(trans?.status) && trans?.destinationId === currentWarehouseId}
               onViewReception={() => handleViewReception(trans?.id)}
               isViewDetailsActive={true}
-              onViewDetails={() => handleViewTransferDetails(trans?.id)}
+              onViewDetails={() => handleViewTransferDetails(trans)}
             />
           </div>
         ),

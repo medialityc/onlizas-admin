@@ -133,11 +133,13 @@ export interface TransferReceptionFilter {
 // Form data para la recepción
 export interface ReceptionFormItem {
   transferItemId: string;
-  receivedQuantity: number;
-  batchNumber?: string;
-  expiryDate?: string;
-  discrepancyType?: DiscrepancyType;
-  discrepancyNotes?: string;
+  productVariantId: string;
+  quantityReceived: number;
+  unit: string;
+  receivedBatch?: string | null;
+  receivedExpiryDate?: string | null;
+  discrepancyType?: DiscrepancyType | null;
+  discrepancyNotes?: string | null;
   isAccepted?: boolean;
 }
 
@@ -152,10 +154,9 @@ export interface UnexpectedProductFormData {
 // Datos para crear/actualizar recepción
 export interface CreateReceptionData {
   transferId: string;
-  items: ReceptionFormItem[];
-  unexpectedProducts?: UnexpectedProductFormData[];
+  receivingWarehouseId: string;
   notes?: string;
-  status: TransferReceptionStatus;
+  items: ReceptionFormItem[];
 }
 
 // Datos para reportar discrepancia

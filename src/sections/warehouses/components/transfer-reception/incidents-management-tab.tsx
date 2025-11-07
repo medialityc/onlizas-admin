@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/button/button";
-import { Input } from "@/components/input/input";
+import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import { WarehouseTransfer } from "@/types/warehouses-transfers";
 import { useFormContext } from "react-hook-form";
 import { CreateTransferReceptionFormData } from "@/sections/warehouses/schemas/transfer-reception-schema";
@@ -34,16 +34,16 @@ interface Discrepancy {
 }
 
 export default function IncidentsManagementTab({ transfer }: Props) {
-  const { watch } = useFormContext<CreateTransferReceptionFormData>();
+  const { watch, setValue } = useFormContext<CreateTransferReceptionFormData>();
   const [comments, setComments] = useState<Comment[]>([]);
   const [discrepancies, setDiscrepancies] = useState<Discrepancy[]>([]);
-  const [newComment, setNewComment] = useState("");
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [isSendingComment, setIsSendingComment] = useState(false);
   const [selectedDiscrepancy, setSelectedDiscrepancy] = useState<string | null>(null);
-  const [resolutionNote, setResolutionNote] = useState("");
 
   const formItems = watch("items") || [];
+  const newComment = watch("newComment") || "";
+  const resolutionNote = watch("resolutionNote") || "";
 
   // Cargar comentarios existentes
   useEffect(() => {
@@ -105,7 +105,7 @@ export default function IncidentsManagementTab({ transfer }: Props) {
       // Simular delay de red
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      setNewComment("");
+      setValue("newComment", ""); // Limpiar el campo del formulario
       showToast("Comentario enviado", "success");
       loadComments(); // Recargar comentarios
     } catch (error) {
@@ -144,7 +144,7 @@ export default function IncidentsManagementTab({ transfer }: Props) {
       );
 
       setSelectedDiscrepancy(null);
-      setResolutionNote("");
+      setValue("resolutionNote", ""); // Limpiar el campo del formulario
       showToast("Discrepancia resuelta", "success");
     } catch (error) {
       console.error("Error resolving discrepancy:", error);
@@ -235,24 +235,22 @@ export default function IncidentsManagementTab({ transfer }: Props) {
                 {/* Formulario de resolución */}
                 {selectedDiscrepancy === discrepancy.id && (
                   <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Nota de Resolución
-                    </label>
-                    <textarea
-                      value={resolutionNote}
-                      onChange={(e) => setResolutionNote(e.target.value)}
-                      rows={3}
+                    <RHFInputWithLabel
+                      name="resolutionNote"
+                      type="textarea"
+                      label="Nota de Resolución"
                       placeholder="Describe cómo se resolvió la discrepancia..."
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white mb-3"
+                      rows={3}
+                      showError={false}
                     />
-                    <div className="flex justify-end space-x-3">
+                    <div className="flex justify-end space-x-3 mt-3">
                       <Button
                         type="button"
                         variant="secondary"
                         size="sm"
                         onClick={() => {
                           setSelectedDiscrepancy(null);
-                          setResolutionNote("");
+                          setValue("resolutionNote", "");
                         }}
                       >
                         Cancelar
@@ -342,14 +340,14 @@ export default function IncidentsManagementTab({ transfer }: Props) {
         <div className="border-t border-blue-200 dark:border-blue-800 pt-4">
           <div className="flex space-x-3">
             <div className="flex-1">
-              <Input
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
+              <RHFInputWithLabel
+                name="newComment"
                 placeholder="Escribe un comentario..."
+                showError={false}
                 onKeyPress={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
-                    handleSendComment();
+                    // Aquí iría la lógica para enviar comentario
                   }
                 }}
               />

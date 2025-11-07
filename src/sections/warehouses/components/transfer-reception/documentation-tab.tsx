@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/button/button";
-import { Input } from "@/components/input/input";
+import RHFCheckbox from "@/components/react-hook-form/rhf-checkbox";
 import { WarehouseTransfer } from "@/types/warehouses-transfers";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { CreateTransferReceptionFormData, ReceptionEvidenceFormData } from "@/sections/warehouses/schemas/transfer-reception-schema";
@@ -323,18 +323,11 @@ export default function DocumentationTab({ transfer }: Props) {
             />
           </div>
 
-          <div>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                {...register("documentationComplete")}
-                className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-              />
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Confirmo que toda la documentación requerida ha sido subida
-              </span>
-            </label>
-          </div>
+          <RHFCheckbox
+            name="documentationComplete"
+            label="Confirmo que toda la documentación requerida ha sido subida"
+            showError={false}
+          />
         </div>
       </div>
 
