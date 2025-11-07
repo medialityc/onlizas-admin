@@ -85,16 +85,14 @@ export function WarehouseTransferList({
     }
   }, []);
 
-  const handleMarkAwaitingReception = useCallback(async (transferId: string) => {
+  const handleMarkAwaitingReception = useCallback(async (transferId: string, notes?: string) => {
     try {
-      // Solicitar notas al usuario (temporalmente con prompt, idealmente sería un modal)
-      const notes = window.prompt("Notas adicionales (opcional):", "") || "";
-
-      const res = await markWarehouseTransferAwaitingReception(transferId, notes);
+      const res = await markWarehouseTransferAwaitingReception(transferId, notes || "");
       if (res?.error && res.message) {
         showToast(res.message, "error");
+      } else {
+        showToast("Transferencia marcada como esperando recepción", "success");
       }
-      // Quitar el toast de éxito - solo mostrar errores
     } catch (error) {
       console.error(error);
       showToast("Ocurrió un error, por favor intenta de nuevo", "error");
@@ -210,19 +208,19 @@ export function WarehouseTransferList({
               ].includes(trans?.status)}
               onCancelTransfer={() => handleCanceledTransfer(trans?.id)}
               isExecuteActive={
-                trans?.status === WAREHOUSE_TRANSFER_STATUS.Approved
+                trans?.status === WAREHOUSE_TRANSFER_STATUS.Approved && 
+                trans?.originId === currentWarehouseId
               }
               onExecuteTransfer={() => handleExecuteTransfer(trans?.id)}
               isMarkAwaitingReceptionActive={
-                trans?.status === WAREHOUSE_TRANSFER_STATUS.InTransit
+                trans?.status === WAREHOUSE_TRANSFER_STATUS.InTransit && 
+                trans?.originId === currentWarehouseId
               }
-              onMarkAwaitingReception={() => handleMarkAwaitingReception(trans?.id)}
-              isViewReceptionActive={[
-                WAREHOUSE_TRANSFER_STATUS.InTransit,
-                WAREHOUSE_TRANSFER_STATUS.AwaitingReception,
-                WAREHOUSE_TRANSFER_STATUS.PartiallyReceived,
-                WAREHOUSE_TRANSFER_STATUS.ReceivedWithDiscrepancies,
-              ].includes(trans?.status) && trans?.destinationId === currentWarehouseId}
+              onMarkAwaitingReception={(notes) => handleMarkAwaitingReception(trans?.id, notes)}
+              isViewReceptionActive={
+                trans?.status === WAREHOUSE_TRANSFER_STATUS.AwaitingReception && 
+                trans?.destinationId === currentWarehouseId
+              }
               onViewReception={() => handleViewReception(trans?.id)}
               isViewDetailsActive={true}
               onViewDetails={() => handleViewTransferDetails(trans)}

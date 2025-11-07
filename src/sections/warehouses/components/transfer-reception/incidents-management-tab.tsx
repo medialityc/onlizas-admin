@@ -7,6 +7,7 @@ import { useFormContext } from "react-hook-form";
 import { CreateTransferReceptionFormData } from "@/sections/warehouses/schemas/transfer-reception-schema";
 import { useState, useEffect } from "react";
 import showToast from "@/config/toast/toastConfig";
+import { DISCREPANCY_TYPE_OPTIONS } from "@/types/warehouse-transfer-receptions";
 
 
 interface Props {
@@ -191,8 +192,8 @@ export default function IncidentsManagementTab({ transfer }: Props) {
                         }`}>
                         {discrepancy.status === "resolved" ? "Resuelto" : "Pendiente"}
                       </span>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">
-                        {discrepancy.type}
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
+                        {DISCREPANCY_TYPE_OPTIONS.find(opt => opt.value === discrepancy.type)?.label || discrepancy.type}
                       </span>
                     </div>
 
