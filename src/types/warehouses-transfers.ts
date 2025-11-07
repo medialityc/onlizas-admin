@@ -32,9 +32,9 @@ export const WAREHOUSE_TRANSFER_OPTIONS = [
 export type WarehouseTransfer = {
   id: string;
   transferNumber: string;
-  originId: number;
+  originId: string;
   originWarehouseName: string;
-  destinationId: number;
+  destinationId: string;
   destinationWarehouseName: string;
   status: WAREHOUSE_TRANSFER_STATUS;
   createdAt: Date;

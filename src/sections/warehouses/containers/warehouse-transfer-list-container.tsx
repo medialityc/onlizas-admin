@@ -10,7 +10,7 @@ import { WarehouseTransferList } from "../components/warehouse-transfer-list/war
 interface Props {
   warehousesTransferPromise: ApiResponse<GetAllWarehouseTransfers>;
   query: SearchParams;
-  currentWarehouseId: number;
+  currentWarehouseId: string;
 }
 
 export default function WarehouseTransferListContainer({
@@ -24,9 +24,16 @@ export default function WarehouseTransferListContainer({
   };
 
   // Extraer el array de transfers de la respuesta paginada
-  const transferData = warehousesTransferPromise?.error
-    ? [] // Si hay error, mostrar array vacío
-    : warehousesTransferPromise?.data?.data || []; // Acceder a data.data
+  const allTransfers = warehousesTransferPromise?.error
+    ? []
+    : warehousesTransferPromise?.data?.data || [];
+
+  // Filtrar transferencias que involucren el almacén actual (como origen o destino)
+  const transferData = allTransfers.filter(
+    (trans) =>
+      trans.originId === currentWarehouseId ||
+      trans.destinationId === currentWarehouseId
+  );
 
   return (
     <div className="space-y-6">

@@ -14,6 +14,7 @@ interface Props {
     transfer: WarehouseTransfer;
     isSubmitting: boolean;
     onSaveDraft: () => void;
+    canCompleteReception?: () => boolean;
 }
 
 const tabs = [
@@ -28,6 +29,7 @@ export default function TransferReceptionTabs({
     transfer,
     isSubmitting,
     onSaveDraft,
+    canCompleteReception,
 }: Props) {
     return (
         <div className="space-y-6">
@@ -57,6 +59,7 @@ export default function TransferReceptionTabs({
                         transfer={transfer}
                         isSubmitting={isSubmitting}
                         onSaveDraft={onSaveDraft}
+                        canCompleteReception={canCompleteReception}
                     />
                 )}
 
