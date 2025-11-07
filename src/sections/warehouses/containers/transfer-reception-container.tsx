@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { receiveTransfer, reportDiscrepancy, addReceptionComment, uploadReceptionEvidence } from "@/services/warehouse-transfer-receptions";
 import TransferReceptionTabs from "../components/transfer-reception/transfer-reception-tabs";
 import { Button } from "@/components/button/button";
+import { DISCREPANCY_TYPE_OPTIONS } from "@/types/warehouse-transfer-receptions";
 
 interface Props {
   transfer: WarehouseTransfer;
@@ -225,8 +226,13 @@ export default function TransferReceptionContainer({ transfer }: Props) {
                 ✅ Recepción Completada
               </h3>
               <p className="text-sm text-green-600 dark:text-green-400 mt-1">
-                Recepción #{completedReception.id} - Estado: {completedReception.status}
+                Recepción #{completedReception.id}
               </p>
+              <div className="mt-2">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                  {completedReception.status}
+                </span>
+              </div>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                 Productos procesados: {completedReception.items?.length || 0}
               </p>
@@ -280,9 +286,18 @@ export default function TransferReceptionContainer({ transfer }: Props) {
               <h4 className="font-medium text-gray-900 dark:text-white mb-2">Resumen de Productos:</h4>
               <div className="space-y-2 max-h-40 overflow-y-auto">
                 {completedReception.items.map((item: any, index: number) => (
-                  <div key={index} className="flex justify-between text-sm">
-                    <span>{item.productVariantName}</span>
-                    <span className={item.quantityReceived < item.quantityExpected ? "text-red-600" : "text-green-600"}>
+                  <div key={index} className="flex justify-between items-center text-sm p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <div className="flex-1">
+                      <span className="font-medium">{item.productVariantName}</span>
+                      {item.discrepancyType && (
+                        <div className="mt-1">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
+                            {DISCREPANCY_TYPE_OPTIONS.find(opt => opt.value === item.discrepancyType)?.label || item.discrepancyType}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <span className={`font-medium ${item.quantityReceived < item.quantityExpected ? "text-red-600" : "text-green-600"}`}>
                       {item.quantityReceived}/{item.quantityExpected} {item.unit}
                     </span>
                   </div>

@@ -11,6 +11,7 @@ import {
   InboxArrowDownIcon,
 } from "@heroicons/react/24/solid";
 import ConfirmationDialog from "@/components/modal/confirm-modal";
+import AwaitingReceptionModal from "@/components/modal/awaiting-reception-modal";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
@@ -18,7 +19,7 @@ interface MenuProps {
   onApproveTransfer?: () => void;
   onCancelTransfer?: () => void;
   onExecuteTransfer?: () => void;
-  onMarkAwaitingReception?: () => void;
+  onMarkAwaitingReception?: (notes?: string) => void;
   onViewReception?: () => void;
   onViewDetails?: () => void;
   isApproveActive?: boolean;
@@ -99,11 +100,11 @@ const TransferActionsMenu = ({
     }
   };
 
-  const handleMarkAwaitingReception = async () => {
+  const handleMarkAwaitingReception = async (notes?: string) => {
     if (onMarkAwaitingReception) {
       setLoading(true);
       try {
-        await onMarkAwaitingReception();
+        await onMarkAwaitingReception(notes);
       } catch (error) {
         console.error("Error marking awaiting reception:", error);
       } finally {
@@ -239,14 +240,13 @@ const TransferActionsMenu = ({
         />
       )}
       {onMarkAwaitingReception && isMarkAwaitingReceptionActive && hasMarkAwaitingPermission && (
-        <ConfirmationDialog
+        <AwaitingReceptionModal
           onClose={() => setAwaitingReceptionDialogOpen(false)}
           onConfirm={handleMarkAwaitingReception}
           loading={loading}
           open={awaitingReceptionDialogOpen}
           title="Marcar esperando recepción"
           description="¿Estás seguro de que deseas marcar esta transferencia como esperando recepción? El almacén destino podrá proceder con la recepción."
-          actionType="confirm"
         />
       )}
     </>

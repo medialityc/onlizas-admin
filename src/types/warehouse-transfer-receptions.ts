@@ -17,6 +17,17 @@ export type DiscrepancyType =
   | "expired_product"    // Producto vencido
   | "other";             // Otros
 
+// Opciones de tipos de discrepancia
+export const DISCREPANCY_TYPE_OPTIONS = [
+  { value: "missing_quantity", label: "Cantidad Faltante" },
+  { value: "excess_quantity", label: "Cantidad Sobrante" },
+  { value: "wrong_product", label: "Producto Incorrecto" },
+  { value: "wrong_batch", label: "Lote Incorrecto" },
+  { value: "damaged_product", label: "Producto Dañado" },
+  { value: "expired_product", label: "Producto Vencido" },
+  { value: "other", label: "Otro" },
+];
+
 // Item de recepción
 export interface TransferReceptionItem {
   id: string;

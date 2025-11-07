@@ -10,6 +10,7 @@ import RHFSelectWithLabel from "@/components/react-hook-form/rhf-select";
 import { CreateTransferReceptionFormData } from "@/sections/warehouses/schemas/transfer-reception-schema";
 import { useState, useEffect } from "react";
 import UnexpectedProductForm from "./unexpected-product-form";
+import { DISCREPANCY_TYPE_OPTIONS } from "@/types/warehouse-transfer-receptions";
 
 
 interface Props {
@@ -37,7 +38,7 @@ export default function ProductReceptionTab({
 
     const items = watch("items");
 
-    // Usar la función de validación pasada por props, o calcularla localmente
+    // Lógica de validación para completar recepción
     const validationFunction = canCompleteReception || (() => {
         return transfer.items?.every((transferItem, index) => {
             const item = items[index];
@@ -53,71 +54,23 @@ export default function ProductReceptionTab({
         }) ?? true;
     });
 
-    // Lógica automática de discrepancias
-    useEffect(() => {
-        const newDiscrepancies = new Set<string>();
-        
-        transfer.items?.forEach((transferItem, index) => {
-            const item = items[index];
-            if (item) {
-                const quantityReceived = item.quantityReceived || 0;
-                const quantityRequested = transferItem.quantityRequested;
-                
-                // Marcar discrepancia automáticamente si:
-                // 1. Cantidad recibida es 0 (producto no llegó)
-                // 2. Cantidad recibida es menor a la solicitada
-                if (quantityReceived === 0 || quantityReceived < quantityRequested) {
-                    newDiscrepancies.add(transferItem.id.toString());
-                    
-                    // Si no tiene tipo de discrepancia, asignar uno por defecto
-                    if (!item.discrepancyType) {
-                        setValue(`items.${index}.discrepancyType`, 
-                            quantityReceived === 0 ? "missing_quantity" : "missing_quantity");
-                    }
-                    
-                    // Marcar como no aceptado por defecto
-                    setValue(`items.${index}.isAccepted`, false);
-                } else {
-                    // Si la cantidad está completa, quitar discrepancia automática
-                    // pero permitir discrepancias manuales (por ejemplo, producto dañado)
-                    if (item.discrepancyType !== "damaged_product" && 
-                        item.discrepancyType !== "expired_product" && 
-                        item.discrepancyType !== "wrong_batch") {
-                        // Solo quitar si no es una discrepancia manual
-                        setValue(`items.${index}.discrepancyType`, null);
-                        setValue(`items.${index}.discrepancyNotes`, "");
-                        setValue(`items.${index}.isAccepted`, true);
-                    }
-                }
-            }
-        });
-        
-        setDiscrepancies(newDiscrepancies);
-    }, [items, transfer.items, setValue]);
+    // No lógica automática de discrepancias - solo gestión manual
+    // Los usuarios deben marcar discrepancias manualmente
 
     const handleDiscrepancyToggle = (index: number) => {
         const newDiscrepancies = new Set(discrepancies);
         const itemId = transfer.items[index].id.toString();
-        const item = items[index];
-        const quantityReceived = item?.quantityReceived || 0;
-        const quantityRequested = transfer.items[index].quantityRequested;
         
         if (newDiscrepancies.has(itemId)) {
-            // Solo permitir quitar discrepancia si no es automática
-            if (quantityReceived === 0 || quantityReceived < quantityRequested) {
-                // No permitir quitar discrepancias automáticas por cantidad
-                return;
-            }
-            
             newDiscrepancies.delete(itemId);
-            // Al quitar discrepancia manual, resetear los campos relacionados
+            // Al quitar discrepancia, resetear los campos relacionados
             setValue(`items.${index}.discrepancyType`, null);
             setValue(`items.${index}.discrepancyNotes`, "");
             setValue(`items.${index}.isAccepted`, true);
         } else {
             newDiscrepancies.add(itemId);
-            // Al marcar discrepancia manual, inicializar con valores por defecto
-            setValue(`items.${index}.discrepancyType`, "damaged_product");
+            // Al marcar discrepancia, inicializar con valores por defecto
+            setValue(`items.${index}.discrepancyType`, "missing_quantity");
             setValue(`items.${index}.discrepancyNotes`, "");
             setValue(`items.${index}.isAccepted`, false);
         }
@@ -174,8 +127,7 @@ export default function ProductReceptionTab({
                                           minMax={{ min: 0, max: item.quantityRequested }}
                                           required
                                           className={
-                                            (items[index]?.quantityReceived || 0) < item.quantityRequested && 
-                                            !discrepancies.has(item.id.toString()) 
+                                            (items[index]?.quantityReceived || 0) < item.quantityRequested 
                                               ? "border-red-500 focus:border-red-500 focus:ring-red-500" 
                                               : ""
                                           }
@@ -184,33 +136,23 @@ export default function ProductReceptionTab({
                                         {(items[index]?.quantityReceived || 0) < item.quantityRequested && 
                                          !discrepancies.has(item.id.toString()) && (
                                           <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                                            ⚠️ Cantidad menor a la esperada. Debe marcar una incidencia.
+                                            ⚠️ Cantidad menor a la esperada. Debe marcar una incidencia para continuar.
                                           </p>
                                         )}
                                     </div>
 
-                                    {/* Sección de discrepancia */}
+                                    {/* Sección de discrepancia - Solo se muestra cuando se marca manualmente */}
                                     {discrepancies.has(item.id.toString()) && (
                                         <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                                             <h5 className="font-medium text-red-800 dark:text-red-200 mb-2">
-                                                {items[index]?.quantityReceived === 0 || (items[index]?.quantityReceived || 0) < item.quantityRequested 
-                                                    ? "Discrepancia automática por cantidad" 
-                                                    : "Incidencia reportada"}
+                                                Incidencia reportada
                                             </h5>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <RHFSelectWithLabel
                                                     name={`items.${index}.discrepancyType`}
                                                     label="Tipo de Discrepancia"
                                                     placeholder="Seleccionar tipo"
-                                                    options={[
-                                                        { value: "wrong_product", label: "Producto Incorrecto" },
-                                                        { value: "missing_quantity", label: "Cantidad Faltante" },
-                                                        { value: "excess_quantity", label: "Cantidad Sobrante" },
-                                                        { value: "wrong_batch", label: "Lote Incorrecto" },
-                                                        { value: "damaged_product", label: "Producto Dañado" },
-                                                        { value: "expired_product", label: "Producto Vencido" },
-                                                        { value: "other", label: "Otro" },
-                                                    ]}
+                                                    options={DISCREPANCY_TYPE_OPTIONS}
                                                     showError={false}
                                                 />
                                                 <RHFInputWithLabel
@@ -224,20 +166,15 @@ export default function ProductReceptionTab({
                                     )}
                                 </div>
 
-                                {/* Botón de marcar discrepancia manual */}
+                                {/* Botón de marcar discrepancia */}
                                 <div className="ml-4">
                                     <Button
                                         type="button"
                                         variant={discrepancies.has(item.id.toString()) ? "danger" : "secondary"}
                                         size="sm"
                                         onClick={() => handleDiscrepancyToggle(index)}
-                                        disabled={
-                                            // Deshabilitar si ya hay discrepancia automática por cantidad
-                                            (items[index]?.quantityReceived || 0) < item.quantityRequested ||
-                                            (items[index]?.quantityReceived || 0) === 0
-                                        }
                                     >
-                                        {discrepancies.has(item.id.toString()) ? "Quitar Incidencia" : "Incidencia Adicional"}
+                                        {discrepancies.has(item.id.toString()) ? "Quitar Incidencia" : "Marcar Incidencia"}
                                     </Button>
                                 </div>
                             </div>
