@@ -31,13 +31,15 @@ export const receptionEvidenceSchema = z.object({
 // Item de recepción dentro de la transferencia
 export const transferReceptionItemSchema = z.object({
   transferItemId: z.string({ required_error: "ID del item es requerido" }),
-  receivedQuantity: z
+  productVariantId: z.string({ required_error: "ID del producto variante es requerido" }),
+  quantityReceived: z
     .number({ required_error: "Cantidad recibida requerida" })
     .nonnegative("Cantidad no puede ser negativa"),
-  batchNumber: z.string().optional().or(z.literal("")),
-  expiryDate: z.string().optional().or(z.literal("")),
-  discrepancyType: z.enum(discrepancyTypes).optional(),
-  discrepancyNotes: z.string().optional().or(z.literal("")),
+  unit: z.string({ required_error: "Unidad es requerida" }),
+  receivedBatch: z.string().optional().nullable(),
+  receivedExpiryDate: z.string().optional().nullable(),
+  discrepancyType: z.enum(discrepancyTypes).optional().nullable(),
+  discrepancyNotes: z.string().optional().nullable(),
   isAccepted: z.boolean().optional(),
 });
 
@@ -58,11 +60,16 @@ export const createTransferReceptionSchema = z.object({
   items: z.array(transferReceptionItemSchema).min(1, "Debe haber items"),
   unexpectedProducts: z.array(unexpectedProductSchema).optional(),
   notes: z.string().optional().or(z.literal("")),
-  status: z.string({ required_error: "Estado es requerido" }),
+  // status se determina dinámicamente en el componente, no viene del formulario
+  status: z.string().optional(),
   // Documentación y evidencia
   evidence: z.array(receptionEvidenceSchema).optional(),
   documentationNotes: z.string().optional().or(z.literal("")),
   documentationComplete: z.boolean().optional(),
+  // Campo temporal para nuevo comentario (no se envía al backend)
+  newComment: z.string().optional(),
+  // Campo temporal para resolución de discrepancia (no se envía al backend)
+  resolutionNote: z.string().optional(),
 });
 
 // Tipos inferidos

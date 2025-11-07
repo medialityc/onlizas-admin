@@ -26,7 +26,7 @@ export default async function TransferDetailsPage({
     notFound();
   }
 
-  const transferResponse = await getWarehouseTransferById(Number(transferId));
+  const transferResponse = await getWarehouseTransferById(transferId);
 
   if (!transferResponse?.data) {
     notFound();

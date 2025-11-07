@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/button/button";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
+import RHFSelectWithLabel from "@/components/react-hook-form/rhf-select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormProvider from "@/components/react-hook-form/form-provider";
@@ -25,7 +26,7 @@ export default function UnexpectedProductForm({ onSave, onCancel }: Props) {
     },
   });
 
-  const { handleSubmit, reset, setValue, formState: { errors } } = form;
+  const { handleSubmit, reset, formState: { errors } } = form;
 
   const onSubmit = (data: UnexpectedProductFormValues, e?: React.BaseSyntheticEvent) => {
     // prevenir bubbling si está dentro de otro form
@@ -54,26 +55,22 @@ export default function UnexpectedProductForm({ onSave, onCancel }: Props) {
           showError
           minMax={{ min: 0, max: 999999 }}
         />
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">Unidad *</label>
-          <select
-            value={form.watch("unit")}
-            onChange={(e) => setValue("unit", e.target.value, { shouldValidate: true })}
-            className={`w-full px-3 py-2 border rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${errors.unit ? "border-red-500" : "border-gray-300 dark:border-gray-600"}`}
-            aria-label="Unidad"
-            title="Unidad"
-          >
-            <option value="">Seleccionar unidad</option>
-            <option value="kg">Kilogramos (kg)</option>
-            <option value="g">Gramos (g)</option>
-            <option value="l">Litros (l)</option>
-            <option value="ml">Mililitros (ml)</option>
-            <option value="unidades">Unidades</option>
-            <option value="cajas">Cajas</option>
-            <option value="paquetes">Paquetes</option>
-          </select>
-          {errors.unit && <p className="text-red-500 text-sm mt-1">{errors.unit.message}</p>}
-        </div>
+        <RHFSelectWithLabel
+          name="unit"
+          label="Unidad *"
+          placeholder="Seleccionar unidad"
+          options={[
+            { value: "kg", label: "Kilogramos (kg)" },
+            { value: "g", label: "Gramos (g)" },
+            { value: "l", label: "Litros (l)" },
+            { value: "ml", label: "Mililitros (ml)" },
+            { value: "unidades", label: "Unidades" },
+            { value: "cajas", label: "Cajas" },
+            { value: "paquetes", label: "Paquetes" },
+          ]}
+          required
+          showError
+        />
         <RHFInputWithLabel
           name="batchNumber"
           label="Número de Lote"
