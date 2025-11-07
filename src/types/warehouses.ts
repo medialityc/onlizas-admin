@@ -50,7 +50,7 @@ export type VirtualWarehouseRules = {
 };
 
 export type Warehouse = {
-  id: number;
+  id: string;
   name: string;
   type: WarehouseType;
   status: WarehouseStatus;

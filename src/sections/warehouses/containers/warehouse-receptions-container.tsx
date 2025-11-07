@@ -30,8 +30,8 @@ export default function WarehouseReceptionsContainer({
   const hasError = receptionsPromise?.error;
 
   const handleViewReception = useCallback((transferId: string) => {
-    router.push(`/dashboard/warehouses/origin/${warehouse.id}/reception/${transferId}`);
-  }, [router, warehouse.id]);
+    router.push(`/dashboard/warehouses/${warehouse.type}/${warehouse.id}/reception/${transferId}`);
+  }, [router, warehouse.type, warehouse.id]);
 
   const columns = useMemo<DataTableColumn<TransferReception>[]>(() => [
     {

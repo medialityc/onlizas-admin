@@ -172,7 +172,7 @@ export async function updateWarehouse(
 }
 
 export async function deleteWarehouse(
-  id: number,
+  id: string,
   audit: { reason?: string } = {}
 ): Promise<ApiResponse<{ success: boolean }>> {
   const res = await nextAuthFetch({
@@ -272,7 +272,7 @@ export async function updateMeWarehouse(
 }
 
 export async function getMeWarehouseById(
-  id: number
+  id: string
 ): Promise<ApiResponse<WarehouseFormData>> {
   const res = await nextAuthFetch({
     url: backendRoutes.warehouse_me.byId(id),
