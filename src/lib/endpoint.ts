@@ -260,6 +260,8 @@ export const backendRoutes = {
     list: `${process.env.NEXT_PUBLIC_API_URL}admin/supplier/me`,
     extend: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${id}/extend`, // POST
+    externalReviewToken: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}admin/approval-process/${id}/external-review-token`, // POST (generate external review token)
   },
   store: {
     create: `${process.env.NEXT_PUBLIC_API_URL}stores/admin`,
@@ -476,5 +478,16 @@ export const backendRoutes = {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}subsystems`,
     addBusinesses: (id: string) =>
       `${process.env.NEXT_PUBLIC_API_URL}sub-systems/${id}/businesses`,
+  },
+  externalReview: {
+    // Nuevo contrato: GET /external-review/{token} y POST /external-review/{token}/action
+    getByToken: (token: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}external-review/${token}`,
+    actionByToken: (token: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}external-review/${token}/action`,
+    approvalProcessByToken: (token: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}external-review/${token}/approval-process`,
+    decisionApprovalProcessByToken: (token: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}external-review/${token}/approval-process/decision`,
   },
 };

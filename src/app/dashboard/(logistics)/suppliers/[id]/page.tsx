@@ -4,6 +4,7 @@ import ApprovalControls from "@/sections/suppliers/edit/approval-controls";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { getSupplierDetails } from "@/services/supplier";
 import SupplierEditForm from "@/sections/suppliers/edit/form/supplier-edit-form";
+import ExternalReviewTokenModal from "@/sections/suppliers/edit/external-review/external-review-token-modal";
 
 export default async function Page({
   params,
@@ -12,7 +13,8 @@ export default async function Page({
     id: string;
   }>;
 }) {
-  const { data: supplierDetails } = await getSupplierDetails((await params).id);
+  const { id } = await params;
+  const { data: supplierDetails } = await getSupplierDetails(id);
   const showApprovalButton =
     supplierDetails?.state === "Pending" ||
     supplierDetails?.state === "WaitingExtension";
@@ -153,6 +155,7 @@ export default async function Page({
           <FloatingApprovalButton />
         </Suspense>
       )}
+      <ExternalReviewTokenModal approvalProcessId={id} />
     </div>
   );
 }
