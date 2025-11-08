@@ -93,7 +93,7 @@ export const processesState = [
   },
   { id: 2, name: "Aprobado", value: "Approved" },
   { id: 3, name: "Rechazado", value: "Rejected" },
-  { id: 4, name: "Solicitud de revisión", value: "WaitingExtension" },
+  { id: 4, name: "Solicitud de extensión", value: "WaitingExtension" },
 ];
 
 export type SupplierState =

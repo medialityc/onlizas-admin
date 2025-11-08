@@ -37,6 +37,7 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
   const [selectedBusiness, setSelectedBusiness] =
     React.useState<Business | null>(null);
   const nacionalityType = watch("nacionalityType");
+  console.log(errors, selectedUser);
 
   React.useEffect(() => {
     if (useExistingUser) {
@@ -178,6 +179,15 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                         Completar información del usuario
                       </div>
                       <div className="grid grid-cols-1 gap-3">
+                        {needEmail && (
+                          <RHFInputWithLabel
+                            name="email"
+                            label="Email"
+                            placeholder="Email del usuario"
+                            type="email"
+                            required
+                          />
+                        )}
                         {needName && (
                           <RHFInputWithLabel
                             name="name"
