@@ -2,9 +2,11 @@
 
 import { useState, useTransition } from "react";
 import { toast } from "react-toastify";
+import ExternalReviewTokenModal from "./external-review/external-review-token-modal";
 import { answerApprovalProcess } from "@/services/supplier";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { useModalState } from "@/hooks/use-modal-state";
 
 interface ApprovalControlsProps {
   approvalProcessId: string;
@@ -19,11 +21,14 @@ export default function ApprovalControls({
 }: ApprovalControlsProps) {
   const [comments, setComments] = useState("");
   const [isPending, startTransition] = useTransition();
+  const { openModal } = useModalState();
 
   // Control de permisos
   const { hasPermission } = usePermissions();
   const canApproveReject = hasPermission([PERMISSION_ENUM.UPDATE]);
-
+  const openTokenModal = () => {
+    openModal("external-review-token");
+  };
   const submit = (isApproved: boolean) => {
     // Si se aprueba, comprobar que exista al menos 1 categoría pendiente
     if (isApproved && (!pendingCategories || pendingCategories.length === 0)) {
@@ -52,6 +57,8 @@ export default function ApprovalControls({
       }
     });
   };
+
+  // Token generation moved to modal component
 
   return (
     <div className={className}>
@@ -84,6 +91,13 @@ export default function ApprovalControls({
               className="inline-flex items-center px-3 py-2 rounded-md text-sm font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50"
             >
               Rechazar
+            </button>
+            <button
+              type="button"
+              onClick={openTokenModal}
+              className="inline-flex items-center px-3 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+            >
+              Generar Link Externo
             </button>
           </>
         ) : (
