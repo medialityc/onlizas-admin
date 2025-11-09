@@ -78,6 +78,27 @@ export const productSchema = z.object({
       }
     ),
 
+  // Tutoriales de video (solo YouTube) - máximo 10
+  tutorials: z
+    .array(z.string().url("Debe ser una URL válida"))
+    .max(10, "Máximo 10 tutoriales")
+    .refine(
+      (tutorials: string[]) => {
+        const pattern =
+          /^(?:https?:\/\/)?(?:(?:www|m)\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})(?:[?&].*)?$/;
+        return tutorials.every((t: string) => pattern.test(t));
+      },
+      { message: "Solo se permiten URLs válidas de YouTube" }
+    )
+    .refine(
+      (tutorials: string[]) => {
+        const uniques = new Set(tutorials.map((t: string) => t.trim()));
+        return uniques.size === tutorials.length;
+      },
+      { message: "Las URLs de tutorial deben ser únicas" }
+    )
+    .default([]),
+
   details: z
     .union([
       z.array(

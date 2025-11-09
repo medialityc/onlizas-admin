@@ -30,6 +30,7 @@ const initValues: SupplierProductFormData = {
   active: false,
   categoryIds: [],
   aboutThis: [],
+  tutorials: [],
   details: [],
   image: null,
   brandId: "",

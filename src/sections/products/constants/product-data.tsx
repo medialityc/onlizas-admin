@@ -35,6 +35,7 @@ export const setProductFormData = async (
   formData.append("gtin", String(product.gtin));
   // formData.append("isDurable", String(product.isDurable));
   formData.append("aboutThis", JSON.stringify(product.aboutThis));
+  formData.append("tutorials", JSON.stringify(product.tutorials));
   // Details: enviar como pares details[clave]
   if (product.details) {
     formData.append(

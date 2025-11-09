@@ -20,6 +20,7 @@ const initValues: ProductFormData = {
   categoryIds: [],
   supplierUserIds: [],
   aboutThis: [],
+  tutorials: [],
   details: [],
   image: "",
   brandId: "",
