@@ -10,6 +10,7 @@ import showToast from "@/config/toast/toastConfig";
 
 interface Props {
   transfer: WarehouseTransfer;
+  receptionData?: any;
 }
 
 interface DocumentFile {
@@ -23,7 +24,7 @@ interface DocumentFile {
   isUploading?: boolean;
 }
 
-export default function DocumentationTab({ transfer }: Props) {
+export default function DocumentationTab({ transfer, receptionData }: Props) {
   // Usamos el schema unificado del flujo de recepción
   const { control, register } = useFormContext<CreateTransferReceptionFormData>();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -85,7 +86,6 @@ export default function DocumentationTab({ transfer }: Props) {
         }, 200);
 
         // Simular subida de archivo
-        console.log("Uploading file:", file.name, "for transfer:", transfer.id);
 
         // Aquí iría la llamada real: const result = await uploadReceptionEvidence([file], transfer.id);
 

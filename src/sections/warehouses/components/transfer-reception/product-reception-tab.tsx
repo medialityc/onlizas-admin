@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/button/button";
-import { Input } from "@/components/input/input"; // legacy input for few cases
 import { WarehouseTransfer } from "@/types/warehouses-transfers";
 
 import { useFormContext, useFieldArray } from "react-hook-form";
@@ -11,6 +10,8 @@ import { CreateTransferReceptionFormData } from "@/sections/warehouses/schemas/t
 import { useState, useEffect } from "react";
 import UnexpectedProductForm from "./unexpected-product-form";
 import { DISCREPANCY_TYPE_OPTIONS } from "@/types/warehouse-transfer-receptions";
+import showToast from "@/config/toast/toastConfig";
+import IconTrash from "@/components/icon/icon-trash";
 
 
 interface Props {
@@ -18,6 +19,8 @@ interface Props {
     isSubmitting: boolean;
     onSaveDraft: () => void;
     canCompleteReception?: () => boolean;
+    receptionData?: any;
+    isReceptionCompleted?: boolean;
 }
 
 export default function ProductReceptionTab({
@@ -25,6 +28,8 @@ export default function ProductReceptionTab({
     isSubmitting,
     onSaveDraft,
     canCompleteReception,
+    receptionData,
+    isReceptionCompleted,
 }: Props) {
     const { register, watch, setValue, control } = useFormContext<CreateTransferReceptionFormData>();
         const [discrepancies, setDiscrepancies] = useState<Set<string>>(new Set());
@@ -78,8 +83,23 @@ export default function ProductReceptionTab({
     };
 
     const handleAddUnexpectedProduct = (product: any) => {
+        
+        // Agregar el producto a la lista usando useFieldArray
         addUnexpectedProduct(product);
+        
+        // Cerrar el formulario
         setShowUnexpectedForm(false);
+        
+        // Mostrar toast de confirmación
+        showToast(`Producto "${product.productName}" agregado exitosamente`, "success");
+    };
+
+    const handleRemoveUnexpectedProduct = (index: number) => {
+        const product = unexpectedProducts[index];
+        
+        removeUnexpectedProduct(index);
+        
+        showToast(`Producto "${product.productName}" eliminado`, "info");
     };
 
     return (
@@ -174,7 +194,7 @@ export default function ProductReceptionTab({
                                         size="sm"
                                         onClick={() => handleDiscrepancyToggle(index)}
                                     >
-                                        {discrepancies.has(item.id.toString()) ? "Quitar Incidencia" : "Marcar Incidencia"}
+                                        {discrepancies.has(item.id.toString()) ? <IconTrash /> : "Marcar Incidencia"}
                                     </Button>
                                 </div>
                             </div>
@@ -193,8 +213,13 @@ export default function ProductReceptionTab({
                             </svg>
                         </div>
                         <div>
-                            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                                Productos No Esperados
+                            <h3 className="text-lg font-medium text-gray-900 dark:text-white flex items-center space-x-2">
+                                <span>Productos No Esperados</span>
+                                {unexpectedProducts.length > 0 && (
+                                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">
+                                        {unexpectedProducts.length}
+                                    </span>
+                                )}
                             </h3>
                             <p className="text-sm text-gray-600 dark:text-gray-400">
                                 Registra productos que llegaron pero no estaban en la lista original
@@ -206,6 +231,7 @@ export default function ProductReceptionTab({
                         variant="primary"
                         size="sm"
                         onClick={() => setShowUnexpectedForm(true)}
+                        disabled={isReceptionCompleted}
                     >
                         + Agregar Producto
                     </Button>
@@ -227,30 +253,45 @@ export default function ProductReceptionTab({
                         {unexpectedProducts.map((product, index) => (
                             <div
                                 key={index}
-                                className="bg-white dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600"
+                                className="bg-white dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm"
                             >
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h4 className="font-medium text-gray-900 dark:text-white">
-                                            {product.productName}
-                                        </h4>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                                            Cantidad: {product.quantity} {product.unit}
-                                            {product.batchNumber && ` | Lote: ${product.batchNumber}`}
-                                        </p>
-                                        {product.observations && (
-                                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                                {product.observations}
+                                <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                        <div className="flex items-center space-x-2 mb-2">
+                                            <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                                                Producto #{index + 1}
+                                            </span>
+                                            <h4 className="font-medium text-gray-900 dark:text-white">
+                                                {product.productName}
+                                            </h4>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                <span className="font-medium">Cantidad:</span> {product.quantity} {product.unit}
                                             </p>
-                                        )}
+                                            {product.batchNumber && (
+                                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                    <span className="font-medium">Lote:</span> {product.batchNumber}
+                                                </p>
+                                            )}
+                                            {product.observations && (
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    <span className="font-medium">Observaciones:</span> {product.observations}
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
                                     <Button
                                         type="button"
                                         variant="danger"
                                         size="sm"
-                                        onClick={() => removeUnexpectedProduct(index)}
+                                        onClick={() => handleRemoveUnexpectedProduct(index)}
+                                        disabled={isReceptionCompleted}
+                                        title={isReceptionCompleted ? "No puede eliminar productos después de completar la recepción" : "Eliminar producto"}
                                     >
-                                        Eliminar
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
                                     </Button>
                                 </div>
                             </div>
@@ -268,15 +309,15 @@ export default function ProductReceptionTab({
                 )}
             </div>
 
-            {/* Finalizar Recepción */}
+            {/* Observaciones Generales */}
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                    Finalizar Recepción
+                    Observaciones Generales
                 </h3>
 
                 <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Observaciones Generales
+                        Notas sobre la recepción
                     </label>
                     <textarea
                         {...register("notes")}
@@ -284,24 +325,6 @@ export default function ProductReceptionTab({
                         placeholder="Añade cualquier observación sobre la recepción..."
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
-                </div>
-
-                <div className="flex justify-end space-x-3">
-                    <Button
-                        type="button"
-                        variant="secondary"
-                        onClick={onSaveDraft}
-                        disabled={isSubmitting}
-                    >
-                        Guardar Borrador
-                    </Button>
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        disabled={isSubmitting || !validationFunction()}
-                    >
-                        {isSubmitting ? "Completando..." : "Completar Recepción"}
-                    </Button>
                 </div>
             </div>
         </div>
