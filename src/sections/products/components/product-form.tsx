@@ -14,6 +14,7 @@ import ProductDimensionSection from "./product-dimension-section";
 import AboutProductSection from "./about-product-section";
 import ProductDetailsSection from "./product-details-section";
 import { ProductCustomsInfoSection } from "./product-custom-info";
+import ProductTutorialsSection from "./product-tutorials-section";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import SupplierSelectProductDraft from "./supplier-select-product-draft";
@@ -94,6 +95,9 @@ const ProductForm = ({ initValue }: Props) => {
               <AboutProductSection />
             </div>
             <div className="col-span-1 lg:col-span-2">
+              <ProductTutorialsSection />
+            </div>
+            <div className="col-span-1 lg:col-span-2">
               <ProductDetailsSection />
             </div>
             <div className="col-span-1 lg:col-span-2">
@@ -102,7 +106,7 @@ const ProductForm = ({ initValue }: Props) => {
           </>
         )}
       </div>
-      {isProductDraft && canSubmit && (
+      {canSubmit && (
         <div className="flex gap-4 pt-6 mt-6 border-t justify-end">
           <Button
             type="button"

@@ -94,7 +94,7 @@ export default function ExternalReviewClient({ token, data }: Props) {
             <div className="flex items-start justify-between flex-wrap gap-3">
               <div className="space-y-1">
                 <h1 className="text-2xl font-bold tracking-tight">
-                  Revisión Externa Unificada
+                  Revisión de Solicitud para proveedor
                 </h1>
                 <p className="text-xs text-gray-500">
                   Token expira: {new Date(data.tokenExpiresAt).toLocaleString()}

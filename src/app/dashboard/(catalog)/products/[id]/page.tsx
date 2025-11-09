@@ -5,12 +5,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getProductById } from "@/services/products";
+import ProductTutorialsDisplay from "@/sections/products/components/product-tutorials-display";
 
 async function ProductDetails({ id }: { id: string }) {
   const response = await getProductById(id);
   if (!response?.data) notFound();
 
-  const { image: productImage, ...product } = response.data;
+  const { image: productImage, ...rawProduct } = response.data as any;
+  const product = {
+    ...rawProduct,
+    tutorials: (rawProduct as any).tutorials || [],
+  } as any;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -77,7 +82,7 @@ async function ProductDetails({ id }: { id: string }) {
                     </span>
                     <div className="mt-1 flex flex-wrap gap-1">
                       {product.categories && product.categories.length > 0 ? (
-                        product.categories.map((category) => (
+                        product.categories.map((category: any) => (
                           <Badge
                             key={category.id}
                             variant="secondary"
@@ -203,7 +208,7 @@ async function ProductDetails({ id }: { id: string }) {
 
         {product.suppliers && product.suppliers.length > 0 ? (
           <div className="space-y-3">
-            {product.suppliers.map((supplier) => (
+            {product.suppliers.map((supplier: any) => (
               <div
                 key={supplier.id}
                 className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0"
@@ -236,7 +241,7 @@ async function ProductDetails({ id }: { id: string }) {
                 Acerca del producto:
               </h4>
               <ul className="list-disc list-inside space-y-1 text-gray-600">
-                {product.aboutThis.map((item, i) => (
+                {product.aboutThis.map((item: string, i: number) => (
                   <li key={i}>{item}</li>
                 ))}
               </ul>
@@ -268,6 +273,9 @@ async function ProductDetails({ id }: { id: string }) {
           )}
         </div>
       ) : null}
+
+      {/* Tutoriales */}
+      <ProductTutorialsDisplay tutorials={product.tutorials} />
     </div>
   );
 }

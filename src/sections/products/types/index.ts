@@ -8,6 +8,7 @@ export interface Product {
   name: string;
   images: ProductImage[];
   aboutThis?: string[];
+  tutorials?: string[]; // URLs de YouTube
   details?: Record<string, string>;
   description?: string;
   width?: number;
@@ -21,6 +22,7 @@ export interface ProductOption {
   name: string;
   images?: string[];
   aboutThis?: string[];
+  tutorials?: string[]; // URLs de YouTube
   details?: Record<string, string>;
   description?: string;
   width?: number;
