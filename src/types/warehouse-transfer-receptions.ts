@@ -15,6 +15,7 @@ export type DiscrepancyType =
   | "wrong_batch"        // Lote incorrecto
   | "damaged_product"    // Producto dañado
   | "expired_product"    // Producto vencido
+  | "unexpected_product" // Producto no esperado
   | "other";             // Otros
 
 // Opciones de tipos de discrepancia
@@ -25,6 +26,7 @@ export const DISCREPANCY_TYPE_OPTIONS = [
   { value: "wrong_batch", label: "Lote Incorrecto" },
   { value: "damaged_product", label: "Producto Dañado" },
   { value: "expired_product", label: "Producto Vencido" },
+  { value: "unexpected_product", label: "Producto No Esperado" },
   { value: "other", label: "Otro" },
 ];
 
@@ -117,7 +119,7 @@ export interface TransferReception {
 
 // Documento de recepción
 export interface ReceptionDocument {
-  id: number;
+  id: string;
   name: string;
   url: string;
   type: "receipt" | "evidence" | "discrepancy_report" | "resolution_document" | "other";
@@ -133,8 +135,8 @@ export type GetAllTransferReceptions = PaginatedResponse<TransferReception>;
 // Filtros para recepciones
 export interface TransferReceptionFilter {
   status?: TransferReceptionStatus;
-  warehouseId?: number;
-  supplierId?: number;
+  warehouseId?: string;
+  supplierId?: string;
   hasDiscrepancies?: boolean;
   dateFrom?: string;
   dateTo?: string;
@@ -172,24 +174,48 @@ export interface CreateReceptionData {
 
 // Datos para reportar discrepancia
 export interface ReportDiscrepancyData {
-  receptionId: number;
-  itemId: number;
+  receptionId: string | number; // Soportar tanto GUID como number
+  itemId: string | number;      // Soportar tanto GUID como number
   type: DiscrepancyType;
   description: string;
   quantity?: number;
   evidence?: File[];
 }
 
+// Datos para reportar múltiples discrepancias
+export interface ReportMultipleDiscrepanciesData {
+  discrepancyDescription: string;
+  evidenceUrls?: string[];
+  items: {
+    transferReceptionItemId: string;
+    discrepancyType: string;
+    discrepancyNotes: string;
+    isAccepted: boolean;
+  }[];
+}
+
 // Datos para resolver discrepancia
 export interface ResolveDiscrepancyData {
-  discrepancyId: number;
-  resolution: string;
-  action: "accept" | "return" | "adjust" | "compensate";
-  newInventoryData?: {
-    quantity: number;
-    location?: string;
-    notes?: string;
-  };
+  resolutionDescription: string;
+  resolutionType: number;
+  itemsToReturn: string[];
+  itemsToAccept: {
+    transferReceptionItemId: string;
+    finalQuantityAccepted: number;
+    adjustmentNotes: string;
+  }[];
+}
+
+// Datos para resolver transferencia completa
+export interface ResolveTransferReceptionData {
+  resolutionDescription: string;
+  resolutionType: number;
+  itemsToReturn: string[];
+  itemsToAccept: {
+    transferReceptionItemId: string;
+    finalQuantityAccepted: number;
+    adjustmentNotes: string;
+  }[];
 }
 
 // Log de recepción
