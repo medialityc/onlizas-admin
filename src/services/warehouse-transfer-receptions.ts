@@ -13,7 +13,9 @@ import {
   TransferReceptionFilter,
   CreateReceptionData,
   ReportDiscrepancyData,
+  ReportMultipleDiscrepanciesData,
   ResolveDiscrepancyData,
+  ResolveTransferReceptionData,
   GetReceptionLogs,
   NewInventoryFromReception,
   TransferReceptionComment
@@ -73,7 +75,7 @@ export async function receiveTransfer(
   return buildApiResponseAsync<TransferReception>(res);
 }
 
-// Reportar discrepancia
+// Reportar discrepancia (estructura original - individual)
 export async function reportDiscrepancy(
   data: ReportDiscrepancyData
 ): Promise<ApiResponse<{ success: boolean; discrepancyId: string }>> {
@@ -105,12 +107,33 @@ export async function reportDiscrepancy(
   return buildApiResponseAsync<{ success: boolean; discrepancyId: string }>(res);
 }
 
-// Resolver discrepancia
+// Reportar discrepancias múltiples (nueva estructura para bulk reporting)
+export async function reportMultipleDiscrepancies(
+  receptionId: string,
+  data: ReportMultipleDiscrepanciesData
+): Promise<ApiResponse<{ success: boolean; discrepancyIds: string[] }>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.transferReceptions.reportDiscrepancy(receptionId),
+    method: "POST",
+    data,
+    useAuth: true,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  
+  if (!res.ok) return handleApiServerError(res);
+  revalidateTag(TRANSFER_RECEPTION_TAG);
+  return buildApiResponseAsync<{ success: boolean; discrepancyIds: string[] }>(res);
+}
+
+// Resolver discrepancia individual
 export async function resolveDiscrepancy(
+  discrepancyId: string | number,
   data: ResolveDiscrepancyData
 ): Promise<ApiResponse<{ success: boolean }>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.transferReceptions.resolveDiscrepancy(data.discrepancyId),
+    url: backendRoutes.transferReceptions.resolveDiscrepancy(discrepancyId),
     method: "POST",
     data,
     useAuth: true,
@@ -124,22 +147,22 @@ export async function resolveDiscrepancy(
 // Agregar comentario a recepción
 export async function addReceptionComment(
   receptionId: string,
-  message: string,
-  attachments?: File[]
+  comment: string,
+  type?: string,
+  parentCommentId?: string,
+  attachmentUrls?: string[]
 ): Promise<ApiResponse<TransferReceptionComment>> {
-  const formData = new FormData();
-  formData.append("message", message);
-  
-  if (attachments) {
-    attachments.forEach((file, index) => {
-      formData.append(`attachment_${index}`, file);
-    });
-  }
+  const payload = {
+    comment,
+    type: type || "general",
+    parentCommentId: parentCommentId || null,
+    attachmentUrls: attachmentUrls || []
+  };
   
   const res = await nextAuthFetch({
     url: backendRoutes.transferReceptions.addComment(receptionId),
     method: "POST",
-    data: formData,
+    data: payload,
     useAuth: true,
   });
   

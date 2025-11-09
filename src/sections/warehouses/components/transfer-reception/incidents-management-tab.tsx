@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Button } from "@/components/button/button";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
@@ -7,11 +7,16 @@ import { useFormContext } from "react-hook-form";
 import { CreateTransferReceptionFormData } from "@/sections/warehouses/schemas/transfer-reception-schema";
 import { useState, useEffect } from "react";
 import showToast from "@/config/toast/toastConfig";
+import { addReceptionComment, resolveDiscrepancy } from "@/services/warehouse-transfer-receptions";
 import { DISCREPANCY_TYPE_OPTIONS } from "@/types/warehouse-transfer-receptions";
+import { set } from "lodash";
 
 
 interface Props {
   transfer: WarehouseTransfer;
+  receptionId?: string; // ID de la recepción para poder enviar comentarios
+  receptionData?: any;
+  setData: React.Dispatch<React.SetStateAction<any>>;
 }
 
 interface Comment {
@@ -34,10 +39,11 @@ interface Discrepancy {
   createdAt: string;
 }
 
-export default function IncidentsManagementTab({ transfer }: Props) {
+export default function IncidentsManagementTab({ transfer, receptionId, receptionData,setData }: Props) {
   const { watch, setValue } = useFormContext<CreateTransferReceptionFormData>();
   const [comments, setComments] = useState<Comment[]>([]);
   const [discrepancies, setDiscrepancies] = useState<Discrepancy[]>([]);
+  const [resolvedDiscrepancies, setResolvedDiscrepancies] = useState<Record<string, { resolution: string; resolvedAt: string }>>({});
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [isSendingComment, setIsSendingComment] = useState(false);
   const [selectedDiscrepancy, setSelectedDiscrepancy] = useState<string | null>(null);
@@ -45,26 +51,8 @@ export default function IncidentsManagementTab({ transfer }: Props) {
   const formItems = watch("items") || [];
   const newComment = watch("newComment") || "";
   const resolutionNote = watch("resolutionNote") || "";
-
-  // Cargar comentarios existentes
-  useEffect(() => {
-    loadComments();
-  }, [transfer.id]);
-
-  const loadComments = async () => {
-    try {
-      setIsLoadingComments(true);
-      // Simular carga de comentarios para demo
-      console.log("Loading comments for transfer:", transfer.id);
-      setComments([]);
-    } catch (error) {
-      console.error("Error loading comments:", error);
-      showToast("Error al cargar los comentarios", "error");
-    } finally {
-      setIsLoadingComments(false);
-    }
-  };
-
+  
+ 
   // Generar discrepancias desde los items del formulario (schema tipado)
   useEffect(() => {
     if (!Array.isArray(formItems)) {
@@ -75,48 +63,67 @@ export default function IncidentsManagementTab({ transfer }: Props) {
       .filter((itm) => !!itm.discrepancyType)
       .map((itm) => {
         const transferItem = transfer.items?.find(ti => ti.id === itm.transferItemId);
+        const resolvedInfo = resolvedDiscrepancies[itm.transferItemId];
         return {
           id: itm.transferItemId,
           productId: itm.transferItemId,
           productName: transferItem?.productVariantName || "Producto desconocido",
           type: itm.discrepancyType || "",
-          status: "pending" as const,
+          status: resolvedInfo ? "resolved" as const : "pending" as const,
           description: itm.discrepancyNotes || "",
+          resolution: resolvedInfo?.resolution,
           createdAt: new Date().toISOString(),
         } as Discrepancy;
       });
     setDiscrepancies(generated);
-  }, [formItems, transfer.items]);
+  }, [formItems, transfer.items, resolvedDiscrepancies]);
 
   const handleSendComment = async () => {
     if (!newComment.trim()) return;
 
+    if (!receptionId) {
+      showToast("No se encontró el ID de la recepción", "error");
+      return;
+    }
+
     try {
       setIsSendingComment(true);
 
-      // Simular envío de comentario usando la función del servicio
-      console.log("Enviando comentario:", {
-        transferId: transfer.id,
+      // Llamar al endpoint real
+      const response = await addReceptionComment(
+        receptionId,
+        newComment.trim(),
+        "general"
+      );
+
+      if (response.error) {
+        console.error("❌ [COMMENT ERROR] Error en la respuesta:", response.error);
+        showToast("Error al enviar el comentario", "error");
+        return;
+      }
+
+
+      // Agregar el comentario al estado local para mostrarlo inmediatamente
+      const newCommentObj: Comment = {
+        id: response.data?.id || Date.now().toString(),
         type: "general",
         message: newComment.trim(),
-      });
+        author: "Usuario actual", // En el futuro se puede obtener del contexto de usuario
+        createdAt: new Date().toISOString(),
+      };
 
-      // Aquí iría la llamada real: await addReceptionComment(transfer.id, { ... })
-
-      // Simular delay de red
-      await new Promise(resolve => setTimeout(resolve, 500));
-
+      setComments(prev => [...prev, newCommentObj]);
+      setData((prev: { comments?: Comment[] }) => ({ ...prev, comments: [...(prev.comments || []), newCommentObj] }));
       setValue("newComment", ""); // Limpiar el campo del formulario
-      showToast("Comentario enviado", "success");
-      loadComments(); // Recargar comentarios
+      showToast("Comentario enviado exitosamente", "success");
+      
     } catch (error) {
-      console.error("Error sending comment:", error);
+      console.error("💥 [COMMENT EXCEPTION] Error inesperado:", error);
       showToast("Error al enviar el comentario", "error");
     } finally {
       setIsSendingComment(false);
     }
   };
-
   const handleResolveDiscrepancy = async (discrepancyId: string) => {
     if (!resolutionNote.trim()) {
       showToast("Debe agregar una nota de resolución", "error");
@@ -124,31 +131,55 @@ export default function IncidentsManagementTab({ transfer }: Props) {
     }
 
     try {
-      // Simular resolución de discrepancia
-      console.log("Resolviendo discrepancia:", {
-        discrepancyId,
-        transferId: transfer.id,
+      // Obtener la cantidad recibida del formulario para este item
+      const formItem = formItems.find(item => item.transferItemId === discrepancyId);
+      const finalQuantityAccepted = formItem?.quantityReceived || 0;
+
+      // Buscar el transferReceptionItemId correcto en receptionData.items
+      const receptionItem = receptionData?.items?.find((it: any) => it.transferItemId === discrepancyId);
+      if (!receptionItem) {
+        console.error("❌ [RESOLVE ERROR] No se encontró el item de recepción para transferItemId:", discrepancyId);
+        showToast("Error: No se encontró el item de recepción correspondiente", "error");
+        return;
+      }
+
+      // Construir payload para resolver discrepancia
+      const resolveData = {
         resolutionDescription: resolutionNote.trim(),
-      });
+        resolutionType: 2, // Resolución mixta
+        itemsToReturn: [discrepancyId], // No devolver items por ahora
+        itemsToAccept: [
+          {
+            transferReceptionItemId: receptionItem.id,
+            finalQuantityAccepted: finalQuantityAccepted,
+            adjustmentNotes: resolutionNote.trim(),
+          }
+        ]
+      };
 
-      // Aquí iría la llamada real: await resolveDiscrepancy(discrepancyId, { ... })
+      // Llamar al endpoint real
+      const response = await resolveDiscrepancy(receptionData.id, resolveData);
 
-      // Simular delay de red
-      await new Promise(resolve => setTimeout(resolve, 500));
+      if (response.error) {
+        console.error("❌ [RESOLVE ERROR] Error al resolver discrepancia:", response.error);
+        showToast("Error al resolver la discrepancia", "error");
+        return;
+      }
 
-      setDiscrepancies(prev =>
-        prev.map(d =>
-          d.id === discrepancyId
-            ? { ...d, status: "resolved", resolution: resolutionNote }
-            : d
-        )
-      );
+      // Actualizar estado de resoluciones realizadas
+      setResolvedDiscrepancies(prev => ({
+        ...prev,
+        [discrepancyId]: {
+          resolution: resolutionNote.trim(),
+          resolvedAt: new Date().toISOString()
+        }
+      }));
 
       setSelectedDiscrepancy(null);
       setValue("resolutionNote", ""); // Limpiar el campo del formulario
       showToast("Discrepancia resuelta", "success");
     } catch (error) {
-      console.error("Error resolving discrepancy:", error);
+      console.error("💥 [RESOLVE EXCEPTION] Error inesperado:", error);
       showToast("Error al resolver la discrepancia", "error");
     }
   };
@@ -195,6 +226,7 @@ export default function IncidentsManagementTab({ transfer }: Props) {
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
                         {DISCREPANCY_TYPE_OPTIONS.find(opt => opt.value === discrepancy.type)?.label || discrepancy.type}
                       </span>
+                      
                     </div>
 
                     <h4 className="font-medium text-gray-900 dark:text-white">
@@ -204,6 +236,12 @@ export default function IncidentsManagementTab({ transfer }: Props) {
                     {discrepancy.description && (
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         {discrepancy.description}
+                      </p>
+                    )}
+
+                    {!discrepancy.description && (
+                      <p className="text-sm text-gray-500 dark:text-gray-500 mt-1 italic">
+                        Sin notas adicionales
                       </p>
                     )}
 
@@ -307,9 +345,9 @@ export default function IncidentsManagementTab({ transfer }: Props) {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
               <p className="text-sm text-gray-500 mt-2">Cargando comentarios...</p>
             </div>
-          ) : comments.length > 0 ? (
+          ) : receptionData.comments.length > 0 ? (
             <div className="space-y-3">
-              {comments.map((comment) => (
+              {receptionData.comments.map((comment:any) => (
                 <div
                   key={comment.id}
                   className="bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700"
@@ -361,63 +399,6 @@ export default function IncidentsManagementTab({ transfer }: Props) {
             >
               {isSendingComment ? "Enviando..." : "Enviar"}
             </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Estadísticas Rápidas */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-orange-100 dark:bg-orange-800 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-orange-600 dark:text-orange-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {discrepancies.filter(d => d.status === "pending").length}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Pendientes
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-green-100 dark:bg-green-800 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {discrepancies.filter(d => d.status === "resolved").length}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Resueltas
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-blue-100 dark:bg-blue-800 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {comments.length}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Comentarios
-              </p>
-            </div>
           </div>
         </div>
       </div>

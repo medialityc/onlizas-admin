@@ -33,9 +33,7 @@ export default async function WarehouseReceptionProcessPage({
   }
 
   // Extraer la transferencia del objeto anidado (basado en la estructura real del API)
-  console.log('Transfer response:', transferResponse);
   const transfer = (transferResponse.data as any).transfer || transferResponse.data;
-  console.log('Extracted transfer:', transfer);
 
   // Verificar que la transferencia está en estado para recepcionar
   // TEMPORALMENTE DESACTIVADO PARA DEBUG
@@ -70,7 +68,7 @@ export default async function WarehouseReceptionProcessPage({
             </div>
             <div className="text-right">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
-                {WAREHOUSE_TRANSFER_OPTIONS.find(opt => opt.value === transfer.status)?.label || transfer.status}
+                {"Recepcionando"}
               </span>
             </div>
           </div>
