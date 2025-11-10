@@ -21,12 +21,14 @@ interface MenuProps {
   onExecuteTransfer?: () => void;
   onMarkAwaitingReception?: (notes?: string) => void;
   onViewReception?: () => void;
+  onViewReceptionReadOnly?: () => void;
   onViewDetails?: () => void;
   isApproveActive?: boolean;
   isCancelActive?: boolean;
   isExecuteActive?: boolean;
   isMarkAwaitingReceptionActive?: boolean;
   isViewReceptionActive?: boolean;
+  isViewReceptionReadOnlyActive?: boolean;
   isViewDetailsActive?: boolean;
 }
 
@@ -36,12 +38,14 @@ const TransferActionsMenu = ({
   onExecuteTransfer,
   onMarkAwaitingReception,
   onViewReception,
+  onViewReceptionReadOnly,
   onViewDetails,
   isApproveActive = false,
   isCancelActive = false,
   isExecuteActive = false,
   isMarkAwaitingReceptionActive = false,
   isViewReceptionActive = false,
+  isViewReceptionReadOnlyActive = false,
   isViewDetailsActive = false,
 }: MenuProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -121,6 +125,7 @@ const TransferActionsMenu = ({
     (onExecuteTransfer && isExecuteActive && hasExecutePermission) ||
     (onMarkAwaitingReception && isMarkAwaitingReceptionActive && hasMarkAwaitingPermission) ||
     (onViewReception && isViewReceptionActive && hasViewPermission) ||
+    (onViewReceptionReadOnly && isViewReceptionReadOnlyActive && hasViewPermission) ||
     (onViewDetails && isViewDetailsActive && hasViewPermission);
 
   // Si no hay acciones disponibles, no renderizar el menú
@@ -147,6 +152,16 @@ const TransferActionsMenu = ({
               onClick={onViewReception}
             >
               Recepcionar
+            </Menu.Item>
+          )}
+
+          {onViewReceptionReadOnly && isViewReceptionReadOnlyActive && hasViewPermission && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-white hover:bg-blue-400"
+              leftSection={<EyeIcon className="h-4 w-4" />}
+              onClick={onViewReceptionReadOnly}
+            >
+              Ver Recepción
             </Menu.Item>
           )}
 
