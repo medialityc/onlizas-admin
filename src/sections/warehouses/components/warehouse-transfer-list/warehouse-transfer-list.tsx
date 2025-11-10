@@ -101,8 +101,6 @@ export function WarehouseTransferList({
 
   const handleViewReception = useCallback((transferId: string) => {
     // Construir la ruta de recepción basada en la ruta actual
-    // pathname será algo como: /dashboard/warehouses/[type]/[id]/edit/transfers/list
-    // Necesitamos extraer type e id para construir la ruta de recepción
     const pathParts = pathname.split('/');
     const typeIndex = pathParts.indexOf('warehouses') + 1;
     const idIndex = typeIndex + 1;
@@ -112,6 +110,20 @@ export function WarehouseTransferList({
       const warehouseId = pathParts[idIndex];
       const receptionPath = `/dashboard/warehouses/${type}/${warehouseId}/reception/${transferId}`;
       push(receptionPath);
+    }
+  }, [pathname, push]);
+
+  const handleViewReceptionReadOnly = useCallback((transferId: string) => {
+    // Construir la ruta de vista de recepción basada en la ruta actual
+    const pathParts = pathname.split('/');
+    const typeIndex = pathParts.indexOf('warehouses') + 1;
+    const idIndex = typeIndex + 1;
+
+    if (typeIndex > 0 && idIndex < pathParts.length) {
+      const type = pathParts[typeIndex];
+      const warehouseId = pathParts[idIndex];
+      const viewPath = `/dashboard/warehouses/${type}/${warehouseId}/reception/${transferId}/view`;
+      push(viewPath);
     }
   }, [pathname, push]);
 
@@ -222,6 +234,10 @@ export function WarehouseTransferList({
                 trans?.destinationId === currentWarehouseId
               }
               onViewReception={() => handleViewReception(trans?.id)}
+              isViewReceptionReadOnlyActive={                 
+                trans?.originId === currentWarehouseId
+              }
+              onViewReceptionReadOnly={() => handleViewReceptionReadOnly(trans?.id)}
               isViewDetailsActive={true}
               onViewDetails={() => handleViewTransferDetails(trans)}
             />
@@ -229,7 +245,7 @@ export function WarehouseTransferList({
         ),
       },
     ],
-    [handleApprovedTransfer, handleCanceledTransfer, handleExecuteTransfer, handleMarkAwaitingReception, handleViewReception, handleViewTransferDetails]
+    [handleApprovedTransfer, handleCanceledTransfer, handleExecuteTransfer, handleMarkAwaitingReception, handleViewReception, handleViewReceptionReadOnly, handleViewTransferDetails]
   );
 
   return (
