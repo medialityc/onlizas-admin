@@ -71,6 +71,7 @@ export interface Product {
   categories: Category[];
   suppliers: Category[];
   active: boolean;
+  tutorials: string[];
 }
 export interface AduanaCategory {
   id: number;
