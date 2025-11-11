@@ -33,19 +33,13 @@ export default async function WarehouseReceptionProcessPage({
   }
 
   // Extraer la transferencia del objeto anidado (basado en la estructura real del API)
-  const transfer = (transferResponse.data as any).transfer || transferResponse.data;
-
-  // Verificar que la transferencia está en estado para recepcionar
-  // TEMPORALMENTE DESACTIVADO PARA DEBUG
-  // if (!['InTransit', 'AwaitingReception'].includes(transfer.status)) {
-  //   notFound();
-  // }
+  const transfer =
+    (transferResponse.data as any).transfer || transferResponse.data;
 
   // Verificar que la transferencia es para este almacén (como destino)
-  // TEMPORALMENTE DESACTIVADO PARA DEBUG
-  // if (transfer.destinationId !== id) {
-  //   notFound();
-  // }
+  if (transfer.destinationId !== id) {
+    notFound();
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -63,21 +57,23 @@ export default async function WarehouseReceptionProcessPage({
                 Recepcionar Transferencia #{transfer.transferNumber}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Origen: {transfer.originWarehouseName} → Destino: {transfer.destinationWarehouseName}
+                Origen: {transfer.originWarehouseName} → Destino:{" "}
+                {transfer.destinationWarehouseName}
               </p>
             </div>
             <div className="text-right">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
-                {"Recepcionando"}
+                {transfer.status === "AwaitingReception" 
+                  ? "Recepcionando" 
+                  : WAREHOUSE_TRANSFER_OPTIONS.find(opt => opt.value === transfer.status)?.label || transfer.status
+                }
               </span>
             </div>
           </div>
         </div>
 
         {/* Contenedor de recepción */}
-        <TransferReceptionContainer
-          transfer={transfer}
-        />
+        <TransferReceptionContainer transfer={transfer} />
       </div>
     </div>
   );
