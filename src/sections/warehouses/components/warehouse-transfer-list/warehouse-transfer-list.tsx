@@ -211,7 +211,8 @@ export function WarehouseTransferList({
           <div className="flex justify-center">
             <TransferActionsMenu
               isApproveActive={
-                trans?.status === WAREHOUSE_TRANSFER_STATUS.Pending
+                trans?.status === WAREHOUSE_TRANSFER_STATUS.Pending /* &&
+                trans?.originId === currentWarehouseId */
               }
               onApproveTransfer={() => handleApprovedTransfer(trans?.id)}
               isCancelActive={[
@@ -230,11 +231,22 @@ export function WarehouseTransferList({
               }
               onMarkAwaitingReception={(notes) => handleMarkAwaitingReception(trans?.id, notes)}
               isViewReceptionActive={
-                trans?.status === WAREHOUSE_TRANSFER_STATUS.AwaitingReception && 
+                [
+                  WAREHOUSE_TRANSFER_STATUS.AwaitingReception,
+                  WAREHOUSE_TRANSFER_STATUS.PartiallyReceived,
+                  WAREHOUSE_TRANSFER_STATUS.ReceivedWithDiscrepancies,                  
+                ].includes(trans?.status) && 
                 trans?.destinationId === currentWarehouseId
               }
               onViewReception={() => handleViewReception(trans?.id)}
               isViewReceptionReadOnlyActive={                 
+                [
+                  WAREHOUSE_TRANSFER_STATUS.AwaitingReception,
+                  WAREHOUSE_TRANSFER_STATUS.PartiallyReceived,
+                  WAREHOUSE_TRANSFER_STATUS.ReceivedWithDiscrepancies,
+                  WAREHOUSE_TRANSFER_STATUS.Conciliated,
+                  WAREHOUSE_TRANSFER_STATUS.Completed
+                ].includes(trans?.status) && 
                 trans?.originId === currentWarehouseId
               }
               onViewReceptionReadOnly={() => handleViewReceptionReadOnly(trans?.id)}

@@ -17,6 +17,10 @@ interface Props {
   receptionId?: string; // ID de la recepción para poder enviar comentarios
   receptionData?: any;
   setData: React.Dispatch<React.SetStateAction<any>>;
+  resolvedDiscrepancies: Record<string, { resolution: string; resolvedAt: string; quantityAccepted: number }>;
+  permanentlyResolvedDiscrepancies: Set<string>;
+  setResolvedDiscrepancies: React.Dispatch<React.SetStateAction<Record<string, { resolution: string; resolvedAt: string; quantityAccepted: number }>>>;
+  setPermanentlyResolvedDiscrepancies: React.Dispatch<React.SetStateAction<Set<string>>>;
 }
 
 interface Comment {
@@ -39,11 +43,20 @@ interface Discrepancy {
   createdAt: string;
 }
 
-export default function IncidentsManagementTab({ transfer, receptionId, receptionData,setData }: Props) {
+export default function IncidentsManagementTab({ 
+  transfer, 
+  receptionId, 
+  receptionData,
+  setData,
+  resolvedDiscrepancies,
+  permanentlyResolvedDiscrepancies,
+  setResolvedDiscrepancies,
+  setPermanentlyResolvedDiscrepancies
+}: Props) {
   const { watch, setValue } = useFormContext<CreateTransferReceptionFormData>();
   const [comments, setComments] = useState<Comment[]>([]);
   const [discrepancies, setDiscrepancies] = useState<Discrepancy[]>([]);
-  const [resolvedDiscrepancies, setResolvedDiscrepancies] = useState<Record<string, { resolution: string; resolvedAt: string }>>({});
+  const [isResolvingAll, setIsResolvingAll] = useState(false);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [isSendingComment, setIsSendingComment] = useState(false);
   const [selectedDiscrepancy, setSelectedDiscrepancy] = useState<string | null>(null);
@@ -53,7 +66,18 @@ export default function IncidentsManagementTab({ transfer, receptionId, receptio
   const resolutionNote = watch("resolutionNote") || "";
   
  
-  // Generar discrepancias desde los items del formulario (schema tipado)
+  // Watch para resolver todas las discrepancias cuando estén completas
+  useEffect(() => {
+    const totalDiscrepancies = discrepancies.length;
+    const resolvedCount = Object.keys(resolvedDiscrepancies).length;
+    const permanentlyResolvedCount = permanentlyResolvedDiscrepancies.size;
+
+    // Si todas las discrepancias están resueltas (ya sea temporal o permanentemente) y no estamos ya resolviendo
+    const totalResolved = resolvedCount + permanentlyResolvedCount;
+    if (totalDiscrepancies > 0 && totalResolved === totalDiscrepancies && resolvedCount > 0 && !isResolvingAll) {
+      handleResolveAllDiscrepancies();
+    }
+  }, [discrepancies.length, resolvedDiscrepancies, permanentlyResolvedDiscrepancies, isResolvingAll]);
   useEffect(() => {
     if (!Array.isArray(formItems)) {
       setDiscrepancies([]);
@@ -64,19 +88,20 @@ export default function IncidentsManagementTab({ transfer, receptionId, receptio
       .map((itm) => {
         const transferItem = transfer.items?.find(ti => ti.id === itm.transferItemId);
         const resolvedInfo = resolvedDiscrepancies[itm.transferItemId];
+        const isPermanentlyResolved = permanentlyResolvedDiscrepancies.has(itm.transferItemId);
         return {
           id: itm.transferItemId,
           productId: itm.transferItemId,
           productName: transferItem?.productVariantName || "Producto desconocido",
           type: itm.discrepancyType || "",
-          status: resolvedInfo ? "resolved" as const : "pending" as const,
+          status: (resolvedInfo || isPermanentlyResolved) ? "resolved" as const : "pending" as const,
           description: itm.discrepancyNotes || "",
           resolution: resolvedInfo?.resolution,
           createdAt: new Date().toISOString(),
         } as Discrepancy;
       });
     setDiscrepancies(generated);
-  }, [formItems, transfer.items, resolvedDiscrepancies]);
+  }, [formItems, transfer.items, resolvedDiscrepancies, permanentlyResolvedDiscrepancies]);
 
   const handleSendComment = async () => {
     if (!newComment.trim()) return;
@@ -130,57 +155,77 @@ export default function IncidentsManagementTab({ transfer, receptionId, receptio
       return;
     }
 
-    try {
-      // Obtener la cantidad recibida del formulario para este item
-      const formItem = formItems.find(item => item.transferItemId === discrepancyId);
-      const finalQuantityAccepted = formItem?.quantityReceived || 0;
+    // Obtener la cantidad recibida del formulario para este item
+    const formItem = formItems.find(item => item.transferItemId === discrepancyId);
+    const finalQuantityAccepted = formItem?.quantityReceived || 0;
 
-      // Buscar el transferReceptionItemId correcto en receptionData.items
-      const receptionItem = receptionData?.items?.find((it: any) => it.transferItemId === discrepancyId);
-      if (!receptionItem) {
-        console.error("❌ [RESOLVE ERROR] No se encontró el item de recepción para transferItemId:", discrepancyId);
-        showToast("Error: No se encontró el item de recepción correspondiente", "error");
-        return;
+    // Guardar localmente la resolución (sin llamar al backend aún)
+    setResolvedDiscrepancies(prev => ({
+      ...prev,
+      [discrepancyId]: {
+        resolution: resolutionNote.trim(),
+        resolvedAt: new Date().toISOString(),
+        quantityAccepted: finalQuantityAccepted
       }
+    }));
 
-      // Construir payload para resolver discrepancia
+    setSelectedDiscrepancy(null);
+    setValue("resolutionNote", ""); // Limpiar el campo del formulario
+    showToast("Discrepancia marcada como resuelta", "success");
+  };
+
+  const handleResolveAllDiscrepancies = async () => {
+    if (!receptionData?.id) {
+      console.error("❌ [RESOLVE ALL ERROR] No hay ID de recepción");
+      return;
+    }
+
+    try {
+      setIsResolvingAll(true);
+
+      // Construir payload con todas las discrepancias resueltas
+      const itemsToAccept = Object.entries(resolvedDiscrepancies).map(([discrepancyId, resolutionData]) => {
+        // Buscar el transferReceptionItemId correcto en receptionData.items
+        const receptionItem = receptionData.items?.find((it: any) => it.transferItemId === discrepancyId);
+        if (!receptionItem) {
+          throw new Error(`No se encontró el item de recepción para ${discrepancyId}`);
+        }
+
+        return {
+          transferReceptionItemId: receptionItem.id,
+          finalQuantityAccepted: resolutionData.quantityAccepted,
+          adjustmentNotes: resolutionData.resolution,
+        };
+      });
+
       const resolveData = {
-        resolutionDescription: resolutionNote.trim(),
+        resolutionDescription: "Todas las discrepancias han sido resueltas",
         resolutionType: 2, // Resolución mixta
-        itemsToReturn: [discrepancyId], // No devolver items por ahora
-        itemsToAccept: [
-          {
-            transferReceptionItemId: receptionItem.id,
-            finalQuantityAccepted: finalQuantityAccepted,
-            adjustmentNotes: resolutionNote.trim(),
-          }
-        ]
+        itemsToReturn: itemsToAccept.map(item => item.transferReceptionItemId), // Enviar los IDs de los items aceptados
+        itemsToAccept: itemsToAccept
       };
 
-      // Llamar al endpoint real
+      // Llamar al endpoint real con todas las discrepancias
       const response = await resolveDiscrepancy(receptionData.id, resolveData);
 
       if (response.error) {
-        console.error("❌ [RESOLVE ERROR] Error al resolver discrepancia:", response.error);
-        showToast("Error al resolver la discrepancia", "error");
+        console.error("❌ [RESOLVE ALL ERROR] Error al resolver todas las discrepancias:", response.error);
+        showToast("Error al resolver las discrepancias", "error");
         return;
       }
 
-      // Actualizar estado de resoluciones realizadas
-      setResolvedDiscrepancies(prev => ({
-        ...prev,
-        [discrepancyId]: {
-          resolution: resolutionNote.trim(),
-          resolvedAt: new Date().toISOString()
-        }
-      }));
+      // Limpiar el estado de discrepancias resueltas temporales y marcar como permanentemente resueltas
+      const resolvedIds = Object.keys(resolvedDiscrepancies);
+      setPermanentlyResolvedDiscrepancies(prev => new Set([...Array.from(prev), ...resolvedIds]));
+      setResolvedDiscrepancies({});
 
-      setSelectedDiscrepancy(null);
-      setValue("resolutionNote", ""); // Limpiar el campo del formulario
-      showToast("Discrepancia resuelta", "success");
+      showToast("Todas las discrepancias han sido resueltas exitosamente", "success");
+
     } catch (error) {
-      console.error("💥 [RESOLVE EXCEPTION] Error inesperado:", error);
-      showToast("Error al resolver la discrepancia", "error");
+      console.error("💥 [RESOLVE ALL EXCEPTION] Error inesperado:", error);
+      showToast("Error al resolver las discrepancias", "error");
+    } finally {
+      setIsResolvingAll(false);
     }
   };
 
@@ -206,6 +251,16 @@ export default function IncidentsManagementTab({ transfer, receptionId, receptio
 
         {discrepancies.length > 0 ? (
           <div className="space-y-4">
+            {isResolvingAll && (
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <div className="flex items-center space-x-3">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                  <p className="text-sm text-blue-800 dark:text-blue-300 font-medium">
+                    Resolviendo todas las discrepancias...
+                  </p>
+                </div>
+              </div>
+            )}
             {discrepancies.map((discrepancy) => (
               <div
                 key={discrepancy.id}
@@ -300,7 +355,7 @@ export default function IncidentsManagementTab({ transfer, receptionId, receptio
                         size="sm"
                         onClick={() => handleResolveDiscrepancy(discrepancy.id)}
                       >
-                        Confirmar Resolución
+                        Marcar como Resuelta
                       </Button>
                     </div>
                   </div>

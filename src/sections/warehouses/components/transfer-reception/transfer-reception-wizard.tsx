@@ -41,6 +41,8 @@ export default function TransferReceptionWizard({
     const [isReceiving, setIsReceiving] = useState(false);
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
     const [isReceptionCompleted, setIsReceptionCompleted] = useState(false);
+    const [resolvedDiscrepancies, setResolvedDiscrepancies] = useState<Record<string, { resolution: string; resolvedAt: string; quantityAccepted: number }>>({});
+    const [permanentlyResolvedDiscrepancies, setPermanentlyResolvedDiscrepancies] = useState<Set<string>>(new Set());
     const { watch, formState, getValues } = useFormContext<CreateTransferReceptionFormData>();
     const items = watch("items");
     const router = useRouter();
@@ -219,7 +221,16 @@ export default function TransferReceptionWizard({
             id: "incidents",
             title: "Gestión de Incidencias",
             description: "Revisa y gestiona las incidencias reportadas",
-            component: <IncidentsManagementTab transfer={transfer} receptionId={localReceptionData?.id} receptionData={localReceptionData} setData={setLocalReceptionData}/>,
+            component: <IncidentsManagementTab 
+              transfer={transfer} 
+              receptionId={localReceptionData?.id} 
+              receptionData={localReceptionData} 
+              setData={setLocalReceptionData}
+              resolvedDiscrepancies={resolvedDiscrepancies}
+              permanentlyResolvedDiscrepancies={permanentlyResolvedDiscrepancies}
+              setResolvedDiscrepancies={setResolvedDiscrepancies}
+              setPermanentlyResolvedDiscrepancies={setPermanentlyResolvedDiscrepancies}
+            />,
             isValid: validateIncidentsStep,
             isOptional: true,
         },
