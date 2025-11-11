@@ -23,7 +23,7 @@ interface Props {
     isReceptionCompleted?: boolean;
 }
 
-export default function ProductReceptionTab({
+export default function ProductReceptionTabOptimized({
     transfer,
     isSubmitting,
     onSaveDraft,
