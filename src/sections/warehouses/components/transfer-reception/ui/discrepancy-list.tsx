@@ -20,11 +20,12 @@ interface DiscrepancyListProps {
   discrepancies: Discrepancy[];
   resolvedDiscrepancies: Record<string, { resolution: string; resolvedAt: string; quantityAccepted: number }>;
   permanentlyResolvedDiscrepancies: Set<string>;
-  onSelectForResolution: (discrepancyId: string) => void;
+  onSelectForResolution?: (discrepancyId: string) => void;
   selectedDiscrepancy: string | null;
-  onResolveDiscrepancy: (discrepancyId: string) => void;
-  onCancelResolution: () => void;
+  onResolveDiscrepancy?: (discrepancyId: string) => void;
+  onCancelResolution?: () => void;
   isResolvingAll: boolean;
+  canResolve?: boolean;
 }
 
 export function DiscrepancyList({
@@ -36,6 +37,7 @@ export function DiscrepancyList({
   onResolveDiscrepancy,
   onCancelResolution,
   isResolvingAll,
+  canResolve = true,
 }: DiscrepancyListProps) {
   const { setValue } = useFormContext<CreateTransferReceptionFormData>();
 
@@ -59,21 +61,10 @@ export function DiscrepancyList({
 
       {discrepancies.length > 0 ? (
         <div className="space-y-4">
-          {isResolvingAll && (
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-              <div className="flex items-center space-x-3">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
-                <p className="text-sm text-blue-800 dark:text-blue-300 font-medium">
-                  Resolviendo todas las discrepancias...
-                </p>
-              </div>
-            </div>
-          )}
-          
           {discrepancies.map((discrepancy) => {
             const isPermanentlyResolved = permanentlyResolvedDiscrepancies.has(discrepancy.id);
             const temporaryResolution = resolvedDiscrepancies[discrepancy.id];
-            const isResolved = isPermanentlyResolved || !!temporaryResolution;
+            const isResolved = isPermanentlyResolved || !!temporaryResolution || discrepancy.status === 'resolved';
 
             return (
               <div
@@ -117,25 +108,25 @@ export function DiscrepancyList({
                       </p>
                     )}
 
-                    {temporaryResolution && (
+                    {isResolved && (
                       <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
                         <p className="text-sm text-green-800 dark:text-green-300 font-medium">
                           Resolución:
                         </p>
                         <p className="text-sm text-green-700 dark:text-green-400">
-                          {temporaryResolution.resolution}
+                          {discrepancy.resolution}
                         </p>
                       </div>
                     )}
                   </div>
 
-                  {!isResolved && (
+                  {!isResolved  && canResolve && (
                     <div className="ml-4">
                       <Button
                         type="button"
                         variant="primary"
                         size="sm"
-                        onClick={() => onSelectForResolution(discrepancy.id)}
+                        onClick={() => onSelectForResolution?.(discrepancy.id)}
                       >
                         Resolver
                       </Button>
@@ -167,7 +158,7 @@ export function DiscrepancyList({
                         type="button"
                         variant="primary"
                         size="sm"
-                        onClick={() => onResolveDiscrepancy(discrepancy.id)}
+                        onClick={() => onResolveDiscrepancy?.(discrepancy.id)}
                       >
                         Marcar como Resuelta
                       </Button>

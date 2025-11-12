@@ -154,13 +154,13 @@ export async function reportMultipleDiscrepancies(
   return buildApiResponseAsync<{ success: boolean; discrepancyIds: string[] }>(res);
 }
 
-// Resolver discrepancia individual
-export async function resolveDiscrepancy(
-  discrepancyId: string | number,
-  data: ResolveDiscrepancyData
+// Resolver recepción completa (marcar todas las discrepancias como resueltas)
+export async function resolveTransferReception(
+  receptionId: string,
+  data: ResolveTransferReceptionData
 ): Promise<ApiResponse<{ success: boolean }>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.transferReceptions.resolveDiscrepancy(discrepancyId),
+    url: backendRoutes.transferReceptions.resolveDiscrepancy(receptionId),
     method: "POST",
     data,
     useAuth: true,

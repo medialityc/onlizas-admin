@@ -1,4 +1,5 @@
 import { getWarehouseTransferById } from "@/services/warehouses-transfers";
+import { getTransferReceptionsByTransferId } from "@/services/warehouse-transfer-receptions";
 import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 import TransferReceptionContainer from "@/sections/warehouses/containers/transfer-reception-container";
 import BackButton from "@/components/button/back-button";
@@ -36,9 +37,16 @@ export default async function WarehouseReceptionProcessPage({
   const transfer =
     (transferResponse.data as any).transfer || transferResponse.data;
 
-  // Verificar que la transferencia es para este almacén (como destino)
-  if (transfer.destinationId !== id) {
-    notFound();
+  
+
+  // Obtener recepción existente si la transferencia ya fue recepcionada
+  let existingReceptions = null;
+  if (transfer.status !== "AwaitingReception") {
+    const receptionsResponse = await getTransferReceptionsByTransferId(transferId);
+    if (receptionsResponse?.data?.data && receptionsResponse.data.data.length > 0) {
+      // Tomar todas las recepciones para este transfer
+      existingReceptions = receptionsResponse.data.data;
+    }
   }
 
   return (
@@ -61,7 +69,7 @@ export default async function WarehouseReceptionProcessPage({
                 {transfer.destinationWarehouseName}
               </p>
             </div>
-            <div className="text-right">
+            <div className="text-center">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
                 {transfer.status === "AwaitingReception" 
                   ? "Recepcionando" 
@@ -73,7 +81,11 @@ export default async function WarehouseReceptionProcessPage({
         </div>
 
         {/* Contenedor de recepción */}
-        <TransferReceptionContainer transfer={transfer} />
+        <TransferReceptionContainer 
+          transfer={transfer} 
+          existingReceptions={existingReceptions}
+          currentWarehouseId={id}
+        />
       </div>
     </div>
   );
