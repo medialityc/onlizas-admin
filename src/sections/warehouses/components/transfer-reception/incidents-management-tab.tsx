@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form";
 import { CreateTransferReceptionFormData } from "@/sections/warehouses/schemas/transfer-reception-schema";
 import { useState, useEffect } from "react";
 import showToast from "@/config/toast/toastConfig";
-import { addReceptionComment, resolveDiscrepancy } from "@/services/warehouse-transfer-receptions";
+import { addReceptionComment, resolveTransferReception } from "@/services/warehouse-transfer-receptions";
 
 // Componentes UI optimizados
 import { DiscrepancyList } from "./ui/discrepancy-list";
@@ -16,10 +16,7 @@ interface Props {
   receptionId?: string;
   receptionData?: any;
   setData: React.Dispatch<React.SetStateAction<any>>;
-  resolvedDiscrepancies: Record<string, { resolution: string; resolvedAt: string; quantityAccepted: number }>;
-  permanentlyResolvedDiscrepancies: Set<string>;
-  setResolvedDiscrepancies: React.Dispatch<React.SetStateAction<Record<string, { resolution: string; resolvedAt: string; quantityAccepted: number }>>>;
-  setPermanentlyResolvedDiscrepancies: React.Dispatch<React.SetStateAction<Set<string>>>;
+  currentWarehouseId: string;
 }
 
 export default function IncidentsManagementTab({
@@ -27,52 +24,73 @@ export default function IncidentsManagementTab({
   receptionId,
   receptionData,
   setData,
-  resolvedDiscrepancies,
-  permanentlyResolvedDiscrepancies,
-  setResolvedDiscrepancies,
-  setPermanentlyResolvedDiscrepancies,
+  currentWarehouseId,
 }: Props) {
   const { watch, setValue } = useFormContext<CreateTransferReceptionFormData>();
   const [selectedDiscrepancy, setSelectedDiscrepancy] = useState<string | null>(null);
   const [discrepancies, setDiscrepancies] = useState<any[]>([]);
-  const [isResolvingAll, setIsResolvingAll] = useState(false);
   const [isSendingComment, setIsSendingComment] = useState(false);
-
-  console.log(transfer)
-  console.log(receptionData)
-  console.log(receptionId)
-  console.log(discrepancies)
-
+  const [isCompletingResolution, setIsCompletingResolution] = useState(false);
 
   const formItems = watch("items") || [];
   const newComment = watch("newComment") || "";
   const resolutionNote = watch("resolutionNote") || "";
 
-  // Inicializar discrepancias basado en formItems
+  // Determinar si este almacén puede resolver discrepancias (solo almacén origen)
+  const canResolveDiscrepancies = currentWarehouseId === transfer.originId;
+
+  // Determinar si las discrepancias están resueltas a nivel de recepción
+  const isDiscrepancyResolved = receptionData?.isDiscrepancyResolved;
+
+  // Inicializar discrepancias basadas únicamente en datos del backend
   useEffect(() => {
-    const generatedDiscrepancies = formItems
-      .filter((itm) => !!itm.discrepancyType)
-      .map((itm) => {
-        const transferItem = transfer.items?.find(ti => ti.id === itm.transferItemId);
-        const resolvedInfo = resolvedDiscrepancies[itm.transferItemId];
-        const isPermanentlyResolved = permanentlyResolvedDiscrepancies.has(itm.transferItemId);
-        
-        return {
-          id: itm.transferItemId,
-          productId: itm.transferItemId,
-          productName: transferItem?.productVariantName || "Producto desconocido",
-          type: itm.discrepancyType || "",
-          status: (resolvedInfo || isPermanentlyResolved) ? "resolved" as const : "pending" as const,
-          description: itm.discrepancyNotes || "",
-          resolution: resolvedInfo?.resolution,
-          createdAt: new Date().toISOString(),
-        };
-      });
+        // Determinar si las discrepancias están resueltas a nivel de recepción
 
-    setDiscrepancies(generatedDiscrepancies);
-  }, [formItems, transfer.items, resolvedDiscrepancies, permanentlyResolvedDiscrepancies]);
+    if (receptionData?.items && receptionData.items.length > 0) {
+      const generatedDiscrepancies = receptionData.items
+        .filter((item: any) => !item.isAccepted || item.discrepancyType || item.discrepancyNotes)
+        .map((item: any) => {
+          const transferItem = transfer.items?.find(ti => ti.id === item.transferItemId);
 
-  // Inicializar comentarios desde receptionData
+          return {
+            id: item.id,
+            transferItemId: item.transferItemId,
+            productId: item.productVariantId,
+            productName: item.productName || transferItem?.productVariantName || "Producto desconocido",
+            type: item.discrepancyType || "No definido",
+            status: isDiscrepancyResolved ? "resolved" : "pending",
+            resolution: item.discrepancyNotes,
+            createdAt: receptionData.receivedAt || new Date().toISOString(),
+            quantityExpected: item.quantityExpected,
+            quantityReceived: item.quantityReceived,
+            isAccepted: item.isAccepted,
+          };
+        });
+       
+      setDiscrepancies(generatedDiscrepancies);
+    } else {
+      // Fallback para cuando no hay receptionData (modo creación)
+      const generatedDiscrepancies = formItems
+        .filter((itm) => !!itm.discrepancyType)
+        .map((itm) => {
+          const transferItem = transfer.items?.find(ti => ti.id === itm.transferItemId);
+
+          return {
+            id: itm.transferItemId,
+            productId: itm.transferItemId,
+            productName: transferItem?.productName || "Producto desconocido",
+            type: itm.discrepancyType || "",
+            status: "pending" as const,
+            description: itm.discrepancyNotes || "",
+            resolution: "",
+            createdAt: new Date().toISOString(),
+          };
+        });
+
+      setDiscrepancies(generatedDiscrepancies);
+    }
+  }, [receptionData?.isDiscrepancyResolved, receptionData?.items, transfer.items, formItems]);
+
   const comments = receptionData?.comments || [];
 
   // Manejar comentarios
@@ -86,7 +104,6 @@ export default function IncidentsManagementTab({
 
     setIsSendingComment(true);
     try {
-      // Llamar al endpoint real
       const response = await addReceptionComment(
         receptionId,
         newComment.trim(),
@@ -94,12 +111,10 @@ export default function IncidentsManagementTab({
       );
 
       if (response.error) {
-        console.error("❌ [COMMENT ERROR] Error en la respuesta:", response.error);
         showToast("Error al enviar el comentario", "error");
         return;
       }
 
-      // Agregar el comentario al estado local para mostrarlo inmediatamente
       const newCommentObj = {
         id: response.data?.id || Date.now().toString(),
         type: "general" as const,
@@ -108,147 +123,91 @@ export default function IncidentsManagementTab({
         createdAt: new Date().toISOString(),
       };
 
-      setData((prev: { comments?: any[] }) => ({ 
-        ...prev, 
-        comments: [...(prev.comments || []), newCommentObj] 
+      setData((prev: { comments?: any[] }) => ({
+        ...prev,
+        comments: [...(prev.comments || []), newCommentObj]
       }));
       setValue("newComment", "");
       showToast("Comentario enviado exitosamente", "success");
     } catch (error) {
-      console.error("💥 [COMMENT EXCEPTION] Error inesperado:", error);
       showToast("Error al enviar el comentario", "error");
     } finally {
       setIsSendingComment(false);
     }
   };
 
-  // Manejar resolución de discrepancia individual
-  const handleResolveDiscrepancy = async (discrepancyId: string) => {
+  // Solo mostrar funciones de resolución si es almacén origen
+  const handleResolveDiscrepancy = canResolveDiscrepancies ? async (discrepancyId: string) => {
     if (!resolutionNote.trim()) {
       showToast("Debe agregar una nota de resolución", "error");
       return;
     }
 
-    const formItem = formItems.find(item => item.transferItemId === discrepancyId);
-    const finalQuantityAccepted = formItem?.quantityReceived || 0;
-
-    setResolvedDiscrepancies(prev => ({
-      ...prev,
-      [discrepancyId]: {
-        resolution: resolutionNote.trim(),
-        resolvedAt: new Date().toISOString(),
-        quantityAccepted: finalQuantityAccepted
-      }
-    }));
-
+    // Aquí podríamos hacer una llamada individual al backend para resolver una discrepancia específica
+    // Por ahora, solo mostrar que se resolvió localmente
     setSelectedDiscrepancy(null);
     setValue("resolutionNote", "");
     showToast("Discrepancia marcada como resuelta", "success");
-  };
+  } : undefined;
 
-  // Manejar cancelación de resolución
-  const handleCancelResolution = () => {
+  const handleCancelResolution = canResolveDiscrepancies ? () => {
     setSelectedDiscrepancy(null);
     setValue("resolutionNote", "");
-  };
+  } : undefined;
 
-  // Manejar resolución de todas las discrepancias
-  const handleResolveAllDiscrepancies = async () => {
-    if (!receptionData?.id) {
-      console.error("❌ [RESOLVE ALL ERROR] No hay ID de recepción");
+  const handleSelectForResolution = canResolveDiscrepancies ? setSelectedDiscrepancy : undefined;
+
+  // Completar resolución manual de todas las discrepancias
+  const handleCompleteResolution = async () => {
+    if (!receptionId) {
+      showToast("No se encontró el ID de la recepción", "error");
       return;
     }
 
+    if (discrepancies.length === 0) {
+      showToast("No hay discrepancias para resolver", "error");
+      return;
+    }
+
+    setIsCompletingResolution(true);
     try {
-      setIsResolvingAll(true);
-
-      // Construir payload con todas las discrepancias resueltas
-      const itemsToAccept = Object.entries(resolvedDiscrepancies).map(([discrepancyId, resolutionData]) => {
-        // Debug: Log para ver qué datos tenemos
-        console.log("🔍 [DEBUG] Buscando discrepancyId:", discrepancyId);
-        console.log("🔍 [DEBUG] receptionData.items:", receptionData.items);
-        
-        // Buscar el transferReceptionItemId correcto en receptionData.items
-        const receptionItem = receptionData.items?.find((it: any) => {
-          console.log("🔍 [DEBUG] Comparando con item:", it.transferItemId, "===", discrepancyId);
-          return it.transferItemId === discrepancyId;
-        });
-        
-        if (!receptionItem) {
-          console.error("❌ [RESOLVE ERROR] No se encontró el item de recepción para:", discrepancyId);
-          console.error("❌ [RESOLVE ERROR] Items disponibles:", receptionData.items?.map((it: any) => ({
-            id: it.id,
-            transferItemId: it.transferItemId,
-            productName: it.productName
-          })));
-          
-          // En lugar de lanzar error, intentar buscar de manera alternativa
-          const alternativeItem = receptionData.items?.find((it: any) => 
-            it.id === discrepancyId || it.productId === discrepancyId
-          );
-          
-          if (!alternativeItem) {
-            throw new Error(`No se encontró el item de recepción para ${discrepancyId}. Items disponibles: ${receptionData.items?.map((it: any) => it.transferItemId).join(', ')}`);
-          }
-          
-          console.log("✅ [RESOLVE INFO] Encontrado item alternativo:", alternativeItem);
-          return {
-            transferReceptionItemId: alternativeItem.id,
-            finalQuantityAccepted: resolutionData.quantityAccepted,
-            adjustmentNotes: resolutionData.resolution,
-          };
-        }
-
-        console.log("✅ [RESOLVE INFO] Item encontrado correctamente:", receptionItem);
-        return {
-          transferReceptionItemId: receptionItem.id,
-          finalQuantityAccepted: resolutionData.quantityAccepted,
-          adjustmentNotes: resolutionData.resolution,
-        };
-      });
-
-      const resolveData = {
+      // Preparar datos para resolver la recepción completa
+      const resolutionData = {
         resolutionDescription: "Todas las discrepancias han sido resueltas",
-        resolutionType: 2, // Resolución mixta
-        itemsToReturn: itemsToAccept.map(item => item.transferReceptionItemId), // Enviar los IDs de los items aceptados
-        itemsToAccept: itemsToAccept
+        resolutionType: 1,
+        itemsToReturn: discrepancies.map(disc => disc.id),
+        itemsToAccept: discrepancies.map(disc => ({
+          transferReceptionItemId: disc.id,
+          finalQuantityAccepted: disc.quantityReceived || 0,
+          adjustmentNotes: resolutionNote.trim() || "Resuelto"
+        }))
       };
 
-      // Llamar al endpoint real con todas las discrepancias
-      const response = await resolveDiscrepancy(receptionData.id, resolveData);
+      const response = await resolveTransferReception(receptionId, resolutionData);
 
       if (response.error) {
-        console.error("❌ [RESOLVE ALL ERROR] Error al resolver todas las discrepancias:", response.error);
-        showToast("Error al resolver las discrepancias", "error");
+        showToast("Error al completar la resolución", "error");
         return;
       }
 
-      // Limpiar el estado de discrepancias resueltas temporales y marcar como permanentemente resueltas
-      const resolvedIds = Object.keys(resolvedDiscrepancies);
-      setPermanentlyResolvedDiscrepancies(prev => new Set([...Array.from(prev), ...resolvedIds]));
-      setResolvedDiscrepancies({});
+      // Actualizar receptionData para reflejar que todas las discrepancias están resueltas
+      setData((prev: any) => ({
+        ...prev,
+        status: 'RESOLVED',
+        isDiscrepancyResolved: true,
+        discrepancyResolvedAt: new Date().toISOString()
+      }));
 
-      showToast("Todas las discrepancias han sido resueltas exitosamente", "success");
+      // Limpiar discrepancias ya que están resueltas
+      setDiscrepancies([]);
 
+      showToast("Resolución completada exitosamente", "success");
     } catch (error) {
-      console.error("💥 [RESOLVE ALL EXCEPTION] Error inesperado:", error);
-      showToast("Error al resolver las discrepancias", "error");
+      showToast("Error al completar la resolución", "error");
     } finally {
-      setIsResolvingAll(false);
+      setIsCompletingResolution(false);
     }
   };
-
-  // Auto-resolver cuando todas las discrepancias estén marcadas
-  useEffect(() => {
-    const totalDiscrepancies = discrepancies.length;
-    const resolvedCount = Object.keys(resolvedDiscrepancies).length;
-    const permanentlyResolvedCount = permanentlyResolvedDiscrepancies.size;
-    const totalResolved = resolvedCount + permanentlyResolvedCount;
-
-    if (totalDiscrepancies > 0 && totalResolved === totalDiscrepancies && resolvedCount > 0 && !isResolvingAll) {
-      handleResolveAllDiscrepancies();
-    }
-  }, [discrepancies.length, resolvedDiscrepancies, permanentlyResolvedDiscrepancies, isResolvingAll]);
 
   return (
     <div className="space-y-6">
@@ -256,14 +215,29 @@ export default function IncidentsManagementTab({
       {discrepancies.length > 0 && (
         <DiscrepancyList
           discrepancies={discrepancies}
-          resolvedDiscrepancies={resolvedDiscrepancies}
-          permanentlyResolvedDiscrepancies={permanentlyResolvedDiscrepancies}
-          onSelectForResolution={setSelectedDiscrepancy}
+          resolvedDiscrepancies={{}}
+          permanentlyResolvedDiscrepancies={new Set()}
+          onSelectForResolution={handleSelectForResolution}
           selectedDiscrepancy={selectedDiscrepancy}
           onResolveDiscrepancy={handleResolveDiscrepancy}
           onCancelResolution={handleCancelResolution}
-          isResolvingAll={isResolvingAll}
+          isResolvingAll={false}
+          canResolve={canResolveDiscrepancies}
         />
+      )}
+
+      {/* Botón para completar resolución si hay discrepancias, se puede resolver y NO está resuelto */}
+      {canResolveDiscrepancies && discrepancies.length > 0 && !isDiscrepancyResolved && (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={handleCompleteResolution}
+            disabled={isCompletingResolution}
+            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
+          >
+            {isCompletingResolution ? "Completando..." : "Completar Resolución"}
+          </button>
+        </div>
       )}
 
       {/* Sección de comentarios */}

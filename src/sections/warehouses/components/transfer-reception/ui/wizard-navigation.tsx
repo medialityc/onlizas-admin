@@ -27,28 +27,30 @@ export const WizardNavigation: React.FC<WizardNavigationProps> = ({
 }) => {
   const router = useRouter();
   return (
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-      <div className="flex justify-between items-center">
-        <div>
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
+        <div className="w-full sm:w-auto order-2 sm:order-1">
           {!isFirstStep && (
             <Button
               type="button"
               variant="secondary"
               onClick={onPrevious}
               disabled={isSubmitting || !canGoBack}
+              className="w-full sm:w-auto"
             >
               ← Anterior
             </Button>
           )}
         </div>
 
-        <div className="flex space-x-3">
+        <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 w-full sm:w-auto order-1 sm:order-2">
           {!isLastStep ? (
             <Button
               type="button"
               variant="primary"
               onClick={onNext}
               disabled={!canGoNext || isSubmitting}
+              className="w-full sm:w-auto"
             >
               Siguiente →
             </Button>
@@ -60,6 +62,7 @@ export const WizardNavigation: React.FC<WizardNavigationProps> = ({
                 router.back();
               }}
               disabled={isSubmitting}
+              className="w-full sm:w-auto"
             >
               Completar
             </Button>
