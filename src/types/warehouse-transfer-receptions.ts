@@ -11,6 +11,7 @@ export type TransferReceptionStatus =
 export type DiscrepancyType = 
   | "missing_quantity"   // Faltantes
   | "excess_quantity"    // Sobrantes
+  | "quantity_mismatch"  // Diferencia de cantidad
   | "wrong_product"      // Producto incorrecto
   | "wrong_batch"        // Lote incorrecto
   | "damaged_product"    // Producto dañado
@@ -22,6 +23,7 @@ export type DiscrepancyType =
 export const DISCREPANCY_TYPE_OPTIONS = [
   { value: "missing_quantity", label: "Cantidad Faltante" },
   { value: "excess_quantity", label: "Cantidad Sobrante" },
+  { value: "quantity_mismatch", label: "Diferencia de Cantidad" },
   { value: "wrong_product", label: "Producto Incorrecto" },
   { value: "wrong_batch", label: "Lote Incorrecto" },
   { value: "damaged_product", label: "Producto Dañado" },

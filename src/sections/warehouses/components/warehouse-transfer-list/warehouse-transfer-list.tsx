@@ -235,8 +235,7 @@ export function WarehouseTransferList({
                   WAREHOUSE_TRANSFER_STATUS.AwaitingReception,
                   WAREHOUSE_TRANSFER_STATUS.PartiallyReceived,
                   WAREHOUSE_TRANSFER_STATUS.ReceivedWithDiscrepancies,                  
-                ].includes(trans?.status) && 
-                trans?.destinationId === currentWarehouseId
+                ].includes(trans?.status) 
               }
               onViewReception={() => handleViewReception(trans?.id)}
               isViewReceptionReadOnlyActive={                 
@@ -246,8 +245,7 @@ export function WarehouseTransferList({
                   WAREHOUSE_TRANSFER_STATUS.ReceivedWithDiscrepancies,
                   WAREHOUSE_TRANSFER_STATUS.Conciliated,
                   WAREHOUSE_TRANSFER_STATUS.Completed
-                ].includes(trans?.status) && 
-                trans?.originId === currentWarehouseId
+                ].includes(trans?.status) 
               }
               onViewReceptionReadOnly={() => handleViewReceptionReadOnly(trans?.id)}
               isViewDetailsActive={true}

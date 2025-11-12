@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { WarehouseTransfer } from "@/types/warehouses-transfers";
+import { TransferReception } from "@/types/warehouse-transfer-receptions";
 import showToast from "@/config/toast/toastConfig";
 import {
   createTransferReceptionSchema,
@@ -19,32 +20,49 @@ import { DISCREPANCY_TYPE_OPTIONS } from "@/types/warehouse-transfer-receptions"
 
 interface Props {
   transfer: WarehouseTransfer;
+  existingReceptions?: TransferReception[] | null;
+  currentWarehouseId: string;
 }
 
 // NOTA: El backend espera CreateReceptionData; se mapeará desde CreateTransferReceptionFormData al enviar.
 
-export default function TransferReceptionContainer({ transfer }: Props) {
+export default function TransferReceptionContainer({ 
+  transfer, 
+  existingReceptions,
+  currentWarehouseId
+}: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+
+    const existingReception = existingReceptions?.find(
+    reception => reception.transferId === String(transfer.id)
+  );
 
   const methods = useForm<CreateTransferReceptionFormData>({
     resolver: zodResolver(createTransferReceptionSchema),
     defaultValues: {
       transferId: String(transfer.id),
       // status se determina dinámicamente en handleCompleteReception
-      notes: "",
+      notes: existingReception?.notes || "",
       items:
-        transfer.items?.map((itm) => ({
-          transferItemId: String(itm.id),
-          productVariantId: String(itm.productVariantId),
-          quantityReceived: 0, // valor inicial editable en UI
-          unit: itm.unit || "units",
-          receivedBatch: "",
-          receivedExpiryDate: "",
-          discrepancyType: null,
-          discrepancyNotes: "",
-          isAccepted: true,
-        })) || [],
+        transfer.items?.map((transferItem, index) => {
+          // Si existe recepción, buscar el item correspondiente
+          const existingItem = existingReception?.items?.find(
+            item => item.transferItemId === String(transferItem.id)
+          );
+          
+          return {
+            transferItemId: String(transferItem.id),
+            productVariantId: String(transferItem.productVariantId),
+            quantityReceived: existingItem?.quantityReceived || 0, // valor inicial editable en UI
+            unit: transferItem.unit || "units",
+            receivedBatch: existingItem?.receivedBatch || "",
+            receivedExpiryDate: existingItem?.receivedExpiryDate || "",
+            discrepancyType: (existingItem?.discrepancyType as any) || null,
+            discrepancyNotes: existingItem?.discrepancyNotes || "",
+            isAccepted: existingItem?.isAccepted ?? true,
+          };
+        }) || [],
       unexpectedProducts: [],
       evidence: [],
       documentationNotes: "",
@@ -173,12 +191,13 @@ export default function TransferReceptionContainer({ transfer }: Props) {
     <div className="space-y-6">
       {/* Formulario principal - solo mostrar para transferencias en estado AwaitingReception */}
       <FormProvider methods={methods} onSubmit={handleCompleteReception}>
-        {/* Wizard de navegación por pasos */}
         <TransferReceptionWizard
           transfer={transfer}
           isSubmitting={isSubmitting}
           onSaveDraft={handleSaveDraft}
           canCompleteReception={canCompleteReception}
+          existingReception={existingReception}
+          currentWarehouseId={currentWarehouseId}
         />
       </FormProvider>
     </div>
