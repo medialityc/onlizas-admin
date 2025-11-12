@@ -23,6 +23,33 @@ import {
 
 const TRANSFER_RECEPTION_TAG = "transfer-receptions";
 
+// Obtener recepciones por transferId
+export async function getTransferReceptionsByTransferId(
+  transferId: string,
+  params?: { page?: number; pageSize?: number }
+): Promise<ApiResponse<GetAllTransferReceptions>> {
+  const queryParams = {
+    guidTransferId: transferId,
+    page: params?.page || 1,
+    pageSize: params?.pageSize || 10,
+  };
+  
+  const url = new QueryParamsURLFactory(
+    queryParams,
+    backendRoutes.transferReceptions.list
+  ).build();
+  
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: [TRANSFER_RECEPTION_TAG] },
+  });
+  
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<GetAllTransferReceptions>(res);
+}
+
 // Obtener todas las recepciones de transferencias
 export async function getAllTransferReceptions(
   params: IQueryable & TransferReceptionFilter
