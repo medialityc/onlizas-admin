@@ -43,6 +43,7 @@ export type WarehouseTransfer = {
     {
       id: string;
       productVariantId: number;
+      productName:string
       productVariantName: string;
       quantityRequested: number;
       quantityTransferred: number;

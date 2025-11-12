@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import { WizardHeader } from "./ui/wizard-header";
 import { WizardStepper } from "./ui/wizard-stepper";
 import { ValidationAlert } from "./ui/validation-alert";
@@ -6,6 +7,7 @@ import { WizardNavigation } from "./ui/wizard-navigation";
 import { ConfirmationDialog } from "./ui/confirmation-dialog";
 import { useFormContext } from "react-hook-form";
 import { WarehouseTransfer } from "@/types/warehouses-transfers";
+import { TransferReception } from "@/types/warehouse-transfer-receptions";
 import { CreateTransferReceptionFormData } from "@/sections/warehouses/schemas/transfer-reception-schema";
 import { validateReceptionStep } from "@/sections/warehouses/utils/receptionValidators";
 
@@ -27,6 +29,8 @@ interface Props {
     onSaveDraft: () => void;
     canCompleteReception?: () => boolean;
     onNavigateBack?: () => void;
+    existingReception?: TransferReception | null;
+    currentWarehouseId: string;
 }
 
 export default function TransferReceptionWizard({
@@ -35,13 +39,15 @@ export default function TransferReceptionWizard({
     onSaveDraft,
     canCompleteReception,
     onNavigateBack,
+    existingReception,
+    currentWarehouseId,
 }: Props) {
     const { watch, formState } = useFormContext<CreateTransferReceptionFormData>();
     const items = watch("items");
     const router=useRouter()
 
     // Estados y hooks personalizados
-    const receptionState = useReceptionState();
+    const receptionState = useReceptionState(existingReception);
     const discrepancyState = useDiscrepancyManagement();
     const wizardNavigation = useWizardNavigation(3);
     const receptionOperations = useReceptionOperations(
@@ -52,6 +58,30 @@ export default function TransferReceptionWizard({
         receptionState.setReceptionData,
         receptionState.setIsReceptionCompleted
     );
+
+    // Si hay recepción existente con discrepancias, ir automáticamente al paso de gestión de incidencias
+    useEffect(() => {
+        if (existingReception && ((existingReception as any).status === 'WithDiscrepancies' || existingReception.status === 'WITH_DISCREPANCY') && wizardNavigation.currentStep === 0) {
+            wizardNavigation.setCurrentStep(1);
+        }
+    }, [existingReception, wizardNavigation]);
+
+    // Determinar el paso inicial basado en la recepción existente
+    const getInitialStep = () => {
+        if (existingReception) {
+            const hasDiscrepancies = (existingReception as any).status === 'WithDiscrepancies';
+            return hasDiscrepancies ? 1 : 2; // Paso 1 para incidencias, paso 2 para documentación
+        }
+        return 0; // Paso 0 para recepción inicial
+    };
+
+    // Usar el paso inicial determinado
+    useEffect(() => {
+        const initialStep = getInitialStep();
+        if (wizardNavigation.currentStep !== initialStep) {
+            wizardNavigation.setCurrentStep(initialStep);
+        }
+    }, [existingReception]);
 
     // Validaciones
     const validateReceptionStepWrapper = () => validateReceptionStep(transfer, items);
@@ -83,13 +113,10 @@ export default function TransferReceptionWizard({
             component: (
                 <IncidentsManagementTab 
                     transfer={transfer} 
-                    receptionId={receptionState.receptionData?.id} 
-                    receptionData={receptionState.receptionData} 
+                    receptionId={existingReception?.id} 
+                    receptionData={existingReception} 
                     setData={receptionState.setReceptionData}
-                    resolvedDiscrepancies={discrepancyState.resolvedDiscrepancies}
-                    permanentlyResolvedDiscrepancies={discrepancyState.permanentlyResolvedDiscrepancies}
-                    setResolvedDiscrepancies={discrepancyState.setResolvedDiscrepancies}
-                    setPermanentlyResolvedDiscrepancies={discrepancyState.setPermanentlyResolvedDiscrepancies}
+                    currentWarehouseId={currentWarehouseId}
                 />
             ),
             isValid: validateIncidentsStep,
@@ -102,7 +129,7 @@ export default function TransferReceptionWizard({
             component: (
                 <DocumentationTab 
                     transfer={transfer} 
-                    receptionData={receptionState.receptionData} 
+                    receptionData={existingReception} 
                 />
             ),
             isValid: validateDocumentationStep,
@@ -114,51 +141,20 @@ export default function TransferReceptionWizard({
     const handleConfirmReception = async () => {
         wizardNavigation.setShowConfirmDialog(false);
         
-        // Crear una recepción inventada temporalmente para poder avanzar
-       /*  const fakeReception = {
-            id: "019a6e10-243c-7212-ac16-55c7358d338e",
-            transferId: transfer.id,
-            status: 'completed',
-            createdAt: new Date().toISOString(),
-            receivedAt: new Date().toISOString(),
-            hasDiscrepancies: false,
-            items: transfer.items?.map(item => ({
-                ...item,
-                quantityReceived: item.quantityRequested,
-                receivedBatch: null,
-                discrepancyType: null,
-                discrepancyNotes: '',
-                isAccepted: true
-            })) || [],
-            unexpectedProducts: [],
-            notes: '',
-            comments: []
-        };
+        // Si ya existe una recepción, no intentar crearla de nuevo
+        if (existingReception) {
+            const hasDiscrepancies = (existingReception as any).status === 'WithDiscrepancies';
+            wizardNavigation.setCurrentStep(hasDiscrepancies ? 1 : 2);
+            return;
+        }
 
-        // Simular un delay como si fuera una llamada real
-        receptionState.setIsReceiving(true);
-        
-        setTimeout(() => {
-            receptionState.setReceptionData(fakeReception);
-            receptionState.setIsReceptionCompleted(true);
-            receptionState.setIsReceiving(false);
-            wizardNavigation.setCurrentStep(1);
-        }, 1000); */
-
-        // TODO: Reemplazar con la llamada real cuando esté lista
-         const result = await receptionOperations.handleReceiveTransfer();
+        const result = await receptionOperations.handleReceiveTransfer();
         
         if (result.success) {
             // Verificar si hay discrepancias en los items del formulario
             const hasDiscrepancies = items.some((item: any) => 
                 item.discrepancyType && item.discrepancyType !== null
-            );
-            if (!hasDiscrepancies) {
-                router.back()
-            } else {
-                // Si hay discrepancias, ir al paso de gestión de incidencias
-                wizardNavigation.setCurrentStep(1);
-            }
+            ) || (existingReception && (existingReception as any).status === 'WithDiscrepancies');
         } 
     };
 
@@ -188,7 +184,7 @@ export default function TransferReceptionWizard({
     return (
         <div className="space-y-6">
             {/* Header de progreso */}
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 sm:p-6">
                 <WizardHeader
                     transferId={transfer.id}
                     receptionId={receptionState.receptionData?.id}
@@ -211,7 +207,7 @@ export default function TransferReceptionWizard({
 
             {/* Contenido del paso actual */}
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
-                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
                     <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                         {currentStepData.title}
                     </h3>
@@ -219,7 +215,7 @@ export default function TransferReceptionWizard({
                         {currentStepData.description}
                     </p>
                 </div>
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                     {currentStepData.component}
                 </div>
             </div>

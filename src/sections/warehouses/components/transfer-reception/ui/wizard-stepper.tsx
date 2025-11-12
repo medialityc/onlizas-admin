@@ -23,17 +23,13 @@ export const WizardStepper: React.FC<WizardStepperProps> = ({
   }
 
   return (
-    <div className="flex items-center justify-between">
-      {safeSteps.map((step, index) => (
-        <div key={step.id} className="flex items-center">
-          <div
-            className={`flex items-center cursor-pointer ${
-              index <= safeCurrentStep ? "text-blue-600" : "text-gray-400"
-            }`}
-            onClick={() => onStepClick(index)}
-          >
+    <div className="space-y-4 sm:space-y-0">
+      {/* Versión móvil: Steps verticales */}
+      <div className="block sm:hidden space-y-3">
+        {safeSteps.map((step, index) => (
+          <div key={step.id} className="flex items-center space-x-3">
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium border-2 ${
+              className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium border-2 ${
                 index < safeCurrentStep
                   ? "bg-blue-600 border-blue-600 text-white"
                   : index === safeCurrentStep
@@ -42,37 +38,83 @@ export const WizardStepper: React.FC<WizardStepperProps> = ({
               }`}
             >
               {index < safeCurrentStep ? (
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
               ) : (
                 index + 1
               )}
             </div>
-            <div className="ml-3 hidden sm:block">
+            <div className="flex-1 min-w-0">
               <div className="text-sm font-medium flex items-center space-x-2">
-                <span>{step.title}</span>
+                <span className="truncate">{step.title}</span>
                 {index === 0 && isReceptionCompleted && (
-                  <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                  <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full flex-shrink-0">
                     Completado
                   </span>
                 )}
               </div>
-              <div className="text-xs text-gray-500">{step.description}</div>
+              <div className="text-sm text-gray-500 truncate">{step.description}</div>
               {step.isOptional && (
                 <div className="text-xs text-gray-400">(Opcional)</div>
               )}
             </div>
           </div>
-          {index < safeSteps.length - 1 && (
+        ))}
+      </div>
+
+      {/* Versión desktop: Steps horizontales */}
+      <div className="hidden sm:flex items-center justify-between">
+        {safeSteps.map((step, index) => (
+          <div key={step.id} className="flex items-center">
             <div
-              className={`w-16 h-0.5 mx-4 ${
-                index < safeCurrentStep ? "bg-blue-600" : "bg-gray-300"
+              className={`flex items-center cursor-pointer ${
+                index <= safeCurrentStep ? "text-blue-600" : "text-gray-400"
               }`}
-            />
-          )}
-        </div>
-      ))}
+              onClick={() => onStepClick(index)}
+            >
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium border-2 ${
+                  index < safeCurrentStep
+                    ? "bg-blue-600 border-blue-600 text-white"
+                    : index === safeCurrentStep
+                    ? "border-blue-600 text-blue-600 bg-white dark:bg-gray-800"
+                    : "border-gray-300 text-gray-400 bg-white dark:bg-gray-800"
+                }`}
+              >
+                {index < safeCurrentStep ? (
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  index + 1
+                )}
+              </div>
+              <div className="ml-3">
+                <div className="text-sm font-medium flex items-center space-x-2">
+                  <span>{step.title}</span>
+                  {index === 0 && isReceptionCompleted && (
+                    <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                      Completado
+                    </span>
+                  )}
+                </div>
+                <div className="text-xs text-gray-500">{step.description}</div>
+                {step.isOptional && (
+                  <div className="text-xs text-gray-400">(Opcional)</div>
+                )}
+              </div>
+            </div>
+            {index < safeSteps.length - 1 && (
+              <div
+                className={`w-16 h-0.5 mx-4 ${
+                  index < safeCurrentStep ? "bg-blue-600" : "bg-gray-300"
+                }`}
+              />
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
