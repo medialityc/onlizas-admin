@@ -247,10 +247,10 @@ export async function uploadReceptionEvidence(
   files: File[]
 ): Promise<ApiResponse<{ success: boolean; urls: string[] }>> {
   const formData = new FormData();
-  files.forEach((file, idx) => formData.append(`file_${idx}`, file));
+  files.forEach((file, idx) => formData.append(`evidenceFiles`, file));
 
   const res = await nextAuthFetch({
-    url: backendRoutes.transferReceptions.addComment(receptionId),
+    url: backendRoutes.transferReceptions.uploadEvidence(receptionId),
     method: "POST",
     data: formData,
     useAuth: true,

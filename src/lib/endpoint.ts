@@ -189,6 +189,8 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}transfer-receptions/${discrepancyId}/resolve-discrepancy`,
     addComment: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}transfer-receptions/${id}/comments`,
+    uploadEvidence: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}transfer-receptions/${id}/upload-evidence`,
     logs: `${process.env.NEXT_PUBLIC_API_URL}transfer-receptions/logs`,
     createInventory: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}transfer-receptions/${id}/create-inventory`,
