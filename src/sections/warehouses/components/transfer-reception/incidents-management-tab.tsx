@@ -52,6 +52,26 @@ export default function IncidentsManagementTab({
         .map((item: any) => {
           const transferItem = transfer.items?.find(ti => ti.id === item.transferItemId);
 
+          // Separar discrepancyNotes en descripción y resolución si contiene "; "
+          let description = "";
+          let resolution = "";
+          
+          if (item.discrepancyNotes) {
+            const notesParts = item.discrepancyNotes.split("; ");
+            if (notesParts.length > 1) {
+              // Tiene descripción y resolución separadas
+              description = notesParts[0];
+              resolution = notesParts.slice(1).join("; ");
+            } else {
+              // Solo tiene una parte - si está resuelto, es resolución; si no, es descripción
+              if (isDiscrepancyResolved) {
+                resolution = item.discrepancyNotes;
+              } else {
+                description = item.discrepancyNotes;
+              }
+            }
+          }
+
           return {
             id: item.id,
             transferItemId: item.transferItemId,
@@ -59,7 +79,8 @@ export default function IncidentsManagementTab({
             productName: item.productName || transferItem?.productVariantName || "Producto desconocido",
             type: item.discrepancyType || "No definido",
             status: isDiscrepancyResolved ? "resolved" : "pending",
-            resolution: item.discrepancyNotes,
+            description: description,
+            resolution: resolution,
             createdAt: receptionData.receivedAt || new Date().toISOString(),
             quantityExpected: item.quantityExpected,
             quantityReceived: item.quantityReceived,
@@ -143,16 +164,23 @@ export default function IncidentsManagementTab({
       return;
     }
 
-    // Aquí podríamos hacer una llamada individual al backend para resolver una discrepancia específica
-    // Por ahora, solo mostrar que se resolvió localmente
+    // Actualizar el estado de la discrepancia específica para mostrarla como resuelta
+    setDiscrepancies(prev => prev.map(disc =>
+      disc.id === discrepancyId
+        ? { ...disc, status: "resolved" as const, resolution: resolutionNote.trim() }
+        : disc
+    ));
+
     setSelectedDiscrepancy(null);
-    setValue("resolutionNote", "");
+    // Limpiar la nota de resolución después de un pequeño delay para evitar re-renders inmediatos
+    setTimeout(() => setValue("resolutionNote", ""), 100);
     showToast("Discrepancia marcada como resuelta", "success");
   } : undefined;
 
   const handleCancelResolution = canResolveDiscrepancies ? () => {
     setSelectedDiscrepancy(null);
-    setValue("resolutionNote", "");
+    // Limpiar la nota de resolución después de un pequeño delay para evitar re-renders inmediatos
+    setTimeout(() => setValue("resolutionNote", ""), 100);
   } : undefined;
 
   const handleSelectForResolution = canResolveDiscrepancies ? setSelectedDiscrepancy : undefined;
@@ -174,8 +202,8 @@ export default function IncidentsManagementTab({
       // Preparar datos para resolver la recepción completa
       const resolutionData = {
         resolutionDescription: "Todas las discrepancias han sido resueltas",
-        resolutionType: 1,
-        itemsToReturn: discrepancies.map(disc => disc.id),
+        resolutionType: 0,
+        itemsToReturn: [],/* discrepancies.map(disc => disc.id), */
         itemsToAccept: discrepancies.map(disc => ({
           transferReceptionItemId: disc.id,
           finalQuantityAccepted: disc.quantityReceived || 0,
@@ -226,8 +254,8 @@ export default function IncidentsManagementTab({
         />
       )}
 
-      {/* Botón para completar resolución si hay discrepancias, se puede resolver y NO está resuelto */}
-      {canResolveDiscrepancies && discrepancies.length > 0 && !isDiscrepancyResolved && (
+      {/* Botón para completar resolución si hay discrepancias, se puede resolver, TODAS están resueltas individualmente y NO está resuelto a nivel de recepción */}
+      {canResolveDiscrepancies && discrepancies.length > 0 && discrepancies.every(disc => disc.status === 'resolved') && !isDiscrepancyResolved && (
         <div className="flex justify-end">
           <button
             type="button"
