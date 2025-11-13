@@ -235,12 +235,12 @@ export function WarehouseTransferList({
                   WAREHOUSE_TRANSFER_STATUS.AwaitingReception,
                   WAREHOUSE_TRANSFER_STATUS.PartiallyReceived,
                   WAREHOUSE_TRANSFER_STATUS.ReceivedWithDiscrepancies,                  
-                ].includes(trans?.status) 
+                ].includes(trans?.status) && ( (WAREHOUSE_TRANSFER_STATUS.AwaitingReception===trans.status && trans.originId===currentWarehouseId)?false:true)
               }
               onViewReception={() => handleViewReception(trans?.id)}
               isViewReceptionReadOnlyActive={                 
                 [
-                  WAREHOUSE_TRANSFER_STATUS.AwaitingReception,
+                 /*  WAREHOUSE_TRANSFER_STATUS.AwaitingReception, */
                   WAREHOUSE_TRANSFER_STATUS.PartiallyReceived,
                   WAREHOUSE_TRANSFER_STATUS.ReceivedWithDiscrepancies,
                   WAREHOUSE_TRANSFER_STATUS.Conciliated,
