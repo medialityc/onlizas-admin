@@ -1,4 +1,3 @@
-import { logs } from "./../services/data-for-gateway-settings/mock-datas";
 import { usePermissions as useSSO } from "zas-sso-client";
 
 // Tipo Permission de zas-sso-client

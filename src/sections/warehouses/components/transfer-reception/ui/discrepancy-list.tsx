@@ -150,7 +150,11 @@ export function DiscrepancyList({
                         type="button"
                         variant="secondary"
                         size="sm"
-                        onClick={onCancelResolution}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onCancelResolution?.();
+                        }}
                       >
                         Cancelar
                       </Button>
@@ -158,7 +162,11 @@ export function DiscrepancyList({
                         type="button"
                         variant="primary"
                         size="sm"
-                        onClick={() => onResolveDiscrepancy?.(discrepancy.id)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onResolveDiscrepancy?.(discrepancy.id);
+                        }}
                       >
                         Marcar como Resuelta
                       </Button>

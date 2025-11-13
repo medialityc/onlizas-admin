@@ -60,11 +60,12 @@ export default function TransferReceptionWizard({
     );
 
     // Si hay recepción existente con discrepancias, ir automáticamente al paso de gestión de incidencias
+    // SOLO si estamos en el paso 0 para no interrumpir navegación manual
     useEffect(() => {
         if (existingReception && ((existingReception as any).status === 'WithDiscrepancies' || existingReception.status === 'WITH_DISCREPANCY') && wizardNavigation.currentStep === 0) {
             wizardNavigation.setCurrentStep(1);
         }
-    }, [existingReception, wizardNavigation]);
+    }, [existingReception]);
 
     // Determinar el paso inicial basado en la recepción existente
     const getInitialStep = () => {
@@ -75,10 +76,11 @@ export default function TransferReceptionWizard({
         return 0; // Paso 0 para recepción inicial
     };
 
-    // Usar el paso inicial determinado
+    // Usar el paso inicial determinado SOLO si estamos en el paso 0
     useEffect(() => {
         const initialStep = getInitialStep();
-        if (wizardNavigation.currentStep !== initialStep) {
+        // Solo cambiar automáticamente si estamos en el paso 0, para no interrumpir navegación manual
+        if (wizardNavigation.currentStep === 0 && wizardNavigation.currentStep !== initialStep) {
             wizardNavigation.setCurrentStep(initialStep);
         }
     }, [existingReception]);
