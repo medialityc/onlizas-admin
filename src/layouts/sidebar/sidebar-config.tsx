@@ -164,7 +164,7 @@ export const sidebarSections: SidebarSection[] = [
       },
       {
         id: "payment-gateway",
-        label: "Gateways",
+        label: "Pasarelas de Pago",
         path: paths.dashboard.gateways.paymentGateway,
         icon: <CreditCard className="size-4" />,
         permissions: PERMISSION_ADMIN,

@@ -15,7 +15,7 @@ export const GatewayFormSelector = () => {
         htmlFor="gateway-type"
         className="block text-sm font-medium dark:text-gray-200"
       >
-        Gateway Type
+        Tipo de Pasarela
       </label>
       <select
         id="gateway-type"
@@ -25,7 +25,7 @@ export const GatewayFormSelector = () => {
         }
         className="w-full  border rounded p-2 bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
       >
-        <option value="">Select a payment gateway</option>
+        <option value="">Seleccione una pasarela de pago</option>
         <option value="stripe">Stripe</option>
         <option value="paypal">PayPal</option>
         <option value="tropipay">Tropipay</option>
