@@ -16,6 +16,9 @@ import { Field, GatewayFormProps, GatewayType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { gatewaysSchemas } from "./gateway-schemas.schema";
 import { ZodTypeAny } from "zod";
+import { createGateway } from "@/services/gateways";
+import showToast from "@/config/toast/toastConfig";
+import { useQueryClient } from "@tanstack/react-query";
 
 const getErrorMessage = (error: unknown) =>
   typeof error === "string" ? error : "";
@@ -28,6 +31,7 @@ export function GatewayForm({
   buttonText,
   name,
 }: GatewayFormProps & { name: GatewayType }) {
+  const queryClient = useQueryClient();
   const defaultValues: Record<string, any> = {};
 
   fields.forEach((f) => {
@@ -48,9 +52,33 @@ export function GatewayForm({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: Record<string, any>) => {
-    console.log(name, "Valores del formulario:", data);
-    reset(defaultValues);
+  const onSubmit = async (data: Record<string, any>) => {
+    try {
+      // Mapear los datos del formulario al formato que espera la API
+      const gatewayData = {
+        name: name.charAt(0).toUpperCase() + name.slice(1), // "stripe" → "Stripe"
+        code: name, // "stripe" (código interno)
+        description: `Configuración de ${name.charAt(0).toUpperCase() + name.slice(1)}`, // "Configuración de Stripe"
+        isEnabled: data[`${name}-live`] ?? data[`${name}-sandbox`] ?? true, // true si está en live/sandbox
+        isDefault: false, // Nueva pasarela nunca es default inicialmente
+        key: JSON.stringify(data), // TODOS los campos específicos del proveedor como JSON
+      };
+
+      const response = await createGateway(gatewayData);
+
+      if (response.error) {
+        showToast("Error al crear la pasarela", "error");
+        return;
+      }
+
+      showToast("Pasarela creada exitosamente", "success");
+      reset(defaultValues);
+
+      // Invalidar el cache de gateways para que se refresque automáticamente
+      queryClient.invalidateQueries({ queryKey: ["gateways"] });
+    } catch (error) {
+      showToast("Error al crear la pasarela", "error");
+    }
   };
 
   return (
@@ -172,7 +200,7 @@ export function GatewayForm({
              hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 
              transition-colors duration-200"
       >
-        {buttonText || "Save Configuration"}
+        {buttonText || "Guardar Configuración"}
       </Button>
     </form>
   );

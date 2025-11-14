@@ -50,7 +50,7 @@ export const PaymentMethodsContent = () => {
       </DndContext>
       <div className="sticky bottom-0 pt-4">
         <Button className="w-full h-fit py-3 sm:py-4 bg-green-600 hover:bg-green-800 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 text-sm sm:text-base">
-          Save Payment Method Configuration
+          Guardar Configuración de Métodos de Pago
         </Button>
       </div>
     </CardContent>

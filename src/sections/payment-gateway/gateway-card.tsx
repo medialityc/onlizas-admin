@@ -1,24 +1,47 @@
-import type { gateways } from "@/services/data-for-gateway-settings/mock-datas";
+import type { Gateway } from "@/types/gateway.interface";
 import { Badge, Button, Card, Group, Text } from "@mantine/core";
 import { CreditCard, Edit, Eye, EyeOff, Trash2 } from "lucide-react";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { deleteGateway } from "@/services/gateways";
+import showToast from "@/config/toast/toastConfig";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const GatewayCard = ({
   gateway,
   showCredentials,
   toggleCredentialVisibility,
 }: {
-  gateway: (typeof gateways)[number];
+  gateway: Gateway;
   showCredentials: boolean;
   toggleCredentialVisibility: () => void;
 }) => {
   // Control de permisos
   const { hasPermission } = usePermissions();
+  const queryClient = useQueryClient();
 
   const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
   const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
   const hasDeletePermission = hasPermission([PERMISSION_ENUM.DELETE]);
+
+  //Funcion para eliminar pasarela por id que llame al endpoint deleteGateway
+  const handleDeleteGateway = async () => {
+    if (!hasDeletePermission) return;
+    try {
+      const response = await deleteGateway(gateway.id);
+      console.log(response);
+      if (!response.error) {
+        showToast("Pasarela eliminada exitosamente", "success");
+        queryClient.invalidateQueries({ queryKey: ["gateways"] });
+        return;
+      } else {
+        showToast("Error al eliminar la pasarela", "error");
+        queryClient.invalidateQueries({ queryKey: ["gateways"] });
+      }
+    } catch (error) {
+      showToast(`Error al eliminar la pasarela: ${error}`, "error");
+    }
+  };
 
   return (
     <Card
@@ -38,7 +61,7 @@ export const GatewayCard = ({
               {gateway.name}
             </Text>
             <Text size="sm" c="dimmed" className="dark:text-gray-400">
-              Created: {gateway.created}
+              Código: {gateway.code}
             </Text>
           </div>
         </Group>
@@ -47,12 +70,14 @@ export const GatewayCard = ({
           gap="xs"
           className="w-full sm:w-auto justify-center sm:justify-end flex-wrap"
         >
-          <Badge
-            color={gateway.status === "active" ? "green" : "red"}
-            variant="filled"
-          >
-            {gateway.status}
+          <Badge color={gateway.isEnabled ? "green" : "red"} variant="filled">
+            {gateway.isEnabled ? "Habilitado" : "Deshabilitado"}
           </Badge>
+          {gateway.isDefault && (
+            <Badge color="blue" variant="filled">
+              Predeterminado
+            </Badge>
+          )}
           <Button
             variant="subtle"
             size="xs"
@@ -67,7 +92,12 @@ export const GatewayCard = ({
             </Button>
           )}
           {hasDeletePermission && (
-            <Button variant="subtle" size="xs" color="red">
+            <Button
+              variant="subtle"
+              size="xs"
+              color="red"
+              onClick={handleDeleteGateway}
+            >
               <Trash2 size={14} />
             </Button>
           )}
@@ -82,23 +112,17 @@ export const GatewayCard = ({
           className="bg-gray-100 dark:bg-gray-700"
         >
           <Text fw={500} mb="xs" className="text-gray-900 dark:text-gray-100">
-            Credentials
+            Credenciales
           </Text>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
               <Text c="dimmed" className="dark:text-gray-400">
-                API Key:
+                Clave API:
               </Text>
               <Text className="font-mono text-gray-900 dark:text-gray-100 break-all">
-                sk_test_***************
-              </Text>
-            </div>
-            <div>
-              <Text c="dimmed" className="dark:text-gray-400">
-                Webhook Secret:
-              </Text>
-              <Text className="font-mono text-gray-900 dark:text-gray-100 break-all">
-                whsec_***************
+                {gateway.key
+                  ? `${gateway.key.substring(0, 8)}********`
+                  : "No configurada"}
               </Text>
             </div>
           </div>

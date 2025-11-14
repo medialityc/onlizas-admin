@@ -7,6 +7,20 @@ import type {
   AuthorizeConfig,
   BankConfig,
 } from "@/sections/payment-gateway/settings-gateway-forms/gateway-schemas.schema";
+import { PaginatedResponse } from "./common";
+
+export type Gateway={
+  id:string,
+  name:string,
+  code:string,
+  description:string,
+  isEnabled:boolean,
+  isDefault:boolean,
+  key:string
+}
+
+export type GetAllGateways=PaginatedResponse<Gateway>
+
 
 export type GatewayType =
   | "stripe"
@@ -85,7 +99,7 @@ export type GatewaySchema<T extends GatewayType> =
   T extends keyof typeof gatewaysSchemas ? (typeof gatewaysSchemas)[T] : never;
 
 // Legacy interfaces for backward compatibility
-export interface Gateway {
+export interface GatewayI {
   name: string;
   lastTest: string;
   transactions: string;
