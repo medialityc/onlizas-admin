@@ -384,6 +384,10 @@ export const backendRoutes = {
 
     // Payment configuration endpoints
     payments: {
+      list: `${process.env.NEXT_PUBLIC_API_URL}api/gateways`,
+      update: (gatewayId: number | string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}api/gateways/${gatewayId}`,
+      setDefault:(gateId:string)=>`${process.env.NEXT_PUBLIC_API_URL}api/gateways/${gateId}/set-default`,
       add: (regionId: number | string) =>
         `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/payment-gateways`,
       remove: (regionId: number | string, gatewayId: number | string) =>

@@ -41,7 +41,7 @@ export function PaymentMethodRow({ method, onToggleEnabled }: Props) {
             {...listeners}
             {...attributes}
             className="cursor-grab inline-flex items-center p-1 flex-shrink-0 self-center sm:self-auto"
-            aria-label={`Drag ${method.name}`}
+            aria-label={`Arrastrar ${method.name}`}
             type="button"
           >
             <GripVertical className="h-4 w-4 text-gray-500" />
@@ -50,7 +50,7 @@ export function PaymentMethodRow({ method, onToggleEnabled }: Props) {
           <Switch
             checked={method.enabled}
             onChange={() => onToggleEnabled(method.id)}
-            aria-label={`Enable ${method.name}`}
+            aria-label={`Habilitar ${method.name}`}
             className="flex-shrink-0 self-center sm:self-auto"
           />
 
@@ -67,7 +67,7 @@ export function PaymentMethodRow({ method, onToggleEnabled }: Props) {
         <div className="flex items-center justify-end space-x-2 sm:space-x-2 flex-shrink-0">
           {method.primary && (
             <Badge size="sm" className="text-xs">
-              Primary
+              Principal
             </Badge>
           )}
           {hasUpdatePermission && (

@@ -10,10 +10,10 @@ export default function PaymentgatewayPage() {
             order={1}
             className="text-2xl sm:text-3xl lg:text-4xl font-semibold"
           >
-            Payment Gateways
+            Pasarelas de Pago
           </Title>
           <Text c="dimmed" className="text-sm sm:text-base">
-            Configure and manage payment gateway credentials
+            Configure y gestione las pasarelas de pago
           </Text>
         </div>
       </div>

@@ -3,13 +3,15 @@
 import { Card, Tabs, Text, Title } from "@mantine/core";
 import { GatewayFormSelector } from "./gateway-form-selector";
 import { GatewaysManageList } from "./gateway-list";
+import { GatewaysManageListRef } from "./gateway-list";
+import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 
 export const GatewaysTab = () => {
   const [tabActive, setTabActive] = useState<"configure" | "manage">(
     "configure"
   );
+  const gatewaysListRef = useRef<GatewaysManageListRef>(null);
 
   return (
     <div className="space-y-6">
@@ -25,7 +27,7 @@ export const GatewaysTab = () => {
                 : "bg-gray-300 dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-gray-400 dark:hover:bg-gray-800"
             )}
           >
-            Configure Gateway
+            Configurar Pasarela
           </Tabs.Tab>
 
           <Tabs.Tab
@@ -38,7 +40,7 @@ export const GatewaysTab = () => {
                 : "bg-gray-300 dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-gray-400 dark:hover:bg-gray-800"
             )}
           >
-            Manage Existing
+            Gestionar Existentes
           </Tabs.Tab>
         </Tabs.List>
 
@@ -51,10 +53,10 @@ export const GatewaysTab = () => {
             className="bg-slate-200/50 dark:bg-slate-950/50 shadow-lg transition-all duration-500 ease-in-out"
           >
             <Title order={4} className="text-gray-900 dark:text-gray-100">
-              + Add New Payment Gateway
+              + Agregar Nueva Pasarela de Pago
             </Title>
             <Text c="dimmed" size="sm" mb="md" className="dark:text-gray-400">
-              Configure credentials for a new payment provider
+              Configure las credenciales para un nuevo proveedor de pagos
             </Text>
             <GatewayFormSelector />
           </Card>
@@ -68,12 +70,12 @@ export const GatewaysTab = () => {
             className="bg-slate-200/50 dark:bg-slate-950/50 shadow-lg transition-all duration-500 ease-in-out"
           >
             <Title order={4} className="text-gray-900 dark:text-gray-100">
-              Existing Gateways
+              Pasarelas Existentes
             </Title>
             <Text c="dimmed" size="sm" mb="md" className="dark:text-gray-400">
-              Manage your configured payment gateways
+              Gestione sus pasarelas de pago configuradas
             </Text>
-            <GatewaysManageList />
+            <GatewaysManageList ref={gatewaysListRef} tabActive={tabActive} />
           </Card>
         </Tabs.Panel>
       </Tabs>
