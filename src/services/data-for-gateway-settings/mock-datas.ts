@@ -15,6 +15,7 @@ import {
   ConfigChange,
   Log,
   PaymentMethod,
+  GatewayI,
 } from "@/types";
 
 export const mockStats: Stat[] = [
@@ -44,7 +45,7 @@ export const mockStats: Stat[] = [
   },
 ];
 
-export const mockGateways: Gateway[] = [
+export const mockGateways: GatewayI[] = [
   {
     name: "Stripe",
     lastTest: "2 hours ago",
