@@ -14,10 +14,9 @@ import { useForm, Controller } from "react-hook-form";
 import { useState, useEffect } from "react";
 import FormProvider from "@/components/react-hook-form/form-provider";
 import SimpleModal from "@/components/modal/modal";
-import { Switch } from "@/components/switch";
 import ConfirmationDialog from "@/components/modal/confirm-modal";
 import { RHFInputWithLabel, RHFSwitch } from "@/components/react-hook-form";
-import { id } from "zod/v4/locales";
+
 
 export const GatewayCard = ({
   gateway,
