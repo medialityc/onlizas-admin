@@ -56,12 +56,13 @@ export function GatewayForm({
     try {
       // Mapear los datos del formulario al formato que espera la API
       const gatewayData = {
-        name: name.charAt(0).toUpperCase() + name.slice(1), // "stripe" → "Stripe"
-        code: name, // "stripe" (código interno)
-        description: `Configuración de ${name.charAt(0).toUpperCase() + name.slice(1)}`, // "Configuración de Stripe"
-        isEnabled: data[`${name}-live`] ?? data[`${name}-sandbox`] ?? true, // true si está en live/sandbox
-        isDefault: false, // Nueva pasarela nunca es default inicialmente
-        key: JSON.stringify(data), // TODOS los campos específicos del proveedor como JSON
+        name: name.charAt(0).toUpperCase() + name.slice(1),
+        code: data[`${name}-publishable`],
+        description: `Configuración de ${name.charAt(0).toUpperCase() + name.slice(1)}`,
+        isEnabled:
+          data[`${name}-live`] || data[`${name}-mode`] === "live" || true,
+        isDefault: false,
+        key: data[`${name}-secret`],
       };
 
       const response = await createGateway(gatewayData);
