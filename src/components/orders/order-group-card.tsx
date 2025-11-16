@@ -7,16 +7,14 @@ import { formatCurrency, formatDate } from "@/lib/order-utils";
 import { StatusBadge } from "@/components/orders/status-badge";
 import { Button } from "@/components/button/button";
 
-export type OrderGroup = { order: Order; subOrders: SubOrder[] };
-
 export function OrderGroupCard({
-  group,
+  order,
   onPrintLabel,
 }: {
-  group: OrderGroup;
+  order: Order;
   onPrintLabel?: (subOrderId: string, status: OrderStatus) => void;
 }) {
-  const { order, subOrders } = group;
+  const subOrders = order.subOrders;
   const [expanded, setExpanded] = useState(true);
   const orderTotal = subOrders.reduce((sum, so) => sum + so.amountPaid, 0);
 

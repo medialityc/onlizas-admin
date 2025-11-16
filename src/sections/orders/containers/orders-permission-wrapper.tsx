@@ -36,9 +36,9 @@ export default function OrdersPermissionWrapper({
     [query]
   );
   const serializedParams = useMemo(() => JSON.stringify(apiQuery), [apiQuery]);
-  const [stableData, setStableData] = useState<ApiResponse<GetAllOrders> | undefined>(
-    adminData
-  );
+  const [stableData, setStableData] = useState<
+    ApiResponse<GetAllOrders> | undefined
+  >(adminData);
 
   const {
     data: ordersResponse,
