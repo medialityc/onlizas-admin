@@ -4,7 +4,11 @@ import { OrderStatus, SubOrder } from "@/types/order";
 
 type Stat = { label: string; value: number; icon: any; color: string };
 
-export function SupplierOrderStatsCards({ subOrders }: { subOrders: SubOrder[] }) {
+export function SupplierOrderStatsCards({
+  subOrders,
+}: {
+  subOrders: SubOrder[];
+}) {
   const stats: Stat[] = [
     {
       label: "Total Órdenes",
@@ -21,7 +25,8 @@ export function SupplierOrderStatsCards({ subOrders }: { subOrders: SubOrder[] }
     {
       label: "En Proceso",
       value: subOrders.filter(
-        (s) => s.status === OrderStatus.Processing || s.status === OrderStatus.Sent
+        (s) =>
+          s.status === OrderStatus.Processing || s.status === OrderStatus.Sent
       ).length,
       icon: TruckIcon,
       color: "text-blue-600",
@@ -29,7 +34,9 @@ export function SupplierOrderStatsCards({ subOrders }: { subOrders: SubOrder[] }
     {
       label: "Completadas",
       value: subOrders.filter(
-        (s) => s.status === OrderStatus.Completed || s.status === OrderStatus.Received
+        (s) =>
+          s.status === OrderStatus.Completed ||
+          s.status === OrderStatus.Received
       ).length,
       icon: CheckCircle,
       color: "text-green-600",

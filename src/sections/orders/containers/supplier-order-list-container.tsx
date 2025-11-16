@@ -4,39 +4,42 @@ import { Download, RefreshCw, Search, Package } from "lucide-react";
 import { Input } from "@/components/input/input";
 import { Button } from "@/components/button/button";
 import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
-import { OrderStats } from "../components/order-stats";
+// Vista de proveedor: recibe órdenes ya filtradas por backend con solo sus sub-órdenes
 import { ApiResponse } from "@/types/fetch/api";
 import { GetAllOrders, Order } from "@/types/order";
-import { OrderGroupCard, OrderGroup } from "@/components/orders/order-group-card";
+import { OrderGroupCard } from "@/components/orders/order-group-card";
 import { SupplierOrderStatsCards } from "@/components/orders/supplier-order-stats-cards";
 
 type Props = { data: ApiResponse<GetAllOrders>; supplierName?: string };
 
-export default function SupplierOrderListContainer({ data, supplierName }: Props) {
+export default function SupplierOrderListContainer({
+  data,
+  supplierName,
+}: Props) {
   const [searchValue, setSearchValue] = useState("");
-  const orderGroups: OrderGroup[] = useMemo(() => {
-    const orders: Order[] = data.data?.data ?? [];
-    return orders.map((o) => ({ order: o, subOrders: o.subOrders }));
-  }, [data]);
+  const orders: Order[] = useMemo(() => data.data?.data ?? [], [data]);
 
-  const filteredGroups = useMemo(() => {
-    if (!searchValue) return orderGroups;
+  const filteredOrders = useMemo(() => {
+    if (!searchValue) return orders;
     const q = searchValue.toLowerCase();
-    return orderGroups.filter((g) => {
+    return orders.filter((o) => {
       const baseMatch =
-        g.order.orderNumber.toLowerCase().includes(q) ||
-        g.order.senderName.toLowerCase().includes(q) ||
-        g.order.receiverName.toLowerCase().includes(q);
-      const subMatch = g.subOrders.some(
+        o.orderNumber.toLowerCase().includes(q) ||
+        o.senderName.toLowerCase().includes(q) ||
+        o.receiverName.toLowerCase().includes(q);
+      const subMatch = o.subOrders.some(
         (so) =>
           so.productName.toLowerCase().includes(q) ||
           so.subOrderNumber.toLowerCase().includes(q)
       );
       return baseMatch || subMatch;
     });
-  }, [searchValue, orderGroups]);
+  }, [searchValue, orders]);
 
-  const allSubOrders = useMemo(() => orderGroups.flatMap((g) => g.subOrders), [orderGroups]);
+  const allSubOrders = useMemo(
+    () => orders.flatMap((o) => o.subOrders),
+    [orders]
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -64,7 +67,6 @@ export default function SupplierOrderListContainer({ data, supplierName }: Props
           </div>
         </div>
 
-        <OrderStats orders={allSubOrders as any} />
         <SupplierOrderStatsCards subOrders={allSubOrders as any} />
 
         <div className="relative">
@@ -82,15 +84,15 @@ export default function SupplierOrderListContainer({ data, supplierName }: Props
           hidePagination
           searchPlaceholder="Buscar órdenes..."
           data={{
-            data: filteredGroups,
-            totalCount: filteredGroups.length,
+            data: filteredOrders,
+            totalCount: filteredOrders.length,
             page: 1,
-            pageSize: filteredGroups.length,
+            pageSize: filteredOrders.length,
             hasNext: false,
             hasPrevious: false,
           }}
           component={
-            filteredGroups.length === 0 ? (
+            filteredOrders.length === 0 ? (
               <div className="text-center py-12">
                 <Package className="h-16 w-16 mx-auto text-muted-foreground/50" />
                 <p className="text-muted-foreground mt-4">
@@ -99,10 +101,10 @@ export default function SupplierOrderListContainer({ data, supplierName }: Props
               </div>
             ) : (
               <div className="space-y-4">
-                {filteredGroups.map((group) => (
+                {filteredOrders.map((order) => (
                   <OrderGroupCard
-                    key={group.order.id}
-                    group={group}
+                    key={order.id}
+                    order={order}
                     onPrintLabel={(id) => console.log("Imprimir etiqueta", id)}
                   />
                 ))}

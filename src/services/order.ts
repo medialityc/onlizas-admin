@@ -1,3 +1,4 @@
+"use server";
 import { backendRoutes } from "@/lib/endpoint";
 import { QueryParamsURLFactory } from "@/lib/request";
 import { IQueryable } from "@/types/fetch/request";
