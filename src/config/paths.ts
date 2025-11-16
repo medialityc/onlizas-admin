@@ -93,6 +93,11 @@ export const paths = {
       paymentMethods: `${DASHBOARD}/payment-methods`,
       testingValidation: `${DASHBOARD}/testing-validation`,
     },
+    orders: {
+      list: `${DASHBOARD}/orders`,
+      view: (id: string | number) => `${DASHBOARD}/orders/${id}`,
+      edit: (id: string | number) => `${DASHBOARD}/orders/${id}/edit`,
+    },
   },
   provider: {
     root: PROVIDER,

@@ -8,7 +8,10 @@ import { GetAllOrders } from "@/types/order";
 import { useMemo } from "react";
 
 export function useSupplierOrders(params: SearchParams) {
-  const queryParams: IQueryable = useMemo(() => buildQueryParams(params), [params]);
+  const queryParams: IQueryable = useMemo(
+    () => buildQueryParams(params),
+    [params]
+  );
   const serialized = JSON.stringify(queryParams);
   return useQuery<ApiResponse<GetAllOrders>>({
     queryKey: ["supplier-orders", serialized],

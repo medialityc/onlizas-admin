@@ -30,6 +30,7 @@ import {
 import {
   PERMISSION_ADMIN,
   PERMISSION_INVENTORY,
+  PERMISSION_ORDERS,
   PERMISSION_PRODUCT,
   PERMISSION_STORE,
   PERMISSION_WAREHOUSE,
@@ -121,6 +122,13 @@ export const sidebarSections: SidebarSection[] = [
     id: "inventory",
     label: "Inventario y Logística",
     items: [
+      {
+        id: "orders",
+        label: "Órdenes",
+        path: paths.dashboard.orders.list,
+        icon: <ClipboardDocumentIcon className="h-4 w-4" />,
+        permissions: PERMISSION_ORDERS,
+      },
       {
         id: "inventory",
         label: "Inventario",
