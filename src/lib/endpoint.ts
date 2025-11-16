@@ -387,7 +387,8 @@ export const backendRoutes = {
       list: `${process.env.NEXT_PUBLIC_API_URL}api/gateways`,
       update: (gatewayId: number | string) =>
         `${process.env.NEXT_PUBLIC_API_URL}api/gateways/${gatewayId}`,
-      setDefault:(gateId:string)=>`${process.env.NEXT_PUBLIC_API_URL}api/gateways/${gateId}/set-default`,
+      setDefault: (gateId: string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}api/gateways/${gateId}/set-default`,
       add: (regionId: number | string) =>
         `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/payment-gateways`,
       remove: (regionId: number | string, gatewayId: number | string) =>
@@ -495,5 +496,11 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}external-review/${token}/approval-process`,
     decisionApprovalProcessByToken: (token: string) =>
       `${process.env.NEXT_PUBLIC_API_URL}external-review/${token}/approval-process/decision`,
+  },
+  orders: {
+    list: `${process.env.NEXT_PUBLIC_API_URL}orders`,
+    getById: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}orders/${id}`,
+    supplierList: `${process.env.NEXT_PUBLIC_API_URL}api/order/supplier`,
   },
 };
