@@ -54,7 +54,7 @@ export default function AdminOrdersPage({ data, query }: Props) {
         {/* Stats */}
         <OrderStats orders={data.data?.data ?? []} />
 
-        <div className="relative">
+        {/* <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por número de orden, cliente, producto..."
@@ -62,7 +62,7 @@ export default function AdminOrdersPage({ data, query }: Props) {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
           />
-        </div>
+        </div> */}
 
         <div className="space-y-4">
           {data.data?.data.length === 0 ? (
@@ -74,8 +74,7 @@ export default function AdminOrdersPage({ data, query }: Props) {
               data={data.data}
               searchParams={query}
               onSearchParamsChange={onSearchParamsChange}
-              searchPlaceholder="Buscar inventario..."
-              createText="Crear inventario"
+              searchPlaceholder="Buscar órdenes..."
               enableColumnToggle={false}
               component={<OrderList data={data.data?.data} />}
             />

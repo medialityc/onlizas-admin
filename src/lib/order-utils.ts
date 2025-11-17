@@ -26,7 +26,7 @@ export function getStatusLabel(status: OrderStatus): string {
     case OrderStatus.Pending:
       return "Pendiente";
     case OrderStatus.Processing:
-      return "Procesando";
+      return "Procesado";
     case OrderStatus.Completed:
       return "Completada";
     case OrderStatus.Sent:
