@@ -3,6 +3,7 @@ import { PaginatedResponse } from "./common";
 export type Order = {
   id: string;
   customerId: string;
+  status: number; // estado general de la orden
   orderNumber: string;
   totalAmountPaid: number;
   totalTaxAmount: number;
@@ -18,6 +19,7 @@ export type Order = {
   receiverAddress: string;
   createdDatetime: string;
   subOrders: SubOrder[];
+  configuredTime: number;
 };
 
 export type SubOrder = {
