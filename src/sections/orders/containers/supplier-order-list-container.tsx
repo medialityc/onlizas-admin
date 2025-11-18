@@ -10,11 +10,12 @@ import { GetAllOrders, Order } from "@/types/order";
 import { OrderGroupCard } from "@/components/orders/order-group-card";
 import { SupplierOrderStatsCards } from "@/components/orders/supplier-order-stats-cards";
 
-type Props = { data: ApiResponse<GetAllOrders>; supplierName?: string };
+type Props = { data: ApiResponse<GetAllOrders>; supplierName?: string; onShowStores?: () => void };
 
 export default function SupplierOrderListContainer({
   data,
   supplierName,
+  onShowStores,
 }: Props) {
   const [searchValue, setSearchValue] = useState("");
   const orders: Order[] = useMemo(() => data.data?.data ?? [], [data]);
@@ -69,7 +70,7 @@ export default function SupplierOrderListContainer({
 
         <SupplierOrderStatsCards subOrders={allSubOrders as any} />
 
-        <div className="relative">
+        {/* <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por número de orden, cliente, producto..."
@@ -77,7 +78,7 @@ export default function SupplierOrderListContainer({
             onChange={(e) => setSearchValue(e.target.value)}
             className="pl-10"
           />
-        </div>
+        </div> */}
 
         <DataGridCard
           enableSearch={false}
