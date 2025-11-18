@@ -25,18 +25,21 @@ export async function getAllOrders(
   return buildApiResponseAsync<GetAllOrders>(res);
 }
 
-export async function getSupplierOrders(
+export async function getOrdersByStore(
+  storeId: string,
   params: IQueryable
 ): Promise<ApiResponse<GetAllOrders>> {
+
+  console.log(storeId, params)
   const url = new QueryParamsURLFactory(
-    { ...params },
-    backendRoutes.orders.supplierList
+    { ...params.pagination },
+    backendRoutes.orders.supplierList(storeId)
   ).build();
   const res = await nextAuthFetch({
     url,
     method: "GET",
     useAuth: true,
-    next: { tags: ["orders", "supplier-orders"] },
+    next: { tags: ["orders", "store-orders"] },
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<GetAllOrders>(res);

@@ -4,12 +4,14 @@ import { PERMISSION_ENUM } from "@/lib/permissions";
 import { useQuery } from "@tanstack/react-query";
 import { buildQueryParams } from "@/lib/request";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
-import { getAllOrders, getSupplierOrders } from "@/services/order";
+import { getAllOrders } from "@/services/order";
 import { useEffect, useMemo, useState } from "react";
 import AdminOrdersPage from "./order-list-container";
-import SupplierOrderListContainer from "./supplier-order-list-container";
 import { ApiResponse } from "@/types/fetch/api";
 import { GetAllOrders } from "@/types/order";
+import { useAuth } from "zas-sso-client";
+import SupplierStoresView from "./supplier-stores-view";
+// Nuevo componente
 
 type Props = {
   query: SearchParams;
@@ -23,6 +25,8 @@ export default function OrdersPermissionWrapper({
   supplierName,
 }: Props) {
   const { hasPermission, isLoading: permissionsLoading } = usePermissions();
+  const session = useAuth();
+  const userName = session.user?.name || "Proveedor";
   const hasAdminRetrieve =
     !permissionsLoading && hasPermission([PERMISSION_ENUM.RETRIEVE]);
   const hasSupplierRetrieve =
@@ -54,10 +58,10 @@ export default function OrdersPermissionWrapper({
     ],
     queryFn: async () => {
       if (hasAdminRetrieve) return await getAllOrders(apiQuery as any);
-      if (hasSupplierRetrieve) return await getSupplierOrders(apiQuery as any);
+      //if (hasSupplierRetrieve) return await getSupplierOrders(apiQuery as any);
       return undefined as any;
     },
-    enabled: canList,
+    enabled: canList && hasAdminRetrieve,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
     placeholderData: (prev) => prev,
@@ -143,10 +147,7 @@ export default function OrdersPermissionWrapper({
       {hasAdminRetrieve ? (
         <AdminOrdersPage data={effectiveData as any} query={query} />
       ) : (
-        <SupplierOrderListContainer
-          data={effectiveData as any}
-          supplierName={supplierName}
-        />
+        <SupplierStoresView query={query} supplierName={userName} />
       )}
       {isFetching && !ordersLoading && effectiveData && (
         <div className="absolute top-2 right-2 text-xs px-2 py-1 bg-gray-800 text-white rounded shadow animate-pulse">
