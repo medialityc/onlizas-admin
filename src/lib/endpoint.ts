@@ -501,6 +501,6 @@ export const backendRoutes = {
     list: `${process.env.NEXT_PUBLIC_API_URL}orders`,
     getById: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}orders/${id}`,
-    supplierList: `${process.env.NEXT_PUBLIC_API_URL}api/order/supplier`,
+    supplierList: (storeId:string)=> `${process.env.NEXT_PUBLIC_API_URL}orders/store/${storeId}`,
   },
 };

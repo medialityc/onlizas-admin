@@ -25,7 +25,7 @@ async function Page({ searchParams }: PageProps) {
     <OrdersPermissionWrapper
       query={params}
       adminData={ordersPromise}
-      supplierName={"Proveedor"}
+      supplierName={"Proveedor"} // Se obtendrá dinámicamente en el componente
     />
   );
 }
