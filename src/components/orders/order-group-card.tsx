@@ -21,7 +21,7 @@ export function OrderGroupCard({
   return (
     <div className="rounded-lg border bg-card overflow-hidden">
       <div
-        className="bg-muted/50 px-4 py-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between cursor-pointer"
+        className="bg-gradient-to-r from-primary/5 to-primary/10 px-4 py-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between cursor-pointer hover:from-primary/10 hover:to-primary/15 transition-colors"
         onClick={() => setExpanded((v) => !v)}
       >
         <div className="flex items-center gap-3">
