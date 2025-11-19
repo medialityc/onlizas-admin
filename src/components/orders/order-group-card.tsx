@@ -10,9 +10,11 @@ import { Button } from "@/components/button/button";
 export function OrderGroupCard({
   order,
   onPrintLabel,
+  onViewDetails,
 }: {
   order: Order;
   onPrintLabel?: (subOrderId: string, status: OrderStatus) => void;
+  onViewDetails?: (order: Order) => void;
 }) {
   const subOrders = order.subOrders;
   const [expanded, setExpanded] = useState(true);
@@ -43,6 +45,17 @@ export function OrderGroupCard({
               {formatCurrency(orderTotal)}
             </p>
           </div>
+          <Button
+            variant="secondary"
+            outline
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewDetails?.(order);
+            }}
+          >
+            Ver Detalles
+          </Button>
           <Button
             variant="secondary"
             outline
