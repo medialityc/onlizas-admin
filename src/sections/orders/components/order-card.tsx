@@ -106,6 +106,14 @@ export function OrderCard({
                 <ChevronDown className="h-4 w-4" />
               )}
             </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              outline
+              onClick={() => onViewDetails(order)}
+            >
+              Ver Detalles
+            </Button>
           </div>
         </div>
       </CardHeader>

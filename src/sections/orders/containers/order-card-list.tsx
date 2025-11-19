@@ -1,22 +1,71 @@
 import { SearchParams } from "@/types/fetch/request";
-import React, { useId } from "react";
-import { Order } from "@/types/order";
+import React, { useId, useState } from "react";
+import { Order, OrderStatus } from "@/types/order";
 import { OrderCard } from "../components/order-card";
+import { OrderDetails } from "../components/order-details";
 
 type Props = {
   data?: Order[];
 };
+
 const OrderList = ({ data }: Props) => {
   const id = useId();
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+
+  const handleDetailsModal = () => {
+    setDetailModalOpen(true);
+  };
+  const handleViewDetails = (order: Order) => {
+    setSelectedOrder(order);
+    handleDetailsModal();
+  };
+
+  const handleCloseDetails = () => {
+    setSelectedOrder(null);
+  };
+
+  const handleUpdateSubOrderStatus = (
+    subOrderId: string,
+    status: OrderStatus
+  ) => {
+    // TODO: Implementar actualización de estado de sub-orden
+    console.log("Update sub-order status", subOrderId, status);
+  };
+
+  const handleUpdateAddress = (
+    type: "sender" | "receiver",
+    address: string
+  ) => {
+    // TODO: Implementar actualización de dirección
+    console.log("Update address", type, address);
+  };
 
   return (
-    <section className="grid grid-cols-1 gap-3 md:gap-6 mb-4">
-      {data?.map((order: Order, idx) => (
-        <div className="col-span-1" key={`${id}-${order?.id}${idx}`}>
-          <OrderCard order={order} isAdmin onViewDetails={() => {}} />
-        </div>
-      ))}
-    </section>
+    <>
+      <section className="grid grid-cols-1 gap-3 md:gap-6 mb-4">
+        {data?.map((order: Order, idx) => (
+          <div className="col-span-1" key={`${id}-${order?.id}${idx}`}>
+            <OrderCard
+              order={order}
+              isAdmin
+              onViewDetails={handleViewDetails}
+            />
+          </div>
+        ))}
+      </section>
+      {selectedOrder && (
+        <OrderDetails
+          onOpen={true}
+          order={selectedOrder}
+          onClose={handleCloseDetails}
+          onUpdateSubOrderStatus={handleUpdateSubOrderStatus}
+          onUpdateAddress={handleUpdateAddress}
+          isSupplier={false}
+        />
+      )}
+    </>
   );
 };
 
