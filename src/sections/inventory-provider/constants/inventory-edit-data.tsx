@@ -62,6 +62,8 @@ export async function buildCreateProductVariantFormData(
       warrantyPrice: input.warranty?.warrantyPrice ?? 0,
     })
   );
+  if (input.costPrice !== undefined)
+    fd.append("costPrice", String(input.costPrice));
 
   // Images
   if (input?.images?.length) {
