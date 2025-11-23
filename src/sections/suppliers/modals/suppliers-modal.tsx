@@ -17,6 +17,7 @@ import { createSupplier } from "@/services/supplier";
 import SupplierCreateForm from "./supplier-create-form";
 import {
   SUPPLIER_NATIONALITY,
+  SUPPLIER_TYPE,
   SUPPLIER_TYPE_SELLER,
 } from "../constants/supplier.options";
 
@@ -55,6 +56,7 @@ export default function SuppliersModal({
       mincexCode: "",
       password: "",
       confirmPassword: "",
+      supplierType: SUPPLIER_TYPE.Persona,
       // requiredPasswordChange: false,
     },
   });
@@ -65,9 +67,13 @@ export default function SuppliersModal({
     setError(null);
     onClose();
   };
-  console.log(methods.formState.errors);
   const onSubmit = async (data: SuppliersFormData) => {
+    // Log de la data antes de enviar
+    console.log("[SuppliersModal] Datos a enviar:", data);
+    // Si quieres verlo como JSON plano:
+    console.log("[SuppliersModal] Datos JSON:", JSON.stringify(data));
     setError(null);
+
     try {
       const formData = new FormData();
       if (data.createUserAutomatically) {
@@ -92,7 +98,8 @@ export default function SuppliersModal({
         }
       }
       formData.append("sellerType", String(data.sellerType));
-      formData.append("nacionalityType", String(data.nacionalityType));
+      formData.append("nacionality", String(data.nacionalityType));
+      formData.append("supplierType", String(data.supplierType));
       if (data.mincexCode) formData.append("mincexCode", data.mincexCode);
       if (data.useExistingBusiness && data.businessId) {
         formData.append("businessId", String(data.businessId));
@@ -106,10 +113,30 @@ export default function SuppliersModal({
           toast.error("El documento debe tener un archivo asociado.");
         }
       });
-      console.log("FormData contents:");
+      // Logging mejorado del FormData (agrupa claves repetidas y muestra metadata de archivos)
+      const aggregate: Record<string, any> = {};
       Array.from(formData.entries()).forEach(([key, value]) => {
-        console.log(key, value);
+        const v =
+          value instanceof File
+            ? { name: value.name, size: value.size, type: value.type }
+            : value;
+        if (aggregate[key] === undefined) {
+          aggregate[key] = v;
+        } else if (Array.isArray(aggregate[key])) {
+          aggregate[key].push(v);
+        } else {
+          aggregate[key] = [aggregate[key], v];
+        }
       });
+      console.log("[SuppliersModal] FormData agregado:", aggregate);
+      try {
+        console.log(
+          "[SuppliersModal] FormData JSON:",
+          JSON.stringify(aggregate)
+        );
+      } catch (e) {
+        console.warn("No se pudo serializar FormData agregado", e);
+      }
       const response = await createSupplier(formData);
 
       if (response && !response.error) {

@@ -4,7 +4,7 @@ import { InventoryPermissionGate } from "@/sections/inventory-provider/component
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Inventario General - ZAS Express",
+  title: "Inventario General - Onlizas",
   description: "Gestión el inventarios",
   icons: {
     icon: "/assets/images/NEWZAS.svg",

@@ -5,7 +5,7 @@ import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Gestión de secciones - ZAS Express",
+  title: "Gestión de secciones - Onlizas",
   description: "Administra las secciones de productos",
   icons: {
     icon: "/assets/images/NEWZAS.svg",
@@ -22,10 +22,7 @@ async function SectionListPage({ searchParams }: PageProps) {
   const sectionPromise = await getAllSection(query);
 
   return (
-    <SectionListContainer
-      sectionPromise={sectionPromise}
-      query={params}
-    />
+    <SectionListContainer sectionPromise={sectionPromise} query={params} />
   );
 }
 

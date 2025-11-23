@@ -8,7 +8,7 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Gestión de Regiones - ZAS Express",
+  title: "Gestión de Regiones - Onlizas",
   description: "Administra las regiones del sistema y sus datos asociados",
   icons: {
     icon: "/assets/images/NEWZAS.svg",
@@ -43,7 +43,6 @@ async function RegionsListPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
   const regionsPromise = await getRegions(query);
-  
 
   return (
     <Suspense fallback={<RegionsListSkeleton />}>

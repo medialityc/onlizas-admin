@@ -8,7 +8,7 @@ import { getWarehouseById } from "@/services/warehouses";
 import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Transferencias del almacén - ZAS Express",
+  title: "Transferencias del almacén - Onlizas",
   description: "Gestión de transferencias de almacén",
   icons: {
     icon: "/assets/images/NEWZAS.svg",

@@ -4,6 +4,7 @@ import {
   getAllWarehousesBySupplier,
   getAllWarehousesByType,
 } from "@/services/warehouses";
+import { useEffect, useMemo } from "react";
 import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { IQueryable } from "@/types/fetch/request";
@@ -66,12 +67,72 @@ export const RenderWarehouseField = ({
     (isPaqueteria && configs.isPaqueteria) ||
     configs.default;
 
+  // Construimos un sufijo único que dependa de los flags para forzar refetch cuando cambian.
+  const scenarioKey = [
+    supplierId || "no-supplier",
+    meWarehouse ? "me" : "no-me",
+    isPaqueteria ? "paq" : "no-paq",
+    selectedConfig.name, // incluye el nombre del field para diferenciar virtual/físico
+  ].join(":");
+
+  // Memoize a wrapped fetcher to add logging without recreating excessively
+  const loggedConfig = useMemo<WarehouseFieldConfig>(() => {
+    // Ajustamos el queryKey para incluir scenarioKey y forzar nueva query cuando cambian flags
+    const effectiveQueryKey = `${selectedConfig.queryKey}-${scenarioKey}`;
+    return {
+      ...selectedConfig,
+      queryKey: effectiveQueryKey,
+      onFetch: async (params) => {
+        console.log("[RenderWarehouseField] onFetch:start", {
+          meWarehouse,
+          isPaqueteria,
+          supplierId,
+          scenarioKey,
+          baseQueryKey: selectedConfig.queryKey,
+          effectiveQueryKey,
+          params,
+        });
+        try {
+          const result = await selectedConfig.onFetch(params);
+          console.log("[RenderWarehouseField] onFetch:success", {
+            count: Array.isArray(result?.data?.data)
+              ? result.data.data.length
+              : undefined,
+            scenarioKey,
+          });
+          return result;
+        } catch (err) {
+          console.error("[RenderWarehouseField] onFetch:error", {
+            err,
+            scenarioKey,
+          });
+          throw err;
+        }
+      },
+    };
+  }, [selectedConfig, meWarehouse, isPaqueteria, supplierId, scenarioKey]);
+
+  // Log when controlling flags change
+  useEffect(() => {
+    console.log("[RenderWarehouseField] flags changed", {
+      meWarehouse,
+      isPaqueteria,
+      supplierId,
+      chosen: selectedConfig.label,
+      fieldName: selectedConfig.name,
+      baseQueryKey: selectedConfig.queryKey,
+      scenarioKey,
+    });
+  }, [meWarehouse, isPaqueteria, supplierId, selectedConfig, scenarioKey]);
+
   return (
     <RHFAutocompleteFetcherInfinity
-      {...selectedConfig}
+      {...loggedConfig}
       objectValueKey="id"
       objectKeyLabel="name"
       required
+      // habilitado sólo si hay supplierId cuando se necesita
+      enabled={!!supplierId || loggedConfig.name === "physicalWarehouseId"}
     />
   );
 };

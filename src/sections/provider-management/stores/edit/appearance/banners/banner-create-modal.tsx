@@ -89,12 +89,7 @@ export default function BannerCreateModal({
   }, [open, isEditing, editingBanner, methods]);
 
   const submitOnly = (data: BannerForm) => {
-    if (
-      isEditing &&
-      editingBanner &&
-      onUpdate &&
-      editingBanner.id != null
-    ) {
+    if (isEditing && editingBanner && onUpdate && editingBanner.id != null) {
       onUpdate(editingBanner.id, data);
     } else {
       onCreate(data);
@@ -151,18 +146,28 @@ export default function BannerCreateModal({
               minDate={isEditing ? undefined : new Date()}
             />
           </div>
-          <div>
+          <div className="flex flex-col gap-2 w-full">
             <RHFImageUpload
               name="desktopImage"
               label="Imagen del Banner (Desktop)"
               variant="rounded"
-              className=" dark:text-gray-100"
+              size="full"
+              className="dark:text-gray-100 w-full"
+              cropDimensions={{
+                height: 1600,
+                width: 2560,
+              }}
             />
             <RHFImageUpload
               name="mobileImage"
               label="Imagen del Banner (Mobile)"
               variant="rounded"
-              className=" dark:text-gray-100"
+              size="full"
+              className="dark:text-gray-100 w-full"
+              cropDimensions={{
+                height: 730,
+                width: 470,
+              }}
             />
           </div>
         </div>

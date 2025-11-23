@@ -3,7 +3,7 @@ import { PermissionGate } from "@/components/permission/permission-gate";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Almacenes General - ZAS Express",
+  title: "Almacenes General - Onlizas",
   description: "Gestión de almacenes del sistema",
   icons: {
     icon: "/assets/images/NEWZAS.svg",

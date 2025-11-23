@@ -6,7 +6,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Transferencia de almacén - ZAS Express",
+  title: "Transferencia de almacén - Onlizas",
   icons: {
     icon: "/assets/images/NEWZAS.svg",
   },

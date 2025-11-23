@@ -1,6 +1,6 @@
 # Sidebar Component
 
-Este es un sidebar componentizado y optimizado para la aplicación ZAS Express.
+Este es un sidebar componentizado y optimizado para la aplicación Onlizas.
 
 ## Estructura de Archivos
 

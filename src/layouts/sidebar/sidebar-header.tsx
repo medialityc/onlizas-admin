@@ -1,5 +1,6 @@
 "use client";
 import IconCaretsDown from "@/components/icon/icon-carets-down";
+import Logo from "@/components/logo-component";
 import { toggleSidebar } from "@/store/themeConfigSlice";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,26 +11,23 @@ const SidebarHeader = () => {
 
   return (
     <div className="flex items-center justify-between px-4 py-3">
-      <Link href="/" className="main-logo flex shrink-0 items-center">
-        <div className="py-4 border-b border-gray-100 dark:border-gray-800">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-              <Image
-                className="ml-[5px] w-8 flex-none pt-3"
-                src="/assets/images/ZAS.svg"
-                alt="logo"
-                width={32}
-                height={32}
-              />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                Panel de Control
-              </h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Onlizas
-              </p>
-            </div>
+      <Link href="/" className="main-logo flex shrink-0 items-center ">
+        <div className="flex items-center gap-1.5 py-1 w-full">
+          <div className="relative cursor-pointer group rounded-xl px-2 py-1 flex items-center backdrop-blur-sm border border-primary/10 dark:border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent dark:from-primary/20 dark:via-primary/10 hover:from-primary/20 hover:via-primary/10 transition-colors">
+            <div className="absolute inset-0 rounded-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.6),transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.1),transparent_60%)]" />
+            <Logo
+              width={80}
+              height={28}
+              className="h-6 w-auto flex-shrink-0 select-none transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="text-[10px] font-semibold text-gray-800 dark:text-gray-100 uppercase tracking-wide">
+              Panel de control
+            </span>
+            <span className="text-[9px] font-medium text-primary dark:text-primary/80">
+              Onlizas
+            </span>
           </div>
         </div>
       </Link>

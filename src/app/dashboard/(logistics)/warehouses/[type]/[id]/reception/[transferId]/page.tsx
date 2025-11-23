@@ -8,7 +8,7 @@ import { notFound } from "next/navigation";
 import { WAREHOUSE_TRANSFER_OPTIONS } from "@/types/warehouses-transfers";
 
 export const metadata: Metadata = {
-  title: "Recepcionar Transferencia - ZAS Express",
+  title: "Recepcionar Transferencia - Onlizas",
   description: "Recepcionar productos de transferencia en almacén",
   icons: {
     icon: "/assets/images/NEWZAS.svg",
@@ -37,13 +37,15 @@ export default async function WarehouseReceptionProcessPage({
   const transfer =
     (transferResponse.data as any).transfer || transferResponse.data;
 
-  
-
   // Obtener recepción existente si la transferencia ya fue recepcionada
   let existingReceptions = null;
   if (transfer.status !== "AwaitingReception") {
-    const receptionsResponse = await getTransferReceptionsByTransferId(transferId);
-    if (receptionsResponse?.data?.data && receptionsResponse.data.data.length > 0) {
+    const receptionsResponse =
+      await getTransferReceptionsByTransferId(transferId);
+    if (
+      receptionsResponse?.data?.data &&
+      receptionsResponse.data.data.length > 0
+    ) {
       // Tomar todas las recepciones para este transfer
       existingReceptions = receptionsResponse.data.data;
     }
@@ -71,18 +73,19 @@ export default async function WarehouseReceptionProcessPage({
             </div>
             <div className="text-center">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
-                {transfer.status === "AwaitingReception" 
-                  ? "Recepcionando" 
-                  : WAREHOUSE_TRANSFER_OPTIONS.find(opt => opt.value === transfer.status)?.label || transfer.status
-                }
+                {transfer.status === "AwaitingReception"
+                  ? "Recepcionando"
+                  : WAREHOUSE_TRANSFER_OPTIONS.find(
+                      (opt) => opt.value === transfer.status
+                    )?.label || transfer.status}
               </span>
             </div>
           </div>
         </div>
 
         {/* Contenedor de recepción */}
-        <TransferReceptionContainer 
-          transfer={transfer} 
+        <TransferReceptionContainer
+          transfer={transfer}
           existingReceptions={existingReceptions}
           currentWarehouseId={id}
         />

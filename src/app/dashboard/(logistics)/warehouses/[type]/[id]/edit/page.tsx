@@ -7,7 +7,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Editar almacén - ZAS Express",
+  title: "Editar almacén - Onlizas",
   icons: {
     icon: "/assets/images/NEWZAS.svg",
   },

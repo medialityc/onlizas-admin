@@ -1,7 +1,7 @@
 import CategoryCreateFormContainer from "@/sections/categories/containers/category-create-from.container";
 
 export const metadata = {
-  title: "Crear Categoría - ZAS Express",
+  title: "Crear Categoría - Onlizas",
 };
 
 export default function NewCategoryPage() {

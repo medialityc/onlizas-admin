@@ -144,7 +144,7 @@ export const backendRoutes = {
     transferById: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}warehouses/transfers/${id}`,
     listBySupplier: (supplierId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/warehouses`,
+      `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${supplierId}/warehouses`,
     listByType: (type: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}warehouses/${type}`,
     listSupplier: `${process.env.NEXT_PUBLIC_API_URL}suppliers/warehouses`,
@@ -219,7 +219,7 @@ export const backendRoutes = {
   business: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}businesses`,
     getByProvider: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}businesses`, // todo pasar id
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${id}/businesses`, // todo pasar id
     getAllLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/business`,
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/businesses`,
     createBySupplier: `${process.env.NEXT_PUBLIC_API_URL}suppliers/businesses`,
@@ -501,6 +501,7 @@ export const backendRoutes = {
     list: `${process.env.NEXT_PUBLIC_API_URL}orders`,
     getById: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}orders/${id}`,
-    supplierList: (storeId:string)=> `${process.env.NEXT_PUBLIC_API_URL}orders/store/${storeId}`,
+    supplierList: (storeId: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}orders/store/${storeId}`,
   },
 };

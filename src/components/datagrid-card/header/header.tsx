@@ -49,7 +49,7 @@ export function Header({
         )}
       </div>
 
-      {isActions && (
+      {Boolean(isActions) && (
         <div className="flex items-center gap-3 ml-4">
           {rightActions}
           {onCreate && hasCreatePermission && (

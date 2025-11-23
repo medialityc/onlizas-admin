@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import TransferStatusCell from "@/sections/warehouses/components/transfer-cell/transfer-status-cell";
 
 export const metadata: Metadata = {
-  title: "Detalles de Transferencia - ZAS Express",
+  title: "Detalles de Transferencia - Onlizas",
   description: "Ver detalles de transferencia de almacén",
   icons: {
     icon: "/assets/images/NEWZAS.svg",
@@ -17,9 +17,7 @@ type PageProps = {
   params: Promise<{ id: string; type: string; transferId: string }>;
 };
 
-export default async function TransferDetailsPage({
-  params,
-}: PageProps) {
+export default async function TransferDetailsPage({ params }: PageProps) {
   const { id, type, transferId } = await params;
 
   if (!Object.keys(WAREHOUSE_TYPE_ENUM).includes(type)) {
@@ -33,7 +31,8 @@ export default async function TransferDetailsPage({
   }
 
   // Extraer la transferencia del objeto anidado
-  const transfer = (transferResponse.data as any).transfer || transferResponse.data;
+  const transfer =
+    (transferResponse.data as any).transfer || transferResponse.data;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -51,7 +50,8 @@ export default async function TransferDetailsPage({
                 Transferencia #{transfer.transferNumber}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Origen: {transfer.originWarehouseName} → Destino: {transfer.destinationWarehouseName}
+                Origen: {transfer.originWarehouseName} → Destino:{" "}
+                {transfer.destinationWarehouseName}
               </p>
             </div>
             <div className="text-right">
@@ -90,12 +90,12 @@ export default async function TransferDetailsPage({
                 Fecha de Creación
               </label>
               <p className="text-sm text-gray-900 dark:text-white">
-                {new Date(transfer.createdAt).toLocaleDateString('es-ES', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
+                {new Date(transfer.createdAt).toLocaleDateString("es-ES", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
                 })}
               </p>
             </div>
@@ -105,12 +105,12 @@ export default async function TransferDetailsPage({
                 Última Actualización
               </label>
               <p className="text-sm text-gray-900 dark:text-white">
-                {new Date(transfer.updatedAt).toLocaleDateString('es-ES', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
+                {new Date(transfer.updatedAt).toLocaleDateString("es-ES", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
                 })}
               </p>
             </div>
@@ -142,13 +142,13 @@ export default async function TransferDetailsPage({
                   {transfer.items.map((item: any, index: number) => (
                     <tr key={index}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                        {item.productVariantName || item.productName || 'N/A'}
+                        {item.productVariantName || item.productName || "N/A"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                        {item.quantityRequested || item.quantity || 'N/A'}
+                        {item.quantityRequested || item.quantity || "N/A"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                        {item.unit || 'N/A'}
+                        {item.unit || "N/A"}
                       </td>
                     </tr>
                   ))}

@@ -361,7 +361,18 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
             </>
           )}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <RHFSelectWithLabel
+            name="supplierType"
+            label="Tipo de proveedor"
+            options={[
+              { value: 0, label: "Persona" },
+              { value: 1, label: "Empresa" },
+            ]}
+            placeholder="Seleccionar..."
+            required
+            variant="custom"
+          />
           <RHFSelectWithLabel
             name="sellerType"
             label="Tipo de vendedor"

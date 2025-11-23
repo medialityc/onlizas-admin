@@ -4,7 +4,7 @@ import CategoryEditFormContainer from "@/sections/categories/containers/category
 import { CategoryFormData } from "@/sections/categories/schemas/category-schema";
 
 export const metadata = {
-  title: "Editar Categoría - ZAS Express",
+  title: "Editar Categoría - Onlizas",
 };
 
 interface EditPageProps {

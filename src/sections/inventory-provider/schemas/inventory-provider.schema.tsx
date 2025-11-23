@@ -59,6 +59,16 @@ export const productVariants = z
       .number({ required_error: "Requerido" })
       .min(0, "El precio es requerido")
       .default(0),
+    costPrice: z
+      .number({ required_error: "Requerido" })
+      .min(0, "El costo es requerido")
+      .default(0),
+    deliveryMode: z
+      .enum(["ONLIZAS", "PROVEEDOR"], {
+        required_error: "Modo de entrega requerido",
+        invalid_type_error: "Modo de entrega inválido",
+      })
+      .default("ONLIZAS"),
     isLimit: z.boolean().default(false),
     purchaseLimit: z.number().default(0),
     isPrime: z.boolean().default(false),

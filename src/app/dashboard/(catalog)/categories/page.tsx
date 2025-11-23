@@ -6,7 +6,7 @@ import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Gestión de Categorías - ZAS Express",
+  title: "Gestión de Categorías - Onlizas",
   description: "Administra las categorías del sistema y sus reglas específicas",
   icons: {
     icon: "/assets/images/NEWZAS.svg",
