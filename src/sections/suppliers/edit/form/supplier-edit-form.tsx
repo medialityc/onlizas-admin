@@ -97,7 +97,6 @@ export default function SupplierEditForm({
       }
       formData.append("address", data.address);
       formData.append("message", data.message || "");
-      formData.append("type", data.type);
       formData.append("active", data.active.toString());
       formData.append("sellerType", String(data.sellerType));
       formData.append("nacionalityType", String(data.nacionalityType));

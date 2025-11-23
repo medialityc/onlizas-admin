@@ -35,18 +35,6 @@ function SuppliersGeneralInfo({ supplier }: { supplier: Supplier }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <TagIcon className="size-5 text-blue-500" />
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-              ID del Proveedor
-            </label>
-          </div>
-          <p className="text-lg font-mono text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded inline-block">
-            #{supplier.id}
-          </p>
-        </div>
-
-        <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-2">
             <UserIcon className="size-5 text-green-500" />
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
               Nombre del Proveedor
