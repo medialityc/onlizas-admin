@@ -23,9 +23,6 @@ export const updateSupplierSchema = z.object({
     .string()
     .max(500, "El mensaje no puede tener más de 500 caracteres.")
     .optional(),
-  type: z
-    .string({ required_error: "El tipo es obligatorio." })
-    .min(1, "El tipo no puede estar vacío."),
   active: z.boolean({
     required_error: "Debes especificar si el proveedor está activo.",
   }),
