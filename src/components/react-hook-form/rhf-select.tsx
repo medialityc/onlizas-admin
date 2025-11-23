@@ -133,9 +133,13 @@ export default function RHFSelectWithLabel({
         document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const toggleValue = (val: string | number) => {
+    const toggleValue = (e: React.MouseEvent, val: string | number) => {
+      // Prevenir que el blur del botón principal se ejecute antes de setear el valor
+      e.preventDefault();
+      e.stopPropagation();
       if (!multiple) {
         onChange(val);
+        // Cerrar inmediatamente después de seleccionar
         setOpen(false);
         return;
       }
@@ -285,7 +289,7 @@ export default function RHFSelectWithLabel({
                         !opt.disabled &&
                         "bg-blue-50/70 dark:bg-blue-900/30"
                     )}
-                    onClick={() => toggleValue(opt.value)}
+                    onMouseDown={(e) => toggleValue(e, opt.value)}
                     role="option"
                     aria-selected={active}
                   >

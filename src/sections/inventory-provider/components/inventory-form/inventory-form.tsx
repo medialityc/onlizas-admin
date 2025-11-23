@@ -41,7 +41,7 @@ function InventoryForm({ provider }: Props) {
             disabled={!supplierId}
             extraFilters={{ supplierId }}
             required
-            queryKey={'products'}
+            queryKey={"products"}
           />
 
           <RHFCheckbox name="isPaqueteria" label="¿Es paquetería?" />
@@ -59,7 +59,7 @@ function InventoryForm({ provider }: Props) {
           {!isPaqueteria && (
             <RHFCheckbox
               name="meWarehouse"
-              label="¿Guardar en almacén virtual?"
+              label="¿Guardar en almacén del proveedor?"
             />
           )}
 

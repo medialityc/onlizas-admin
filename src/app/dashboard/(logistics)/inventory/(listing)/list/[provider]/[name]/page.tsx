@@ -8,7 +8,7 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Inventario por Proveedores - ZAS Express",
+  title: "Inventario por Proveedores - Onlizas",
   description: "Gestiona el inventario de los proveedores",
   icons: {
     icon: "/assets/images/NEWZAS.svg",

@@ -18,6 +18,7 @@ import {
 } from "./schema";
 import {
   SUPPLIER_NATIONALITY,
+  SUPPLIER_TYPE,
   SUPPLIER_TYPE_SELLER,
 } from "../../constants/supplier.options";
 
@@ -36,7 +37,6 @@ export default function SupplierEditForm({
       countryCode: supplierDetails.countryCode ?? "",
       address: supplierDetails.address,
       message: supplierDetails.message || "",
-      type: supplierDetails.type,
       active: supplierDetails.active,
       sellerType: supplierDetails.sellerType
         ? Number(SUPPLIER_TYPE_SELLER[supplierDetails.sellerType])
@@ -45,6 +45,9 @@ export default function SupplierEditForm({
         ? Number(SUPPLIER_NATIONALITY[supplierDetails.nacionality])
         : 0,
       mincexCode: supplierDetails.mincexCode ?? "",
+      supplierType: supplierDetails.type
+        ? Number(SUPPLIER_TYPE[supplierDetails.type])
+        : 0,
       expirationDate: supplierDetails.expirationDate
         ? new Date(supplierDetails.expirationDate)
         : new Date(),
@@ -64,7 +67,7 @@ export default function SupplierEditForm({
     [supplierDetails]
   );
   const methods = useForm<UpdateSupplierFormData>({
-    resolver: zodResolver(updateSupplierSchemaWithRules),
+    resolver: zodResolver(updateSupplierSchemaWithRules) as any,
     defaultValues: initValue,
   });
 
@@ -98,6 +101,7 @@ export default function SupplierEditForm({
       formData.append("active", data.active.toString());
       formData.append("sellerType", String(data.sellerType));
       formData.append("nacionalityType", String(data.nacionalityType));
+      formData.append("supplierType", String(data.supplierType));
       if (data.mincexCode) {
         console.log(data.mincexCode);
 

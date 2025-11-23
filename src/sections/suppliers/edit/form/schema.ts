@@ -63,6 +63,14 @@ export const updateSupplierSchema = z.object({
   mincexCode: z.string().optional(),
   // Expiration date of the supplier account (ISO date string)
   expirationDate: z.date().default(new Date()).optional(),
+  supplierType: z.coerce
+    .number({
+      required_error: "El tipo de proveedor es obligatorio.",
+      invalid_type_error: "El tipo de proveedor es obligatorio.",
+    })
+    .min(0)
+    .max(1)
+    .default(0),
 });
 
 export type UpdateSupplierFormData = z.infer<typeof updateSupplierSchema>;

@@ -5,7 +5,7 @@ import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Gestión de Usuarios - ZAS Express",
+  title: "Gestión de Usuarios - Onlizas",
   description: "Gestionar usuarios del sistema y sus permisos",
   icons: {
     icon: "/assets/images/NEWZAS.svg",

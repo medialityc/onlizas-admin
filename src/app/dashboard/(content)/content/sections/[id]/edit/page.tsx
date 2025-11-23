@@ -4,7 +4,7 @@ import SectionEditFormContainer from "@/sections/admin/sections/containers/secti
 import { SectionFormData } from "@/sections/admin/sections/schema/section-schema";
 
 export const metadata = {
-  title: "Editar Sección - ZAS Express",
+  title: "Editar Sección - Onlizas",
 };
 
 interface EditPageProps {

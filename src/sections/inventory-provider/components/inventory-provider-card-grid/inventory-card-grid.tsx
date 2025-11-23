@@ -27,7 +27,10 @@ export function InventoryCardGrid({
         onCreate={onCreate}
         createText="Crear inventario"
         enableColumnToggle={false}
-        createPermissions={[PERMISSION_ENUM.CREATE_INVENTORY]}
+        createPermissions={[
+          PERMISSION_ENUM.CREATE_INVENTORY,
+          PERMISSION_ENUM.CREATE,
+        ]}
         component={
           <InventoryProviderList
             data={data?.data}

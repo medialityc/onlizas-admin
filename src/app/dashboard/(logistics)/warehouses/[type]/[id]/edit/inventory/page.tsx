@@ -14,7 +14,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Inventario de almacén - ZAS Express",
+  title: "Inventario de almacén - Onlizas",
   icons: {
     icon: "/assets/images/NEWZAS.svg",
   },

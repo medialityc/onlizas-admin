@@ -4,7 +4,7 @@ import { getHomeBannerById } from "@/services/homebanner";
 import { HomeBannerFormData } from "@/sections/admin/home-banners/schema/banner-schema";
 
 export const metadata = {
-  title: "Editar Banner - ZAS Express",
+  title: "Editar Banner - Onlizas",
 };
 
 interface Props {

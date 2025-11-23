@@ -29,7 +29,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           {...rest}
         />
         {label && (
-          <span className={`text-white-dark ${disabled ? "opacity-50" : ""}`}>
+          <span className={`text-gray-700 ${disabled ? "opacity-50" : ""}`}>
             {label}
           </span>
         )}

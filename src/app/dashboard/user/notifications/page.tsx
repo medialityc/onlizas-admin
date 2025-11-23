@@ -5,7 +5,7 @@ import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Gestión de Notificaciones - ZAS Express",
+  title: "Gestión de Notificaciones - Onlizas",
   description: "Gestionar notificaciones del sistema",
   icons: {
     icon: "/assets/images/NEWZAS.svg",

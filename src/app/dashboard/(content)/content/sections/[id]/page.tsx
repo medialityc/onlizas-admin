@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const metadata = {
-  title: "Detalles Sección - ZAS Express",
+  title: "Detalles Sección - Onlizas",
 };
 
 export default async function SectionDetailPage({ params }: Props) {

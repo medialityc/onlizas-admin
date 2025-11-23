@@ -56,6 +56,12 @@ export const suppliersSchema = z.object({
   // Optional existing business association
   useExistingBusiness: z.boolean().optional(),
   businessId: z.union([z.number(), z.string()]).optional(),
+  supplierType: z.coerce
+    .number({
+      required_error: "El tipo de proveedor es obligatorio.",
+      invalid_type_error: "El tipo de proveedor es obligatorio.",
+    })
+    .min(0),
 });
 
 export type SuppliersFormData = z.infer<typeof suppliersSchema>;

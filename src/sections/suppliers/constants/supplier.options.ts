@@ -3,6 +3,10 @@ export enum SUPPLIER_TYPE_SELLER {
   "Minorista",
   "Ambos",
 }
+export enum SUPPLIER_TYPE {
+  "Empresa",
+  "Persona",
+}
 export enum SUPPLIER_NATIONALITY {
   "Nacional",
   "Extranjero",
@@ -18,4 +22,8 @@ export const SUPPLIER_NATIONALITY_OPTIONS = [
   { value: SUPPLIER_NATIONALITY.Nacional, label: "Nacional" },
   { value: SUPPLIER_NATIONALITY.Extranjero, label: "Extranjero" },
   { value: SUPPLIER_NATIONALITY.Ambos, label: "Ambos" },
+];
+export const SUPPLIER_TYPE_OPTIONS = [
+  { value: SUPPLIER_TYPE.Empresa, label: "Empresa" },
+  { value: SUPPLIER_TYPE.Persona, label: "Persona" },
 ];

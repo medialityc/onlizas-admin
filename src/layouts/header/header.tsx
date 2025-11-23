@@ -7,6 +7,7 @@ import themeConfig from "@/theme.config";
 import NotificationsDropdown from "./notifications-dropdown";
 import ThemeSwitcher from "./theme-switcher";
 import UserProfileDropdown from "./user-profile-dropdown";
+import Logo from "@/components/logo-component";
 
 export default function Header() {
   const dispatch = useDispatch();
@@ -26,12 +27,21 @@ export default function Header() {
               >
                 <IconMenu className="h-5 w-5" />
               </button>
+              <div className="relative cursor-pointer group rounded-xl px-2 py-1 flex items-center backdrop-blur-sm border border-primary/10 dark:border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent dark:from-primary/20 dark:via-primary/10 hover:from-primary/20 hover:via-primary/10 transition-colors">
+                <div className="absolute inset-0 rounded-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.6),transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.1),transparent_60%)]" />
+                <Logo
+                  width={80}
+                  height={28}
+                  className="h-6 w-auto flex-shrink-0 select-none transition-transform duration-300 hover:scale-105"
+                />
+              </div>
             </div>
           </div>
 
           <div className="flex items-center space-x-1.5 dropdown sm:flex-1 lg:space-x-2 justify-end">
-            <NotificationsDropdown />
+            {/* <NotificationsDropdown /> */}
             <ThemeSwitcher />
+
             <UserProfileDropdown />
           </div>
         </div>

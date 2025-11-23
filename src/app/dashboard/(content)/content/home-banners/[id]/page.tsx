@@ -6,7 +6,7 @@ interface Props {
 }
 
 export const metadata = {
-  title: "Detalles del Banner - ZAS Express",
+  title: "Detalles del Banner - Onlizas",
 };
 
 export default async function CategoryDetailPage({ params }: Props) {

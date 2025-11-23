@@ -32,7 +32,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "ZAS Express | Panel de Administración",
+  title: "Onlizas | Panel de Administración",
   description:
     "Panel de administración para el sistema ZAS - Gestión de usuarios, subsistemas, seguimiento y configuraciones del sistema.",
   keywords: [
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "ZAS Team" }],
   creator: "ZAS Team",
-  applicationName: "ZAS Express",
+  applicationName: "Onlizas",
   generator: "Next.js",
   robots: "noindex, nofollow", // Admin panel should not be indexed
   icons: {
@@ -54,14 +54,14 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    title: "ZAS Express | Panel de Administración",
+    title: "Onlizas | Panel de Administración",
     description:
       "Panel de administración para el sistema ZAS - Gestión completa del sistema.",
-    siteName: "ZAS Express",
+    siteName: "Onlizas",
   },
   twitter: {
     card: "summary",
-    title: "ZAS Express | Panel de Administración",
+    title: "Onlizas | Panel de Administración",
     description:
       "Panel de administración para el sistema ZAS - Gestión completa del sistema.",
   },

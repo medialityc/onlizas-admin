@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Profile | ZAS Express",
+  title: "Profile | Onlizas",
   description: "Provider profile and account settings",
   icons: {
     icon: "/assets/images/NEWZAS.svg",

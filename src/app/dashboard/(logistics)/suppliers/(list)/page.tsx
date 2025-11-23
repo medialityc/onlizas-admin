@@ -5,7 +5,7 @@ import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Gestión de Solicitudes Proveedores - ZAS Express",
+  title: "Gestión de Solicitudes Proveedores - Onlizas",
   description:
     "Administra las solicitudes de proveedor del sistema y sus datos asociados",
   icons: {

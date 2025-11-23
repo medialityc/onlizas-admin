@@ -6,6 +6,7 @@ import {
   SUPPLIER_NATIONALITY_OPTIONS,
   SUPPLIER_TYPE_SELLER_OPTIONS,
   SUPPLIER_NATIONALITY,
+  SUPPLIER_TYPE_OPTIONS,
 } from "../../constants/supplier.options";
 
 export default function SupplierBasicInfo() {
@@ -18,6 +19,14 @@ export default function SupplierBasicInfo() {
   const nacionalityType = watch("nacionalityType");
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <RHFSelectWithLabel
+        name="supplierType"
+        label="Tipo de proveedor"
+        options={SUPPLIER_TYPE_OPTIONS}
+        placeholder="Seleccionar..."
+        required
+        variant="custom"
+      />
       <RHFInputWithLabel
         name="name"
         label="Nombre del Proveedor"
