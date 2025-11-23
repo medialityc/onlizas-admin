@@ -77,6 +77,8 @@ function EditContainer({ inventory, features }: Props) {
       packageDelivery: false,
       images: [],
       isLimit: false,
+      costPrice: 0,
+      deliveryMode: "ONLIZAS" as "ONLIZAS" | "PROVEEDOR",
     }),
     [featuresNormalized]
   );

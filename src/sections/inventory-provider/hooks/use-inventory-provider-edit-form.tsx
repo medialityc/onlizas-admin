@@ -36,6 +36,8 @@ const initValue: ProductVariant = {
   isPrime: false,
   packageDelivery: false,
   images: [],
+  costPrice: 0,
+  deliveryMode: "ONLIZAS" as "ONLIZAS" | "PROVEEDOR",
 };
 
 export const useInventoryProviderEditForm = (
