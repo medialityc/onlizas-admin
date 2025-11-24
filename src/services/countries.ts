@@ -8,13 +8,12 @@ import { PaginatedResponse } from "@/types/common";
 
 export async function getCountries(): Promise<ApiResponse<Country[]>> {
   const res = await nextAuthFetch({
-    url: `https://api.zasdistributor.com/api/countries/all`,
+    url: `${process.env.NEXT_PUBLIC_API_URL}countries`,
     method: "GET",
-    useAuth: false,
+    useAuth: true,
     cache: "no-store",
     next: { tags: ["countries"] },
   });
-  console.log(res)
 
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<Country[]>(res);
@@ -30,14 +29,24 @@ export async function getCountriesPaginated(params: {
 
   // Reuse existing getCountries() which fetches the full list from the API
   const allRes = await getCountries();
-  if (allRes.error) return { data: null as any, status: allRes.status, error: true, message: allRes.message };
+  if (allRes.error)
+    return {
+      data: null as any,
+      status: allRes.status,
+      error: true,
+      message: allRes.message,
+    };
 
   const all = allRes.data || [];
   const q = params.search?.toString().trim().toLowerCase() ?? "";
-  const filtered = q === "" ? all : all.filter(c =>
-    String(c.name).toLowerCase().includes(q) ||
-    String(c.code).toLowerCase().includes(q)
-  );
+  const filtered =
+    q === ""
+      ? all
+      : all.filter(
+          (c) =>
+            String(c.name).toLowerCase().includes(q) ||
+            String(c.code).toLowerCase().includes(q)
+        );
 
   const start = (page - 1) * pageSize;
   const pageItems = filtered.slice(start, start + pageSize);

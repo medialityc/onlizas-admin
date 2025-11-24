@@ -39,18 +39,6 @@ export function RHFPhoneCountrySelect({
         setCurrentCountry(country);
         return;
       }
-    } else if (currentCountry == null && myIPData?.data) {
-      const { region, calling_code, ip, country, country_code } = myIPData.data;
-      const countryByIp: Country = {
-        name: country,
-        code: country_code,
-        id: ip,
-        active: true,
-        phoneNumberCode: Number(calling_code),
-        region: region,
-      };
-      setCurrentCountry(countryByIp);
-      setValue(countryFieldName, countryByIp[countryValueKey]);
     }
   }, [
     countries,
