@@ -70,6 +70,11 @@ const InventoryProviderCard = ({ item }: Props) => {
                 Paquetería
               </Badge>
             )}
+            {item.isMayorista && (
+              <Badge variant="outline-success" className="size-fit">
+                Mayorista
+              </Badge>
+            )}
           </div>
         </div>
       </CardHeader>

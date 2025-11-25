@@ -174,6 +174,21 @@ export async function getApprovalProcess(
   return buildApiResponseAsync(res);
 }
 
+// Variante que retorna el proceso de aprobación completo (incluye sellerType)
+export async function getSupplierApprovalProcessById(
+  id: string | number
+): Promise<ApiResponse<SupplierApprovalProcess>> {
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}suppliers/${id}/approval-process`,
+    method: "GET",
+    cache: "no-store",
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<SupplierApprovalProcess>(res);
+}
+
 export async function getSupplierApprovalProcess(): Promise<
   ApiResponse<SupplierApprovalProcess>
 > {

@@ -9,6 +9,8 @@ export const inventoryEasySchema = z
     virtualWarehouseId: z.string().optional(),
     meWarehouse: z.boolean().default(false).optional(),
     isPaqueteria: z.boolean().default(false).optional(),
+    // Campo opcional que se mostrará solo si el supplier tiene sellerType Mayorista o Ambos
+    isMayorista: z.boolean().default(false).optional(),
   })
   .superRefine((data, ctx) => {
     // Si es paquetería, ignoramos meWarehouse y exigimos virtualWarehouseId

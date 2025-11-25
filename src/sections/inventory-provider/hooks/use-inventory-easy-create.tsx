@@ -32,6 +32,7 @@ export const useInventoryCreateForm = (
         productId: payload.productId,
         supplierId: payload.supplierId,
         isPaqueteria: payload.isPaqueteria,
+        isMayorista: payload.isMayorista,
       };
       const res = await createInventoryProvider(body);
 
