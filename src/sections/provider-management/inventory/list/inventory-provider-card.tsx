@@ -44,9 +44,20 @@ const InventoryProviderCard = ({ item }: Props) => {
               <span>{item.totalQuantity} unidades</span>
             </div>
           </div>
-          <Badge variant={item.active ? "info" : "danger"} className="h-fit">
-            {item.active ? "Activo" : "Inactivo"}
-          </Badge>
+          <div className="flex flex-col items-end gap-1">
+            <Badge
+              variant={item.active ? "info" : "danger"}
+              className="h-fit w-fit"
+            >
+              {item.active ? "Activo" : "Inactivo"}
+            </Badge>
+            <Badge
+              variant={item.isMayorista ? "success" : "outline"}
+              className="h-fit w-fit text-[10px] tracking-wide"
+            >
+              {item.isMayorista ? "Mayorista" : "Minorista"}
+            </Badge>
+          </div>
         </div>
       </CardHeader>
 
@@ -67,6 +78,14 @@ const InventoryProviderCard = ({ item }: Props) => {
           <div>
             <p className="text-muted-foreground">Tienda</p>
             <p className="font-medium line-clamp-1">{item.storeName}</p>
+          </div>
+          <div className="col-span-2">
+            <p className="text-muted-foreground">Modalidad</p>
+            <p className="font-medium">
+              {item.isMayorista
+                ? "Inventario mayorista"
+                : "Inventario minorista"}
+            </p>
           </div>
         </div>
       </CardContent>
