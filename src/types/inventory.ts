@@ -42,6 +42,8 @@ export type InventoryProvider = {
   totalPrice: number;
   totalQuantity: number;
   isPacking?: boolean;
+  // Indica si el inventario corresponde a modalidad mayorista
+  isMayorista?: boolean;
 
   products: InventoryProductItem[];
   categoryIds: number[];
@@ -63,6 +65,8 @@ export type CreateEasyInventory = {
   productId: string;
   supplierId: string;
   isPaqueteria?: boolean;
+  // Indica si el inventario es de tipo mayorista (solo cuando sellerType es Mayorista o Ambos)
+  isMayorista?: boolean;
 };
 
 export type GetAllInventoryProviderResponse =

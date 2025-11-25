@@ -17,11 +17,19 @@ const InventoryHeader = ({
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
           Información del Inventario
         </h3>
-        {inventory.isPacking && (
-          <Badge variant="outline-warning" className="size-fit">
-            Paquetería
+        <div className="flex gap-2">
+          {inventory.isPacking && (
+            <Badge variant="outline-warning" className="size-fit">
+              Paquetería
+            </Badge>
+          )}
+          <Badge
+            variant={inventory.isMayorista ? "success" : "outline"}
+            className="size-fit"
+          >
+            {inventory.isMayorista ? "Mayorista" : "Minorista"}
           </Badge>
-        )}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
