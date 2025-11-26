@@ -15,6 +15,7 @@ export const InventoryStoreSchema = z.object({
   /* adapter data */
   products: z.array(productVariants),
   isPacking: z.boolean().readonly(),
+  isMayorista: z.boolean().optional().default(false),
 });
 
 export type InventoryStoreFormData = z.infer<typeof InventoryStoreSchema>;

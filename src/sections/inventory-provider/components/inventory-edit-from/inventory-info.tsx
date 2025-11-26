@@ -24,7 +24,7 @@ const InventoryHeader = ({
             </Badge>
           )}
           <Badge
-            variant={inventory.isMayorista ? "success" : "outline"}
+            variant={inventory.isMayorista ? "success" : "outline-primary"}
             className="size-fit"
           >
             {inventory.isMayorista ? "Mayorista" : "Minorista"}

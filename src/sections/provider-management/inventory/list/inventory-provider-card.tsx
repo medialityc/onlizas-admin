@@ -52,7 +52,7 @@ const InventoryProviderCard = ({ item }: Props) => {
               {item.active ? "Activo" : "Inactivo"}
             </Badge>
             <Badge
-              variant={item.isMayorista ? "success" : "outline"}
+              variant={item.isMayorista ? "success" : "outline-primary"}
               className="h-fit w-fit text-[10px] tracking-wide"
             >
               {item.isMayorista ? "Mayorista" : "Minorista"}
