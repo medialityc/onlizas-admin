@@ -154,8 +154,8 @@ export default function BannerCreateModal({
               size="full"
               className="dark:text-gray-100 w-full"
               cropDimensions={{
-                height: 1600,
-                width: 2560,
+                height: 1080,
+                width: 1920,
               }}
             />
             <RHFImageUpload
