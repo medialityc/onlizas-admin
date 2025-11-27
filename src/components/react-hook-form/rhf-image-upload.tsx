@@ -117,9 +117,9 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
     const validateImage = (file: File): Promise<string | null> => {
       return new Promise((resolve) => {
         // Validar tamaño del archivo (5MB)
-        const maxSize = 5 * 1024 * 1024;
+        const maxSize = 10 * 1024 * 1024;
         if (file.size > maxSize) {
-          resolve("El archivo debe ser menor a 5MB");
+          resolve("El archivo debe ser menor a 10MB");
           return;
         }
 
@@ -317,7 +317,10 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
       <>
         <div className={cn("flex flex-col gap-1", className)}>
           {label && (
-            <label className="font-medium text-sm dark:text-white" htmlFor={field.name}>
+            <label
+              className="font-medium text-sm dark:text-white"
+              htmlFor={field.name}
+            >
               {label}
               <span className="text-red-500 ml-1">*</span>
             </label>
@@ -414,7 +417,7 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
                   </p>
                   {!isDisabledOrValidating && (
                     <p className="text-xs text-gray-500">
-                      500×500 - 3200×3200 px • Máx 5MB
+                      500×500 - 3200×3200 px • Máx 10MB
                     </p>
                   )}
                 </div>

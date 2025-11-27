@@ -30,6 +30,10 @@ function BasicInfoSection() {
             label="Imagen"
             variant="rounded"
             size="full"
+            cropDimensions={{
+              height: 1080,
+              width: 1920,
+            }}
           />
         </div>
         {/* <div className="flex flex-col space-y-1">
