@@ -11,21 +11,36 @@ export const storeSchema = z.object({
     .string()
     .min(1, "El teléfono es obligatorio")
     .regex(/^[0-9 +()-]+$/, "Formato de teléfono inválido"),
-  address: z.string().min(10, { message: "La dirección debe tener al menos 10 caracteres" }).max(200),
+  address: z
+    .string()
+    .min(10, { message: "La dirección debe tener al menos 10 caracteres" })
+    .max(200),
 
   logoStyle: z.union([
     z.string().url("Debe ser una URL válida."),
     z.instanceof(File, { message: "Debe ser un archivo válido." }),
   ]),
-  returnPolicy: z.string({
-    required_error: "Necesita definir una politica de reembolso",
-  }).min(10, { message: "La política de reembolso debe tener al menos 10 caracteres" }).max(200),
-  shippingPolicy: z.string({
-    required_error: "Necesita definir una politica de envío",
-  }).min(10, { message: "La política de envío debe tener al menos 10 caracteres" }).max(200),
-  termsOfService: z.string({
-    required_error: "Necesita definir una términos del Servicio",
-  }).min(10, { message: "Los términos del servicio deben tener al menos 10 caracteres" }).max(200),
+  returnPolicy: z
+    .string({
+      required_error: "Necesita definir una politica de reembolso",
+    })
+    .min(10, {
+      message: "La política de reembolso debe tener al menos 10 caracteres",
+    }),
+  shippingPolicy: z
+    .string({
+      required_error: "Necesita definir una politica de envío",
+    })
+    .min(10, {
+      message: "La política de envío debe tener al menos 10 caracteres",
+    }),
+  termsOfService: z
+    .string({
+      required_error: "Necesita definir una términos del Servicio",
+    })
+    .min(10, {
+      message: "Los términos del servicio deben tener al menos 10 caracteres",
+    }),
   /* primaryColor: z
     .string()
     .regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/, "Formato de color inválido").optional(),
@@ -37,14 +52,14 @@ export const storeSchema = z.object({
     .regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/, "Formato de color inválido").optional(),
   font: z.number().int().optional(),
   template: z.number().int().optional(), */
-   businessId: z.union([z.string(), z.number()]).refine((val) => {
-     const num = typeof val === 'string' ? parseFloat(val) : val;
-     return !isNaN(num) && num > 0;
-   }, "Debe ser un número positivo"),
+  businessId: z.union([z.string(), z.number()]).refine((val) => {
+    const num = typeof val === "string" ? parseFloat(val) : val;
+    return !isNaN(num) && num > 0;
+  }, "Debe ser un número positivo"),
   ownerId: z.union([z.string(), z.number()]).refine((val) => {
-     const num = typeof val === 'string' ? parseFloat(val) : val;
-     return !isNaN(num) && num > 0;
-   }, "Debe ser un número positivo"), 
+    const num = typeof val === "string" ? parseFloat(val) : val;
+    return !isNaN(num) && num > 0;
+  }, "Debe ser un número positivo"),
 });
 
 export type StoreFormData = z.infer<typeof storeSchema>;

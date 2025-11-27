@@ -117,16 +117,15 @@ const InventoryProviderDetailSection = () => {
                     label={
                       <div className="flex flex-row gap-1">
                         <p>{feat?.featureName || feat?.key}</p>
-                        {feat?.suggestions &&
-                          feat?.suggestions?.length !== 0 && (
-                            <Tippy
-                              trigger="mouseenter focus"
-                              content={feat?.suggestions?.join(", ")}
-                              className=""
-                            >
-                              <InformationCircleIcon className="w-5 h-5 text-blue-500" />
-                            </Tippy>
-                          )}
+                        {feat?.featureDescription && (
+                          <Tippy
+                            trigger="mouseenter focus"
+                            content={feat?.featureDescription}
+                            className=""
+                          >
+                            <InformationCircleIcon className="w-5 h-5 text-blue-500" />
+                          </Tippy>
+                        )}
                       </div>
                     }
                     placeholder={feat?.featureDescription ?? feat?.featureName}
@@ -135,12 +134,6 @@ const InventoryProviderDetailSection = () => {
                     }
                   />
                   <div className="ml-2 self-center flex flex-col gap-1">
-                    {feat?.featureDescription && (
-                      <Badge className="text-xs">
-                        {feat.featureDescription}
-                      </Badge>
-                    )}
-
                     {feat?.suggestions && feat?.suggestions.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-1">
                         {feat.suggestions.map((sugg: string, i: number) => {

@@ -29,28 +29,31 @@ const promotionSchema = z.object({
 
 // Banners en el formulario siguen el contrato del backend:
 // { title, urlDestinity, position:number, initDate, endDate, image }
-const homeBannerSchema = z.array(z.object({
-  id: z.number().int().nonnegative().optional(),
-  title: z.string().min(1, "El título es obligatorio"),
-  urlDestinity: z.string().min(1, "La URL de destino es obligatoria"),
-  position: z.coerce.number().int().nonnegative({ message: "La posición debe ser un número entero" }),
-  initDate: z
-    .string()
-    .refine((v) => !v || !Number.isNaN(Date.parse(v)), {
+const homeBannerSchema = z.array(
+  z.object({
+    id: z.number().int().nonnegative().optional(),
+    title: z.string().min(1, "El título es obligatorio"),
+    urlDestinity: z.string().min(1, "La URL de destino es obligatoria"),
+    position: z.coerce
+      .number()
+      .int()
+      .nonnegative({ message: "La posición debe ser un número entero" }),
+    initDate: z.string().refine((v) => !v || !Number.isNaN(Date.parse(v)), {
       message: "Fecha de inicio inválida",
     }),
-  endDate: z
-    .string()
-    .refine((v) => !v || !Number.isNaN(Date.parse(v)), {
+    endDate: z.string().refine((v) => !v || !Number.isNaN(Date.parse(v)), {
       message: "Fecha de fin inválida",
     }),
-  image: z.union([
-    z.instanceof(File, { message: "Debe ser un archivo válido." }),
-    z.string(),
-    z.null(),
-  ]).optional(),
-  active: z.boolean().optional(),
-}))
+    image: z
+      .union([
+        z.instanceof(File, { message: "Debe ser un archivo válido." }),
+        z.string(),
+        z.null(),
+      ])
+      .optional(),
+    active: z.boolean().optional(),
+  })
+);
 
 const categoryItemSchema = z.object({
   id: z.number().int().positive(),
@@ -58,7 +61,7 @@ const categoryItemSchema = z.object({
 });
 
 export const storeEditSchema = z.object({
-  id:z.number().optional(),
+  id: z.number().optional(),
   active: z.boolean().optional(),
 
   // Datos básicos
@@ -92,16 +95,13 @@ export const storeEditSchema = z.object({
   // Políticas
   returnPolicy: z
     .string({ required_error: "Necesita definir una politica de reembolso" })
-    .min(10)
-    .max(200),
+    .min(10),
   shippingPolicy: z
     .string({ required_error: "Necesita definir una politica de envío" })
-    .min(10)
-    .max(200),
+    .min(10),
   termsOfService: z
     .string({ required_error: "Necesita definir una términos del Servicio" })
-    .min(10)
-    .max(200),
+    .min(10),
 
   // Apariencia
   primaryColor: z.string().regex(colorRegex, "Formato de color inválido"),

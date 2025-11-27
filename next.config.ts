@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["@mantine/core", "@mantine/hooks"],
     serverActions: {
-      bodySizeLimit: "50mb", // Aumenta el límite según tus necesidades
+      bodySizeLimit: "50mb",
     },
     authInterrupts: true,
   },
@@ -14,12 +14,22 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "http",
-        hostname: "minio-api.zasdistributor.com",
+        hostname: "**.onlizas.com",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "minio-api.zasdistributor.com",
+        hostname: "**.onlizas.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "**.zasdistributor.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.zasdistributor.com",
         pathname: "/**",
       },
     ],
