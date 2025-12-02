@@ -46,6 +46,22 @@ src/
 	contexts/           # React Context Providers
 ```
 
+## Módulo de Finanzas (Maquetación)
+
+Se incluye una maquetación funcional del módulo de finanzas con navegación y vistas base:
+
+- Rutas:
+
+  - `/finance` (Resumen)
+  - `/finance/closures` (Cierres: filtro por fecha, generación parcial)
+  - `/finance/account-states` (Estados de cuenta: desglose Onlizas/Impuestos/Proveedores/Logística)
+  - `/finance/entity-accounts` (CRUD cuentas de plataforma y proveedores)
+  - `/finance/payables-receivables` (Cuentas por pagar y por cobrar, reintento de pago)
+
+- Navegación: accesos en el sidebar dentro de "Finanzas y Pagos".
+
+- Estado: vistas con componentes y tablas de ejemplo listas para conectar a APIs (`GET/POST`) y cron jobs. No hay integración de datos aún.
+
 ## 🛠 Requisitos previos
 
 - Node.js 20+ (recomendado LTS)

@@ -1,0 +1,20 @@
+import { GetPlatformAccounts } from "@/types/finance";
+import PlatformAccountsList from "@/sections/finance/list/platform-accounts-list";
+
+export default function ClientCreateButton({
+  initialData,
+}: {
+  initialData?: GetPlatformAccounts;
+}) {
+  return (
+    <div className="panel">
+      <div className="mb-3 flex items-center justify-between">
+        <div>
+          <h2 className="font-semibold">Listado</h2>
+          <p className="text-sm text-gray-500">Cuentas destino por propósito</p>
+        </div>
+      </div>
+      <PlatformAccountsList data={initialData} />
+    </div>
+  );
+}

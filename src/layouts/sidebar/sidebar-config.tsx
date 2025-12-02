@@ -35,6 +35,7 @@ import {
   PERMISSION_STORE,
   PERMISSION_WAREHOUSE,
 } from "@/lib/permissions";
+import { CalendarRange, ClipboardList, WalletCards } from "lucide-react";
 
 export const sidebarSections: SidebarSection[] = [
   {
@@ -160,8 +161,35 @@ export const sidebarSections: SidebarSection[] = [
     ],
   },
   {
+    id: "finance",
+    label: "Finanzas",
+    items: [
+      {
+        id: "finance-closures",
+        label: "Cierres",
+        path: paths.finance.closures,
+        icon: <CalendarRange className="size-4" />,
+        permissions: PERMISSION_ADMIN,
+      },
+      {
+        id: "finance-account-states",
+        label: "Estados de cuentas",
+        path: paths.finance.accountStates,
+        icon: <ClipboardList className="size-4" />,
+        permissions: PERMISSION_ADMIN,
+      },
+      {
+        id: "finance-entity-accounts",
+        label: "Cuentas de entidades",
+        path: paths.finance.entityAccounts,
+        icon: <WalletCards className="size-4" />,
+        permissions: PERMISSION_ADMIN,
+      },
+    ],
+  },
+  {
     id: "payments",
-    label: "Finanzas y Pagos",
+    label: "Pagos",
     items: [
       {
         id: "overview",
@@ -273,6 +301,8 @@ export const defaultExpandedSections = {
   security: true,
   logistics: true,
   administration: false,
+  finance: true,
+  payments: true,
 };
 
 export const defaultExpandedItems = {

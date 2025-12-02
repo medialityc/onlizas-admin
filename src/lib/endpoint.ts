@@ -504,4 +504,18 @@ export const backendRoutes = {
     supplierList: (storeId: string) =>
       `${process.env.NEXT_PUBLIC_API_URL}orders/store/${storeId}`,
   },
+  finance: {
+    closures: {
+      list: `${process.env.NEXT_PUBLIC_API_URL}closures`, // GET paginated
+    },
+    platformAccounts: {
+      list: `${process.env.NEXT_PUBLIC_API_URL}platform-accounts`,
+      update: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}platform-accounts/${id}`,
+      detail: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}platform-accounts/${id}`,
+      toggleStatus: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}platform-accounts/${id}/toggle-status`,
+    },
+  },
 };
