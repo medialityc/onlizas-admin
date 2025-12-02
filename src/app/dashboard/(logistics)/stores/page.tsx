@@ -1,7 +1,5 @@
-import { buildQueryParams } from "@/lib/request";
-import StoresPermissionWrapper from "@/sections/stores/list/stores-permission-wrapper";
-import { PermissionGate } from "@/components/permission/permission-gate";
-import { IQueryable, SearchParams } from "@/types/fetch/request";
+import StoresServerWrapper from "@/sections/stores/list/stores-server-wrapper";
+import { Suspense } from "react";
 import { Metadata } from "next";
 import SkeletonStoreList from "@/sections/stores/list/components/skeleton";
 
@@ -13,22 +11,24 @@ export const metadata: Metadata = {
   },
 };
 
-interface PageProps {
-  searchParams: Promise<SearchParams>;
-}
-
-async function StoresListPage({ searchParams }: PageProps) {
+/**
+ * Página de tiendas - Server Component
+ *
+ * Utiliza el nuevo StoresServerWrapper que:
+ * - Obtiene permisos en el servidor (sin delay de cliente)
+ * - Pre-fetchea datos según el rol del usuario
+ * - Renderiza el componente apropiado (admin/supplier)
+ */
+export default async function StoresListPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[]>>;
+}) {
   const params = await searchParams;
-  const apiQuery: IQueryable = buildQueryParams(params as any);
-  // Pasamos tanto los params crudos como la versión construida para estabilidad en el wrapper
+
   return (
-    <PermissionGate
-      loadingFallback={<SkeletonStoreList />}
-      keepFallbackIfMissing={false}
-    >
-      <StoresPermissionWrapper query={params} apiQuery={apiQuery} />
-    </PermissionGate>
+    <Suspense fallback={<SkeletonStoreList />}>
+      <StoresServerWrapper query={params} />
+    </Suspense>
   );
 }
-
-export default StoresListPage;

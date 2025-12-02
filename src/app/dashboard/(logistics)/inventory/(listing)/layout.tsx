@@ -1,10 +1,6 @@
-"use client";
-
 import React from "react";
 import { NavigationTabs, TabItem } from "@/components/tab/navigation-tabs";
-import { usePermissions } from "@/hooks/use-permissions";
-import { PERMISSION_ENUM } from "@/lib/permissions";
-// ...existing code...
+import { getModulePermissions } from "@/components/permission/server-permission-wrapper";
 import { paths } from "@/config/paths";
 
 const tabs: TabItem[] = [
@@ -22,16 +18,22 @@ const tabs: TabItem[] = [
   },
 ];
 
-export default function InventoryLayout({
+/**
+ * Layout de inventario - Server Component
+ * Determina qué tabs mostrar basándose en los permisos del usuario.
+ * - Admin: Muestra todas las tabs
+ * - Supplier: Oculta las tabs (solo ve su inventario)
+ */
+export default async function InventoryLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { hasPermission } = usePermissions();
-  const hasAdminRetrieve = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const { isAdmin, isSupplier } = await getModulePermissions("inventory");
 
-  const supplierOnly =
-    !hasAdminRetrieve && hasPermission([PERMISSION_ENUM.RETRIEVE_INVENTORY]);
+  // Si es supplier sin permisos de admin, ocultar las tabs
+  const supplierOnly = !isAdmin && isSupplier;
+
   return (
     <div>
       <NavigationTabs tabs={tabs} className="mb-6" hidden={supplierOnly} />

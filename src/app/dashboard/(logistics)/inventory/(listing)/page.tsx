@@ -1,6 +1,7 @@
 import { SearchParams } from "@/types/fetch/request";
-import InventoryPermissionWrapper from "@/sections/inventory-provider/containers/inventory-permission-wrapper";
-import { InventoryPermissionGate } from "@/sections/inventory-provider/components/inventory-permission-gate";
+import InventoryServerWrapper from "@/sections/inventory-provider/containers/inventory-server-wrapper";
+import { InventoryListSkeleton } from "@/sections/inventory-provider/components/skeleton/inventory-list-skeleton";
+import { Suspense } from "react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,22 +12,24 @@ export const metadata: Metadata = {
   },
 };
 
-interface PageProps {
+/**
+ * Página de inventario - Server Component
+ *
+ * Utiliza el nuevo InventoryServerWrapper que:
+ * - Obtiene permisos en el servidor (sin delay de cliente)
+ * - Pre-fetchea datos según el rol del usuario
+ * - Renderiza el componente apropiado (admin/supplier)
+ */
+export default async function InventoryProviderPage({
+  searchParams,
+}: {
   searchParams: Promise<SearchParams>;
-}
-
-async function InventoryProviderPage({ searchParams }: PageProps) {
+}) {
   const search = await searchParams;
-  // Gate: ocultar cualquier navegación/tabs que estén fuera hasta que permisos carguen.
-  // Aquí asumimos que las tabs están fuera de este componente; si no, envuelve sólo la parte de tabs.
+
   return (
-    <InventoryPermissionGate
-      requireAdmin={false}
-      keepSkeletonForNonAdmin={false}
-    >
-      <InventoryPermissionWrapper query={search} />
-    </InventoryPermissionGate>
+    <Suspense fallback={<InventoryListSkeleton />}>
+      <InventoryServerWrapper query={search} />
+    </Suspense>
   );
 }
-
-export default InventoryProviderPage;
