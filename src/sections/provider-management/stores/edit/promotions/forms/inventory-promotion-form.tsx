@@ -12,13 +12,11 @@ import {
   FormDate,
   FormDateRanges,
   ValueSelector,
+  InventoryMultiSelect,
 } from "../components/form-fields";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import PromotionTypeHeader from "../components/form-fields/promotion-type-header";
 import PromotionBasicInfo from "../components/form-fields/promotion-basic-info";
-// import PurchaseRequirements from "../components/form-fields/purchase-requirements"; // not used here per request
-// Esquema específico para order value
-import { type OrderValueFormData } from "../schemas/order-value-schema";
 import type { Promotion } from "@/types/promotions";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -27,35 +25,60 @@ import { Button } from "@/components/button/button";
 import { Label } from "@/components/label/label";
 import { buildPromotionFormData } from "../form/promotion-form-builder";
 import { getCommonDefaultValues } from "../utils/default-values";
-import { togglePromotionStatus } from "@/services/promotions";
-import { PackageFormData, packageSchema } from "../schemas/package-schema";
 import { navigateAfterSave } from "../utils/promotion-helpers";
-import { usePromotionPackageMutations } from "../hooks/mutations/usePromotionPackageMutations";
-import ProductSelect from "../components/form-fields/product-multi-select";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import {
+  createPromotionInventory,
+  updatePromotionInventory,
+} from "@/services/promotions";
 import { getStoreById } from "@/services/stores";
+import { z } from "zod";
 
-interface OrderValueFormProps {
-  storeId: string; // Cambiado a string para GUIDs
+// Schema específico para promociones por inventario
+const inventoryPromotionSchema = z.object({
+  name: z.string().min(1, "El nombre es requerido"),
+  description: z.string().min(1, "La descripción es requerida"),
+  active: z.boolean(),
+  discountType: z.number(),
+  discountValue: z.number().min(0, "El valor debe ser mayor a 0"),
+  usageLimit: z.number().min(1, "Debe ser mayor a 0"),
+  usageLimitPerUser: z.number().optional(),
+  minimumAmount: z.number().optional(),
+  minimumItems: z.number().optional(),
+  requiresCode: z.boolean(),
+  code: z.string().optional(),
+  mediaFile: z.any().optional(),
+  dateRanges: z.array(
+    z.object({
+      startDate: z.date(),
+      endDate: z.date(),
+    })
+  ),
+  simpleDates: z.array(z.date()).optional(),
+  inventoryIds: z
+    .array(z.string())
+    .min(1, "Selecciona al menos un item de inventario"),
+});
+
+type InventoryPromotionFormData = z.infer<typeof inventoryPromotionSchema>;
+
+interface InventoryPromotionFormProps {
+  storeId: string;
   mode: string;
   promotionData?: Promotion;
   onCancel: () => void;
   isLoading?: boolean;
 }
 
-/**
- * Formulario específico para promociones de descuento por valor del pedido
- * Basado en el diseño de la imagen proporcionada y siguiendo el patrón de free-delivery
- */
-export default function PackageForm({
+export default function InventoryPromotionForm({
   storeId,
   promotionData,
   mode,
   onCancel,
   isLoading = false,
-}: OrderValueFormProps) {
+}: InventoryPromotionFormProps) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   // Asegurar que las fechas estén en el futuro
@@ -64,16 +87,16 @@ export default function PackageForm({
   const dayAfterTomorrow = new Date(today);
   dayAfterTomorrow.setDate(today.getDate() + 2);
 
-  const methods = useForm<PackageFormData>({
-    resolver: zodResolver(packageSchema),
+  const methods = useForm<InventoryPromotionFormData>({
+    resolver: zodResolver(inventoryPromotionSchema),
     defaultValues: {
       ...getCommonDefaultValues(promotionData),
-      // Campos específicos del formulario de paquete
+      // Campos específicos del formulario de inventario
       dateRanges:
         mode === "create"
           ? [{ startDate: tomorrow, endDate: dayAfterTomorrow }] // Fechas futuras válidas
           : getCommonDefaultValues(promotionData).dateRanges || [],
-      productVariantsIds: [],
+      inventoryIds: [],
       // Asegurar que los campos requeridos tengan valores válidos
       active: true, // Siempre activa por defecto ya que no hay control en UI
       discountType: promotionData?.discountType
@@ -89,8 +112,8 @@ export default function PackageForm({
       requiresCode: Boolean(promotionData?.code),
     },
   });
-  const mutations = usePromotionPackageMutations(storeId);
-  const loading = mutations.isCreating || mutations.isUpdating || isLoading;
+
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { handleSubmit } = methods;
 
@@ -99,7 +122,7 @@ export default function PackageForm({
   const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
 
   // Obtener información de la tienda para el supplierId
-  const { data: storeData } = useQuery({
+  const { data: storeData, isLoading: storeDataLoading } = useQuery({
     queryKey: ["store", storeId],
     queryFn: () => getStoreById(storeId),
     enabled: !!storeId,
@@ -109,73 +132,102 @@ export default function PackageForm({
     ? String(storeData.data.supplierId)
     : "";
 
-  const onFormSubmit = handleSubmit(async (data) => {
-    // Usar la función reutilizable para construir FormData
-    const formData = buildPromotionFormData(
-      data as any,
-      storeId,
-      "package", // Cambiado para coincidir con el endpoint /promotions/product-variant
-      promotionData
-    );
-    await onSubmit(formData, data as any);
-  });
-  const onSubmit = async (formData: FormData, data: OrderValueFormData) => {
-    try {
-      // Si es edit y el estado cambió, actualizar el estado primero
-      if (
-        mode === "edit" &&
-        promotionData &&
-        data.active !== promotionData.active
-      ) {
-        const statusRes = await togglePromotionStatus(promotionData.id);
-        if (statusRes.error) {
-          toast.error("Error al actualizar el estado");
-          return;
-        }
-        toast.success("Estado actualizado exitosamente");
+  // Mutations para crear/actualizar
+  const createMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const res = await createPromotionInventory(formData);
+      if (res.error) {
+        throw new Error(
+          res.message || res.detail || "Error al crear promoción"
+        );
       }
+      return res;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["store-promotions", storeId],
+        exact: false,
+      });
+      toast.success("Promoción creada exitosamente");
+      navigateAfterSave(router);
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "Error al crear la promoción");
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({
+      promotionId,
+      data,
+    }: {
+      promotionId: number;
+      data: FormData;
+    }) => {
+      const res = await updatePromotionInventory(promotionId, data);
+      if (res.error) {
+        throw new Error(
+          res.message || res.detail || "Error al actualizar promoción"
+        );
+      }
+      return res;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["store-promotions", storeId],
+        exact: false,
+      });
+      toast.success("Promoción actualizada exitosamente");
+      navigateAfterSave(router);
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "Error al actualizar la promoción");
+    },
+  });
+
+  const loading =
+    createMutation.isPending || updateMutation.isPending || isLoading;
+
+  const onFormSubmit = handleSubmit(async (data) => {
+    try {
+      // Usar buildPromotionFormData para construir los datos
+      const formData = buildPromotionFormData(
+        data as any,
+        storeId,
+        "inventory",
+        promotionData
+      );
+
+      // Agregar inventoryIds específicos para este endpoint
+      formData.append("inventoryIds", JSON.stringify(data.inventoryIds));
 
       if (mode === "create") {
-        if (mutations.createAsync) {
-          await mutations.createAsync(formData);
-        } else {
-          await mutations.create(formData);
-        }
-        navigateAfterSave(router);
-      } else {
-        if (promotionData && promotionData.id) {
-          const updatePayload = {
-            promotionId: promotionData.id,
-            data: formData,
-          };
-          if (mutations.updateAsync) {
-            await mutations.updateAsync(updatePayload);
-          } else {
-            await mutations.update(updatePayload);
-          }
-          navigateAfterSave(router);
-        } else {
-          toast.error("No se encontró el ID de la promoción para actualizar.");
-        }
+        await createMutation.mutateAsync(formData);
+      } else if (promotionData?.id) {
+        await updateMutation.mutateAsync({
+          promotionId: promotionData.id,
+          data: formData,
+        });
       }
     } catch (error) {
-      console.error("Error al guardar promoción:", error);
+      console.error("Error al procesar formulario:", error);
     }
-  };
+  });
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={onFormSubmit} className="space-y-6">
         <PromotionTypeHeader
-          title="Descuento por paquetes"
-          description="Establecer valores para descuento por paquete"
-          icon={<span>📦</span>}
+          title="Promoción por Inventario"
+          description="Aplicar descuentos a items específicos de inventario"
+          icon={<span>🏪</span>}
         />
+
         <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardContent>
             <PromotionBasicInfo
-              showCode={false}
-              typeLabel="Descuento por paquete"
+              showCode={true}
+              typeLabel="Promoción por Inventario"
             />
             <div className="mt-4">
               <RHFImageUpload
@@ -188,52 +240,69 @@ export default function PackageForm({
           </CardContent>
         </Card>
 
-        <Card className="gap-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardHeader className="pb-0">
             <CardTitle className="text-gray-900 dark:text-gray-100">
-              Valor *
+              Valor del Descuento *
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="grid grid-cols-1 gap-3">
-              <div className="pt-0">
-                {/* Mostrar el selector de tipo de valor: percentage / fixed */}
-                <ValueSelector
-                  showPercent={true}
-                  showAmount={true}
-                  showFree={false}
-                  typeName="discountType"
-                  valueName="discountValue"
-                />
-              </div>
-              <ProductSelect
-                multiple={true}
-                name="productVariantsIds"
-                storeId={storeId}
-                supplierId={supplierId}
-                label="Productos aplicables"
-              />
-            </div>
+          <CardContent className="space-y-4">
+            <ValueSelector
+              showPercent={true}
+              showAmount={true}
+              showFree={false}
+              typeName="discountType"
+              valueName="discountValue"
+            />
+
+            {/* Selector de inventario usando el componente reutilizable */}
+            <InventoryMultiSelect
+              multiple={true}
+              name="inventoryIds"
+              storeId={storeId}
+              supplierId={supplierId}
+              label="Items de Inventario *"
+            />
           </CardContent>
         </Card>
 
         <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardHeader>
             <CardTitle className="text-gray-900 dark:text-gray-100">
-              {" "}
-              <Label>Usos máximos de descuento *</Label>
+              Requisitos Mínimos
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <FormInput
+              name="minimumAmount"
+              label="Monto mínimo de compra"
+              type="number"
+              step="0.01"
+            />
+            <FormInput
+              name="minimumItems"
+              label="Cantidad mínima de productos"
+              type="number"
+            />
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-gray-900 dark:text-gray-100">
+              Límites de Uso
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormInput
                 name="usageLimit"
-                label="Límite de veces que se puede usar en total"
+                label="Límite de usos total *"
                 type="number"
               />
               <FormInput
                 name="usageLimitPerUser"
-                label="Límite de veces que se puede usar por cliente"
+                label="Límite de usos por usuario"
                 type="number"
               />
             </div>
@@ -248,14 +317,11 @@ export default function PackageForm({
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {/* Rangos de fechas */}
               <div>
                 <FormDateRanges />
               </div>
-
-              {/* Días específicos */}
               <div>
-                <FormDate />
+                <FormDate name="simpleDates" />
               </div>
             </div>
           </CardContent>

@@ -18,13 +18,18 @@ import AutomaticForm from "../forms/promotion-automatic";
 import PackageForm from "../forms/promotion-package";
 import GetYForm from "../forms/promotion-x-get-y";
 
+import InventoryPromotionForm from "../forms/inventory-promotion-form";
+
 // Utilidades centralizadas
-import { mapBackendPromotionType, navigateAfterSave } from "../utils/promotion-helpers";
+import {
+  mapBackendPromotionType,
+  navigateAfterSave,
+} from "../utils/promotion-helpers";
 
 interface PromotionFormContainerProps {
   storeId: string; // Cambiado a string para GUIDs
   mode: "create" | "edit";
-  promotionType?: string;  // Solo para create
+  promotionType?: string; // Solo para create
   //promotionId?: number;    // Solo para edit
   promotionData?: Promotion;
 }
@@ -39,19 +44,21 @@ export default function PromotionFormContainer({
   mode,
   promotionType,
 
-  promotionData
+  promotionData,
 }: PromotionFormContainerProps) {
   const router = useRouter();
   const pathname = usePathname();
-  
-  
+
   // create/update are handled by type-specific hooks inside each form
 
   // En modo creación, usar el tipo proporcionado
   // En modo edición, mapear el promotionType del backend
-  const currentType = mode === "create" 
-    ? promotionType 
-    : (promotionData?.promotionType ? mapBackendPromotionType(promotionData.promotionType) : promotionType);
+  const currentType =
+    mode === "create"
+      ? promotionType
+      : promotionData?.promotionType
+        ? mapBackendPromotionType(promotionData.promotionType)
+        : promotionType;
 
   // Debug: mostrar información del tipo detectado
   useEffect(() => {
@@ -62,20 +69,25 @@ export default function PromotionFormContainer({
           id: promotionData.id,
           name: promotionData.name,
           promotionType: promotionData.promotionType,
-          discountType: promotionData.discountType
+          discountType: promotionData.discountType,
         },
         mappedType: currentType,
-        originalPromotionType: promotionType
+        originalPromotionType: promotionType,
       });
     }
   }, [mode, promotionData, currentType, promotionType]);
 
   // Buscar configuración del tipo
-  const typeConfig = PROMOTION_TYPES.find(t => t.value === currentType);
+  const typeConfig = PROMOTION_TYPES.find((t) => t.value === currentType);
 
   // Validaciones
   useEffect(() => {
-    console.log(mode, promotionData, promotionType, "Estoy en container para form")
+    console.log(
+      mode,
+      promotionData,
+      promotionType,
+      "Estoy en container para form"
+    );
     if (mode === "create" && !promotionType) {
       toast.error("Tipo de promoción no especificado");
       router.back();
@@ -85,9 +97,6 @@ export default function PromotionFormContainer({
       router.back();
     }
   }, [mode, promotionType, promotionData, router]);
-
-
-
 
   const handleCancel = () => {
     navigateAfterSave(router);
@@ -119,7 +128,9 @@ export default function PromotionFormContainer({
           {mode === "create" ? "Crear promoción" : "Editar promoción"}
         </h1>
         {typeConfig && (
-          <p className="text-gray-600 dark:text-gray-400 mt-1">{typeConfig.description}</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            {typeConfig.description}
+          </p>
         )}
       </div>
 
@@ -137,6 +148,17 @@ export default function PromotionFormContainer({
 
     // Switch simplificado - solo los tipos principales
     switch (currentType) {
+      case "inventory":
+        return (
+          <InventoryPromotionForm
+            storeId={storeId}
+            promotionData={promotionData}
+            mode={mode}
+            onCancel={handleCancel}
+            isLoading={false}
+          />
+        );
+
       case "free-delivery":
         return (
           <FreeDeliveryForm
@@ -147,7 +169,7 @@ export default function PromotionFormContainer({
             isLoading={false}
           />
         );
-      
+
       case "code":
         return (
           <PromotionCode
@@ -158,7 +180,7 @@ export default function PromotionFormContainer({
             isLoading={false}
           />
         );
-      
+
       case "order-value":
         return (
           <OrderValueForm
@@ -169,7 +191,7 @@ export default function PromotionFormContainer({
             isLoading={false}
           />
         );
-      
+
       case "automatic":
         return (
           <AutomaticForm
@@ -180,7 +202,7 @@ export default function PromotionFormContainer({
             isLoading={false}
           />
         );
-      
+
       case "package":
         return (
           <PackageForm
@@ -191,7 +213,7 @@ export default function PromotionFormContainer({
             isLoading={false}
           />
         );
-      
+
       case "buy-x-get-y":
         return (
           <GetYForm

@@ -309,6 +309,8 @@ export const backendRoutes = {
   },
   storePromotions: {
     list: () => `${process.env.NEXT_PUBLIC_API_URL}promotions`,
+    createInventory: () =>
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/inventory`,
     createGetY: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/buyxgety`,
     updateGetY: (promotionId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}promotions/buyxgety/${promotionId}`,
@@ -320,9 +322,12 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}promotions/general`,
     updateAutomatic: (promotionId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}promotions/general/${promotionId}`,
-    createPackage: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/package`,
+    createPackage: () =>
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/product-variant`,
+    updateInventory: (promotionId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/inventory/${promotionId}`,
     updatePackage: (promotionId: number | string) =>
-      `${process.env.NEXT_PUBLIC_API_URL}promotions/package/${promotionId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/product-variant/${promotionId}`,
     createOvervalue: () =>
       `${process.env.NEXT_PUBLIC_API_URL}promotions/ordervalue`,
     updateOvervalue: (promotionId: number | string) =>
