@@ -99,6 +99,17 @@ export const paths = {
       edit: (id: string | number) => `${DASHBOARD}/orders/${id}/edit`,
     },
   },
+  finance: {
+    root: "/dashboard/finance",
+    summary: "/dashboard/finance",
+    closures: "/dashboard/finance/closures",
+    accountStates: "/dashboard/finance/account-states",
+    entityAccounts: "/dashboard/finance/entity-accounts",
+    closureAccounts: (id: string | number) =>
+      `/dashboard/finance/closures/${id}/accounts`,
+    entityAccount: (id: string | number) =>
+      `/dashboard/finance/entity-accounts/${id}`,
+  },
   provider: {
     root: PROVIDER,
     profile: {
