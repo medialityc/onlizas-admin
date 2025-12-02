@@ -1,21 +1,47 @@
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import {  getAllProductsBySupplier } from "@/services/products";
+import { getAllProducts, getAllProductsBySupplier } from "@/services/products";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 interface ProductSelectProps {
   name: string;
   storeId: string;
-  supplierId: string; // Nuevo prop para supplierId
+  supplierId: string;
   label?: string;
   multiple: boolean;
 }
 
-export default function ProductSelect({ name, multiple, storeId, supplierId, label }: ProductSelectProps) {
+export default function ProductSelect({
+  name,
+  multiple,
+  storeId,
+  supplierId,
+  label,
+}: ProductSelectProps) {
+  const { hasPermission } = usePermissions();
+
+  // Función que detecta permisos y usa el endpoint apropiado
+  const fetchProducts = (params: any) => {
+    const isAdmin = hasPermission([
+      PERMISSION_ENUM.CREATE,
+      PERMISSION_ENUM.UPDATE,
+    ]);
+
+    if (isAdmin) {
+      // Para admin, usar endpoint de admin
+      return getAllProducts(params); // true = isAdmin
+    } else {
+      // Para provider, usar endpoint normal
+      return getAllProductsBySupplier(supplierId, params); // false = isProvider
+    }
+  };
+
   return (
     <RHFAutocompleteFetcherInfinity
       name={name}
       label={label}
       placeholder="Buscar productos..."
-      onFetch={(params) => getAllProductsBySupplier(supplierId, params)}
+      onFetch={fetchProducts}
       objectValueKey="id"
       objectKeyLabel="name"
       multiple={multiple}

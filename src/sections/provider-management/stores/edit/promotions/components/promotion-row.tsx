@@ -8,6 +8,9 @@ import {
 import { getPromotionTypeName } from "../index-refactored";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { togglePromotionStatus } from "@/services/promotions";
+import { toast } from "react-toastify";
 
 interface PromotionRowProps {
   p: Promotion;
@@ -23,6 +26,7 @@ export default function PromotionRow({
   onViewDetails,
 }: PromotionRowProps) {
   const isExpired = p.endDate && new Date(p.endDate) < new Date();
+  const queryClient = useQueryClient();
 
   // Control de permisos
   const { hasPermission } = usePermissions();
@@ -30,8 +34,43 @@ export default function PromotionRow({
   const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
   const hasDeletePermission = hasPermission([PERMISSION_ENUM.DELETE]);
 
+  // Mutation para toggle status
+  const toggleMutation = useMutation({
+    mutationFn: async () => {
+      const res = await togglePromotionStatus(p.id);
+      if (res.error) {
+        throw new Error(res.message || "Error al cambiar estado");
+      }
+      return res;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["store-promotions"],
+        exact: false,
+      });
+      toast.success(
+        `Promoción ${p.active ? "desactivada" : "activada"} exitosamente`
+      );
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "Error al cambiar estado de la promoción");
+    },
+  });
+
   const getDiscountText = (type: number, value: number) => {
-    return type === 0 ? `-${value}%` : `-$${value}`;
+    // Backend: 1=Porcentaje, 2=MontoFijo, 3=EnvíoGratis, 4=CompraXLlevaY
+    switch (type) {
+      case 1: // Porcentaje
+        return `-${value}%`;
+      case 2: // MontoFijo
+        return `-$${value}`;
+      case 3: // EnvíoGratis
+        return "Envío Gratis";
+      case 4: // CompraXLlevaY
+        return "Compra X Lleva Y";
+      default:
+        return `-${value}`;
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -111,17 +150,41 @@ export default function PromotionRow({
             </div>
           </div>
 
+          {/* Toggle Switch para estado activo/inactivo */}
+          {hasUpdatePermission && !isExpired && (
+            <div className="flex flex-col items-center gap-1">
+              <button
+                onClick={() => toggleMutation.mutate()}
+                disabled={toggleMutation.isPending}
+                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:opacity-50 ${
+                  p.active ? "bg-blue-600" : "bg-gray-200"
+                }`}
+                title={`${p.active ? "Desactivar" : "Activar"} promoción`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                    p.active ? "translate-x-5" : "translate-x-0"
+                  }`}
+                />
+              </button>
+              <span className="text-[10px] text-gray-500 dark:text-gray-300">
+                {p.active ? "Activa" : "Inactiva"}
+              </span>
+            </div>
+          )}
+
           {/* Actions */}
           <div className="flex items-center gap-2">
-            {onEdit && hasUpdatePermission && (
+            {/* Botón editar temporalmente oculto */}
+            {/* {onEdit && hasUpdatePermission && (
               <button
                 onClick={() => onEdit(p)}
                 className="p-1 text-gray-500 dark:text-gray-300 hover:text-blue-600 transition-colors"
                 title="Editar promoción"
               >
-                <PencilIcon className="h-4 w-4" />
+                <PencilIcon className="w-4 h-4" />
               </button>
-            )}
+            )} */}
 
             {onDelete && hasDeletePermission && (
               <button
