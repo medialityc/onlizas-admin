@@ -90,6 +90,27 @@ export async function getAllInventoryByUserProvider(
   return buildApiResponseAsync<GetAllInventoryProviderResponse>(res);
 }
 
+export async function getAllInventory(
+  params: IQueryable
+): Promise<ApiResponse<GetAllInventoryProviderResponse>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.inventoryProvider.list
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: [INVENTORY_TAG_KEY, String("admin")] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetAllInventoryProviderResponse>(res);
+}
+
+
 export async function getInventoryById(
   id: number | string
 ): Promise<ApiResponse<InventoryProvider>> {

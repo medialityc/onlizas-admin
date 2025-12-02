@@ -52,7 +52,9 @@ export default function PromotionTypeSelectorModal({
         
         {/* Grid de tipos de promoción */}
         <div className="space-y-3 max-h-96 overflow-y-auto">
-          {PROMOTION_TYPES.map((config) => (
+          {PROMOTION_TYPES
+            .filter((config) => ['inventory', 'package'].includes(config.value))
+            .map((config) => (
             <PromotionTypeCard
               key={config.id}
               config={config}

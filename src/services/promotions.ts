@@ -50,6 +50,43 @@ export async function getStorePromotionById(
   return buildApiResponseAsync<Promotion>(res);
 }
 
+export async function createPromotionInventory(
+  formData: FormData
+): Promise<ApiResponse<Promotion>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.storePromotions.createInventory(),
+    method: "POST",
+    data: formData,
+    useAuth: true,
+  });
+  if (!res.ok) return handleApiServerError(res);
+
+  revalidateTag(`store-promotions-inventory-${formData}`);
+
+  return buildApiResponseAsync<Promotion>(res);
+}
+
+export async function updatePromotionInventory(
+  promotionId: number,
+  data: FormData
+): Promise<ApiResponse<Promotion>> {
+  // Agregar el promotionId al FormData
+  data.append("promotionId", promotionId.toString());
+
+  const res = await nextAuthFetch({
+    url: backendRoutes.storePromotions.updateInventory(promotionId),
+    method: "PUT",
+    data: data,
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  revalidateTag(`store-promotions-update-inventory-${data}`);
+
+  return buildApiResponseAsync<Promotion>(res);
+}
+
 export async function createPromotionXGetY(
   formData: FormData
 ): Promise<ApiResponse<Promotion>> {
