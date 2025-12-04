@@ -34,7 +34,7 @@ export async function getStorePromotions(
   return buildApiResponseAsync<GetStorePromotions>(res);
 }
 export async function getStorePromotionById(
-  promotionId: number
+  promotionId: string
 ): Promise<ApiResponse<Promotion>> {
   const res = await nextAuthFetch({
     url: backendRoutes.storePromotions.getPromotionById(promotionId),
@@ -65,7 +65,7 @@ export async function createPromotionInventory(
 }
 
 export async function updatePromotionInventory(
-  promotionId: number,
+  promotionId: string,
   data: FormData
 ): Promise<ApiResponse<Promotion>> {
   // Agregar el promotionId al FormData
@@ -177,7 +177,7 @@ export async function createPromotionPackage(
 }
 
 export async function updatePromotionGetY(
-  promotionId: number,
+  promotionId: string,
   data: FormData
 ): Promise<ApiResponse<Promotion>> {
   // Agregar el promotionId al FormData
@@ -197,7 +197,7 @@ export async function updatePromotionGetY(
   return buildApiResponseAsync<Promotion>(res);
 }
 export async function updatePromotionCode(
-  promotionId: number,
+  promotionId: string,
   data: FormData
 ): Promise<ApiResponse<Promotion>> {
   // Agregar el promotionId al FormData
@@ -217,7 +217,7 @@ export async function updatePromotionCode(
   return buildApiResponseAsync<Promotion>(res);
 }
 export async function updatePromotionAutomatic(
-  promotionId: number,
+  promotionId: string,
   data: FormData
 ): Promise<ApiResponse<Promotion>> {
   // Agregar el promotionId al FormData
@@ -237,7 +237,7 @@ export async function updatePromotionAutomatic(
   return buildApiResponseAsync<Promotion>(res);
 }
 export async function updatePromotionFree(
-  promotionId: number,
+  promotionId: string,
   data: FormData
 ): Promise<ApiResponse<Promotion>> {
   // Agregar el promotionId al FormData
@@ -257,7 +257,7 @@ export async function updatePromotionFree(
   return buildApiResponseAsync<Promotion>(res);
 }
 export async function updatePromotionOvervalue(
-  promotionId: number,
+  promotionId: string,
   data: FormData
 ): Promise<ApiResponse<Promotion>> {
   // Agregar el promotionId al FormData
@@ -277,7 +277,7 @@ export async function updatePromotionOvervalue(
   return buildApiResponseAsync<Promotion>(res);
 }
 export async function updatePromotionPackage(
-  promotionId: number,
+  promotionId: string,
   data: FormData
 ): Promise<ApiResponse<Promotion>> {
   // Agregar el promotionId al FormData
@@ -298,9 +298,8 @@ export async function updatePromotionPackage(
 }
 
 export async function deletePromotion(
-  promotionId: number
+  promotionId: string
 ): Promise<ApiResponse<ApiStatusResponse>> {
-  console.log(promotionId, "promocion delete");
   const res = await nextAuthFetch({
     url: backendRoutes.storePromotions.delete(promotionId),
     method: "DELETE",
@@ -309,7 +308,6 @@ export async function deletePromotion(
     useAuth: true,
   });
 
-  console.log("API delete response:", res);
   if (!res.ok)
     // Leer cuerpo del error para mensaje
     return handleApiServerError(res);
@@ -320,7 +318,7 @@ export async function deletePromotion(
 }
 
 export async function togglePromotionStatus(
-  promotionId: number
+  promotionId: string
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.storePromotions.toggle(),
@@ -344,7 +342,6 @@ export async function generatePromotionCode(): Promise<ApiResponse<string>> {
     useAuth: true,
   });
 
-  console.log(res);
   if (!res.ok) return handleApiServerError(res);
 
   revalidateTag("store-promotions-code");

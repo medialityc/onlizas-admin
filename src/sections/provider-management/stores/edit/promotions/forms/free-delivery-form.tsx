@@ -133,7 +133,7 @@ export default function FreeDeliveryForm({
         navigateAfterSave(router);
       } else {
         await mutations.update({
-          promotionId: promotionData?.id as number,
+          promotionId: promotionData?.id || "",
           data: formData,
         });
         navigateAfterSave(router);

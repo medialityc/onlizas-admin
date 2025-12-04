@@ -129,12 +129,12 @@ export default function PromotionCode({
       } else {
         if (mutations.updateAsync)
           await mutations.updateAsync({
-            promotionId: promotionData?.id as number,
+            promotionId: promotionData?.id || "",
             data: formData,
           });
         else
           await mutations.update({
-            promotionId: promotionData?.id as number,
+            promotionId: promotionData?.id || "",
             data: formData,
           });
         navigateAfterSave(router);

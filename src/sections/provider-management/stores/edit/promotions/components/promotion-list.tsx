@@ -5,7 +5,7 @@ interface PromotionListProps {
   promotions: Promotion[];
   isLoading: boolean;
   onEdit: (promotion: Promotion) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
   onViewDetails: (promotion: Promotion) => void;
 }
 
@@ -18,7 +18,7 @@ export default function PromotionList({
   isLoading,
   onEdit,
   onDelete,
-  onViewDetails
+  onViewDetails,
 }: PromotionListProps) {
   if (isLoading) {
     return (

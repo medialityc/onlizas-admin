@@ -30,7 +30,6 @@ export async function getOrdersByStore(
   params: IQueryable
 ): Promise<ApiResponse<GetAllOrders>> {
 
-  console.log(storeId, params)
   const url = new QueryParamsURLFactory(
     { ...params.pagination },
     backendRoutes.orders.supplierList(storeId)

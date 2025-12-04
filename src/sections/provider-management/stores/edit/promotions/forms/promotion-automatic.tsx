@@ -113,12 +113,12 @@ export default function AutomaticForm({
       } else {
         if (mutations.updatePromotionAsync)
           await mutations.updatePromotionAsync({
-            promotionId: promotionData?.id as number,
+            promotionId: promotionData?.id || "",
             data: formData,
           });
         else
           await mutations.updatePromotion({
-            promotionId: promotionData?.id as number,
+            promotionId: promotionData?.id || "",
             data: formData,
           });
         navigateAfterSave(router);

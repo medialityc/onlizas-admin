@@ -49,7 +49,7 @@ export function usePromotionsMutations(storeId: string | number) {
       promotionId,
       data,
     }: {
-      promotionId: number;
+      promotionId: string;
       data: FormData;
     }) => {
       const res = await updatePromotionAutomatic(promotionId, data);
@@ -69,7 +69,7 @@ export function usePromotionsMutations(storeId: string | number) {
 
   // Eliminar promoción
   const deleteMutation = useMutation({
-    mutationFn: async (promotionId: number) => {
+    mutationFn: async (promotionId: string) => {
       const res = await deletePromotion(promotionId);
       if (res.error) {
         throw new Error(res.message || res.detail || "Error desconocido");
@@ -87,7 +87,7 @@ export function usePromotionsMutations(storeId: string | number) {
 
   // Toggle status - LÓGICA MANTENIDA PARA USO EN FORMULARIOS
   const toggleMutation = useMutation({
-    mutationFn: async (promotionId: number) => {
+    mutationFn: async (promotionId: string) => {
       const res = await togglePromotionStatus(promotionId);
       if (res.error) {
         throw new Error(res.message || res.detail || "Error al cambiar estado");
