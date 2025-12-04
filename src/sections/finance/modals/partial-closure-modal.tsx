@@ -133,7 +133,7 @@ export function PartialClosureModal() {
       open={partialModal?.open}
       onClose={() => closeModal("partial-closure")}
       title="Cierre Parcial"
-      className="w-[980px] max-w-[95vw]"
+      className="w-[980px] max-w-[95vw] max-h-[85vh]"
     >
       <FormProvider {...methods}>
         <div className="flex flex-col gap-4">
@@ -266,7 +266,7 @@ export function PartialClosureModal() {
           )}
 
           {activeTab === "proveedores" && (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               <RHFAutocompleteFetcherInfinity
                 onFetch={(params) =>
                   getSuppliersWithPendingAccounts(
@@ -283,12 +283,21 @@ export function PartialClosureModal() {
                 multiple
               />
 
+              {/* Placeholder cuando no hay proveedores seleccionados o resultados */}
+              {(!suppliers || suppliers.length === 0) && (
+                <div className="rounded-lg border bg-gray-50 p-3 text-xs text-gray-600">
+                  Selecciona uno o más proveedores para cargar las cuentas
+                  pendientes. Puedes filtrar por nombre y luego marcar las
+                  cuentas a incluir en el cierre parcial.
+                </div>
+              )}
+
               {Array.isArray(suppliers) && suppliers.length > 0 && (
-                <div className="mt-2">
+                <div className="mt-1 flex-1 min-h-0">
                   <h3 className="text-sm font-semibold mb-2">
                     Cuentas por pagar seleccionables
                   </h3>
-                  <div className="space-y-4 max-h-[55vh] overflow-auto pr-2">
+                  <div className="space-y-4 max-h-[50vh] overflow-auto pr-2 relative">
                     {suppliers.map((supplier: any) => (
                       <div
                         key={supplier.userId}
@@ -302,6 +311,15 @@ export function PartialClosureModal() {
                             </p>
                           </div>
                           <div className="text-right text-xs text-gray-600">
+                            {/* Placeholder informativo para guiar al usuario */}
+                            <div className="mt-4 rounded-lg border bg-gray-50 p-3 text-xs text-gray-600">
+                              Esta sección muestra las cuentas pendientes por
+                              proveedor en el rango seleccionado. Selecciona las
+                              cuentas que desees incluir en el cierre parcial
+                              usando las casillas de la tabla. El resumen
+                              superior actualizará el total a pagar y el conteo
+                              de cuentas seleccionadas.
+                            </div>
                             <div>
                               Cuenta(s) pendientes:{" "}
                               {supplier.totalPendingAccounts}
@@ -314,7 +332,7 @@ export function PartialClosureModal() {
 
                         <div className="mt-3">
                           <table className="w-full text-sm">
-                            <thead>
+                            <thead className="sticky top-0 z-10 bg-white shadow-sm">
                               <tr className="text-left text-gray-600">
                                 <th className="py-1">Seleccionar</th>
                                 <th className="py-1">Descripción</th>
@@ -381,11 +399,7 @@ export function PartialClosureModal() {
                       </div>
                     ))}
                   </div>
-                  {(!suppliers || suppliers.length === 0) && (
-                    <div className="text-sm text-gray-500">
-                      No hay proveedores en el rango seleccionado.
-                    </div>
-                  )}
+                  {/* Fin lista proveedores */}
                 </div>
               )}
             </div>
