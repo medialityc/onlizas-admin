@@ -26,3 +26,25 @@ export type PlatformAccount = {
 export type GetPlatformAccounts = {
   data: PlatformAccount[];
 };
+
+export type SupplierAccount = {
+  id: string;
+  name: string;
+  accountNumber: string;
+  bank: string;
+  isPrimaryAccount: boolean;
+  supplierId: string;
+  supplierName?: string;
+  accountType?: string | null;
+  description?: string | null;
+  active: boolean;
+};
+
+export type GetSupplierAccounts = {
+  data: SupplierAccount[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+};

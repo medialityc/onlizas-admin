@@ -34,8 +34,9 @@ import {
   PERMISSION_PRODUCT,
   PERMISSION_STORE,
   PERMISSION_WAREHOUSE,
+  PERMISSION_SUPPLIER_ACCOUNTS,
 } from "@/lib/permissions";
-import { CalendarRange, ClipboardList, WalletCards } from "lucide-react";
+import { CalendarRange, ClipboardList, WalletCards, Landmark } from "lucide-react";
 
 export const sidebarSections: SidebarSection[] = [
   {
@@ -184,6 +185,13 @@ export const sidebarSections: SidebarSection[] = [
         path: paths.finance.entityAccounts,
         icon: <WalletCards className="size-4" />,
         permissions: PERMISSION_ADMIN,
+      },
+      {
+        id: "my-bank-accounts",
+        label: "Mis Cuentas Bancarias",
+        path: paths.provider.bankAccounts.list,
+        icon: <Landmark className="size-4" />,
+        permissions: PERMISSION_SUPPLIER_ACCOUNTS,
       },
     ],
   },
