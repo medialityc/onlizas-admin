@@ -1,12 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import {
-  createPromotionXGetY,
-  updatePromotionGetY,
+  createPromotionInventory,
+  updatePromotionInventory,
 } from "@/services/promotions";
 
-export function usePromotionXGetYMutations(storeId: string) {
-  // Cambiado a string para GUIDs
+export function usePromotionInventoryMutations(storeId: string) {
   const queryClient = useQueryClient();
 
   const invalidate = () => {
@@ -22,17 +21,17 @@ export function usePromotionXGetYMutations(storeId: string) {
 
   const createMutation = useMutation({
     mutationFn: async (formData: FormData) => {
-      const res = await createPromotionXGetY(formData);
+      const res = await createPromotionInventory(formData);
       if (res.error)
         throw new Error(res.message || res.detail || "Error desconocido");
       return res;
     },
     onSuccess: () => {
       invalidate();
-      toast.success("Promoción de tipo X-get-Y creada");
+      toast.success("Promoción de inventario creada");
     },
     onError: (err: any) =>
-      toast.error(err?.message || "Error al crear promoción X-get-Y"),
+      toast.error(err?.message || "Error al crear promoción inventario"),
   });
 
   const updateMutation = useMutation({
@@ -43,17 +42,17 @@ export function usePromotionXGetYMutations(storeId: string) {
       promotionId: number;
       data: FormData;
     }) => {
-      const res = await updatePromotionGetY(promotionId, data);
+      const res = await updatePromotionInventory(promotionId, data);
       if (res.error)
         throw new Error(res.message || res.detail || "Error desconocido");
       return res;
     },
     onSuccess: () => {
       invalidate();
-      toast.success("Promoción X-get-Y actualizada");
+      toast.success("Promoción de inventario actualizada");
     },
     onError: (err: any) =>
-      toast.error(err?.message || "Error al actualizar promoción X-get-Y"),
+      toast.error(err?.message || "Error al actualizar promoción inventario"),
   });
 
   return {
