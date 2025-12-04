@@ -2,7 +2,7 @@ import { PaginatedResponse } from "./common";
 
 // Tipo principal de promoción (actualizado para coincidir con el JSON del backend)
 export type Promotion = {
-  id: number;
+  id: string; // Cambiado a string para GUIDs
   storeId: number;
   storeName: string;
   active: boolean;

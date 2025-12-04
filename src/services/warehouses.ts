@@ -114,7 +114,6 @@ export async function getAllSupplierWarehouses(
     { ...params, role: "ONL_SUPPLIER" },
     backendRoutes.warehouses.listSupplier
   ).build();
-  console.log(url);
 
   const res = await nextAuthFetch({
     url,

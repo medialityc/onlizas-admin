@@ -10,11 +10,17 @@ export function usePromotionModals() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  
+
   // Estados de entidades seleccionadas
-  const [selectedPromotion, setSelectedPromotion] = useState<Promotion | null>(null);
-  const [editingPromotion, setEditingPromotion] = useState<Promotion | null>(null);
-  const [promotionToDelete, setPromotionToDelete] = useState<number | null>(null);
+  const [selectedPromotion, setSelectedPromotion] = useState<Promotion | null>(
+    null
+  );
+  const [editingPromotion, setEditingPromotion] = useState<Promotion | null>(
+    null
+  );
+  const [promotionToDelete, setPromotionToDelete] = useState<string | null>(
+    null
+  );
 
   // Handlers para abrir modales
   const openCreateModal = useCallback(() => {
@@ -32,7 +38,7 @@ export function usePromotionModals() {
     setDetailsModalOpen(true);
   }, []);
 
-  const openDeleteModal = useCallback((promotionId: number) => {
+  const openDeleteModal = useCallback((promotionId: string) => {
     setPromotionToDelete(promotionId);
     setDeleteModalOpen(true);
   }, []);
@@ -61,13 +67,13 @@ export function usePromotionModals() {
     selectedPromotion,
     editingPromotion,
     promotionToDelete,
-    
+
     // Handlers para abrir
     openCreateModal,
     openEditModal,
     openDetailsModal,
     openDeleteModal,
-    
+
     // Handlers para cerrar
     closeCreateModal,
     closeDetailsModal,

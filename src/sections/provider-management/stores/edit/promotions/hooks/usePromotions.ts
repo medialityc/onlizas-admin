@@ -60,7 +60,7 @@ export function usePromotions(storeId: string, initialParams: PromotionSearchPar
 
   // Mutation para actualizar promoción con FormData
   const updateMutation = useMutation({
-    mutationFn: async ({ promotionId, data }: { promotionId: number; data: FormData }) => {
+    mutationFn: async ({ promotionId, data }: { promotionId: string; data: FormData }) => {
       const res = await updatePromotionCode(promotionId, data)
       if (res.error) {
         throw new Error(res.message || res.detail || "Error desconocido");
@@ -78,7 +78,7 @@ export function usePromotions(storeId: string, initialParams: PromotionSearchPar
 
   // Mutation para eliminar promoción
   const deleteMutation = useMutation({
-    mutationFn: async (promotionId: number) => {
+    mutationFn: async (promotionId: string) => {
       const res = await deletePromotion(promotionId);
       console.log(res)
       // Si hay error en la respuesta, lanzarlo para que React Query lo maneje
@@ -100,7 +100,7 @@ export function usePromotions(storeId: string, initialParams: PromotionSearchPar
 
   // Mutation para toggle status
   const toggleMutation = useMutation({
-    mutationFn: (promotionId: number) => togglePromotionStatus(promotionId),
+    mutationFn: (promotionId: string) => togglePromotionStatus(promotionId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["store-promotions", storeId], exact: false });
       queryClient.invalidateQueries({ queryKey: ["store-promotions-summary", storeId] });
@@ -163,7 +163,7 @@ export function usePromotions(storeId: string, initialParams: PromotionSearchPar
   }, []);
 
   // Toggle con optimistic update inteligente que respeta filtros
-  const handleToggle = useCallback(async (id: number, checked: boolean) => {
+  const handleToggle = useCallback(async (id: string, checked: boolean) => {
     // Verificar si hay filtro activo que afecte el resultado
     const hasActiveFilter = searchParams.active !== undefined;
     const willMatchFilter = hasActiveFilter ? searchParams.active === checked : true;
