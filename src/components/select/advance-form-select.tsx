@@ -24,6 +24,7 @@ export interface SearchSelectProps<T = any> {
   loading?: boolean;
   required?: boolean;
   multiple?: boolean;
+  returnSelectedObject?: boolean;
   onChangeOptional?: () => void;
   onOptionSelected?: (option: T) => void;
   onScrollEnd?: () => void;
@@ -51,6 +52,7 @@ export function AdvancedSearchSelect<T>({
   loading,
   required,
   multiple = false,
+  returnSelectedObject = false,
   onChangeOptional,
   onScrollEnd,
   renderOption,
@@ -118,17 +120,25 @@ export function AdvancedSearchSelect<T>({
     onChange: (value: any) => void
   ) => {
     setIsClickingOption(true);
-    const value = option[objectValueKey];
+    const primitiveValue = option[objectValueKey];
+    const emittedValue = returnSelectedObject ? option : primitiveValue;
 
     if (multiple) {
       const currentArray = Array.isArray(currentValue) ? currentValue : [];
-      const newValue = currentArray.includes(value)
-        ? currentArray.filter((v) => v !== value)
-        : [...currentArray, value];
+      const includesFn = (v: any) => {
+        if (returnSelectedObject) {
+          return v && v[objectValueKey] === primitiveValue;
+        }
+        return v === primitiveValue;
+      };
+
+      const newValue = currentArray.some(includesFn)
+        ? currentArray.filter((v: any) => !includesFn(v))
+        : [...currentArray, emittedValue];
       onChange(newValue);
       if (setQuery) setQuery("");
     } else {
-      onChange(value);
+      onChange(emittedValue);
       if (setQuery) setQuery(getDisplayValue(option));
       setIsOpen(false);
     }
@@ -145,7 +155,12 @@ export function AdvancedSearchSelect<T>({
   ) => {
     if (!multiple) return;
     const newValue = Array.isArray(currentValue)
-      ? currentValue.filter((v) => v !== valueToRemove)
+      ? currentValue.filter((v) => {
+          if (returnSelectedObject) {
+            return v && v[objectValueKey] !== valueToRemove;
+          }
+          return v !== valueToRemove;
+        })
       : [];
     onChange(newValue);
     onChangeOptional?.();
@@ -173,8 +188,11 @@ export function AdvancedSearchSelect<T>({
     const selectedValues = Array.isArray(currentValue)
       ? currentValue
       : [currentValue];
+    const selectedIds = selectedValues.map((v: any) =>
+      returnSelectedObject ? v[objectValueKey] : v
+    );
     return uniqueOptions.filter((opt) =>
-      selectedValues.includes(opt[objectValueKey])
+      selectedIds.includes(opt[objectValueKey])
     );
   };
 
@@ -285,8 +303,18 @@ export function AdvancedSearchSelect<T>({
                     filteredOptions.map((option) => {
                       const isSelected = multiple
                         ? Array.isArray(field.value) &&
-                          field.value.includes(option[objectValueKey])
-                        : field.value === option[objectValueKey];
+                          (returnSelectedObject
+                            ? field.value.some(
+                                (v: any) =>
+                                  v &&
+                                  v[objectValueKey] === option[objectValueKey]
+                              )
+                            : field.value.includes(option[objectValueKey]))
+                        : returnSelectedObject
+                          ? field.value &&
+                            field.value[objectValueKey] ===
+                              option[objectValueKey]
+                          : field.value === option[objectValueKey];
 
                       return (
                         <li

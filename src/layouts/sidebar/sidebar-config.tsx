@@ -70,6 +70,13 @@ export const sidebarSections: SidebarSection[] = [
         icon: <BriefcaseIcon className="h-4 w-4" />,
         permissions: PERMISSION_ADMIN,
       },
+      {
+        id: "orders",
+        label: "Órdenes",
+        path: paths.dashboard.orders.list,
+        icon: <ClipboardDocumentIcon className="h-4 w-4" />,
+        permissions: PERMISSION_ORDERS,
+      },
     ],
   },
   {
@@ -125,13 +132,6 @@ export const sidebarSections: SidebarSection[] = [
     label: "Inventario y Logística",
     items: [
       {
-        id: "orders",
-        label: "Órdenes",
-        path: paths.dashboard.orders.list,
-        icon: <ClipboardDocumentIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ORDERS,
-      },
-      {
         id: "inventory",
         label: "Inventario",
         path: paths.dashboard.inventory.all,
@@ -181,7 +181,7 @@ export const sidebarSections: SidebarSection[] = [
       },
       {
         id: "finance-entity-accounts",
-        label: "Cuentas de entidades",
+        label: "Cuentas",
         path: paths.finance.entityAccounts,
         icon: <WalletCards className="size-4" />,
         permissions: PERMISSION_ADMIN,
