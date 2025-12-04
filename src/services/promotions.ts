@@ -10,14 +10,13 @@ import { revalidateTag } from "next/cache";
 import {
   Promotion,
   GetStorePromotions,
-  UpdatePromotionRequest
+  UpdatePromotionRequest,
 } from "@/types/promotions";
 
 export async function getStorePromotions(
   storeId: string | number,
   params: IQueryable
 ): Promise<ApiResponse<GetStorePromotions>> {
-
   const url = new QueryParamsURLFactory(
     { ...params, storeId },
     backendRoutes.storePromotions.list()
@@ -27,7 +26,7 @@ export async function getStorePromotions(
     url,
     method: "GET",
     useAuth: true,
-    next: { tags: ["store-promotions", `store-promotions-${storeId}`] },
+    next: { tags: ["store-promotions", "store-promotions-by-store"] },
   });
 
   if (!res.ok) return handleApiServerError(res);
@@ -35,14 +34,13 @@ export async function getStorePromotions(
   return buildApiResponseAsync<GetStorePromotions>(res);
 }
 export async function getStorePromotionById(
-  promotionId: number,
-  
+  promotionId: number
 ): Promise<ApiResponse<Promotion>> {
   const res = await nextAuthFetch({
-    url:backendRoutes.storePromotions.getPromotionById(promotionId),
+    url: backendRoutes.storePromotions.getPromotionById(promotionId),
     method: "GET",
     useAuth: true,
-    next: { tags: ["store-promotions-byid"]},
+    next: { tags: ["store-promotions-byid"] },
   });
 
   if (!res.ok) return handleApiServerError(res);
@@ -61,7 +59,7 @@ export async function createPromotionInventory(
   });
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(`store-promotions-inventory-${formData}`);
+  revalidateTag("store-promotions-inventory");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -82,7 +80,7 @@ export async function updatePromotionInventory(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(`store-promotions-update-inventory-${data}`);
+  revalidateTag("store-promotions-update-inventory");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -95,11 +93,10 @@ export async function createPromotionXGetY(
     method: "POST",
     data: formData,
     useAuth: true,
-
   });
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(`store-promotions-buyX-${formData}`);
+  revalidateTag("store-promotions-buyX");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -111,11 +108,10 @@ export async function createPromotionCode(
     method: "POST",
     data: formData,
     useAuth: true,
-
   });
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(`store-promotions-code-${formData}`);
+  revalidateTag("store-promotions-code");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -127,11 +123,10 @@ export async function createPromotionAutomatic(
     method: "POST",
     data: formData,
     useAuth: true,
-
   });
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(`store-promotions-fixed-${formData}`);
+  revalidateTag("store-promotions-fixed");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -143,11 +138,10 @@ export async function createPromotionFree(
     method: "POST",
     data: formData,
     useAuth: true,
-
   });
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(`store-promotions-free-${formData}`);
+  revalidateTag("store-promotions-free");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -159,11 +153,10 @@ export async function createPromotionOvervalue(
     method: "POST",
     data: formData,
     useAuth: true,
-
   });
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(`store-promotions-overvalue-${formData}`);
+  revalidateTag("store-promotions-overvalue");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -175,11 +168,10 @@ export async function createPromotionPackage(
     method: "POST",
     data: formData,
     useAuth: true,
-
   });
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(`store-promotions-package-${formData}`);
+  revalidateTag("store-promotions-package");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -200,8 +192,7 @@ export async function updatePromotionGetY(
 
   if (!res.ok) return handleApiServerError(res);
 
-
-  revalidateTag(`store-promotions-update-gety-${data}`);
+  revalidateTag("store-promotions-update-gety");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -221,7 +212,7 @@ export async function updatePromotionCode(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(`store-promotions-update-code-${data}`);
+  revalidateTag("store-promotions-update-code");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -241,8 +232,7 @@ export async function updatePromotionAutomatic(
 
   if (!res.ok) return handleApiServerError(res);
 
-
-  revalidateTag(`store-promotions-update-fixed-${data}`);
+  revalidateTag("store-promotions-update-fixed");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -262,8 +252,7 @@ export async function updatePromotionFree(
 
   if (!res.ok) return handleApiServerError(res);
 
-
-  revalidateTag(`store-promotions-update-free-${data}`);
+  revalidateTag("store-promotions-update-free");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -283,8 +272,7 @@ export async function updatePromotionOvervalue(
 
   if (!res.ok) return handleApiServerError(res);
 
-
-  revalidateTag(`store-promotions-update-overvalue-${data}`);
+  revalidateTag("store-promotions-update-overvalue");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -304,17 +292,15 @@ export async function updatePromotionPackage(
 
   if (!res.ok) return handleApiServerError(res);
 
-
-  revalidateTag(`store-promotions-update-package-${data}`);
+  revalidateTag("store-promotions-update-package");
 
   return buildApiResponseAsync<Promotion>(res);
 }
 
-
 export async function deletePromotion(
   promotionId: number
 ): Promise<ApiResponse<ApiStatusResponse>> {
-  console.log(promotionId, "promocion delete")
+  console.log(promotionId, "promocion delete");
   const res = await nextAuthFetch({
     url: backendRoutes.storePromotions.delete(promotionId),
     method: "DELETE",
@@ -323,19 +309,17 @@ export async function deletePromotion(
     useAuth: true,
   });
 
-  console.log('API delete response:', res);
+  console.log("API delete response:", res);
   if (!res.ok)
     // Leer cuerpo del error para mensaje
     return handleApiServerError(res);
 
   revalidateTag("store-promotions");
 
-
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
 export async function togglePromotionStatus(
-
   promotionId: number
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
@@ -350,7 +334,6 @@ export async function togglePromotionStatus(
 
   revalidateTag("store-promotions");
 
-
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
@@ -361,7 +344,7 @@ export async function generatePromotionCode(): Promise<ApiResponse<string>> {
     useAuth: true,
   });
 
-  console.log(res)
+  console.log(res);
   if (!res.ok) return handleApiServerError(res);
 
   revalidateTag("store-promotions-code");
