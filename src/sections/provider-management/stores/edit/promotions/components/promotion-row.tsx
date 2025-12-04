@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 interface PromotionRowProps {
   p: Promotion;
   onEdit?: (promotion: Promotion) => void;
-  onDelete?: (id: number) => void;
+  onDelete?: (id: string) => void;
   onViewDetails?: (promotion: Promotion) => void;
 }
 

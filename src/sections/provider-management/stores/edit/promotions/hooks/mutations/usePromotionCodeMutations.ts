@@ -40,7 +40,7 @@ export function usePromotionCodeMutations(storeId: string) {
       promotionId,
       data,
     }: {
-      promotionId: number;
+      promotionId: string;
       data: FormData;
     }) => {
       const res = await updatePromotionCode(promotionId, data);

@@ -39,7 +39,7 @@ export function usePromotionFreeMutations(storeId: string) {
       promotionId,
       data,
     }: {
-      promotionId: number;
+      promotionId: string;
       data: FormData;
     }) => {
       const res = await updatePromotionFree(promotionId, data);
