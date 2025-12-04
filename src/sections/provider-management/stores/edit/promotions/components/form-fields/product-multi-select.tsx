@@ -1,5 +1,5 @@
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import { getAllProducts, getAllProductsBySupplier } from "@/services/products";
+import { getAllProducts, getAllProductsBySupplier, getAllProductsVariants } from "@/services/products";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
@@ -29,10 +29,10 @@ export default function ProductSelect({
 
     if (isAdmin) {
       // Para admin, usar endpoint de admin
-      return getAllProducts(params); // true = isAdmin
+      return getAllProductsVariants(params); // true = isAdmin
     } else {
       // Para provider, usar endpoint normal
-      return getAllProductsBySupplier(supplierId, params); // false = isProvider
+      return getAllProductsVariants( params); // false = isProvider
     }
   };
 
@@ -43,7 +43,7 @@ export default function ProductSelect({
       placeholder="Buscar productos..."
       onFetch={fetchProducts}
       objectValueKey="id"
-      objectKeyLabel="name"
+      objectKeyLabel="productName"
       multiple={multiple}
       queryKey="products-promotion"
     />
