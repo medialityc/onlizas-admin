@@ -44,8 +44,13 @@ export default function PromotionRow({
       return res;
     },
     onSuccess: () => {
+      // Invalidar tanto las promociones como el summary para las métricas
       queryClient.invalidateQueries({
         queryKey: ["store-promotions"],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["store-promotions-summary"],
         exact: false,
       });
       toast.success(

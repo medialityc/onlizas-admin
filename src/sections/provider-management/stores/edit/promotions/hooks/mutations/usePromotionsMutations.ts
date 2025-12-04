@@ -2,9 +2,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import {
   deletePromotion,
-  togglePromotionStatus, 
+  togglePromotionStatus,
   updatePromotionAutomatic,
-  createPromotionAutomatic
+  createPromotionAutomatic,
 } from "@/services/promotions";
 
 /**
@@ -16,8 +16,13 @@ export function usePromotionsMutations(storeId: string | number) {
 
   // Función helper para invalidar queries
   const invalidatePromotionQueries = () => {
-    queryClient.invalidateQueries({ queryKey: ["store-promotions", storeId], exact: false });
-    queryClient.invalidateQueries({ queryKey: ["store-promotions-summary", storeId] });
+    queryClient.invalidateQueries({
+      queryKey: ["store-promotions", storeId],
+      exact: false,
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["store-promotions-summary", storeId],
+    });
   };
 
   // Crear promoción
@@ -40,7 +45,13 @@ export function usePromotionsMutations(storeId: string | number) {
 
   // Actualizar promoción
   const updateMutation = useMutation({
-    mutationFn: async ({ promotionId, data }: { promotionId: number; data: FormData }) => {
+    mutationFn: async ({
+      promotionId,
+      data,
+    }: {
+      promotionId: number;
+      data: FormData;
+    }) => {
       const res = await updatePromotionAutomatic(promotionId, data);
       if (res.error) {
         throw new Error(res.message || res.detail || "Error desconocido");
@@ -84,8 +95,8 @@ export function usePromotionsMutations(storeId: string | number) {
       return res;
     },
     onSuccess: () => {
-      // Invalidación simple para formularios futuros
-      //invalidatePromotionQueries();
+      // Invalidar queries para que se actualicen las métricas
+      invalidatePromotionQueries();
       toast.success("Estado actualizado exitosamente");
     },
     onError: (error: any) => {
@@ -103,7 +114,7 @@ export function usePromotionsMutations(storeId: string | number) {
     deletePromotionAsync: deleteMutation.mutateAsync,
     toggleStatus: toggleMutation.mutate,
     toggleStatusAsync: toggleMutation.mutateAsync,
-    
+
     // States
     isCreating: createMutation.isPending,
     isUpdating: updateMutation.isPending,
