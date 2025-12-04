@@ -9,6 +9,7 @@ export type Promotion = {
   name: string;
   description: string;
   promotionType?: number; // Campo del backend que indica el tipo de promoción (0-5)
+  targetType?: number; // Nuevo campo: 1=ProductVariant, 2=Inventory
   startDate?: string; // Opcional si no siempre viene
   endDate?: string;   // Opcional si no siempre viene
   discountValue: number;

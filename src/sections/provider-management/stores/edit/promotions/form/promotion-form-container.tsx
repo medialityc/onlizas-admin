@@ -52,12 +52,15 @@ export default function PromotionFormContainer({
   // create/update are handled by type-specific hooks inside each form
 
   // En modo creación, usar el tipo proporcionado
-  // En modo edición, mapear el promotionType del backend
+  // En modo edición, mapear el targetType del backend
   const currentType =
     mode === "create"
       ? promotionType
-      : promotionData?.promotionType
-        ? mapBackendPromotionType(promotionData.promotionType)
+      : promotionData?.targetType || promotionData?.promotionType
+        ? mapBackendPromotionType(
+            promotionData.targetType,
+            promotionData.promotionType
+          )
         : promotionType;
 
   // Debug: mostrar información del tipo detectado
@@ -68,6 +71,7 @@ export default function PromotionFormContainer({
         promotionData: {
           id: promotionData.id,
           name: promotionData.name,
+          targetType: promotionData.targetType,
           promotionType: promotionData.promotionType,
           discountType: promotionData.discountType,
         },

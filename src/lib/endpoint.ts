@@ -81,6 +81,7 @@ export const backendRoutes = {
   products: {
     create: `${process.env.NEXT_PUBLIC_API_URL}products`, // POST
     list: `${process.env.NEXT_PUBLIC_API_URL}products/admin`, // GET
+    productVariants: `${process.env.NEXT_PUBLIC_API_URL}product-variants`,
     listBySupplier: (supplierId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}products/admin/${supplierId}`, // GET
     byId: (id: string | number) =>
