@@ -13,6 +13,7 @@ import {
   CategoryFeaturesResponse,
   AssignSuppliersRequest,
   CanDeleteResponse,
+  ProductVariantsApiResponse,
 } from "@/types/products";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
@@ -35,6 +36,25 @@ export async function getAllProducts(
   if (!res.ok) return handleApiServerError(res);
 
   return buildApiResponseAsync<GetAllProducts>(res);
+}
+
+export async function getAllProductsVariants(
+  params: IQueryable
+): Promise<ApiResponse<ProductVariantsApiResponse>> {
+  const url = new QueryParamsURLFactory(
+    params,
+    backendRoutes.products.productVariants
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    useAuth: true,
+    next: { tags: ["product-variants"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<ProductVariantsApiResponse>(res);
 }
 
 export async function getAllProductsBySupplier(

@@ -134,6 +134,62 @@ export type ProductApiResponse = {
 };
 
 export type GetAllProducts = ProductApiResponse;
+
+// Tipo para las variantes de productos con la nueva estructura del endpoint
+export type ProductVariantItem = {
+  id: string;
+  productId: string;
+  productName: string;
+  costPrice: number;
+  price: number;
+  upc: string;
+  ean: string;
+  condition: number;
+  limitPurchaseLimit: number;
+  warranty: {
+    id: number;
+    isWarranty: boolean;
+    warrantyPrice: number;
+    warrantyTime: number;
+  };
+  isPrime: boolean;
+  stock: number;
+  inventoryId: string;
+  storeId: string;
+  storeName: string;
+  details: {
+    [key: string]: string;
+  };
+  images: string[];
+  sku: string;
+  weight: number;
+  volume: number;
+  isActive: boolean;
+  deliveryType: number;
+  zoneId: string;
+  zone: {
+    id: string;
+    deliveryAmount: number;
+    districtsIds: string[];
+    userId: string;
+    userName: string;
+    subsystemId: string;
+    subsystemName: string;
+    active: boolean;
+    createdDatetime: string;
+    updatedDatetime: string;
+  };
+};
+
+export type ProductVariantsApiResponse = {
+  data: ProductVariantItem[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+};
+
 export type GetAllProductVariant = Omit<ProductApiResponse, "data"> & {
   data: InventoryProductItem[];
 };

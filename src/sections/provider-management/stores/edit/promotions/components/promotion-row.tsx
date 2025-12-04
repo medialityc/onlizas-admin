@@ -132,7 +132,7 @@ export default function PromotionRow({
             </p>
           )}
           <span className="text-xs font-normal text-gray-500 dark:text-gray-300 uppercase tracking-wide">
-            Tipo: {getPromotionTypeName(p.promotionType)}
+            Tipo: {getPromotionTypeName(p.targetType, p.promotionType)}
           </span>
 
           <div className="text-[11px] text-gray-500 mt-1">
