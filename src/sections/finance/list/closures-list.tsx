@@ -5,6 +5,9 @@ import { useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { paths } from "@/config/paths";
 import { GetAllClosures, Closure } from "@/types/finance";
+import { useModalState } from "@/hooks/use-modal-state";
+import { PartialClosureModal } from "../modals/partial-closure-modal";
+import { formatDate } from "@/utils/format";
 
 interface ClosuresListProps {
   data?: GetAllClosures;
@@ -18,6 +21,8 @@ export function ClosuresList({
   onSearchParamsChange,
 }: ClosuresListProps) {
   const router = useRouter();
+  const { getModalState, openModal, closeModal } = useModalState();
+  const partialModal = getModalState("partial-closure");
 
   const handleViewAccounts = useCallback(
     (row: Closure) => {
@@ -31,9 +36,30 @@ export function ClosuresList({
       {
         accessor: "createdAt",
         title: "Fecha",
-        render: (r) => new Date(r.createdAt).toLocaleDateString(),
+        render: (r) =>
+          formatDate((r as any).closureDate ?? (r as any).createdAt),
       },
-      { accessor: "type", title: "Tipo" },
+      {
+        accessor: "period",
+        title: "Periodo",
+        render: (r) => (
+          <div className="text-xs">
+            <div>Inicio: {formatDate((r as any).periodStartDate)}</div>
+            <div>Fin: {formatDate((r as any).periodEndDate)}</div>
+          </div>
+        ),
+      },
+      {
+        accessor: "type",
+        title: "Tipo",
+        render: (r) => (r as any).typeName ?? r.type,
+      },
+      {
+        accessor: "status",
+        title: "Estado",
+        render: (r) => (r as any).statusName ?? (r as any).status,
+      },
+      { accessor: "totalAccounts", title: "Total Cuentas" },
       {
         accessor: "pendingAccounts",
         title: "Pendientes",
@@ -45,18 +71,33 @@ export function ClosuresList({
       {
         accessor: "errorAccounts",
         title: "Errores",
-        render: (r) => <span className="text-red-700">{r.errorAccounts}</span>,
+        render: (r) => (
+          <span className="text-red-700">
+            {(r as any).failedAccounts ?? (r as any).errorAccounts}
+          </span>
+        ),
+      },
+      {
+        accessor: "totalAmount",
+        title: "Total a Pagar",
+        render: (r) =>
+          ((r as any).totalAmount ?? 0).toLocaleString(undefined, {
+            style: "currency",
+            currency: "USD",
+          }),
       },
       {
         accessor: "actions",
         title: "Acciones",
         render: (r) => (
-          <button
-            className="px-2 py-1 text-xs rounded border"
-            onClick={() => handleViewAccounts(r)}
-          >
-            Ver cuentas
-          </button>
+          <div className="flex gap-2">
+            <button
+              className="px-2 py-1 text-xs rounded border"
+              onClick={() => handleViewAccounts(r)}
+            >
+              Ver cuentas
+            </button>
+          </div>
         ),
       },
     ],
@@ -64,13 +105,18 @@ export function ClosuresList({
   );
 
   return (
-    <DataGrid
-      data={data}
-      columns={columns}
-      searchParams={searchParams}
-      onSearchParamsChange={onSearchParamsChange}
-      searchPlaceholder="Buscar cierres..."
-      emptyText="No se encontraron cierres"
-    />
+    <>
+      <DataGrid
+        data={data}
+        columns={columns}
+        searchParams={searchParams}
+        onSearchParamsChange={onSearchParamsChange}
+        onCreate={() => openModal("partial-closure")}
+        createText="Crear Cierre Parcial"
+        searchPlaceholder="Buscar cierres..."
+        emptyText="No se encontraron cierres"
+      />
+      <PartialClosureModal />
+    </>
   );
 }

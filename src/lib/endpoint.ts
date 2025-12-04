@@ -512,6 +512,11 @@ export const backendRoutes = {
   finance: {
     closures: {
       list: `${process.env.NEXT_PUBLIC_API_URL}closures`, // GET paginated
+      summary: `${process.env.NEXT_PUBLIC_API_URL}closures/dashboard/summary`,
+      partialCreate: `${process.env.NEXT_PUBLIC_API_URL}closures/partial`, // POST
+    },
+    approval: {
+      suppliersWithPending: `${process.env.NEXT_PUBLIC_API_URL}approval/users-with-pending-accounts`, // GET
     },
     platformAccounts: {
       list: `${process.env.NEXT_PUBLIC_API_URL}platform-accounts`,

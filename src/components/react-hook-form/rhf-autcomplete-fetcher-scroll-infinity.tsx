@@ -33,6 +33,7 @@ interface Props<T> extends Omit<AutocompleteProps, "data" | "renderOption"> {
   exclude?: string[];
   required?: boolean;
   multiple?: boolean;
+  returnSelectedObject?: boolean;
   dataTest?: string;
   onChangeOptional?: VoidFunction;
   onOptionSelected?: (option: T) => void;
@@ -68,6 +69,7 @@ export default function RHFAutocompleteFetcherInfinity<T>({
   pillsClassname,
   renderMultiplesValues,
   multiple = false,
+  returnSelectedObject = false,
   queryKey = "no-cache",
   enabled = true,
   inputClassName,
@@ -164,6 +166,7 @@ export default function RHFAutocompleteFetcherInfinity<T>({
       options={options}
       loading={isLoading || isFetchingNextPage}
       objectValueKey={objectValueKey}
+      returnSelectedObject={returnSelectedObject}
       onScrollEnd={handleScrollEnd}
       onChangeOptional={onChangeOptional}
       onOptionSelected={onOptionSelected}

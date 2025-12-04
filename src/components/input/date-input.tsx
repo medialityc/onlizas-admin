@@ -240,7 +240,8 @@ export default function DateInput({
                   return !isWithinRange(date);
                 }}
                 initialFocus
-                month={selectedDate ?? new Date(2000, 0, 1)}
+                // Usar defaultMonth para permitir navegación interna sin controlar el mes
+                defaultMonth={selectedDate ?? new Date()}
               />
             </div>
           )}

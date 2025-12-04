@@ -5,8 +5,9 @@ import { backendRoutes } from "@/lib/endpoint";
 import { QueryParamsURLFactory } from "@/lib/request";
 import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
-import { GetAllClosures } from "@/types/finance";
+import { GetAllClosures, ClosuresSummary } from "@/types/finance";
 import { nextAuthFetch } from "../utils/next-auth-fetch";
+import { PaginatedResponse } from "@/types/common";
 
 export async function getAllClosures(
   params: IQueryable
@@ -25,4 +26,122 @@ export async function getAllClosures(
 
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<GetAllClosures>(res);
+}
+
+export type SuppliersWithPendingResponse = {
+  userId: string;
+  userName: string;
+  email: string;
+  accounts: [
+    {
+      accountId: string;
+      description: string;
+      totalAmount: number;
+      createdDate: string;
+      dueDate: string;
+      subOrdersCount: number;
+      orderIds: string[];
+    },
+  ];
+  totalPendingAccounts: number;
+  totalPendingAmount: number;
+  oldestDueDate: string;
+  newestDueDate: string;
+};
+
+export async function getSuppliersWithPendingAccounts(
+  params: IQueryable,
+  fromDate?: string,
+  toDate?: string
+): Promise<ApiResponse<PaginatedResponse<SuppliersWithPendingResponse>>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.finance.approval.suppliersWithPending
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["suppliers-with-pending-accounts"] },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync(res);
+}
+
+export async function createPartialClosure(data: {
+  periodStartDate: string;
+  periodEndDate: string;
+  notes?: string;
+  suppliers: Array<{ supplierId: string; amountToPay: number }>;
+}) {
+  const res = await nextAuthFetch({
+    url: backendRoutes.finance.closures.partialCreate,
+    method: "POST",
+    useAuth: true,
+    data: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<{ status: number }>(res);
+}
+
+// Alternative payload: suppliers mapped by accountId (as requested)
+export async function createPartialClosureByAccounts(data: {
+  periodStartDate: string;
+  periodEndDate: string;
+  notes?: string;
+  suppliers: Array<{ supplierId: string; accountId: string }>;
+}) {
+  const res = await nextAuthFetch({
+    url: backendRoutes.finance.closures.partialCreate,
+    method: "POST",
+    useAuth: true,
+    data: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<{ status: number }>(res);
+}
+
+export async function getClosureAccounts(
+  closureId: string
+): Promise<ApiResponse<any>> {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}closures/${closureId}/accounts`;
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["closure-accounts", closureId] },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync(res);
+}
+
+export async function getClosureStatement(
+  closureId: string
+): Promise<ApiResponse<any>> {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}closures/${closureId}/statement`;
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["closure-statement", closureId] },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync(res);
+}
+
+export async function getClosuresSummary(): Promise<
+  ApiResponse<ClosuresSummary>
+> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.finance.closures.summary,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["closures-summary"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<ClosuresSummary>(res);
 }

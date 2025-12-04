@@ -48,3 +48,51 @@ export type GetSupplierAccounts = {
   hasNext: boolean;
   hasPrevious: boolean;
 };
+
+export type LatestClosure = {
+  id: string;
+  type: number;
+  typeName: string;
+  cutoffDate: string;
+  createdAt: string;
+  totalIncome: number;
+  platformFee: number;
+  taxes: number;
+  suppliersTotal: number;
+  logisticsTotal: number;
+  totalAccounts: number;
+  pendingAccounts: number;
+  paidAccounts: number;
+  failedAccounts: number;
+};
+
+export type ClosureByMonth = {
+  year: number;
+  month: number;
+  monthName: string;
+  closuresCount: number;
+  totalIncome: number;
+  platformFee: number;
+  taxes: number;
+  suppliersTotal: number;
+  logisticsTotal: number;
+  accountsCount: number;
+  pendingAccounts: number;
+  paidAccounts: number;
+  failedAccounts: number;
+};
+
+export type ClosuresSummary = {
+  totalClosures: number;
+  totalIncome: number;
+  platformFee: number;
+  taxes: number;
+  suppliersTotal: number;
+  logisticsTotal: number;
+  totalAccounts: number;
+  pendingAccounts: number;
+  paidAccounts: number;
+  failedAccounts: number;
+  latestClosure: LatestClosure | null;
+  closuresByMonth: ClosureByMonth[];
+};
