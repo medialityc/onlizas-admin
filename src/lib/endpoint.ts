@@ -522,5 +522,19 @@ export const backendRoutes = {
       toggleStatus: (id: string | number) =>
         `${process.env.NEXT_PUBLIC_API_URL}platform-accounts/${id}/toggle-status`,
     },
+    supplierAccounts: {
+      list: (supplierId: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/accounts`,
+      create: (supplierId: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/accounts`,
+      detail: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}supplier-accounts/${id}`,
+      update: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}supplier-accounts/${id}`,
+      delete: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}supplier-accounts/${id}`,
+      setPrimary: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}supplier-accounts/${id}/set-primary`,
+    },
   },
 };

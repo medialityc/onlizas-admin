@@ -129,6 +129,9 @@ export const paths = {
     stores: {
       list: `${PROVIDER}/stores`,
     },
+    bankAccounts: {
+      list: `${DASHBOARD}/my-accounts`,
+    },
   },
 
   content: {
