@@ -53,10 +53,10 @@ function AccountCard({
       />
       <button
         aria-label={checked ? "Quitar selección" : "Seleccionar cuenta"}
-        className={`absolute -top-2 -left-2 rounded-full p-2 shadow-sm border ${
+        className={`absolute top-2 right-2 rounded-md p-1.5 shadow-sm border ${
           checked
             ? `bg-${tone}-600 text-white border-${tone}-700`
-            : `bg-white text-gray-700 border-gray-200`
+            : `bg-white/90 backdrop-blur text-gray-700 border-gray-200`
         } hover:shadow-md`}
         onClick={() => toggleAccount(supplierId, acc.accountId)}
       >
@@ -99,7 +99,7 @@ function AccountCard({
             ) : null}
           </div>
         </div>
-        <div className="text-right">
+        <div className="text-left">
           <div className="text-xs text-gray-500">Total</div>
           <div className="font-semibold">
             {new Intl.NumberFormat(undefined, {

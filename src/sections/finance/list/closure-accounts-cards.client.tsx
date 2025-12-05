@@ -6,6 +6,7 @@ export type ClosureAccountCard = {
   id: string;
   supplierId: string | null;
   supplierName: string | null;
+  purpose?: number;
   description: string;
   totalAmount: number;
   statusName: string;
@@ -29,6 +30,17 @@ export function ClosureAccountsCardsClient({
 }) {
   const [selected, setSelected] = useState<ClosureAccountCard | null>(null);
 
+  const purposeMap: Record<
+    NonNullable<ClosureAccountCard["purpose"]>,
+    string
+  > = {
+    0: "Pago a proveedor",
+    1: "Pago de débito",
+    2: "Reembolso",
+    3: "Comisión de plataforma",
+    4: "Impuestos",
+  };
+
   if (!items?.length) {
     return (
       <div className="rounded-lg border bg-white p-4 text-sm text-gray-600">
@@ -46,7 +58,7 @@ export function ClosureAccountsCardsClient({
             : (it.statusName || "").toLowerCase().includes("venc")
               ? "rose"
               : "indigo";
-          const isConcept = !it.supplierId;
+          const isConcept = it.purpose && it.purpose !== 0;
           const ring = `ring-1 ring-${statusTone}-200`;
           const bg = isConcept
             ? `bg-gradient-to-br from-gray-50 to-white`
@@ -67,10 +79,10 @@ export function ClosureAccountsCardsClient({
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
                   <div className="text-xs text-gray-500">
-                    {it.supplierId ? "Proveedor" : "Concepto"}
+                    {isConcept ? "Concepto" : "Proveedor"}
                   </div>
                   <div className="font-medium truncate max-w-[220px]">
-                    {it.supplierId ? it.supplierName : it.description}
+                    {isConcept ? it.description : it.supplierName}
                   </div>
                 </div>
                 <div className="text-right ml-2">
@@ -86,15 +98,19 @@ export function ClosureAccountsCardsClient({
 
               {/* Secondary line: description for proveedor or concept tag */}
               <div className="mt-2 text-sm text-gray-700 line-clamp-2">
-                {it.supplierId ? (
-                  it.description
-                ) : (
+                {isConcept ? (
                   <span className="inline-flex items-center gap-1 text-gray-700">
                     <span className="h-6 w-6 rounded-full bg-blue-100 text-blue-700 grid place-items-center text-xs">
                       ★
                     </span>
-                    <span className="font-medium">Cuenta de plataforma</span>
+                    <span className="font-medium">
+                      {it.purpose && purposeMap[it.purpose]
+                        ? purposeMap[it.purpose]
+                        : "Cuenta de plataforma"}
+                    </span>
                   </span>
+                ) : (
+                  it.description
                 )}
               </div>
 
@@ -111,28 +127,6 @@ export function ClosureAccountsCardsClient({
                     {new Date(it.dueDate).toLocaleDateString()}
                   </span>
                 </span>
-                {!it.supplierId &&
-                  it.debitBreakdown &&
-                  (() => {
-                    const breakdown = it.debitBreakdown;
-                    const dominant = [
-                      { label: "Comisión", value: breakdown.platformFeeAmount },
-                      { label: "Impuestos", value: breakdown.taxAmount },
-                      { label: "Productos", value: breakdown.productAmount },
-                      { label: "Delivery", value: breakdown.deliveryAmount },
-                    ].sort((a, b) => (b.value || 0) - (a.value || 0))[0];
-                    return dominant.value ? (
-                      <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-blue-800">
-                        {dominant.label}:{" "}
-                        <span className="ml-1 font-medium">
-                          {new Intl.NumberFormat(undefined, {
-                            style: "currency",
-                            currency: "USD",
-                          }).format(dominant.value)}
-                        </span>
-                      </span>
-                    ) : null;
-                  })()}
                 {typeof it.subOrdersCount === "number" &&
                 it.subOrdersCount > 0 ? (
                   <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-gray-700">
@@ -159,12 +153,16 @@ export function ClosureAccountsCardsClient({
             <div className="flex items-center justify-between">
               <div className="flex-1 min-w-0">
                 <div className="text-xs text-gray-500">
-                  {selected.supplierId ? "Proveedor" : "Concepto"}
+                  {selected?.purpose && selected.purpose !== 0
+                    ? "Concepto"
+                    : "Proveedor"}
                 </div>
                 <div className="font-semibold">
-                  {selected.supplierId
-                    ? selected.supplierName
-                    : "Cuenta de plataforma"}
+                  {selected?.purpose && selected.purpose !== 0
+                    ? selected.purpose
+                      ? purposeMap[selected.purpose]
+                      : "Cuenta de plataforma"
+                    : selected.supplierName}
                 </div>
               </div>
               <div className="text-right ml-3">
@@ -205,7 +203,7 @@ export function ClosureAccountsCardsClient({
             </div>
 
             {/* Mostrar desglose en el modal sólo si es cuenta de proveedor */}
-            {selected.debitBreakdown && selected.supplierId ? (
+            {selected.debitBreakdown && selected.purpose === 0 ? (
               <div>
                 <div className="font-medium mb-2">Detalle de débitos</div>
                 <div className="grid grid-cols-2 gap-3 text-sm">
