@@ -35,7 +35,7 @@ export function ClosuresList({
     () => [
       {
         accessor: "createdAt",
-        title: "Fecha",
+        title: "Fecha de Creación",
         render: (r) =>
           formatDate((r as any).closureDate ?? (r as any).createdAt),
       },

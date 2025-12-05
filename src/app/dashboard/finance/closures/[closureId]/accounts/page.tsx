@@ -3,6 +3,9 @@ import {
   getClosureStatement,
 } from "@/services/finance/closures";
 import { ClosureAccountsCardsClient } from "@/sections/finance/list/closure-accounts-cards.client";
+import { formatDate } from "@/utils/format";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default async function ClosureAccountsPage({
   params,
@@ -69,9 +72,51 @@ export default async function ClosureAccountsPage({
 
   return (
     <div className="space-y-6 p-4">
+      {/* Breadcrumb + Back */}
+      <div className="flex items-center justify-between">
+        <nav className="text-sm text-gray-600" aria-label="Breadcrumb">
+          <ol className="inline-flex items-center gap-1">
+            <li>
+              <Link href="/dashboard" className="hover:underline text-gray-700">
+                Dashboard
+              </Link>
+            </li>
+            <li className="text-gray-400">/</li>
+            <li>
+              <Link
+                href="/dashboard/finance"
+                className="hover:underline text-gray-700"
+              >
+                Finanzas
+              </Link>
+            </li>
+            <li className="text-gray-400">/</li>
+            <li>
+              <Link
+                href="/dashboard/finance/closures"
+                className="hover:underline text-gray-700"
+              >
+                Cierres
+              </Link>
+            </li>
+            <li className="text-gray-400">/</li>
+            <li className="text-gray-500">Cuentas</li>
+          </ol>
+        </nav>
+        <Link
+          href="/dashboard/finance/closures"
+          className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm hover:bg-gray-50"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Volver a cierres
+        </Link>
+      </div>
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold tracking-tight">
-          Cuentas del cierre #{closureId}
+          Cuentas del cierre{" "}
+          {statement
+            ? `de ${formatDate(statement.fromDate)} a ${formatDate(statement.toDate)}`
+            : ""}
         </h1>
         <p className="text-sm text-gray-500">
           Resumen y detalle de cuentas asociadas al cierre seleccionado.

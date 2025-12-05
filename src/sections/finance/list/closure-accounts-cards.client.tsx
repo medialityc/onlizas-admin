@@ -4,7 +4,8 @@ import SimpleModal from "@/components/modal/modal";
 
 export type ClosureAccountCard = {
   id: string;
-  supplierName: string;
+  supplierId: string | null;
+  supplierName: string | null;
   description: string;
   totalAmount: number;
   statusName: string;
@@ -45,23 +46,34 @@ export function ClosureAccountsCardsClient({
             : (it.statusName || "").toLowerCase().includes("venc")
               ? "rose"
               : "indigo";
+          const isConcept = !it.supplierId;
           const ring = `ring-1 ring-${statusTone}-200`;
-          const bg = `bg-gradient-to-br from-${statusTone}-50 to-white`;
+          const bg = isConcept
+            ? `bg-gradient-to-br from-gray-50 to-white`
+            : `bg-gradient-to-br from-${statusTone}-50 to-white`;
           const text = `text-${statusTone}-700`;
           return (
             <button
               key={it.id}
-              className={`text-left rounded-2xl ${ring} ${bg} p-4 shadow-sm transition hover:shadow-md focus:outline-none`}
+              className={`text-left rounded-2xl ${ring} ${bg} p-4 shadow-sm transition hover:shadow-md focus:outline-none relative overflow-hidden`}
               onClick={() => setSelected(it)}
             >
+              {/* Accent ribbon to differentiate concept vs proveedor */}
+              <span
+                className={`absolute top-0 left-0 h-1 w-full ${
+                  isConcept ? "bg-blue-200" : `bg-${statusTone}-200`
+                }`}
+              />
               <div className="flex items-start justify-between">
-                <div>
-                  <div className="text-xs text-gray-500">Proveedor</div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs text-gray-500">
+                    {it.supplierId ? "Proveedor" : "Concepto"}
+                  </div>
                   <div className="font-medium truncate max-w-[220px]">
-                    {it.supplierName}
+                    {it.supplierId ? it.supplierName : it.description}
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right ml-2">
                   <div className="text-xs text-gray-500">Total</div>
                   <div className={`text-xl font-semibold ${text}`}>
                     {new Intl.NumberFormat(undefined, {
@@ -72,11 +84,21 @@ export function ClosureAccountsCardsClient({
                 </div>
               </div>
 
-              <div className="mt-2 text-sm text-gray-700 line-clamp-3">
-                {it.description}
+              {/* Secondary line: description for proveedor or concept tag */}
+              <div className="mt-2 text-sm text-gray-700 line-clamp-2">
+                {it.supplierId ? (
+                  it.description
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-gray-700">
+                    <span className="h-6 w-6 rounded-full bg-blue-100 text-blue-700 grid place-items-center text-xs">
+                      ★
+                    </span>
+                    <span className="font-medium">Cuenta de plataforma</span>
+                  </span>
+                )}
               </div>
 
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
                 <span
                   className={`inline-flex items-center rounded-full bg-${statusTone}-100 px-2 py-1 text-${statusTone}-800`}
                 >
@@ -89,15 +111,30 @@ export function ClosureAccountsCardsClient({
                     {new Date(it.dueDate).toLocaleDateString()}
                   </span>
                 </span>
-                <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-gray-700">
-                  Pago:{" "}
-                  <span className="ml-1 font-medium">
-                    {it.paymentDate
-                      ? new Date(it.paymentDate).toLocaleDateString()
-                      : "—"}
-                  </span>
-                </span>
-                {typeof it.subOrdersCount === "number" ? (
+                {!it.supplierId &&
+                  it.debitBreakdown &&
+                  (() => {
+                    const breakdown = it.debitBreakdown;
+                    const dominant = [
+                      { label: "Comisión", value: breakdown.platformFeeAmount },
+                      { label: "Impuestos", value: breakdown.taxAmount },
+                      { label: "Productos", value: breakdown.productAmount },
+                      { label: "Delivery", value: breakdown.deliveryAmount },
+                    ].sort((a, b) => (b.value || 0) - (a.value || 0))[0];
+                    return dominant.value ? (
+                      <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-blue-800">
+                        {dominant.label}:{" "}
+                        <span className="ml-1 font-medium">
+                          {new Intl.NumberFormat(undefined, {
+                            style: "currency",
+                            currency: "USD",
+                          }).format(dominant.value)}
+                        </span>
+                      </span>
+                    ) : null;
+                  })()}
+                {typeof it.subOrdersCount === "number" &&
+                it.subOrdersCount > 0 ? (
                   <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-gray-700">
                     Subórdenes:{" "}
                     <span className="ml-1 font-medium">
@@ -106,47 +143,6 @@ export function ClosureAccountsCardsClient({
                   </span>
                 ) : null}
               </div>
-
-              {it.debitBreakdown ? (
-                <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                  <div className="rounded-lg bg-white/60 ring-1 ring-gray-200 p-2">
-                    <div className="text-gray-500">Productos</div>
-                    <div className="font-semibold">
-                      {new Intl.NumberFormat(undefined, {
-                        style: "currency",
-                        currency: "USD",
-                      }).format(it.debitBreakdown.productAmount ?? 0)}
-                    </div>
-                  </div>
-                  <div className="rounded-lg bg-white/60 ring-1 ring-gray-200 p-2">
-                    <div className="text-gray-500">Delivery</div>
-                    <div className="font-semibold">
-                      {new Intl.NumberFormat(undefined, {
-                        style: "currency",
-                        currency: "USD",
-                      }).format(it.debitBreakdown.deliveryAmount ?? 0)}
-                    </div>
-                  </div>
-                  <div className="rounded-lg bg-white/60 ring-1 ring-gray-200 p-2">
-                    <div className="text-gray-500">Impuestos</div>
-                    <div className="font-semibold">
-                      {new Intl.NumberFormat(undefined, {
-                        style: "currency",
-                        currency: "USD",
-                      }).format(it.debitBreakdown.taxAmount ?? 0)}
-                    </div>
-                  </div>
-                  <div className="rounded-lg bg-white/60 ring-1 ring-gray-200 p-2">
-                    <div className="text-gray-500">Tarifa Plataforma</div>
-                    <div className="font-semibold">
-                      {new Intl.NumberFormat(undefined, {
-                        style: "currency",
-                        currency: "USD",
-                      }).format(it.debitBreakdown.platformFeeAmount ?? 0)}
-                    </div>
-                  </div>
-                </div>
-              ) : null}
             </button>
           );
         })}
@@ -161,11 +157,17 @@ export function ClosureAccountsCardsClient({
         {selected ? (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div>
-                <div className="text-xs text-gray-500">Proveedor</div>
-                <div className="font-semibold">{selected.supplierName}</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs text-gray-500">
+                  {selected.supplierId ? "Proveedor" : "Concepto"}
+                </div>
+                <div className="font-semibold">
+                  {selected.supplierId
+                    ? selected.supplierName
+                    : "Cuenta de plataforma"}
+                </div>
               </div>
-              <div className="text-right">
+              <div className="text-right ml-3">
                 <div className="text-xs text-gray-500">Total</div>
                 <div className="font-semibold">
                   {new Intl.NumberFormat(undefined, {
@@ -202,7 +204,8 @@ export function ClosureAccountsCardsClient({
               </div>
             </div>
 
-            {selected.debitBreakdown ? (
+            {/* Mostrar desglose en el modal sólo si es cuenta de proveedor */}
+            {selected.debitBreakdown && selected.supplierId ? (
               <div>
                 <div className="font-medium mb-2">Detalle de débitos</div>
                 <div className="grid grid-cols-2 gap-3 text-sm">
@@ -233,7 +236,7 @@ export function ClosureAccountsCardsClient({
                       )}
                     </div>
                   </div>
-                  <div className="rounded-lg ring-1 ring-gray-200 p-3 bg-white">
+                  {/* <div className="rounded-lg ring-1 ring-gray-200 p-3 bg-white">
                     <div className="text-xs text-gray-500">
                       Tarifa Plataforma
                     </div>
@@ -243,8 +246,8 @@ export function ClosureAccountsCardsClient({
                         { style: "currency", currency: "USD" }
                       )}
                     </div>
-                  </div>
-                  <div className="rounded-lg ring-1 ring-gray-200 p-3 bg-white">
+                  </div> */}
+                  {/* <div className="rounded-lg ring-1 ring-gray-200 p-3 bg-white">
                     <div className="text-xs text-gray-500">Proveedor</div>
                     <div className="font-semibold">
                       {selected.debitBreakdown.supplierAmount?.toLocaleString(
@@ -252,7 +255,7 @@ export function ClosureAccountsCardsClient({
                         { style: "currency", currency: "USD" }
                       )}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             ) : null}
