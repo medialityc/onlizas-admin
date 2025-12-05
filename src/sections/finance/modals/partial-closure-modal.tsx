@@ -17,7 +17,13 @@ import { formatDate } from "@/utils/format";
 import { createPartialClosureByAccounts } from "@/services/finance/closures";
 import showToast from "@/config/toast/toastConfig";
 
-type SelectedAccount = { accountId: string; supplierId: string };
+// New modular components
+import { SelectedSummary } from "./partial-closure/SelectedSummary";
+import { TabsBar } from "./partial-closure/TabsBar";
+import { DatosTab } from "./partial-closure/DatosTab";
+import { ProveedoresTab } from "./partial-closure/ProveedoresTab";
+import { SelectedAccount, Supplier } from "./partial-closure/types";
+
 type PartialClosureForm = GeneratePartialClosureInput & {
   selectedAccounts?: SelectedAccount[];
 };
@@ -78,23 +84,23 @@ export function PartialClosureModal() {
   );
 
   // Utilidades de resumen
-  const computeSupplierAmount = (supplier: any) => {
+  const computeSupplierAmount = (supplier: Supplier) => {
     const supplierSelections = selectedAccounts.filter(
       (a) => a.supplierId === supplier.userId
     );
     return supplierSelections.reduce((sum, sel) => {
-      const acc = supplier.accounts?.find(
-        (x: any) => x.accountId === sel.accountId
-      );
+      const acc = supplier.accounts?.find((x) => x.accountId === sel.accountId);
       return sum + (acc?.totalAmount ?? 0);
     }, 0);
   };
 
   const computeTotalAmount = () => {
     return selectedAccounts.reduce((sum, sel) => {
-      const supplier = suppliers?.find((s: any) => s.userId === sel.supplierId);
+      const supplier = suppliers?.find(
+        (s: Supplier) => s.userId === sel.supplierId
+      );
       const acc = supplier?.accounts?.find(
-        (x: any) => x.accountId === sel.accountId
+        (x) => x.accountId === sel.accountId
       );
       return sum + (acc?.totalAmount ?? 0);
     }, 0);
@@ -112,7 +118,7 @@ export function PartialClosureModal() {
       periodEndDate: values.toDate.toISOString(),
       notes: values.notes ?? "",
       suppliers: (values.selectedAccounts ?? []).map((sa) => ({
-        supplierId: sa.supplierId,
+        supplierId: sa.supplierId ?? "",
         accountId: sa.accountId,
       })),
     };
@@ -137,272 +143,39 @@ export function PartialClosureModal() {
     >
       <FormProvider {...methods}>
         <div className="flex flex-col gap-4">
-          {/* Sticky resumen superior */}
-          <div className="sticky top-0 z-10 bg-white/95 dark:bg-[#0b1422]/95 backdrop-blur pt-2 pb-3 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between">
-              <div className="text-sm flex items-center gap-2">
-                {Array.isArray(selectedAccounts) &&
-                selectedAccounts.length > 0 ? (
-                  <>
-                    <span className="text-gray-700">Total a pagar</span>
-                    <span className="inline-flex items-center rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200 px-2 py-1 text-xs">
-                      {selectedAccounts.length} cuenta(s)
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-gray-500">
-                    Selecciona cuentas para ver el resumen
-                  </span>
-                )}
-              </div>
-              <div className="text-sm font-semibold">
-                {Array.isArray(selectedAccounts) && selectedAccounts.length > 0
-                  ? computeTotalAmount().toLocaleString(undefined, {
-                      style: "currency",
-                      currency: "USD",
-                    })
-                  : "—"}
-              </div>
-            </div>
-            <div className="mt-2 flex items-center gap-2">
-              <button
-                type="button"
-                className="px-3 py-1.5 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs"
-                onClick={() => {
-                  methods.setValue("selectedAccounts", [], {
-                    shouldDirty: true,
-                  });
-                }}
-              >
-                Limpiar selección
-              </button>
-              <button
-                type="button"
-                className="px-3 py-1.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs"
-                onClick={() => setActiveTab("proveedores")}
-              >
-                Ir a proveedores
-              </button>
-            </div>
-          </div>
+          <SelectedSummary
+            selectedAccounts={selectedAccounts || []}
+            computeTotalAmount={computeTotalAmount}
+            onClear={() => {
+              methods.setValue("selectedAccounts", [], { shouldDirty: true });
+            }}
+            onGoSuppliers={() => setActiveTab("proveedores")}
+          />
 
-          {/* Tabs */}
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
-            <div className="flex gap-2">
-              <button
-                type="button"
-                className={`px-3 py-2 text-sm ${
-                  activeTab === "datos"
-                    ? "border-b-2 border-primary font-semibold"
-                    : "text-gray-600"
-                }`}
-                onClick={() => setActiveTab("datos")}
-              >
-                Datos
-              </button>
-              <button
-                type="button"
-                className={`px-3 py-2 text-sm ${
-                  activeTab === "proveedores"
-                    ? "border-b-2 border-primary font-semibold"
-                    : "text-gray-600"
-                }`}
-                onClick={() => setActiveTab("proveedores")}
-              >
-                Proveedores
-              </button>
-            </div>
-            <div className="py-2">
-              <button
-                type="button"
-                className="px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white text-sm disabled:opacity-50 inline-flex items-center gap-2"
-                disabled={
-                  submitting ||
-                  !selectedAccounts ||
-                  selectedAccounts.length === 0
-                }
-                onClick={onSubmit}
-              >
-                {submitting && (
-                  <span className="inline-block h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                )}
-                {submitting ? "Enviando..." : "Enviar cierre parcial"}
-              </button>
-            </div>
-          </div>
+          <TabsBar
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            submitting={submitting}
+            canSubmit={!!selectedAccounts && selectedAccounts.length > 0}
+            onSubmit={onSubmit}
+          />
 
           {activeTab === "datos" && (
-            <div className="flex flex-col gap-4">
-              <div className="flex gap-2">
-                <RHFDateInput
-                  name="fromDate"
-                  label="Fecha inicio"
-                  // La fecha inicio no puede ser mayor a la fecha fin
-                  maxDate={toDate}
-                />
-                <RHFDateInput
-                  name="toDate"
-                  label="Fecha fin"
-                  // La fecha fin debe ser al menos hace 15 días y no menor que inicio
-                  minDate={fromDate}
-                  maxDate={(() => {
-                    const d = new Date();
-                    d.setDate(d.getDate() - 15);
-                    return d;
-                  })()}
-                />
-              </div>
-              <RHFInputWithLabel name="notes" label="Notas" type="textarea" />
-              <div className="flex items-center justify-end">
-                <button
-                  type="button"
-                  className="px-4 py-2 rounded-md bg-primary text-white text-sm hover:bg-primary/90"
-                  onClick={() => setActiveTab("proveedores")}
-                >
-                  Continuar a Proveedores
-                </button>
-              </div>
-            </div>
+            <DatosTab
+              fromDate={fromDate}
+              toDate={toDate}
+              onContinue={() => setActiveTab("proveedores")}
+            />
           )}
 
           {activeTab === "proveedores" && (
-            <div className="flex flex-col gap-3">
-              <RHFAutocompleteFetcherInfinity
-                onFetch={(params) =>
-                  getSuppliersWithPendingAccounts(
-                    params
-                    // fromDate.toISOString(),
-                    // toDate.toISOString()
-                  )
-                }
-                // queryKey={`suppliers-${fromDate.toISOString()}-${toDate.toISOString()}`}
-                name="suppliers"
-                label="Proveedores"
-                returnSelectedObject
-                objectKeyLabel="userName"
-                multiple
-              />
-
-              {/* Placeholder cuando no hay proveedores seleccionados o resultados */}
-              {(!suppliers || suppliers.length === 0) && (
-                <div className="rounded-lg border bg-gray-50 p-3 text-xs text-gray-600">
-                  Selecciona uno o más proveedores para cargar las cuentas
-                  pendientes. Puedes filtrar por nombre y luego marcar las
-                  cuentas a incluir en el cierre parcial.
-                </div>
-              )}
-
-              {Array.isArray(suppliers) && suppliers.length > 0 && (
-                <div className="mt-1 flex-1 min-h-0">
-                  <h3 className="text-sm font-semibold mb-2">
-                    Cuentas por pagar seleccionables
-                  </h3>
-                  <div className="space-y-4 max-h-[50vh] overflow-auto pr-2 relative">
-                    {suppliers.map((supplier: any) => (
-                      <div
-                        key={supplier.userId}
-                        className="border rounded-lg p-3 shadow-sm"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-medium">{supplier.userName}</p>
-                            <p className="text-xs text-gray-500">
-                              {supplier.email}
-                            </p>
-                          </div>
-                          <div className="text-right text-xs text-gray-600">
-                            {/* Placeholder informativo para guiar al usuario */}
-                            <div className="mt-4 rounded-lg border bg-gray-50 p-3 text-xs text-gray-600">
-                              Esta sección muestra las cuentas pendientes por
-                              proveedor en el rango seleccionado. Selecciona las
-                              cuentas que desees incluir en el cierre parcial
-                              usando las casillas de la tabla. El resumen
-                              superior actualizará el total a pagar y el conteo
-                              de cuentas seleccionadas.
-                            </div>
-                            <div>
-                              Cuenta(s) pendientes:{" "}
-                              {supplier.totalPendingAccounts}
-                            </div>
-                            <div>
-                              Monto pendiente: {supplier.totalPendingAmount}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="mt-3">
-                          <table className="w-full text-sm">
-                            <thead className="sticky top-0 z-10 bg-white shadow-sm">
-                              <tr className="text-left text-gray-600">
-                                <th className="py-1">Seleccionar</th>
-                                <th className="py-1">Descripción</th>
-                                <th className="py-1">Monto</th>
-                                <th className="py-1">Vencimiento</th>
-                                <th className="py-1">Subórdenes</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {supplier.accounts?.map((acc: any) => {
-                                const checked = (selectedAccounts || []).some(
-                                  (a) =>
-                                    a.accountId === acc.accountId &&
-                                    a.supplierId === supplier.userId
-                                );
-                                return (
-                                  <tr
-                                    key={acc.accountId}
-                                    className="border-t hover:bg-gray-50"
-                                  >
-                                    <td className="py-1">
-                                      <input
-                                        type="checkbox"
-                                        className="h-4 w-4"
-                                        checked={checked}
-                                        onChange={() =>
-                                          toggleAccount(
-                                            supplier.userId,
-                                            acc.accountId
-                                          )
-                                        }
-                                      />
-                                    </td>
-                                    <td className="py-1">{acc.description}</td>
-                                    <td className="py-1">{acc.totalAmount}</td>
-                                    <td className="py-1">
-                                      {formatDate(acc.dueDate)}
-                                    </td>
-                                    <td className="py-1">
-                                      {acc.subOrdersCount}
-                                    </td>
-                                  </tr>
-                                );
-                              })}
-                            </tbody>
-                          </table>
-                        </div>
-
-                        {/* Resumen por proveedor dentro de la tarjeta */}
-                        <div className="mt-2 flex justify-between text-sm">
-                          <span className="text-gray-700">
-                            Subtotal proveedor
-                          </span>
-                          <span className="font-medium">
-                            {computeSupplierAmount(supplier).toLocaleString(
-                              undefined,
-                              {
-                                style: "currency",
-                                currency: "USD",
-                              }
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  {/* Fin lista proveedores */}
-                </div>
-              )}
-            </div>
+            <ProveedoresTab
+              suppliers={(suppliers as Supplier[]) || []}
+              onFetch={(params) => getSuppliersWithPendingAccounts(params)}
+              selectedAccounts={selectedAccounts || []}
+              toggleAccount={toggleAccount}
+              computeSupplierAmount={computeSupplierAmount}
+            />
           )}
         </div>
       </FormProvider>

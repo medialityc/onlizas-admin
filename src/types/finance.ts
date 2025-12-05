@@ -96,3 +96,49 @@ export type ClosuresSummary = {
   latestClosure: LatestClosure | null;
   closuresByMonth: ClosureByMonth[];
 };
+
+export type ClosureStatement = {
+  fromDate: string;
+  toDate: string;
+  totalIncome: number;
+  platformFee: number;
+  taxes: number;
+  suppliersTotal: number;
+  logisticsTotal: number;
+  supplierBalances: [
+    {
+      supplierId: string;
+      supplierName: string;
+      productAmount: number;
+      deliveryAmount: number;
+      totalAmount: number;
+    },
+  ];
+};
+
+export type ClosureAccount = {
+  id: string;
+  supplierId: string | null;
+  supplierName: string | null;
+  totalAmount: number;
+  status: number;
+  statusName: string;
+  dueDate: string;
+  paymentDate: string | null;
+  description: string;
+  subOrdersCount: number;
+  debitBreakdown: {
+    productAmount: number;
+    platformFeeAmount: number;
+    supplierAmount: number;
+    deliveryAmount: number;
+    taxAmount: number;
+    totalAmount: number;
+  };
+};
+
+export type ClosureAccountsResponse = {
+  accounts: ClosureAccount[];
+  totalAccounts: number;
+  totalAmount: number;
+};

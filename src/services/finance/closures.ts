@@ -5,7 +5,12 @@ import { backendRoutes } from "@/lib/endpoint";
 import { QueryParamsURLFactory } from "@/lib/request";
 import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
-import { GetAllClosures, ClosuresSummary } from "@/types/finance";
+import {
+  GetAllClosures,
+  ClosuresSummary,
+  ClosureStatement,
+  ClosureAccountsResponse,
+} from "@/types/finance";
 import { nextAuthFetch } from "../utils/next-auth-fetch";
 import { PaginatedResponse } from "@/types/common";
 
@@ -106,7 +111,7 @@ export async function createPartialClosureByAccounts(data: {
 
 export async function getClosureAccounts(
   closureId: string
-): Promise<ApiResponse<any>> {
+): Promise<ApiResponse<ClosureAccountsResponse>> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}closures/${closureId}/accounts`;
   const res = await nextAuthFetch({
     url,
@@ -120,7 +125,7 @@ export async function getClosureAccounts(
 
 export async function getClosureStatement(
   closureId: string
-): Promise<ApiResponse<any>> {
+): Promise<ApiResponse<ClosureStatement>> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}closures/${closureId}/statement`;
   const res = await nextAuthFetch({
     url,
