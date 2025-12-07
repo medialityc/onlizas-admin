@@ -100,6 +100,10 @@ export const productVariants = z
     // ⚡️ Campos de paquetería
     volume: z.number().optional(),
     weight: z.number().optional(),
+
+    // Zonas de entrega - ahora acepta objetos completos
+    zoneIds: z.array(z.string()).optional().default([]),
+    zones: z.array(z.any()).optional().default([]), // Array de objetos Zone completos
   })
   .transform((data) => ({
     ...data,

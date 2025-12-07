@@ -49,7 +49,7 @@ export function RHFCountrySelect({
     const fetchCountries = async () => {
       try {
         const res = await getCountries();
-        const data = res.data;
+        const data = res.data?.data;
         if (data) {
           setCountries(data);
         } else {

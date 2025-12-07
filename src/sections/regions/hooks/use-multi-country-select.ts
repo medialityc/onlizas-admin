@@ -45,7 +45,7 @@ export function useMultiCountrySelect({
       try {
         setLoading(true);
         setError(null);
-        const response: ApiResponse<Country[]> = await getCountries();
+        const response = await getCountries();
         
         if (!isMounted) return;
         
@@ -54,8 +54,8 @@ export function useMultiCountrySelect({
           return;
         }
 
-        if (response.data) {
-          setCountries(response.data);
+        if (response.data?.data) {
+          setCountries(response.data.data);
         }
       } catch (err) {
         if (!isMounted) return;

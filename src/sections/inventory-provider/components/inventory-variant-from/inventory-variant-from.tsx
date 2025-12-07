@@ -1,3 +1,4 @@
+"use client";
 import {
   RHFCheckbox,
   RHFInputWithLabel,
@@ -5,12 +6,16 @@ import {
   RHFSelectWithLabel,
 } from "@/components/react-hook-form";
 import { Separator } from "@/components/ui/separator";
-import React from "react";
-import { useFormContext } from "react-hook-form";
+import React, { useMemo } from "react";
+import { useFormContext, Controller } from "react-hook-form";
 import InventoryProviderDetailSection from "../inventory-provider-detail-section/inventory-provider-detail-section";
 import { RHFMultiImageUpload } from "@/components/react-hook-form/rhf-multi-images-upload";
 import { ProductVariant } from "../../schemas/inventory-provider.schema";
 import { cn } from "@/lib/utils";
+import { MultiSelect } from "@mantine/core";
+import { useQuery } from "@tanstack/react-query";
+import { getMyZones, getOnlizasZones } from "@/services/zones";
+import { usePermissions } from "@/hooks/use-permissions";
 
 type Props = {
   variantIndex: number;
@@ -28,18 +33,85 @@ const variantConditionOptions = [
   { value: 7, label: "Reacondicionado" },
 ];
 
-const deliveryModeOptions = [
-  { value: "ONLIZAS", label: "Entrega gestionada por Onlizas" },
-  { value: "PROVEEDOR", label: "Entrega gestionada por el Proveedor" },
-];
-
 const InventoryVariantFrom = ({ variantIndex, isPacking }: Props) => {
-  const { watch } = useFormContext<ProductVariant>();
-  const [isWarranty, isLimit, id] = watch([
+  const { watch, control, setValue } = useFormContext<ProductVariant>();
+  const { hasSpecificPermission, isLoading: permissionsLoading } = usePermissions();
+  
+  const [isWarranty, isLimit, id, deliveryMode] = watch([
     "warranty.isWarranty",
     "isLimit",
     "id",
+    "deliveryMode",
   ]);
+
+  // Verificar si el usuario tiene permisos de administrador
+  // Por defecto asumir que es proveedor hasta que carguen los permisos
+  const isAdmin = !permissionsLoading && hasSpecificPermission("inventory_providers.create.admin");
+  
+  // Opciones de modo de entrega según el rol
+  const deliveryModeOptions = useMemo(() => {
+    if (isAdmin) {
+      // Admin solo puede gestionar entregas por Onlizas
+      return [{ value: "ONLIZAS", label: "Entrega gestionada por Onlizas" }];
+    }
+    // Proveedor puede elegir entre ambas opciones
+    return [
+      { value: "ONLIZAS", label: "Entrega gestionada por Onlizas" },
+      { value: "PROVEEDOR", label: "Entrega gestionada por el Proveedor" },
+    ];
+  }, [isAdmin]);
+
+  // Determina si usar zonas de plataforma (ONLIZAS) o del proveedor (PROVEEDOR)
+  const isOnlizasDelivery = deliveryMode === "ONLIZAS";
+
+  // Fetch zonas de Onlizas (cuando es entrega gestionada por Onlizas)
+  const { data: onlizasZonesData, isLoading: onlizasZonesLoading } = useQuery({
+    queryKey: ["onlizas-zones-variant"],
+    queryFn: async () => {
+      const res = await getOnlizasZones();
+      if (res.error) {
+        throw new Error(res.message);
+      }
+      return res.data?.data || [];
+    },
+    enabled: isOnlizasDelivery && !!deliveryMode,
+  });
+
+  // Fetch zonas del proveedor (cuando es entrega gestionada por el proveedor)
+  const { data: supplierZonesData, isLoading: supplierZonesLoading } = useQuery({
+    queryKey: ["my-zones-variant"],
+    queryFn: async () => {
+      const res = await getMyZones();
+      if (res.error) {
+        throw new Error(res.message);
+      }
+      return res.data?.data || [];
+    },
+    enabled: !isOnlizasDelivery && !!deliveryMode && !isAdmin,
+  });
+
+  const zonesData = isOnlizasDelivery ? onlizasZonesData : supplierZonesData;
+  const zonesLoading = isOnlizasDelivery ? onlizasZonesLoading : supplierZonesLoading;
+
+  const zoneOptions = useMemo(() => {
+    return (zonesData || []).map((z) => ({
+      value: z.id,
+      label: z.name ? `${z.name} - $${z.deliveryAmount.toFixed(2)}` : `${z.districtsIds.length} distrito(s) - $${z.deliveryAmount.toFixed(2)}`,
+    }));
+  }, [zonesData]);
+
+  // Limpiar zonas seleccionadas cuando cambia el modo de entrega
+  React.useEffect(() => {
+    setValue("zoneIds", []);
+    setValue("zones", []);
+  }, [deliveryMode, setValue]);
+  
+  // Si es admin, establecer automáticamente el modo de entrega a ONLIZAS
+  React.useEffect(() => {
+    if (isAdmin && !deliveryMode) {
+      setValue("deliveryMode", "ONLIZAS");
+    }
+  }, [isAdmin, deliveryMode, setValue]);
 
   return (
     <div className="flex flex-col gap-2  ">
@@ -64,6 +136,51 @@ const InventoryVariantFrom = ({ variantIndex, isPacking }: Props) => {
           <EntregaInfoHelper />
         </div>
       </div>
+
+      <Separator className="my-2" />
+
+      {/* Sección Zonas de Entrega */}
+      {deliveryMode && (
+        <div className="flex flex-col gap-2">
+          <p className="text-sm font-bold">Zonas de Entrega</p>
+          <Controller
+            name="zoneIds"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <MultiSelect
+                label={isOnlizasDelivery 
+                  ? "Zonas de entrega de la plataforma" 
+                  : "Mis zonas de entrega"}
+                placeholder={zonesLoading ? "Cargando..." : "Seleccione zonas"}
+                data={zoneOptions}
+                value={field.value || []}
+                onChange={(selectedIds) => {
+                  field.onChange(selectedIds);
+                  // Guardar también los objetos completos de las zonas seleccionadas
+                  const selectedZones = (zonesData || []).filter((zone) =>
+                    selectedIds.includes(zone.id)
+                  );
+                  setValue("zones", selectedZones);
+                }}
+                searchable
+                clearable
+                error={error?.message}
+                disabled={zonesLoading}
+                classNames={{
+                  input: "form-input",
+                  label: "text-sm font-semibold text-gray-900 dark:text-gray-300",
+                }}
+                maxDropdownHeight={200}
+              />
+            )}
+          />
+          <p className="text-xs text-muted-foreground">
+            {isOnlizasDelivery 
+              ? "Las zonas de la plataforma definen dónde Onlizas puede entregar este producto."
+              : "Tus zonas definen los distritos donde puedes entregar este producto y el costo de envío."}
+          </p>
+        </div>
+      )}
 
       <Separator className="my-2" />
 

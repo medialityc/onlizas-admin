@@ -1,8 +1,8 @@
 'use client';
 import { getCountries } from '@/services/countries';
-// import { getCountries } from "@/services/countries"; // Comentado temporalmente para usar mock
 import { Country } from '@/types/countries';
 import { ApiResponse } from '@/types/fetch/api';
+import { PaginatedResponse } from '@/types/common';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 // Query key constant to avoid typos across the app
@@ -19,7 +19,7 @@ interface UseCountriesResult {
 	isFetching: boolean;
 	isError: boolean;
 	error: unknown;
-	refetch: () => Promise<UseQueryResult<ApiResponse<Country[]>, unknown>>;
+	refetch: () => Promise<UseQueryResult<ApiResponse<PaginatedResponse<Country>>, unknown>>;
 }
 
 export function useCountries(
@@ -27,13 +27,13 @@ export function useCountries(
 ): UseCountriesResult {
 	const { enabled = true, select } = options;
 
-	const query = useQuery<ApiResponse<Country[]>, unknown, Country[]>({
+	const query = useQuery<ApiResponse<PaginatedResponse<Country>>, unknown, Country[]>({
 		queryKey: COUNTRIES_QUERY_KEY,
 		enabled,
-		queryFn: async () => await getCountries(), //
+		queryFn: async () => await getCountries(),
 
-		select: (apiResp: ApiResponse<Country[]>) => {
-			const base = apiResp.data ?? [];
+		select: (apiResp: ApiResponse<PaginatedResponse<Country>>) => {
+			const base = apiResp.data?.data ?? [];
 			return select ? select(base) : base;
 		},
 	});

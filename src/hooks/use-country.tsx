@@ -27,12 +27,12 @@ export function useCountry(countryId?: string | number): UseCountryReturn {
     setError(false);
 
     getCountries()
-      .then((countries: ApiResponse<Country[]>) => {
-        if (!countries.data) {
+      .then((response) => {
+        if (!response.data?.data) {
           throw new Error("No se pudieron obtener los países");
         }
 
-        const found = countries.data.find(
+        const found = response.data.data.find(
           c => String(c.id) === String(countryId)
         );
 

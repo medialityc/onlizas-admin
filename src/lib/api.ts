@@ -40,7 +40,7 @@ export const handleApiServerError = async <T>(
       const errorText = await response.text();
       console.error("API Error on text:", {
         error: errorText,
-        url: response,
+        url: response.url,
       });
 
       let message = errorText || "Ocurrió un error inesperado";

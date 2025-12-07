@@ -66,7 +66,7 @@ export default function SystemConfigurationEditModal({
     // Build a map id -> code to compute countryCode on submit
     getCountries()
       .then((res) => {
-        const list = res.data || [];
+        const list = res.data?.data || [];
         const map: Record<number|string, string> = {};
         for (const c of list) map[c.id] = c.code;
         setCountriesMap(map);

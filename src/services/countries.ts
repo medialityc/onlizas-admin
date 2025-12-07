@@ -6,7 +6,7 @@ import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { Country } from "@/types/countries";
 import { PaginatedResponse } from "@/types/common";
 
-export async function getCountries(): Promise<ApiResponse<Country[]>> {
+export async function getCountries(): Promise<ApiResponse<PaginatedResponse<Country>>> {
   const res = await nextAuthFetch({
     url: `${process.env.NEXT_PUBLIC_API_URL}countries`,
     method: "GET",
@@ -16,7 +16,7 @@ export async function getCountries(): Promise<ApiResponse<Country[]>> {
   });
 
   if (!res.ok) return handleApiServerError(res);
-  return buildApiResponseAsync<Country[]>(res);
+  return buildApiResponseAsync<PaginatedResponse<Country>>(res);
 }
 
 export async function getCountriesPaginated(params: {
@@ -37,7 +37,7 @@ export async function getCountriesPaginated(params: {
       message: allRes.message,
     };
 
-  const all = allRes.data || [];
+  const all = allRes.data?.data || [];
   const q = params.search?.toString().trim().toLowerCase() ?? "";
   const filtered =
     q === ""

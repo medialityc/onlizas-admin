@@ -159,7 +159,7 @@ export async function addVariantToInventory(
 }
 export async function editVariantInventory(
   variantId: string | number,
-  variantData: FormData
+  variantData: FormData | any
 ): Promise<ApiResponse<InventoryProvider>> {
   const res = await nextAuthFetch({
     url: backendRoutes.inventoryProvider.editVariantInventory(variantId),
