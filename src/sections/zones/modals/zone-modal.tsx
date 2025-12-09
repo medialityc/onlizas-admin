@@ -58,8 +58,7 @@ export default function ZoneModal({
     queryFn: async () => {
       const res = await getCountries();
       if (res.error) throw new Error(res.message);
-      const countries = Array.isArray(res.data) ? res.data : (res.data?.data || []);
-      return countries;
+      return res.data || [];
     },
     enabled: open,
     staleTime: 0,
