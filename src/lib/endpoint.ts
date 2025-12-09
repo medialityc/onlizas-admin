@@ -543,4 +543,23 @@ export const backendRoutes = {
         `${process.env.NEXT_PUBLIC_API_URL}supplier-accounts/${id}/set-primary`,
     },
   },
+  zones: {
+    list: `${process.env.NEXT_PUBLIC_API_URL}zones`,
+    create: `${process.env.NEXT_PUBLIC_API_URL}zones`,
+    detail: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}zones/${id}`,
+    update: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}zones/${id}`,
+    delete: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}zones/${id}`,
+    myZones: `${process.env.NEXT_PUBLIC_API_URL}zones/my-zones`,
+    onlizasZones: `${process.env.NEXT_PUBLIC_API_URL}zones/onlizas`,
+    bySupplier: (supplierId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${supplierId}/zones`,
+  },
+  districts: {
+    list: `${process.env.NEXT_PUBLIC_API_URL}districts`,
+    byCountry: (countryId: string) => 
+      `${process.env.NEXT_PUBLIC_API_URL}districts/by-country/${countryId}`,
+  },
 };

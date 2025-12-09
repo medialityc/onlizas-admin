@@ -38,6 +38,8 @@ const initValue: ProductVariant = {
   images: [],
   costPrice: 0,
   deliveryMode: "ONLIZAS" as "ONLIZAS" | "PROVEEDOR",
+  zoneIds: [],
+  zones: [],
 };
 
 export const useInventoryProviderEditForm = (
@@ -50,20 +52,28 @@ export const useInventoryProviderEditForm = (
     resolver: zodResolver(productVariants),
   });
 
+  // Solo resetear cuando el ID cambia (edición de diferentes variantes)
+  // No resetear en cada cambio de defaultValues para evitar perder valores del formulario
+  const variantId = defaultValues?.id;
+  
   useEffect(() => {
-    if (defaultValues) {
+    if (defaultValues && variantId) {
       reset(defaultValues);
     }
-  }, [defaultValues, reset]);
+  }, [variantId, reset, defaultValues]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: ProductVariant) => {
       const formData = await buildCreateProductVariantFormData(payload);
+      
       const res = payload.id
         ? await editVariantInventory(payload.id, formData)
         : await addVariantToInventory(inventoryId, formData);
 
-      if (res.error) throw res;
+      if (res.error) {
+        throw new Error(res.message || "Error al guardar");
+      }
+      return res;
     },
     async onSuccess() {
       toast.success(`Se editó el inventario correctamente`);
@@ -75,6 +85,8 @@ export const useInventoryProviderEditForm = (
         msg = error.message;
       } else if (typeof error === "string") {
         msg = error;
+      } else if (error && typeof error === "object" && "message" in error) {
+        msg = (error as any).message;
       }
       toast.error(msg);
     },
