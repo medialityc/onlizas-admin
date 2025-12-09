@@ -35,7 +35,9 @@ export default function ZoneModal({
   onSuccess,
   zone,
 }: Props) {
-  const [selectedCountryId, setSelectedCountryId] = useState<string | null>(null);
+  const [selectedCountryId, setSelectedCountryId] = useState<string | null>(
+    null
+  );
 
   const methods = useForm<ZoneInput>({
     resolver: zodResolver(ZoneSchema),
@@ -53,7 +55,11 @@ export default function ZoneModal({
   } = methods;
 
   // Fetch countries for the filter
-  const { data: countriesData, isLoading: countriesLoading, refetch } = useQuery({
+  const {
+    data: countriesData,
+    isLoading: countriesLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["countries-zone-modal", open],
     queryFn: async () => {
       const res = await getCountries();
@@ -93,7 +99,14 @@ export default function ZoneModal({
     async (params: IQueryable): Promise<ApiResponse<GetDistricts>> => {
       if (!selectedCountryId) {
         return {
-          data: { data: [], totalCount: 0, page: 1, pageSize: 35, hasNext: false, hasPrevious: false },
+          data: {
+            data: [],
+            totalCount: 0,
+            page: 1,
+            pageSize: 35,
+            hasNext: false,
+            hasPrevious: false,
+          },
           status: 200,
           error: false,
         };
@@ -172,7 +185,11 @@ export default function ZoneModal({
             />
             <Select
               label="País"
-              placeholder={countriesLoading ? "Cargando..." : "Seleccione un país para filtrar distritos"}
+              placeholder={
+                countriesLoading
+                  ? "Cargando..."
+                  : "Seleccione un país para filtrar distritos"
+              }
               data={countryOptions}
               value={selectedCountryId}
               onChange={handleCountryChange}
@@ -188,7 +205,11 @@ export default function ZoneModal({
               key={`districts-${selectedCountryId || "none"}`}
               name="districtsIds"
               label="Distritos"
-              placeholder={selectedCountryId ? "Buscar distritos" : "Seleccione un país primero"}
+              placeholder={
+                selectedCountryId
+                  ? "Buscar distritos"
+                  : "Seleccione un país primero"
+              }
               onFetch={fetchDistricts}
               multiple
               required
