@@ -25,6 +25,21 @@ export type InventoryProductItem = {
   details: string[];
   images?: string[];
   isActive?: boolean;
+  deliveryType?: number; // 0 = ONLIZAS, 1 = PROVEEDOR
+  deliveryMode?: "ONLIZAS" | "PROVEEDOR";
+  zones?: Array<{
+    id: string;
+    name: string;
+    deliveryAmount: number;
+    districtsIds: string[];
+    userId: string;
+    userName: string;
+    subsystemId?: string;
+    subsystemName?: string;
+    active: boolean;
+    createdDatetime: string;
+    updatedDatetime: string;
+  }>;
 };
 
 // Tipos para Currency
