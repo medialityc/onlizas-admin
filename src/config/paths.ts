@@ -83,6 +83,9 @@ export const paths = {
     regions: {
       list: `${DASHBOARD}/regions`,
     },
+    zones: {
+      list: `${DASHBOARD}/zones`,
+    },
     systemConfigurations: {
       list: `${DASHBOARD}/system-configurations`,
     },
@@ -131,6 +134,9 @@ export const paths = {
     },
     bankAccounts: {
       list: `${DASHBOARD}/my-accounts`,
+    },
+    zones: {
+      list: `${DASHBOARD}/my-zones`,
     },
   },
 
