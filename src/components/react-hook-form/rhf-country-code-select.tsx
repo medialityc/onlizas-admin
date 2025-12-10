@@ -12,7 +12,7 @@ import { Fragment, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
 type Country = {
-  id: number|string;
+  id: number | string;
   name: string;
   code: string;
   phoneNumberCode: number;
@@ -39,10 +39,10 @@ export function RHFCountrySelect({
   const [countries, setCountries] = useState<Country[]>([]);
   const [query, setQuery] = useState("");
   const selectedValue = watch(name);
-  const selectedCountry = countries.find(
-    (country) => storeCode 
-      ? country.code.toLowerCase() === selectedValue?.toLowerCase() 
-      : country.id === selectedValue
+  const selectedCountry = countries.find((country) =>
+    storeCode
+      ? country.code.toLowerCase() === String(selectedValue ?? "").toLowerCase()
+      : String(country.id) === String(selectedValue ?? "")
   );
 
   useEffect(() => {
@@ -103,7 +103,9 @@ export function RHFCountrySelect({
         >
           <Combobox
             value={selectedCountry ?? null}
-            onChange={(val) => onChange(storeCode ? val?.code ?? "" : Number(val?.id) ?? -1)}
+            onChange={(val) =>
+              onChange(storeCode ? (val?.code ?? "") : val?.id)
+            }
           >
             <div className="w-full flex flex-col gap-1 relative">
               <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left sm:text-sm">

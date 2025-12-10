@@ -4,7 +4,7 @@ import { FormProvider } from "@/components/react-hook-form";
 import { Button } from "@/components/button/button";
 import BasicInfoSection from "./components/basic-info-section";
 import CapacitySection from "./components/capacity-section";
-import LocationSection from "./components/location-section";
+import AddressSection from "./components/address-section";
 import { useWarehouseCreateForm } from "../../hooks/use-warehouse-create-form";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { getAdapterWarehouse } from "../../adapter/warehouse-edit.adapter";
@@ -22,6 +22,7 @@ export function WarehouseForm({ warehouse }: Props) {
   const { form, isPending, onSubmit, warehouseType } = useWarehouseCreateForm(
     warehouse && getAdapterWarehouse(warehouse)
   );
+  console.log(form.formState.errors);
 
   // Control de permisos
   const { hasPermission } = usePermissions();
@@ -46,7 +47,7 @@ export function WarehouseForm({ warehouse }: Props) {
           {warehouseType === WAREHOUSE_TYPE_ENUM.virtualwarehouse && (
             <VirtualSection />
           )}
-          <LocationSection />
+          <AddressSection showCountryAndDistrict={!warehouse?.id} />
         </div>
       </div>
       {/* Actions stickies */}

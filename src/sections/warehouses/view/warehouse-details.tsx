@@ -87,7 +87,7 @@ export async function WarehouseDetails({
         </div>
         {/* Columna derecha */}
         <div className="space-y-6">
-          {w.locationId && (
+          {w.address && (
             <div className="flex items-start gap-2">
               <MapPinIcon className="h-5 w-5 mt-0.5 text-gray-400" />
               <div>
@@ -95,7 +95,7 @@ export async function WarehouseDetails({
                   Ubicación:
                 </div>
                 <div className="text-gray-600 dark:text-gray-300">
-                  {w.locationName}
+                  {w.address?.name}
                 </div>
               </div>
             </div>
