@@ -18,17 +18,17 @@ export type VirtualWarehouseSubType =
 
 export type WarehouseStatus = "active" | "inactive" | "maintenance";
 
-export type Location = {
-  id: number;
-  country: string;
-  region: string;
-  zone: string;
-  coordinates?: {
-    latitude: number;
-    longitude: number;
-  };
-  postalCode?: string;
-  address?: string;
+export type Address = {
+  name: string;
+  mainStreet: string;
+  difficultAccessArea: boolean;
+  number?: string;
+  otherStreets?: string;
+  city: string;
+  zipcode?: string;
+  annotations?: string;
+  districtId?: string;
+  countryId?: number | string;
 };
 
 // Reglas de negocio específicas para almacenes virtuales (HU-005)
@@ -54,8 +54,7 @@ export type Warehouse = {
   name: string;
   type: WarehouseType;
   status: WarehouseStatus;
-  locationId: number;
-  location?: Location;
+  address?: Address;
   maxCapacity?: number;
   currentCapacity?: number;
   description?: string;
@@ -102,10 +101,7 @@ export type Warehouse = {
   };
 };
 
-export type CreateWarehouse = Omit<
-  Warehouse,
-  "id" | "createdAt" | "updatedAt" | "location"
->;
+export type CreateWarehouse = Omit<Warehouse, "id" | "createdAt" | "updatedAt">;
 
 export type UpdateWarehouse = Partial<CreateWarehouse>;
 
@@ -113,7 +109,6 @@ export type WarehouseFilter = {
   search?: string;
   type?: WarehouseType;
   status?: WarehouseStatus;
-  locationId?: number | string;
   supplierId?: number | string;
 };
 

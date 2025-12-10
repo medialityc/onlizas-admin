@@ -128,15 +128,19 @@ export function WarehouseCard({
             </div>
           </div>
         )}
-        {/* Ubicación */}
-        <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-          <MapPinIcon className="h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
-          <div>
-            <p className="truncate">
-              {warehouse?.locationName || "Sin localización"}
-            </p>
+        {/* Dirección */}
+        {warehouse.address && (
+          <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <MapPinIcon className="h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
+            <div>
+              <p className="truncate">
+                {warehouse.address?.name ||
+                  warehouse.address?.city ||
+                  "Sin dirección"}
+              </p>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Capacidad */}
         {warehouse.capacity && (

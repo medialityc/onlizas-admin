@@ -10,7 +10,18 @@ export const warehouseSchema = z
         return { message: "Tipo de almacén inválido" };
       },
     }),
-    locationId: z.string({ required_error: "Requerido" }),
+    address: z.object({
+      name: z.string().min(1, "Requerido"),
+      mainStreet: z.string().min(1, "Requerido"),
+      difficultAccessArea: z.boolean().default(false),
+      number: z.string().optional(),
+      otherStreets: z.string().optional(),
+      city: z.string().min(1, "Requerido"),
+      zipcode: z.string().optional(),
+      annotations: z.string().optional(),
+      districtId: z.string().optional(),
+      countryId: z.string().optional(),
+    }),
     active: z.boolean().default(true),
 
     // physical
@@ -106,7 +117,7 @@ export const warehouseSchema = z
 export type WarehouseFormData = z.infer<typeof warehouseSchema> & {
   createdAt?: string | Date;
   updatedAt?: string | Date;
-  locationName?: string;
+  addressName?: string;
   supplierName?: string;
   virtualTypeName?: string;
   isDeleted?: boolean;

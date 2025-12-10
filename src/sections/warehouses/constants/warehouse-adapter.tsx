@@ -11,7 +11,7 @@ export const warehouseAdapter = (
       name: payload.name,
       capacity: payload.capacity,
       capacityUnit: payload.capacityUnit,
-      locationId: payload.locationId,
+      address: payload.address,
     };
   }
 

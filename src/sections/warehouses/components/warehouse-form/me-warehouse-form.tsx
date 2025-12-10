@@ -2,7 +2,7 @@
 
 import { FormProvider } from "@/components/react-hook-form";
 import { Button } from "@/components/button/button";
-import LocationSection from "./components/location-section";
+import AddressSection from "./components/address-section";
 import { useMeWarehouseCreateForm } from "../../hooks/use-me-warehouse-create-form";
 import { useCallback } from "react";
 import RHFInput from "@/components/react-hook-form/rhf-input";
@@ -47,7 +47,7 @@ export function MeWarehouseForm({ warehouse, onClose }: Props) {
             />
           </div>
 
-          <LocationSection />
+          <AddressSection showCountryAndDistrict={!warehouse?.id} />
         </div>
       </div>
       {/* Actions stickies */}
