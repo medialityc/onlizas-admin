@@ -1,5 +1,9 @@
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import { getAllProducts, getAllProductsBySupplier, getAllProductsVariants } from "@/services/products";
+import {
+  getAllProducts,
+  getAllProductsBySupplier,
+  getAllProductsVariants,
+} from "@/services/products";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
@@ -32,8 +36,32 @@ export default function ProductSelect({
       return getAllProductsVariants(params); // true = isAdmin
     } else {
       // Para provider, usar endpoint normal
-      return getAllProductsVariants( params); // false = isProvider
+      return getAllProductsVariants(params); // false = isProvider
     }
+  };
+
+  // Función para mostrar información adicional de la variante
+  const renderVariantOption = (option: any) => {
+    const details = option.details || {};
+    const detailsArray = Object.entries(details)
+      .filter(([_, value]) => value && String(value).trim() !== "")
+      .map(([key, value]) => `${key}: ${value}`);
+
+    const detailsText =
+      detailsArray.length > 0 ? ` (${detailsArray.join(", ")})` : "";
+    const skuText = option.sku ? ` - SKU: ${option.sku}` : "";
+    const priceText = option.price ? ` - $${option.price}` : "";
+
+    return (
+      <div className="flex flex-col">
+        <span className="font-medium">{option.productName}</span>
+        <span className="text-xs text-gray-500">
+          {detailsText}
+          {skuText}
+          {priceText}
+        </span>
+      </div>
+    );
   };
 
   return (
@@ -42,8 +70,9 @@ export default function ProductSelect({
       label={label}
       placeholder="Buscar productos..."
       onFetch={fetchProducts}
-      objectValueKey="id"
+      objectValueKey="inventoryId"
       objectKeyLabel="productName"
+      renderOption={renderVariantOption}
       multiple={multiple}
       queryKey="products-promotion"
     />

@@ -23,44 +23,13 @@ export const BACKEND_TYPE_MAP: { [key: number]: PromotionType } = {
   6: PromotionType.FREE_DELIVERY,
 };
 
-// Función ÚNICA para convertir tipos del backend usando targetType
-export const mapBackendPromotionType = (
-  targetType?: number,
-  promotionType?: number | string
-): string => {
-  // Priorizar targetType si está disponible (1=ProductVariant, 2=Inventory)
-  if (targetType && BACKEND_TYPE_MAP[targetType]) {
-    return BACKEND_TYPE_MAP[targetType];
-  }
-
-  // Fallback a promotionType si targetType no está disponible
-  if (typeof promotionType === "number" && BACKEND_TYPE_MAP[promotionType]) {
-    return BACKEND_TYPE_MAP[promotionType];
-  }
-
-  // Si viene como string, intentar parsear como número primero
-  if (promotionType) {
-    const numType = parseInt(String(promotionType));
-    if (!isNaN(numType) && BACKEND_TYPE_MAP[numType]) {
-      return BACKEND_TYPE_MAP[numType];
-    }
-    // Fallback: devolver el string tal como viene
-    return String(promotionType);
-  }
-
-  return PromotionType.PACKAGE; // Default fallback
-};
-
-// Función ÚNICA para obtener nombres legibles
-export const getPromotionTypeName = (
-  targetType?: number,
-  promotionType?: number | string
-): string => {
-  if (!targetType && (promotionType === undefined || promotionType === null)) {
+// Función para obtener nombres legibles basada en targetType
+export const getPromotionTypeName = (targetType?: number): string => {
+  if (!targetType) {
     return "No especificado";
   }
 
-  const mappedType = mapBackendPromotionType(targetType, promotionType);
+  const mappedType = BACKEND_TYPE_MAP[targetType];
   const config = PROMOTION_TYPES.find((t) => t.value === mappedType);
   return config?.name || "Tipo desconocido";
 };
