@@ -1,5 +1,4 @@
 import { buildQueryParams } from "@/lib/request";
-import BusinessListContainer from "@/sections/business/list/business-list-container";
 import RegionListContainer from "@/sections/regions/list/region-list-container";
 import { getAllBusiness } from "@/services/business";
 import { getRegions } from "@/services/regions";
