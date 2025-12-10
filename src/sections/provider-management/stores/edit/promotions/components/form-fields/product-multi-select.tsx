@@ -49,17 +49,11 @@ export default function ProductSelect({
 
     const detailsText =
       detailsArray.length > 0 ? ` (${detailsArray.join(", ")})` : "";
-    const skuText = option.sku ? ` - SKU: ${option.sku}` : "";
-    const priceText = option.price ? ` - $${option.price}` : "";
 
     return (
       <div className="flex flex-col">
         <span className="font-medium">{option.productName}</span>
-        <span className="text-xs text-gray-500">
-          {detailsText}
-          {skuText}
-          {priceText}
-        </span>
+        <span className="text-xs text-gray-500">{detailsText}</span>
       </div>
     );
   };
