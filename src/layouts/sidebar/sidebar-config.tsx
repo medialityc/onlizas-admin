@@ -37,7 +37,13 @@ import {
   PERMISSION_SUPPLIER_ACCOUNTS,
   PERMISSION_SUPPLIER_ZONES,
 } from "@/lib/permissions";
-import { CalendarRange, ClipboardList, WalletCards, Landmark, MapIcon } from "lucide-react";
+import {
+  CalendarRange,
+  ClipboardList,
+  WalletCards,
+  Landmark,
+  MapIcon,
+} from "lucide-react";
 
 export const sidebarSections: SidebarSection[] = [
   {
@@ -145,13 +151,6 @@ export const sidebarSections: SidebarSection[] = [
         path: paths.dashboard.warehouses.list,
         icon: <WarehouseIcon className="h-4 w-4" />,
         permissions: PERMISSION_WAREHOUSE,
-      },
-      {
-        id: "locations",
-        label: "Localizaciones",
-        path: paths.dashboard.locations.list,
-        icon: <MapPinIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ADMIN,
       },
       {
         id: "regions",

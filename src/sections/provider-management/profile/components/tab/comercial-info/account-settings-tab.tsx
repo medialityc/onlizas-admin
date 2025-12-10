@@ -12,7 +12,6 @@ import {
   SparklesIcon,
 } from "@heroicons/react/24/outline";
 import { UserResponseMe } from "@/types/users";
-import ProviderBusinessModalContainer from "../../business/provider-business-modal-container";
 import BeneficiaryModal from "../../modal/beneficiary-modal";
 import { Business } from "@/types/business";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
@@ -35,8 +34,8 @@ interface AccountSettingsTabProps {
 export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
   const { getModalState, openModal, closeModal } = useModalState();
   const createBusinessModal = getModalState("createBusiness");
-  const editBusinessModal = getModalState<number|string>("editBusiness");
-  const deleteBusinessModal = getModalState<number|string>("deleteBusiness");
+  const editBusinessModal = getModalState<number | string>("editBusiness");
+  const deleteBusinessModal = getModalState<number | string>("deleteBusiness");
   const { data: business, isLoading } = useBusiness();
 
   // Hook para eliminar business
@@ -158,7 +157,10 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
                             className="p-1.5 rounded-full text-sky-600 hover:bg-sky-600/10 transition"
                             onClick={() => {
                               if (b?.id) {
-                                openModal<number|string>("editBusiness", b.id);
+                                openModal<number | string>(
+                                  "editBusiness",
+                                  b.id
+                                );
                               }
                             }}
                           >
@@ -169,7 +171,10 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
                             className="p-1.5 rounded-full text-red-400 hover:bg-red-600/10 hover:text-red-700 transition"
                             onClick={() => {
                               if (b?.id) {
-                                openModal<number|string>("deleteBusiness", b.id);
+                                openModal<number | string>(
+                                  "deleteBusiness",
+                                  b.id
+                                );
                               }
                             }}
                           >
@@ -265,20 +270,6 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
         </CardContent>
       </Card>
 
-      {/* Modales FUERA del FormProvider */}
-      <ProviderBusinessModalContainer
-        open={createBusinessModal.open || editBusinessModal.open}
-        onClose={() => {
-          if (editBusinessModal.open) closeModal("editBusiness");
-          if (createBusinessModal.open) closeModal("createBusiness");
-        }}
-        business={selectedBusiness}
-        userId={user?.id}
-        onSuccess={() => {
-          if (editBusinessModal.open) closeModal("editBusiness");
-          if (createBusinessModal.open) closeModal("createBusiness");
-        }}
-      />
       <BeneficiaryModal
         open={beneficiaryModalOpen}
         onClose={() => setBeneficiaryModalOpen(false)}
