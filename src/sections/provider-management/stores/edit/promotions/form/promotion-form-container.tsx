@@ -21,10 +21,10 @@ import GetYForm from "../forms/promotion-x-get-y";
 import InventoryPromotionForm from "../forms/inventory-promotion-form";
 
 // Utilidades centralizadas
-import {
-  mapBackendPromotionType,
-  navigateAfterSave,
-} from "../utils/promotion-helpers";
+import { navigateAfterSave } from "../utils/promotion-helpers";
+
+// Importar el mapeo directo
+import { BACKEND_TYPE_MAP } from "../types/promotion-types";
 
 interface PromotionFormContainerProps {
   storeId: string; // Cambiado a string para GUIDs
@@ -52,15 +52,12 @@ export default function PromotionFormContainer({
   // create/update are handled by type-specific hooks inside each form
 
   // En modo creación, usar el tipo proporcionado
-  // En modo edición, mapear el targetType del backend
+  // En modo edición, usar directamente targetType si está disponible
   const currentType =
     mode === "create"
       ? promotionType
-      : promotionData?.targetType || promotionData?.promotionType
-        ? mapBackendPromotionType(
-            promotionData.targetType,
-            promotionData.promotionType
-          )
+      : promotionData?.targetType && BACKEND_TYPE_MAP[promotionData.targetType]
+        ? BACKEND_TYPE_MAP[promotionData.targetType]
         : promotionType;
 
   // Debug: mostrar información del tipo detectado

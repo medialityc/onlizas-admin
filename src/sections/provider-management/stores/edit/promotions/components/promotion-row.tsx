@@ -5,7 +5,10 @@ import {
   TrashIcon,
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
-import { getPromotionTypeName } from "../index-refactored";
+import {
+  getPromotionTypeName,
+  getDiscountText,
+} from "../utils/promotion-helpers";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -62,22 +65,6 @@ export default function PromotionRow({
     },
   });
 
-  const getDiscountText = (type: number, value: number) => {
-    // Backend: 1=Porcentaje, 2=MontoFijo, 3=EnvíoGratis, 4=CompraXLlevaY
-    switch (type) {
-      case 1: // Porcentaje
-        return `-${value}%`;
-      case 2: // MontoFijo
-        return `-$${value}`;
-      case 3: // EnvíoGratis
-        return "Envío Gratis";
-      case 4: // CompraXLlevaY
-        return "Compra X Lleva Y";
-      default:
-        return `-${value}`;
-    }
-  };
-
   const formatDate = (dateString: string) => {
     try {
       return new Date(dateString).toLocaleDateString("es-ES", {
@@ -132,7 +119,7 @@ export default function PromotionRow({
             </p>
           )}
           <span className="text-xs font-normal text-gray-500 dark:text-gray-300 uppercase tracking-wide">
-            Tipo: {getPromotionTypeName(p.targetType, p.promotionType)}
+            Tipo: {getPromotionTypeName(p.targetType)}
           </span>
 
           <div className="text-[11px] text-gray-500 mt-1">
