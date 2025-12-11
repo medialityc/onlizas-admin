@@ -56,14 +56,14 @@ export const sectionSchema = z
       ),
     active: z.boolean().default(true),
     displayOrder: z
-      .number({ invalid_type_error: "El orden de visualización es requerido" })
+      .number({ error: "El orden de visualización es requerido" })
       .int("El orden debe ser un número entero")
       .min(0, "El orden debe ser mayor o igual a 0"),
     templateType: z
-      .number({ invalid_type_error: "El tipo de plantilla es requerido" })
+      .number({ error: "El tipo de plantilla es requerido" })
       .int("El tipo de plantilla debe ser un número entero"),
     defaultItemCount: z
-      .number({ invalid_type_error: "La cantidad por defecto es requerida" })
+      .number({ error: "La cantidad por defecto es requerida" })
       .int("La cantidad debe ser un número entero")
       .min(1, "Debe haber al menos 1 elemento por defecto"),
 

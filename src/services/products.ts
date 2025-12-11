@@ -103,7 +103,7 @@ export async function createProduct(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("products");
+  revalidateTag("products", "max");
 
   return buildApiResponseAsync<Product>(res);
 }
@@ -121,7 +121,7 @@ export async function updateProduct(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return buildApiResponseAsync<Product>(res);
 }
 
@@ -135,7 +135,7 @@ export async function deleteProduct(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("products");
+  revalidateTag("products", "max");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -150,7 +150,7 @@ export async function deactivateProduct(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("products");
+  revalidateTag("products", "max");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -184,7 +184,7 @@ export async function assignSuppliersToProduct(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("products");
+  revalidateTag("products", "max");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -204,7 +204,7 @@ export async function unassignSuppliersFromProduct(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("products");
+  revalidateTag("products", "max");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -269,7 +269,7 @@ export async function toggleActiveProduct(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
@@ -307,7 +307,7 @@ export async function createSupplierProductLink(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("products-supplier");
+  revalidateTag("products-supplier", "max");
 
   return buildApiResponseAsync<Product>(res);
 }
@@ -323,7 +323,7 @@ export async function createSupplierProduct(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("products-supplier");
+  revalidateTag("products-supplier", "max");
 
   return buildApiResponseAsync<Product>(res);
 }
@@ -341,7 +341,7 @@ export async function updateSupplierProduct(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("products-supplier");
+  revalidateTag("products-supplier", "max");
   return buildApiResponseAsync<Product>(res);
 }
 
@@ -370,7 +370,7 @@ export async function deleteSupplierProduct(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("products-supplier");
+  revalidateTag("products-supplier", "max");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -403,6 +403,6 @@ export async function meToggleActiveProduct(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier-products");
+  revalidateTag("supplier-products", "max");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }

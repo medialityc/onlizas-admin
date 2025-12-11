@@ -35,8 +35,8 @@ export async function createSupplierAccount(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  
-  revalidateTag("supplier-accounts");
+
+  revalidateTag("supplier-accounts", "max");
   return buildApiResponseAsync<SupplierAccount>(res);
 }
 
@@ -67,8 +67,8 @@ export async function updateSupplierAccount(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  
-  revalidateTag("supplier-accounts");
+
+  revalidateTag("supplier-accounts", "max");
   return buildApiResponseAsync<SupplierAccount>(res);
 }
 
@@ -82,8 +82,8 @@ export async function deleteSupplierAccount(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  
-  revalidateTag("supplier-accounts");
+
+  revalidateTag("supplier-accounts", "max");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
@@ -97,7 +97,7 @@ export async function setSupplierAccountPrimary(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  
-  revalidateTag("supplier-accounts");
+
+  revalidateTag("supplier-accounts", "max");
   return buildApiResponseAsync<SupplierAccount>(res);
 }

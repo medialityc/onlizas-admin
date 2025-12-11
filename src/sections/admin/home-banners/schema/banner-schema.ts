@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const homeBannerSchema = z.object({
   id: z.string().optional(),
-  link: z.string({ required_error: "Requerido" }).min(5, "Mínimo 5 caracteres"),
+  link: z.string({ error: "Requerido" }).min(5, "Mínimo 5 caracteres"),
   regionIds: z.array(z.any()).refine((arr) => arr.length > 0, {
     message: "La región es obligatoria.",
     path: ["regionIds"],
@@ -12,17 +12,17 @@ export const homeBannerSchema = z.object({
       z.string().url("Debe ser una URL válida para la imagen."),
       z.instanceof(File, { message: "Debe ser un archivo válido." }),
     ],
-    { required_error: "La imagen es obligatoria." }
+    { error: "La imagen es obligatoria." }
   ),
   imageDesktopUrl: z.union(
     [
       z.string().url("Debe ser una URL válida para la imagen."),
       z.instanceof(File, { message: "Debe ser un archivo válido." }),
     ],
-    { required_error: "La imagen es obligatoria." }
+    { error: "La imagen es obligatoria." }
   ),
   active: z
-    .boolean({ required_error: "El estado activo es obligatorio." })
+    .boolean({ error: "El estado activo es obligatorio." })
     .default(false),
 });
 

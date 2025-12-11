@@ -43,7 +43,7 @@ export async function createBrand(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("brands");
+  revalidateTag("brands", "max");
   return buildApiResponseAsync<CreateBrandResponse>(res);
 }
 
@@ -70,7 +70,7 @@ export async function updateBrand(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("brands");
+  revalidateTag("brands", "max");
   return buildApiResponseAsync<UpdateBrandResponse>(res);
 }
 
@@ -83,6 +83,6 @@ export async function deleteBrand(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("brands");
+  revalidateTag("brands", "max");
   return buildApiResponseAsync<{ status: string }>(res);
 }

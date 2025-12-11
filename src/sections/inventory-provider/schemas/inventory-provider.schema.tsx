@@ -16,14 +16,13 @@ export const productVariants = z
           .array(
             z.object({
               key: z.string(),
-              value: z
-                .string({ required_error: "Requerido" })
-                .min(1, "Requerido"),
+              value: z.string().min(1, "Requerido"),
               isRequired: z.boolean().optional(),
             })
           )
           .min(1, "Es requerido al menos una característica"),
         z.record(
+          z.string(),
           z.union([
             z.string(),
             z.object({
@@ -51,24 +50,10 @@ export const productVariants = z
           }))
         );
       }),
-    stock: z
-      .number({ required_error: "Requerido" })
-      .min(1, "La cantidad debe ser al menos 1")
-      .default(1),
-    price: z
-      .number({ required_error: "Requerido" })
-      .min(0, "El precio es requerido")
-      .default(0),
-    costPrice: z
-      .number({ required_error: "Requerido" })
-      .min(0, "El costo es requerido")
-      .default(0),
-    deliveryMode: z
-      .enum(["ONLIZAS", "PROVEEDOR"], {
-        required_error: "Modo de entrega requerido",
-        invalid_type_error: "Modo de entrega inválido",
-      })
-      .default("ONLIZAS"),
+    stock: z.number().min(1, "La cantidad debe ser al menos 1").default(1),
+    price: z.number().min(0, "El precio es requerido").default(0),
+    costPrice: z.number().min(0, "El costo es requerido").default(0),
+    deliveryMode: z.enum(["ONLIZAS", "PROVEEDOR"]).default("ONLIZAS"),
     isLimit: z.boolean().default(false),
     purchaseLimit: z.number().default(0),
     isPrime: z.boolean().default(false),
@@ -79,11 +64,11 @@ export const productVariants = z
       ),
       warrantyPrice: z.preprocess(
         (val) => (val == null ? 0 : val),
-        z.number({ required_error: "Requerido" }).default(0)
+        z.number().default(0)
       ),
       warrantyTime: z.preprocess(
         (val) => (val == null ? 0 : val),
-        z.number({ required_error: "Requerido" }).default(0)
+        z.number().default(0)
       ),
     }),
     packageDelivery: z.boolean().optional().default(false),
@@ -176,8 +161,8 @@ export const inventoryProviderArraySchema = z
 // ---------- PROVIDER SCHEMA ----------
 export const inventoryProviderSchema = z.object({
   storesWarehouses: inventoryProviderArraySchema,
-  productId: z.string({ required_error: "Requerido" }),
-  supplierId: z.string({ required_error: "Requerido" }),
+  productId: z.string().min(1, "Requerido"),
+  supplierId: z.string().min(1, "Requerido"),
   categoryFeatures: z.array(featureSchema),
 });
 

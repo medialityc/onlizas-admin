@@ -5,7 +5,7 @@ export const productSchema = z.object({
   isDraft: z.boolean().default(false).optional(),
   id: z.string().optional(),
   name: z
-    .string({ required_error: "El nombre es obligatorio." })
+    .string({ error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")
     .max(250, "El nombre no puede tener más de 250 caracteres."),
   description: z
@@ -21,15 +21,15 @@ export const productSchema = z.object({
     .min(1, "Debe seleccionar al menos una categoría."),
   /*  customsValueAduanaUsd: z
     .number({
-      required_error: "El valor aduanero es obligatorio",
-      invalid_type_error: "El valor aduanero es obligatorio",
+      error: "El valor aduanero es obligatorio",
+      error: "El valor aduanero es obligatorio",
     })
     .min(0, "El valor aduanero no puede ser negativo")
     .optional(),
   valuePerUnit: z
     .number({
-      required_error: "El valor por unidad es obligatorio",
-      invalid_type_error: "El valor por unidad es obligatorio",
+      error: "El valor por unidad es obligatorio",
+      error: "El valor por unidad es obligatorio",
     })
     .min(0, "El valor por unidad no puede ser negativo")
     .optional(), */

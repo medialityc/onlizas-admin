@@ -8,12 +8,15 @@ import {
 } from "@/components/cards/card";
 import Badge, { Variant } from "@/components/badge/badge";
 import { SupplierApprovalProcess } from "@/types/suppliers";
-import { useState } from "react";
+import { useState, JSX } from "react";
 import { CheckCircle, Clock } from "lucide-react";
 
 import { CategoryItem } from "./category-item";
 import { DocumentItem } from "./document-item";
-import { CategoryDetailsModal, type CategoryDetails } from "./category-details-modal";
+import {
+  CategoryDetailsModal,
+  type CategoryDetails,
+} from "./category-details-modal";
 
 interface ApprovalProcessStatusProps {
   approvalProcess: SupplierApprovalProcess | null;
@@ -114,7 +117,7 @@ export function ApprovalProcessStatus({
               <div className="space-y-2 max-h-36 overflow-y-auto pr-1 custom-scrollbar">
                 {(approvalProcess?.approvedCategories?.length ?? 0 > 0) ? (
                   approvalProcess?.approvedCategories.map((category) => (
-                    <CategoryItem 
+                    <CategoryItem
                       key={category.id}
                       category={category}
                       onClick={openCategoryModal}
@@ -139,7 +142,7 @@ export function ApprovalProcessStatus({
               <div className="space-y-2 max-h-36 overflow-y-auto pr-1 custom-scrollbar">
                 {(approvalProcess?.pendingCategories?.length ?? 0 > 0) ? (
                   approvalProcess?.pendingCategories.map((category) => (
-                    <CategoryItem 
+                    <CategoryItem
                       key={category.id}
                       category={category}
                       onClick={openCategoryModal}

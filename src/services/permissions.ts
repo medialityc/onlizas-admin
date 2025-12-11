@@ -39,11 +39,11 @@ export async function createPermission(
   const res = await nextAuthFetch({
     url: backendRoutes.permissions.create,
     method: "POST",
-    data:{...data,permissionType:Number(data.permissionType)},
+    data: { ...data, permissionType: Number(data.permissionType) },
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("permissions");
+  revalidateTag("permissions", "max");
   return buildApiResponseAsync<CreatePermissionResponse>(res);
 }
 
@@ -61,7 +61,7 @@ export async function updatePermission(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("permissions");
+  revalidateTag("permissions", "max");
   return buildApiResponseAsync<CreatePermissionResponse>(res);
 }
 
@@ -74,26 +74,25 @@ export async function deletePermission(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("permissions");
+  revalidateTag("permissions", "max");
   return buildApiResponseAsync<DeletePermissionResponse>(res);
 }
 
-
 export async function getAllPermissionsBySubsystemId(
-	id: string,
-	params: IQueryable,
+  id: string,
+  params: IQueryable
 ): Promise<ApiResponse<GetAllPermissionsResponse>> {
-	const url = new QueryParamsURLFactory(
-		params,
-		backendRoutes.permissions.getBySubsystemId(id),
-	).build();
-	const res = await nextAuthFetch({
-		url,
-		method: 'GET',
-		useAuth: true,
-		next: { tags: ['permissions'] },
-	});
+  const url = new QueryParamsURLFactory(
+    params,
+    backendRoutes.permissions.getBySubsystemId(id)
+  ).build();
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["permissions"] },
+  });
 
-	if (!res.ok) return handleApiServerError(res);
-	return buildApiResponseAsync<GetAllPermissionsResponse>(res);
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<GetAllPermissionsResponse>(res);
 }

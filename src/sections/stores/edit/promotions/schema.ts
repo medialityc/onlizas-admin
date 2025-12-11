@@ -4,18 +4,13 @@ export const promotionFormSchema = z
   .object({
     name: z.string().min(1, "El nombre es requerido"),
     type: z.enum(["percent", "amount"], {
-      errorMap: () => ({ message: "Selecciona un tipo válido" }),
+      message: "Selecciona un tipo válido",
     }),
     description: z.string().optional(),
-    value: z
-      .union([z.number(), z.string()])
-      .refine(
-        (v) => {
-          const n = typeof v === "string" ? Number(v) : v;
-          return !isNaN(n) && n > 0;
-        },
-        "Ingresa un valor válido"
-      ),
+    value: z.union([z.number(), z.string()]).refine((v) => {
+      const n = typeof v === "string" ? Number(v) : v;
+      return !isNaN(n) && n > 0;
+    }, "Ingresa un valor válido"),
     usageLimit: z
       .number()
       .optional()

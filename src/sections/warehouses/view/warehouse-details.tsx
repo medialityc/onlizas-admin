@@ -5,6 +5,7 @@ import Link from "next/link";
 import { MapPinIcon, UserIcon } from "@heroicons/react/24/outline";
 import { WarehouseFormData } from "../schemas/warehouse-schema";
 import { WarehouseIcon } from "lucide-react";
+import { WAREHOUSE_TYPE_ENUM } from "../constants/warehouse-type";
 
 interface WarehouseDetailsProps {
   warehouse: WarehouseFormData;
@@ -20,7 +21,7 @@ export async function WarehouseDetails({
         <div className="flex items-center gap-4 min-w-0">
           <div
             className={
-              w.type === "physical"
+              w.type === WAREHOUSE_TYPE_ENUM.warehouse
                 ? "p-3 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
                 : "p-3 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
             }
@@ -60,10 +61,12 @@ export async function WarehouseDetails({
               Tipo:
             </span>
             <span className="text-gray-600 dark:text-gray-300">
-              {w.type === "physical" ? "General" : "Para proveedor"}
+              {w.type === WAREHOUSE_TYPE_ENUM.warehouse
+                ? "General"
+                : "Para proveedor"}
             </span>
           </div>
-          {w.type === "physical" && (
+          {w.type === WAREHOUSE_TYPE_ENUM.warehouse && (
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="font-semibold text-gray-700 dark:text-gray-200">

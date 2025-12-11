@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const storeSchema = z.object({
-  name: z.string({ required_error: "El nombre es obligatorio" }).max(100),
+  name: z.string({ error: "El nombre es obligatorio" }).max(100),
   description: z.string().optional(),
-  url: z.string({ required_error: "La URL es obligatoria" }),
+  url: z.string({ error: "La URL es obligatoria" }),
   email: z
-    .string({ required_error: "el email es obligatorio" })
+    .string({ error: "el email es obligatorio" })
     .email("Formato de correo inválido"),
   phoneNumber: z
     .string()
@@ -22,21 +22,21 @@ export const storeSchema = z.object({
   ]),
   returnPolicy: z
     .string({
-      required_error: "Necesita definir una politica de reembolso",
+      error: "Necesita definir una politica de reembolso",
     })
     .min(10, {
       message: "La política de reembolso debe tener al menos 10 caracteres",
     }),
   shippingPolicy: z
     .string({
-      required_error: "Necesita definir una politica de envío",
+      error: "Necesita definir una politica de envío",
     })
     .min(10, {
       message: "La política de envío debe tener al menos 10 caracteres",
     }),
   termsOfService: z
     .string({
-      required_error: "Necesita definir una términos del Servicio",
+      error: "Necesita definir una términos del Servicio",
     })
     .min(10, {
       message: "Los términos del servicio deben tener al menos 10 caracteres",

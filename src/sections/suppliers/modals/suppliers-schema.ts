@@ -27,7 +27,7 @@ export const suppliersSchema = z.object({
     .array(
       z.object({
         fileName: z
-          .string({ required_error: "El nombre del archivo es obligatorio." })
+          .string({ error: "El nombre del archivo es obligatorio." })
           .min(1, "El nombre del archivo no puede estar vacío."),
         content: z.instanceof(File, {
           message: "El contenido debe ser un archivo válido.",
@@ -35,17 +35,15 @@ export const suppliersSchema = z.object({
       })
     )
     .min(1, "Debes agregar al menos un documento."),
-  sellerType: z.coerce
+  sellerType: z
     .number({
-      required_error: "El tipo de vendedor es obligatorio.",
-      invalid_type_error: "El tipo de vendedor es obligatorio.",
+      error: "El tipo de vendedor es obligatorio.",
     })
     .min(0, "El tipo de vendedor no puede estar vacío.")
     .max(100),
-  nacionalityType: z.coerce
+  nacionalityType: z
     .number({
-      required_error: "La nacionalidad es obligatoria.",
-      invalid_type_error: "La nacionalidad es obligatoria.",
+      error: "La nacionalidad es obligatoria.",
     })
     .min(0, "La nacionalidad no puede estar vacía."),
   mincexCode: z.string().optional(),
@@ -56,10 +54,9 @@ export const suppliersSchema = z.object({
   // Optional existing business association
   useExistingBusiness: z.boolean().optional(),
   businessId: z.union([z.number(), z.string()]).optional(),
-  supplierType: z.coerce
+  supplierType: z
     .number({
-      required_error: "El tipo de proveedor es obligatorio.",
-      invalid_type_error: "El tipo de proveedor es obligatorio.",
+      error: "El tipo de proveedor es obligatorio.",
     })
     .min(0),
 });

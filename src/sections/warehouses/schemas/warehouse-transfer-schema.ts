@@ -3,26 +3,26 @@ import { z } from "zod";
 export const warehouseTransferSchema = z
   .object({
     originId: z.string({
-      required_error: "Almacén de origen es requerido",
+      error: "Almacén de origen es requerido",
     }),
     destinationId: z
-      .string({ required_error: "Almacén de destino es requerido" })
+      .string({ error: "Almacén de destino es requerido" })
       .refine((val) => !!val, {
         message: "Almacén de destino es requerido",
       }),
     transferNumber: z.coerce
-      .string({ required_error: "Número de transferencia es requerido" })
+      .string({ error: "Número de transferencia es requerido" })
       .default("string"),
     items: z
       .array(
         z.object({
           productVariantId: z.string({
-            required_error: "Producto es requerido",
+            error: "Producto es requerido",
           }),
           quantityRequested: z.coerce.number({
-            required_error: "Cantidad es requerida",
+            error: "Cantidad es requerida",
           }),
-          unit: z.string({ required_error: "Unidad es requerida" }),
+          unit: z.string({ error: "Unidad es requerida" }),
         })
       )
       .min(1, "Debe seleccionar al menos un producto a transferir"),

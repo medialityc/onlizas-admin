@@ -15,7 +15,7 @@ import { Textarea } from "@/components/textarea";
 import { Field, GatewayFormProps, GatewayType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { gatewaysSchemas } from "./gateway-schemas.schema";
-import { ZodTypeAny } from "zod";
+import { z } from "zod";
 import { createGateway } from "@/services/gateways";
 import showToast from "@/config/toast/toastConfig";
 import { useQueryClient } from "@tanstack/react-query";
@@ -41,7 +41,7 @@ export function GatewayForm({
   if (selectField) defaultValues[selectField.id] = "sandbox";
   if (switchField) defaultValues[switchField.id] = false;
 
-  const schema = gatewaysSchemas[name] as ZodTypeAny;
+  const schema = gatewaysSchemas[name] as z.ZodObject<any>;
   const {
     handleSubmit,
     control,

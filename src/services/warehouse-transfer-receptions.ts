@@ -18,7 +18,7 @@ import {
   ResolveTransferReceptionData,
   GetReceptionLogs,
   NewInventoryFromReception,
-  TransferReceptionComment
+  TransferReceptionComment,
 } from "@/types/warehouse-transfer-receptions";
 
 const TRANSFER_RECEPTION_TAG = "transfer-receptions";
@@ -33,19 +33,19 @@ export async function getTransferReceptionsByTransferId(
     page: params?.page || 1,
     pageSize: params?.pageSize || 10,
   };
-  
+
   const url = new QueryParamsURLFactory(
     queryParams,
     backendRoutes.transferReceptions.list
   ).build();
-  
+
   const res = await nextAuthFetch({
     url,
     method: "GET",
     useAuth: true,
     next: { tags: [TRANSFER_RECEPTION_TAG] },
   });
-  
+
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<GetAllTransferReceptions>(res);
 }
@@ -58,14 +58,14 @@ export async function getAllTransferReceptions(
     { ...params },
     backendRoutes.transferReceptions.list
   ).build();
-  
+
   const res = await nextAuthFetch({
     url,
     method: "GET",
     useAuth: true,
     next: { tags: [TRANSFER_RECEPTION_TAG] },
   });
-  
+
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<GetAllTransferReceptions>(res);
 }
@@ -81,7 +81,7 @@ export async function getTransferReceptionById(
     useAuth: true,
     next: { tags: [TRANSFER_RECEPTION_TAG, id] },
   });
-  
+
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<TransferReception>(res);
 }
@@ -96,9 +96,9 @@ export async function receiveTransfer(
     data,
     useAuth: true,
   });
-  
+
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(TRANSFER_RECEPTION_TAG);
+  revalidateTag(TRANSFER_RECEPTION_TAG, "max");
   return buildApiResponseAsync<TransferReception>(res);
 }
 
@@ -111,27 +111,29 @@ export async function reportDiscrepancy(
   formData.append("itemId", String(data.itemId));
   formData.append("type", data.type);
   formData.append("description", data.description);
-  
+
   if (data.quantity) {
     formData.append("quantity", String(data.quantity));
   }
-  
+
   if (data.evidence) {
     data.evidence.forEach((file, index) => {
       formData.append(`evidence_${index}`, file);
     });
   }
-  
+
   const res = await nextAuthFetch({
     url: backendRoutes.transferReceptions.reportDiscrepancy(data.receptionId),
     method: "POST",
     data: formData,
     useAuth: true,
   });
-  
+
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(TRANSFER_RECEPTION_TAG);
-  return buildApiResponseAsync<{ success: boolean; discrepancyId: string }>(res);
+  revalidateTag(TRANSFER_RECEPTION_TAG, "max");
+  return buildApiResponseAsync<{ success: boolean; discrepancyId: string }>(
+    res
+  );
 }
 
 // Reportar discrepancias múltiples (nueva estructura para bulk reporting)
@@ -145,13 +147,15 @@ export async function reportMultipleDiscrepancies(
     data,
     useAuth: true,
     headers: {
-      'Content-Type': 'application/json'
-    }
+      "Content-Type": "application/json",
+    },
   });
-  
+
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(TRANSFER_RECEPTION_TAG);
-  return buildApiResponseAsync<{ success: boolean; discrepancyIds: string[] }>(res);
+  revalidateTag(TRANSFER_RECEPTION_TAG, "max");
+  return buildApiResponseAsync<{ success: boolean; discrepancyIds: string[] }>(
+    res
+  );
 }
 
 // Resolver recepción completa (marcar todas las discrepancias como resueltas)
@@ -165,9 +169,9 @@ export async function resolveTransferReception(
     data,
     useAuth: true,
   });
-  
+
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(TRANSFER_RECEPTION_TAG);
+  revalidateTag(TRANSFER_RECEPTION_TAG, "max");
   return buildApiResponseAsync<{ success: boolean }>(res);
 }
 
@@ -183,18 +187,18 @@ export async function addReceptionComment(
     comment,
     type: type || "general",
     parentCommentId: parentCommentId || null,
-    attachmentUrls: attachmentUrls || []
+    attachmentUrls: attachmentUrls || [],
   };
-  
+
   const res = await nextAuthFetch({
     url: backendRoutes.transferReceptions.addComment(receptionId),
     method: "POST",
     data: payload,
     useAuth: true,
   });
-  
+
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(TRANSFER_RECEPTION_TAG);
+  revalidateTag(TRANSFER_RECEPTION_TAG, "max");
   return buildApiResponseAsync<TransferReceptionComment>(res);
 }
 
@@ -206,14 +210,14 @@ export async function getReceptionLogs(
     { ...params },
     backendRoutes.transferReceptions.logs
   ).build();
-  
+
   const res = await nextAuthFetch({
     url,
     method: "GET",
     useAuth: true,
     next: { tags: [`${TRANSFER_RECEPTION_TAG}-logs`] },
   });
-  
+
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<GetReceptionLogs>(res);
 }
@@ -235,9 +239,9 @@ export async function createNewInventoryFromReception(
     data: inventoryData,
     useAuth: true,
   });
-  
+
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(TRANSFER_RECEPTION_TAG);
+  revalidateTag(TRANSFER_RECEPTION_TAG, "max");
   return buildApiResponseAsync<NewInventoryFromReception>(res);
 }
 
@@ -257,6 +261,6 @@ export async function uploadReceptionEvidence(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(TRANSFER_RECEPTION_TAG);
+  revalidateTag(TRANSFER_RECEPTION_TAG, "max");
   return buildApiResponseAsync<{ success: boolean; urls: string[] }>(res);
 }

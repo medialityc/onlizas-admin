@@ -76,7 +76,7 @@ export const addressSchema = z.object({
 
 export const userEditSchema = z.object({
   name: z
-    .string({ required_error: "El nombre es obligatorio." })
+    .string({ error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")
     .max(50, "El nombre es demasiado largo")
     .trim(),

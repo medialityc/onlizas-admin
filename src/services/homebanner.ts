@@ -26,7 +26,7 @@ export async function createHomeBanner(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("content-home-banner");
+  revalidateTag("content-home-banner", "max");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
@@ -42,7 +42,7 @@ export async function updateHomeBanner(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("content-home-banner");
+  revalidateTag("content-home-banner", "max");
 
   return buildApiResponseAsync<IHomeBanner>(res);
 }
@@ -107,7 +107,7 @@ export async function toggleStatusHomeBanner(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
+  revalidateTag("categories", "max");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }

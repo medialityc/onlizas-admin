@@ -10,7 +10,7 @@ import { AdvancedSearchSelect } from "../select/advance-form-select";
 // Debounce hook
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState(value);
-  const handler = useRef<NodeJS.Timeout>();
+  const handler = useRef<NodeJS.Timeout>(null);
 
   useEffect(() => {
     if (handler.current) clearTimeout(handler.current);
