@@ -64,7 +64,7 @@ export default function ProductSelect({
       label={label}
       placeholder="Buscar productos..."
       onFetch={fetchProducts}
-      objectValueKey="inventoryId"
+      objectValueKey="id"
       objectKeyLabel="productName"
       renderOption={renderVariantOption}
       multiple={multiple}
