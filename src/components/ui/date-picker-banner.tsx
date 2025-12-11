@@ -5,11 +5,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+// Removed react-text-mask; using a plain input
 import { cn } from "@/lib/utils";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 import { format, parse } from "date-fns";
 import { es } from "date-fns/locale";
-import MaskedInput from "react-text-mask";
 import { Calendar } from "../input/calendar";
 import { ChangeEvent, useEffect, useState } from "react";
 
@@ -75,7 +75,7 @@ export function DatePickerBanner({
     const currentYear = new Date().getFullYear();
     const minYear = minDate ? minDate.getFullYear() : currentYear;
     const maxYear = currentYear + 10; // Hasta 10 años en el futuro
-    
+
     if (yyyy < minYear || yyyy > maxYear) {
       setError(`El año debe estar entre ${minYear} y ${maxYear}`);
       return false;
@@ -159,14 +159,16 @@ export function DatePickerBanner({
   return (
     <div className={cn("flex flex-col gap-3", containerClassname)}>
       <div className="relative flex items-center">
-        <MaskedInput
-          mask={[/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/]}
+        <input
           className={cn(
             "w-full border rounded-md px-3 py-2 font-normal pr-10 focus:outline-none focus:ring-2 focus:ring-primary-500",
             buttonClassname
           )}
           placeholder="dd/mm/aaaa"
           value={inputValue}
+          type="text"
+          inputMode="numeric"
+          pattern="\\d{2}/\\d{2}/\\d{4}"
           onChange={handleInputChange}
           onBlur={handleInputBlur}
         />
@@ -196,7 +198,7 @@ export function DatePickerBanner({
               month={currentMonth}
               onMonthChange={handleMonthChange}
               captionLayout="dropdown"
-              disabled={(date) => minDate ? date < minDate : false}
+              disabled={(date) => (minDate ? date < minDate : false)}
             />
           </PopoverContent>
         </Popover>

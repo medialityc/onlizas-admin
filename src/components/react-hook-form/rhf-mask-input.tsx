@@ -1,18 +1,16 @@
 import { Controller, useFormContext } from "react-hook-form";
 import { CSSProperties } from "react";
 
-import{ Mask } from "react-text-mask";
 import MaskInputWithLabel from "../input/mask-input-with-label";
 
 // ----------------------------------------------------------------------
 
-interface Props
-  extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    "onChange" | "onBlur" | "value" | "size"
-  > {
+interface Props extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "onChange" | "onBlur" | "value" | "size"
+> {
   name: string;
-  mask: Mask | ((value: string) => Mask);
+  // Mask removed; no mask prop required
   disabled?: boolean;
   size?: "small" | "medium";
   label?: string;

@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 import { format, parse } from "date-fns";
 import { es } from "date-fns/locale";
-import MaskedInput from "react-text-mask";
 import { Calendar } from "../input/calendar";
 
 interface DatePickerProps {
@@ -146,14 +145,16 @@ export function DatePicker({
   return (
     <div className={cn("flex flex-col gap-3", containerClassname)}>
       <div className="relative flex items-center">
-        <MaskedInput
-          mask={[/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/]}
+        <input
           className={cn(
             "w-full border rounded-md px-3 py-2 font-normal pr-10 focus:outline-none focus:ring-2 focus:ring-primary-500",
             buttonClassname
           )}
           placeholder="dd/mm/aaaa"
           value={inputValue}
+          type="text"
+          inputMode="numeric"
+          pattern="\\d{2}/\\d{2}/\\d{4}"
           onChange={handleInputChange}
           onBlur={handleInputBlur}
         />

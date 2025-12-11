@@ -1,13 +1,13 @@
 import { cn } from "@/lib/utils";
 import { CSSProperties, ChangeEvent } from "react";
 import { FieldError } from "react-hook-form";
-import MaskedInput, { Mask } from "react-text-mask";
+// Removed react-text-mask; using a plain input with Tailwind styles
+// Mask support removed; plain input used
 
-interface Props
-  extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    "onChange" | "onBlur" | "value" | "size" | "className"
-  > {
+interface Props extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "onChange" | "onBlur" | "value" | "size" | "className"
+> {
   id: string;
   placeholder?: string;
   value: string | number;
@@ -25,7 +25,7 @@ interface Props
   autoComplete?: string;
   className?: string;
   containerClassname?: string;
-  mask: Mask | ((value: string) => Mask);
+  // Mask removed; no special props
 }
 
 const sizes = {
@@ -52,7 +52,6 @@ const MaskInputWithLabel: React.FC<Props> = ({
   dataTest,
   autoComplete,
   className,
-  mask,
   ...rest
 }) => (
   <div
@@ -76,7 +75,7 @@ const MaskInputWithLabel: React.FC<Props> = ({
       </div>
       <div className="relative">
         <div className={cn("relative")}>
-          <MaskedInput
+          <input
             className={cn(
               "form-input",
               className,
@@ -98,7 +97,6 @@ const MaskInputWithLabel: React.FC<Props> = ({
             disabled={disabled}
             data-test={dataTest}
             style={{ width }}
-            mask={mask}
             {...rest}
           />
         </div>
