@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "./utilities.css";
 @plugin 'tailwindcss-animate';
 @plugin "@tailwindcss/forms" {
   strategy: "class";
