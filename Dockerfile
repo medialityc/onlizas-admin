@@ -8,7 +8,7 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-RUN npm i --legacy-peer-deps
+RUN npm i
 
 FROM base AS builder
 

@@ -5,9 +5,8 @@ import { CalendarIcon } from "@heroicons/react/24/outline";
 import * as React from "react";
 import { CSSProperties } from "react";
 import { FieldError } from "react-hook-form";
-import MaskedInput from "react-text-mask";
+// Removed react-text-mask; using a plain input with Tailwind
 import { Calendar } from "./calendar";
-
 interface DateInputProps {
   id: string;
   value?: Date;
@@ -30,21 +29,22 @@ interface DateInputProps {
 
 export default function DateInput({
   id,
-  value,
-  onChange,
-  onBlur,
-  placeholder = "Seleccionar fecha",
-  label,
-  underLabel,
-  disabled = false,
-  required = false,
-  error,
-  width = "100%",
-  containerClassName,
-  showError = true,
   minDate,
   maxDate,
   locale,
+  showError,
+  error,
+  value,
+  onChange,
+  className,
+  onBlur,
+  containerClassName,
+  disabled,
+  label,
+  placeholder,
+  required,
+  underLabel,
+  width,
 }: DateInputProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   // Formato DD/MM/YYYY
@@ -167,7 +167,7 @@ export default function DateInput({
         </div>
 
         <div className="relative">
-          <MaskedInput
+          <input
             id={id}
             type="text"
             value={inputValue}
@@ -190,18 +190,8 @@ export default function DateInput({
               }
             }}
             className={`form-input h-12 border-2 rounded-xl focus:border-blue-500 w-full ${"border-slate-200"}`}
-            mask={[
-              /[0-9]/,
-              /[0-9]/,
-              "/",
-              /[0-9]/,
-              /[0-9]/,
-              "/",
-              /[0-9]/,
-              /[0-9]/,
-              /[0-9]/,
-              /[0-9]/,
-            ]}
+            inputMode="numeric"
+            pattern="\\d{2}/\\d{2}/\\d{4}"
             disabled={disabled}
           />
           <button
