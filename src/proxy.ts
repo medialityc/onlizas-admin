@@ -32,25 +32,37 @@ export default function createSSOMiddleware(options?: SSOInitOptions) {
     : null;
 
   return async function middleware(req: NextRequest) {
-    const { pathname } = req.nextUrl;
+    try {
+      const { pathname } = req.nextUrl;
 
-    if (!isProtected(pathname, protectedRoutes)) {
+      if (!isProtected(pathname, protectedRoutes)) {
+        return NextResponse.next();
+      }
+
+      let hasSession = false;
+      try {
+        const session = await getServerSession();
+        hasSession =
+          !!session?.user &&
+          !!session?.tokens?.accessToken &&
+          !!session?.tokens?.refreshToken;
+      } catch {
+        // ignore session retrieval errors and continue to redirect
+      }
+
+      if (hasSession) return NextResponse.next();
+
+      const rawLoginUrl = getLoginUrl();
+      const loginUrl = new URL(
+        rawLoginUrl,
+        // If `getLoginUrl()` is relative, resolve against current request origin
+        req.nextUrl.origin
+      );
+      loginUrl.searchParams.set("callbackUrl", req.url);
+      return NextResponse.redirect(loginUrl);
+    } catch {
+      // Ensure middleware always returns a valid Response instance
       return NextResponse.next();
     }
-
-    let hasSession = false;
-    try {
-      const session = await getServerSession();
-      hasSession =
-        !!session?.user &&
-        !!session?.tokens?.accessToken &&
-        !!session?.tokens?.refreshToken;
-    } catch {}
-
-    if (hasSession) return NextResponse.next();
-
-    const loginUrl = new URL(getLoginUrl());
-    loginUrl.searchParams.set("callbackUrl", req.url);
-    return NextResponse.redirect(loginUrl);
   };
 }
