@@ -54,7 +54,7 @@ const SidebarSection = ({
     false;
 
   return (
-    <li className="mb-6">
+    <li>
       <div className="mb-2">
         <button
           type="button"
@@ -162,9 +162,7 @@ const SidebarSection = ({
                           <SidebarItem
                             key={item.id}
                             item={item}
-                            active={
-                              item.path ? isActiveLink(item.path) : false
-                            }
+                            active={item.path ? isActiveLink(item.path) : false}
                             isExpanded={expandedItems[item.id]}
                             onToggle={() => onToggleItem(item.id)}
                             isActiveLink={isActiveLink}
