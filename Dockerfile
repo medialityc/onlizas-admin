@@ -34,7 +34,7 @@ RUN adduser -S nextjs -u 1001
 
 COPY --from=builder /app/public ./public
 
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+# COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
