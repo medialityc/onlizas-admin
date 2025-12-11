@@ -74,7 +74,7 @@ const ImagePreview = ({
     <>
       <div
         className={cn(
-          "object-contain w-14 h-14 flex-shrink-0 bg-slate-100 border dark:border-slate-700 dark:bg-slate-700 rounded-md overflow-hidden relative",
+          "object-contain w-14 h-14 flex-shrink-0 bg-slate-100 border-slate-400 dark:border-slate-700 dark:bg-slate-700 rounded-md overflow-hidden relative",
           previewEnabled &&
             !showIcon &&
             !isDefaultImage &&
