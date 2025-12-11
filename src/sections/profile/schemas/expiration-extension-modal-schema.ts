@@ -3,8 +3,7 @@ import { z } from "zod";
 export const expirationExtensionModalSchema = z.object({
   newExpirationDate: z
     .date({
-      required_error: "La nueva fecha de expiración es obligatoria.",
-      invalid_type_error: "Debe seleccionar una fecha válida.",
+      error: "La nueva fecha de expiración es obligatoria.",
     })
     .refine(
       (date) => date > new Date(),
@@ -22,7 +21,7 @@ export const expirationExtensionModalSchema = z.object({
       .optional()
   ),
   comments: z
-    .string({ required_error: "Los comentarios son obligatorios." })
+    .string({ error: "Los comentarios son obligatorios." })
     .max(1000, "Los comentarios no pueden tener más de 1000 caracteres."),
 });
 

@@ -25,7 +25,7 @@ export async function validateDocument(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier");
+  revalidateTag("supplier", "max");
 
   return buildApiResponseAsync<ValidateDocumentResponse>(res);
 }
@@ -42,7 +42,7 @@ export async function uploadDocument(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier");
+  revalidateTag("supplier", "max");
 
   return buildApiResponseAsync<AddDocumentResponse>(res);
 }

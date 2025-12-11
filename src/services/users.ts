@@ -88,7 +88,7 @@ export async function createUser(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("users");
+  revalidateTag("users", "max");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 export async function resendEmail(data: {
@@ -429,9 +429,9 @@ export async function updateProviderPersonalInfo(
   if (!res.ok) return handleApiServerError(res);
 
   // Revalidar caches
-  revalidateTag("supplier");
-  revalidateTag("suppliers");
-  revalidateTag(`supplier-${id}`);
+  revalidateTag("supplier", "max");
+  revalidateTag("suppliers", "max");
+  revalidateTag(`supplier-${id}`, "max");
 
   return buildApiResponseAsync<void>(res);
 }

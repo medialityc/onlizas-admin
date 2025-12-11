@@ -33,7 +33,7 @@ export async function getSystemConfigurations(
 }
 
 export async function updateSystemConfiguration(
-  id: number|string,
+  id: number | string,
   data: UpdateSystemConfiguration
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
@@ -44,7 +44,7 @@ export async function updateSystemConfiguration(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("system-configurations");
+  revalidateTag("system-configurations", "max");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
@@ -59,12 +59,12 @@ export async function createSystemConfiguration(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("system-configurations");
+  revalidateTag("system-configurations", "max");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
 export async function setSystemConfigurationAsDefault(
-  id: number|string
+  id: number | string
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.systemConfigurations.setCurrent(id),
@@ -72,6 +72,6 @@ export async function setSystemConfigurationAsDefault(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("system-configurations");
+  revalidateTag("system-configurations", "max");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }

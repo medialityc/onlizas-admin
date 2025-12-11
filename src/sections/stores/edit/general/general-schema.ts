@@ -3,9 +3,7 @@ import { z } from "zod";
 export const GeneralStoreSchema = z
   .object({
     // Estado
-    active: z
-      .boolean({ required_error: "El estado es obligatorio" })
-      .default(true),
+    active: z.boolean({ error: "El estado es obligatorio" }).default(true),
 
     // Información básica
     name: z.string().min(1, "Nombre requerido"),

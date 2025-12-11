@@ -167,6 +167,7 @@ export const userFormSchema = z.object({
   // Atributos dinámicos: permitir string, null u objetos anidados
   attributes: z
     .record(
+      z.string(),
       z.union([
         z.string(),
         z.null(),
@@ -197,7 +198,10 @@ export const userSearchSchema = z.object({
 
 // User attributes update schema
 export const updateUserAttributesSchema = z.object({
-  attributes: z.record(z.any()),
+  attributes: z.record(
+    z.string(),
+    z.union([z.string(), z.null(), z.object({}).catchall(z.any())])
+  ),
 });
 
 export type UpdateUserAttributesRequest = z.infer<

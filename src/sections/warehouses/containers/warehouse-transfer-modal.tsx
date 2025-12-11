@@ -34,7 +34,7 @@ export default function WarehouseSelectedModal({
     (option: WarehouseFormData) => {
       console.log(option, "WWW");
       if (option) {
-        form.setValue("type", option?.type?.toLowerCase(), {
+        form.setValue("type", option?.type, {
           shouldDirty: true,
         });
       }

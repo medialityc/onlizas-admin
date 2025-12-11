@@ -22,7 +22,7 @@ export async function createDepartment(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
+  revalidateTag("categories", "max");
 
   return buildApiResponseAsync<Department>(res);
 }
@@ -37,7 +37,7 @@ export async function deleteDepartment(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
+  revalidateTag("categories", "max");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -75,7 +75,7 @@ export async function updateDepartment(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
+  revalidateTag("categories", "max");
 
   return buildApiResponseAsync<Department>(res);
 }

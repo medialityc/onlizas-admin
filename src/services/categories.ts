@@ -26,7 +26,7 @@ export async function createCategory(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("categories");
+  revalidateTag("categories", "max");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
@@ -42,7 +42,7 @@ export async function updateCategory(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
+  revalidateTag("categories", "max");
 
   return buildApiResponseAsync<Category>(res);
 }
@@ -57,7 +57,7 @@ export async function toggleStatusCategory(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
+  revalidateTag("categories", "max");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }

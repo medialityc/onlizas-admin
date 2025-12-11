@@ -10,7 +10,6 @@ import { revalidateTag } from "next/cache";
 import { backendRoutes } from "@/lib/endpoint";
 import { Region } from "@/types/regions";
 
-
 // Tipos para Currency
 export type Currency = {
   id: string;
@@ -29,16 +28,16 @@ export type CreateCurrency = {
   codIso: string;
   symbol: string;
   rate: number;
-  regionIds: (number|string)[];
+  regionIds: (number | string)[];
 };
 
 export type UpdateCurrency = {
-  guidId:string,
+  guidId: string;
   name: string;
-  codIso:string,
+  codIso: string;
   symbol: string;
   rate: number;
-  regionIds: (number|string)[];
+  regionIds: (number | string)[];
 };
 
 export type GetAllCurrencies = {
@@ -62,7 +61,7 @@ export async function createCurrency(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("currencies");
+  revalidateTag("currencies", "max");
 
   return buildApiResponseAsync<Currency>(res);
 }
@@ -77,7 +76,7 @@ export async function deleteCurrency(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("currencies");
+  revalidateTag("currencies", "max");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -103,7 +102,7 @@ export async function getAllCurrencies(
 }
 
 export async function updateCurrency(
-  id: string ,
+  id: string,
   data: UpdateCurrency
 ): Promise<ApiResponse<Currency>> {
   const res = await nextAuthFetch({
@@ -117,7 +116,7 @@ export async function updateCurrency(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("currencies");
+  revalidateTag("currencies", "max");
 
   return buildApiResponseAsync<Currency>(res);
 }
@@ -132,7 +131,7 @@ export async function setAsDefaultCurrency(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("currencies");
+  revalidateTag("currencies", "max");
 
   return buildApiResponseAsync<Currency>(res);
 }

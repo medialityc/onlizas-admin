@@ -3,7 +3,7 @@ import { z } from "zod";
 export const pendingDocumentSchema = z.object({
   id: z.number().optional(),
   fileName: z
-    .string({ required_error: "El nombre del archivo es obligatorio." })
+    .string({ error: "El nombre del archivo es obligatorio." })
     .min(1, "El nombre del archivo es obligatorio."),
   content: z
     .union([

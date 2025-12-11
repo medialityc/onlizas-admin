@@ -60,15 +60,12 @@ export const storeEditSchema = z.object({
   active: z.boolean().optional(),
 
   // Datos básicos
-  name: z
-    .string({ required_error: "El nombre es obligatorio" })
-    .min(1)
-    .max(100),
+  name: z.string({ error: "El nombre es obligatorio" }).min(1).max(100),
   description: z.string().max(1000).optional(),
-  url: z.string({ required_error: "La URL es obligatoria" }),
+  url: z.string({ error: "La URL es obligatoria" }),
   // Contacto
   email: z
-    .string({ required_error: "El correo es obligatorio" })
+    .string({ error: "El correo es obligatorio" })
     .email("Formato de correo inválido"),
   phoneNumber: z
     .string()
@@ -89,13 +86,13 @@ export const storeEditSchema = z.object({
 
   // Políticas
   returnPolicy: z
-    .string({ required_error: "Necesita definir una politica de reembolso" })
+    .string({ error: "Necesita definir una politica de reembolso" })
     .min(10),
   shippingPolicy: z
-    .string({ required_error: "Necesita definir una politica de envío" })
+    .string({ error: "Necesita definir una politica de envío" })
     .min(10),
   termsOfService: z
-    .string({ required_error: "Necesita definir una términos del Servicio" })
+    .string({ error: "Necesita definir una términos del Servicio" })
     .min(10),
 
   // Apariencia

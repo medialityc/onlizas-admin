@@ -14,7 +14,7 @@ export async function createProductAsProvider(
   // Get current user to automatically assign as supplier
   const userRes = await fetchUserMe();
   const currentUser = userRes?.data;
-  
+
   if (!currentUser?.id) {
     return {
       error: true,
@@ -34,7 +34,7 @@ export async function createProductAsProvider(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("products");
+  revalidateTag("products", "max");
 
   return buildApiResponseAsync<Product>(res);
 }
@@ -46,7 +46,7 @@ export async function updateProductAsProvider(
   // Get current user to automatically assign as supplier
   const userRes = await fetchUserMe();
   const currentUser = userRes?.data;
-  
+
   if (!currentUser?.id) {
     return {
       error: true,
@@ -67,6 +67,6 @@ export async function updateProductAsProvider(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return buildApiResponseAsync<Product>(res);
 }

@@ -58,10 +58,9 @@ export async function createWarehouseTransfer(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(WAREHOUSE_TRANSFER_TAG);
+  revalidateTag(WAREHOUSE_TRANSFER_TAG, "max");
   return buildApiResponseAsync<WarehouseTransfer>(res);
 }
-
 
 export async function approveWarehouseTransfer(
   transferId: number | string
@@ -72,7 +71,7 @@ export async function approveWarehouseTransfer(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(WAREHOUSE_TRANSFER_TAG);
+  revalidateTag(WAREHOUSE_TRANSFER_TAG, "max");
   return buildApiResponseAsync<WarehouseTransfer>(res);
 }
 
@@ -85,7 +84,7 @@ export async function cancelWarehouseTransfer(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(WAREHOUSE_TRANSFER_TAG);
+  revalidateTag(WAREHOUSE_TRANSFER_TAG, "max");
   return buildApiResponseAsync<WarehouseTransfer>(res);
 }
 export async function executeWarehouseTransfer(
@@ -97,7 +96,7 @@ export async function executeWarehouseTransfer(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(WAREHOUSE_TRANSFER_TAG);
+  revalidateTag(WAREHOUSE_TRANSFER_TAG, "max");
   return buildApiResponseAsync<WarehouseTransfer>(res);
 }
 
@@ -110,10 +109,10 @@ export async function markWarehouseTransferAwaitingReception(
     method: "PUT",
     useAuth: true,
     data: {
-      notes: notes || ""
+      notes: notes || "",
     },
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(WAREHOUSE_TRANSFER_TAG);
+  revalidateTag(WAREHOUSE_TRANSFER_TAG, "max");
   return buildApiResponseAsync<WarehouseTransfer>(res);
 }

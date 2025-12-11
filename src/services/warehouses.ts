@@ -150,7 +150,7 @@ export async function createWarehouse(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("warehouses");
+  revalidateTag("warehouses", "max");
   return buildApiResponseAsync<Warehouse>(res);
 }
 
@@ -166,7 +166,7 @@ export async function updateWarehouse(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("warehouses");
+  revalidateTag("warehouses", "max");
   return buildApiResponseAsync<Warehouse>(res);
 }
 
@@ -181,7 +181,7 @@ export async function deleteWarehouse(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("warehouses");
+  revalidateTag("warehouses", "max");
   return buildApiResponseAsync<{ success: boolean }>(res);
 }
 
@@ -251,7 +251,7 @@ export async function createMeWarehouse(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier-warehouses");
+  revalidateTag("supplier-warehouses", "max");
   return buildApiResponseAsync<Warehouse>(res);
 }
 
@@ -266,7 +266,7 @@ export async function updateMeWarehouse(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier-warehouses");
+  revalidateTag("supplier-warehouses", "max");
   return buildApiResponseAsync<Warehouse>(res);
 }
 

@@ -22,7 +22,7 @@ export async function createSection(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("admin-section");
+  revalidateTag("admin-section", "max");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
@@ -38,7 +38,7 @@ export async function updateSection(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("admin-section");
+  revalidateTag("admin-section", "max");
 
   return buildApiResponseAsync<ISection>(res);
 }

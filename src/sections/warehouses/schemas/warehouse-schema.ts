@@ -5,11 +5,7 @@ export const warehouseSchema = z
   .object({
     id: z.string().optional(),
     name: z.string().min(1, "El nombre del almacén es requerido"),
-    type: z.enum(Object.keys(WAREHOUSE_TYPE_ENUM) as [string, ...string[]], {
-      errorMap: () => {
-        return { message: "Tipo de almacén inválido" };
-      },
-    }),
+    type: z.nativeEnum(WAREHOUSE_TYPE_ENUM),
     address: z.object({
       name: z.string().min(1, "Requerido"),
       mainStreet: z.string().min(1, "Requerido"),

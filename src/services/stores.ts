@@ -10,7 +10,6 @@ import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { revalidateTag } from "next/cache";
 import { PaginatedResponse } from "@/types/common";
 
-
 export async function getAllStores(
   params: IQueryable
 ): Promise<ApiResponse<GetAllStores>> {
@@ -31,11 +30,11 @@ export async function getAllStores(
   return buildApiResponseAsync<GetAllStores>(res);
 }
 export async function getAllProviderStores(
-  providerId: number|string,
+  providerId: number | string,
   params: IQueryable
 ): Promise<ApiResponse<GetAllStores>> {
   const url = new QueryParamsURLFactory(
-    { ...params, /* includeMetics */ },
+    { ...params /* includeMetics */ },
     backendRoutes.store.listByProvider(providerId)
   ).build();
 
@@ -45,7 +44,6 @@ export async function getAllProviderStores(
     useAuth: true,
     next: { tags: ["stores-all-provider"] },
   });
-
 
   if (!res.ok) return handleApiServerError(res);
 
@@ -68,7 +66,6 @@ export async function getProviderStores(
   });
 
   if (!res.ok) return handleApiServerError(res);
-
 
   return buildApiResponseAsync<GetAllStores>(res);
 }
@@ -103,12 +100,12 @@ export async function deleteStore(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("stores");
+  revalidateTag("stores", "max");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 export async function getStoreById(
-  id: number|string
+  id: number | string
 ): Promise<ApiResponse<Store | undefined>> {
   const url = backendRoutes.store.storeById(id);
   const res = await nextAuthFetch({
@@ -133,13 +130,13 @@ export async function createStore(data: FormData): Promise<ApiResponse<Store>> {
     console.log("Error creating store", res);
     return handleApiServerError(res);
   }
-  revalidateTag("stores");
+  revalidateTag("stores", "max");
   console.log("Store created successfully", res);
   return buildApiResponseAsync<Store>(res);
 }
 
 export async function updateSupplierStore(
-  id: number|string,
+  id: number | string,
   data: FormData
 ): Promise<ApiResponse<Store | undefined>> {
   const res = await nextAuthFetch({
@@ -150,12 +147,12 @@ export async function updateSupplierStore(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("stores");
-  revalidateTag("store-supplier-edit");
+  revalidateTag("stores", "max");
+  revalidateTag("store-supplier-edit", "max");
   return buildApiResponseAsync<Store>(res);
 }
 export async function updateAdminStore(
-  storeId: number|string,
+  storeId: number | string,
   data: FormData
 ): Promise<ApiResponse<Store | undefined>> {
   const res = await nextAuthFetch({
@@ -167,7 +164,7 @@ export async function updateAdminStore(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-details");
+  revalidateTag("store-details", "max");
   return buildApiResponseAsync<Store>(res);
 }
 export async function updateBannersStore(
@@ -183,7 +180,7 @@ export async function updateBannersStore(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-banner-update");
+  revalidateTag("store-banner-update", "max");
   return buildApiResponseAsync<Store>(res);
 }
 export async function createBannersStore(
@@ -199,12 +196,12 @@ export async function createBannersStore(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-banner-create");
+  revalidateTag("store-banner-create", "max");
   return buildApiResponseAsync<Store>(res);
 }
 
 export async function getStoreDetails(
-  storeId: number|string
+  storeId: number | string
 ): Promise<ApiResponse<Store | undefined>> {
   const url = backendRoutes.store.details(storeId);
   const res = await nextAuthFetch({
@@ -214,13 +211,12 @@ export async function getStoreDetails(
     next: { tags: ["store-details"] },
   });
 
-
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<Store>(res);
 }
 
 export async function getStoreSupplierDetails(
-  storeId: number|string
+  storeId: number | string
 ): Promise<ApiResponse<Store | undefined>> {
   const url = backendRoutes.store.storeDetails(storeId);
   const res = await nextAuthFetch({
@@ -234,14 +230,14 @@ export async function getStoreSupplierDetails(
 }
 
 export type StoreFollower = {
-  id: number|string;
+  id: number | string;
   name: string;
   email: string;
   phoneNumber: string;
 };
 
 export async function getStoreFollowers(
-  storeId: number|string,
+  storeId: number | string,
   params: IQueryable
 ): Promise<ApiResponse<PaginatedResponse<StoreFollower>>> {
   const url = new QueryParamsURLFactory(

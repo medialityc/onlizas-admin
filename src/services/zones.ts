@@ -3,7 +3,12 @@
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { backendRoutes } from "@/lib/endpoint";
 import { ApiResponse } from "@/types/fetch/api";
-import { GetZones, Zone, CreateZonePayload, UpdateZonePayload } from "@/types/zones";
+import {
+  GetZones,
+  Zone,
+  CreateZonePayload,
+  UpdateZonePayload,
+} from "@/types/zones";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { revalidateTag } from "next/cache";
 import { IQueryable } from "@/types/fetch/request";
@@ -11,9 +16,14 @@ import { QueryParamsURLFactory } from "@/lib/request";
 
 const ZONES_TAG = "zones";
 
-export async function getZones(params: IQueryable = {}): Promise<ApiResponse<GetZones>> {
-  const url = new QueryParamsURLFactory(params, backendRoutes.zones.list).build();
-  
+export async function getZones(
+  params: IQueryable = {}
+): Promise<ApiResponse<GetZones>> {
+  const url = new QueryParamsURLFactory(
+    params,
+    backendRoutes.zones.list
+  ).build();
+
   const res = await nextAuthFetch({
     url,
     method: "GET",
@@ -25,9 +35,14 @@ export async function getZones(params: IQueryable = {}): Promise<ApiResponse<Get
   return buildApiResponseAsync<GetZones>(res);
 }
 
-export async function getMyZones(params: IQueryable = {}): Promise<ApiResponse<GetZones>> {
-  const url = new QueryParamsURLFactory(params, backendRoutes.zones.myZones).build();
-  
+export async function getMyZones(
+  params: IQueryable = {}
+): Promise<ApiResponse<GetZones>> {
+  const url = new QueryParamsURLFactory(
+    params,
+    backendRoutes.zones.myZones
+  ).build();
+
   const res = await nextAuthFetch({
     url,
     method: "GET",
@@ -39,9 +54,14 @@ export async function getMyZones(params: IQueryable = {}): Promise<ApiResponse<G
   return buildApiResponseAsync<GetZones>(res);
 }
 
-export async function getOnlizasZones(params: IQueryable = {}): Promise<ApiResponse<GetZones>> {
-  const url = new QueryParamsURLFactory(params, backendRoutes.zones.onlizasZones).build();
-  
+export async function getOnlizasZones(
+  params: IQueryable = {}
+): Promise<ApiResponse<GetZones>> {
+  const url = new QueryParamsURLFactory(
+    params,
+    backendRoutes.zones.onlizasZones
+  ).build();
+
   const res = await nextAuthFetch({
     url,
     method: "GET",
@@ -80,7 +100,7 @@ export async function createZone(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(ZONES_TAG);
+  revalidateTag(ZONES_TAG, "max");
   return buildApiResponseAsync<Zone>(res);
 }
 
@@ -112,7 +132,7 @@ export async function updateZone(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(ZONES_TAG);
+  revalidateTag(ZONES_TAG, "max");
   return buildApiResponseAsync<Zone>(res);
 }
 
@@ -129,6 +149,6 @@ export async function deleteZone(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(ZONES_TAG);
+  revalidateTag(ZONES_TAG, "max");
   return { error: false, status: res.status, data: undefined };
 }
