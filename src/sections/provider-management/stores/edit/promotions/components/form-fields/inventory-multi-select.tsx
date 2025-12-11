@@ -49,6 +49,33 @@ export default function InventorySelect({
     }
   };
 
+  // Función para mostrar información adicional del inventario
+  const renderInventoryOption = (option: any) => {
+    //console.log(option)
+    const supplierText = option.supplierName
+      ? `Proveedor: ${option.supplierName}`
+      : "";
+    const warehouseText = option.warehouseName
+      ? `Almacén: ${option.warehouseName}`
+      : "";
+    const store = option.storeName ? `Tienda: ${option.storeName}` : "";
+    const priceText = option.totalPrice ? `Precio: $${option.totalPrice}` : "";
+    const products = option.products.length
+      ? `Productos: ${option.products.length}`
+      : "0";
+
+    const details = [supplierText, warehouseText, store, products, priceText]
+      .filter(Boolean)
+      .join(" • ");
+
+    return (
+      <div className="flex flex-col">
+        <span className="font-medium">{option.parentProductName}</span>
+        <span className="text-xs text-gray-500">{details}</span>
+      </div>
+    );
+  };
+
   return (
     <RHFAutocompleteFetcherInfinity
       name={name}
@@ -57,6 +84,7 @@ export default function InventorySelect({
       onFetch={fetchInventory}
       objectValueKey="id"
       objectKeyLabel="parentProductName"
+      renderOption={renderInventoryOption}
       multiple={multiple}
       queryKey={`inventory-promotion-${supplierId}`}
     />
