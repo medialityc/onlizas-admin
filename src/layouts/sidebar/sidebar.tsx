@@ -1,6 +1,8 @@
 "use client";
 import { useTheme } from "next-themes";
 import { useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 import SearchBar from "./search-bar";
 import { sidebarSections } from "./sidebar-config";
 // import { filterSectionsByPermissions } from "./sidebar-utils"; // Uncomment when integrating permissions
@@ -11,6 +13,7 @@ import { useSidebar } from "./use-sidebar";
 const Sidebar = () => {
   const { theme } = useTheme();
   const { expandedItems, isActiveLink, toggleItem } = useSidebar();
+  const themeConfig = useSelector((state: RootState) => state.themeConfig);
   const [search, setSearch] = useState("");
 
   // Placeholder for future permission integration
@@ -65,9 +68,11 @@ const Sidebar = () => {
   return (
     <div className={theme == "dark" ? "dark" : ""}>
       <nav
-        className={`sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-[width,background,box-shadow] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] will-change-transform ${
-          theme == "dark" ? "text-white-dark" : ""
-        }`}
+        className={`sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300 ${
+          !themeConfig.sidebar
+            ? "-translate-x-full lg:translate-x-0"
+            : "translate-x-0"
+        } ${theme == "dark" ? "text-white-dark" : ""}`}
       >
         <div className="h-full flex flex-col bg-white dark:bg-black">
           <div className="shrink-0">
