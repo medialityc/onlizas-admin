@@ -1,4 +1,3 @@
-@reference tailwindcss;
 /* progress bar */
 .animated-progress {
   animation: progress-bar-stripes 1s linear infinite;

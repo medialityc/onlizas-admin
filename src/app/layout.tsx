@@ -1,19 +1,12 @@
+import "./styles/tailwind.css";
 import type { Metadata, Viewport } from "next";
 import { Nunito } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
-// 👇 Import the mantine-core layer CSS file;
-//    this will automatically place it in a `mantine` layer
-
 import "@mantine/core/styles.layer.css";
-
-// 👇 Import the mantine-datatable layer CSS file;
-//    this will automatically place it in a `mantine-datatable` layer
 import "mantine-datatable/styles.layer.css";
-
 import ProviderComponent from "@/layouts/provider-component";
 import { ThemeProvider } from "next-themes";
 import { ToastContainer } from "react-toastify";
-import "./styles/tailwind.css";
 import "./styles/custom-scrollbar.css";
 import "react-phone-number-input/style.css";
 import { mantineHtmlProps } from "@mantine/core";
