@@ -1,6 +1,5 @@
 table:not([data-slot="calendar"] table) > thead > tr > th,
 table:not([data-slot="calendar"] table) > tbody > tr > td {
-  @reference tailwindcss;
   @apply !py-3 !px-4 text-sm;
 }
 
