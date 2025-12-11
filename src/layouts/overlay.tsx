@@ -10,7 +10,7 @@ const Overlay = () => {
     <>
       {/* sidebar menu overlay */}
       <div
-        className={`${!themeConfig.sidebar ? "opacity-0 pointer-events-none" : "opacity-100"} 
+        className={`${themeConfig.sidebar ? "opacity-100" : "opacity-0 pointer-events-none"} 
                     fixed inset-0 z-40 bg-black/60 lg:hidden transition-opacity duration-300`}
         onClick={() => dispatch(toggleSidebar())}
         aria-hidden={!themeConfig.sidebar}
