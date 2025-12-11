@@ -62,7 +62,9 @@ function useGoogleMapsScript(
   return loaded;
 }
 
-export const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
+export const GooglePlacesAutocomplete: React.FC<
+  GooglePlacesAutocompleteProps
+> = ({
   apiKey,
   inputClassName = "",
   optionClassName = "",
@@ -74,27 +76,33 @@ export const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> =
   onInputChange,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [options, setOptions] = useState<google.maps.places.AutocompletePrediction[]>([]);
+  const [options, setOptions] = useState<
+    google.maps.places.AutocompletePrediction[]
+  >([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userInput, setUserInput] = useState(initialValue);
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const loaded = useGoogleMapsScript(apiKey, "es", ["places"]);
-  const autocompleteService = useRef<google.maps.places.AutocompleteService>();
-  const placesService = useRef<google.maps.places.PlacesService>();
+  const autocompleteService =
+    useRef<google.maps.places.AutocompleteService>(null);
+  const placesService = useRef<google.maps.places.PlacesService>(null);
 
   // Create hidden div for PlacesService (required for legacy getDetails)
   useEffect(() => {
     if (!loaded) return;
     if (!autocompleteService.current) {
-      autocompleteService.current = new window.google.maps.places.AutocompleteService();
+      autocompleteService.current =
+        new window.google.maps.places.AutocompleteService();
     }
     if (!placesService.current) {
       const mapDiv = document.createElement("div");
       mapDiv.style.display = "none";
       document.body.appendChild(mapDiv);
-      placesService.current = new window.google.maps.places.PlacesService(mapDiv);
+      placesService.current = new window.google.maps.places.PlacesService(
+        mapDiv
+      );
     }
   }, [loaded]);
 
@@ -147,10 +155,13 @@ export const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> =
             "formatted_address",
             "address_component",
             "geometry",
-            "place_id"
-          ]
+            "place_id",
+          ],
         },
-        (place: google.maps.places.PlaceResult | null, status: google.maps.places.PlacesServiceStatus) => {
+        (
+          place: google.maps.places.PlaceResult | null,
+          status: google.maps.places.PlacesServiceStatus
+        ) => {
           if (
             status === window.google.maps.places.PlacesServiceStatus.OK &&
             place
@@ -237,7 +248,11 @@ export const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> =
           className={`absolute left-0 right-0 z-10 mt-1 max-h-56 overflow-y-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg ${dropdownClassName}`}
         >
           {loading && (
-            <li className={`px-4 py-2 text-gray-400 bg-white dark:bg-gray-900 ${optionClassName}`}>Cargando...</li>
+            <li
+              className={`px-4 py-2 text-gray-400 bg-white dark:bg-gray-900 ${optionClassName}`}
+            >
+              Cargando...
+            </li>
           )}
           {!loading &&
             options.map((option, idx) => (
@@ -249,11 +264,13 @@ export const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> =
                 onMouseDown={() => handleSelect(option)}
                 onMouseEnter={() => setActiveIndex(idx)}
               >
-              {highlightMatch(option.description, userInput)}
+                {highlightMatch(option.description, userInput)}
               </li>
             ))}
           {!loading && options.length === 0 && (
-            <li className={`px-4 py-2 text-gray-400 bg-white dark:bg-gray-900 ${optionClassName}`}>
+            <li
+              className={`px-4 py-2 text-gray-400 bg-white dark:bg-gray-900 ${optionClassName}`}
+            >
               Sin resultados
             </li>
           )}

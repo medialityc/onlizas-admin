@@ -6,6 +6,6 @@ export const getAdapterWarehouse = (warehouse: WarehouseFormData) => {
   }
   return {
     ...warehouse,
-    type: warehouse?.type?.toLocaleLowerCase(),
+    type: warehouse?.type,
   };
 };

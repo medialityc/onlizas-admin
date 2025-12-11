@@ -3,20 +3,20 @@ import { SUPPLIER_NATIONALITY } from "../../constants/supplier.options";
 
 export const updateSupplierSchema = z.object({
   name: z
-    .string({ required_error: "El nombre es obligatorio." })
+    .string({ error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")
     .max(100, "El nombre no puede tener más de 100 caracteres."),
   email: z
-    .string({ required_error: "El email es obligatorio." })
+    .string({ error: "El email es obligatorio." })
     .min(1, "El email no puede estar vacío.")
     .email("Debe ser un email válido."),
   phone: z
-    .string({ required_error: "El teléfono es obligatorio." })
+    .string({ error: "El teléfono es obligatorio." })
     .min(1, "El teléfono no puede estar vacío.")
     .max(20, "El teléfono no puede tener más de 20 caracteres."),
   countryCode: z.string().optional(),
   address: z
-    .string({ required_error: "La dirección es obligatoria." })
+    .string({ error: "La dirección es obligatoria." })
     .min(1, "La dirección no puede estar vacía.")
     .max(200, "La dirección no puede tener más de 200 caracteres."),
   message: z
@@ -24,7 +24,7 @@ export const updateSupplierSchema = z.object({
     .max(500, "El mensaje no puede tener más de 500 caracteres.")
     .optional(),
   active: z.boolean({
-    required_error: "Debes especificar si el proveedor está activo.",
+    error: "Debes especificar si el proveedor está activo.",
   }),
   pendingCategories: z
     .array(
@@ -46,15 +46,13 @@ export const updateSupplierSchema = z.object({
   // .default([]) y .optional() removidos para requerir al menos una categoría
   sellerType: z.coerce
     .number({
-      required_error: "El tipo de vendedor es obligatorio.",
-      invalid_type_error: "El tipo de vendedor es obligatorio.",
+      error: "El tipo de vendedor es obligatorio.",
     })
     .min(0, "El tipo de vendedor no puede estar vacío.")
     .max(100),
   nacionalityType: z.coerce
     .number({
-      required_error: "La nacionalidad es obligatoria.",
-      invalid_type_error: "La nacionalidad es obligatoria.",
+      error: "La nacionalidad es obligatoria.",
     })
     .min(0, "La nacionalidad no puede estar vacía."),
   mincexCode: z.string().optional(),
@@ -62,8 +60,7 @@ export const updateSupplierSchema = z.object({
   expirationDate: z.date().default(new Date()).optional(),
   supplierType: z.coerce
     .number({
-      required_error: "El tipo de proveedor es obligatorio.",
-      invalid_type_error: "El tipo de proveedor es obligatorio.",
+      error: "El tipo de proveedor es obligatorio.",
     })
     .min(0)
     .max(1)

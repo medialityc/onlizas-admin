@@ -8,7 +8,7 @@ export const supplierProductSchema = z
     isDraft: z.boolean().default(false).optional(),
     isOwned: z.boolean().default(false).optional(), // define si es un producto del proveedor
     name: z
-      .string({ required_error: "El nombre es obligatorio." })
+      .string({ error: "El nombre es obligatorio." })
       .min(1, "El nombre no puede estar vacío.")
       .max(250, "El nombre no puede tener más de 250 caracteres."),
     description: z

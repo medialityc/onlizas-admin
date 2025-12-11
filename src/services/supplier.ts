@@ -32,7 +32,7 @@ export async function createSupplier(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("suppliers");
+  revalidateTag("suppliers", "max");
 
   return buildApiResponseAsync<Supplier>(res);
 }
@@ -47,7 +47,7 @@ export async function deleteSuppliers(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("suppliers");
+  revalidateTag("suppliers", "max");
 
   return buildApiResponseAsync(res);
 }
@@ -84,8 +84,8 @@ export async function updateSupplierData(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier");
-  revalidateTag("suppliers");
+  revalidateTag("supplier", "max");
+  revalidateTag("suppliers", "max");
 
   return buildApiResponseAsync<Supplier>(res);
 }
@@ -234,7 +234,7 @@ export async function answerApprovalProcess(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier");
+  revalidateTag("supplier", "max");
   return buildApiResponseAsync(res);
 }
 
@@ -254,6 +254,6 @@ export async function createUserSupplier(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier");
+  revalidateTag("supplier", "max");
   return buildApiResponseAsync<Supplier>(res);
 }

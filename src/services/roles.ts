@@ -49,7 +49,7 @@ export async function createRole(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("roles");
+  revalidateTag("roles", "max");
   return buildApiResponseAsync<CreateRoleResponse>(res);
 }
 
@@ -62,7 +62,7 @@ export async function deleteRole(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("roles");
+  revalidateTag("roles", "max");
   return buildApiResponseAsync<DeleteRoleResponse>(res);
 }
 
@@ -80,7 +80,7 @@ export async function updateRole(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("roles");
+  revalidateTag("roles", "max");
   return buildApiResponseAsync<UpdateRoleResponse>(res);
 }
 

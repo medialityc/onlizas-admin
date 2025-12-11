@@ -28,7 +28,7 @@ function EditHeader({ warehouse }: { warehouse: WarehouseFormData }) {
   const statusInfo = getStatusInfo();
 
   const iconBgColor =
-    warehouse.type === "physical"
+    warehouse.type === WAREHOUSE_TYPE_ENUM.warehouse
       ? "bg-gradient-to-br from-purple-500 to-purple-600"
       : "bg-gradient-to-br from-blue-500 to-indigo-600";
 

@@ -7,14 +7,14 @@ import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { revalidateTag } from "next/cache";
 import { PaginatedResponse } from "@/types/common";
-import { 
-  StoreCategory, 
-  GetStoreCategories, 
-  UpdateStoreCategoriesOrderRequest 
+import {
+  StoreCategory,
+  GetStoreCategories,
+  UpdateStoreCategoriesOrderRequest,
 } from "@/types/store-categories";
 
 export async function getStoreCategories(
-  storeId: number|string
+  storeId: number | string
 ): Promise<ApiResponse<GetStoreCategories>> {
   const url = backendRoutes.storeCategories.list(storeId);
   const res = await nextAuthFetch({
@@ -29,7 +29,7 @@ export async function getStoreCategories(
 
 // Para autocomplete infinito - adaptador que simula paginación
 export async function getStoreCategoriesForSelect(
-  storeId: number|string,
+  storeId: number | string,
   params?: IQueryable
 ): Promise<ApiResponse<PaginatedResponse<StoreCategory>>> {
   const res = await getStoreCategories(storeId);
@@ -40,7 +40,9 @@ export async function getStoreCategoriesForSelect(
 
   // Filtrar por búsqueda si existe
   const filtered = search
-    ? allCategories.filter((cat) => cat.categoryName.toLowerCase().includes(search))
+    ? allCategories.filter((cat) =>
+        cat.categoryName.toLowerCase().includes(search)
+      )
     : allCategories;
 
   // Return all filtered results as a single page (no real backend pagination)
@@ -62,7 +64,7 @@ export async function getStoreCategoriesForSelect(
 }
 
 export async function toggleStoreCategoryStatus(
-  storeCategoryId: number|string
+  storeCategoryId: number | string
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.storeCategories.toggle,
@@ -72,12 +74,12 @@ export async function toggleStoreCategoryStatus(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("store-categories");
+  revalidateTag("store-categories", "max");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
 export async function updateStoreCategoriesOrder(
-  storeId: number|string,
+  storeId: number | string,
   orders: UpdateStoreCategoriesOrderRequest
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
@@ -88,7 +90,7 @@ export async function updateStoreCategoriesOrder(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("store-categories");
-  revalidateTag(`store-categories-${storeId}`);
+  revalidateTag("store-categories", "max");
+  revalidateTag(`store-categories-${storeId}`, "max");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }

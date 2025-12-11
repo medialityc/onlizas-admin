@@ -63,7 +63,7 @@ export async function createBusiness(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
+  revalidateTag("categories", "max");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -80,7 +80,7 @@ export async function createBusinessBySupplier(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
+  revalidateTag("categories", "max");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -99,7 +99,7 @@ export async function updateBusinessData(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
+  revalidateTag("categories", "max");
 
   return buildApiResponseAsync<Business>(res);
 }
@@ -117,7 +117,7 @@ export async function updateBusinessProviderData(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories");
+  revalidateTag("categories", "max");
 
   return buildApiResponseAsync<Business>(res);
 }
@@ -132,7 +132,7 @@ export async function deleteBusiness(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("business");
+  revalidateTag("business", "max");
 
   return buildApiResponseAsync(res);
 }
@@ -147,7 +147,7 @@ export async function deleteBusinessBySupplier(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("business");
+  revalidateTag("business", "max");
 
   return buildApiResponseAsync(res);
 }

@@ -22,20 +22,20 @@ export const permissionUpdateSchema = (existingPermissions: IPermission[]) =>
         .min(1, "La descripción es requerida")
         .max(255, "La descripción no puede exceder 255 caracteres"),
       entity: z.string().min(1, "La entidad es requerida"),
-      type: z.number({ required_error: "El tipo es requerido" }),
+      type: z.number({ error: "El tipo es requerido" }),
     })
     .refine(
-      data =>
+      (data) =>
         !existingPermissions.some(
-          perm =>
+          (perm) =>
             perm.name.trim().toLowerCase() === data.name.trim().toLowerCase()
         ),
       { message: "El nombre ya existe", path: ["name"] }
     )
     .refine(
-      data =>
+      (data) =>
         !existingPermissions.some(
-          perm =>
+          (perm) =>
             perm.code.trim().toUpperCase() === data.code.trim().toUpperCase()
         ),
       { message: "El código ya existe", path: ["code"] }
@@ -53,4 +53,6 @@ export const permissionSearchSchema = z.object({
 });
 
 // Tipos
-export type PermissionUpdateData = z.infer<ReturnType<typeof permissionUpdateSchema>>;
+export type PermissionUpdateData = z.infer<
+  ReturnType<typeof permissionUpdateSchema>
+>;

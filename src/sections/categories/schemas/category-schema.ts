@@ -33,16 +33,16 @@ export const categorySchema = z.object({
 
   /* fields */
   name: z
-    .string({ required_error: "El nombre es obligatorio." })
+    .string({ error: "El nombre es obligatorio." })
     .min(1, "El nombre no puede estar vacío.")
     .max(100, "El nombre no puede tener más de 100 caracteres."),
   departmentId: z
     .string({
-      required_error: "Debes seleccionar un departamento.",
+      error: "Debes seleccionar un departamento.",
     })
     .uuid("El ID del departamento debe ser un UUID válido."),
   description: z
-    .string({ required_error: "La descripción es obligatoria." })
+    .string({ error: "La descripción es obligatoria." })
     .min(1, "La descripción no puede estar vacía.")
     .max(500, "La descripción no puede tener más de 500 caracteres."),
   image: z.union(
@@ -50,10 +50,10 @@ export const categorySchema = z.object({
       z.string().url("Debe ser una URL válida para la imagen."),
       z.instanceof(File, { message: "Debe ser un archivo válido." }),
     ],
-    { required_error: "La imagen es obligatoria." }
+    { error: "La imagen es obligatoria." }
   ),
   active: z
-    .boolean({ required_error: "El estado activo es obligatorio." })
+    .boolean({ error: "El estado activo es obligatorio." })
     .default(false),
   features: z
     .array(featureSchema)

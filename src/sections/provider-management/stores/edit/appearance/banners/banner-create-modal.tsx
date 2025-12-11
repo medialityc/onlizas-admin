@@ -40,7 +40,7 @@ export default function BannerCreateModal({
   };
 
   const methods = useForm<BannerForm>({
-    resolver: zodResolver(BannerSchema),
+    resolver: zodResolver(BannerSchema) as any,
     defaultValues: {
       title: "",
       urlDestinity: "",

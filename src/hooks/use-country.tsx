@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, JSX } from "react";
 import Image from "next/image";
 import { Country } from "@/types/countries";
 import { getCountries } from "@/services/countries";
@@ -33,7 +33,7 @@ export function useCountry(countryId?: string | number): UseCountryReturn {
         }
 
         const found = countries.data.find(
-          c => String(c.id) === String(countryId)
+          (c) => String(c.id) === String(countryId)
         );
 
         setCountry(found || null);
@@ -41,7 +41,7 @@ export function useCountry(countryId?: string | number): UseCountryReturn {
           setError(true);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error obteniendo país:", err);
         setCountry(null);
         setError(true);

@@ -40,7 +40,7 @@ export const createPermissionSchema = (
       .max(255, "La descripción no puede exceder 255 caracteres")
       .optional(),
     roleId: z
-      .number({ required_error: "El rol es requerido" })
+      .number({ error: "El rol es requerido" })
       .min(1, "Debe seleccionar un rol"),
   });
 
@@ -81,7 +81,7 @@ export const updatePermissionSchema = (existingPermissions: IPermission[]) =>
       .min(1, "La descripción es requerida")
       .max(255, "La descripción no puede exceder 255 caracteres"),
     roleId: z
-      .number({ required_error: "El rol es requerido" })
+      .number({ error: "El rol es requerido" })
       .min(1, "Debe seleccionar un rol"),
   });
 // Permission search/filter schema

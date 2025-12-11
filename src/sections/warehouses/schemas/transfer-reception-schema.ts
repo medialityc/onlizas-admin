@@ -30,12 +30,14 @@ export const receptionEvidenceSchema = z.object({
 
 // Item de recepción dentro de la transferencia
 export const transferReceptionItemSchema = z.object({
-  transferItemId: z.string({ required_error: "ID del item es requerido" }),
-  productVariantId: z.string({ required_error: "ID del producto variante es requerido" }),
+  transferItemId: z.string({ error: "ID del item es requerido" }),
+  productVariantId: z.string({
+    error: "ID del producto variante es requerido",
+  }),
   quantityReceived: z
-    .number({ required_error: "Cantidad recibida requerida" })
+    .number({ error: "Cantidad recibida requerida" })
     .nonnegative("Cantidad no puede ser negativa"),
-  unit: z.string({ required_error: "Unidad es requerida" }),
+  unit: z.string({ error: "Unidad es requerida" }),
   receivedBatch: z.string().optional().nullable(),
   receivedExpiryDate: z.string().optional().nullable(),
   discrepancyType: z.enum(discrepancyTypes).optional().nullable(),
@@ -47,7 +49,7 @@ export const transferReceptionItemSchema = z.object({
 export const unexpectedProductSchema = z.object({
   productName: z.string().min(1, "El nombre del producto es requerido"),
   quantity: z
-    .number({ required_error: "La cantidad es requerida" })
+    .number({ error: "La cantidad es requerida" })
     .positive("La cantidad debe ser mayor a 0"),
   unit: z.string().min(1, "La unidad es requerida"),
   batchNumber: z.string().optional().or(z.literal("")),
@@ -56,7 +58,7 @@ export const unexpectedProductSchema = z.object({
 
 // Schema principal para crear recepción
 export const createTransferReceptionSchema = z.object({
-  transferId: z.string({ required_error: "Transferencia requerida" }),
+  transferId: z.string({ error: "Transferencia requerida" }),
   items: z.array(transferReceptionItemSchema).min(1, "Debe haber items"),
   unexpectedProducts: z.array(unexpectedProductSchema).optional(),
   notes: z.string().optional().or(z.literal("")),
@@ -73,7 +75,13 @@ export const createTransferReceptionSchema = z.object({
 });
 
 // Tipos inferidos
-export type CreateTransferReceptionFormData = z.infer<typeof createTransferReceptionSchema>;
-export type TransferReceptionItemFormData = z.infer<typeof transferReceptionItemSchema>;
-export type UnexpectedProductFormSchema = z.infer<typeof unexpectedProductSchema>;
+export type CreateTransferReceptionFormData = z.infer<
+  typeof createTransferReceptionSchema
+>;
+export type TransferReceptionItemFormData = z.infer<
+  typeof transferReceptionItemSchema
+>;
+export type UnexpectedProductFormSchema = z.infer<
+  typeof unexpectedProductSchema
+>;
 export type ReceptionEvidenceFormData = z.infer<typeof receptionEvidenceSchema>;

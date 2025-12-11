@@ -27,7 +27,7 @@ export async function createInventoryProvider(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(INVENTORY_TAG_KEY);
+  revalidateTag(INVENTORY_TAG_KEY, "max");
 
   return buildApiResponseAsync<InventoryProvider>(res);
 }
@@ -44,7 +44,7 @@ export async function updateInventoryProvider(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(INVENTORY_TAG_KEY);
+  revalidateTag(INVENTORY_TAG_KEY, "max");
 
   return buildApiResponseAsync<InventoryProvider>(res);
 }
@@ -110,7 +110,6 @@ export async function getAllInventory(
   return buildApiResponseAsync<GetAllInventoryProviderResponse>(res);
 }
 
-
 export async function getInventoryById(
   id: number | string
 ): Promise<ApiResponse<InventoryProvider>> {
@@ -136,7 +135,7 @@ export async function deleteInventoryProvider(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(INVENTORY_TAG_KEY);
+  revalidateTag(INVENTORY_TAG_KEY, "max");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -153,7 +152,7 @@ export async function addVariantToInventory(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(INVENTORY_TAG_KEY);
+  revalidateTag(INVENTORY_TAG_KEY, "max");
 
   return buildApiResponseAsync<InventoryProvider>(res);
 }
@@ -169,7 +168,7 @@ export async function editVariantInventory(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(INVENTORY_TAG_KEY);
+  revalidateTag(INVENTORY_TAG_KEY, "max");
 
   return buildApiResponseAsync<InventoryProvider>(res);
 }
@@ -185,7 +184,7 @@ export async function deleteVariantInventory(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(INVENTORY_TAG_KEY);
+  revalidateTag(INVENTORY_TAG_KEY, "max");
 
   return buildApiResponseAsync<InventoryProvider>(res);
 }
