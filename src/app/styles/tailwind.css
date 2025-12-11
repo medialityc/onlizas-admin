@@ -1,56 +1,4 @@
-/* Animate css */
-@import "./animate.css";
-/* tippy css */
-@import "./tippy.css";
-
-/* swiper css */
-@import "./swiper.css";
-
-/* Elements - Progressbar */
-@import "./progressbar.css";
-
-/* Data tables css */
-@import "./datatables.css";
-
-/* scrumboard */
-@import "./scrumboard.css";
-
-/* calendar css */
-@import "./fullcalendar.css";
-
-/* sweetalert css */
-@import "./sweetalert.css";
-
-/* flatpickr css */
-@import "./flatpickr.css";
-
-/* quill-editor css */
-@import "./quill-editor.css";
-
-/* markdown-editor css */
-@import "./markdown-editor.css";
-
-/* file upload with preview */
-@import "./file-upload-preview.css";
-
-/* dragndrop*/
-@import "./dragndrop.css";
-
-/* form element*/
-@import "./form-elements.css";
-
-/* Select2*/
-@import "./select2.css";
-
 @import "tailwindcss";
-@import "tw-animate-css";
-@import "./utilities.css";
-@plugin "tailwindcss-animate";
-@plugin "@tailwindcss/forms" {
-  strategy: "class";
-}
-@plugin "@tailwindcss/typography";
-
 @config "../../../tailwind.config.js";
 
 @custom-variant dark (&:is(.dark *));
@@ -313,6 +261,49 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
+/* Animate css */
+@import "./animate.css";
+/* tippy css */
+@import "./tippy.css";
+
+/* swiper css */
+@import "./swiper.css";
+
+/* Elements - Progressbar */
+@import "./progressbar.css";
+
+/* Data tables css */
+@import "./datatables.css";
+
+/* scrumboard */
+@import "./scrumboard.css";
+
+/* calendar css */
+@import "./fullcalendar.css";
+
+/* sweetalert css */
+@import "./sweetalert.css";
+
+/* flatpickr css */
+@import "./flatpickr.css";
+
+/* quill-editor css */
+@import "./quill-editor.css";
+
+/* markdown-editor css */
+@import "./markdown-editor.css";
+
+/* file upload with preview */
+@import "./file-upload-preview.css";
+
+/* dragndrop*/
+@import "./dragndrop.css";
+
+/* form element*/
+@import "./form-elements.css";
+
+/* Select2*/
+@import "./select2.css";
 
 @layer utilities {
   @keyframes slide-down {
@@ -329,15 +320,6 @@
 
   .animate-slide-down {
     animation: slide-down 0.3s ease-out;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  .lucide {
-    @apply size-4;
   }
 }
 
@@ -675,7 +657,7 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
   }
 
   .form-input-person {
-    @apply form-input h-12 border-2 rounded-xl focus:border-blue-500;
+    @apply w-full rounded-xl border-2 border-white-light bg-white px-4 h-12 py-2 text-sm font-semibold text-black !outline-none focus:border-blue-500 focus:ring-transparent dark:border-[#17263c] dark:bg-[#121e32] dark:text-white-dark;
   }
 
   .form-input-lg,

@@ -31,7 +31,7 @@ const InventoryProviderCard = ({ item }: Props) => {
   ]);
 
   return (
-    <Card className="group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full dark:border-slate-700">
+    <Card className="group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full border-slate-400 dark:border-slate-700">
       <CardHeader className="space-y-0 pb-4">
         <div className="flex items-start justify-between gap-4 min-w-0">
           <div className="relative h-24 w-24 overflow-hidden rounded-lg">
