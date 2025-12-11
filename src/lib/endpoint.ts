@@ -562,4 +562,30 @@ export const backendRoutes = {
     byCountry: (countryId: string) => 
       `${process.env.NEXT_PUBLIC_API_URL}districts/by-country/${countryId}`,
   },
+  importers: {
+    list: `${process.env.NEXT_PUBLIC_API_URL}importers`,
+    create: `${process.env.NEXT_PUBLIC_API_URL}importers`,
+    getById: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importers/${id}`,
+    update: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importers/${id}`,
+    toggleStatus: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importers/${id}/toggle-status`,
+    nomenclators: (importerId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importers/${importerId}/nomenclators`,
+    pendingContracts: (importerId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importers/${importerId}/pending-contracts`,
+    supplierContracts: (supplierId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importers/${supplierId}/contracts`,
+  },
+  importerContracts: {
+    list: `${process.env.NEXT_PUBLIC_API_URL}importer-contracts`,
+    create: `${process.env.NEXT_PUBLIC_API_URL}importer-contracts`,
+    getById: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importer-contracts/${id}`,
+    approve: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importer-contracts/${id}/approve`,
+    reject: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importer-contracts/${id}/reject`,
+  },
 };
