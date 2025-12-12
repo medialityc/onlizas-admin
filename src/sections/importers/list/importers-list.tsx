@@ -9,11 +9,10 @@ import ImporterModal from "../modals/importer-modal";
 import ImporterQRModal from "../modals/importer-qr-modal";
 import ActionsMenu from "@/components/menu/actions-menu";
 import showToast from "@/config/toast/toastConfig";
-import { getImporterById, toggleImporterStatus } from "@/services/importers";
+import { getImporterById } from "@/services/importers";
 import { useRouter } from "next/navigation";
-import { Badge, Switch } from "@mantine/core";
-import IconUsers from "@/components/icon/icon-users";
-import IconTag from "@/components/icon/icon-tag";
+import { Badge } from "@mantine/core";
+import { PERMISSION_ADMIN } from "@/lib/permissions";
 
 interface ImportersListProps {
   data?: GetImporters;
@@ -57,27 +56,6 @@ export default function ImportersList({ data }: ImportersListProps) {
     [openModal]
   );
 
-  const handleToggleStatus = useCallback(
-    async (importer: Importer) => {
-      try {
-        const res = await toggleImporterStatus(importer.id);
-        if (res.error) {
-          showToast(res.message || "Error al cambiar estado", "error");
-        } else {
-          showToast(
-            importer.isActive ? "Importadora desactivada" : "Importadora activada",
-            "success"
-          );
-          router.refresh();
-        }
-      } catch (e) {
-        console.error(e);
-        showToast("Ocurrió un error, intente nuevamente", "error");
-      }
-    },
-    [router]
-  );
-
   const handleViewNomenclators = useCallback(
     (importer: Importer) => {
       router.push(`/dashboard/importadoras/${importer.id}/nomencladores`);
@@ -111,16 +89,9 @@ export default function ImportersList({ data }: ImportersListProps) {
         width: 180,
         render: (r) => (
           <div className="h-10 flex items-center">
-            <div className="flex items-center gap-3">
-              <Switch
-                checked={r.isActive}
-                onChange={() => handleToggleStatus(r)}
-                size="sm"
-              />
-              <Badge color={r.isActive ? "green" : "gray"}>
-                {r.isActive ? "Activo" : "Inactivo"}
-              </Badge>
-            </div>
+            <Badge color={r.isActive ? "green" : "gray"}>
+              {r.isActive ? "Activo" : "Inactivo"}
+            </Badge>
           </div>
         ),
       },
@@ -139,12 +110,18 @@ export default function ImportersList({ data }: ImportersListProps) {
         textAlign: "center",
         render: (importer) => (
           <div className="flex justify-center gap-2">
-            <ActionsMenu onEdit={() => handleEdit(importer)} />
+            <ActionsMenu
+              onEdit={() => handleEdit(importer)}
+              onNomenclators={() => handleViewNomenclators(importer)}
+              onProviders={() => handleViewProviders(importer)}
+              nomenclatorsPermissions={PERMISSION_ADMIN}
+              providersPermissions={PERMISSION_ADMIN}
+            />
           </div>
         ),
       },
     ],
-    [handleEdit, handleToggleStatus]
+    [handleEdit, handleViewNomenclators, handleViewProviders]
   );
 
   return (

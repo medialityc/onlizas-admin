@@ -1,32 +1,31 @@
-import { getImporterById, getPendingContractRequests, getSupplierContracts } from "@/services/importers";
-import ProvidersListClient from "@/sections/importers/providers/providers-list.client";
+import { getImporterById } from "@/services/importers";
 import { notFound } from "next/navigation";
+import ProvidersTableClient from "@/sections/importers/providers/providers-table.client";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
+
 export default async function ImporterProvidersPage({ params }: Props) {
   const { id } = await params;
-  
-  const [importerRes, pendingRes, approvedRes] = await Promise.all([
-    getImporterById(id),
-    getPendingContractRequests(id),
-    getSupplierContracts(id),
-  ]);
+
+  const importerRes = await getImporterById(id);
 
   if (importerRes.error || !importerRes.data) {
     notFound();
   }
 
-  const pendingRequests = pendingRes.error ? [] : (pendingRes.data?.data || []);
-  const approvedContracts = approvedRes.error ? [] : (approvedRes.data?.data || []);
+  const contracts = importerRes.data.contracts || [];
+  const nomenclators = importerRes.data.nomenclators || [];
 
   return (
-    <ProvidersListClient
-      pendingRequests={pendingRequests}
-      approvedContracts={approvedContracts}
+    <ProvidersTableClient
       importerName={importerRes.data.name}
+      importerId={id}
+      contracts={contracts}
+      nomenclators={nomenclators}
     />
   );
 }
+

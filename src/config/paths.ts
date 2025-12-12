@@ -83,6 +83,9 @@ export const paths = {
     regions: {
       list: `${DASHBOARD}/regions`,
     },
+    importers: {
+      list: `${DASHBOARD}/importadoras`,
+    },
     zones: {
       list: `${DASHBOARD}/zones`,
     },
