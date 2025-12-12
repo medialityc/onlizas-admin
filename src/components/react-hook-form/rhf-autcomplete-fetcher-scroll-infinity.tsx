@@ -53,6 +53,7 @@ interface Props<T> extends Omit<AutocompleteProps, "data" | "renderOption"> {
   queryKey?: string;
   enabled?: boolean;
   inputClassName?: string;
+  dropdownPosition?: "top" | "bottom";
 }
 
 export default function RHFAutocompleteFetcherInfinity<T>({
@@ -75,6 +76,7 @@ export default function RHFAutocompleteFetcherInfinity<T>({
   inputClassName,
   onOptionSelected,
   extraFilters = {},
+  dropdownPosition,
   ...other
 }: Props<T>) {
   // Estado para el término de búsqueda
@@ -178,6 +180,7 @@ export default function RHFAutocompleteFetcherInfinity<T>({
       query={searchTerm}
       inputClassName={inputClassName}
       setQuery={setSearchTerm}
+      dropdownPosition={dropdownPosition}
       {...other}
     />
   );

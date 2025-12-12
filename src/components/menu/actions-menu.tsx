@@ -35,6 +35,8 @@ interface MenuProps {
   onVerify?: () => void;
   isVerify?: boolean;
   onModifyAttributes?: () => void;
+  onNomenclators?: () => void;
+  onProviders?: () => void;
 
   // Permissions - si no se especifican, se asumen permisos generales
   viewPermissions?: string[];
@@ -49,6 +51,8 @@ interface MenuProps {
   blockedPermissions?: string[];
   verifyPermissions?: string[];
   modifyAttributesPermissions?: string[];
+  nomenclatorsPermissions?: string[];
+  providersPermissions?: string[];
 }
 
 const ActionsMenu = ({
@@ -67,6 +71,8 @@ const ActionsMenu = ({
   onBlocked,
   onVerify,
   onModifyAttributes,
+  onNomenclators,
+  onProviders,
   onSetDefault,
   viewPermissions,
   editPermissions,
@@ -80,6 +86,8 @@ const ActionsMenu = ({
   blockedPermissions,
   verifyPermissions,
   modifyAttributesPermissions,
+  nomenclatorsPermissions,
+  providersPermissions,
 }: MenuProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [toggleStatusDialogOpen, setToggleStatusDialogOpen] = useState(false);
@@ -133,6 +141,26 @@ const ActionsMenu = ({
               onClick={onViewDetails}
             >
               Ver detalles
+            </Menu.Item>
+          )}
+
+          {onNomenclators && hasPermission(nomenclatorsPermissions) && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-white"
+              leftSection={<DocumentIcon className="h-4 w-4 " />}
+              onClick={onNomenclators}
+            >
+              Nomencladores
+            </Menu.Item>
+          )}
+
+          {onProviders && hasPermission(providersPermissions) && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-white"
+              leftSection={<UserPlusIcon className="h-4 w-4 " />}
+              onClick={onProviders}
+            >
+              Proveedores
             </Menu.Item>
           )}
 

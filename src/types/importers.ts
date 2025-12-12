@@ -6,6 +6,26 @@ export type Importer = {
   qrCode?: string;
   isActive: boolean;
   createdAt: string;
+  updatedAt?: string;
+  nomenclators?: Array<{
+    id: string;
+    name: string;
+    isActive: boolean;
+    createdAt?: string;
+    createdDatetime?: string;
+  }>;
+  contracts?: Array<{
+    id: string;
+    importerId: string;
+    importerName: string;
+    supplierId: string;
+    supplierName: string;
+    startDate: string;
+    endDate: string;
+    status: string;
+    createdAt?: string;
+    createdDatetime?: string;
+  }>;
 };
 
 export type GetImporters = PaginatedResponse<Importer>;
@@ -21,10 +41,11 @@ export type UpdateImporterPayload = {
 export type ImporterNomenclator = {
   id: string;
   name: string;
-  categories: string[];
-  suppliersCount: number;
+  categories?: string[];
+  suppliersCount?: number;
   isActive: boolean;
-  createdDatetime: string;
+  createdDatetime?: string;
+  createdAt?: string;
 };
 
 export type GetImporterNomenclators = PaginatedResponse<ImporterNomenclator>;

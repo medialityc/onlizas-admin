@@ -40,6 +40,7 @@ export interface SearchSelectProps<T = any> {
   setQuery?: (q: string) => void;
   inputClassName?: string;
   disabled?: boolean;
+  dropdownPosition?: "top" | "bottom";
 }
 
 export function AdvancedSearchSelect<T>({
@@ -65,6 +66,7 @@ export function AdvancedSearchSelect<T>({
   query = "",
   disabled,
   setQuery,
+  dropdownPosition = "bottom",
 }: SearchSelectProps<T>) {
   const { control } = useFormContext();
   const scrollRef = useRef<HTMLUListElement>(null);
@@ -297,7 +299,11 @@ export function AdvancedSearchSelect<T>({
                 <ul
                   ref={scrollRef}
                   onScroll={handleScroll}
-                  className="absolute z-50 mt-1 w-full bg-white dark:bg-[#121c2c] border border-gray-200 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto"
+                  className={`absolute z-50 w-full bg-white dark:bg-[#121c2c] border border-gray-200 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto ${
+                    dropdownPosition === "top"
+                      ? "bottom-full mb-1"
+                      : "top-full mt-1"
+                  }`}
                 >
                   {filteredOptions.length > 0 ? (
                     filteredOptions.map((option) => {

@@ -588,4 +588,12 @@ export const backendRoutes = {
     reject: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}importer-contracts/${id}/reject`,
   },
+  nomenclators: {
+    create: `${process.env.NEXT_PUBLIC_API_URL}nomenclators`,
+    getById: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}nomenclators/${id}`,
+    update: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}nomenclators/${id}`,
+    updateBase: `${process.env.NEXT_PUBLIC_API_URL}nomenclators`,
+  },
 };

@@ -146,6 +146,13 @@ export const sidebarSections: SidebarSection[] = [
         permissions: PERMISSION_INVENTORY,
       },
       {
+        id: "importadoras",
+        label: "Importadoras",
+        path: paths.dashboard.importers.list,
+        icon: <MapPinIcon className="h-4 w-4" />,
+        permissions: PERMISSION_INVENTORY,
+      },
+      {
         id: "warehouses",
         label: "Almacenes",
         path: paths.dashboard.warehouses.list,
