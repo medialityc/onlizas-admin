@@ -4,6 +4,8 @@ import { DataGrid } from "@/components/datagrid/datagrid";
 import { DataTableColumn } from "mantine-datatable";
 import { ImporterContractRequest, SupplierContract } from "@/types/importers";
 import { useCallback, useMemo } from "react";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ADMIN } from "@/lib/permissions";
 import { Badge, Tabs } from "@mantine/core";
 import { approveContractRequest, rejectContractRequest } from "@/services/importer-contracts";
 import showToast from "@/config/toast/toastConfig";
@@ -23,6 +25,9 @@ export default function ProvidersListClient({
   importerName,
 }: Props) {
   const router = useRouter();
+  const { hasPermission, isLoading: permissionsLoading } = usePermissions();
+
+  const canAccess = !permissionsLoading && hasPermission(PERMISSION_ADMIN);
 
   const handleApprove = useCallback(
     async (request: ImporterContractRequest) => {
@@ -141,18 +146,8 @@ export default function ProvidersListClient({
         ),
       },
       {
-        accessor: "startDate",
-        title: "Inicio",
-        render: (r) => new Date(r.startDate).toLocaleDateString("es-ES"),
-      },
-      {
-        accessor: "endDate",
-        title: "Fin",
-        render: (r) => new Date(r.endDate).toLocaleDateString("es-ES"),
-      },
-      {
         accessor: "status",
-        title: "Estado",
+        title: "Estado del Contrato",
         render: (r) => {
           const colors = {
             ACTIVE: "green",
@@ -166,22 +161,65 @@ export default function ProvidersListClient({
           );
         },
       },
+      {
+        accessor: "validity",
+        title: "Vigencia",
+        render: (r) => {
+          const startDate = new Date(r.startDate).toLocaleDateString("es-ES");
+          const endDate = new Date(r.endDate).toLocaleDateString("es-ES");
+          return `${startDate} - ${endDate}`;
+        },
+      },
+      {
+        accessor: "actions",
+        title: "Acciones",
+        textAlign: "center",
+        render: (r) => (
+          <div className="flex justify-center gap-2">
+            <button
+              onClick={() => router.push(`/dashboard/suppliers/${r.supplierId}`)}
+              className="btn btn-sm btn-outline-primary"
+              title="Ver proveedor"
+            >
+              Ver proveedor
+            </button>
+            <button
+              onClick={() => router.push(`/dashboard/importadoras/${r.importerId}/proveedores/${r.id}`)}
+              className="btn btn-sm btn-outline-info"
+              title="Ver contrato"
+            >
+              Ver contrato
+            </button>
+          </div>
+        ),
+      },
     ],
-    []
+    [router]
   );
 
   return (
     <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          Proveedores - {importerName}
-        </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-          Gestiona las solicitudes y contratos de proveedores
-        </p>
-      </div>
+      {permissionsLoading && (
+        <div className="text-sm text-gray-600 dark:text-gray-400">Comprobando permisos...</div>
+      )}
+      {!permissionsLoading && !canAccess && (
+        <div className="panel p-6">
+          <h2 className="text-lg font-semibold mb-2">Acceso denegado</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">No tienes permisos de administrador para ver esta página.</p>
+        </div>
+      )}
+      {!permissionsLoading && canAccess && (
+        <>
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              Proveedores - {importerName}
+            </h1>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              Gestiona las solicitudes y contratos de proveedores
+            </p>
+          </div>
 
-      <Tabs defaultValue="pending" className="mt-6">
+          <Tabs defaultValue="pending" className="mt-6">
         <Tabs.List>
           <Tabs.Tab value="pending">
             Solicitudes Pendientes
@@ -225,6 +263,8 @@ export default function ProvidersListClient({
           />
         </Tabs.Panel>
       </Tabs>
+        </>
+      )}
     </div>
   );
 }

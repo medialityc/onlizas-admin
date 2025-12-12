@@ -34,6 +34,7 @@ export default async function ImporterNomenclatorsPage({ params }: Props) {
     <NomenclatorsListClient
       data={nomenclatorsRes.data?.data || []}
       importerName={importerRes.data.name}
+      importerId={id}
     />
   );
 }
