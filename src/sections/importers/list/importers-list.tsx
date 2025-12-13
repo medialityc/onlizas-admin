@@ -114,8 +114,8 @@ export default function ImportersList({ data }: ImportersListProps) {
               onEdit={() => handleEdit(importer)}
               onNomenclators={() => handleViewNomenclators(importer)}
               onProviders={() => handleViewProviders(importer)}
-              nomenclatorsPermissions={PERMISSION_ADMIN}
-              providersPermissions={PERMISSION_ADMIN}
+              nomenclatorsPermissions={["RetrieveNomenclator"]}
+              providersPermissions={["RetrieveImporterContract"]}
             />
           </div>
         ),

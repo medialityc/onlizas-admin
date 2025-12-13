@@ -7,6 +7,7 @@ interface Props {
 }
 
 export default async function ImporterNomenclatorsPage({ params }: Props) {
+
   const { id } = await params;
   
   const [importerRes, nomenclatorsRes] = await Promise.all([
