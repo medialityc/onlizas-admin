@@ -1,6 +1,8 @@
 import { getImporters } from "@/services/importers";
 import ImportersClient from "@/sections/importers/list/importers.client";
 
+export const dynamic = 'force-dynamic';
+
 export default async function ImportersPage() {
   const res = await getImporters();
   
