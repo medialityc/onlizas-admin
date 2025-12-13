@@ -178,8 +178,9 @@ export async function submitExternalApprovalDecision(
   // SSRF guard: validate token before using in URL
   if (!isValidReviewToken(data.token)) {
     return {
-      ok: false,
-      error: { message: "Invalid token format", status: 400 }
+      error: true,
+      status: 400,
+      message: "Invalid token format",
     };
   }
   const res = await fetch(
