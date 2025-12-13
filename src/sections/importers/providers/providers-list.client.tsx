@@ -17,12 +17,14 @@ interface Props {
   pendingRequests: ImporterContractRequest[];
   approvedContracts: SupplierContract[];
   importerName: string;
+  importerId: string;
 }
 
 export default function ProvidersListClient({
   pendingRequests,
   approvedContracts,
   importerName,
+  importerId,
 }: Props) {
   const router = useRouter();
   const { hasPermission, isLoading: permissionsLoading } = usePermissions();
@@ -184,7 +186,7 @@ export default function ProvidersListClient({
               Ver proveedor
             </button>
             <button
-              onClick={() => router.push(`/dashboard/importadoras/${r.importerId}/proveedores/${r.id}`)}
+              onClick={() => router.push(`/dashboard/importadoras/${importerId}/proveedores/${r.id}`)}
               className="btn btn-sm btn-outline-info"
               title="Ver contrato"
             >
