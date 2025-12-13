@@ -26,6 +26,11 @@ import {
   ShieldCheck,
   Wallet,
   WarehouseIcon,
+  CalendarRange,
+  ClipboardList,
+  WalletCards,
+  Landmark,
+  MapIcon,
 } from "lucide-react";
 import {
   PERMISSION_ADMIN,
@@ -143,13 +148,6 @@ export const sidebarSections: SidebarSection[] = [
         label: "Inventario",
         path: paths.dashboard.inventory.all,
         icon: <ClipboardDocumentIcon className="h-4 w-4" />,
-        permissions: PERMISSION_INVENTORY,
-      },
-      {
-        id: "importadoras",
-        label: "Importadoras",
-        path: paths.dashboard.importers.list,
-        icon: <MapPinIcon className="h-4 w-4" />,
         permissions: PERMISSION_INVENTORY,
       },
       {
