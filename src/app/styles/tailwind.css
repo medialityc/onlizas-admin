@@ -201,8 +201,9 @@
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
 
-  --primary: #2563eb;
-  --primary-light: #2563eb;
+  /* Dark mode primary tuned for better contrast */
+  --primary: #8ab4f8;
+  --primary-light: #8ab4f8;
   --primary-dark-light: rgba(67, 97, 238, 0.15);
 
   --secondary: #805dca;
@@ -841,6 +842,13 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
   /* code hightlight */
   pre {
     direction: ltr;
+  }
+}
+
+/* Global border color defaults */
+@layer utilities {
+  .border {
+    @apply border-slate-200 dark:border-slate-700;
   }
 }
 

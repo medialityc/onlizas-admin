@@ -48,26 +48,22 @@ const SidebarItem = ({
         {item.path && !hasSubsections ? (
           <Link href={item.path}>
             <div
-              className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-primary/5 hover:shadow-sm ${
+              className={`flex items-center justify-between px-3 py-2.5 rounded-md transition-colors ${
                 active
-                  ? "bg-primary/10 text-primary border-l-[3px] border-l-primary shadow-sm"
-                  : "text-gray-700 dark:text-gray-300 hover:text-primary"
+                  ? "bg-primary/10 text-primary border-l-[3px] border-primary/60"
+                  : "text-muted-foreground hover:bg-primary/5"
               }`}
             >
               <div className="flex items-center space-x-3 ">
                 <div
-                  className={`shrink-0  transition-colors duration-200 flex items-center justify-center ${
+                  className={`shrink-0 transition-colors duration-200 flex items-center justify-center ${
                     active
-                      ? "text-primary "
-                      : "text-gray-400 dark:text-gray-500 group-hover:text-primary"
+                      ? "text-primary"
+                      : "text-muted-foreground group-hover:text-primary"
                   }`}
                 >
                   <div
-                    className={`  ${
-                      active
-                        ? "text-primary "
-                        : "border-current/40 group-hover:border-primary/60"
-                    }`}
+                    className={`${active ? "text-primary" : "border-current/40 group-hover:border-primary/60"}`}
                   >
                     <Minus className="h-4 w-4" />
                   </div>
@@ -76,7 +72,7 @@ const SidebarItem = ({
                   className={`text-sm font-medium transition-colors duration-200 ${
                     active
                       ? "text-primary"
-                      : "text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
+                      : "text-muted-foreground group-hover:text-primary"
                   }`}
                 >
                   {item.label}
@@ -85,9 +81,7 @@ const SidebarItem = ({
               <div className="flex items-center gap-2">
                 {item.badge && (
                   <span
-                    className={`rounded-full px-2 py-1 text-xs font-medium shadow-sm ${
-                      badgeColors[item.badge.color || "primary"]
-                    }`}
+                    className={`rounded-full px-2 py-1 text-xs font-medium shadow-sm bg-primary/10 text-primary`}
                   >
                     {item.badge.text}
                   </span>
@@ -95,7 +89,9 @@ const SidebarItem = ({
                 {hasSubsections && item.isCollapsible && (
                   <ChevronDown
                     className={`h-4 w-4 transition-all duration-200 ${
-                      isExpanded ? "rotate-180 text-primary" : "text-gray-400"
+                      isExpanded
+                        ? "rotate-180 text-primary"
+                        : "text-muted-foreground"
                     }`}
                   />
                 )}
@@ -104,10 +100,10 @@ const SidebarItem = ({
           </Link>
         ) : (
           <div
-            className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-primary/5 hover:shadow-sm ${
+            className={`flex items-center justify-between px-3 py-2.5 rounded-md transition-colors ${
               active
-                ? "bg-primary/10 text-primary border-l-3 border-primary shadow-sm"
-                : "text-gray-700 dark:text-gray-300 hover:text-primary"
+                ? "bg-primary/10 text-primary border-l-[3px] border-primary/60"
+                : "text-muted-foreground hover:bg-primary/5"
             }`}
           >
             <div className="flex items-center space-x-3">
@@ -115,13 +111,13 @@ const SidebarItem = ({
                 className={`shrink-0 transition-colors duration-200 flex items-center justify-center ${
                   active
                     ? "text-primary"
-                    : "text-gray-400 dark:text-gray-500 group-hover:text-primary"
+                    : "text-muted-foreground group-hover:text-primary"
                 }`}
               >
                 <div
                   className={`h-2 w-2 rounded-full border ${
                     active
-                      ? "border-primary bg-primary/80 shadow-[0_0_0_3px_rgba(var(--color-primary-rgb),0.15)]"
+                      ? "bg-primary border-primary/60"
                       : "border-current/40 group-hover:border-primary/60"
                   }`}
                 ></div>
@@ -130,7 +126,7 @@ const SidebarItem = ({
                 className={`text-sm font-medium transition-colors duration-200 ${
                   active
                     ? "text-primary"
-                    : "text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
+                    : "text-muted-foreground group-hover:text-primary"
                 }`}
               >
                 {item.label}
@@ -139,9 +135,7 @@ const SidebarItem = ({
             <div className="flex items-center gap-2">
               {item.badge && (
                 <span
-                  className={`rounded-full px-2 py-1 text-xs font-medium shadow-sm ${
-                    badgeColors[item.badge.color || "primary"]
-                  }`}
+                  className={`rounded-full px-2 py-1 text-xs font-medium shadow-sm bg-primary/10 text-primary`}
                 >
                   {item.badge.text}
                 </span>
@@ -149,7 +143,9 @@ const SidebarItem = ({
               {hasSubsections && item.isCollapsible && (
                 <ChevronDown
                   className={`h-4 w-4 transition-all duration-200 ${
-                    isExpanded ? "rotate-180 text-primary" : "text-gray-400"
+                    isExpanded
+                      ? "rotate-180 text-primary"
+                      : "text-muted-foreground"
                   }`}
                 />
               )}
@@ -167,12 +163,12 @@ const SidebarItem = ({
           easing="cubic-bezier(0.4, 0, 0.2, 1)"
         >
           <div
-            className="mt-3 ml-6 pl-3 border-l-2 border-gray-100 dark:border-gray-800"
+            className="mt-3 ml-6 pl-3 border-l-2 border-primary/20"
             aria-hidden={!isExpanded}
           >
             {item.subsections.map((subsection) => (
               <div key={subsection.id} className="mb-4">
-                <h4 className="mb-2 px-2 py-1 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <h4 className="mb-2 px-2 py-1 text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
                   {subsection.label}
                 </h4>
                 <ul className="space-y-1">
@@ -180,10 +176,10 @@ const SidebarItem = ({
                     <li key={subItem.id}>
                       <Link
                         href={subItem.path}
-                        className={`flex items-center px-3 py-2 text-sm rounded-lg transition-all duration-200 hover:shadow-sm relative ${
+                        className={`flex items-center px-3 py-2 text-sm rounded-md transition-colors relative ${
                           isActiveLink(subItem.path)
-                            ? "bg-primary/10 text-primary border-l-2 border-primary font-medium ring-1 ring-primary/20"
-                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200"
+                            ? "bg-primary/10 text-primary border-l-[3px] border-primary/60 font-medium"
+                            : "text-muted-foreground hover:bg-primary/5"
                         } ${subItem.disabled ? "pointer-events-none opacity-50" : ""}`}
                       >
                         <div
