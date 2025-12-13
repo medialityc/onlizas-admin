@@ -166,9 +166,22 @@ export async function getExternalReviewApprovalProcess(
   return buildApiResponseAsync<ExternalReviewApprovalProcessResponse>(res);
 }
 
+// Helper: RFC-safe token validation (only allows alphanumerics, '-', '_'; length 8-128)
+function isValidReviewToken(token: string): boolean {
+  // Adjust regex as needed to fit allowed token formats
+  return /^[A-Za-z0-9_-]{8,128}$/.test(token);
+}
+
 export async function submitExternalApprovalDecision(
   data: ExternalReviewApprovalDecisionRequest
 ): Promise<ApiResponse<ExternalReviewApprovalDecisionResponse>> {
+  // SSRF guard: validate token before using in URL
+  if (!isValidReviewToken(data.token)) {
+    return {
+      ok: false,
+      error: { message: "Invalid token format", status: 400 }
+    };
+  }
   const res = await fetch(
     backendRoutes.externalReview.decisionApprovalProcessByToken(data.token),
     {
