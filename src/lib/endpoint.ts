@@ -577,6 +577,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}importers/${importerId}/pending-contracts`,
     supplierContracts: (supplierId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}importers/${supplierId}/contracts`,
+    access: `${process.env.NEXT_PUBLIC_API_URL}importers/access`,
   },
   importerContracts: {
     list: `${process.env.NEXT_PUBLIC_API_URL}importer-contracts`,
