@@ -17,8 +17,8 @@ export async function approveContractRequest(id: string): Promise<ApiResponse<vo
 
   if (!res.ok) return handleApiServerError(res);
   
-  revalidateTag(CONTRACTS_TAG);
-  revalidateTag("importers");
+  revalidateTag(CONTRACTS_TAG, "max");
+  revalidateTag("importers", "max");
   return buildApiResponseAsync<void>(res);
 }
 
@@ -31,7 +31,7 @@ export async function rejectContractRequest(id: string): Promise<ApiResponse<voi
 
   if (!res.ok) return handleApiServerError(res);
   
-  revalidateTag(CONTRACTS_TAG);
-  revalidateTag("importers");
+  revalidateTag(CONTRACTS_TAG, "max");
+  revalidateTag("importers", "max");
   return buildApiResponseAsync<void>(res);
 }
