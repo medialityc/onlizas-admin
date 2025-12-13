@@ -14,46 +14,66 @@ interface RHFSimpleEditorProps {
 
 // Función para sanitizar URLs y prevenir XSS
 function sanitizeUrl(url: string): string {
-  if (!url || typeof url !== 'string') {
-    return '#';
+  if (!url || typeof url !== "string") {
+    return "#";
   }
 
   // Remover espacios en blanco
   const trimmedUrl = url.trim();
-  
+
   // Lista de esquemas permitidos
-  const allowedSchemes = ['http:', 'https:', 'mailto:', 'tel:'];
-  
+  const allowedSchemes = ["http:", "https:", "mailto:", "tel:"];
+
   try {
     // Intentar crear un objeto URL para validar
     const urlObj = new URL(trimmedUrl);
-    
+
     // Verificar si el esquema está permitido
     if (allowedSchemes.includes(urlObj.protocol)) {
       return trimmedUrl;
     } else {
       // Esquema no permitido (javascript:, data:, etc.)
-      return '#';
+      return "#";
     }
   } catch {
     // Si no es una URL válida, verificar si es una URL relativa
-    if (trimmedUrl.startsWith('/') || trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')) {
+    if (
+      trimmedUrl.startsWith("/") ||
+      trimmedUrl.startsWith("./") ||
+      trimmedUrl.startsWith("../")
+    ) {
       return trimmedUrl;
     }
-    
+
     // Si no comienza con un protocolo, asumir https
-    if (!trimmedUrl.includes('://')) {
+    if (!trimmedUrl.includes("://")) {
       try {
         const urlWithProtocol = `https://${trimmedUrl}`;
         new URL(urlWithProtocol); // Validar que sea una URL válida
         return urlWithProtocol;
       } catch {
-        return '#';
+        return "#";
       }
     }
-    
-    return '#';
+
+    return "#";
   }
+}
+
+// Función para sanitizar texto y prevenir XSS
+function sanitizeText(text: string): string {
+  if (!text || typeof text !== "string") {
+    return "";
+  }
+
+  // Escapar caracteres HTML peligrosos
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;")
+    .trim();
 }
 
 export default function RHFSimpleEditor({
@@ -145,55 +165,66 @@ export default function RHFSimpleEditor({
 
     // Sanitizar la URL antes de usarla
     const sanitizedUrl = sanitizeUrl(linkUrl);
-    
+
     // Si la URL sanitizada es '#', mostrar error y no crear enlace
-    if (sanitizedUrl === '#') {
-      alert('URL no válida o potencialmente peligrosa. Por favor, usa una URL que comience con http://, https://, mailto: o tel:');
+    if (sanitizedUrl === "#") {
+      alert(
+        "URL no válida o potencialmente peligrosa. Por favor, usa una URL que comience con http://, https://, mailto: o tel:"
+      );
+      return;
+    }
+
+    // Sanitizar el texto del enlace
+    const sanitizedText = sanitizeText(linkText);
+
+    if (!sanitizedText) {
+      alert("Texto del enlace no puede estar vacío");
       return;
     }
 
     if (currentSelection && editorRef.current) {
-      // Para texto seleccionado: crear enlace manteniendo el texto original
+      // Para texto seleccionado: usar innerHTML de manera segura
       editorRef.current.focus();
 
-      // Crear el elemento del enlace manualmente
-      const linkElement = document.createElement("a");
-      linkElement.href = sanitizedUrl; // Usar URL sanitizada
-      linkElement.target = "_blank";
-      linkElement.textContent = linkText; // Mantener el texto original
-      linkElement.style.color = "#3b82f6";
-      linkElement.style.textDecoration = "underline";
-
-      // Reemplazar el contenido seleccionado con el enlace
       try {
+        // Crear HTML seguro usando template literal con valores sanitizados
+        const safeHtml = `<a href="${sanitizedUrl}" target="_blank" style="color: #3b82f6; text-decoration: underline;">${sanitizedText}</a>`;
+
+        // Reemplazar contenido seleccionado
         currentSelection.deleteContents();
-        currentSelection.insertNode(linkElement);
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = safeHtml;
+        const linkElement = tempDiv.firstChild as HTMLElement;
 
-        // Poner el cursor después del enlace
-        const range = document.createRange();
-        range.setStartAfter(linkElement);
-        range.collapse(true);
+        if (linkElement) {
+          currentSelection.insertNode(linkElement);
 
-        const selection = window.getSelection();
-        selection?.removeAllRanges();
-        selection?.addRange(range);
+          // Poner el cursor después del enlace
+          const range = document.createRange();
+          range.setStartAfter(linkElement);
+          range.collapse(true);
+
+          const selection = window.getSelection();
+          selection?.removeAllRanges();
+          selection?.addRange(range);
+        }
 
         // Actualizar el contenido
         const content = editorRef.current.innerHTML;
         onChange(content);
       } catch (e) {
         console.warn("Error creando enlace:", e);
-        // Fallback: usar insertHTML con URL sanitizada
-        const linkHTML = `<a href="${sanitizedUrl}" target="_blank" style="color: #3b82f6; text-decoration: underline;">${linkText}</a>&nbsp;`;
-        document.execCommand("insertHTML", false, linkHTML);
+        // Fallback: usar insertHTML con valores sanitizados
+        const safeHtml = `<a href="${sanitizedUrl}" target="_blank" style="color: #3b82f6; text-decoration: underline;">${sanitizedText}</a>&nbsp;`;
+        document.execCommand("insertHTML", false, safeHtml);
         handleInput();
       }
-    } else if (linkText) {
+    } else if (sanitizedText) {
       // Insertar nuevo enlace con texto personalizado
       if (editorRef.current) {
         editorRef.current.focus();
-        const linkHTML = `<a href="${sanitizedUrl}" target="_blank" style="color: #3b82f6; text-decoration: underline;">${linkText}</a>&nbsp;`;
-        document.execCommand("insertHTML", false, linkHTML);
+        const safeHtml = `<a href="${sanitizedUrl}" target="_blank" style="color: #3b82f6; text-decoration: underline;">${sanitizedText}</a>&nbsp;`;
+        document.execCommand("insertHTML", false, safeHtml);
         handleInput();
       }
     }
