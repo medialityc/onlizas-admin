@@ -2,7 +2,6 @@
 import IconCaretsDown from "@/components/icon/icon-carets-down";
 import Logo from "@/components/logo-component";
 import { toggleSidebar } from "@/store/themeConfigSlice";
-import Image from "next/image";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 
@@ -18,7 +17,7 @@ const SidebarHeader = () => {
             <Logo
               width={80}
               height={28}
-              className="h-6 w-auto flex-shrink-0 select-none transition-transform duration-300 hover:scale-105"
+              className="h-6 w-auto shrink-0 select-none transition-transform duration-300 hover:scale-105"
             />
           </div>
           <div className="flex flex-col leading-tight">

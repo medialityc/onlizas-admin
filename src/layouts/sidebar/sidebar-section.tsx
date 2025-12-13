@@ -59,10 +59,10 @@ const SidebarSection = ({
         <button
           type="button"
           onClick={() => onToggleItem(section.id)}
-          className={`w-full group flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm backdrop-blur-sm transition-colors border-l-4 border-r-4 ${
+          className={`w-full group flex items-center justify-between px-3.5 py-2.5 text-[11px] font-semibold uppercase tracking-wide rounded-md transition-colors border ${
             sectionActive
-              ? "bg-primary/15 border-primary text-primary"
-              : "bg-primary/5 border-primary text-gray-700 dark:text-gray-300 hover:bg-primary/10"
+              ? "bg-primary/10 text-primary border-primary/40"
+              : "bg-transparent text-muted-foreground hover:bg-primary/5"
           }`}
         >
           <div className="flex items-center space-x-2">
@@ -116,24 +116,22 @@ const SidebarSection = ({
                     key={group.id}
                     className={`rounded-md border overflow-hidden transition-colors ${
                       groupActive
-                        ? "border-primary/60 bg-primary/5"
-                        : "border-gray-100 dark:border-gray-800"
+                        ? "bg-primary/5 border-primary/40"
+                        : "bg-transparent"
                     }`}
                   >
                     <button
                       type="button"
                       onClick={() => collapsible && onToggleItem(groupId)}
-                      className={`flex w-full items-center justify-between px-3 py-2 text-xs font-semibold tracking-wide uppercase transition-colors ${
+                      className={`flex w-full items-center justify-between px-3 py-2 text-[11px] font-semibold tracking-wide uppercase transition-colors ${
                         groupActive
-                          ? "bg-primary/10 text-primary"
-                          : "bg-gray-50 dark:bg-gray-900/40 hover:bg-gray-100 dark:hover:bg-gray-900"
+                          ? "text-primary"
+                          : "text-muted-foreground hover:bg-primary/5"
                       } ${collapsible ? "cursor-pointer" : "cursor-default"}`}
                     >
                       <span
                         className={`flex items-center gap-1 ${
-                          groupActive
-                            ? "text-primary"
-                            : "text-gray-600 dark:text-gray-400"
+                          groupActive ? "text-primary" : "text-muted-foreground"
                         }`}
                       >
                         <ChevronRight
