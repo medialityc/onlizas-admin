@@ -18,47 +18,17 @@ function sanitizeUrl(url: string): string {
   if (!url || typeof url !== "string") {
     return "#";
   }
-
   // Remover espacios en blanco
   const trimmedUrl = url.trim();
-
-  // Lista de esquemas permitidos
-  const allowedSchemes = ["http:", "https:", "mailto:", "tel:"];
-
-  try {
-    // Intentar crear un objeto URL para validar
-    const urlObj = new URL(trimmedUrl);
-
-    // Verificar si el esquema está permitido
-    if (allowedSchemes.includes(urlObj.protocol)) {
-      return trimmedUrl;
-    } else {
-      // Esquema no permitido (javascript:, data:, etc.)
-      return "#";
-    }
-  } catch {
-    // Si no es una URL válida, verificar si es una URL relativa
-    if (
-      trimmedUrl.startsWith("/") ||
-      trimmedUrl.startsWith("./") ||
-      trimmedUrl.startsWith("../")
-    ) {
-      return trimmedUrl;
-    }
-
-    // Si no comienza con un protocolo, asumir https
-    if (!trimmedUrl.includes("://")) {
-      try {
-        const urlWithProtocol = `https://${trimmedUrl}`;
-        new URL(urlWithProtocol); // Validar que sea una URL válida
-        return urlWithProtocol;
-      } catch {
-        return "#";
-      }
-    }
-
+  // Usa DOMPurify para limpiar la URL, solo permitiendo ciertos protocolos
+  const purifiedUrl = DOMPurify.sanitize(trimmedUrl, {
+    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel):|\/|\.\/|\.\.\/)/i
+  });
+  // Si la url fue bloqueada o vacía, retornar "#"
+  if (!purifiedUrl || purifiedUrl === "" || purifiedUrl === "about:blank") {
     return "#";
   }
+  return purifiedUrl;
 }
 
 export default function RHFSimpleEditor({
