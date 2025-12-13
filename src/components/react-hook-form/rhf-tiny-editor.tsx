@@ -3,6 +3,7 @@
 import { useController, useFormContext } from "react-hook-form";
 import { useRef, useState, useCallback } from "react";
 import SimpleModal from "@/components/modal/modal";
+import DOMPurify from "dompurify";
 
 interface RHFSimpleEditorProps {
   name: string;
@@ -58,22 +59,6 @@ function sanitizeUrl(url: string): string {
 
     return "#";
   }
-}
-
-// Función para sanitizar texto y prevenir XSS
-function sanitizeText(text: string): string {
-  if (!text || typeof text !== "string") {
-    return "";
-  }
-
-  // Escapar caracteres HTML peligrosos
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;")
-    .trim();
 }
 
 export default function RHFSimpleEditor({
@@ -161,7 +146,7 @@ export default function RHFSimpleEditor({
 
   // Función para crear el enlace
   const handleCreateLink = useCallback(() => {
-    if (!linkUrl) return;
+    if (!linkUrl || !linkText) return;
 
     // Sanitizar la URL antes de usarla
     const sanitizedUrl = sanitizeUrl(linkUrl);
@@ -174,56 +159,56 @@ export default function RHFSimpleEditor({
       return;
     }
 
-    // Sanitizar el texto del enlace
-    const sanitizedText = sanitizeText(linkText);
-
-    if (!sanitizedText) {
-      alert("Texto del enlace no puede estar vacío");
-      return;
-    }
-
     if (currentSelection && editorRef.current) {
-      // Para texto seleccionado: usar innerHTML de manera segura
+      // Para texto seleccionado: usar textContent (más seguro)
       editorRef.current.focus();
 
       try {
-        // Crear HTML seguro usando template literal con valores sanitizados
-        const safeHtml = `<a href="${sanitizedUrl}" target="_blank" style="color: #3b82f6; text-decoration: underline;">${sanitizedText}</a>`;
+        // Crear enlace usando DOM API seguro
+        const linkElement = document.createElement("a");
+        linkElement.href = sanitizedUrl;
+        linkElement.target = "_blank";
+        linkElement.textContent = linkText; // textContent es seguro, no interpreta HTML
+        linkElement.style.color = "#3b82f6";
+        linkElement.style.textDecoration = "underline";
 
         // Reemplazar contenido seleccionado
         currentSelection.deleteContents();
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = safeHtml;
-        const linkElement = tempDiv.firstChild as HTMLElement;
+        currentSelection.insertNode(linkElement);
 
-        if (linkElement) {
-          currentSelection.insertNode(linkElement);
+        // Poner el cursor después del enlace
+        const range = document.createRange();
+        range.setStartAfter(linkElement);
+        range.collapse(true);
 
-          // Poner el cursor después del enlace
-          const range = document.createRange();
-          range.setStartAfter(linkElement);
-          range.collapse(true);
-
-          const selection = window.getSelection();
-          selection?.removeAllRanges();
-          selection?.addRange(range);
-        }
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
 
         // Actualizar el contenido
         const content = editorRef.current.innerHTML;
         onChange(content);
       } catch (e) {
         console.warn("Error creando enlace:", e);
-        // Fallback: usar insertHTML con valores sanitizados
-        const safeHtml = `<a href="${sanitizedUrl}" target="_blank" style="color: #3b82f6; text-decoration: underline;">${sanitizedText}</a>&nbsp;`;
+        // Fallback: usar DOMPurify para sanitizar HTML antes de insertar
+        const unsafeHtml = `<a href="${sanitizedUrl}" target="_blank" style="color: #3b82f6; text-decoration: underline;">${linkText}</a>&nbsp;`;
+        const safeHtml = DOMPurify.sanitize(unsafeHtml, {
+          ALLOWED_TAGS: ["a"],
+          ALLOWED_ATTR: ["href", "target", "style"],
+        });
         document.execCommand("insertHTML", false, safeHtml);
         handleInput();
       }
-    } else if (sanitizedText) {
+    } else if (linkText) {
       // Insertar nuevo enlace con texto personalizado
       if (editorRef.current) {
         editorRef.current.focus();
-        const safeHtml = `<a href="${sanitizedUrl}" target="_blank" style="color: #3b82f6; text-decoration: underline;">${sanitizedText}</a>&nbsp;`;
+        // Usar DOMPurify para sanitizar HTML antes de insertar
+        const unsafeHtml = `<a href="${sanitizedUrl}" target="_blank" style="color: #3b82f6; text-decoration: underline;">${linkText}</a>&nbsp;`;
+        const safeHtml = DOMPurify.sanitize(unsafeHtml, {
+          ALLOWED_TAGS: ["a"],
+          ALLOWED_ATTR: ["href", "target", "style"],
+        });
         document.execCommand("insertHTML", false, safeHtml);
         handleInput();
       }
@@ -347,7 +332,24 @@ export default function RHFSimpleEditor({
             fontSize: "14px",
             lineHeight: "1.6",
           }}
-          dangerouslySetInnerHTML={{ __html: value || "" }}
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(value || "", {
+              ALLOWED_TAGS: [
+                "a",
+                "b",
+                "i",
+                "u",
+                "strong",
+                "em",
+                "ul",
+                "ol",
+                "li",
+                "p",
+                "br",
+              ],
+              ALLOWED_ATTR: ["href", "target", "style"],
+            }),
+          }}
           onInput={handleInput}
           onPaste={handlePaste}
           onFocus={() => setIsFocused(true)}
