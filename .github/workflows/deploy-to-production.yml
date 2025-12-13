@@ -37,6 +37,7 @@ jobs:
           echo "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}" >> .env
           echo "NEXT_PUBLIC_REFRESH_ENDPOINT=${{ secrets.NEXT_PUBLIC_REFRESH_ENDPOINT }}" >> .env
           echo "NEXT_PUBLIC_PERMISSIONS_ENDPOINT=${{ secrets.NEXT_PUBLIC_PERMISSIONS_ENDPOINT }}" >> .env
+          echo "NEXT_PUBLIC_TINYMCE_API_KEY=${{ secrets.NEXT_PUBLIC_TINYMCE_API_KEY }}" >> .env
 
       - name: Create deploy.tar for CapRover
         run: tar --exclude='.git' --exclude='.github' --exclude='node_modules' --exclude='deploy.tar' -cvf deploy.tar .
