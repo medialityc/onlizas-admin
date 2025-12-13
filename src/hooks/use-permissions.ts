@@ -23,10 +23,9 @@ export const usePermissions = () => {
     isError: boolean;
   };
   // Asegurar que permissions sea siempre un array válido de códigos
-  const safePermissionCodes = Array.isArray(
-    permissions?.filter((p) => p.subsystem.code === "Onlizas")
-  )
-    ? permissions.map((p: Permission) => p?.code).filter(Boolean)
+  const filteredPermissions = permissions?.filter((p) => p?.subsystem?.code === "Onlizas") || [];
+  const safePermissionCodes = Array.isArray(filteredPermissions)
+    ? filteredPermissions.map((p: Permission) => p?.code).filter(Boolean)
     : [];
 
   /**

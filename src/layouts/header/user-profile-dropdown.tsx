@@ -10,6 +10,7 @@ export default function UserProfileDropdown() {
   const session = useAuth();
   const user = session.user;
 
+
   return (
     <Dropdown
       offset={[0, 8]}

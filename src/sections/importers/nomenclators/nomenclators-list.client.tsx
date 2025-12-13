@@ -176,17 +176,20 @@ export default function NomenclatorsListClient({
       {
         accessor: "categories",
         title: "Categorías",
-        render: (r) => (
-          <div className="flex flex-wrap gap-1">
-            {((r.categories || []) as any[]).length > 0
-              ? ((r.categories || []) as any[]).map((cat, idx) => (
-                  <Badge key={idx} size="sm" variant="light">
-                    {categoryLabels[String(cat)] || String(cat)}
-                  </Badge>
-                ))
-              : "-"}
-          </div>
-        ),
+        render: (r) => {
+          const categories = r.categories || [];
+          return (
+            <div className="flex flex-wrap gap-1">
+              {categories.length > 0
+                ? categories.map((cat: any, idx: number) => (
+                    <Badge key={idx} size="sm" variant="light">
+                      {typeof cat === 'object' && cat?.name ? cat.name : (categoryLabels[String(cat)] || String(cat))}
+                    </Badge>
+                  ))
+                : "-"}
+            </div>
+          );
+        },
       },
       {
         accessor: "createdAt",
