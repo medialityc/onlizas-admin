@@ -2,6 +2,8 @@ import { getImporterById } from "@/services/importers";
 import { notFound } from "next/navigation";
 import ProvidersTableClient from "@/sections/importers/providers/providers-table.client";
 
+export const dynamic = 'force-dynamic';
+
 interface Props {
   params: Promise<{ id: string }>;
 }
