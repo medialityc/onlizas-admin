@@ -98,7 +98,7 @@ export function RHFCountrySelect({
         <div
           className={cn(
             "w-full",
-            fullwidth ? "max-w-none" : "flex-shrink-0 max-w-[100px]"
+            fullwidth ? "max-w-none" : "shrink-0 max-w-25"
           )}
         >
           <Combobox
