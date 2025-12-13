@@ -67,8 +67,8 @@ export async function createNomenclator(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(NOMENCLATORS_TAG);
-  revalidateTag("importers");
+  revalidateTag(NOMENCLATORS_TAG, "max");
+  revalidateTag("importers", "max");
   return buildApiResponseAsync<ImporterNomenclator>(res);
 }
 
@@ -93,12 +93,12 @@ export async function updateNomenclator(
 
     if (!fallback.ok) return handleApiServerError(fallback);
 
-    revalidateTag(NOMENCLATORS_TAG);
-    revalidateTag("importers");
+    revalidateTag(NOMENCLATORS_TAG, "max");
+    revalidateTag("importers", "max");
     return buildApiResponseAsync<ImporterNomenclator>(fallback);
   }
 
-  revalidateTag(NOMENCLATORS_TAG);
-  revalidateTag("importers");
+  revalidateTag(NOMENCLATORS_TAG, "max");
+  revalidateTag("importers", "max");
   return buildApiResponseAsync<ImporterNomenclator>(res);
 }

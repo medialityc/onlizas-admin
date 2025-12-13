@@ -57,7 +57,7 @@ export async function createImporter(data: CreateImporterPayload): Promise<ApiRe
 
   if (!res.ok) return handleApiServerError(res);
   
-  revalidateTag(IMPORTERS_TAG);
+  revalidateTag(IMPORTERS_TAG, "max");
   return buildApiResponseAsync<Importer>(res);
 }
 
@@ -75,7 +75,7 @@ export async function updateImporter(
 
   if (!res.ok) return handleApiServerError(res);
   
-  revalidateTag(IMPORTERS_TAG);
+  revalidateTag(IMPORTERS_TAG, "max");
   return buildApiResponseAsync<Importer>(res);
 }
 
@@ -88,7 +88,7 @@ export async function toggleImporterStatus(id: string): Promise<ApiResponse<void
 
   if (!res.ok) return handleApiServerError(res);
   
-  revalidateTag(IMPORTERS_TAG);
+  revalidateTag(IMPORTERS_TAG, "max");
   return buildApiResponseAsync<void>(res);
 }
 
