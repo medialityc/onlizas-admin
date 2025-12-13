@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function ImporterQRModal({ open, onClose, importer }: Props) {
-  if (!importer) return null;
+  if (!importer || !importer.qrCode) return null;
 
   return (
     <SimpleModal
