@@ -5,6 +5,10 @@ export { default as RHFInputWithLabel } from "./rhf-input";
 export { default as RHFSelect } from "./rhf-select";
 export { default as RHFSelectWithLabel } from "./rhf-select";
 
+// Rich Text Editors
+export { default as RHFSimpleEditor } from "./rhf-tiny-editor";
+export { default as RHFTinyMCEEditor } from "./rhf-tinymce-editor";
+
 // Other Components
 export { default as RHFSwitch } from "./rhf-switch";
 export { default as RHFCheckbox } from "./rhf-checkbox";
