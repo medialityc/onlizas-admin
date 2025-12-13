@@ -42,13 +42,7 @@ import {
   PERMISSION_SUPPLIER_ACCOUNTS,
   PERMISSION_SUPPLIER_ZONES,
 } from "@/lib/permissions";
-import {
-  CalendarRange,
-  ClipboardList,
-  WalletCards,
-  Landmark,
-  MapIcon,
-} from "lucide-react";
+
 
 export const sidebarSections: SidebarSection[] = [
   {
