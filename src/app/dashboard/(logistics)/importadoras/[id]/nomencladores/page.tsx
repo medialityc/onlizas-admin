@@ -2,6 +2,8 @@ import { getImporterById, getImporterNomenclators } from "@/services/importers";
 import NomenclatorsListClient from "@/sections/importers/nomenclators/nomenclators-list.client";
 import { notFound } from "next/navigation";
 
+export const dynamic = 'force-dynamic';
+
 interface Props {
   params: Promise<{ id: string }>;
 }
