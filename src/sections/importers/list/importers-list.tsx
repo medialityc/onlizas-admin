@@ -9,7 +9,7 @@ import ImporterModal from "../modals/importer-modal";
 import ImporterQRModal from "../modals/importer-qr-modal";
 import ActionsMenu from "@/components/menu/actions-menu";
 import showToast from "@/config/toast/toastConfig";
-import { getImporterById } from "@/services/importers";
+import { getImporterById, toggleImporterStatus } from "@/services/importers";
 import { useRouter } from "next/navigation";
 import { Badge } from "@mantine/core";
 import { PERMISSION_ADMIN } from "@/lib/permissions";
@@ -74,6 +74,27 @@ export default function ImportersList({ data }: ImportersListProps) {
     router.refresh();
   }, [router]);
 
+  const handleToggleStatus = useCallback(
+    async (importer: Importer) => {
+      try {
+        const res = await toggleImporterStatus(importer.id);
+        if (res.error && res.message) {
+          showToast(res.message, "error");
+          return;
+        }
+        showToast(
+          `Importadora ${importer.isActive ? "desactivada" : "activada"} exitosamente`,
+          "success"
+        );
+        router.refresh();
+      } catch (e) {
+        console.error(e);
+        showToast("Error al cambiar el estado de la importadora", "error");
+      }
+    },
+    [router]
+  );
+
   const columns = useMemo<DataTableColumn<Importer>[]>(
     () => [
       {
@@ -114,6 +135,9 @@ export default function ImportersList({ data }: ImportersListProps) {
               onEdit={() => handleEdit(importer)}
               onNomenclators={() => handleViewNomenclators(importer)}
               onProviders={() => handleViewProviders(importer)}
+              onGenerateQR={() => handleShowQR(importer)}
+              onActive={() => handleToggleStatus(importer)}
+              active={importer.isActive}
               nomenclatorsPermissions={["RetrieveNomenclator"]}
               providersPermissions={["RetrieveImporterContract"]}
             />
@@ -121,7 +145,7 @@ export default function ImportersList({ data }: ImportersListProps) {
         ),
       },
     ],
-    [handleEdit, handleViewNomenclators, handleViewProviders]
+    [handleEdit, handleViewNomenclators, handleViewProviders, handleShowQR]
   );
 
   return (

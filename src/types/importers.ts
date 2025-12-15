@@ -80,3 +80,73 @@ export type ImporterAccessResponse = {
   expiresIn: number;
   importer: Importer;
 };
+
+export type QRCodeResponse = {
+  importerId: string;
+  importerName: string;
+  secretKey: string;
+  qrCodeUrl: string;
+  qrCodeImageBase64: string;
+  createdAt: string;
+  instructions: string;
+};
+
+export type Category = {
+  id: string;
+  name: string;
+  active: boolean;
+  departmentId: string;
+  departmentName: string;
+  description: string;
+  image: string;
+  features: Array<{
+    featureId: string;
+    featureName: string;
+    featureDescription: string;
+    suggestions: string[];
+    isRequired: boolean;
+    isPrimary: boolean;
+  }>;
+};
+
+export type ImporterNomenclatorDetail = {
+  id: string;
+  name: string;
+  isActive: boolean;
+  createdAt: string;
+  categories: Category[];
+};
+
+export type ImporterContract = {
+  id: string;
+  importerId: string;
+  importerName: string;
+  supplierId: string;
+  supplierName: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  createdAt: string;
+};
+
+export type ImporterDataResponse = {
+  importerId: string;
+  importerName: string;
+  isActive: boolean;
+  nomenclators: ImporterNomenclatorDetail[];
+  contracts: ImporterContract[];
+  accessedAt: string;
+  sessionExpiresAt: string;
+};
+
+export type ImporterSession = {
+  sessionId: string;
+  importerId: string;
+  importerName: string;
+  createdAt: string;
+  expiresAt: string;
+  lastAccessedAt: string;
+  ipAddress: string;
+  isActive: boolean;
+  isExpired: boolean;
+};

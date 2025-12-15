@@ -17,6 +17,7 @@ import {
   createNomenclator,
   getNomenclatorById,
   updateNomenclator,
+  toggleNomenclatorStatus,
 } from "@/services/nomenclators";
 import { useRouter } from "next/navigation";
 import LoaderButton from "@/components/loaders/loader-button";
@@ -164,6 +165,31 @@ export default function NomenclatorsListClient({
     [close, importerId, router, selected]
   );
 
+  const handleToggleStatus = useCallback(
+    async (nomenclator: ImporterNomenclator) => {
+      try {
+        const res = await toggleNomenclatorStatus(nomenclator.id);
+        if (res.error) {
+          toast.error(res.message || "Error al cambiar el estado del nomenclador");
+          return;
+        }
+
+        setLocalData((prev) =>
+          prev.map((n) =>
+            n.id === nomenclator.id ? { ...n, isActive: !n.isActive } : n
+          )
+        );
+        toast.success(
+          `Nomenclador ${nomenclator.isActive ? "desactivado" : "activado"} exitosamente`
+        );
+        router.refresh();
+      } catch {
+        toast.error("Error al cambiar el estado del nomenclador");
+      }
+    },
+    [router]
+  );
+
   const columns = useMemo<DataTableColumn<ImporterNomenclator>[]>(
     () => [
       {
@@ -214,12 +240,16 @@ export default function NomenclatorsListClient({
         textAlign: "center",
         render: (r) => (
           <div className="flex justify-center">
-            <ActionsMenu onEdit={() => openEdit(r)} />
+            <ActionsMenu 
+              onEdit={() => openEdit(r)} 
+              onActive={() => handleToggleStatus(r)}
+              active={r.isActive}
+            />
           </div>
         ),
       },
     ],
-    [categoryLabels, openEdit]
+    [categoryLabels, openEdit, handleToggleStatus]
   );
 
   return (

@@ -102,3 +102,19 @@ export async function updateNomenclator(
   revalidateTag("importers", "max");
   return buildApiResponseAsync<ImporterNomenclator>(res);
 }
+
+export async function toggleNomenclatorStatus(
+  id: string
+): Promise<ApiResponse<void>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.nomenclators.toggleStatus(id),
+    method: "PATCH",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  revalidateTag(NOMENCLATORS_TAG, "max");
+  revalidateTag("importers", "max");
+  return buildApiResponseAsync<void>(res);
+}

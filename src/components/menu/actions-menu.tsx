@@ -21,7 +21,7 @@ import { usePermissions } from "@/hooks/use-permissions";
 interface MenuProps {
   onAddUsers?: () => void;
   onEdit?: () => void;
-  onEditFull?: () => void; // Nueva acción para edición completa
+  onEditFull?: () => void; 
   onViewDetails?: () => void;
   onViewDocuments?: () => void;
   onDelete?: () => void;
@@ -29,16 +29,18 @@ interface MenuProps {
   onDownload?: () => void;
   onActive?: () => void;
   active?: boolean;
-  onSetDefault?: () => void; // nueva acción para establecer como actual
+  onSetDefault?: () => void; 
   onBlocked?: () => void;
   isBlocked?: boolean;
   onVerify?: () => void;
   isVerify?: boolean;
   onModifyAttributes?: () => void;
+  onChangeStatus?: () => void;
   onNomenclators?: () => void;
   onProviders?: () => void;
+  onGenerateQR?: () => void;
 
-  // Permissions - si no se especifican, se asumen permisos generales
+
   viewPermissions?: string[];
   editPermissions?: string[];
   deletePermissions?: string[];
@@ -51,8 +53,10 @@ interface MenuProps {
   blockedPermissions?: string[];
   verifyPermissions?: string[];
   modifyAttributesPermissions?: string[];
+  changeStatusPermissions?: string[];
   nomenclatorsPermissions?: string[];
   providersPermissions?: string[];
+  qrPermissions?: string[];
 }
 
 const ActionsMenu = ({
@@ -71,8 +75,10 @@ const ActionsMenu = ({
   onBlocked,
   onVerify,
   onModifyAttributes,
+  onChangeStatus,
   onNomenclators,
   onProviders,
+  onGenerateQR,
   onSetDefault,
   viewPermissions,
   editPermissions,
@@ -86,14 +92,15 @@ const ActionsMenu = ({
   blockedPermissions,
   verifyPermissions,
   modifyAttributesPermissions,
+  changeStatusPermissions,
   nomenclatorsPermissions,
   providersPermissions,
+  qrPermissions,
 }: MenuProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [toggleStatusDialogOpen, setToggleStatusDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Obtener permisos del usuario
   const { hasPermission } = usePermissions();
 
   const handleDelete = async () => {
@@ -164,6 +171,16 @@ const ActionsMenu = ({
             </Menu.Item>
           )}
 
+          {onGenerateQR && hasPermission(qrPermissions) && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-white"
+              leftSection={<LockClosedIcon className="h-4 w-4 " />}
+              onClick={onGenerateQR}
+            >
+              Generar QR
+            </Menu.Item>
+          )}
+
           {onDownload && hasPermission(downloadPermissions) && (
             <Menu.Item
               className="p-1 text-sm  hover:text-white"
@@ -211,6 +228,16 @@ const ActionsMenu = ({
               onClick={onModifyAttributes}
             >
               Modificar Atributos
+            </Menu.Item>
+          )}
+
+          {onChangeStatus && hasPermission(changeStatusPermissions) && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-white"
+              leftSection={<Cog6ToothIcon className="h-4 w-4 " />}
+              onClick={onChangeStatus}
+            >
+              Cambiar estado
             </Menu.Item>
           )}
 
