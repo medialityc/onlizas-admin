@@ -152,3 +152,23 @@ export async function getSupplierContracts(
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<GetSupplierContracts>(res);
 }
+
+export async function generateImporterQRCode(importerId: string): Promise<ApiResponse<{
+  importerId: string;
+  importerName: string;
+  secretKey: string;
+  qrCodeUrl: string;
+  qrCodeImageBase64: string;
+  createdAt: string;
+  instructions: string;
+}>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.importerAccess.generateQr(importerId),
+    method: "POST",
+    useAuth: true,
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync(res);
+}

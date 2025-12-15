@@ -16,6 +16,7 @@ import {
   GlobeAltIcon,
   PhotoIcon,
   PuzzlePieceIcon,
+  TruckIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "./types";
 
@@ -150,6 +151,13 @@ export const sidebarSections: SidebarSection[] = [
         path: paths.dashboard.warehouses.list,
         icon: <WarehouseIcon className="h-4 w-4" />,
         permissions: PERMISSION_WAREHOUSE,
+      },
+      {
+        id: "importers",
+        label: "Importadoras",
+        path: paths.dashboard.importers.list,
+        icon: <TruckIcon className="h-4 w-4" />,
+        permissions: PERMISSION_ADMIN,
       },
       {
         id: "regions",

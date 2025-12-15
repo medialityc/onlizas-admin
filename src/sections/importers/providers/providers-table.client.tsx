@@ -1,9 +1,20 @@
 "use client";
 
 import React, { useCallback, useMemo, useState } from "react";
-import { Modal, Button, Group, Text, TextInput } from "@mantine/core";
 import { DataGrid } from "@/components/datagrid/datagrid";
 import { DataTableColumn } from "mantine-datatable";
+import ActionsMenu from "@/components/menu/actions-menu";
+import { approveContractRequest, rejectContractRequest } from "@/services/importer-contracts";
+import showToast from "@/config/toast/toastConfig";
+import { useRouter } from "next/navigation";
+import SimpleModal from "@/components/modal/modal";
+import InputWithLabel from "@/components/input/input-with-label";
+import LoaderButton from "@/components/loaders/loader-button";
+import FormProvider from "@/components/react-hook-form/form-provider";
+import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
+import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
+import { useForm } from "react-hook-form";
+import { getImporterNomenclators } from "@/services/importers";
 
 type ImporterNomenclator = {
   id: string;
@@ -19,10 +30,57 @@ type ImporterContract = {
   startDate: string;
   endDate: string;
   status: string;
+  importerNomenclators?: ImporterNomenclator[]; // Nomencladores del contrato
 };
 
 type Row = ImporterContract & {
   importerNomenclators: ImporterNomenclator[];
+};
+
+type ContractForm = {
+  nomenclatorIds: string[];
+  startDate: string;
+  endDate: string;
+};
+
+// Función helper para convertir fecha ISO a formato YYYY-MM-DD
+const formatDateForInput = (dateString: string): string => {
+  if (!dateString) return "";
+  try {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  } catch {
+    return "";
+  }
+};
+
+// Función helper para formatear fecha legible
+const formatDateReadable = (dateString: string): string => {
+  if (!dateString) return "-";
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  } catch {
+    return "-";
+  }
+};
+
+// Mapeo de estados en inglés a español
+const statusMap: Record<string, string> = {
+  PENDING: "Pendiente",
+  APPROVED: "Aprobado",
+  REJECTED: "Rechazado",
+  ACTIVE: "Activo",
+  EXPIRED: "Expirado",
+  TERMINATED: "Terminado",
+};
+
+const getStatusLabel = (status: string): string => {
+  return statusMap[status.toUpperCase()] || status;
 };
 
 type Props = {
@@ -38,13 +96,32 @@ export default function ProvidersTableClient({
   contracts,
   nomenclators,
 }: Props) {
+  const router = useRouter();
   const [opened, setOpened] = useState(false);
+  const [statusModalOpened, setStatusModalOpened] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [form, setForm] = useState({ status: "", startDate: "", endDate: "" });
+  const [selectedStatusId, setSelectedStatusId] = useState<string | null>(null);
+  const [statusForm, setStatusForm] = useState({ status: "" });
   const [localContracts, setLocalContracts] = useState<ImporterContract[]>(contracts);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const methods = useForm<ContractForm>({
+    defaultValues: {
+      nomenclatorIds: [],
+      startDate: "",
+      endDate: "",
+    },
+  });
+
+  const { reset } = methods;
 
   const rows = useMemo<Row[]>(
-    () => localContracts.map((c) => ({ ...c, importerNomenclators: nomenclators })),
+    () => localContracts.map((c) => ({ 
+      ...c, 
+      // Si el contrato no tiene nomencladores específicos, usar los de la importadora
+      importerNomenclators: c.importerNomenclators || nomenclators 
+    })),
     [localContracts, nomenclators]
   );
 
@@ -56,40 +133,130 @@ export default function ProvidersTableClient({
   const openEdit = useCallback(
     (contract: ImporterContract) => {
       setSelectedId(contract.id);
-      setForm({
-        status: contract.status || "",
-        startDate: contract.startDate || "",
-        endDate: contract.endDate || "",
+      
+      // Convertir las fechas del backend al formato YYYY-MM-DD para los inputs
+      const formattedStartDate = formatDateForInput(contract.startDate);
+      const formattedEndDate = formatDateForInput(contract.endDate);
+      
+      // Obtener los IDs de los nomencladores del contrato
+      // Si el contrato no tiene nomencladores específicos, iniciar vacío
+      const nomenclatorIds = contract.importerNomenclators?.map(n => n.id) || [];
+      
+      // Poblar el formulario con los datos del contrato
+      reset({
+        nomenclatorIds,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
       });
+      
       setOpened(true);
     },
-    []
+    [reset]
   );
 
   const close = useCallback(() => {
     setOpened(false);
     setSelectedId(null);
+    reset({ nomenclatorIds: [], startDate: "", endDate: "" });
+  }, [reset]);
+
+  const handleChangeStatus = useCallback((contract: ImporterContract) => {
+    setSelectedStatusId(contract.id);
+    // Normalizar el estado a mayúsculas y limpiar espacios
+    const normalizedStatus = contract.status ? contract.status.trim().toUpperCase() : "";
+    setStatusForm({ status: normalizedStatus });
+    setStatusModalOpened(true);
   }, []);
 
-  const save = useCallback(() => {
-    if (!selectedId) return;
+  const closeStatusModal = useCallback(() => {
+    setStatusModalOpened(false);
+    setSelectedStatusId(null);
+    setStatusForm({ status: "" }); // Limpiar el formulario al cerrar
+  }, []);
+  const submitEditContract = useCallback(
+    async (values: ContractForm) => {
+      if (!selectedId) return;
 
-    setLocalContracts((prev) =>
-      prev.map((c) =>
-        c.id === selectedId
-          ? {
-              ...c,
-              status: form.status,
-              startDate: form.startDate,
-              endDate: form.endDate,
-            }
-          : c
-      )
-    );
-    void importerId;
+      setIsSaving(true);
+      try {
+        // TODO: Aquí deberías llamar al endpoint para actualizar el contrato
+        // Por ahora solo actualizamos el estado local
+        setLocalContracts((prev) =>
+          prev.map((c) =>
+            c.id === selectedId
+              ? {
+                  ...c,
+                  startDate: values.startDate,
+                  endDate: values.endDate,
+                }
+              : c
+          )
+        );
+        
+        showToast("Contrato actualizado exitosamente", "success");
+        router.refresh();
+        close();
+      } catch (error) {
+        showToast("Error al actualizar el contrato", "error");
+      } finally {
+        setIsSaving(false);
+      }
+    },
+    [selectedId, close, router]
+  );
+  const handleStatusSave = useCallback(async () => {
+    if (!selectedStatusId || !statusForm.status) return;
+    
+    setIsLoading(true);
+    try {
+      let res;
+      
+      if (statusForm.status === "APPROVED") {
+        res = await approveContractRequest(selectedStatusId);
+      } else if (statusForm.status === "REJECTED") {
+        res = await rejectContractRequest(selectedStatusId);
+      } else {
+        // Si es PENDING, cerrar sin hacer nada
+        closeStatusModal();
+        return;
+      }
+      
+      if (res?.error) {
+        showToast(res.message || "Error al actualizar el contrato", "error");
+        return;
+      }
+      
+      // Actualizar el estado local de la tabla
+      setLocalContracts((prev) =>
+        prev.map((contract) =>
+          contract.id === selectedStatusId
+            ? { ...contract, status: statusForm.status }
+            : contract
+        )
+      );
+      
+      showToast(
+        statusForm.status === "APPROVED" 
+          ? "Contrato aprobado exitosamente" 
+          : "Contrato rechazado exitosamente", 
+        "success"
+      );
+      
+      router.refresh();
+      closeStatusModal();
+    } catch (error) {
+      showToast("Error al actualizar el estado del contrato", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [closeStatusModal, selectedStatusId, statusForm.status, router]);
 
-    close();
-  }, [close, form.endDate, form.startDate, form.status, importerId, selectedId]);
+  const fetchNomenclators = useCallback(
+    async (params: any) => {
+      return await getImporterNomenclators(importerId, params);
+    },
+    [importerId]
+  );
 
   const columns = useMemo<DataTableColumn<Row>[]>(
     () => [
@@ -108,18 +275,15 @@ export default function ProvidersTableClient({
       {
         accessor: "status",
         title: "Estado del contrato",
+        render: (row) => getStatusLabel(row.status),
       },
       {
         accessor: "validity",
         title: "Vigencia",
         render: (row) => {
-          const s = row.startDate
-            ? new Date(row.startDate).toLocaleDateString("es-ES")
-            : "-";
-          const e = row.endDate
-            ? new Date(row.endDate).toLocaleDateString("es-ES")
-            : "-";
-          return `${s} - ${e}`;
+          const start = formatDateReadable(row.startDate);
+          const end = formatDateReadable(row.endDate);
+          return `${start} - ${end}`;
         },
       },
       {
@@ -128,14 +292,16 @@ export default function ProvidersTableClient({
         textAlign: "center",
         render: (row) => (
           <div className="flex justify-center">
-            <Button size="xs" onClick={() => openEdit(row)}>
-              Editar
-            </Button>
+            <ActionsMenu
+              onEdit={() => openEdit(row)}
+              onChangeStatus={() => handleChangeStatus(row)}
+              changeStatusPermissions={[]}
+            />
           </div>
         ),
       },
     ],
-    [openEdit]
+    [openEdit, handleChangeStatus]
   );
 
   return (
@@ -159,36 +325,110 @@ export default function ProvidersTableClient({
         emptyText="No hay contratos"
       />
 
-      <Modal opened={opened} onClose={close} title="Editar contrato" size="lg">
-        {selected ? (
-          <>
-            <Text mb="sm">{selected.supplierName}</Text>
-            <TextInput
-              label="Estado"
-              value={form.status}
-              onChange={(e) => setForm({ ...form, status: e.target.value })}
-            />
-            <TextInput
-              label="Vigencia inicio"
-              value={form.startDate}
-              onChange={(e) =>
-                setForm({ ...form, startDate: e.target.value })
-              }
-            />
-            <TextInput
-              label="Vigencia fin"
-              value={form.endDate}
-              onChange={(e) => setForm({ ...form, endDate: e.target.value })}
-            />
-            <Group justify="right" mt="md">
-              <Button variant="default" onClick={close}>
-                Cancelar
-              </Button>
-              <Button onClick={save}>Guardar</Button>
-            </Group>
-          </>
-        ) : null}
-      </Modal>
+      <SimpleModal
+        open={opened}
+        onClose={close}
+        title="Editar contrato"
+      >
+        <div className="p-5">
+          {selected ? (
+            <FormProvider methods={methods} onSubmit={submitEditContract}>
+              <p className="text-sm mb-4 dark:text-white font-medium">{selected.supplierName}</p>
+              
+              <div className="space-y-4">
+                <RHFAutocompleteFetcherInfinity
+                  name="nomenclatorIds"
+                  label="Nomencladores"
+                  placeholder="Seleccionar nomencladores..."
+                  onFetch={fetchNomenclators}
+                  objectValueKey="id"
+                  objectKeyLabel="name"
+                  queryKey={`importer-nomenclators-${importerId}`}
+                  dropdownPosition="top"
+                  multiple
+                  required
+                />
+                
+                <RHFInputWithLabel
+                  name="startDate"
+                  label="Fecha de inicio"
+                  placeholder="YYYY-MM-DD"
+                  type="date"
+                  required
+                />
+                
+                <RHFInputWithLabel
+                  name="endDate"
+                  label="Fecha de fin"
+                  placeholder="YYYY-MM-DD"
+                  type="date"
+                  required
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-6">
+                <button
+                  type="button"
+                  onClick={close}
+                  disabled={isSaving}
+                  className="btn btn-outline-secondary"
+                >
+                  Cancelar
+                </button>
+                <LoaderButton type="submit" loading={isSaving} disabled={isSaving}>
+                  Guardar
+                </LoaderButton>
+              </div>
+            </FormProvider>
+          ) : null}
+        </div>
+      </SimpleModal>
+
+      <SimpleModal
+        open={statusModalOpened}
+        onClose={closeStatusModal}
+        title="Cambiar estado del contrato"
+      >
+        <div className="p-5">
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="contractStatus" className="block text-sm font-medium mb-2 dark:text-white-light">
+                Estado del contrato
+              </label>
+              <select
+                id="contractStatus"
+                value={statusForm.status}
+                onChange={(e) => setStatusForm({ status: e.target.value })}
+                className="form-select"
+              >
+                <option value="">Selecciona un estado</option>
+                <option value="PENDING">Pendiente</option>
+                <option value="APPROVED">Aprobado</option>
+                <option value="REJECTED">Rechazado</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-6">
+            <button
+              type="button"
+              onClick={closeStatusModal}
+              disabled={isLoading}
+              className="btn btn-outline-secondary"
+            >
+              Cancelar
+            </button>
+            <LoaderButton
+              type="button"
+              onClick={handleStatusSave}
+              loading={isLoading}
+              disabled={isLoading || !statusForm.status}
+            >
+              Guardar
+            </LoaderButton>
+          </div>
+        </div>
+      </SimpleModal>
     </div>
   );
 }

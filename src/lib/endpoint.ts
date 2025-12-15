@@ -579,6 +579,17 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}importers/${supplierId}/contracts`,
     access: `${process.env.NEXT_PUBLIC_API_URL}importers/access`,
   },
+  importerAccess: {
+    validate: `${process.env.NEXT_PUBLIC_API_URL}importer-access/validate`,
+    getData: (importerId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importer-access/${importerId}/data`,
+    generateQr: (importerId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importer-access/${importerId}/generate-qr`,
+    sessions: (importerId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importer-access/${importerId}/sessions`,
+    revokeSession: (importerId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importer-access/${importerId}/revoke`,
+  },
   importerContracts: {
     list: `${process.env.NEXT_PUBLIC_API_URL}importer-contracts`,
     create: `${process.env.NEXT_PUBLIC_API_URL}importer-contracts`,
@@ -596,5 +607,7 @@ export const backendRoutes = {
     update: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}nomenclators/${id}`,
     updateBase: `${process.env.NEXT_PUBLIC_API_URL}nomenclators`,
+    toggleStatus: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}nomenclators/${id}/toggle-status`,
   },
 };
