@@ -7,6 +7,12 @@ const IMPORTER_TOKEN_COOKIE = "importer_access_token";
 const IMPORTER_ID_COOKIE = "importer_id";
 const IMPORTER_EXPIRES_COOKIE = "importer_expires_at";
 
+// Validar que sea un UUID válido para prevenir SSRF
+function isValidUUID(id: string): boolean {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(id);
+}
+
 export type ValidateResponse = {
   success: boolean;
   token?: string;
@@ -67,6 +73,15 @@ export async function validateImporterAccess(
   code: string
 ): Promise<ValidateResponse> {
   try {
+    // Validar UUID para prevenir SSRF
+    if (!isValidUUID(importerId)) {
+      return {
+        success: false,
+        error: true,
+        message: "ID de importadora inválido",
+      };
+    }
+
     const response = await fetch(backendRoutes.importerAccess.validate, {
       method: "POST",
       headers: {
@@ -173,6 +188,14 @@ export async function getImporterData(): Promise<{
       return {
         error: true,
         message: "No hay sesión activa",
+      };
+    }
+
+    // Validar UUID para prevenir SSRF
+    if (!isValidUUID(importerId)) {
+      return {
+        error: true,
+        message: "ID de importadora inválido",
       };
     }
 
@@ -285,6 +308,14 @@ export async function getImporterSessions(
   message?: string;
 }> {
   try {
+    // Validar UUID para prevenir SSRF
+    if (!isValidUUID(importerId)) {
+      return {
+        error: true,
+        message: "ID de importadora inválido",
+      };
+    }
+
     const cookieStore = await cookies();
     const token = cookieStore.get(IMPORTER_TOKEN_COOKIE)?.value;
 
@@ -332,6 +363,15 @@ export async function revokeImporterSession(
   message?: string;
 }> {
   try {
+    // Validar UUID para prevenir SSRF
+    if (!isValidUUID(importerId)) {
+      return {
+        success: false,
+        error: true,
+        message: "ID de importadora inválido",
+      };
+    }
+
     const cookieStore = await cookies();
     const token = cookieStore.get(IMPORTER_TOKEN_COOKIE)?.value;
 
@@ -397,6 +437,14 @@ export async function generateImporterQR(
   message?: string;
 }> {
   try {
+    // Validar UUID para prevenir SSRF
+    if (!isValidUUID(importerId)) {
+      return {
+        error: true,
+        message: "ID de importadora inválido",
+      };
+    }
+
     const response = await fetch(
       backendRoutes.importerAccess.generateQr(importerId),
       {
