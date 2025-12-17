@@ -11,8 +11,7 @@ import ActionsMenu from "@/components/menu/actions-menu";
 import showToast from "@/config/toast/toastConfig";
 import { getImporterById, toggleImporterStatus } from "@/services/importers";
 import { useRouter } from "next/navigation";
-import { Badge } from "@mantine/core";
-import { PERMISSION_ADMIN } from "@/lib/permissions";
+import Badge from "@/components/badge/badge";
 
 interface ImportersListProps {
   data?: GetImporters;
@@ -26,7 +25,9 @@ export default function ImportersList({ data }: ImportersListProps) {
   const editModal = getModalState("edit");
   const qrModal = getModalState("qr");
 
-  const [selectedImporter, setSelectedImporter] = useState<Importer | null>(null);
+  const [selectedImporter, setSelectedImporter] = useState<Importer | null>(
+    null
+  );
 
   const handleCreate = useCallback(() => openModal("create"), [openModal]);
 
@@ -101,7 +102,9 @@ export default function ImportersList({ data }: ImportersListProps) {
         accessor: "name",
         title: "Nombre",
         render: (r) => (
-          <span className="font-medium text-gray-900 dark:text-gray-100">{r.name}</span>
+          <span className="font-medium text-gray-900 dark:text-gray-100">
+            {r.name}
+          </span>
         ),
       },
       {
@@ -110,7 +113,9 @@ export default function ImportersList({ data }: ImportersListProps) {
         width: 180,
         render: (r) => (
           <div className="h-10 flex items-center">
-            <Badge color={r.isActive ? "green" : "gray"}>
+            <Badge
+              variant={r.isActive ? "outline-success" : "outline-secondary"}
+            >
               {r.isActive ? "Activo" : "Inactivo"}
             </Badge>
           </div>
@@ -119,11 +124,12 @@ export default function ImportersList({ data }: ImportersListProps) {
       {
         accessor: "createdAt",
         title: "Fecha de Creación",
-        render: (r) => new Date(r.createdAt).toLocaleDateString("es-ES", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }),
+        render: (r) =>
+          new Date(r.createdAt).toLocaleDateString("es-ES", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }),
       },
       {
         accessor: "actions",

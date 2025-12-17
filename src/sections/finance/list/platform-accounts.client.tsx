@@ -7,7 +7,7 @@ export default function ClientCreateButton({
   initialData?: GetPlatformAccounts;
 }) {
   return (
-    <div className="panel">
+    <div>
       <div className="mb-3 flex items-center justify-between">
         <div>
           <h2 className="font-semibold">Listado</h2>

@@ -139,7 +139,7 @@ table tr .mantine-Checkbox-root {
 }
 
 .mantine-Group-root .mantine-UnstyledButton-root {
-  @apply border-[#191e3a] text-white-dark;
+  @apply border-none text-white-dark;
 }
 
 .mantine-Group-root .mantine-UnstyledButton-root:hover {
@@ -159,11 +159,11 @@ table tr .mantine-Checkbox-root {
 }
 
 .mantine-Menu-dropdown {
-  @apply border-[#191e3a] bg-[#1a2941] text-white-dark;
+  @apply border-gray-300 bg-white text-white-dark;
 }
 
 .dark .mantine-Menu-dropdown {
-  @apply !border-[#191e3a] !bg-[#1a2941] text-white-dark;
+  @apply border-[#191e3a] bg-[#1a2941] text-white-dark;
 }
 
 .mantine-Checkbox-body {
@@ -186,28 +186,8 @@ table tr .mantine-Checkbox-root {
   @apply rounded border border-white-light outline-0 focus:ring-1 focus:ring-white-light/40;
 }
 
-.dark .mantine-datatable-pagination {
-  @apply border-[#191e3a] !bg-black !text-white;
-}
-
 .mantine-3xbgk5 .mantine-qo1k2 {
   @apply p-2 text-sm;
-}
-
-.mantine-Pagination-item {
-  @apply h-9 w-9 rounded-full border-white-light !bg-white-light font-nunito text-sm !text-[#3b3f5c];
-}
-
-.mantine-Pagination-item:hover {
-  @apply !bg-primary !text-white;
-}
-
-.dark .mantine-Pagination-item {
-  @apply border-[#191e3a] !bg-[#191e3a] !text-white;
-}
-
-.mantine-Pagination-item[data-active] {
-  @apply !bg-primary !text-white;
 }
 
 .mantine-Menu-item .mantine-Text-root {

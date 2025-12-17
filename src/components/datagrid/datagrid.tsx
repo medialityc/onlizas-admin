@@ -29,6 +29,7 @@ export function DataGrid<T extends Record<string, any>>({
   rightActions,
   customActions,
   createPermissions,
+  removePanel,
 }: DataGridProps<T>) {
   const [searchValue, setSearchValue] = useState(searchParams.search || "");
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<T>>({
@@ -100,41 +101,43 @@ export function DataGrid<T extends Record<string, any>>({
       />
 
       {/* Data Table */}
-      <div className="datatables">
-        <DataTable<T>
-          withTableBorder={false}
-          columns={visibleColumns}
-          records={data?.data || simpleData || []}
-          // Agregar el loading
-          // fetching={loading}
+      <div className={removePanel ? "" : "panel"}>
+        <div className="datatables">
+          <DataTable<T>
+            withTableBorder={false}
+            columns={visibleColumns}
+            records={data?.data || simpleData || []}
+            // Agregar el loading
+            // fetching={loading}
 
-          minHeight={minHeight}
-          sortStatus={
-            enableSorting ? sortStatus : ({} as DataTableSortStatus<T>)
-          }
-          onSortStatusChange={() => enableSorting && handleSortWithState}
-          pinLastColumn
-          className="table-hover whitespace-nowrap"
-          totalRecords={data?.totalCount || simpleData?.length || 0}
-          recordsPerPage={searchParams.pageSize || 10}
-          page={searchParams.page || 1}
-          onPageChange={enablePagination ? handlePageChange : () => {}}
-          recordsPerPageOptions={enablePagination ? PAGE_SIZES : []}
-          onRecordsPerPageChange={
-            enablePagination ? handlePageSizeChange : () => {}
-          }
-          paginationText={({ from, to, totalRecords }) =>
-            `Mostrando ${from} - ${to} ${"de"} ${totalRecords}`
-          }
-          noRecordsText={emptyText || "No hay registros"}
-          loadingText={"Cargando"}
-          striped
-          highlightOnHover
-          onRowClick={(record: any) => {
-            if (onRowClick) onRowClick(record as T);
-          }}
-          rowClassName={onRowClick ? "cursor-pointer" : undefined}
-        />
+            minHeight={minHeight}
+            sortStatus={
+              enableSorting ? sortStatus : ({} as DataTableSortStatus<T>)
+            }
+            onSortStatusChange={() => enableSorting && handleSortWithState}
+            pinLastColumn
+            className="table-hover whitespace-nowrap"
+            totalRecords={data?.totalCount || simpleData?.length || 0}
+            recordsPerPage={searchParams.pageSize || 10}
+            page={searchParams.page || 1}
+            onPageChange={enablePagination ? handlePageChange : () => {}}
+            recordsPerPageOptions={enablePagination ? PAGE_SIZES : []}
+            onRecordsPerPageChange={
+              enablePagination ? handlePageSizeChange : () => {}
+            }
+            paginationText={({ from, to, totalRecords }) =>
+              `Mostrando ${from} - ${to} ${"de"} ${totalRecords}`
+            }
+            noRecordsText={emptyText || "No hay registros"}
+            loadingText={"Cargando"}
+            striped
+            highlightOnHover
+            onRowClick={(record: any) => {
+              if (onRowClick) onRowClick(record as T);
+            }}
+            rowClassName={onRowClick ? "cursor-pointer" : undefined}
+          />
+        </div>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import SupplierProductForm from "../components/supplier-product-form";
 
 const SupplierProductCreateContainer = () => {
   return (
-    <div className="panel">
+    <div>
       <div className="mb-5">
         <h2 className="text-xl font-semibold text-dark dark:text-white-light">
           Crear Product

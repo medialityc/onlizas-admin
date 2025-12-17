@@ -4,7 +4,7 @@ interface DataGridSkeletonProps {
 
 export function DataGridSkeleton({ rows = 10 }: DataGridSkeletonProps) {
   return (
-    <div className="panel">
+    <div>
       {/* Search skeleton */}
       <div className="mb-5">
         <div className="flex items-center justify-between">

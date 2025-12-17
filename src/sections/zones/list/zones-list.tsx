@@ -10,6 +10,7 @@ import ActionsMenu from "@/components/menu/actions-menu";
 import showToast from "@/config/toast/toastConfig";
 import { deleteZone, getZoneById } from "@/services/zones";
 import { useRouter } from "next/navigation";
+import Badge from "@/components/badge/badge";
 
 interface ZonesListProps {
   data?: GetZones;
@@ -71,16 +72,15 @@ export default function ZonesList({ data }: ZonesListProps) {
       {
         accessor: "name",
         title: "Nombre",
-        render: (r) => (
-          <span className="font-medium">{r.name}</span>
-        ),
+        render: (r) => <span className="font-medium">{r.name}</span>,
       },
       {
         accessor: "districtsIds",
         title: "Distritos",
         render: (r) => (
           <span className="text-sm">
-            {r.districtsIds.length} distrito{r.districtsIds.length !== 1 ? "s" : ""}
+            {r.districtsIds.length} distrito
+            {r.districtsIds.length !== 1 ? "s" : ""}
           </span>
         ),
       },
@@ -95,11 +95,9 @@ export default function ZonesList({ data }: ZonesListProps) {
         accessor: "active",
         title: "Estado",
         render: (r) => (
-          <span
-            className={r.active ? "text-green-700 font-medium" : "text-red-500"}
-          >
+          <Badge variant={r.active ? "outline-success" : "outline-secondary"}>
             {r.active ? "Activo" : "Inactivo"}
-          </span>
+          </Badge>
         ),
       },
       {

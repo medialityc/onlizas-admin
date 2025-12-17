@@ -37,7 +37,7 @@ export default function InventoryProviderCardListContainer({
 
   return (
     <div className="space-y-6">
-      <div className="panel">
+      <div>
         <div className="mb-5 flex items-center justify-start gap-2">
           {showBackButton && (
             <Button

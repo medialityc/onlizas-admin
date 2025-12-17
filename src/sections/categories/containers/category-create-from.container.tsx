@@ -4,7 +4,7 @@ import CategoryForm from "../components/category-form";
 
 const CategoryCreateFormContainer = () => {
   return (
-    <div className="panel">
+    <div>
       <div className="mb-5">
         <h2 className="text-xl font-semibold text-dark dark:text-white-light">
           Crear Categoría

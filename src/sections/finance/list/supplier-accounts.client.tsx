@@ -8,9 +8,12 @@ interface Props {
   supplierId: string;
 }
 
-export default function SupplierAccountsClient({ initialData, supplierId }: Props) {
+export default function SupplierAccountsClient({
+  initialData,
+  supplierId,
+}: Props) {
   return (
-    <div className="panel">
+    <div>
       <div className="mb-3 flex items-center justify-between">
         <div>
           <h2 className="font-semibold">Mis Cuentas Bancarias</h2>

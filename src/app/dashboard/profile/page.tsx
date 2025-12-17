@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 function CategoriesListSkeleton() {
   return (
-    <div className="panel">
+    <div>
       <div className="mb-5">
         <div className="h-8 bg-gray-200 rounded animate-pulse mb-4"></div>
         <div className="flex gap-4 mb-4">
