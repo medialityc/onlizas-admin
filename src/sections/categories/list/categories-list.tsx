@@ -12,8 +12,6 @@ import { toggleStatusCategory } from "@/services/categories";
 import { paths } from "@/config/paths";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import { usePermissions } from "@/hooks/use-permissions";
-import ImagePreview from "@/components/image/image-preview";
-import { isValidUrl } from "@/utils/format";
 
 interface CategoriesListProps {
   data?: GetAllCategories;
@@ -135,7 +133,7 @@ export function CategoriesList({
               {category.totalProducts}
             </div>
             <div className="text-xs text-gray-500 dark:text-gray-400">
-              {category.activeProducts} activos
+              activos
             </div>
           </div>
         ),
