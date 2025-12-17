@@ -1,11 +1,11 @@
 import { getImporters } from "@/services/importers";
 import ImportersClient from "@/sections/importers/list/importers.client";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function ImportersPage() {
   const res = await getImporters();
-  
+
   if (res.error) {
     return (
       <div className="p-6">
@@ -19,16 +19,17 @@ export default async function ImportersPage() {
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          Importadoras
-        </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-          Gestiona las importadoras y sus nomencladores
-        </p>
+    <div className="space-y-6">
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold text-dark dark:text-white-light">
+            Importadoras
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Gestiona las importadoras y sus nomencladores
+          </p>
+        </div>
       </div>
-      
       <ImportersClient data={res.data} />
     </div>
   );

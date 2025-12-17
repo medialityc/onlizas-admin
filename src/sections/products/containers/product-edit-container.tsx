@@ -8,7 +8,7 @@ type Props = {
 };
 const ProductEditContainer = ({ product }: Props) => {
   return (
-    <div className="panel">
+    <div>
       <div className="mb-5">
         <h2 className="text-xl font-semibold text-dark dark:text-white-light">
           Editar Producto

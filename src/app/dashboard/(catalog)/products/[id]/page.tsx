@@ -101,7 +101,13 @@ async function ProductDetails({ id }: { id: string }) {
                       Estado:
                     </span>
                     <div className="mt-1">
-                      <Badge variant={product.state ? "success" : "secondary"}>
+                      <Badge
+                        variant={
+                          product.state
+                            ? "outline-success"
+                            : "outline-secondary"
+                        }
+                      >
                         {product.state ? "Activo" : "Inactivo"}
                       </Badge>
                     </div>

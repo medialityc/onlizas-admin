@@ -9,7 +9,7 @@ interface Props {
 
 export default function ZonesClient({ initialData }: Props) {
   return (
-    <div className="panel">
+    <div>
       <div className="mb-3 flex items-center justify-between">
         <div>
           <h2 className="font-semibold">Zonas de Entrega</h2>

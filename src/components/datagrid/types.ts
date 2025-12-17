@@ -28,6 +28,7 @@ export interface DataGridProps<T> {
   customActions?: React.ReactNode;
   //pagination
   hidePagination?: boolean;
+  removePanel?: boolean;
 }
 export interface ColumnSelectorProps<T> {
   columns: DataTableColumn<T>[];

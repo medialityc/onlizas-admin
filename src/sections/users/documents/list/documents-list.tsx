@@ -120,7 +120,7 @@ export function UserDocumentsList({ documentsPromise, userId }: Props) {
 
   return (
     <>
-      <div className="panel">
+      <div>
         <div className="mb-5 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-semibold text-dark dark:text-white-light">

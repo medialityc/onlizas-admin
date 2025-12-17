@@ -2,7 +2,11 @@
 
 import { ApiResponse } from "@/types/fetch/api";
 import { SearchParams } from "@/types/fetch/request";
-import { GetAllTransferReceptions, TransferReceptionStatus, TransferReception } from "@/types/warehouse-transfer-receptions";
+import {
+  GetAllTransferReceptions,
+  TransferReceptionStatus,
+  TransferReception,
+} from "@/types/warehouse-transfer-receptions";
 import { WarehouseFormData } from "../schemas/warehouse-schema";
 import { DataGrid } from "@/components/datagrid/datagrid";
 import { DataTableColumn } from "mantine-datatable";
@@ -29,60 +33,70 @@ export default function WarehouseReceptionsContainer({
   const router = useRouter();
   const hasError = receptionsPromise?.error;
 
-  const handleViewReception = useCallback((transferId: string) => {
-    router.push(`/dashboard/warehouses/${warehouse.type}/${warehouse.id}/reception/${transferId}`);
-  }, [router, warehouse.type, warehouse.id]);
+  const handleViewReception = useCallback(
+    (transferId: string) => {
+      router.push(
+        `/dashboard/warehouses/${warehouse.type}/${warehouse.id}/reception/${transferId}`
+      );
+    },
+    [router, warehouse.type, warehouse.id]
+  );
 
-  const columns = useMemo<DataTableColumn<TransferReception>[]>(() => [
-    {
-      accessor: "transferNumber",
-      title: "Número de Transferencia",
-      width: 200,
-    },
-    {
-      accessor: "originWarehouseName",
-      title: "Almacén Origen",
-      width: 200,
-    },
-    {
-      accessor: "status",
-      title: "Estado",
-      width: 180,
-      render: (reception: TransferReception) => (
-        <Badge
-          children={reception.status}
-          variant={getStatusColor(reception.status)}
-        />
-      ),
-    },
-    {
-      accessor: "createdAt",
-      title: "Fecha de Envío",
-      width: 150,
-      render: (reception: TransferReception) => (
-        <DateValue value={reception.receivedAt} />
-      ),
-    },
-    {
-      accessor: "actions" as keyof TransferReception,
-      title: "Acciones",
-      width: 120,
-      textAlign: "center" as const,
-      render: (reception: TransferReception) => (
-        <Button
-          onClick={() => handleViewReception(reception.transferId)}
-          variant="secondary"
-          outline
-          size="sm"
-        >
-          <EyeIcon className="h-4 w-4 mr-2" />
-          Ver Recepción
-        </Button>
-      ),
-    },
-  ], [handleViewReception]);
+  const columns = useMemo<DataTableColumn<TransferReception>[]>(
+    () => [
+      {
+        accessor: "transferNumber",
+        title: "Número de Transferencia",
+        width: 200,
+      },
+      {
+        accessor: "originWarehouseName",
+        title: "Almacén Origen",
+        width: 200,
+      },
+      {
+        accessor: "status",
+        title: "Estado",
+        width: 180,
+        render: (reception: TransferReception) => (
+          <Badge
+            children={reception.status}
+            variant={getStatusColor(reception.status)}
+          />
+        ),
+      },
+      {
+        accessor: "createdAt",
+        title: "Fecha de Envío",
+        width: 150,
+        render: (reception: TransferReception) => (
+          <DateValue value={reception.receivedAt} />
+        ),
+      },
+      {
+        accessor: "actions" as keyof TransferReception,
+        title: "Acciones",
+        width: 120,
+        textAlign: "center" as const,
+        render: (reception: TransferReception) => (
+          <Button
+            onClick={() => handleViewReception(reception.transferId)}
+            variant="secondary"
+            outline
+            size="sm"
+          >
+            <EyeIcon className="h-4 w-4 mr-2" />
+            Ver Recepción
+          </Button>
+        ),
+      },
+    ],
+    [handleViewReception]
+  );
 
-  const getStatusColor = (status: TransferReceptionStatus): "primary" | "success" | "warning" | "danger" | "info" => {
+  const getStatusColor = (
+    status: TransferReceptionStatus
+  ): "primary" | "success" | "warning" | "danger" | "info" => {
     switch (status) {
       case "PENDING":
         return "warning";
@@ -99,7 +113,7 @@ export default function WarehouseReceptionsContainer({
 
   if (hasError) {
     return (
-      <div className="panel">
+      <div>
         <div className="text-center py-12">
           <p className="text-red-500 dark:text-red-400">
             Error al cargar las recepciones: {receptionsPromise.message}
@@ -110,7 +124,7 @@ export default function WarehouseReceptionsContainer({
   }
 
   return (
-    <div className="panel">
+    <div>
       <div className="mb-5 flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold text-dark dark:text-white-light">
