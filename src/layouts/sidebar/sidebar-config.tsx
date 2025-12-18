@@ -42,8 +42,8 @@ import {
   PERMISSION_WAREHOUSE,
   PERMISSION_SUPPLIER_ACCOUNTS,
   PERMISSION_SUPPLIER_ZONES,
+  PERMISSION_FINANCE_SUPPLIER_CLOSURES,
 } from "@/lib/permissions";
-
 
 export const sidebarSections: SidebarSection[] = [
   {
@@ -184,7 +184,7 @@ export const sidebarSections: SidebarSection[] = [
         label: "Cierres",
         path: paths.finance.closures,
         icon: <CalendarRange className="size-4" />,
-        permissions: PERMISSION_ADMIN,
+        permissions: PERMISSION_FINANCE_SUPPLIER_CLOSURES,
       },
       {
         id: "finance-account-states",

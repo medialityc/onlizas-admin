@@ -5,29 +5,23 @@ import { useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { paths } from "@/config/paths";
 import { GetAllClosures, Closure } from "@/types/finance";
-import { useModalState } from "@/hooks/use-modal-state";
-import { PartialClosureModal } from "../modals/partial-closure-modal";
 import { formatDate } from "@/utils/format";
 
-interface ClosuresListProps {
+interface SupplierClosuresListProps {
   data?: GetAllClosures;
   searchParams: any;
   onSearchParamsChange: (params: any) => void;
 }
 
-export function ClosuresList({
+export function SupplierClosuresList({
   data,
   searchParams,
   onSearchParamsChange,
-}: ClosuresListProps) {
+}: SupplierClosuresListProps) {
   const router = useRouter();
-  const { getModalState, openModal, closeModal } = useModalState();
-  const partialModal = getModalState("partial-closure");
 
   const handleViewAccounts = useCallback(
     (row: Closure) => {
-      console.log(row);
-
       router.push(paths.finance.closureAccounts(row.id));
     },
     [router]
@@ -107,18 +101,14 @@ export function ClosuresList({
   );
 
   return (
-    <>
-      <DataGrid
-        data={data}
-        columns={columns}
-        searchParams={searchParams}
-        onSearchParamsChange={onSearchParamsChange}
-        onCreate={() => openModal("partial-closure")}
-        createText="Crear Cierre Parcial"
-        searchPlaceholder="Buscar cierres..."
-        emptyText="No se encontraron cierres"
-      />
-      <PartialClosureModal />
-    </>
+    <DataGrid
+      data={data}
+      columns={columns}
+      searchParams={searchParams}
+      onSearchParamsChange={onSearchParamsChange}
+      // Supplier: no create action
+      searchPlaceholder="Buscar cierres..."
+      emptyText="No se encontraron cierres"
+    />
   );
 }

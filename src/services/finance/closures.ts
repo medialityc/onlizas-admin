@@ -33,6 +33,25 @@ export async function getAllClosures(
   return buildApiResponseAsync<GetAllClosures>(res);
 }
 
+export async function getMyClosures(
+  params: IQueryable
+): Promise<ApiResponse<GetAllClosures>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    `${process.env.NEXT_PUBLIC_API_URL}closures/supplier`
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["closures", "supplier"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<GetAllClosures>(res);
+}
+
 export type SuppliersWithPendingResponse = {
   userId: string;
   userName: string;

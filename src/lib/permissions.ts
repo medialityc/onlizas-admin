@@ -48,6 +48,10 @@ export enum PERMISSION_ENUM {
 
   RETRIEVE_ORDERS = "RetrieveOrder",
   UPDATE_ORDERS = "UpdateOrder",
+
+  // Finance - supplier closures and summary
+  RETRIEVE_CLOSURES = "RetrieveClosure",
+  RETRIEVE_SUMMARY = "RetrieveSummary",
 }
 export const PERMISSION_ADMIN = [
   PERMISSION_ENUM.CREATE,
@@ -102,6 +106,12 @@ export const PERMISSION_ORDERS = [
   ...PERMISSION_ADMIN,
   PERMISSION_ENUM.RETRIEVE_ORDERS,
   PERMISSION_ENUM.UPDATE_ORDERS,
+];
+
+// Finance views
+export const PERMISSION_FINANCE_SUPPLIER_CLOSURES = [
+  ...PERMISSION_ADMIN,
+  PERMISSION_ENUM.RETRIEVE_CLOSURES,
 ];
 
 export const PERMISSION_SUPPLIER_ACCOUNTS = [

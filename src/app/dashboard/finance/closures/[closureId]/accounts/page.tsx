@@ -10,9 +10,10 @@ import { ArrowLeft } from "lucide-react";
 export default async function ClosureAccountsPage({
   params,
 }: {
-  params: { closureId: string };
+  params: Promise<{ closureId: string }>;
 }) {
-  const closureId = params?.closureId as string;
+  const closureId = (await params)?.closureId as string;
+  console.log(closureId);
 
   const [accRes, stmtRes] = await Promise.all([
     getClosureAccounts(closureId),
@@ -159,7 +160,7 @@ export default async function ClosureAccountsPage({
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>
-                <tr className="text-left border-b bg-gray-50">
+                <tr className="text-left border-b border-b-gray-300 bg-gray-50">
                   <th className="py-2 pr-4 font-medium text-gray-700">
                     Proveedor
                   </th>
