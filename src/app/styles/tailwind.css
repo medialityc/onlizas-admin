@@ -366,7 +366,7 @@
 
   .sidebar .nav-item > button,
   .sidebar .nav-item > a {
-    @apply mb-1 flex w-full items-center justify-between overflow-hidden whitespace-nowrap rounded-md p-2.5 text-[#506690] hover:bg-[#000]/[0.08] hover:text-black dark:hover:bg-[#181f32] dark:hover:text-white-dark;
+    @apply mb-1 flex w-full items-center justify-between overflow-hidden whitespace-nowrap rounded-md p-2.5 text-[#506690] hover:bg-[#000]/[0.08] hover:text-black dark:hover:bg-[#181f32] dark:hover:text-white-dark cursor-pointer;
   }
   .sidebar .nav-item > button.active,
   .sidebar .nav-item > a.active {
@@ -381,7 +381,7 @@
   .sidebar ul.sub-menu li button,
   .sidebar ul.sub-menu li a {
     @apply flex w-full items-center px-9 py-2.5 before:h-0.5 before:w-2 before:rounded before:bg-gray-300 hover:bg-gray-100
-hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark:before:bg-gray-500 dark:hover:bg-gray-900 dark:hover:text-primary;
+hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark:before:bg-gray-500 dark:hover:bg-gray-900 dark:hover:text-primary cursor-pointer;
   }
   .sidebar ul.sub-menu li button.active,
   .sidebar ul.sub-menu li a.active {
@@ -427,7 +427,7 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
   }
 
   .horizontal-menu .nav-link {
-    @apply flex items-center rounded-lg px-2 py-2.5 hover:bg-[#000]/[0.08] hover:text-black dark:hover:bg-[#181f32] dark:hover:text-white-dark xl:px-4;
+    @apply flex items-center rounded-lg px-2 py-2.5 hover:bg-[#000]/[0.08] hover:text-black dark:hover:bg-[#181f32] dark:hover:text-white-dark xl:px-4 cursor-pointer;
   }
 
   .horizontal-menu .nav-link.active {
@@ -440,7 +440,7 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
 
   .horizontal-menu ul.sub-menu a,
   .horizontal-menu ul.sub-menu button {
-    @apply flex w-full items-center justify-between px-4 py-2 hover:bg-gray-100 hover:text-primary dark:hover:bg-primary/10;
+    @apply flex w-full items-center justify-between px-4 py-2 hover:bg-gray-100 hover:text-primary dark:hover:bg-primary/10 cursor-pointer;
   }
 
   .horizontal-menu ul.sub-menu a.active,
@@ -543,7 +543,7 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
 
   /* Buttons */
   .btn {
-    @apply relative flex items-center justify-center rounded-md border px-5 py-2 text-sm font-semibold shadow-[0_10px_20px_-10px] outline-none transition duration-300 hover:shadow-none;
+    @apply relative flex items-center justify-center rounded-md border px-5 py-2 text-sm font-semibold shadow-[0_10px_20px_-10px] outline-none transition duration-300 hover:shadow-none cursor-pointer;
   }
   .btn-lg {
     @apply px-7 py-2.5 text-base;
@@ -795,7 +795,7 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
   }
   .dropdown ul li > a,
   .dropdown ul li > button {
-    @apply flex items-center px-4 py-2 hover:bg-primary/10 hover:text-primary;
+    @apply flex items-center px-4 py-2 hover:bg-primary/10 hover:text-primary cursor-pointer;
   }
   .dropdown ul li > button {
     @apply w-full;

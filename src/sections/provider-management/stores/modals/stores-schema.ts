@@ -20,27 +20,6 @@ export const storeSchema = z.object({
     z.string().url("Debe ser una URL válida."),
     z.instanceof(File, { message: "Debe ser un archivo válido." }),
   ]),
-  returnPolicy: z
-    .string({
-      error: "Necesita definir una politica de reembolso",
-    })
-    .min(10, {
-      message: "La política de reembolso debe tener al menos 10 caracteres",
-    }),
-  shippingPolicy: z
-    .string({
-      error: "Necesita definir una politica de envío",
-    })
-    .min(10, {
-      message: "La política de envío debe tener al menos 10 caracteres",
-    }),
-  termsOfService: z
-    .string({
-      error: "Necesita definir una términos del Servicio",
-    })
-    .min(10, {
-      message: "Los términos del servicio deben tener al menos 10 caracteres",
-    }),
   /* primaryColor: z
     .string()
     .regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/, "Formato de color inválido").optional(),

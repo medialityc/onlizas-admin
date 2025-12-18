@@ -43,9 +43,6 @@ export default function StoresCreateModal({
       countryCode: store?.countryCode ?? "",
       address: store?.address ?? "",
       logoStyle: store?.logoStyle ?? undefined,
-      returnPolicy: store?.returnPolicy ?? "",
-      shippingPolicy: store?.shippingPolicy ?? "",
-      termsOfService: store?.termsOfService ?? "",
       ownerId: store?.ownerId ?? undefined,
       businessId: store?.businessId ?? undefined,
     },
@@ -91,9 +88,6 @@ export default function StoresCreateModal({
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("countryCode", data.countryCode);
       formData.append("address", data.address);
-      formData.append("returnPolicy", data.returnPolicy);
-      formData.append("shippingPolicy", data.shippingPolicy);
-      formData.append("termsOfService", data.termsOfService);
 
       let response = null;
       response = await createStore(formData);

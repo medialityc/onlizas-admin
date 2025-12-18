@@ -14,12 +14,12 @@ export type StoreAddress = {
 };
 
 export type BannerItem = {
-  id?: number | string; 
+  id?: number | string;
   title: string;
   urlDestinity: string;
   position: number | string; // integer position
   initDate?: string | null; // ISO date string - usar nombres del backend
-  endDate?: string | null;   // ISO date string - usar nombres del backend
+  endDate?: string | null; // ISO date string - usar nombres del backend
   desktopImage?: File | string | null;
   mobileImage?: File | string | null;
   active: boolean;
@@ -48,7 +48,6 @@ export type StoreBanner = {
   startDate: string;
   endDate: string;
   active: boolean;
-  
 };
 
 type StoreMetrics = {
@@ -73,9 +72,6 @@ export type CreateStoreRequest = {
   phoneNumber: string;
   countryCode: string;
   address: string;
-  returnPolicy: string;
-  shippingPolicy: string;
-  termsOfService: string;
 };
 
 // Para actualizar tienda
@@ -125,7 +121,7 @@ export type Store = {
   ];
   banners: [
     {
-      id:string,
+      id: string;
       title: string;
       urlDestinity: string;
       position: number | string;

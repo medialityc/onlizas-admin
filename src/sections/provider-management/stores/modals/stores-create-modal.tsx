@@ -47,9 +47,6 @@ export default function StoresCreateModal({
       phoneNumber: store?.phoneNumber ?? "",
       address: store?.address ?? "",
       logoStyle: store?.logoStyle ?? undefined,
-      returnPolicy: store?.returnPolicy ?? "",
-      shippingPolicy: store?.shippingPolicy ?? "",
-      termsOfService: store?.termsOfService ?? "",
       ownerId: user?.id ?? 0,
       businessId: store?.businessId ?? undefined,
     },
@@ -102,9 +99,6 @@ export default function StoresCreateModal({
       formData.append("email", data.email);
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("address", data.address);
-      formData.append("returnPolicy", data.returnPolicy);
-      formData.append("shippingPolicy", data.shippingPolicy);
-      formData.append("termsOfService", data.termsOfService);
 
       console.log(formData);
       let response = null;
@@ -234,42 +228,6 @@ export default function StoresCreateModal({
               rows={3}
               type="textarea"
               required
-              containerClassname="[&>label]:text-base [&>textarea]:text-sm"
-            />
-            {/* Return Policy Input */}
-            <RHFInputWithLabel
-              name="returnPolicy"
-              label="Política de Reembolso"
-              placeholder=" Escriba la política que seguirá su tienda"
-              maxLength={200}
-              rows={3}
-              type="textarea"
-              required
-              size="medium"
-              containerClassname="[&>label]:text-base [&>textarea]:text-sm"
-            />
-            {/* Shipping Policy Input */}
-            <RHFInputWithLabel
-              name="shippingPolicy"
-              label="Política de Envío"
-              placeholder=" Escriba la política que seguirá su tienda"
-              maxLength={200}
-              rows={3}
-              type="textarea"
-              required
-              size="medium"
-              containerClassname="[&>label]:text-base [&>textarea]:text-sm"
-            />
-            {/* Terms of Service Input */}
-            <RHFInputWithLabel
-              name="termsOfService"
-              label="Términos del Servicio"
-              placeholder=" Escriba la términos que seguirá su tienda"
-              maxLength={200}
-              rows={3}
-              type="textarea"
-              required
-              size="medium"
               containerClassname="[&>label]:text-base [&>textarea]:text-sm"
             />
           </div>
