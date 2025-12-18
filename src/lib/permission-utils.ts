@@ -2,13 +2,16 @@ import { PERMISSION_ENUM } from "./permissions";
 
 export type UserRole = "admin" | "supplier" | "none";
 
-
 export const MODULE_PERMISSIONS = {
   products: [
     PERMISSION_ENUM.CREATE_PRODUCT,
     PERMISSION_ENUM.RETRIEVE_PRODUCT,
     PERMISSION_ENUM.UPDATE_PRODUCT,
     PERMISSION_ENUM.DELETE_PRODUCT,
+  ],
+  finance: [
+    PERMISSION_ENUM.RETRIEVE_CLOSURES,
+    PERMISSION_ENUM.RETRIEVE_SUMMARY,
   ],
   inventory: [
     PERMISSION_ENUM.CREATE_INVENTORY,
@@ -45,7 +48,6 @@ export function getPermissionCodes(
   return permissions.map((p) => p.code).filter(Boolean);
 }
 
-
 export function hasAllPermissions(
   permissionCodes: string[],
   requiredPermissions: string[]
@@ -56,7 +58,6 @@ export function hasAllPermissions(
   return requiredPermissions.every((perm) => permissionCodes.includes(perm));
 }
 
-
 export function hasAnyPermission(
   permissionCodes: string[],
   requiredPermissions: string[]
@@ -66,7 +67,6 @@ export function hasAnyPermission(
 
   return requiredPermissions.some((perm) => permissionCodes.includes(perm));
 }
-
 
 export function determineUserRole(
   permissionCodes: string[],

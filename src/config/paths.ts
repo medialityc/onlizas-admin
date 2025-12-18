@@ -109,6 +109,7 @@ export const paths = {
     root: "/dashboard/finance",
     summary: "/dashboard/finance",
     closures: "/dashboard/finance/closures",
+    accountsSummary: "/dashboard/finance/accounts-summary",
     accountStates: "/dashboard/finance/account-states",
     entityAccounts: "/dashboard/finance/entity-accounts",
     closureAccounts: (id: string | number) =>
