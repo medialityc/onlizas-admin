@@ -168,7 +168,6 @@ export function DatePickerBanner({
           value={inputValue}
           type="text"
           inputMode="numeric"
-          pattern="\\d{2}/\\d{2}/\\d{4}"
           onChange={handleInputChange}
           onBlur={handleInputBlur}
         />

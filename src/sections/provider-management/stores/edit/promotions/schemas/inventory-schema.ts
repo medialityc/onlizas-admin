@@ -14,12 +14,18 @@ export const inventoryPromotionSchema = z.object({
   requiresCode: z.boolean(),
   code: z.string().optional(),
   mediaFile: z.any().optional(),
-  dateRanges: z.array(
-    z.object({
-      startDate: z.date(),
-      endDate: z.date(),
-    })
-  ),
+  dateRanges: z
+    .array(
+      z
+        .object({
+          startDate: z.date(),
+          endDate: z.date(),
+        })
+        .refine((data) => data.endDate > data.startDate, {
+          message: "La fecha de fin debe ser posterior a la fecha de inicio",
+        })
+    )
+    .min(1, { message: "Debe seleccionar al menos una fecha" }),
   simpleDates: z.array(z.date()).optional(),
   inventoryIds: z
     .array(z.string())

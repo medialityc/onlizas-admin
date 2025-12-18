@@ -12,27 +12,18 @@ export const packageSchema = z.object({
 
   // Dates
   simpleDates: z.array(z.date()).optional(),
-  dateRanges: z.array(
-    z
-      .object({
-        startDate: z.union([z.string(), z.date()]),
-        endDate: z.union([z.string(), z.date()]),
-      })
-      .refine(
-        (data) => {
-          const start =
-            data.startDate instanceof Date
-              ? data.startDate
-              : new Date(data.startDate);
-          const end =
-            data.endDate instanceof Date
-              ? data.endDate
-              : new Date(data.endDate);
-          return end > start;
-        },
-        { message: "La fecha de fin debe ser posterior a la fecha de inicio" }
-      )
-  ),
+  dateRanges: z
+    .array(
+      z
+        .object({
+          startDate: z.date(),
+          endDate: z.date(),
+        })
+        .refine((data) => data.endDate > data.startDate, {
+          message: "La fecha de fin debe ser posterior a la fecha de inicio",
+        })
+    )
+    .min(1, { message: "Debe seleccionar al menos una fecha" }),
 
   // Usage limits
   usageLimit: z.number(),
