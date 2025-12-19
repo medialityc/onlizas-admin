@@ -28,7 +28,12 @@ export default function SectionProducts() {
     async (index: string) => {
       try {
         setDeletingId(index);
-        await deleteSectionProduct(sectionId, index);
+        const result = await deleteSectionProduct(sectionId, index);
+        if (result.error) {
+          throw new Error(
+            result.message || "No se pudo eliminar el producto de la sección"
+          );
+        }
         toast.success("Producto eliminado de la sección");
       } catch (e: any) {
         toast.error(e?.message || "No se pudo eliminar el producto");
