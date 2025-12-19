@@ -1,29 +1,44 @@
 "use client";
 
-import { useState } from "react";
-
-import { Download, RefreshCw, Search } from "lucide-react";
+import { Download, RefreshCw } from "lucide-react";
+import { useTransition } from "react";
 import { ApiResponse } from "zas-sso-client/dist/lib/api";
-import { GetAllOrders } from "@/types/order";
+import { GetAllOrders, OrderStatus } from "@/types/order";
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { SearchParams } from "@/types/fetch/request";
 import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
 import OrderList from "./order-card-list";
 import { Button } from "@/components/button/button";
-import { Input } from "@/components/input/input";
 import { OrderStats } from "../components/order-stats";
+import { StatusFilter } from "@/components/filters/status-filters";
 
 type Props = {
   data: ApiResponse<GetAllOrders>;
   query: SearchParams;
 };
 
-export default function AdminOrdersPage({ data, query }: Props) {
-  const [searchQuery, setSearchQuery] = useState("");
+// Mapeo de estados a nombres legibles
+const ORDER_STATUS_MAP: Record<number, string> = {
+  [OrderStatus.Pending]: "Pendiente",
+  [OrderStatus.Processing]: "Procesando",
+  [OrderStatus.Completed]: "Completada",
+  [OrderStatus.Sent]: "Enviada",
+  [OrderStatus.Received]: "Recibida",
+  [OrderStatus.Cancelled]: "Cancelada",
+};
 
+const STATUS_OPTIONS = Object.entries(ORDER_STATUS_MAP).map(([key, value]) => ({
+  value: key,
+  label: value,
+}));
+
+export default function AdminOrdersPage({ data, query }: Props) {
+  const [isPending, startTransition] = useTransition();
   const { updateFiltersInUrl } = useFiltersUrl();
   const onSearchParamsChange = (params: SearchParams) => {
-    updateFiltersInUrl(params);
+    startTransition(() => {
+      updateFiltersInUrl(params);
+    });
   };
 
   return (
@@ -54,32 +69,37 @@ export default function AdminOrdersPage({ data, query }: Props) {
         {/* Stats */}
         <OrderStats orders={data.data?.data ?? []} />
 
-        {/* <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar por número de orden, cliente, producto..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div> */}
-
-        <div className="space-y-4">
-          {data.data?.data.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">No se encontraron órdenes</p>
-            </div>
-          ) : (
-            <DataGridCard
-              data={data.data}
-              searchParams={query}
-              onSearchParamsChange={onSearchParamsChange}
-              searchPlaceholder="Buscar órdenes..."
-              enableColumnToggle={false}
-              component={<OrderList data={data.data?.data} />}
+        {/* Grid con Búsqueda y Filtros */}
+        <DataGridCard
+          data={data.data}
+          searchParams={query}
+          onSearchParamsChange={onSearchParamsChange}
+          searchPlaceholder="Buscar por número de orden, cliente, email..."
+          enableColumnToggle={false}
+          rightActions={
+            <StatusFilter
+              options={STATUS_OPTIONS}
+              placeholder="Todos los estados"
+              searchParamKey="status"
+              allowMultiple={false}
+              className="w-full md:w-auto md:min-w-48"
             />
-          )}
-        </div>
+          }
+          component={
+            isPending ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="animate-spin rounded-full border-4 border-gray-300 dark:border-gray-600 border-t-blue-500 dark:border-t-blue-400 h-8 w-8"></div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Cargando órdenes...
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <OrderList data={data.data?.data} />
+            )
+          }
+        />
       </div>
     </div>
   );
