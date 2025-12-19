@@ -19,6 +19,8 @@ import Badge from "@/components/badge/badge"; // legacy badge (mantener si se us
 import { StatusBadge } from "@/components/orders/status-badge";
 import { getStatusLabel } from "@/lib/order-utils";
 import { CountdownTimer } from "@/components/orders/countdown-timer";
+import { Eye, Download } from "lucide-react";
+import { urlToFile } from "@/lib/utils";
 
 interface OrderCardProps {
   order: Order;
@@ -241,6 +243,58 @@ export function OrderCard({
                   </div>
                   <div className="flex md:flex-col items-center md:items-end gap-2 md:gap-1 w-full md:w-auto">
                     <StatusBadge status={subOrder.status as OrderStatus} />
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        outline
+                        disabled={
+                          !subOrder.factureUrl ||
+                          subOrder.factureUrl.trim() === ""
+                        }
+                        onClick={() => {
+                          if (!subOrder.factureUrl) return;
+                          try {
+                            window.open(
+                              subOrder.factureUrl,
+                              "_blank",
+                              "noopener,noreferrer"
+                            );
+                          } catch {}
+                        }}
+                      >
+                        <Eye className="h-3 w-3 mr-1" /> Ver factura
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        outline
+                        disabled={
+                          !subOrder.factureUrl ||
+                          subOrder.factureUrl.trim() === ""
+                        }
+                        onClick={async () => {
+                          if (!subOrder.factureUrl) return;
+                          try {
+                            const suggestedName = `factura-${subOrder.subOrderNumber || subOrder.id}`;
+                            const file = await urlToFile(
+                              subOrder.factureUrl,
+                              suggestedName
+                            );
+                            const url = URL.createObjectURL(file);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = file.name;
+                            document.body.appendChild(a);
+                            a.click();
+                            a.remove();
+                            URL.revokeObjectURL(url);
+                          } catch {}
+                        }}
+                      >
+                        <Download className="h-3 w-3 mr-1" /> Descargar
+                      </Button>
+                    </div>
                   </div>
                 </div>
               );

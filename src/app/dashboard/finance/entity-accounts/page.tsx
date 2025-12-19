@@ -9,7 +9,6 @@ export default async function FinanceEntityAccountsPage() {
   const accountsRes = await getPlatformAccounts();
   return (
     <div className="space-y-6 p-4">
-      <h1 className="text-xl font-semibold">Cuentas de la plataforma</h1>
       <ClientCreateButton initialData={accountsRes.data} />
     </div>
   );

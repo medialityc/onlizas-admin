@@ -5,7 +5,7 @@ import { backendRoutes } from "@/lib/endpoint";
 import { ApiResponse } from "@/types/fetch/api";
 import { Product } from "@/types/products";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { fetchUserMe } from "./users";
 
 export async function createProductAsProvider(
@@ -34,7 +34,7 @@ export async function createProductAsProvider(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("products", "max");
+  updateTag("products");
 
   return buildApiResponseAsync<Product>(res);
 }
@@ -67,6 +67,6 @@ export async function updateProductAsProvider(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("products", "max");
+  updateTag("products");
   return buildApiResponseAsync<Product>(res);
 }

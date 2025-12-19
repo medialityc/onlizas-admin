@@ -37,6 +37,7 @@ export type SubOrder = {
   deliveryAmount: number;
   weight: number;
   createdDatetime: string;
+  factureUrl: string;
 };
 
 export type GetAllOrders = PaginatedResponse<Order>;

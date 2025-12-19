@@ -6,7 +6,7 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { WarehouseFormData } from "@/sections/warehouses/schemas/warehouse-schema";
 
 import {
@@ -58,7 +58,7 @@ export async function createWarehouseTransfer(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(WAREHOUSE_TRANSFER_TAG, "max");
+  updateTag(WAREHOUSE_TRANSFER_TAG);
   return buildApiResponseAsync<WarehouseTransfer>(res);
 }
 
@@ -71,7 +71,7 @@ export async function approveWarehouseTransfer(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(WAREHOUSE_TRANSFER_TAG, "max");
+  updateTag(WAREHOUSE_TRANSFER_TAG);
   return buildApiResponseAsync<WarehouseTransfer>(res);
 }
 
@@ -84,7 +84,7 @@ export async function cancelWarehouseTransfer(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(WAREHOUSE_TRANSFER_TAG, "max");
+  updateTag(WAREHOUSE_TRANSFER_TAG);
   return buildApiResponseAsync<WarehouseTransfer>(res);
 }
 export async function executeWarehouseTransfer(
@@ -96,7 +96,7 @@ export async function executeWarehouseTransfer(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(WAREHOUSE_TRANSFER_TAG, "max");
+  updateTag(WAREHOUSE_TRANSFER_TAG);
   return buildApiResponseAsync<WarehouseTransfer>(res);
 }
 
@@ -113,6 +113,6 @@ export async function markWarehouseTransferAwaitingReception(
     },
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(WAREHOUSE_TRANSFER_TAG, "max");
+  updateTag(WAREHOUSE_TRANSFER_TAG);
   return buildApiResponseAsync<WarehouseTransfer>(res);
 }

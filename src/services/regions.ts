@@ -19,7 +19,7 @@ import {
   handleApiServerError,
   getErrorMessage,
 } from "@/lib/api";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 interface RegionResolution {
   region: Region;
@@ -98,7 +98,7 @@ export async function createRegion(
     return handleApiServerError(res);
   }
 
-  revalidateTag("regions", "max");
+  updateTag("regions");
   return buildApiResponseAsync<Region>(res);
 }
 
@@ -118,7 +118,7 @@ export async function updateRegion(
     return handleApiServerError(res);
   }
 
-  revalidateTag("regions", "max");
+  updateTag("regions");
   return buildApiResponseAsync<Region>(res);
 }
 
@@ -137,7 +137,7 @@ export async function deleteRegion(
     return handleApiServerError(res);
   }
 
-  revalidateTag("regions", "max");
+  updateTag("regions");
   return { data: true, status: 200, error: false };
 }
 
@@ -158,7 +158,7 @@ export async function removeCurrencyFromRegion(
     return handleApiServerError(res);
   }
 
-  revalidateTag("regions", "max");
+  updateTag("regions");
   return { data: true, status: 200, error: false };
 }
 
@@ -178,7 +178,7 @@ export async function addCurrenciesToRegion(
     return handleApiServerError(res);
   }
 
-  revalidateTag("regions", "max");
+  updateTag("regions");
   return buildApiResponseAsync<boolean>(res);
 }
 
@@ -197,7 +197,7 @@ export async function setPrimaryCurrency(
     return handleApiServerError(res);
   }
 
-  revalidateTag("regions", "max");
+  updateTag("regions");
   return { data: true, status: 200, error: false };
 }
 
@@ -218,7 +218,7 @@ export async function removePaymentGatewayFromRegion(
     return handleApiServerError(res);
   }
 
-  revalidateTag("regions", "max");
+  updateTag("regions");
   return { data: true, status: 200, error: false };
 }
 
@@ -238,7 +238,7 @@ export async function addPaymentGatewaysToRegion(
     return handleApiServerError(res);
   }
 
-  revalidateTag("regions", "max");
+  updateTag("regions");
   return buildApiResponseAsync<boolean>(res);
 }
 
@@ -259,7 +259,7 @@ export async function updatePaymentGatewayPriority(
     return handleApiServerError(res);
   }
 
-  revalidateTag("regions", "max");
+  updateTag("regions");
   return { data: true, status: 200, error: false };
 }
 
@@ -280,7 +280,7 @@ export async function removeShippingMethodFromRegion(
     return handleApiServerError(res);
   }
 
-  revalidateTag("regions", "max");
+  updateTag("regions");
   return { data: true, status: 200, error: false };
 }
 
@@ -300,6 +300,6 @@ export async function addShippingMethodsToRegion(
     return handleApiServerError(res);
   }
 
-  revalidateTag("regions", "max");
+  updateTag("regions");
   return buildApiResponseAsync<boolean>(res);
 }

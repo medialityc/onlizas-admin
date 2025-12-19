@@ -10,7 +10,7 @@ import {
   UpdateZonePayload,
 } from "@/types/zones";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { IQueryable } from "@/types/fetch/request";
 import { QueryParamsURLFactory } from "@/lib/request";
 
@@ -100,7 +100,7 @@ export async function createZone(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(ZONES_TAG, "max");
+  updateTag(ZONES_TAG);
   return buildApiResponseAsync<Zone>(res);
 }
 
@@ -132,7 +132,7 @@ export async function updateZone(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(ZONES_TAG, "max");
+  updateTag(ZONES_TAG);
   return buildApiResponseAsync<Zone>(res);
 }
 
@@ -149,6 +149,6 @@ export async function deleteZone(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(ZONES_TAG, "max");
+  updateTag(ZONES_TAG);
   return { error: false, status: res.status, data: undefined };
 }

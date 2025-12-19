@@ -7,7 +7,7 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import {
   IHomeBanner,
   IGetAllHomeBanner,
@@ -26,7 +26,7 @@ export async function createHomeBanner(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("content-home-banner", "max");
+  updateTag("content-home-banner");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
@@ -42,7 +42,7 @@ export async function updateHomeBanner(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("content-home-banner", "max");
+  updateTag("content-home-banner");
 
   return buildApiResponseAsync<IHomeBanner>(res);
 }
@@ -107,7 +107,7 @@ export async function toggleStatusHomeBanner(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories", "max");
+  updateTag("categories");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }

@@ -173,6 +173,13 @@ export const sidebarSections: SidebarSection[] = [
         icon: <MapIcon className="size-4" />,
         permissions: PERMISSION_ADMIN,
       },
+      {
+        id: "my-zones",
+        label: "Mis Zonas de Entrega",
+        path: paths.provider.zones.list,
+        icon: <MapIcon className="size-4" />,
+        permissions: PERMISSION_SUPPLIER_ZONES,
+      },
     ],
   },
   {
@@ -206,13 +213,6 @@ export const sidebarSections: SidebarSection[] = [
         path: paths.provider.bankAccounts.list,
         icon: <Landmark className="size-4" />,
         permissions: PERMISSION_SUPPLIER_ACCOUNTS,
-      },
-      {
-        id: "my-zones",
-        label: "Mis Zonas de Entrega",
-        path: paths.provider.zones.list,
-        icon: <MapIcon className="size-4" />,
-        permissions: PERMISSION_SUPPLIER_ZONES,
       },
     ],
   },

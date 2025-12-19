@@ -16,7 +16,7 @@ export default function SupplierAccountsClient({
     <div>
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <h2 className="font-semibold">Mis Cuentas Bancarias</h2>
+          <h2 className="text-3xl font-semibold">Mis Cuentas Bancarias</h2>
           <p className="text-sm text-gray-500">
             Administra tus cuentas bancarias para recibir pagos
           </p>

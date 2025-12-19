@@ -28,12 +28,15 @@ export const setSectionFormData = async (
 
   /* productos de la sección */
   if (section.products && section.products.length > 0) {
-    formData.append(
-      `products`,
-      JSON.stringify(
-        section.products?.map((p, index) => ({ ...p, displayOrder: index + 1 }))
-      )
-    );
+    const newProducts = section.products.filter((p: any) => !p?.id);
+    if (newProducts.length > 0) {
+      formData.append(
+        `products`,
+        JSON.stringify(
+          newProducts.map((p, index) => ({ ...p, displayOrder: index + 1 }))
+        )
+      );
+    }
   }
 
   return formData;

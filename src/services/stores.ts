@@ -7,7 +7,7 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { backendRoutes } from "@/lib/endpoint";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { PaginatedResponse } from "@/types/common";
 
 export async function getAllStores(
@@ -100,7 +100,7 @@ export async function deleteStore(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("stores", "max");
+  updateTag("stores");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -130,7 +130,7 @@ export async function createStore(data: FormData): Promise<ApiResponse<Store>> {
     console.log("Error creating store", res);
     return handleApiServerError(res);
   }
-  revalidateTag("stores", "max");
+  updateTag("stores");
   console.log("Store created successfully", res);
   return buildApiResponseAsync<Store>(res);
 }
@@ -147,8 +147,8 @@ export async function updateSupplierStore(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("stores", "max");
-  revalidateTag("store-supplier-edit", "max");
+  updateTag("stores");
+  updateTag("store-supplier-edit");
   return buildApiResponseAsync<Store>(res);
 }
 export async function updateAdminStore(
@@ -164,7 +164,7 @@ export async function updateAdminStore(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-details", "max");
+  updateTag("store-details");
   return buildApiResponseAsync<Store>(res);
 }
 export async function updateBannersStore(
@@ -180,7 +180,7 @@ export async function updateBannersStore(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-banner-update", "max");
+  updateTag("store-banner-update");
   return buildApiResponseAsync<Store>(res);
 }
 export async function createBannersStore(
@@ -196,7 +196,7 @@ export async function createBannersStore(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-banner-create", "max");
+  updateTag("store-banner-create");
   return buildApiResponseAsync<Store>(res);
 }
 

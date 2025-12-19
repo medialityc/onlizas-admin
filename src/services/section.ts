@@ -7,7 +7,7 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { ISection, IGetAllAdminsSection, UpdateSection } from "@/types/section";
 
 export async function createSection(
@@ -22,7 +22,7 @@ export async function createSection(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("admin-section", "max");
+  updateTag("admin-section");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
@@ -38,7 +38,7 @@ export async function updateSection(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("admin-section", "max");
+  updateTag("admin-section");
 
   return buildApiResponseAsync<ISection>(res);
 }
@@ -87,4 +87,22 @@ export async function deleteSectionById(
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<ISection>(res);
+}
+
+export async function deleteSectionProduct(
+  sectionId: string | number,
+  productGlobalId: string | number
+): Promise<ApiResponse<ApiStatusResponse>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.content.section.removeProduct(
+      sectionId,
+      productGlobalId
+    ),
+    method: "DELETE",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  updateTag("admin-section");
+  return buildApiResponseAsync<ApiStatusResponse>(res);
 }

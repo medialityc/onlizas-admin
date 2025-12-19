@@ -1,9 +1,9 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 
 export async function revalidateTagFn(tag: string) {
-  revalidateTag(tag, "max");
+  updateTag(tag);
 }
 
 export async function revalidatePathFn(tag: string) {

@@ -6,7 +6,7 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { backendRoutes } from "@/lib/endpoint";
 import { Region } from "@/types/regions";
 
@@ -61,7 +61,7 @@ export async function createCurrency(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("currencies", "max");
+  updateTag("currencies");
 
   return buildApiResponseAsync<Currency>(res);
 }
@@ -76,7 +76,7 @@ export async function deleteCurrency(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("currencies", "max");
+  updateTag("currencies");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -116,7 +116,7 @@ export async function updateCurrency(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("currencies", "max");
+  updateTag("currencies");
 
   return buildApiResponseAsync<Currency>(res);
 }
@@ -131,7 +131,7 @@ export async function setAsDefaultCurrency(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("currencies", "max");
+  updateTag("currencies");
 
   return buildApiResponseAsync<Currency>(res);
 }

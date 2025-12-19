@@ -13,16 +13,20 @@ import {
   GetSupplierContracts,
 } from "@/types/importers";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { IQueryable } from "@/types/fetch/request";
 import { QueryParamsURLFactory } from "@/lib/request";
 
-
 const IMPORTERS_TAG = "importers";
 
-export async function getImporters(params: IQueryable = {}): Promise<ApiResponse<GetImporters>> {
-  const url = new QueryParamsURLFactory(params, backendRoutes.importers.list).build();
-  
+export async function getImporters(
+  params: IQueryable = {}
+): Promise<ApiResponse<GetImporters>> {
+  const url = new QueryParamsURLFactory(
+    params,
+    backendRoutes.importers.list
+  ).build();
+
   const res = await nextAuthFetch({
     url,
     method: "GET",
@@ -34,7 +38,9 @@ export async function getImporters(params: IQueryable = {}): Promise<ApiResponse
   return buildApiResponseAsync<GetImporters>(res);
 }
 
-export async function getImporterById(id: string): Promise<ApiResponse<Importer>> {
+export async function getImporterById(
+  id: string
+): Promise<ApiResponse<Importer>> {
   const res = await nextAuthFetch({
     url: backendRoutes.importers.getById(id),
     method: "GET",
@@ -46,7 +52,9 @@ export async function getImporterById(id: string): Promise<ApiResponse<Importer>
   return buildApiResponseAsync<Importer>(res);
 }
 
-export async function createImporter(data: CreateImporterPayload): Promise<ApiResponse<Importer>> {
+export async function createImporter(
+  data: CreateImporterPayload
+): Promise<ApiResponse<Importer>> {
   const res = await nextAuthFetch({
     url: backendRoutes.importers.create,
     method: "POST",
@@ -56,8 +64,8 @@ export async function createImporter(data: CreateImporterPayload): Promise<ApiRe
   });
 
   if (!res.ok) return handleApiServerError(res);
-  
-  revalidateTag(IMPORTERS_TAG, "max");
+
+  updateTag(IMPORTERS_TAG);
   return buildApiResponseAsync<Importer>(res);
 }
 
@@ -74,12 +82,14 @@ export async function updateImporter(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  
-  revalidateTag(IMPORTERS_TAG, "max");
+
+  updateTag(IMPORTERS_TAG);
   return buildApiResponseAsync<Importer>(res);
 }
 
-export async function toggleImporterStatus(id: string): Promise<ApiResponse<void>> {
+export async function toggleImporterStatus(
+  id: string
+): Promise<ApiResponse<void>> {
   const res = await nextAuthFetch({
     url: backendRoutes.importers.toggleStatus(id),
     method: "PATCH",
@@ -87,8 +97,8 @@ export async function toggleImporterStatus(id: string): Promise<ApiResponse<void
   });
 
   if (!res.ok) return handleApiServerError(res);
-  
-  revalidateTag(IMPORTERS_TAG, "max");
+
+  updateTag(IMPORTERS_TAG);
   return buildApiResponseAsync<void>(res);
 }
 
@@ -100,7 +110,6 @@ export async function getImporterNomenclators(
     params,
     backendRoutes.importers.nomenclators(importerId)
   ).build();
-
 
   const res = await nextAuthFetch({
     url,
@@ -121,7 +130,7 @@ export async function getPendingContractRequests(
     params,
     backendRoutes.importers.pendingContracts(importerId)
   ).build();
-  
+
   const res = await nextAuthFetch({
     url,
     method: "GET",
@@ -141,7 +150,7 @@ export async function getSupplierContracts(
     params,
     backendRoutes.importers.supplierContracts(supplierId)
   ).build();
-  
+
   const res = await nextAuthFetch({
     url,
     method: "GET",
@@ -153,15 +162,17 @@ export async function getSupplierContracts(
   return buildApiResponseAsync<GetSupplierContracts>(res);
 }
 
-export async function generateImporterQRCode(importerId: string): Promise<ApiResponse<{
-  importerId: string;
-  importerName: string;
-  secretKey: string;
-  qrCodeUrl: string;
-  qrCodeImageBase64: string;
-  createdAt: string;
-  instructions: string;
-}>> {
+export async function generateImporterQRCode(importerId: string): Promise<
+  ApiResponse<{
+    importerId: string;
+    importerName: string;
+    secretKey: string;
+    qrCodeUrl: string;
+    qrCodeImageBase64: string;
+    createdAt: string;
+    instructions: string;
+  }>
+> {
   const res = await nextAuthFetch({
     url: backendRoutes.importerAccess.generateQr(importerId),
     method: "POST",

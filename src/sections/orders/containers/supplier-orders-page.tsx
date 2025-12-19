@@ -41,12 +41,6 @@ export default function SupplierOrdersPage({
               Gestiona tus órdenes agrupadas - {supplierName}
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button size="sm" variant="secondary">
-              <Download className="h-4 w-4 mr-2" />
-              Exportar
-            </Button>
-          </div>
         </div>
 
         {/* Stats */}

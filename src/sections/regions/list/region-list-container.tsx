@@ -28,13 +28,14 @@ export default function RegionListContainer({
   return (
     <div className="space-y-6">
       <div>
-        <div className="mb-5 flex items-center justify-between">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-dark dark:text-white-light">
+            <h1 className="text-3xl font-bold text-balance">
               Gestión de Regiones
-            </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Maneja las regiones y sus configuraciones asociadas
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Administra las regiones del sistema y sus configuraciones
+              asociadas
             </p>
           </div>
         </div>

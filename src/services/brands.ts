@@ -13,7 +13,7 @@ import {
   UpdateBrandRequest,
   UpdateBrandResponse,
 } from "@/types/brands";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 
 export async function getAllBrands(
@@ -43,7 +43,7 @@ export async function createBrand(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("brands", "max");
+  updateTag("brands");
   return buildApiResponseAsync<CreateBrandResponse>(res);
 }
 
@@ -70,7 +70,7 @@ export async function updateBrand(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("brands", "max");
+  updateTag("brands");
   return buildApiResponseAsync<UpdateBrandResponse>(res);
 }
 
@@ -83,6 +83,6 @@ export async function deleteBrand(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("brands", "max");
+  updateTag("brands");
   return buildApiResponseAsync<{ status: string }>(res);
 }

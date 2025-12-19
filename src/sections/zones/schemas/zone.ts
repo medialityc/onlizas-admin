@@ -8,6 +8,7 @@ export const ZoneSchema = z.object({
   districtsIds: z
     .array(z.string())
     .min(1, "Debe seleccionar al menos un distrito"),
+  countryId: z.string(),
 });
 
 export type ZoneInput = z.infer<typeof ZoneSchema>;

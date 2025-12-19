@@ -10,7 +10,11 @@ import { GetAllOrders, Order } from "@/types/order";
 import { OrderGroupCard } from "@/components/orders/order-group-card";
 import { SupplierOrderStatsCards } from "@/components/orders/supplier-order-stats-cards";
 
-type Props = { data: ApiResponse<GetAllOrders>; supplierName?: string; onShowStores?: () => void };
+type Props = {
+  data: ApiResponse<GetAllOrders>;
+  supplierName?: string;
+  onShowStores?: () => void;
+};
 
 export default function SupplierOrderListContainer({
   data,
@@ -55,16 +59,6 @@ export default function SupplierOrderListContainer({
                 {supplierName} - Gestiona tus órdenes agrupadas
               </p>
             )}
-          </div>
-          <div className="flex gap-2">
-            <Button size="sm" onClick={() => window.location.reload()}>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Actualizar
-            </Button>
-            <Button size="sm" variant="secondary" outline>
-              <Download className="h-4 w-4 mr-2" />
-              Exportar
-            </Button>
           </div>
         </div>
 

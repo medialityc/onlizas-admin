@@ -4,7 +4,7 @@ import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { backendRoutes } from "@/lib/endpoint";
 import { ApiResponse } from "@/types/fetch/api";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import type { ImporterNomenclator } from "@/types/importers";
 
 const NOMENCLATORS_TAG = "nomenclators";
@@ -67,8 +67,8 @@ export async function createNomenclator(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(NOMENCLATORS_TAG, "max");
-  revalidateTag("importers", "max");
+  updateTag(NOMENCLATORS_TAG);
+  updateTag("importers");
   return buildApiResponseAsync<ImporterNomenclator>(res);
 }
 
@@ -93,13 +93,13 @@ export async function updateNomenclator(
 
     if (!fallback.ok) return handleApiServerError(fallback);
 
-    revalidateTag(NOMENCLATORS_TAG, "max");
-    revalidateTag("importers", "max");
+    updateTag(NOMENCLATORS_TAG);
+    updateTag("importers");
     return buildApiResponseAsync<ImporterNomenclator>(fallback);
   }
 
-  revalidateTag(NOMENCLATORS_TAG, "max");
-  revalidateTag("importers", "max");
+  updateTag(NOMENCLATORS_TAG);
+  updateTag("importers");
   return buildApiResponseAsync<ImporterNomenclator>(res);
 }
 
@@ -114,7 +114,7 @@ export async function toggleNomenclatorStatus(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag(NOMENCLATORS_TAG, "max");
-  revalidateTag("importers", "max");
+  updateTag(NOMENCLATORS_TAG);
+  updateTag("importers");
   return buildApiResponseAsync<void>(res);
 }

@@ -2,6 +2,8 @@
 import { useState, useCallback } from "react";
 import { OrderStatus, SubOrder } from "@/types/order";
 import { Card } from "@/components/cards/card";
+import { Button } from "@/components/button/button";
+import { Eye, Download } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -12,6 +14,7 @@ import {
 import { getStatusLabel } from "@/lib/order-utils";
 import { formatCurrency, formatDate } from "@/utils/format";
 import Badge from "@/components/badge/badge";
+import { urlToFile } from "@/lib/utils";
 
 interface SubOrderItemProps {
   subOrder: SubOrder;
@@ -36,6 +39,35 @@ export function SubOrderItem({
     },
     [onUpdateStatus, subOrder.id]
   );
+
+  const hasFacture = !!subOrder.factureUrl && subOrder.factureUrl.trim() !== "";
+
+  const handleViewFacture = useCallback(() => {
+    if (!hasFacture) return;
+    try {
+      window.open(subOrder.factureUrl, "_blank", "noopener,noreferrer");
+    } catch (e) {
+      // noop
+    }
+  }, [hasFacture, subOrder.factureUrl]);
+
+  const handleDownloadFacture = useCallback(async () => {
+    if (!hasFacture) return;
+    try {
+      const suggestedName = `factura-${subOrder.subOrderNumber || subOrder.id}`;
+      const file = await urlToFile(subOrder.factureUrl, suggestedName);
+      const url = URL.createObjectURL(file);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = file.name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      // noop
+    }
+  }, [hasFacture, subOrder.factureUrl, subOrder.subOrderNumber, subOrder.id]);
 
   return (
     <Card className="p-4">
@@ -83,6 +115,26 @@ export function SubOrderItem({
                 ))}
             </SelectContent>
           </Select>
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              variant="secondary"
+              outline
+              disabled={!hasFacture}
+              onClick={handleViewFacture}
+            >
+              <Eye className="h-4 w-4 mr-1" /> Ver factura
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              outline
+              disabled={!hasFacture}
+              onClick={handleDownloadFacture}
+            >
+              <Download className="h-4 w-4 mr-1" /> Descargar
+            </Button>
+          </div>
         </div>
       </div>
     </Card>

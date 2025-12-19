@@ -20,13 +20,13 @@ export default async function ImportersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="mb-5 flex items-center justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-            Importadoras
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Gestiona las importadoras y sus nomencladores
+          <h1 className="text-3xl font-bold text-balance">
+            Gestión de Importadoras
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Administra las importadoras del sistema y sus datos asociados
           </p>
         </div>
       </div>

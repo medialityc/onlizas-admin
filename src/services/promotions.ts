@@ -6,7 +6,7 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { backendRoutes } from "@/lib/endpoint";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import {
   Promotion,
   GetStorePromotions,
@@ -59,7 +59,7 @@ export async function createPromotionInventory(
   });
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-inventory", "max");
+  updateTag("store-promotions-inventory");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -80,7 +80,7 @@ export async function updatePromotionInventory(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-update-inventory", "max");
+  updateTag("store-promotions-update-inventory");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -96,7 +96,7 @@ export async function createPromotionXGetY(
   });
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-buyX", "max");
+  updateTag("store-promotions-buyX");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -111,7 +111,7 @@ export async function createPromotionCode(
   });
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-code", "max");
+  updateTag("store-promotions-code");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -126,7 +126,7 @@ export async function createPromotionAutomatic(
   });
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-fixed", "max");
+  updateTag("store-promotions-fixed");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -141,7 +141,7 @@ export async function createPromotionFree(
   });
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-free", "max");
+  updateTag("store-promotions-free");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -156,7 +156,7 @@ export async function createPromotionOvervalue(
   });
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-overvalue", "max");
+  updateTag("store-promotions-overvalue");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -171,7 +171,7 @@ export async function createPromotionPackage(
   });
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-package", "max");
+  updateTag("store-promotions-package");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -192,7 +192,7 @@ export async function updatePromotionGetY(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-update-gety", "max");
+  updateTag("store-promotions-update-gety");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -212,7 +212,7 @@ export async function updatePromotionCode(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-update-code", "max");
+  updateTag("store-promotions-update-code");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -232,7 +232,7 @@ export async function updatePromotionAutomatic(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-update-fixed", "max");
+  updateTag("store-promotions-update-fixed");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -252,7 +252,7 @@ export async function updatePromotionFree(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-update-free", "max");
+  updateTag("store-promotions-update-free");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -272,7 +272,7 @@ export async function updatePromotionOvervalue(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-update-overvalue", "max");
+  updateTag("store-promotions-update-overvalue");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -292,7 +292,7 @@ export async function updatePromotionPackage(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-update-package", "max");
+  updateTag("store-promotions-update-package");
 
   return buildApiResponseAsync<Promotion>(res);
 }
@@ -312,7 +312,7 @@ export async function deletePromotion(
     // Leer cuerpo del error para mensaje
     return handleApiServerError(res);
 
-  revalidateTag("store-promotions", "max");
+  updateTag("store-promotions");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -330,7 +330,7 @@ export async function togglePromotionStatus(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions", "max");
+  updateTag("store-promotions");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -344,6 +344,6 @@ export async function generatePromotionCode(): Promise<ApiResponse<string>> {
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("store-promotions-code", "max");
+  updateTag("store-promotions-code");
   return buildApiResponseAsync<string>(res);
 }

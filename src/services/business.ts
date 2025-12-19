@@ -7,7 +7,7 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { Business, GetAllBusiness } from "@/types/business";
 import { PaginatedResponse } from "../types/common";
 
@@ -63,7 +63,7 @@ export async function createBusiness(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories", "max");
+  updateTag("categories");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -80,7 +80,7 @@ export async function createBusinessBySupplier(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories", "max");
+  updateTag("categories");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -99,7 +99,7 @@ export async function updateBusinessData(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories", "max");
+  updateTag("categories");
 
   return buildApiResponseAsync<Business>(res);
 }
@@ -117,7 +117,7 @@ export async function updateBusinessProviderData(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories", "max");
+  updateTag("categories");
 
   return buildApiResponseAsync<Business>(res);
 }
@@ -132,7 +132,7 @@ export async function deleteBusiness(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("business", "max");
+  updateTag("business");
 
   return buildApiResponseAsync(res);
 }
@@ -147,7 +147,7 @@ export async function deleteBusinessBySupplier(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("business", "max");
+  updateTag("business");
 
   return buildApiResponseAsync(res);
 }

@@ -7,7 +7,7 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import {
   Category,
   GetAllAduanaCategories,
@@ -26,7 +26,7 @@ export async function createCategory(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("categories", "max");
+  updateTag("categories");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
@@ -42,7 +42,7 @@ export async function updateCategory(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories", "max");
+  updateTag("categories");
 
   return buildApiResponseAsync<Category>(res);
 }
@@ -57,7 +57,7 @@ export async function toggleStatusCategory(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories", "max");
+  updateTag("categories");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }

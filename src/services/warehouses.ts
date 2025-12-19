@@ -12,7 +12,7 @@ import {
   WarehouseFilter,
 } from "@/types/warehouses";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { WarehouseFormData } from "@/sections/warehouses/schemas/warehouse-schema";
 import { GetAllUsersResponse } from "../types/users";
 import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
@@ -150,7 +150,7 @@ export async function createWarehouse(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("warehouses", "max");
+  updateTag("warehouses");
   return buildApiResponseAsync<Warehouse>(res);
 }
 
@@ -166,7 +166,7 @@ export async function updateWarehouse(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("warehouses", "max");
+  updateTag("warehouses");
   return buildApiResponseAsync<Warehouse>(res);
 }
 
@@ -181,7 +181,7 @@ export async function deleteWarehouse(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("warehouses", "max");
+  updateTag("warehouses");
   return buildApiResponseAsync<{ success: boolean }>(res);
 }
 
@@ -251,7 +251,7 @@ export async function createMeWarehouse(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier-warehouses", "max");
+  updateTag("supplier-warehouses");
   return buildApiResponseAsync<Warehouse>(res);
 }
 
@@ -266,7 +266,7 @@ export async function updateMeWarehouse(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier-warehouses", "max");
+  updateTag("supplier-warehouses");
   return buildApiResponseAsync<Warehouse>(res);
 }
 

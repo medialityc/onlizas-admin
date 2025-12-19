@@ -22,7 +22,7 @@ import {
   UserAttributeLogResponse,
   UserResponseMe,
 } from "@/types/users";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { PaginatedResponse } from "@/types/common";
 import { PersonalInfoFormData } from "@/sections/provider-management/profile/schemas/personal-info-schema";
@@ -88,7 +88,7 @@ export async function createUser(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("users", "max");
+  updateTag("users");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 export async function resendEmail(data: {
@@ -429,9 +429,9 @@ export async function updateProviderPersonalInfo(
   if (!res.ok) return handleApiServerError(res);
 
   // Revalidar caches
-  revalidateTag("supplier", "max");
-  revalidateTag("suppliers", "max");
-  revalidateTag(`supplier-${id}`, "max");
+  updateTag("supplier");
+  updateTag("suppliers");
+  updateTag(`supplier-${id}`);
 
   return buildApiResponseAsync<void>(res);
 }

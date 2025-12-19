@@ -5,7 +5,7 @@ import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { backendRoutes } from "@/lib/endpoint";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { PaginatedResponse } from "@/types/common";
 import {
   StoreCategory,
@@ -74,7 +74,7 @@ export async function toggleStoreCategoryStatus(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("store-categories", "max");
+  updateTag("store-categories");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
@@ -90,7 +90,7 @@ export async function updateStoreCategoriesOrder(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("store-categories", "max");
-  revalidateTag(`store-categories-${storeId}`, "max");
+  updateTag("store-categories");
+  updateTag(`store-categories-${storeId}`);
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }

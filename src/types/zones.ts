@@ -12,6 +12,7 @@ export type Zone = {
   name: string;
   deliveryAmount: number;
   districtsIds: string[];
+  countryId: string;
   userId: string;
   userName: string;
   active: boolean;

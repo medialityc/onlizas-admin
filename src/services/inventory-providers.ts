@@ -5,7 +5,7 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { backendRoutes } from "@/lib/endpoint";
 import {
   CreateEasyInventory,
@@ -28,7 +28,7 @@ export async function createInventoryProvider(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(INVENTORY_TAG_KEY, "max");
+  updateTag(INVENTORY_TAG_KEY);
 
   return buildApiResponseAsync<InventoryProvider>(res);
 }
@@ -45,7 +45,7 @@ export async function updateInventoryProvider(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(INVENTORY_TAG_KEY, "max");
+  updateTag(INVENTORY_TAG_KEY);
 
   return buildApiResponseAsync<InventoryProvider>(res);
 }
@@ -136,7 +136,7 @@ export async function deleteInventoryProvider(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(INVENTORY_TAG_KEY, "max");
+  updateTag(INVENTORY_TAG_KEY);
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -148,8 +148,14 @@ export async function addVariantToInventory(
   // Debug: Obtener y mostrar ID del proveedor autenticado
   const userRes = await fetchUserMe();
   const currentUser = userRes?.data;
-  console.log("DEBUG - ID del proveedor autenticado (addVariantToInventory):", currentUser?.id);
-  console.log("DEBUG - Datos completos del usuario (addVariantToInventory):", currentUser);
+  console.log(
+    "DEBUG - ID del proveedor autenticado (addVariantToInventory):",
+    currentUser?.id
+  );
+  console.log(
+    "DEBUG - Datos completos del usuario (addVariantToInventory):",
+    currentUser
+  );
 
   const res = await nextAuthFetch({
     url: backendRoutes.inventoryProvider.AddVariantToInventory(inventoryId),
@@ -159,7 +165,7 @@ export async function addVariantToInventory(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(INVENTORY_TAG_KEY, "max");
+  updateTag(INVENTORY_TAG_KEY);
 
   return buildApiResponseAsync<InventoryProvider>(res);
 }
@@ -170,8 +176,14 @@ export async function editVariantInventory(
   // Debug: Obtener y mostrar ID del proveedor autenticado
   const userRes = await fetchUserMe();
   const currentUser = userRes?.data;
-  console.log("DEBUG - ID del proveedor autenticado (editVariantInventory):", currentUser?.id);
-  console.log("DEBUG - Datos completos del usuario (editVariantInventory):", currentUser);
+  console.log(
+    "DEBUG - ID del proveedor autenticado (editVariantInventory):",
+    currentUser?.id
+  );
+  console.log(
+    "DEBUG - Datos completos del usuario (editVariantInventory):",
+    currentUser
+  );
 
   const res = await nextAuthFetch({
     url: backendRoutes.inventoryProvider.editVariantInventory(variantId),
@@ -181,7 +193,7 @@ export async function editVariantInventory(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(INVENTORY_TAG_KEY, "max");
+  updateTag(INVENTORY_TAG_KEY);
 
   return buildApiResponseAsync<InventoryProvider>(res);
 }
@@ -197,7 +209,7 @@ export async function deleteVariantInventory(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(INVENTORY_TAG_KEY, "max");
+  updateTag(INVENTORY_TAG_KEY);
 
   return buildApiResponseAsync<InventoryProvider>(res);
 }

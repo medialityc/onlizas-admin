@@ -26,13 +26,13 @@ export default function SupplierProductsListContainer({
   return (
     <div className="space-y-6">
       <div>
-        <div className="mb-5 flex items-center justify-between">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-              Gestión de Mis Productos
-            </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Administra tus productos
+            <h1 className="text-3xl font-bold text-balance">
+              Gestión de mis Productos
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Administrar mis productos y sus datos asociados
             </p>
           </div>
         </div>

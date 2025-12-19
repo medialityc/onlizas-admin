@@ -8,7 +8,7 @@ import { ApiResponse } from "@/types/fetch/api";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { backendRoutes } from "@/lib/endpoint";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export async function validateDocument(
   id: number,
@@ -25,7 +25,7 @@ export async function validateDocument(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier", "max");
+  updateTag("supplier");
 
   return buildApiResponseAsync<ValidateDocumentResponse>(res);
 }
@@ -42,7 +42,7 @@ export async function uploadDocument(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier", "max");
+  updateTag("supplier");
 
   return buildApiResponseAsync<AddDocumentResponse>(res);
 }

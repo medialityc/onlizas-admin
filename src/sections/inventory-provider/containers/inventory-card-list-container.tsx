@@ -41,13 +41,13 @@ export default function InventoryCardListContainer({
   return (
     <div className="space-y-6">
       <div>
-        <div className="mb-5 flex items-center justify-start gap-2">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-              Inventarios
-            </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Gestión de inventario
+            <h1 className="text-3xl font-bold text-balance">
+              Gestión de Inventarios
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Administra los inventarios del sistema y sus datos asociados
             </p>
           </div>
         </div>

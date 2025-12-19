@@ -5,7 +5,7 @@ import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { backendRoutes } from "@/lib/endpoint";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { PaginatedResponse } from "@/types/common";
 
 import {
@@ -44,7 +44,7 @@ export async function updateSystemConfiguration(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("system-configurations", "max");
+  updateTag("system-configurations");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
@@ -59,7 +59,7 @@ export async function createSystemConfiguration(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("system-configurations", "max");
+  updateTag("system-configurations");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
@@ -72,6 +72,6 @@ export async function setSystemConfigurationAsDefault(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("system-configurations", "max");
+  updateTag("system-configurations");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }

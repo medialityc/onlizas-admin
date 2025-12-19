@@ -6,7 +6,7 @@ import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { GetSupplierAccounts, SupplierAccount } from "@/types/finance";
 import { SupplierAccountInput } from "@/sections/finance/schemas/supplier-account";
 import { nextAuthFetch } from "../utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export async function getSupplierAccounts(
   supplierId: string | number
@@ -36,7 +36,7 @@ export async function createSupplierAccount(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("supplier-accounts", "max");
+  updateTag("supplier-accounts");
   return buildApiResponseAsync<SupplierAccount>(res);
 }
 
@@ -68,7 +68,7 @@ export async function updateSupplierAccount(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("supplier-accounts", "max");
+  updateTag("supplier-accounts");
   return buildApiResponseAsync<SupplierAccount>(res);
 }
 
@@ -83,7 +83,7 @@ export async function deleteSupplierAccount(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("supplier-accounts", "max");
+  updateTag("supplier-accounts");
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 
@@ -98,6 +98,6 @@ export async function setSupplierAccountPrimary(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("supplier-accounts", "max");
+  updateTag("supplier-accounts");
   return buildApiResponseAsync<SupplierAccount>(res);
 }

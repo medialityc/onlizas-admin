@@ -7,18 +7,17 @@ import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-aut
 import LoaderButton from "@/components/loaders/loader-button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useEffect, useState, useMemo, useCallback } from "react";
-import { Select } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useCallback } from "react";
 import { ZoneSchema, ZoneInput } from "../schemas/zone";
 import { createZone, updateZone } from "@/services/zones";
 import { getDistrictsByCountry } from "@/services/districts";
-import { getCountries } from "@/services/countries";
 import { Zone, District } from "@/types/zones";
 import { toast } from "react-toastify";
 import { IQueryable } from "@/types/fetch/request";
 import { ApiResponse } from "@/types/fetch/api";
 import { GetDistricts } from "@/types/zones";
+import { RHFCountrySelect } from "@/components/react-hook-form/rhf-country-code-select";
+import { Label } from "@/components/label/label";
 
 interface Props {
   open: boolean;
@@ -35,16 +34,13 @@ export default function ZoneModal({
   onSuccess,
   zone,
 }: Props) {
-  const [selectedCountryId, setSelectedCountryId] = useState<string | null>(
-    null
-  );
-
   const methods = useForm<ZoneInput>({
     resolver: zodResolver(ZoneSchema),
     defaultValues: {
       name: zone?.name || "",
       deliveryAmount: zone?.deliveryAmount || 0,
       districtsIds: zone?.districtsIds || [],
+      countryId: zone?.countryId,
     },
   });
 
@@ -53,46 +49,12 @@ export default function ZoneModal({
     setValue,
     formState: { isSubmitting },
   } = methods;
-
-  // Fetch countries for the filter
-  const {
-    data: countriesData,
-    isLoading: countriesLoading,
-    refetch,
-  } = useQuery({
-    queryKey: ["countries-zone-modal", open],
-    queryFn: async () => {
-      const res = await getCountries();
-      if (res.error) throw new Error(res.message);
-      return res.data || [];
-    },
-    enabled: open,
-    staleTime: 0,
-    gcTime: 0,
-  });
-
-  // Forzar refetch cuando se abre el modal
-  useEffect(() => {
-    if (open) {
-      refetch();
-    }
-  }, [open, refetch]);
-
-  const countryOptions = (countriesData || []).map((c) => ({
-    value: c.id.toString(),
-    label: c.name,
-  }));
+  const selectedCountryId = methods.watch("countryId");
 
   // Memoize extraFilters to avoid unnecessary re-renders
   const districtFilters = useMemo(() => {
     return selectedCountryId ? { countryId: selectedCountryId } : {};
   }, [selectedCountryId]);
-
-  // Limpiar distritos cuando cambia el país
-  const handleCountryChange = (value: string | null) => {
-    setSelectedCountryId(value);
-    setValue("districtsIds", []); // Limpiar distritos seleccionados
-  };
 
   // Función wrapper para obtener distritos con el countryId
   const fetchDistricts = useCallback(
@@ -118,7 +80,6 @@ export default function ZoneModal({
 
   const handleClose = () => {
     reset();
-    setSelectedCountryId(null);
     onClose();
   };
 
@@ -155,6 +116,7 @@ export default function ZoneModal({
         name: zone.name,
         deliveryAmount: zone.deliveryAmount,
         districtsIds: zone.districtsIds,
+        countryId: zone.countryId,
       });
     }
     if (!open && !zone) {
@@ -162,6 +124,7 @@ export default function ZoneModal({
         name: "",
         deliveryAmount: 0,
         districtsIds: [],
+        countryId: "",
       });
     }
   }, [zone, open, reset]);
@@ -183,24 +146,18 @@ export default function ZoneModal({
               type="text"
               required
             />
-            <Select
-              label="País"
-              placeholder={
-                countriesLoading
-                  ? "Cargando..."
-                  : "Seleccione un país para filtrar distritos"
-              }
-              data={countryOptions}
-              value={selectedCountryId}
-              onChange={handleCountryChange}
-              searchable
-              clearable
-              disabled={countriesLoading}
-              classNames={{
-                input: "form-input",
-                label: "text-sm font-semibold text-gray-900 dark:text-gray-300",
-              }}
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-[13px]">
+                País
+                <span className="text-red-500"> *</span>
+              </label>
+              <RHFCountrySelect
+                name="countryId"
+                variant="name"
+                fullwidth
+                inputClassname="transition-all focus:ring-2 focus:ring-green-500"
+              />
+            </div>
             <RHFAutocompleteFetcherInfinity<District>
               key={`districts-${selectedCountryId || "none"}`}
               name="districtsIds"

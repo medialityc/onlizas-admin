@@ -10,7 +10,7 @@ export default function ClientCreateButton({
     <div>
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <h2 className="font-semibold">Listado</h2>
+          <h2 className="text-3xl font-semibold">Cuentas de la plataforma</h2>
           <p className="text-sm text-gray-500">Cuentas destino por propósito</p>
         </div>
       </div>

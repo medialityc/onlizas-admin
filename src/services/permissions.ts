@@ -12,7 +12,7 @@ import {
   GetAllPermissionsResponse,
   PermissionUpdateData,
 } from "@/types/permissions";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 
 export async function getAllPermissions(
@@ -43,7 +43,7 @@ export async function createPermission(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("permissions", "max");
+  updateTag("permissions");
   return buildApiResponseAsync<CreatePermissionResponse>(res);
 }
 
@@ -61,7 +61,7 @@ export async function updatePermission(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("permissions", "max");
+  updateTag("permissions");
   return buildApiResponseAsync<CreatePermissionResponse>(res);
 }
 
@@ -74,7 +74,7 @@ export async function deletePermission(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("permissions", "max");
+  updateTag("permissions");
   return buildApiResponseAsync<DeletePermissionResponse>(res);
 }
 

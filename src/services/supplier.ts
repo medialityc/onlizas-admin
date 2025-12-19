@@ -7,7 +7,7 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import {
   AnswerApprovalProcess,
   ApprovalProcess,
@@ -32,7 +32,7 @@ export async function createSupplier(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("suppliers", "max");
+  updateTag("suppliers");
 
   return buildApiResponseAsync<Supplier>(res);
 }
@@ -47,7 +47,7 @@ export async function deleteSuppliers(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("suppliers", "max");
+  updateTag("suppliers");
 
   return buildApiResponseAsync(res);
 }
@@ -84,8 +84,8 @@ export async function updateSupplierData(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier", "max");
-  revalidateTag("suppliers", "max");
+  updateTag("supplier");
+  updateTag("suppliers");
 
   return buildApiResponseAsync<Supplier>(res);
 }
@@ -234,7 +234,7 @@ export async function answerApprovalProcess(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier", "max");
+  updateTag("supplier");
   return buildApiResponseAsync(res);
 }
 
@@ -254,6 +254,6 @@ export async function createUserSupplier(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("supplier", "max");
+  updateTag("supplier");
   return buildApiResponseAsync<Supplier>(res);
 }

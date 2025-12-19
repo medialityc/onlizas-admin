@@ -6,7 +6,7 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import {
   GetAllTransferReceptions,
   TransferReception,
@@ -98,7 +98,7 @@ export async function receiveTransfer(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(TRANSFER_RECEPTION_TAG, "max");
+  updateTag(TRANSFER_RECEPTION_TAG);
   return buildApiResponseAsync<TransferReception>(res);
 }
 
@@ -130,7 +130,7 @@ export async function reportDiscrepancy(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(TRANSFER_RECEPTION_TAG, "max");
+  updateTag(TRANSFER_RECEPTION_TAG);
   return buildApiResponseAsync<{ success: boolean; discrepancyId: string }>(
     res
   );
@@ -152,7 +152,7 @@ export async function reportMultipleDiscrepancies(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(TRANSFER_RECEPTION_TAG, "max");
+  updateTag(TRANSFER_RECEPTION_TAG);
   return buildApiResponseAsync<{ success: boolean; discrepancyIds: string[] }>(
     res
   );
@@ -171,7 +171,7 @@ export async function resolveTransferReception(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(TRANSFER_RECEPTION_TAG, "max");
+  updateTag(TRANSFER_RECEPTION_TAG);
   return buildApiResponseAsync<{ success: boolean }>(res);
 }
 
@@ -198,7 +198,7 @@ export async function addReceptionComment(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(TRANSFER_RECEPTION_TAG, "max");
+  updateTag(TRANSFER_RECEPTION_TAG);
   return buildApiResponseAsync<TransferReceptionComment>(res);
 }
 
@@ -241,7 +241,7 @@ export async function createNewInventoryFromReception(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(TRANSFER_RECEPTION_TAG, "max");
+  updateTag(TRANSFER_RECEPTION_TAG);
   return buildApiResponseAsync<NewInventoryFromReception>(res);
 }
 
@@ -261,6 +261,6 @@ export async function uploadReceptionEvidence(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag(TRANSFER_RECEPTION_TAG, "max");
+  updateTag(TRANSFER_RECEPTION_TAG);
   return buildApiResponseAsync<{ success: boolean; urls: string[] }>(res);
 }

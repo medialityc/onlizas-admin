@@ -12,7 +12,7 @@ export default function ZonesClient({ initialData }: Props) {
     <div>
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <h2 className="font-semibold">Zonas de Entrega</h2>
+          <h2 className="text-3xl font-semibold">Zonas de Entrega</h2>
           <p className="text-sm text-gray-500">
             Administra las zonas de entrega y sus costos
           </p>

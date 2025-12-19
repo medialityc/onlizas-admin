@@ -19,10 +19,9 @@ export default async function MyAccountsPage() {
 
   return (
     <div className="space-y-6 p-4">
-      <h1 className="text-xl font-semibold">Mis Cuentas Bancarias</h1>
-      <SupplierAccountsClient 
-        initialData={accountsRes.data} 
-        supplierId={userId} 
+      <SupplierAccountsClient
+        initialData={accountsRes.data}
+        supplierId={userId}
       />
     </div>
   );

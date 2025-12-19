@@ -54,16 +54,6 @@ export default function AdminOrdersPage({ data, query }: Props) {
               Panel de administración para todas las órdenes del sistema
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button size="sm">
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Actualizar
-            </Button>
-            <Button size="sm">
-              <Download className="h-4 w-4 mr-2" />
-              Exportar
-            </Button>
-          </div>
         </div>
 
         {/* Stats */}

@@ -8,7 +8,7 @@ import { QueryParamsURLFactory } from "@/lib/request";
 import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export async function createDepartment(
   data: FormData
@@ -22,7 +22,7 @@ export async function createDepartment(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories", "max");
+  updateTag("categories");
 
   return buildApiResponseAsync<Department>(res);
 }
@@ -37,7 +37,7 @@ export async function deleteDepartment(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories", "max");
+  updateTag("categories");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
@@ -75,7 +75,7 @@ export async function updateDepartment(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("categories", "max");
+  updateTag("departments");
 
   return buildApiResponseAsync<Department>(res);
 }

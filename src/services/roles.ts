@@ -12,7 +12,7 @@ import {
   GetAllRolesResponse,
   UpdateRoleResponse,
 } from "@/types/roles";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import {
   CreateRoleSchema,
@@ -49,7 +49,7 @@ export async function createRole(
 
   if (!res.ok) return handleApiServerError(res);
 
-  revalidateTag("roles", "max");
+  updateTag("roles");
   return buildApiResponseAsync<CreateRoleResponse>(res);
 }
 
@@ -62,7 +62,7 @@ export async function deleteRole(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("roles", "max");
+  updateTag("roles");
   return buildApiResponseAsync<DeleteRoleResponse>(res);
 }
 
@@ -80,7 +80,7 @@ export async function updateRole(
     useAuth: true,
   });
   if (!res.ok) return handleApiServerError(res);
-  revalidateTag("roles", "max");
+  updateTag("roles");
   return buildApiResponseAsync<UpdateRoleResponse>(res);
 }
 

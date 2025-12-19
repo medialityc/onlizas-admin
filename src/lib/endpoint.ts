@@ -454,6 +454,11 @@ export const backendRoutes = {
         `${process.env.NEXT_PUBLIC_API_URL}admin/sections/${id}`, // PUT
       rollBack: (id: string | number, versionId: string | number) =>
         `${process.env.NEXT_PUBLIC_API_URL}admin/sections/${id}/rollback/${versionId}`, // POST
+      removeProduct: (
+        sectionId: string | number,
+        productGlobalId: string | number
+      ) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/sections/${sectionId}/products/${productGlobalId}`,
     },
     homeBanner: {
       list: `${process.env.NEXT_PUBLIC_API_URL}home-banners`, // GET
@@ -559,8 +564,8 @@ export const backendRoutes = {
   },
   districts: {
     list: `${process.env.NEXT_PUBLIC_API_URL}districts`,
-    byCountry: (countryId: string) => 
-      `${process.env.NEXT_PUBLIC_API_URL}districts/by-country/${countryId}`,
+    byCountry: (countryId: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}districts/${countryId}`,
   },
   importers: {
     list: `${process.env.NEXT_PUBLIC_API_URL}importers`,

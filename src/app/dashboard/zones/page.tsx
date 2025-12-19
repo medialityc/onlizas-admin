@@ -10,7 +10,6 @@ export default async function ZonesPage() {
 
   return (
     <div className="space-y-6 p-4">
-      <h1 className="text-xl font-semibold">Zonas de Entrega</h1>
       <ZonesClient initialData={zonesRes.data} />
     </div>
   );
