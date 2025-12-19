@@ -154,41 +154,7 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
           type="textarea"
           required
         />
-        {/* Return Policy Input */}
-        <RHFInputWithLabel
-          name="returnPolicy"
-          label="Política de Reembolso"
-          placeholder=" Escriba la política que seguirá su tienda"
-          maxLength={200}
-          rows={3}
-          type="textarea"
-          required
-          size="medium"
-        />
-        {/* Shipping Policy Input */}
-        <RHFInputWithLabel
-          name="shippingPolicy"
-          label="Política de Envío"
-          placeholder=" Escriba la política que seguirá su tienda"
-          maxLength={200}
-          rows={3}
-          type="textarea"
-          required
-          size="medium"
-          containerClassname="[&>label]:text-base [&>textarea]:text-sm"
-        />
-        {/* Terms of Service Input */}
-        <RHFInputWithLabel
-          name="termsOfService"
-          label="Términos del Servicio"
-          placeholder=" Escriba la términos que seguirá su tienda"
-          maxLength={200}
-          rows={3}
-          type="textarea"
-          required
-          size="medium"
-          containerClassname="[&>label]:text-base [&>textarea]:text-sm"
-        />
+        
       </div>
 
       <div className="flex justify-end gap-3 pt-6">
