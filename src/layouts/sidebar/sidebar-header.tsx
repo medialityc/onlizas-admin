@@ -12,7 +12,7 @@ const SidebarHeader = () => {
     <div className="flex items-center justify-between px-4 py-3">
       <Link href="/" className="main-logo flex shrink-0 items-center ">
         <div className="flex items-center gap-1.5 py-1 w-full">
-          <div className="relative cursor-pointer group rounded-xl px-2 py-1 flex items-center backdrop-blur-sm border border-primary/10 dark:border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent dark:from-primary/20 dark:via-primary/10 hover:from-primary/20 hover:via-primary/10 transition-colors">
+          <div className="relative cursor-pointer group rounded-xl px-2 py-1 flex items-center backdrop-blur-sm border border-primary/10 dark:border-primary/20 bg-linear-to-r from-primary/10 via-primary/5 to-transparent dark:from-primary/20 dark:via-primary/10 hover:from-primary/20 hover:via-primary/10 transition-colors">
             <div className="absolute inset-0 rounded-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.6),transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.1),transparent_60%)]" />
             <Logo
               width={80}
