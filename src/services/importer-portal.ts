@@ -6,15 +6,18 @@ import { cookies } from "next/headers";
 const IMPORTER_TOKEN_COOKIE = "importer_access_token";
 const IMPORTER_ID_COOKIE = "importer_id";
 
-async function getImporterToken(): Promise<{ token: string; importerId: string } | null> {
+async function getImporterToken(): Promise<{
+  token: string;
+  importerId: string;
+} | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get(IMPORTER_TOKEN_COOKIE)?.value;
   const importerId = cookieStore.get(IMPORTER_ID_COOKIE)?.value;
-  
+
   if (!token || !importerId) {
     return null;
   }
-  
+
   return { token, importerId };
 }
 
@@ -23,32 +26,35 @@ async function importerFetch(
   options: RequestInit = {}
 ): Promise<Response> {
   const auth = await getImporterToken();
-  
+
   if (!auth) {
     throw new Error("No hay sesión activa de importadora");
   }
-  
+
   console.log("=== IMPORTER FETCH ===");
   console.log("📍 URL:", url);
   console.log("🔑 Token presente:", !!auth.token);
-  console.log("🔑 Token (primeros 50 chars):", auth.token.substring(0, 50) + "...");
+  console.log(
+    "🔑 Token (primeros 50 chars):",
+    auth.token.substring(0, 50) + "..."
+  );
   console.log("👤 Importer ID:", auth.importerId);
-  
+
   const headers: Record<string, string> = {
     "X-Importer-Session-Token": auth.token,
   };
-  
+
   if (options.body) {
     headers["Content-Type"] = "application/json";
   }
-  
+
   if (options.headers) {
     Object.assign(headers, options.headers);
   }
-  
+
   console.log("📤 Headers que se enviarán:", headers);
   console.log("=====================");
-  
+
   return fetch(url, {
     ...options,
     headers,
@@ -67,6 +73,12 @@ export type ImporterContract = {
   createdAt: string;
   rejectionReason?: string;
   approvedAt?: string;
+  approvalProcessUser?: {
+    userId: string;
+    userName: string;
+    userEmail: string;
+  };
+  nomenclators?: ImporterNomenclator[];
 };
 
 export type NomenclatorFeature = {
@@ -124,27 +136,26 @@ export type ImporterDataResponse = {
   error?: boolean;
 };
 
-export async function getImporterData(importerId: string): Promise<ImporterDataResponse> {
+export async function getImporterData(): Promise<ImporterDataResponse> {
   try {
-    const response = await importerFetch(
-      backendRoutes.importerAccess.getData(importerId)
-    );
-    
+    const response = await importerFetch(backendRoutes.importerAccess.getData);
+
     console.log("getImporterData - Response status:", response.status);
-    
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       console.log("getImporterData - Error data:", errorData);
       return {
         success: false,
         error: true,
-        message: errorData.message || "Error al obtener datos de la importadora",
+        message:
+          errorData.message || "Error al obtener datos de la importadora",
       };
     }
-    
+
     const responseData = await response.json();
     console.log("getImporterData - Response data:", responseData);
-    
+
     return {
       success: true,
       data: responseData,
@@ -166,17 +177,18 @@ export async function getImporterContracts(
   try {
     const queryParams = new URLSearchParams();
     if (params?.page) queryParams.append("page", params.page.toString());
-    if (params?.pageSize) queryParams.append("pageSize", params.pageSize.toString());
+    if (params?.pageSize)
+      queryParams.append("pageSize", params.pageSize.toString());
     if (params?.search) queryParams.append("search", params.search);
-    
+
     const url = `${backendRoutes.importers.getById(importerId)}/contracts${
       queryParams.toString() ? `?${queryParams.toString()}` : ""
     }`;
-    
+
     const response = await importerFetch(url);
-    
+
     const responseData = await response.json();
-    
+
     if (!response.ok) {
       return {
         success: false,
@@ -184,7 +196,7 @@ export async function getImporterContracts(
         message: responseData.message || "Error al obtener contratos",
       };
     }
-    
+
     return {
       success: true,
       data: responseData.data || [],
@@ -209,25 +221,27 @@ export async function getPendingContracts(
   try {
     const queryParams = new URLSearchParams();
     if (params?.page) queryParams.append("page", params.page.toString());
-    if (params?.pageSize) queryParams.append("pageSize", params.pageSize.toString());
+    if (params?.pageSize)
+      queryParams.append("pageSize", params.pageSize.toString());
     if (params?.search) queryParams.append("search", params.search);
-    
+
     const url = `${backendRoutes.importerAccess.pendingContracts}${
       queryParams.toString() ? `?${queryParams.toString()}` : ""
     }`;
-    
+
     const response = await importerFetch(url);
-    
+
     const responseData = await response.json();
-    
+
     if (!response.ok) {
       return {
         success: false,
         error: true,
-        message: responseData.message || "Error al obtener contratos pendientes",
+        message:
+          responseData.message || "Error al obtener contratos pendientes",
       };
     }
-    
+
     return {
       success: true,
       data: responseData.data || [],
@@ -245,14 +259,16 @@ export async function getPendingContracts(
   }
 }
 
-export async function getContractDetail(contractId: string): Promise<ContractResponse> {
+export async function getContractDetail(
+  contractId: string
+): Promise<ContractResponse> {
   try {
     const response = await importerFetch(
       backendRoutes.importerContracts.getById(contractId)
     );
-    
+
     const data = await response.json();
-    
+
     if (!response.ok) {
       return {
         success: false,
@@ -260,7 +276,7 @@ export async function getContractDetail(contractId: string): Promise<ContractRes
         message: data.message || "Error al obtener detalle del contrato",
       };
     }
-    
+
     return {
       success: true,
       data,
@@ -275,24 +291,29 @@ export async function getContractDetail(contractId: string): Promise<ContractRes
   }
 }
 
-export async function approveContract(contractId: string): Promise<ContractResponse> {
+export async function approveContract(
+  contractId: string
+): Promise<ContractResponse> {
   try {
     console.log("=== APPROVE CONTRACT ===");
     console.log("Contract ID:", contractId);
-    console.log("Endpoint:", backendRoutes.importerAccess.approveContract(contractId));
-    
+    console.log(
+      "Endpoint:",
+      backendRoutes.importerAccess.approveContract(contractId)
+    );
+
     const response = await importerFetch(
       backendRoutes.importerAccess.approveContract(contractId),
       { method: "POST" }
     );
-    
+
     console.log("Response status:", response.status);
     console.log("Response ok:", response.ok);
-    
+
     const data = await response.json();
     console.log("Response data:", data);
     console.log("========================");
-    
+
     // Verificar si la respuesta es exitosa (200-299) o tiene un indicador de éxito
     if (response.ok || response.status === 200 || data.success !== false) {
       return {
@@ -301,7 +322,7 @@ export async function approveContract(contractId: string): Promise<ContractRespo
         message: data.message || "Contrato aprobado exitosamente",
       };
     }
-    
+
     return {
       success: false,
       error: true,
@@ -325,8 +346,11 @@ export async function rejectContract(
     console.log("=== REJECT CONTRACT ===");
     console.log("Contract ID:", contractId);
     console.log("Reason:", reason);
-    console.log("Endpoint:", backendRoutes.importerAccess.rejectContract(contractId));
-    
+    console.log(
+      "Endpoint:",
+      backendRoutes.importerAccess.rejectContract(contractId)
+    );
+
     const response = await importerFetch(
       backendRoutes.importerAccess.rejectContract(contractId),
       {
@@ -334,14 +358,14 @@ export async function rejectContract(
         body: JSON.stringify({ reason }),
       }
     );
-    
+
     console.log("Response status:", response.status);
     console.log("Response ok:", response.ok);
-    
+
     const data = await response.json();
     console.log("Response data:", data);
     console.log("========================");
-    
+
     // Verificar si la respuesta es exitosa (200-299) o tiene un indicador de éxito
     if (response.ok || response.status === 200 || data.success !== false) {
       return {
@@ -350,7 +374,7 @@ export async function rejectContract(
         message: data.message || "Contrato rechazado",
       };
     }
-    
+
     return {
       success: false,
       error: true,
@@ -378,9 +402,9 @@ export async function addNomenclatorsToContract(
         body: JSON.stringify({ nomenclatorIds }),
       }
     );
-    
+
     const data = await response.json();
-    
+
     if (!response.ok) {
       return {
         success: false,
@@ -388,7 +412,7 @@ export async function addNomenclatorsToContract(
         message: data.message || "Error al agregar nomencladores",
       };
     }
-    
+
     return {
       success: true,
       data,
@@ -404,12 +428,12 @@ export async function addNomenclatorsToContract(
   }
 }
 
-export async function getImporterNomenclators(importerId: string): Promise<ContractResponse> {
+export async function getImporterNomenclators(): Promise<ContractResponse> {
   try {
-    const endpoint = backendRoutes.importerAccess.getData(importerId);
+    const endpoint = backendRoutes.importerAccess.getData;
     const response = await importerFetch(endpoint);
     const data = await response.json();
-    
+
     if (!response.ok) {
       return {
         success: false,
@@ -417,9 +441,9 @@ export async function getImporterNomenclators(importerId: string): Promise<Contr
         message: data.message || "Error al obtener nomencladores",
       };
     }
-    
+
     const nomenclators = data.nomenclators || data.data?.nomenclators || [];
-    
+
     return {
       success: true,
       data: nomenclators,

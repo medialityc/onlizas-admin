@@ -2,16 +2,32 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Badge, Group, Avatar, Text, Modal, Textarea, Stack, Loader, Alert, Button } from "@mantine/core";
+import {
+  Badge,
+  Group,
+  Avatar,
+  Text,
+  Modal,
+  Textarea,
+  Stack,
+  Loader,
+  Alert,
+  Button,
+} from "@mantine/core";
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import { DataGrid } from "@/components/datagrid/datagrid";
 import { DataTableColumn } from "mantine-datatable";
-import { approveContract, rejectContract, ImporterContract } from "@/services/importer-portal";
+import {
+  approveContract,
+  rejectContract,
+  ImporterContract,
+} from "@/services/importer-portal";
 import showToast from "@/config/toast/toastConfig";
 import { usePendingContracts } from "@/hooks/react-query/use-pending-contracts";
 import { useQueryClient } from "@tanstack/react-query";
 import ActionsMenu from "@/components/menu/actions-menu";
 import ContractDetailsModal from "./contract-details-modal";
+import { RHFInputWithLabel } from "@/components/react-hook-form";
 
 type Contract = ImporterContract;
 
@@ -20,13 +36,19 @@ interface Props {
 }
 
 export default function ImporterSolicitudesView({ importerId }: Props) {
-  const { data: contracts = [], isLoading: isLoadingContracts, error } = usePendingContracts(importerId);
+  const {
+    data: contracts = [],
+    isLoading: isLoadingContracts,
+    error,
+  } = usePendingContracts(importerId);
   const queryClient = useQueryClient();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
-  const [selectedContract, setSelectedContract] = useState<Contract | null>(null);
+  const [selectedContract, setSelectedContract] = useState<Contract | null>(
+    null
+  );
   const [rejectReason, setRejectReason] = useState("");
 
   const handleViewDetails = (contract: Contract) => {
@@ -41,7 +63,9 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
       if (result.success) {
         showToast("Contrato aprobado exitosamente", "success");
         // Invalidar las queries para recargar los datos
-        await queryClient.invalidateQueries({ queryKey: ["importer-pending-contracts", importerId] });
+        await queryClient.invalidateQueries({
+          queryKey: ["importer-pending-contracts", importerId],
+        });
         router.refresh();
       } else {
         showToast(result.message || "Error al aprobar contrato", "error");
@@ -64,7 +88,7 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
       showToast("Debe ingresar un motivo de rechazo", "error");
       return;
     }
-    
+
     setIsLoading(true);
     try {
       const result = await rejectContract(selectedContract.id, rejectReason);
@@ -72,7 +96,9 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
         showToast("Contrato rechazado", "success");
         setRejectModalOpen(false);
         // Invalidar las queries para recargar los datos
-        await queryClient.invalidateQueries({ queryKey: ["importer-pending-contracts", importerId] });
+        await queryClient.invalidateQueries({
+          queryKey: ["importer-pending-contracts", importerId],
+        });
         router.refresh();
       } else {
         showToast(result.message || "Error al rechazar contrato", "error");
@@ -84,7 +110,9 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
     }
   };
 
-  const getStatusConfig = (status: string): { label: string; color: string } => {
+  const getStatusConfig = (
+    status: string
+  ): { label: string; color: string } => {
     const config: Record<string, { label: string; color: string }> = {
       PENDING: { label: "Pendiente", color: "yellow" },
       APPROVED: { label: "Aprobado", color: "green" },
@@ -106,7 +134,11 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
             <Avatar size="sm" radius="xl" color="blue">
               {r.approvalProcessName?.substring(0, 2).toUpperCase()}
             </Avatar>
-            <Text size="sm" fw={500} className="text-gray-900 dark:text-gray-100">
+            <Text
+              size="sm"
+              fw={500}
+              className="text-gray-900 dark:text-gray-100"
+            >
               {r.approvalProcessName}
             </Text>
           </Group>
@@ -117,7 +149,9 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
         title: "Fecha Solicitud",
         render: (r) => (
           <Text size="sm" c="dimmed">
-            {r.createdAt ? new Date(r.createdAt).toLocaleDateString("es-ES") : "-"}
+            {r.createdAt
+              ? new Date(r.createdAt).toLocaleDateString("es-ES")
+              : "-"}
           </Text>
         ),
       },
@@ -139,7 +173,7 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
         textAlign: "center",
         render: (r) => {
           const isPending = r.status?.toUpperCase() === "PENDING";
-          
+
           return (
             <div className="flex justify-center">
               <ActionsMenu
@@ -176,13 +210,14 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
       )}
 
       {error && (
-        <Alert 
-          icon={<InformationCircleIcon className="h-5 w-5" />} 
-          title="Error al cargar solicitudes" 
+        <Alert
+          icon={<InformationCircleIcon className="h-5 w-5" />}
+          title="Error al cargar solicitudes"
           color="red"
           className="mb-4"
         >
-          No se pudieron cargar las solicitudes de contrato. Por favor, intenta nuevamente.
+          No se pudieron cargar las solicitudes de contrato. Por favor, intenta
+          nuevamente.
         </Alert>
       )}
 
@@ -214,27 +249,28 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
         centered
         styles={{
           content: {
-            backgroundColor: 'light-dark(#ffffff, #0e1726)',
+            backgroundColor: "light-dark(#ffffff, #0e1726)",
           },
           header: {
-            backgroundColor: 'light-dark(#ffffff, #0e1726)',
-            borderBottom: '1px solid light-dark(#e5e7eb, #1b2e4b)',
+            backgroundColor: "light-dark(#ffffff, #0e1726)",
+            borderBottom: "1px solid light-dark(#e5e7eb, #1b2e4b)",
           },
           title: {
-            color: 'light-dark(#000000, #ffffff)',
+            color: "light-dark(#000000, #ffffff)",
             fontWeight: 600,
           },
           close: {
-            color: 'light-dark(#374151, #e5e7eb)',
+            color: "light-dark(#374151, #e5e7eb)",
           },
           body: {
-            backgroundColor: 'light-dark(#ffffff, #0e1726)',
+            backgroundColor: "light-dark(#ffffff, #0e1726)",
           },
         }}
       >
         <Stack gap="md">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            ¿Estás seguro de rechazar la solicitud de {selectedContract?.supplierName}?
+            ¿Estás seguro de rechazar la solicitud de{" "}
+            {selectedContract?.approvalProcessName}?
           </p>
           <Textarea
             label="Motivo del rechazo"
@@ -245,12 +281,12 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
             minRows={3}
             styles={{
               input: {
-                backgroundColor: 'light-dark(#ffffff, #1b2e4b)',
-                color: 'light-dark(#000000, #ffffff)',
-                borderColor: 'light-dark(#e5e7eb, #17263c)',
+                backgroundColor: "light-dark(#ffffff, #1b2e4b)",
+                color: "light-dark(#000000, #ffffff)",
+                borderColor: "light-dark(#e5e7eb, #17263c)",
               },
               label: {
-                color: 'light-dark(#000000, #ffffff)',
+                color: "light-dark(#000000, #ffffff)",
               },
             }}
           />

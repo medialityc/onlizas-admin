@@ -37,5 +37,10 @@ export default async function ImporterNomencladoresPage({ params }: Props) {
     nomenclators,
   });
 
-  return <ImporterNomencladoresView importerId={id} nomenclators={nomenclators || []} />;
+  return (
+    <ImporterNomencladoresView
+      importerId={id}
+      nomenclators={nomenclators || []}
+    />
+  );
 }
