@@ -2,6 +2,10 @@
 
 import { backendRoutes } from "@/lib/endpoint";
 import { cookies } from "next/headers";
+import type { ImporterData } from "./importer-portal";
+
+// Re-exportar el tipo para mantener compatibilidad
+export type { ImporterData };
 
 const IMPORTER_TOKEN_COOKIE = "importer_access_token";
 const IMPORTER_ID_COOKIE = "importer_id";
@@ -24,48 +28,6 @@ export type ValidateResponse = {
   requiresQRSetup?: boolean;
   message?: string;
   error?: boolean;
-};
-
-export type ImporterData = {
-  importerId: string;
-  importerName: string;
-  isActive: boolean;
-  nomenclators: Array<{
-    id: string;
-    name: string;
-    isActive: boolean;
-    createdAt: string;
-    categories: Array<{
-      id: string;
-      name: string;
-      active: boolean;
-      departmentId: string;
-      departmentName: string;
-      description: string;
-      image: string;
-      features: Array<{
-        featureId: string;
-        featureName: string;
-        featureDescription: string;
-        suggestions: string[];
-        isRequired: boolean;
-        isPrimary: boolean;
-      }>;
-    }>;
-  }>;
-  contracts: Array<{
-    id: string;
-    importerId: string;
-    importerName: string;
-    supplierId: string;
-    supplierName: string;
-    startDate: string;
-    endDate: string;
-    status: string;
-    createdAt: string;
-  }>;
-  accessedAt: string;
-  sessionExpiresAt: string;
 };
 
 export async function validateImporterAccess(
@@ -202,20 +164,14 @@ export async function getImporterData(): Promise<{
     const response = await fetch(backendRoutes.importerAccess.getData(importerId), {
       method: "GET",
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "X-Importer-Id": importerId,
       },
       cache: "no-store",
     });
 
-    console.log("getImporterData response status:", response.status);
-    console.log("getImporterData request headers:", {
-      Authorization: `Bearer ${token.substring(0, 20)}...`,
-      importerId,
-      url: backendRoutes.importerAccess.getData(importerId),
-    });
-
     const text = await response.text();
-    console.log("getImporterData response text:", text.substring(0, 500));
 
     if (!text) {
       return {
