@@ -68,7 +68,7 @@ const Sidebar = () => {
   return (
     <div className={theme == "dark" ? "dark" : ""}>
       <nav
-        className={`sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300 ${
+        className={`sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-65 shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300 ${
           !themeConfig.sidebar
             ? "-translate-x-full lg:translate-x-0"
             : "translate-x-0"
