@@ -13,7 +13,8 @@ const IMPORTER_EXPIRES_COOKIE = "importer_expires_at";
 
 // Validar que sea un UUID válido para prevenir SSRF
 function isValidUUID(id: string): boolean {
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   return uuidRegex.test(id);
 }
 
@@ -54,11 +55,10 @@ export async function validateImporterAccess(
 
     const data = await response.json();
 
-
     if (!response.ok || data.error || data.isValid === false) {
-      const requiresQRSetup = 
+      const requiresQRSetup =
         data.requiresQRSetup === true ||
-        response.status === 428 || 
+        response.status === 428 ||
         data.message?.toLowerCase().includes("qr") ||
         data.message?.toLowerCase().includes("configurar") ||
         data.message?.toLowerCase().includes("setup") ||
@@ -75,7 +75,7 @@ export async function validateImporterAccess(
 
     const token = data.sessionToken || data.token;
     const expiresAtISO = data.expiresAt;
-    
+
     if (!token) {
       console.error("Missing token in response:", data);
       return {
@@ -85,14 +85,13 @@ export async function validateImporterAccess(
       };
     }
 
-
     let expiresAt: number;
     if (expiresAtISO) {
       expiresAt = new Date(expiresAtISO).getTime();
     } else if (data.expiresIn) {
-      expiresAt = Date.now() + (data.expiresIn * 1000);
+      expiresAt = Date.now() + data.expiresIn * 1000;
     } else {
-      expiresAt = Date.now() + (3600 * 1000); 
+      expiresAt = Date.now() + 3600 * 1000;
     }
 
     const expiresInSeconds = Math.floor((expiresAt - Date.now()) / 1000);
@@ -114,7 +113,7 @@ export async function validateImporterAccess(
     });
 
     cookieStore.set(IMPORTER_EXPIRES_COOKIE, expiresAt.toString(), {
-      httpOnly: false, 
+      httpOnly: false,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: expiresInSeconds,
@@ -148,7 +147,7 @@ export async function getImporterData(): Promise<{
     console.log("🔍 [getImporterData] Iniciando...", {
       hasToken: !!token,
       tokenLength: token?.length,
-      tokenPreview: token ? `${token.substring(0, 30)}...` : 'NO TOKEN',
+      tokenPreview: token ? `${token.substring(0, 30)}...` : "NO TOKEN",
     });
 
     if (!token) {
@@ -174,12 +173,18 @@ export async function getImporterData(): Promise<{
     });
 
     console.log("📨 [getImporterData] Response status:", response.status);
-    console.log("📨 [getImporterData] Response headers:", Object.fromEntries(response.headers.entries()));
+    console.log(
+      "📨 [getImporterData] Response headers:",
+      Object.fromEntries(response.headers.entries())
+    );
 
     const text = await response.text();
 
     console.log("📄 [getImporterData] Response text length:", text.length);
-    console.log("📄 [getImporterData] Response text preview:", text.substring(0, 200));
+    console.log(
+      "📄 [getImporterData] Response text preview:",
+      text.substring(0, 200)
+    );
 
     if (!text) {
       console.error("❌ [getImporterData] Respuesta vacía");
@@ -213,14 +218,16 @@ export async function getImporterData(): Promise<{
         message: data.message,
         fullData: JSON.stringify(data, null, 2),
       });
-      
+
       // Extraer mensaje de error si viene en el array errors
       let errorMessage = data.message || "Error al obtener los datos";
       if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
-        errorMessage = data.errors.map((e: any) => e.message || JSON.stringify(e)).join(", ");
+        errorMessage = data.errors
+          .map((e: any) => e.message || JSON.stringify(e))
+          .join(", ");
         console.error("❌ [getImporterData] Errores detallados:", data.errors);
       }
-      
+
       return {
         error: true,
         message: errorMessage,
@@ -286,9 +293,7 @@ export type ImporterSession = {
   isExpired: boolean;
 };
 
-export async function getImporterSessions(
-  importerId: string
-): Promise<{
+export async function getImporterSessions(importerId: string): Promise<{
   data?: ImporterSession[];
   error?: boolean;
   message?: string;
@@ -312,11 +317,14 @@ export async function getImporterSessions(
       };
     }
 
-    const response = await fetch(backendRoutes.importerAccess.sessions(importerId), {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      backendRoutes.importerAccess.sessions(importerId),
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const data = await response.json();
 
@@ -415,9 +423,7 @@ export type QRCodeResponse = {
   instructions: string;
 };
 
-export async function generateImporterQR(
-  importerId: string
-): Promise<{
+export async function generateImporterQR(importerId: string): Promise<{
   data?: QRCodeResponse;
   error?: boolean;
   message?: string;

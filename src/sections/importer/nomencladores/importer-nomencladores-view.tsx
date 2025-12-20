@@ -21,14 +21,19 @@ interface Props {
   nomenclators: Nomenclator[];
 }
 
-export default function ImporterNomencladoresView({ importerId, nomenclators }: Props) {
+export default function ImporterNomencladoresView({
+  importerId,
+  nomenclators,
+}: Props) {
   const columns = useMemo<DataTableColumn<Nomenclator>[]>(
     () => [
       {
         accessor: "name",
         title: "Nombre",
         render: (r) => (
-          <span className="font-medium text-gray-900 dark:text-gray-100">{r.name}</span>
+          <span className="font-medium text-gray-900 dark:text-gray-100">
+            {r.name}
+          </span>
         ),
       },
       {
@@ -53,7 +58,9 @@ export default function ImporterNomencladoresView({ importerId, nomenclators }: 
         accessor: "createdAt",
         title: "Fecha de creación",
         render: (r) => {
-          return r.createdAt ? new Date(r.createdAt).toLocaleDateString("es-ES") : "-";
+          return r.createdAt
+            ? new Date(r.createdAt).toLocaleDateString("es-ES")
+            : "-";
         },
       },
       {
@@ -76,7 +83,8 @@ export default function ImporterNomencladoresView({ importerId, nomenclators }: 
           Nomencladores
         </h1>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-          Tipos de productos que pueden vender los proveedores de esta importadora
+          Tipos de productos que pueden vender los proveedores de esta
+          importadora
         </p>
       </div>
 

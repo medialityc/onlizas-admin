@@ -25,7 +25,9 @@ export default async function ImporterLayout({ children, params }: Props) {
     <ImporterDataProvider importerData={importerDataResult.data || null}>
       <ImporterLayoutClient
         importerId={id}
-        importerName={importerDataResult.data?.importerName || "Portal Importadora"}
+        importerName={
+          importerDataResult.data?.importerName || "Portal Importadora"
+        }
         expiresAt={session.expiresAt}
       >
         {children}
