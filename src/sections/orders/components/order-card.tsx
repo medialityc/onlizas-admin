@@ -62,12 +62,12 @@ export function OrderCard({
                 <Clock className="h-3 w-3" />
                 {formatDate(order.createdDatetime)}
               </p>
-              {/* {order.configuredTime > 0 && (
+               {order.configuredTime > 0 && (
                 <CountdownTimer
                   createdDatetime={order.createdDatetime}
                   configuredMinutes={order.configuredTime}
                 />
-              )} */}
+              )} 
               {/* Datos básicos */}
               <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
                 <div>
