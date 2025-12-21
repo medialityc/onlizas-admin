@@ -586,8 +586,7 @@ export const backendRoutes = {
   },
   importerAccess: {
     validate: `${process.env.NEXT_PUBLIC_API_URL}importer-access/validate`,
-    getData: (importerId: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}importer-access/${importerId}/data`,
+    getData: `${process.env.NEXT_PUBLIC_API_URL}importer-access/data`,
     generateQr: (importerId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}importer-access/${importerId}/generate-qr`,
     sessions: (importerId: string | number) =>
