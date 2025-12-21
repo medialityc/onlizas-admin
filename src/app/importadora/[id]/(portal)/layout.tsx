@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { checkImporterSession } from "@/services/importer-access";
-import { getImporterData } from "@/services/importer-portal";
+import { getImporterData } from "@/services/importer-access";
 import ImporterLayoutClient from "@/layouts/importer-sidebar/importer-layout-client";
 import { ImporterDataProvider } from "@/contexts/importer-data-context";
 
@@ -19,7 +19,7 @@ export default async function ImporterLayout({ children, params }: Props) {
     redirect(`/importadora/${id}`);
   }
 
-  const importerDataResult = await getImporterData(id);
+  const importerDataResult = await getImporterData();
 
   return (
     <ImporterDataProvider importerData={importerDataResult.data || null}>

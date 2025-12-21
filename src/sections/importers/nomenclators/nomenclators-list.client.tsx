@@ -2,15 +2,13 @@
 
 import { DataGrid } from "@/components/datagrid/datagrid";
 import { DataTableColumn } from "mantine-datatable";
-import { ImporterNomenclator } from "@/types/importers";
+import { ImporterNomenclatorDetail } from "@/types/importers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Badge } from "@mantine/core";
 import SimpleModal from "@/components/modal/modal";
 import FormProvider from "@/components/react-hook-form/form-provider";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
-import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import ActionsMenu from "@/components/menu/actions-menu";
-import { getAllCategories } from "@/services/categories";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import {
@@ -23,7 +21,7 @@ import { useRouter } from "next/navigation";
 import LoaderButton from "@/components/loaders/loader-button";
 
 interface Props {
-  data: ImporterNomenclator[];
+  data: ImporterNomenclatorDetail[];
   importerName: string;
   importerId: string;
 }
@@ -40,10 +38,9 @@ export default function NomenclatorsListClient({
 }: Props) {
   const router = useRouter();
   const [opened, setOpened] = useState(false);
-  const [selected, setSelected] = useState<ImporterNomenclator | null>(null);
-  const [localData, setLocalData] = useState<ImporterNomenclator[]>(data);
+  const [selected, setSelected] = useState<ImporterNomenclatorDetail | null>(null);
+  const [localData, setLocalData] = useState<ImporterNomenclatorDetail[]>(data);
   const [isSaving, setIsSaving] = useState(false);
-  const [categoryLabels, setCategoryLabels] = useState<Record<string, string>>({});
 
   const methods = useForm<NomenclatorForm>({
     defaultValues: {
@@ -64,35 +61,15 @@ export default function NomenclatorsListClient({
     setOpened(true);
   }, [reset]);
 
-  const openEdit = useCallback((n: ImporterNomenclator) => {
+  const openEdit = useCallback((n: ImporterNomenclatorDetail) => {
     setSelected(n);
+    const ids = (n.categories || []).map((c) => c.id);
     reset({
       name: n.name || "",
-      categoryIds: [],
+      categoryIds: ids,
     });
     setOpened(true);
-
-    (async () => {
-      const res = await getNomenclatorById(n.id);
-      if (res.error || !res.data) {
-        return;
-      }
-
-      const ids = (res.data.categories || []).map((c) => c.id);
-      const labels = (res.data.categories || []).reduce<Record<string, string>>(
-        (acc, c) => {
-          acc[c.id] = c.name;
-          return acc;
-        },
-        {}
-      );
-      setCategoryLabels((prev) => ({ ...prev, ...labels }));
-      reset({
-        name: res.data.name || n.name || "",
-        categoryIds: ids,
-      });
-    })();
-  }, [getNomenclatorById, reset]);
+  }, [reset]);
 
   const close = useCallback(() => {
     setOpened(false);
@@ -109,7 +86,7 @@ export default function NomenclatorsListClient({
         if (selected) {
           const res = await updateNomenclator(selected.id, {
             name,
-            categoryIds: values.categoryIds || [],
+            categoryIds: [],
           });
           if (res.error) {
             toast.error(res.message || "Error actualizando nomenclador");
@@ -122,7 +99,6 @@ export default function NomenclatorsListClient({
                 ? {
                     ...n,
                     name,
-                    categories: values.categoryIds || [],
                   }
                 : n
             )
@@ -133,7 +109,7 @@ export default function NomenclatorsListClient({
           const res = await createNomenclator({
             name,
             importerId,
-            categoryIds: values.categoryIds || [],
+            categoryIds: [],
           });
           if (res.error) {
             toast.error(res.message || "Error creando nomenclador");
@@ -147,7 +123,7 @@ export default function NomenclatorsListClient({
               name,
               isActive: (res.data as any)?.isActive ?? true,
               createdAt: (res.data as any)?.createdAt || createdAt,
-              categories: values.categoryIds || [],
+              categories: [],
             },
             ...prev,
           ]);
@@ -166,7 +142,7 @@ export default function NomenclatorsListClient({
   );
 
   const handleToggleStatus = useCallback(
-    async (nomenclator: ImporterNomenclator) => {
+    async (nomenclator: ImporterNomenclatorDetail) => {
       try {
         const res = await toggleNomenclatorStatus(nomenclator.id);
         if (res.error) {
@@ -190,7 +166,7 @@ export default function NomenclatorsListClient({
     [router]
   );
 
-  const columns = useMemo<DataTableColumn<ImporterNomenclator>[]>(
+  const columns = useMemo<DataTableColumn<ImporterNomenclatorDetail>[]>(
     () => [
       {
         accessor: "name",
@@ -202,17 +178,10 @@ export default function NomenclatorsListClient({
       {
         accessor: "categories",
         title: "Categorías",
-        render: (r) => {
-          const categories = r.categories || [];
+        render: () => {
           return (
             <div className="flex flex-wrap gap-1">
-              {categories.length > 0
-                ? categories.map((cat: any, idx: number) => (
-                    <Badge key={idx} size="sm" variant="light">
-                      {typeof cat === 'object' && cat?.name ? cat.name : (categoryLabels[String(cat)] || String(cat))}
-                    </Badge>
-                  ))
-                : "-"}
+              <span className="text-gray-500 dark:text-gray-400">-</span>
             </div>
           );
         },
@@ -249,7 +218,7 @@ export default function NomenclatorsListClient({
         ),
       },
     ],
-    [categoryLabels, openEdit, handleToggleStatus]
+    [openEdit, handleToggleStatus]
   );
 
   return (
@@ -263,7 +232,7 @@ export default function NomenclatorsListClient({
         </p>
       </div>
 
-      <DataGrid<ImporterNomenclator>
+      <DataGrid<ImporterNomenclatorDetail>
         simpleData={localData}
         columns={columns}
         enablePagination={false}
@@ -288,18 +257,6 @@ export default function NomenclatorsListClient({
                 label="Nombre"
                 placeholder="Nombre del nomenclador"
                 type="text"
-                required
-              />
-              <RHFAutocompleteFetcherInfinity
-                name="categoryIds"
-                label="Categorías"
-                placeholder="Seleccionar categorías..."
-                onFetch={getAllCategories}
-                objectValueKey="id"
-                objectKeyLabel="name"
-                queryKey="categories"
-                dropdownPosition="top"
-                multiple
                 required
               />
             </div>
