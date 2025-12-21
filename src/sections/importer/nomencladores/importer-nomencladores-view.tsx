@@ -22,7 +22,7 @@ interface Props {
 }
 
 export default function ImporterNomencladoresView({ importerId, nomenclators }: Props) {
-  const columns = useMemo<DataTableColumn<ImporterNomenclator>[]>(
+  const columns = useMemo<DataTableColumn<Nomenclator>[]>(
     () => [
       {
         accessor: "name",

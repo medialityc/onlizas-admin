@@ -144,36 +144,45 @@ export async function getImporterData(): Promise<{
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get(IMPORTER_TOKEN_COOKIE)?.value;
-    const importerId = cookieStore.get(IMPORTER_ID_COOKIE)?.value;
 
-    if (!token || !importerId) {
+    console.log("🔍 [getImporterData] Iniciando...", {
+      hasToken: !!token,
+      tokenLength: token?.length,
+      tokenPreview: token ? `${token.substring(0, 30)}...` : 'NO TOKEN',
+    });
+
+    if (!token) {
+      console.error("❌ [getImporterData] No hay sesión activa");
       return {
         error: true,
         message: "No hay sesión activa",
       };
     }
 
-    // Validar UUID para prevenir SSRF
-    if (!isValidUUID(importerId)) {
-      return {
-        error: true,
-        message: "ID de importadora inválido",
-      };
-    }
+    const endpoint = backendRoutes.importerAccess.getData;
+    console.log("📡 [getImporterData] Llamando al endpoint:", endpoint);
+    console.log("📋 [getImporterData] Headers que se enviarán:", {
+      "X-Importer-Session-Token": `${token.substring(0, 30)}... (length: ${token.length})`,
+    });
 
-    const response = await fetch(backendRoutes.importerAccess.getData(importerId), {
+    const response = await fetch(endpoint, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        "X-Importer-Id": importerId,
+        "X-Importer-Session-Token": token,
       },
       cache: "no-store",
     });
 
+    console.log("📨 [getImporterData] Response status:", response.status);
+    console.log("📨 [getImporterData] Response headers:", Object.fromEntries(response.headers.entries()));
+
     const text = await response.text();
 
+    console.log("📄 [getImporterData] Response text length:", text.length);
+    console.log("📄 [getImporterData] Response text preview:", text.substring(0, 200));
+
     if (!text) {
+      console.error("❌ [getImporterData] Respuesta vacía");
       return {
         error: true,
         message: "Respuesta vacía del servidor",
@@ -183,8 +192,14 @@ export async function getImporterData(): Promise<{
     let data;
     try {
       data = JSON.parse(text);
+      console.log("✅ [getImporterData] JSON parseado correctamente:", {
+        hasData: !!data,
+        dataKeys: Object.keys(data || {}),
+        data: data,
+      });
     } catch (e) {
-      console.error("Error parsing JSON:", e);
+      console.error("❌ [getImporterData] Error parsing JSON:", e);
+      console.error("❌ [getImporterData] Raw text:", text);
       return {
         error: true,
         message: "Respuesta inválida del servidor",
@@ -192,17 +207,32 @@ export async function getImporterData(): Promise<{
     }
 
     if (!response.ok || data.error) {
+      console.error("❌ [getImporterData] Error en respuesta:", {
+        responseOk: response.ok,
+        dataError: data.error,
+        message: data.message,
+        fullData: JSON.stringify(data, null, 2),
+      });
+      
+      // Extraer mensaje de error si viene en el array errors
+      let errorMessage = data.message || "Error al obtener los datos";
+      if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+        errorMessage = data.errors.map((e: any) => e.message || JSON.stringify(e)).join(", ");
+        console.error("❌ [getImporterData] Errores detallados:", data.errors);
+      }
+      
       return {
         error: true,
-        message: data.message || "Error al obtener los datos",
+        message: errorMessage,
       };
     }
 
+    console.log("✅ [getImporterData] Datos obtenidos exitosamente");
     return {
       data: data,
     };
   } catch (error) {
-    console.error("Error getting importer data:", error);
+    console.error("💥 [getImporterData] Excepción capturada:", error);
     return {
       error: true,
       message: "Error al obtener los datos",

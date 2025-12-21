@@ -7,7 +7,6 @@ import showToast from "@/config/toast/toastConfig";
 import { generateImporterQRCode } from "@/services/importers";
 import IconInfoCircle from "@/components/icon/icon-info-circle";
 import { CheckIcon, ClipboardIcon, ArrowDownTrayIcon } from "@heroicons/react/24/solid";
-import { QRCodeSVG } from "qrcode.react";
 
 interface Props {
   open: boolean;
@@ -39,26 +38,43 @@ export default function ImporterQRModal({ open, onClose, importer }: Props) {
   const generateQR = async () => {
     if (!importer) return;
 
+    console.log("🔄 [Generate QR] Iniciando generación de QR para:", {
+      importerId: importer.id,
+      importerName: importer.name
+    });
+
     setIsLoading(true);
     try {
       const result = await generateImporterQRCode(importer.id);
 
+      console.log("📦 [Generate QR] Respuesta completa de la API:", {
+        hasError: !!result.error,
+        hasData: !!result.data,
+        message: result.message,
+        fullResult: result
+      });
+
       if (result.error || !result.data) {
+        console.error("❌ [Generate QR] Error en la respuesta:", result);
         showToast(result.message || "Error al generar el código QR", "error");
         onClose();
         return;
       }
 
       setQrData(result.data);
-      console.log("QR Data received:", {
-        ...result.data,
-        qrCodeImageBase64: result.data.qrCodeImageBase64?.substring(0, 50) + "...",
+      console.log("✅ [Generate QR] QR Data recibida exitosamente:", {
+        importerId: result.data.importerId,
+        importerName: result.data.importerName,
+        secretKey: result.data.secretKey,
+        qrCodeUrl: result.data.qrCodeUrl,
+        createdAt: result.data.createdAt,
+        hasQrCodeImage: !!result.data.qrCodeImageBase64,
+        qrCodeImagePreview: result.data.qrCodeImageBase64?.substring(0, 100) + "..."
       });
-      console.log("QR Code URL completo:", result.data.qrCodeUrl);
-      console.log("Secret Key:", result.data.secretKey);
+      
       showToast("Código QR generado exitosamente", "success");
     } catch (error) {
-      console.error("Error generating QR code:", error);
+      console.error("💥 [Generate QR] Excepción capturada:", error);
       showToast("Error al generar el código QR", "error");
       onClose();
     } finally {
@@ -67,33 +83,18 @@ export default function ImporterQRModal({ open, onClose, importer }: Props) {
   };
 
   const handleDownloadQR = () => {
-    if (!qrData || !qrRef.current) return;
+    if (!qrData || !qrData.qrCodeImageBase64) return;
 
     try {
-      const svg = qrRef.current.querySelector('svg');
-      if (!svg) {
-        showToast("Error al obtener el código QR", "error");
-        return;
-      }
-
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      const svgData = new XMLSerializer().serializeToString(svg);
-      const img = new Image();
-      
-      img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx?.drawImage(img, 0, 0);
+      const base64Image = qrData.qrCodeImageBase64.startsWith('data:image')
+        ? qrData.qrCodeImageBase64
+        : `data:image/png;base64,${qrData.qrCodeImageBase64}`;
         
-        const link = document.createElement('a');
-        link.download = `qr-${importer?.name || 'importadora'}-${Date.now()}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        showToast("Imagen descargada", "success");
-      };
-      
-      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+      const link = document.createElement('a');
+      link.download = `qr-${importer?.name || 'importadora'}-${Date.now()}.png`;
+      link.href = base64Image;
+      link.click();
+      showToast("Imagen descargada", "success");
     } catch (error) {
       console.error("Error downloading QR:", error);
       showToast("Error al descargar la imagen", "error");
@@ -157,14 +158,24 @@ export default function ImporterQRModal({ open, onClose, importer }: Props) {
           </div>
 
           <Stack align="center" gap="md" py="md">
-            {qrData.qrCodeUrl ? (
+            {qrData.qrCodeImageBase64 ? (
               <>
                 <div ref={qrRef} className="bg-white p-4 rounded-lg shadow-sm">
-                  <QRCodeSVG
-                    value={decodeURIComponent(qrData.qrCodeUrl)}
-                    size={280}
-                    level="H"
-                    includeMargin={true}
+                  <img
+                    src={
+                      qrData.qrCodeImageBase64.startsWith('data:image')
+                        ? qrData.qrCodeImageBase64
+                        : `data:image/png;base64,${qrData.qrCodeImageBase64}`
+                    }
+                    alt="Código QR de la Importadora"
+                    className="w-[280px] h-[280px] object-contain"
+                    onError={(e) => {
+                      console.error("❌ Error al cargar la imagen QR");
+                      e.currentTarget.style.display = 'none';
+                    }}
+                    onLoad={() => {
+                      console.log("✅ Imagen QR cargada correctamente");
+                    }}
                   />
                 </div>
 
