@@ -615,4 +615,8 @@ export const backendRoutes = {
     toggleStatus: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}nomenclators/${id}/toggle-status`,
   },
+  dashboard: {
+    admin: `${process.env.NEXT_PUBLIC_API_URL}admin/dashboard`,
+    supplier: `${process.env.NEXT_PUBLIC_API_URL}supplier/dashboard`,
+  },
 };

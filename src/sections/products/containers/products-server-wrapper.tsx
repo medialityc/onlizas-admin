@@ -25,10 +25,12 @@ interface Props {
  */
 export default async function ProductsServerWrapper({ query }: Props) {
   // 1. Obtener permisos del servidor
-  const { role, isAdmin, isSupplier } = await getModulePermissions("products");
+  const { isAdmin, isSupplier } = await getModulePermissions("products");
 
   // 2. Construir query params
-  const apiQuery: IQueryable = buildQueryParams(query as Record<string, unknown>);
+  const apiQuery: IQueryable = buildQueryParams(
+    query as Record<string, unknown>
+  );
 
   // 3. Determinar qué datos obtener y qué componente renderizar
   if (isAdmin) {
@@ -36,10 +38,7 @@ export default async function ProductsServerWrapper({ query }: Props) {
     const productsResponse = await getAllProducts(apiQuery);
 
     return (
-      <ProductsListContainer
-        productsPromise={productsResponse}
-        query={query}
-      />
+      <ProductsListContainer productsPromise={productsResponse} query={query} />
     );
   }
 

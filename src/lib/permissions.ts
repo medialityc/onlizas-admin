@@ -52,6 +52,8 @@ export enum PERMISSION_ENUM {
   // Finance - supplier closures and summary
   RETRIEVE_CLOSURES = "RetrieveClosure",
   RETRIEVE_SUMMARY = "RetrieveSummary",
+  // Dashboard
+  RETRIEVE_DASHBOARD = "RetrieveDashBoard",
 }
 export const PERMISSION_ADMIN = [
   PERMISSION_ENUM.CREATE,
