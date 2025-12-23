@@ -3,6 +3,9 @@ import { NavigationTabs, TabItem } from "@/components/tab/navigation-tabs";
 import { getModulePermissions } from "@/components/permission/server-permission-wrapper";
 import { paths } from "@/config/paths";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const tabs: TabItem[] = [
   {
     label: "Inventario General",
