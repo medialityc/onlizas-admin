@@ -2,13 +2,15 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Badge, Group, Avatar, Text, Button, Modal, Textarea, Stack } from "@mantine/core";
+import { Badge, Group, Avatar, Text, Button, Modal, Textarea, Stack, Loader, Alert } from "@mantine/core";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import { DataGrid } from "@/components/datagrid/datagrid";
 import { DataTableColumn } from "mantine-datatable";
 import { approveContract, rejectContract, ImporterContract } from "@/services/importer-portal";
 import showToast from "@/config/toast/toastConfig";
-import { useImporterData } from "@/contexts/importer-data-context";
+import { usePendingContracts } from "@/hooks/react-query/use-pending-contracts";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Contract = ImporterContract;
 
@@ -17,9 +19,8 @@ interface Props {
 }
 
 export default function ImporterSolicitudesView({ importerId }: Props) {
-  const { importerData } = useImporterData();
-  const allContracts = importerData?.contracts || [];
-  const contracts = allContracts.filter(c => c.status?.toUpperCase() === "PENDING");
+  const { data: contracts = [], isLoading: isLoadingContracts, error } = usePendingContracts(importerId);
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
@@ -32,6 +33,8 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
       const result = await approveContract(contract.id);
       if (result.success) {
         showToast("Contrato aprobado exitosamente", "success");
+        // Invalidar las queries para recargar los datos
+        await queryClient.invalidateQueries({ queryKey: ["importer-pending-contracts", importerId] });
         router.refresh();
       } else {
         showToast(result.message || "Error al aprobar contrato", "error");
@@ -61,6 +64,8 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
       if (result.success) {
         showToast("Contrato rechazado", "success");
         setRejectModalOpen(false);
+        // Invalidar las queries para recargar los datos
+        await queryClient.invalidateQueries({ queryKey: ["importer-pending-contracts", importerId] });
         router.refresh();
       } else {
         showToast(result.message || "Error al rechazar contrato", "error");
@@ -170,15 +175,34 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
         </p>
       </div>
 
-      <DataGrid<Contract>
-        simpleData={contracts}
-        columns={columns}
-        enablePagination={false}
-        enableSorting={false}
-        enableSearch={false}
-        searchPlaceholder=""
-        emptyText="No hay solicitudes de contrato"
-      />
+      {isLoadingContracts && (
+        <div className="flex justify-center items-center py-20">
+          <Loader size="lg" />
+        </div>
+      )}
+
+      {error && (
+        <Alert 
+          icon={<InformationCircleIcon className="h-5 w-5" />} 
+          title="Error al cargar solicitudes" 
+          color="red"
+          className="mb-4"
+        >
+          No se pudieron cargar las solicitudes de contrato. Por favor, intenta nuevamente.
+        </Alert>
+      )}
+
+      {!isLoadingContracts && !error && (
+        <DataGrid<Contract>
+          simpleData={contracts}
+          columns={columns}
+          enablePagination={false}
+          enableSorting={false}
+          enableSearch={false}
+          searchPlaceholder=""
+          emptyText="No hay solicitudes de contrato pendientes"
+        />
+      )}
 
       <Modal
         opened={rejectModalOpen}

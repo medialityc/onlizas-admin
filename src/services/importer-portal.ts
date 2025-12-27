@@ -28,9 +28,11 @@ async function importerFetch(
     throw new Error("No hay sesión activa de importadora");
   }
   
-  console.log("importerFetch - URL:", url);
-  console.log("importerFetch - Token presente:", !!auth.token);
-  console.log("importerFetch - Importer ID:", auth.importerId);
+  console.log("=== IMPORTER FETCH ===");
+  console.log("📍 URL:", url);
+  console.log("🔑 Token presente:", !!auth.token);
+  console.log("🔑 Token (primeros 50 chars):", auth.token.substring(0, 50) + "...");
+  console.log("👤 Importer ID:", auth.importerId);
   
   const headers: Record<string, string> = {
     "X-Importer-Session-Token": auth.token,
@@ -44,7 +46,8 @@ async function importerFetch(
     Object.assign(headers, options.headers);
   }
   
-  console.log("importerFetch - Headers:", headers);
+  console.log("📤 Headers que se enviarán:", headers);
+  console.log("=====================");
   
   return fetch(url, {
     ...options,
