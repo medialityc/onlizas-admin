@@ -11,12 +11,12 @@ export function usePendingContracts(importerId: string) {
       });
 
       console.log("=== PENDING CONTRACTS RESPONSE ===");
-      console.log("Endpoint:", `/importers/${importerId}/pending-contracts`);
+      console.log("Endpoint:", `/api/importer-access/pending-contracts`);
       console.log("Response completa:", response);
       console.log("Response.data:", response.data);
+      console.log("Response.totalCount:", response.totalCount);
       console.log("Response.error:", response.error);
       console.log("Response.message:", response.message);
-      console.log("==================================");
 
       if (response.error) {
         throw new Error(response.message || "Error al obtener solicitudes");

@@ -39,6 +39,8 @@ interface MenuProps {
   onNomenclators?: () => void;
   onProviders?: () => void;
   onGenerateQR?: () => void;
+  onApprove?: () => void;
+  onReject?: () => void;
 
 
   viewPermissions?: string[];
@@ -57,6 +59,8 @@ interface MenuProps {
   nomenclatorsPermissions?: string[];
   providersPermissions?: string[];
   qrPermissions?: string[];
+  approvePermissions?: string[];
+  rejectPermissions?: string[];
 }
 
 const ActionsMenu = ({
@@ -80,6 +84,8 @@ const ActionsMenu = ({
   onProviders,
   onGenerateQR,
   onSetDefault,
+  onApprove,
+  onReject,
   viewPermissions,
   editPermissions,
   deletePermissions,
@@ -96,6 +102,8 @@ const ActionsMenu = ({
   nomenclatorsPermissions,
   providersPermissions,
   qrPermissions,
+  approvePermissions,
+  rejectPermissions,
 }: MenuProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [toggleStatusDialogOpen, setToggleStatusDialogOpen] = useState(false);
@@ -148,6 +156,26 @@ const ActionsMenu = ({
               onClick={onViewDetails}
             >
               Ver detalles
+            </Menu.Item>
+          )}
+
+          {onApprove && hasPermission(approvePermissions) && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-white hover:bg-green-500"
+              leftSection={<CheckIcon className="h-4 w-4" />}
+              onClick={onApprove}
+            >
+              Aprobar
+            </Menu.Item>
+          )}
+
+          {onReject && hasPermission(rejectPermissions) && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-white hover:bg-red-500"
+              leftSection={<TrashIcon className="h-4 w-4" />}
+              onClick={onReject}
+            >
+              Rechazar
             </Menu.Item>
           )}
 
