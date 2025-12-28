@@ -2,8 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Badge, Group, Avatar, Text, Button, Modal, Textarea, Stack, Loader, Alert } from "@mantine/core";
-import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Badge, Group, Avatar, Text, Modal, Textarea, Stack, Loader, Alert, Button } from "@mantine/core";
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import { DataGrid } from "@/components/datagrid/datagrid";
 import { DataTableColumn } from "mantine-datatable";
@@ -11,6 +10,8 @@ import { approveContract, rejectContract, ImporterContract } from "@/services/im
 import showToast from "@/config/toast/toastConfig";
 import { usePendingContracts } from "@/hooks/react-query/use-pending-contracts";
 import { useQueryClient } from "@tanstack/react-query";
+import ActionsMenu from "@/components/menu/actions-menu";
+import ContractDetailsModal from "./contract-details-modal";
 
 type Contract = ImporterContract;
 
@@ -24,8 +25,14 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [selectedContract, setSelectedContract] = useState<Contract | null>(null);
   const [rejectReason, setRejectReason] = useState("");
+
+  const handleViewDetails = (contract: Contract) => {
+    setSelectedContract(contract);
+    setDetailsModalOpen(true);
+  };
 
   const handleApprove = async (contract: Contract) => {
     setIsLoading(true);
@@ -132,31 +139,18 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
         textAlign: "center",
         render: (r) => {
           const isPending = r.status?.toUpperCase() === "PENDING";
-          if (!isPending) return null;
           
           return (
-            <Group gap="xs" justify="center">
-              <Button
-                variant="filled"
-                color="green"
-                size="xs"
-                leftSection={<CheckIcon className="h-4 w-4" />}
-                onClick={() => handleApprove(r)}
-                loading={isLoading}
-              >
-                Aprobar
-              </Button>
-              <Button
-                variant="filled"
-                color="red"
-                size="xs"
-                leftSection={<XMarkIcon className="h-4 w-4" />}
-                onClick={() => handleRejectClick(r)}
-                disabled={isLoading}
-              >
-                Rechazar
-              </Button>
-            </Group>
+            <div className="flex justify-center">
+              <ActionsMenu
+                onViewDetails={() => handleViewDetails(r)}
+                onApprove={isPending ? () => handleApprove(r) : undefined}
+                onReject={isPending ? () => handleRejectClick(r) : undefined}
+                viewPermissions={[]}
+                approvePermissions={[]}
+                rejectPermissions={[]}
+              />
+            </div>
           );
         },
       },
@@ -204,16 +198,44 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
         />
       )}
 
+      <ContractDetailsModal
+        open={detailsModalOpen}
+        onClose={() => {
+          setDetailsModalOpen(false);
+          setSelectedContract(null);
+        }}
+        contract={selectedContract}
+      />
+
       <Modal
         opened={rejectModalOpen}
         onClose={() => setRejectModalOpen(false)}
         title="Rechazar Solicitud"
         centered
+        styles={{
+          content: {
+            backgroundColor: 'light-dark(#ffffff, #0e1726)',
+          },
+          header: {
+            backgroundColor: 'light-dark(#ffffff, #0e1726)',
+            borderBottom: '1px solid light-dark(#e5e7eb, #1b2e4b)',
+          },
+          title: {
+            color: 'light-dark(#000000, #ffffff)',
+            fontWeight: 600,
+          },
+          close: {
+            color: 'light-dark(#374151, #e5e7eb)',
+          },
+          body: {
+            backgroundColor: 'light-dark(#ffffff, #0e1726)',
+          },
+        }}
       >
         <Stack gap="md">
-          <Text size="sm" c="dimmed">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             ¿Estás seguro de rechazar la solicitud de {selectedContract?.supplierName}?
-          </Text>
+          </p>
           <Textarea
             label="Motivo del rechazo"
             placeholder="Ingrese el motivo del rechazo..."
@@ -221,6 +243,16 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
             onChange={(e) => setRejectReason(e.target.value)}
             required
             minRows={3}
+            styles={{
+              input: {
+                backgroundColor: 'light-dark(#ffffff, #1b2e4b)',
+                color: 'light-dark(#000000, #ffffff)',
+                borderColor: 'light-dark(#e5e7eb, #17263c)',
+              },
+              label: {
+                color: 'light-dark(#000000, #ffffff)',
+              },
+            }}
           />
           <Group justify="flex-end" gap="sm">
             <Button variant="subtle" onClick={() => setRejectModalOpen(false)}>

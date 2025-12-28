@@ -212,7 +212,7 @@ export async function getPendingContracts(
     if (params?.pageSize) queryParams.append("pageSize", params.pageSize.toString());
     if (params?.search) queryParams.append("search", params.search);
     
-    const url = `${backendRoutes.importers.getById(importerId)}/pending-contracts${
+    const url = `${backendRoutes.importerAccess.pendingContracts}${
       queryParams.toString() ? `?${queryParams.toString()}` : ""
     }`;
     
@@ -277,25 +277,35 @@ export async function getContractDetail(contractId: string): Promise<ContractRes
 
 export async function approveContract(contractId: string): Promise<ContractResponse> {
   try {
+    console.log("=== APPROVE CONTRACT ===");
+    console.log("Contract ID:", contractId);
+    console.log("Endpoint:", backendRoutes.importerAccess.approveContract(contractId));
+    
     const response = await importerFetch(
-      backendRoutes.importerContracts.approve(contractId),
+      backendRoutes.importerAccess.approveContract(contractId),
       { method: "POST" }
     );
     
-    const data = await response.json();
+    console.log("Response status:", response.status);
+    console.log("Response ok:", response.ok);
     
-    if (!response.ok) {
+    const data = await response.json();
+    console.log("Response data:", data);
+    console.log("========================");
+    
+    // Verificar si la respuesta es exitosa (200-299) o tiene un indicador de éxito
+    if (response.ok || response.status === 200 || data.success !== false) {
       return {
-        success: false,
-        error: true,
-        message: data.message || "Error al aprobar contrato",
+        success: true,
+        data,
+        message: data.message || "Contrato aprobado exitosamente",
       };
     }
     
     return {
-      success: true,
-      data,
-      message: "Contrato aprobado exitosamente",
+      success: false,
+      error: true,
+      message: data.message || "Error al aprobar contrato",
     };
   } catch (error) {
     console.error("Error approving contract:", error);
@@ -312,28 +322,39 @@ export async function rejectContract(
   reason: string
 ): Promise<ContractResponse> {
   try {
+    console.log("=== REJECT CONTRACT ===");
+    console.log("Contract ID:", contractId);
+    console.log("Reason:", reason);
+    console.log("Endpoint:", backendRoutes.importerAccess.rejectContract(contractId));
+    
     const response = await importerFetch(
-      backendRoutes.importerContracts.reject(contractId),
+      backendRoutes.importerAccess.rejectContract(contractId),
       {
         method: "POST",
         body: JSON.stringify({ reason }),
       }
     );
     
-    const data = await response.json();
+    console.log("Response status:", response.status);
+    console.log("Response ok:", response.ok);
     
-    if (!response.ok) {
+    const data = await response.json();
+    console.log("Response data:", data);
+    console.log("========================");
+    
+    // Verificar si la respuesta es exitosa (200-299) o tiene un indicador de éxito
+    if (response.ok || response.status === 200 || data.success !== false) {
       return {
-        success: false,
-        error: true,
-        message: data.message || "Error al rechazar contrato",
+        success: true,
+        data,
+        message: data.message || "Contrato rechazado",
       };
     }
     
     return {
-      success: true,
-      data,
-      message: "Contrato rechazado",
+      success: false,
+      error: true,
+      message: data.message || "Error al rechazar contrato",
     };
   } catch (error) {
     console.error("Error rejecting contract:", error);

@@ -587,6 +587,11 @@ export const backendRoutes = {
   importerAccess: {
     validate: `${process.env.NEXT_PUBLIC_API_URL}importer-access/validate`,
     getData: `${process.env.NEXT_PUBLIC_API_URL}importer-access/data`,
+    pendingContracts: `${process.env.NEXT_PUBLIC_API_URL}importer-access/pending-contracts`,
+    approveContract: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importer-access/contracts/${id}/approve`,
+    rejectContract: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importer-access/contracts/${id}/reject`,
     generateQr: (importerId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}importer-access/${importerId}/generate-qr`,
     sessions: (importerId: string | number) =>
