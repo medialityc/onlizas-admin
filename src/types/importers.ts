@@ -121,12 +121,17 @@ export type ImporterContract = {
   id: string;
   importerId: string;
   importerName: string;
-  supplierId: string;
-  supplierName: string;
+  approvalProcessId: string;
+  approvalProcessName: string;
   startDate: string;
   endDate: string;
   status: string;
   createdAt: string;
+  approvalProcessUser?: {
+    userId: string;
+    userName: string;
+    userEmail: string;
+  };
 };
 
 export type ImporterDataResponse = {

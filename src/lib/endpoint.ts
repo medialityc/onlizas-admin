@@ -598,6 +598,10 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}importer-access/${importerId}/sessions`,
     revokeSession: (importerId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}importer-access/${importerId}/revoke`,
+    updateNomenclator: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importer-access/nomenclators/${id}`,
+    toggleNomenclatorStatus: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importer-access/nomenclators/${id}/toggle-status`,
   },
   importerContracts: {
     list: `${process.env.NEXT_PUBLIC_API_URL}importer-contracts`,

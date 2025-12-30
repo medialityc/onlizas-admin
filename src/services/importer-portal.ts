@@ -457,3 +457,90 @@ export async function getImporterNomenclators(): Promise<ContractResponse> {
     };
   }
 }
+
+export type UpdateNomenclatorPayload = {
+  name: string;
+  categoryIds: string[];
+};
+
+export type NomenclatorResponse = {
+  success: boolean;
+  data?: any;
+  message?: string;
+  error?: boolean;
+};
+
+export async function updateImporterNomenclator(
+  id: string,
+  data: UpdateNomenclatorPayload
+): Promise<NomenclatorResponse> {
+  try {
+    const response = await importerFetch(
+      backendRoutes.importerAccess.updateNomenclator(id),
+      {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }
+    );
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: true,
+        message: responseData.message || "Error al actualizar nomenclador",
+      };
+    }
+
+    return {
+      success: true,
+      data: responseData,
+      message: "Nomenclador actualizado exitosamente",
+    };
+  } catch (error) {
+    console.error("Error updating nomenclator:", error);
+    return {
+      success: false,
+      error: true,
+      message: "Error al actualizar nomenclador",
+    };
+  }
+}
+
+export async function toggleImporterNomenclatorStatus(
+  id: string
+): Promise<NomenclatorResponse> {
+  try {
+    const response = await importerFetch(
+      backendRoutes.importerAccess.toggleNomenclatorStatus(id),
+      {
+        method: "PATCH",
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return {
+        success: false,
+        error: true,
+        message: errorData.message || "Error al cambiar estado del nomenclador",
+      };
+    }
+
+    const responseData = await response.json().catch(() => ({}));
+
+    return {
+      success: true,
+      data: responseData,
+      message: "Estado del nomenclador actualizado",
+    };
+  } catch (error) {
+    console.error("Error toggling nomenclator status:", error);
+    return {
+      success: false,
+      error: true,
+      message: "Error al cambiar estado del nomenclador",
+    };
+  }
+}
