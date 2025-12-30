@@ -3,6 +3,7 @@ import {
   TagIcon,
   UsersIcon,
   DocumentTextIcon,
+  DocumentCheckIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "@/layouts/sidebar/types";
 
@@ -35,6 +36,12 @@ export const getImporterSidebarSections = (importerId: string): SidebarSection[]
         label: "Solicitudes",
         path: `/importadora/${importerId}/solicitudes`,
         icon: <DocumentTextIcon className="h-4 w-4" />,
+      },
+      {
+        id: "contratos",
+        label: "Contratos",
+        path: `/importadora/${importerId}/contratos`,
+        icon: <DocumentCheckIcon className="h-4 w-4" />,
       },
     ],
   },
