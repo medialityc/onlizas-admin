@@ -482,7 +482,7 @@ export async function updateImporterContract(
     console.log("[updateImporterContract] contractId:", contractId);
     console.log("[updateImporterContract] payload:", JSON.stringify(payload));
 
-    const response = await fetch(
+    const response = await (await import("./importer-portal")).importerFetch(
       `${backendRoutes.importerAccess.contracts}/${contractId}`,
       {
         method: "PUT",
