@@ -32,7 +32,7 @@ async function importerFetch(
   }
 
   console.log("=== IMPORTER FETCH ===");
-  console.log("📍 URL:", url);
+  console.log("📍 URL (entrada):", url);
   console.log("🔑 Token presente:", !!auth.token);
   console.log(
     "🔑 Token (primeros 50 chars):",
