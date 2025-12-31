@@ -57,6 +57,7 @@ export default function SuppliersModal({
       password: "",
       confirmPassword: "",
       supplierType: SUPPLIER_TYPE.Persona,
+      importersIds: [],
       // requiredPasswordChange: false,
     },
   });
@@ -96,6 +97,10 @@ export default function SuppliersModal({
         if (data.password) {
           formData.append("password", data.password);
         }
+      }
+      // Agregar importersIds
+      if (Array.isArray(data.importersIds)) {
+        data.importersIds.forEach((id) => formData.append("importersIds", id));
       }
       formData.append("sellerType", String(data.sellerType));
       formData.append("nacionality", String(data.nacionalityType));
