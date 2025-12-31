@@ -148,13 +148,15 @@ export function DatePicker({
         <input
           className={cn(
             "w-full border rounded-md px-3 py-2 font-normal pr-10 focus:outline-none focus:ring-2 focus:ring-primary-500",
+            "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100",
+            "border-gray-300 dark:border-gray-600",
+            "placeholder:text-gray-400 dark:placeholder:text-gray-500",
             buttonClassname
           )}
           placeholder="dd/mm/aaaa"
           value={inputValue}
           type="text"
           inputMode="numeric"
-          pattern="\\d{2}/\\d{2}/\\d{4}"
           onChange={handleInputChange}
           onBlur={handleInputBlur}
         />
@@ -162,7 +164,7 @@ export function DatePicker({
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-primary-500"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400"
               tabIndex={-1}
               aria-label="Abrir calendario"
             >
@@ -170,17 +172,19 @@ export function DatePicker({
             </button>
           </PopoverTrigger>
           <PopoverContent
-            className={cn("w-auto overflow-hidden p-0 z-[70] bg-white")}
+            className={cn("w-auto overflow-hidden p-0 z-70 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700")}
             align="start"
+            side="bottom"
+            sideOffset={4}
           >
             <Calendar
               mode="single"
               locale={es}
               selected={date}
               onSelect={handleDateChange}
-              className={cn("rounded-md border w-fit", calendarClassname)}
+              className={cn("rounded-md border w-fit dark:border-gray-700", calendarClassname)}
               startMonth={new Date(1930, 0)} // Enero 1930
-              endMonth={new Date(2013, 11)} // Diciembre 2013
+              endMonth={new Date(2030, 11)} // Diciembre 2030
               month={currentMonth}
               onMonthChange={handleMonthChange}
               captionLayout="dropdown"

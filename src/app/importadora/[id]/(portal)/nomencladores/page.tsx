@@ -12,11 +12,6 @@ export default async function ImporterNomencladoresPage({ params }: Props) {
 
   const importerDataRes = await getImporterData();
 
-  console.log("📋 [Nomencladores Page] Respuesta de getImporterData:", {
-    hasError: !!importerDataRes.error,
-    hasData: !!importerDataRes.data,
-    message: importerDataRes.message,
-  });
 
   if (importerDataRes.error || !importerDataRes.data) {
     return (
@@ -32,10 +27,6 @@ export default async function ImporterNomencladoresPage({ params }: Props) {
 
   const { nomenclators } = importerDataRes.data;
 
-  console.log("✅ [Nomencladores Page] Datos cargados:", {
-    nomenclatorsCount: nomenclators?.length || 0,
-    nomenclators,
-  });
 
   return (
     <ImporterNomencladoresView

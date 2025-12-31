@@ -14,6 +14,7 @@ import ActionsMenu from "@/components/menu/actions-menu";
 import SimpleModal from "@/components/modal/modal";
 import FormProvider from "@/components/react-hook-form/form-provider";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
+import { RHFMultiSelectImporterCategories } from "@/components/react-hook-form";
 import LoaderButton from "@/components/loaders/loader-button";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";

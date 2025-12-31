@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ImporterSidebar from "./importer-sidebar";
 
 interface ImporterLayoutClientProps {
@@ -10,6 +10,22 @@ interface ImporterLayoutClientProps {
   expiresAt?: number;
 }
 
+function useSessionAutoRedirect(importerId: string, expiresAt?: number) {
+  useEffect(() => {
+    if (!expiresAt) return;
+    const now = Date.now();
+    const msToExpire = expiresAt - now;
+    if (msToExpire <= 0) {
+      window.location.href = `/importadora/${importerId}`;
+      return;
+    }
+    const timeout = setTimeout(() => {
+      window.location.href = `/importadora/${importerId}`;
+    }, msToExpire);
+    return () => clearTimeout(timeout);
+  }, [importerId, expiresAt]);
+}
+
 export default function ImporterLayoutClient({
   children,
   importerId,
@@ -17,6 +33,7 @@ export default function ImporterLayoutClient({
   expiresAt,
 }: ImporterLayoutClientProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  useSessionAutoRedirect(importerId, expiresAt);
 
   return (
     <div className="relative">
