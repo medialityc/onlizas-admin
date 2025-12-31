@@ -153,8 +153,14 @@ export default function ImporterDashboardView({ importerId }: Props) {
   
   const activeNomenclators = importerData?.nomenclators?.filter((n) => n.isActive).length || 0;
   const totalNomenclators = importerData?.nomenclators?.length || 0;
-  const activeContracts = importerData?.contracts?.filter((c) => c.status === "APPROVED" || c.status === "ACTIVE").length || 0;
-  const pendingContracts = importerData?.contracts?.filter((c) => c.status === "PENDING").length || 0;
+  const activeContracts = importerData?.contracts?.filter((c) => {
+    const status = c.status?.toUpperCase();
+    return status === "APPROVED" || status === "ACTIVE";
+  }).length || 0;
+  const pendingContracts = importerData?.contracts?.filter((c) => {
+    const status = c.status?.toUpperCase();
+    return status === "PENDING";
+  }).length || 0;
   const expiringContracts = importerData?.contracts?.filter((c) => {
     if (!c.endDate) return false;
     const endDate = new Date(c.endDate);
