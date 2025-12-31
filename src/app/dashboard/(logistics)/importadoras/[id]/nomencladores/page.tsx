@@ -32,6 +32,7 @@ export default async function ImporterNomenclatorsPage({ params }: Props) {
     <NomenclatorsListClient
       data={(nomenclators || []).map(n => ({
         ...n,
+        createdAt: n.createdAt ?? "",
         categories: n.categories ?? []
       }))}
       importerName={importerName}
