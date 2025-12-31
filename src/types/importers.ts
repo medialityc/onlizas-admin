@@ -7,13 +7,7 @@ export type Importer = {
   isActive: boolean;
   createdAt: string;
   updatedAt?: string;
-  nomenclators?: Array<{
-    id: string;
-    name: string;
-    isActive: boolean;
-    createdAt?: string;
-    createdDatetime?: string;
-  }>;
+  nomenclators?: ImporterNomenclatorDetail[];
   contracts?: Array<{
     id: string;
     importerId: string;

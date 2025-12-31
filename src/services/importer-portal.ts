@@ -1,4 +1,8 @@
-"use server";
+// Validación simple de IDs para rutas (alfanumérico, guion, guion bajo)
+function isValidId(id: string) {
+  return /^[A-Za-z0-9_-]+$/.test(id);
+}
+("use server");
 
 import { backendRoutes } from "@/lib/endpoint";
 import { cookies } from "next/headers";
@@ -174,6 +178,13 @@ export async function getImporterContracts(
   importerId: string,
   params?: { page?: number; pageSize?: number; search?: string }
 ): Promise<ContractResponse> {
+  if (!isValidId(importerId)) {
+    return {
+      success: false,
+      error: true,
+      message: "ID de importadora inválido",
+    };
+  }
   try {
     const queryParams = new URLSearchParams();
     if (params?.page) queryParams.append("page", params.page.toString());
@@ -218,6 +229,13 @@ export async function getPendingContracts(
   importerId: string,
   params?: { page?: number; pageSize?: number; search?: string }
 ): Promise<ContractResponse> {
+  if (!isValidId(importerId)) {
+    return {
+      success: false,
+      error: true,
+      message: "ID de importadora inválido",
+    };
+  }
   try {
     const queryParams = new URLSearchParams();
     if (params?.page) queryParams.append("page", params.page.toString());
@@ -342,6 +360,13 @@ export async function rejectContract(
   contractId: string,
   reason: string
 ): Promise<ContractResponse> {
+  if (!isValidId(contractId)) {
+    return {
+      success: false,
+      error: true,
+      message: "ID de contrato inválido",
+    };
+  }
   try {
     console.log("=== REJECT CONTRACT ===");
     console.log("Contract ID:", contractId);
@@ -394,6 +419,13 @@ export async function addNomenclatorsToContract(
   contractId: string,
   nomenclatorIds: string[]
 ): Promise<ContractResponse> {
+  if (!isValidId(contractId)) {
+    return {
+      success: false,
+      error: true,
+      message: "ID de contrato inválido",
+    };
+  }
   try {
     const response = await importerFetch(
       `${backendRoutes.importerContracts.getById(contractId)}/nomenclators`,
@@ -474,6 +506,13 @@ export async function updateImporterNomenclator(
   id: string,
   data: UpdateNomenclatorPayload
 ): Promise<NomenclatorResponse> {
+  if (!isValidId(id)) {
+    return {
+      success: false,
+      error: true,
+      message: "ID de nomenclador inválido",
+    };
+  }
   try {
     const response = await importerFetch(
       backendRoutes.importerAccess.updateNomenclator(id),
@@ -511,6 +550,13 @@ export async function updateImporterNomenclator(
 export async function toggleImporterNomenclatorStatus(
   id: string
 ): Promise<NomenclatorResponse> {
+  if (!isValidId(id)) {
+    return {
+      success: false,
+      error: true,
+      message: "ID de nomenclador inválido",
+    };
+  }
   try {
     const response = await importerFetch(
       backendRoutes.importerAccess.toggleNomenclatorStatus(id),
