@@ -159,10 +159,6 @@ export async function getImporterData(): Promise<{
     }
 
     const endpoint = backendRoutes.importerAccess.getData;
-    console.log("📡 [getImporterData] Llamando al endpoint:", endpoint);
-    console.log("📋 [getImporterData] Headers que se enviarán:", {
-      "X-Importer-Session-Token": `${token.substring(0, 30)}... (length: ${token.length})`,
-    });
 
     const response = await fetch(endpoint, {
       method: "GET",
@@ -197,14 +193,7 @@ export async function getImporterData(): Promise<{
     let data;
     try {
       data = JSON.parse(text);
-      console.log("✅ [getImporterData] JSON parseado correctamente:", {
-        hasData: !!data,
-        dataKeys: Object.keys(data || {}),
-        data: data,
-      });
     } catch (e) {
-      console.error("❌ [getImporterData] Error parsing JSON:", e);
-      console.error("❌ [getImporterData] Raw text:", text);
       return {
         error: true,
         message: "Respuesta inválida del servidor",
@@ -233,8 +222,6 @@ export async function getImporterData(): Promise<{
         message: errorMessage,
       };
     }
-
-    console.log("✅ [getImporterData] Datos obtenidos exitosamente");
     return {
       data: data,
     };
@@ -299,7 +286,6 @@ export async function getImporterSessions(importerId: string): Promise<{
   message?: string;
 }> {
   try {
-    // Validar UUID para prevenir SSRF
     if (!isValidUUID(importerId)) {
       return {
         error: true,
@@ -357,7 +343,6 @@ export async function revokeImporterSession(
   message?: string;
 }> {
   try {
-    // Validar UUID para prevenir SSRF
     if (!isValidUUID(importerId)) {
       return {
         success: false,
@@ -429,7 +414,6 @@ export async function generateImporterQR(importerId: string): Promise<{
   message?: string;
 }> {
   try {
-    // Validar UUID para prevenir SSRF
     if (!isValidUUID(importerId)) {
       return {
         error: true,
@@ -464,6 +448,81 @@ export async function generateImporterQR(importerId: string): Promise<{
     return {
       error: true,
       message: "Error al generar el código QR",
+    };
+  }
+}
+
+export type UpdateContractPayload = {
+  endDate: string;
+  nomenclatorIds: string[];
+};
+
+export async function updateImporterContract(
+  contractId: string,
+  payload: UpdateContractPayload
+): Promise<{
+  success: boolean;
+  data?: any;
+  error?: boolean;
+  message?: string;
+}> {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(IMPORTER_TOKEN_COOKIE)?.value;
+
+    if (!token) {
+      return {
+        success: false,
+        error: true,
+        message: "No hay sesión activa",
+      };
+    }
+
+    // LOG: Ver qué se está enviando
+    console.log("[updateImporterContract] contractId:", contractId);
+    console.log("[updateImporterContract] payload:", JSON.stringify(payload));
+
+    const response = await fetch(
+      `${backendRoutes.importerAccess.contracts}/${contractId}`,
+      {
+        method: "PUT",
+        headers: {
+          "X-Importer-Session-Token": token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    // LOG: Ver la respuesta cruda
+    const text = await response.text();
+    console.log("[updateImporterContract] raw response:", text);
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      data = { error: true, message: "Respuesta no es JSON", raw: text };
+    }
+
+    if (!response.ok || data.error) {
+      return {
+        success: false,
+        error: true,
+        message: data.message || "Error al actualizar el contrato",
+      };
+    }
+
+    return {
+      success: true,
+      data: data,
+      message: "Contrato actualizado exitosamente",
+    };
+  } catch (error) {
+    console.error("Error updating contract:", error);
+    return {
+      success: false,
+      error: true,
+      message: "Error al actualizar el contrato",
     };
   }
 }

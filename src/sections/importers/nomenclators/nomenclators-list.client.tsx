@@ -8,6 +8,7 @@ import { Badge } from "@mantine/core";
 import SimpleModal from "@/components/modal/modal";
 import FormProvider from "@/components/react-hook-form/form-provider";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
+import RHFMultiSelectImporterCategories from "@/components/react-hook-form/rhf-multi-select-importer-categories";
 import ActionsMenu from "@/components/menu/actions-menu";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -166,7 +167,7 @@ export default function NomenclatorsListClient({
     [router]
   );
 
-  const columns = useMemo<DataTableColumn<ImporterNomenclatorDetail>[]>(
+  const columns = useMemo<DataTableColumn<ImporterNomenclatorDetail>(
     () => [
       {
         accessor: "name",
@@ -257,6 +258,12 @@ export default function NomenclatorsListClient({
                 label="Nombre"
                 placeholder="Nombre del nomenclador"
                 type="text"
+                required
+              />
+              <RHFMultiSelectImporterCategories
+                name="categoryIds"
+                label="Categorías"
+                placeholder="Seleccionar categorías..."
                 required
               />
             </div>

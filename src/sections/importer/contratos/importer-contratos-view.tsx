@@ -8,24 +8,83 @@ import { DataTableColumn } from "mantine-datatable";
 import { ImporterContract } from "@/services/importer-portal";
 import { useImporterData } from "@/contexts/importer-data-context";
 import ActionsMenu from "@/components/menu/actions-menu";
+import SimpleModal from "@/components/modal/modal";
+import FormProvider from "@/components/react-hook-form/form-provider";
+import RHFDatePicker from "@/components/react-hook-form/rhf-date-picker";
+import RHFMultiSelectNomenclators from "@/components/react-hook-form/rhf-multi-select-nomenclators";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { updateImporterContract } from "@/services/importer-access";
+import { useRouter } from "next/navigation";
+import LoaderButton from "@/components/loaders/loader-button";
 
 interface Props {
   importerId: string;
 }
 
+type ContractForm = {
+  endDate: Date;
+  nomenclatorIds: string[];
+};
+
 export default function ImporterContratosView({ importerId }: Props) {
+  const router = useRouter();
   const { importerData } = useImporterData();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedContract, setSelectedContract] = useState<ImporterContract | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const contracts = importerData?.contracts || [];
+  const nomenclators = importerData?.nomenclators || [];
   const isLoading = false; // Ya los datos vienen del contexto
+
+  const methods = useForm<ContractForm>({
+    defaultValues: {
+      endDate: new Date(),
+      nomenclatorIds: [],
+    },
+  });
+
+  const { reset } = methods;
 
   const handleEdit = (contract: ImporterContract) => {
     setSelectedContract(contract);
+    reset({
+      endDate: contract.endDate ? new Date(contract.endDate) : new Date(),
+      nomenclatorIds: nomenclators.map((n) => n.id), // Por defecto, todos los nomencladores
+    });
     setEditModalOpen(true);
-    // TODO: Implementar modal de edición
-    console.log("Editar contrato:", contract);
+  };
+
+  const closeModal = () => {
+    setEditModalOpen(false);
+    setSelectedContract(null);
+  };
+
+  const onSubmit = async (values: ContractForm) => {
+    if (!selectedContract) return;
+
+    setIsSaving(true);
+    try {
+      const res = await updateImporterContract(selectedContract.id, {
+        endDate: values.endDate.toISOString(),
+        nomenclatorIds: values.nomenclatorIds,
+      });
+
+      if (res.error) {
+        toast.error(res.message || "Error al actualizar el contrato");
+        return;
+      }
+
+      toast.success("Contrato actualizado exitosamente");
+      closeModal();
+      router.refresh();
+    } catch (error) {
+      console.error("Error updating contract:", error);
+      toast.error("Error al actualizar el contrato");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const getStatusConfig = (status: string): { label: string; color: string } => {
@@ -69,13 +128,32 @@ export default function ImporterContratosView({ importerId }: Props) {
         },
       },
       {
-        accessor: "approvalProcessName",
-        title: "Proceso",
-        render: (r) => (
-          <Text size="sm" className="text-gray-900 dark:text-gray-100">
-            {r.approvalProcessName}
-          </Text>
-        ),
+        accessor: "nomenclators",
+        title: "Nomencladores",
+        render: () => {
+          const nomenclators = importerData?.nomenclators || [];
+          if (nomenclators.length === 0) {
+            return (
+              <Text size="sm" c="dimmed">
+                Sin nomencladores
+              </Text>
+            );
+          }
+          return (
+            <Group gap="xs">
+              {nomenclators.map((nomenclator) => (
+                <Badge 
+                  key={nomenclator.id} 
+                  color={nomenclator.isActive ? "blue" : "gray"}
+                  variant="light" 
+                  size="sm"
+                >
+                  {nomenclator.name}
+                </Badge>
+              ))}
+            </Group>
+          );
+        },
       },
       {
         accessor: "startDate",
@@ -129,7 +207,7 @@ export default function ImporterContratosView({ importerId }: Props) {
         ),
       },
     ],
-    []
+    [importerData?.nomenclators]
   );
 
   return (
@@ -166,11 +244,86 @@ export default function ImporterContratosView({ importerId }: Props) {
           columns={columns}
           enablePagination={false}
           enableSorting={true}
-          enableSearch={true}
-          searchPlaceholder="Buscar por usuario, proceso..."
+          enableSearch={false}
           emptyText="No hay contratos disponibles"
         />
       )}
+
+      <SimpleModal
+        open={editModalOpen}
+        onClose={closeModal}
+        title="Editar Contrato"
+      >
+        <div className="p-5">
+          {selectedContract && (
+            <>
+              <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Información del Contrato
+                </h3>
+                <div className="space-y-2 text-sm">
+                  <div>
+                    <span className="text-gray-600 dark:text-gray-400">Usuario: </span>
+                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                      {selectedContract.approvalProcessUser?.userName || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600 dark:text-gray-400">Fecha de Inicio: </span>
+                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                      {selectedContract.startDate
+                        ? new Date(selectedContract.startDate).toLocaleDateString("es-ES")
+                        : "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600 dark:text-gray-400">Estado: </span>
+                    <Badge
+                      color={getStatusConfig(selectedContract.status).color}
+                      variant="filled"
+                      size="sm"
+                    >
+                      {getStatusConfig(selectedContract.status).label}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              <FormProvider methods={methods} onSubmit={onSubmit}>
+                <div className="space-y-4">
+                  <RHFDatePicker
+                    name="endDate"
+                    label="Fecha de Fin"
+                    containerClassName="w-full"
+                  />
+
+                  <RHFMultiSelectNomenclators
+                    name="nomenclatorIds"
+                    label="Nomencladores"
+                    nomenclators={nomenclators}
+                    placeholder="Selecciona los nomencladores"
+                    required
+                  />
+                </div>
+
+                <div className="flex justify-end gap-3 pt-6">
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    disabled={isSaving}
+                    className="btn btn-outline-secondary"
+                  >
+                    Cancelar
+                  </button>
+                  <LoaderButton type="submit" loading={isSaving} disabled={isSaving}>
+                    Guardar
+                  </LoaderButton>
+                </div>
+              </FormProvider>
+            </>
+          )}
+        </div>
+      </SimpleModal>
     </div>
   );
 }

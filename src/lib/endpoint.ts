@@ -66,6 +66,7 @@ export const backendRoutes = {
   categories: {
     create: `${process.env.NEXT_PUBLIC_API_URL}categories`, // POST
     list: `${process.env.NEXT_PUBLIC_API_URL}admin/categories`, // GET
+    listImporterAccess: `${process.env.NEXT_PUBLIC_API_URL}importer-access/categories`, // GET para importadoras
     listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/categories`, // GET
     aduanaCategories: `${process.env.NEXT_PUBLIC_API_URL}aduana-categories`,
     toggleStatus: (id: string | number) =>
@@ -587,6 +588,7 @@ export const backendRoutes = {
   importerAccess: {
     validate: `${process.env.NEXT_PUBLIC_API_URL}importer-access/validate`,
     getData: `${process.env.NEXT_PUBLIC_API_URL}importer-access/data`,
+    contracts: `${process.env.NEXT_PUBLIC_API_URL}importer-access/contracts`,
     pendingContracts: `${process.env.NEXT_PUBLIC_API_URL}importer-access/pending-contracts`,
     approveContract: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}importer-access/contracts/${id}/approve`,
