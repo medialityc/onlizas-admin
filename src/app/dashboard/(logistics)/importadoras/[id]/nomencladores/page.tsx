@@ -1,4 +1,4 @@
-import { getImporterData } from "@/services/importers";
+import { getImporters } from "@/services/importers";
 import NomenclatorsListClient from "@/sections/importers/nomenclators/nomenclators-list.client";
 import { notFound } from "next/navigation";
 
@@ -12,7 +12,7 @@ export default async function ImporterNomenclatorsPage({ params }: Props) {
 
   const { id } = await params;
   
-  const importerDataRes = await getImporterData(id);
+  const importerDataRes = await getImporters({ id });
 
   if (importerDataRes.error || !importerDataRes.data) {
     return (
