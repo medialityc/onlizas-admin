@@ -1,3 +1,4 @@
+"use server";
 // Validación simple de IDs para rutas (alfanumérico, guion, guion bajo)
 function isValidId(id: string) {
   return /^[A-Za-z0-9_-]+$/.test(id);
