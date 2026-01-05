@@ -439,6 +439,15 @@ export async function updateImporterContract(
   message?: string;
 }> {
   try {
+    // Validate contractId to prevent SSRF attacks
+    if (!contractId || !/^[a-zA-Z0-9\-_]+$/.test(contractId)) {
+      return {
+        success: false,
+        error: true,
+        message: "ID de contrato inválido",
+      };
+    }
+
     const cookieStore = await cookies();
     const token = cookieStore.get(IMPORTER_TOKEN_COOKIE)?.value;
 
