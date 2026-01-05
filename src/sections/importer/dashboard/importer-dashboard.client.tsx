@@ -69,7 +69,7 @@ export default function ImporterDashboardClient({ importer, expiresAt }: Props) 
                       <Group justify="space-between" mb="xs">
                         <Text fw={500}>{contract.approvalProcessUser?.userName || contract.approvalProcessName}</Text>
                         <Badge
-                          color={contract.status === "active" ? "green" : "gray"}
+                          color={contract.status === "Approved" ? "green" : contract.status === "Pending" ? "yellow" : "gray"}
                           variant="filled"
                         >
                           {contract.status}
