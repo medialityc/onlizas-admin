@@ -1,7 +1,7 @@
 "use client";
 
 import { DataGrid } from "@/components/datagrid/datagrid";
-import { DataTable, DataTableColumn } from "mantine-datatable";
+import { DataTableColumn } from "mantine-datatable";
 import { ImporterNomenclatorDetail } from "@/types/importers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Badge } from "@mantine/core";
@@ -167,7 +167,7 @@ export default function NomenclatorsListClient({
     [router]
   );
 
-  const columns = useMemo<DataTableColumn<ImporterNomenclatorDetail>(
+  const columns = useMemo<DataTableColumn<ImporterNomenclatorDetail>[]>(
     () => [
       {
         accessor: "name",
@@ -191,8 +191,7 @@ export default function NomenclatorsListClient({
         accessor: "createdAt",
         title: "Fecha de creación",
         render: (r) => {
-          const d = r.createdAt || r.createdDatetime;
-          return d ? new Date(d).toLocaleDateString("es-ES") : "-";
+          return r.createdAt ? new Date(r.createdAt).toLocaleDateString("es-ES") : "-";
         },
       },
       {
