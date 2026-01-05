@@ -29,32 +29,35 @@ async function importerFetch(
   url: string,
   options: RequestInit = {}
 ): Promise<Response> {
-  // Validar que la URL sea segura (solo rutas relativas o del dominio permitido)
-  const allowedDomains = [
-    "onlizas-api.zasdistributor.com",
-    "zasdistributor.com",
-    "localhost"
-  ];
-  const safePathPattern = /^\/[A-Za-z0-9_/\-]*$/;
-  
-  // Si es una URL completa, verificar el dominio
-  if (url.startsWith("http://") || url.startsWith("https://")) {
-    const urlObj = new URL(url);
-    const isAllowedDomain = allowedDomains.some(domain => 
-      urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
-    );
-    if (!isAllowedDomain) {
-      throw new Error("Dominio no permitido");
-    }
-  } else if (!safePathPattern.test(url)) {
-    // Si es una ruta relativa, validar el patrón
-    throw new Error("Ruta no válida");
-  }
-
   const auth = await getImporterToken();
 
   if (!auth) {
     throw new Error("No hay sesión activa de importadora");
+  }
+
+  // Construir URL segura: si es una ruta relativa, validar y construir con base URL conocida
+  let safeUrl: string;
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const safePathPattern = /^\/[A-Za-z0-9_/\-]*$/;
+  
+  if (url.startsWith("http://") || url.startsWith("https://")) {
+    // Si es URL completa, validar dominio permitido
+    const urlObj = new URL(url);
+    const allowedDomains = ["onlizas-api.zasdistributor.com", "zasdistributor.com"];
+    const isAllowed = allowedDomains.some(domain => 
+      urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
+    );
+    if (!isAllowed) {
+      throw new Error("Dominio no permitido");
+    }
+    safeUrl = url;
+  } else {
+    // Para rutas relativas, validar patrón y construir con base URL
+    if (!safePathPattern.test(url)) {
+      throw new Error("Ruta no válida");
+    }
+    // Construir URL completa usando base URL conocida
+    safeUrl = `${baseUrl}${url}`;
   }
 
   const headers: Record<string, string> = {
@@ -69,7 +72,7 @@ async function importerFetch(
     Object.assign(headers, options.headers);
   }
 
-  return fetch(url, {
+  return fetch(safeUrl, {
     ...options,
     headers,
   });
