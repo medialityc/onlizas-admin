@@ -35,29 +35,33 @@ async function importerFetch(
     throw new Error("No hay sesión activa de importadora");
   }
 
-  // Construir URL segura: si es una ruta relativa, validar y construir con base URL conocida
-  let safeUrl: string;
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-  const safePathPattern = /^\/[A-Za-z0-9_/\-]*$/;
+  const allowedDomains = ["onlizas-api.zasdistributor.com", "zasdistributor.com"];
   
-  if (url.startsWith("http://") || url.startsWith("https://")) {
-    // Si es URL completa, validar dominio permitido
-    const urlObj = new URL(url);
-    const allowedDomains = ["onlizas-api.zasdistributor.com", "zasdistributor.com"];
-    const isAllowed = allowedDomains.some(domain => 
-      urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
-    );
-    if (!isAllowed) {
-      throw new Error("Dominio no permitido");
+  let finalUrl: URL;
+  
+  try {
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      finalUrl = new URL(url);
+      const isAllowed = allowedDomains.some(domain => 
+        finalUrl.hostname === domain || finalUrl.hostname.endsWith(`.${domain}`)
+      );
+      if (!isAllowed) {
+        throw new Error("Dominio no permitido");
+      }
+    } else {
+      if (!baseUrl) {
+        throw new Error("Base URL no configurada");
+      }
+      finalUrl = new URL(url, baseUrl);
+ 
+      const baseHostname = new URL(baseUrl).hostname;
+      if (finalUrl.hostname !== baseHostname) {
+        throw new Error("URL inválida: hostname no coincide con base");
+      }
     }
-    safeUrl = url;
-  } else {
-    // Para rutas relativas, validar patrón y construir con base URL
-    if (!safePathPattern.test(url)) {
-      throw new Error("Ruta no válida");
-    }
-    // Construir URL completa usando base URL conocida
-    safeUrl = `${baseUrl}${url}`;
+  } catch (error) {
+    throw new Error(`URL inválida: ${error instanceof Error ? error.message : 'error desconocido'}`);
   }
 
   const headers: Record<string, string> = {
@@ -72,7 +76,7 @@ async function importerFetch(
     Object.assign(headers, options.headers);
   }
 
-  return fetch(safeUrl, {
+  return fetch(finalUrl.toString(), {
     ...options,
     headers,
   });
