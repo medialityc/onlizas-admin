@@ -36,29 +36,34 @@ async function importerFetch(
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  
+  if (!baseUrl) {
+    throw new Error("NEXT_PUBLIC_API_URL no está configurado");
+  }
+  
   const allowedDomains = ["onlizas-api.zasdistributor.com", "zasdistributor.com"];
   
-  let finalUrl: URL;
+  let sanitizedUrl: string;
   
   try {
     if (url.startsWith("http://") || url.startsWith("https://")) {
-      finalUrl = new URL(url);
+      const urlObj = new URL(url);
       const isAllowed = allowedDomains.some(domain => 
-        finalUrl.hostname === domain || finalUrl.hostname.endsWith(`.${domain}`)
+        urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
       );
       if (!isAllowed) {
         throw new Error("Dominio no permitido");
       }
+      sanitizedUrl = `${urlObj.protocol}//${urlObj.hostname}${urlObj.pathname}${urlObj.search}${urlObj.hash}`;
     } else {
-      if (!baseUrl) {
-        throw new Error("Base URL no configurada");
-      }
-      finalUrl = new URL(url, baseUrl);
- 
+      const urlObj = new URL(url, baseUrl);
       const baseHostname = new URL(baseUrl).hostname;
-      if (finalUrl.hostname !== baseHostname) {
+      
+      if (urlObj.hostname !== baseHostname) {
         throw new Error("URL inválida: hostname no coincide con base");
       }
+
+      sanitizedUrl = `${urlObj.protocol}//${baseHostname}${urlObj.pathname}${urlObj.search}${urlObj.hash}`;
     }
   } catch (error) {
     throw new Error(`URL inválida: ${error instanceof Error ? error.message : 'error desconocido'}`);
@@ -76,13 +81,12 @@ async function importerFetch(
     Object.assign(headers, options.headers);
   }
 
-  return fetch(finalUrl.toString(), {
+  return fetch(sanitizedUrl, {
     ...options,
     headers,
   });
 }
 
-// Exportar para uso externo
 export { importerFetch };
 
 export type ImporterContract = {
