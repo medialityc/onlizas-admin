@@ -11,7 +11,6 @@ import ActionsMenu from "@/components/menu/actions-menu";
 import SimpleModal from "@/components/modal/modal";
 import FormProvider from "@/components/react-hook-form/form-provider";
 import RHFDatePicker from "@/components/react-hook-form/rhf-date-picker";
-import RHFMultiSelectNomenclators from "@/components/react-hook-form/rhf-multi-select-nomenclators";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { updateImporterContract } from "@/services/importer-access";
@@ -24,7 +23,6 @@ interface Props {
 
 type ContractForm = {
   endDate: Date;
-  nomenclatorIds: string[];
 };
 
 export default function ImporterContratosView({ importerId }: Props) {
@@ -41,7 +39,6 @@ export default function ImporterContratosView({ importerId }: Props) {
   const methods = useForm<ContractForm>({
     defaultValues: {
       endDate: new Date(),
-      nomenclatorIds: [],
     },
   });
 
@@ -51,7 +48,6 @@ export default function ImporterContratosView({ importerId }: Props) {
     setSelectedContract(contract);
     reset({
       endDate: contract.endDate ? new Date(contract.endDate) : new Date(),
-      nomenclatorIds: nomenclators.map((n) => n.id), // Por defecto, todos los nomencladores
     });
     setEditModalOpen(true);
   };
@@ -66,9 +62,12 @@ export default function ImporterContratosView({ importerId }: Props) {
 
     setIsSaving(true);
     try {
+      // Enviar los nomenclatorIds actuales del contrato (no se modifican)
+      const currentNomenclatorIds = selectedContract.nomenclators?.map(n => n.id) || [];
+      
       const res = await updateImporterContract(selectedContract.id, {
         endDate: values.endDate.toISOString(),
-        nomenclatorIds: values.nomenclatorIds,
+        nomenclatorIds: currentNomenclatorIds,
       });
 
       if (res.error) {
@@ -291,18 +290,18 @@ export default function ImporterContratosView({ importerId }: Props) {
 
               <FormProvider methods={methods} onSubmit={onSubmit}>
                 <div className="space-y-4">
+                  <Alert
+                    icon={<InformationCircleIcon className="h-5 w-5" />}
+                    color="blue"
+                    className="mb-4"
+                  >
+                    Los nomencladores asignados al contrato no se pueden modificar.
+                  </Alert>
+
                   <RHFDatePicker
                     name="endDate"
                     label="Fecha de Fin"
                     containerClassName="w-full"
-                  />
-
-                  <RHFMultiSelectNomenclators
-                    name="nomenclatorIds"
-                    label="Nomencladores"
-                    nomenclators={nomenclators}
-                    placeholder="Selecciona los nomencladores"
-                    required
                   />
                 </div>
 

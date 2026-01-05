@@ -2,6 +2,7 @@
 
 import { backendRoutes } from "@/lib/endpoint";
 import { cookies } from "next/headers";
+import { importerFetch } from "./importer-portal";
 import type { ImporterData } from "./importer-portal";
 
 // Re-exportar el tipo para mantener compatibilidad
@@ -454,7 +455,7 @@ export async function generateImporterQR(importerId: string): Promise<{
 
 export type UpdateContractPayload = {
   endDate: string;
-  nomenclatorIds: string[];
+  nomenclatorIds?: string[];
 };
 
 export async function updateImporterContract(
@@ -482,14 +483,10 @@ export async function updateImporterContract(
     console.log("[updateImporterContract] contractId:", contractId);
     console.log("[updateImporterContract] payload:", JSON.stringify(payload));
 
-    const response = await (await import("./importer-portal")).importerFetch(
+    const response = await importerFetch(
       `${backendRoutes.importerAccess.contracts}/${contractId}`,
       {
         method: "PUT",
-        headers: {
-          "X-Importer-Session-Token": token,
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(payload),
       }
     );

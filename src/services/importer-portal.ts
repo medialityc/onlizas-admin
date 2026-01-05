@@ -66,6 +66,9 @@ async function importerFetch(
   });
 }
 
+// Exportar para uso externo
+export { importerFetch };
+
 export type ImporterContract = {
   id: string;
   importerId: string;
@@ -559,6 +562,12 @@ export async function toggleImporterNomenclatorStatus(
     };
   }
   try {
+    console.log("[toggleImporterNomenclatorStatus] id:", id);
+    console.log(
+      "[toggleImporterNomenclatorStatus] endpoint:",
+      backendRoutes.importerAccess.toggleNomenclatorStatus(id)
+    );
+
     const response = await importerFetch(
       backendRoutes.importerAccess.toggleNomenclatorStatus(id),
       {
@@ -568,6 +577,7 @@ export async function toggleImporterNomenclatorStatus(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      console.log("[toggleImporterNomenclatorStatus] error data:", errorData);
       return {
         success: false,
         error: true,
