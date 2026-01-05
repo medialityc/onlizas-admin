@@ -3,7 +3,6 @@
 function isValidId(id: string) {
   return /^[A-Za-z0-9_-]+$/.test(id);
 }
-("use server");
 
 import { backendRoutes } from "@/lib/endpoint";
 import { cookies } from "next/headers";
@@ -36,15 +35,6 @@ async function importerFetch(
     throw new Error("No hay sesión activa de importadora");
   }
 
-  console.log("=== IMPORTER FETCH ===");
-  console.log("📍 URL (entrada):", url);
-  console.log("🔑 Token presente:", !!auth.token);
-  console.log(
-    "🔑 Token (primeros 50 chars):",
-    auth.token.substring(0, 50) + "..."
-  );
-  console.log("👤 Importer ID:", auth.importerId);
-
   const headers: Record<string, string> = {
     "X-Importer-Session-Token": auth.token,
   };
@@ -56,9 +46,6 @@ async function importerFetch(
   if (options.headers) {
     Object.assign(headers, options.headers);
   }
-
-  console.log("📤 Headers que se enviarán:", headers);
-  console.log("=====================");
 
   return fetch(url, {
     ...options,
@@ -148,11 +135,8 @@ export async function getImporterData(): Promise<ImporterDataResponse> {
   try {
     const response = await importerFetch(backendRoutes.importerAccess.getData);
 
-    console.log("getImporterData - Response status:", response.status);
-
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      console.log("getImporterData - Error data:", errorData);
       return {
         success: false,
         error: true,
@@ -162,7 +146,6 @@ export async function getImporterData(): Promise<ImporterDataResponse> {
     }
 
     const responseData = await response.json();
-    console.log("getImporterData - Response data:", responseData);
 
     return {
       success: true,
@@ -317,24 +300,12 @@ export async function approveContract(
   contractId: string
 ): Promise<ContractResponse> {
   try {
-    console.log("=== APPROVE CONTRACT ===");
-    console.log("Contract ID:", contractId);
-    console.log(
-      "Endpoint:",
-      backendRoutes.importerAccess.approveContract(contractId)
-    );
-
     const response = await importerFetch(
       backendRoutes.importerAccess.approveContract(contractId),
       { method: "POST" }
     );
 
-    console.log("Response status:", response.status);
-    console.log("Response ok:", response.ok);
-
     const data = await response.json();
-    console.log("Response data:", data);
-    console.log("========================");
 
     // Verificar si la respuesta es exitosa (200-299) o tiene un indicador de éxito
     if (response.ok || response.status === 200 || data.success !== false) {
@@ -372,14 +343,6 @@ export async function rejectContract(
     };
   }
   try {
-    console.log("=== REJECT CONTRACT ===");
-    console.log("Contract ID:", contractId);
-    console.log("Reason:", reason);
-    console.log(
-      "Endpoint:",
-      backendRoutes.importerAccess.rejectContract(contractId)
-    );
-
     const response = await importerFetch(
       backendRoutes.importerAccess.rejectContract(contractId),
       {
@@ -388,12 +351,7 @@ export async function rejectContract(
       }
     );
 
-    console.log("Response status:", response.status);
-    console.log("Response ok:", response.ok);
-
     const data = await response.json();
-    console.log("Response data:", data);
-    console.log("========================");
 
     // Verificar si la respuesta es exitosa (200-299) o tiene un indicador de éxito
     if (response.ok || response.status === 200 || data.success !== false) {
@@ -562,12 +520,6 @@ export async function toggleImporterNomenclatorStatus(
     };
   }
   try {
-    console.log("[toggleImporterNomenclatorStatus] id:", id);
-    console.log(
-      "[toggleImporterNomenclatorStatus] endpoint:",
-      backendRoutes.importerAccess.toggleNomenclatorStatus(id)
-    );
-
     const response = await importerFetch(
       backendRoutes.importerAccess.toggleNomenclatorStatus(id),
       {

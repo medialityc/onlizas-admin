@@ -145,14 +145,7 @@ export async function getImporterData(): Promise<{
     const cookieStore = await cookies();
     const token = cookieStore.get(IMPORTER_TOKEN_COOKIE)?.value;
 
-    console.log("🔍 [getImporterData] Iniciando...", {
-      hasToken: !!token,
-      tokenLength: token?.length,
-      tokenPreview: token ? `${token.substring(0, 30)}...` : "NO TOKEN",
-    });
-
     if (!token) {
-      console.error("❌ [getImporterData] No hay sesión activa");
       return {
         error: true,
         message: "No hay sesión activa",
@@ -169,22 +162,9 @@ export async function getImporterData(): Promise<{
       cache: "no-store",
     });
 
-    console.log("📨 [getImporterData] Response status:", response.status);
-    console.log(
-      "📨 [getImporterData] Response headers:",
-      Object.fromEntries(response.headers.entries())
-    );
-
     const text = await response.text();
 
-    console.log("📄 [getImporterData] Response text length:", text.length);
-    console.log(
-      "📄 [getImporterData] Response text preview:",
-      text.substring(0, 200)
-    );
-
     if (!text) {
-      console.error("❌ [getImporterData] Respuesta vacía");
       return {
         error: true,
         message: "Respuesta vacía del servidor",
@@ -202,20 +182,12 @@ export async function getImporterData(): Promise<{
     }
 
     if (!response.ok || data.error) {
-      console.error("❌ [getImporterData] Error en respuesta:", {
-        responseOk: response.ok,
-        dataError: data.error,
-        message: data.message,
-        fullData: JSON.stringify(data, null, 2),
-      });
-
       // Extraer mensaje de error si viene en el array errors
       let errorMessage = data.message || "Error al obtener los datos";
       if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
         errorMessage = data.errors
           .map((e: any) => e.message || JSON.stringify(e))
           .join(", ");
-        console.error("❌ [getImporterData] Errores detallados:", data.errors);
       }
 
       return {
@@ -227,7 +199,6 @@ export async function getImporterData(): Promise<{
       data: data,
     };
   } catch (error) {
-    console.error("💥 [getImporterData] Excepción capturada:", error);
     return {
       error: true,
       message: "Error al obtener los datos",
@@ -479,10 +450,6 @@ export async function updateImporterContract(
       };
     }
 
-    // LOG: Ver qué se está enviando
-    console.log("[updateImporterContract] contractId:", contractId);
-    console.log("[updateImporterContract] payload:", JSON.stringify(payload));
-
     const response = await importerFetch(
       `${backendRoutes.importerAccess.contracts}/${contractId}`,
       {
@@ -491,9 +458,7 @@ export async function updateImporterContract(
       }
     );
 
-    // LOG: Ver la respuesta cruda
     const text = await response.text();
-    console.log("[updateImporterContract] raw response:", text);
     let data;
     try {
       data = JSON.parse(text);
