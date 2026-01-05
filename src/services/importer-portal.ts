@@ -29,6 +29,28 @@ async function importerFetch(
   url: string,
   options: RequestInit = {}
 ): Promise<Response> {
+  // Validar que la URL sea segura (solo rutas relativas o del dominio permitido)
+  const allowedDomains = [
+    "onlizas-api.zasdistributor.com",
+    "zasdistributor.com",
+    "localhost"
+  ];
+  const safePathPattern = /^\/[A-Za-z0-9_/\-]*$/;
+  
+  // Si es una URL completa, verificar el dominio
+  if (url.startsWith("http://") || url.startsWith("https://")) {
+    const urlObj = new URL(url);
+    const isAllowedDomain = allowedDomains.some(domain => 
+      urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
+    );
+    if (!isAllowedDomain) {
+      throw new Error("Dominio no permitido");
+    }
+  } else if (!safePathPattern.test(url)) {
+    // Si es una ruta relativa, validar el patrón
+    throw new Error("Ruta no válida");
+  }
+
   const auth = await getImporterToken();
 
   if (!auth) {
@@ -267,6 +289,13 @@ export async function getPendingContracts(
 export async function getContractDetail(
   contractId: string
 ): Promise<ContractResponse> {
+  if (!isValidId(contractId)) {
+    return {
+      success: false,
+      error: true,
+      message: "ID de contrato inválido",
+    };
+  }
   try {
     const response = await importerFetch(
       backendRoutes.importerContracts.getById(contractId)
@@ -299,6 +328,13 @@ export async function getContractDetail(
 export async function approveContract(
   contractId: string
 ): Promise<ContractResponse> {
+  if (!isValidId(contractId)) {
+    return {
+      success: false,
+      error: true,
+      message: "ID de contrato inválido",
+    };
+  }
   try {
     const response = await importerFetch(
       backendRoutes.importerAccess.approveContract(contractId),
