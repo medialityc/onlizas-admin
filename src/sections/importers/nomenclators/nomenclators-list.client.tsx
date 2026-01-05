@@ -1,7 +1,7 @@
 "use client";
 
 import { DataGrid } from "@/components/datagrid/datagrid";
-import { DataTable } from "mantine-datatable";
+import { DataTable, DataTableColumn } from "mantine-datatable";
 import { ImporterNomenclatorDetail } from "@/types/importers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Badge } from "@mantine/core";
