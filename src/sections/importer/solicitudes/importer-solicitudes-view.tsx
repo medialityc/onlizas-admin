@@ -8,7 +8,6 @@ import {
   Avatar,
   Text,
   Modal,
-  Textarea,
   Stack,
   Loader,
   Alert,
@@ -27,13 +26,19 @@ import { usePendingContracts } from "@/hooks/react-query/use-pending-contracts";
 import { useQueryClient } from "@tanstack/react-query";
 import ActionsMenu from "@/components/menu/actions-menu";
 import ContractDetailsModal from "./contract-details-modal";
-import { RHFInputWithLabel } from "@/components/react-hook-form";
+import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
+import FormProvider from "@/components/react-hook-form/form-provider";
+import { useForm } from "react-hook-form";
 
 type Contract = ImporterContract;
 
 interface Props {
   importerId: string;
 }
+
+type RejectForm = {
+  reason: string;
+};
 
 export default function ImporterSolicitudesView({ importerId }: Props) {
   const {
@@ -49,7 +54,12 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
   const [selectedContract, setSelectedContract] = useState<Contract | null>(
     null
   );
-  const [rejectReason, setRejectReason] = useState("");
+
+  const rejectMethods = useForm<RejectForm>({
+    defaultValues: {
+      reason: "",
+    },
+  });
 
   const handleViewDetails = (contract: Contract) => {
     setSelectedContract(contract);
@@ -79,22 +89,23 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
 
   const handleRejectClick = (contract: Contract) => {
     setSelectedContract(contract);
-    setRejectReason("");
+    rejectMethods.reset({ reason: "" });
     setRejectModalOpen(true);
   };
 
-  const handleRejectConfirm = async () => {
-    if (!selectedContract || !rejectReason.trim()) {
+  const handleRejectConfirm = async (values: RejectForm) => {
+    if (!selectedContract || !values.reason.trim()) {
       showToast("Debe ingresar un motivo de rechazo", "error");
       return;
     }
 
     setIsLoading(true);
     try {
-      const result = await rejectContract(selectedContract.id, rejectReason);
+      const result = await rejectContract(selectedContract.id, values.reason);
       if (result.success) {
         showToast("Contrato rechazado", "success");
         setRejectModalOpen(false);
+        rejectMethods.reset();
         // Invalidar las queries para recargar los datos
         await queryClient.invalidateQueries({
           queryKey: ["importer-pending-contracts", importerId],
@@ -244,7 +255,10 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
 
       <Modal
         opened={rejectModalOpen}
-        onClose={() => setRejectModalOpen(false)}
+        onClose={() => {
+          setRejectModalOpen(false);
+          rejectMethods.reset();
+        }}
         title="Rechazar Solicitud"
         centered
         styles={{
@@ -267,43 +281,43 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
           },
         }}
       >
-        <Stack gap="md">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            ¿Estás seguro de rechazar la solicitud de{" "}
-            {selectedContract?.approvalProcessName}?
-          </p>
-          <Textarea
-            label="Motivo del rechazo"
-            placeholder="Ingrese el motivo del rechazo..."
-            value={rejectReason}
-            onChange={(e) => setRejectReason(e.target.value)}
-            required
-            minRows={3}
-            styles={{
-              input: {
-                backgroundColor: "light-dark(#ffffff, #1b2e4b)",
-                color: "light-dark(#000000, #ffffff)",
-                borderColor: "light-dark(#e5e7eb, #17263c)",
-              },
-              label: {
-                color: "light-dark(#000000, #ffffff)",
-              },
-            }}
-          />
-          <Group justify="flex-end" gap="sm">
-            <Button variant="subtle" onClick={() => setRejectModalOpen(false)}>
-              Cancelar
-            </Button>
-            <Button
-              color="red"
-              onClick={handleRejectConfirm}
-              loading={isLoading}
-              disabled={!rejectReason.trim()}
-            >
-              Rechazar
-            </Button>
-          </Group>
-        </Stack>
+        <FormProvider methods={rejectMethods} onSubmit={handleRejectConfirm}>
+          <Stack gap="md">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              ¿Estás seguro de rechazar la solicitud de{" "}
+              {selectedContract?.approvalProcessName}?
+            </p>
+            
+            <RHFInputWithLabel
+              name="reason"
+              label="Motivo del rechazo"
+              placeholder="Ingrese el motivo del rechazo..."
+              type="textarea"
+              required
+            />
+
+            <Group justify="flex-end" gap="sm">
+              <Button
+                variant="subtle"
+                onClick={() => {
+                  setRejectModalOpen(false);
+                  rejectMethods.reset();
+                }}
+                disabled={isLoading}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                color="red"
+                loading={isLoading}
+                disabled={isLoading || !rejectMethods.watch("reason")?.trim()}
+              >
+                Rechazar
+              </Button>
+            </Group>
+          </Stack>
+        </FormProvider>
       </Modal>
     </div>
   );

@@ -67,7 +67,7 @@ export default function ImporterDashboardClient({ importer, expiresAt }: Props) 
                   importer.contracts.map((contract) => (
                     <Card key={contract.id} padding="md" radius="md" withBorder>
                       <Group justify="space-between" mb="xs">
-                        <Text fw={500}>{contract.supplierName}</Text>
+                        <Text fw={500}>{contract.approvalProcessUser?.userName || contract.approvalProcessName}</Text>
                         <Badge
                           color={contract.status === "active" ? "green" : "gray"}
                           variant="filled"
@@ -75,7 +75,7 @@ export default function ImporterDashboardClient({ importer, expiresAt }: Props) 
                           {contract.status}
                         </Badge>
                       </Group>
-                      <Text size="sm" c="dimmed">Proveedor ID: {contract.supplierId}</Text>
+                      <Text size="sm" c="dimmed">Proceso: {contract.approvalProcessName}</Text>
                       <Text size="sm" c="dimmed">Desde: {new Date(contract.startDate).toLocaleDateString()}</Text>
                       <Text size="sm" c="dimmed">Hasta: {new Date(contract.endDate).toLocaleDateString()}</Text>
                     </Card>
