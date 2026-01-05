@@ -32,9 +32,141 @@ type NomenclatorForm = {
 
 export default function ImporterNomencladoresView({
   importerId,
-  nomenclators,
+  nomenclators: initialNomenclators,
 }: Props) {
-  const columns = useMemo<DataTableColumn<Nomenclator>[]>(
+  const { importerData } = useImporterData();
+  const router = useRouter();
+  const [opened, setOpened] = useState(false);
+  const [selected, setSelected] = useState<ImporterNomenclator | null>(null);
+  const [localData, setLocalData] = useState<ImporterNomenclator[]>(initialNomenclators);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const methods = useForm<NomenclatorForm>({
+    defaultValues: {
+      name: "",
+      categoryIds: [],
+    },
+  });
+
+  const { reset } = methods;
+
+  useEffect(() => {
+    if (importerData?.nomenclators) {
+      setLocalData(importerData.nomenclators);
+    }
+  }, [importerData]);
+
+  useEffect(() => {
+    setLocalData(initialNomenclators);
+  }, [initialNomenclators]);
+
+  const openCreate = useCallback(() => {
+    setSelected(null);
+    reset({ name: "", categoryIds: [] });
+    setOpened(true);
+  }, [reset]);
+
+  const openEdit = useCallback((n: ImporterNomenclator) => {
+    setSelected(n);
+    const ids = (n.categories || []).map((c) => c.id);
+    reset({
+      name: n.name || "",
+      categoryIds: ids,
+    });
+    setOpened(true);
+  }, [reset]);
+
+  const close = useCallback(() => {
+    setOpened(false);
+    setSelected(null);
+  }, []);
+
+  const submit = useCallback(
+    async (values: NomenclatorForm) => {
+      const name = values.name.trim();
+      if (!name) {
+        showToast("El nombre es requerido", "error");
+        return;
+      }
+
+      if (!selected) {
+        showToast("La creación de nomencladores no está disponible", "info");
+        return;
+      }
+
+      setIsSaving(true);
+      try {
+        const res = await updateImporterNomenclator(selected.id, {
+          name,
+          categoryIds: values.categoryIds,
+        });
+
+        if (res.error) {
+          showToast(res.message || "Error al actualizar nomenclador", "error");
+          return;
+        }
+
+        setLocalData((prev) =>
+          prev.map((n) =>
+            n.id === selected.id
+              ? {
+                  ...n,
+                  name,
+                }
+              : n
+          )
+        );
+        showToast("Nomenclador actualizado correctamente", "success");
+        router.refresh();
+        close();
+      } catch (err) {
+        console.error("Error en submit nomenclador:", err);
+        showToast("Ocurrió un error, intente nuevamente", "error");
+      } finally {
+        setIsSaving(false);
+      }
+    },
+    [close, router, selected]
+  );
+
+  const handleToggleStatus = useCallback(
+    async (nomenclator: ImporterNomenclator) => {
+      try {
+        const res = await toggleImporterNomenclatorStatus(nomenclator.id);
+        if (res.error) {
+          const errorMessage = res.message || "Error al cambiar el estado del nomenclador";
+          
+          // Mostrar mensaje más específico si es un error del servidor
+          if (errorMessage.includes("error interno del servidor")) {
+            showToast(
+              "No se puede cambiar el estado del nomenclador. Puede estar asociado a contratos activos.",
+              "error"
+            );
+          } else {
+            showToast(errorMessage, "error");
+          }
+          return;
+        }
+
+        setLocalData((prev) =>
+          prev.map((n) =>
+            n.id === nomenclator.id ? { ...n, isActive: !n.isActive } : n
+          )
+        );
+        showToast(
+          `Nomenclador ${nomenclator.isActive ? "desactivado" : "activado"} exitosamente`,
+          "success"
+        );
+        router.refresh();
+      } catch (error) {
+        console.error("Error en handleToggleStatus:", error);
+        showToast("Error al cambiar el estado del nomenclador", "error");
+      }
+    },
+    [router]
+  );
+
+  const columns = useMemo<DataTableColumn<ImporterNomenclator>[]>(
     () => [
       {
         accessor: "name",
@@ -53,7 +185,7 @@ export default function ImporterNomencladoresView({
           return (
             <div className="flex flex-wrap gap-1">
               {categories.length > 0 ? (
-                categories.map((cat) => (
+                categories.map((cat: { id: string; name: string }) => (
                   <Badge key={cat.id} size="sm" variant="light">
                     {cat.name}
                   </Badge>
