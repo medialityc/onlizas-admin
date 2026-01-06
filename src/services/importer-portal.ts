@@ -25,6 +25,22 @@ async function getImporterToken(): Promise<{
   return { token, importerId };
 }
 
+function isSafePath(pathname: string): boolean {
+  // Evita path traversal
+  const segments = pathname.split("/");
+
+  if (segments.some(segment => segment === "..")) {
+    return false;
+  }
+
+  const deniedPrefixes = ["/admin", "/internal", "/metadata"];
+
+  return !deniedPrefixes.some(prefix =>
+    pathname.toLowerCase().startsWith(prefix)
+  );
+}
+
+
 async function importerFetch(
   url: string,
   options: RequestInit = {}
@@ -46,28 +62,49 @@ async function importerFetch(
   let sanitizedUrl: string;
   
   try {
-    if (url.startsWith("http://") || url.startsWith("https://")) {
-      const urlObj = new URL(url);
-      const isAllowed = allowedDomains.some(domain => 
-        urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
-      );
-      if (!isAllowed) {
-        throw new Error("Dominio no permitido");
-      }
-      sanitizedUrl = `${urlObj.protocol}//${urlObj.hostname}${urlObj.pathname}${urlObj.search}${urlObj.hash}`;
-    } else {
-      const urlObj = new URL(url, baseUrl);
-      const baseHostname = new URL(baseUrl).hostname;
-      
-      if (urlObj.hostname !== baseHostname) {
-        throw new Error("URL inválida: hostname no coincide con base");
-      }
+  if (url.startsWith("http://") || url.startsWith("https://")) {
+    const urlObj = new URL(url);
 
-      sanitizedUrl = `${urlObj.protocol}//${baseHostname}${urlObj.pathname}${urlObj.search}${urlObj.hash}`;
+    if (urlObj.protocol !== "http:" && urlObj.protocol !== "https:") {
+      throw new Error("Protocolo no permitido");
     }
-  } catch (error) {
-    throw new Error(`URL inválida: ${error instanceof Error ? error.message : 'error desconocido'}`);
+
+    const isAllowed = allowedDomains.some(domain =>
+      urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
+    );
+
+    if (!isAllowed) {
+      throw new Error("Dominio no permitido");
+    }
+
+    if (!isSafePath(urlObj.pathname)) {
+      throw new Error("Ruta no permitida");
+    }
+
+    sanitizedUrl = `${urlObj.protocol}//${urlObj.hostname}${urlObj.pathname}${urlObj.search}${urlObj.hash}`;
+  } else {
+    const urlObj = new URL(url, baseUrl);
+    const baseUrlObj = new URL(baseUrl);
+
+    if (urlObj.protocol !== "http:" && urlObj.protocol !== "https:") {
+      throw new Error("Protocolo no permitido");
+    }
+
+    if (urlObj.hostname !== baseUrlObj.hostname) {
+      throw new Error("URL inválida: hostname no coincide con base");
+    }
+
+    if (!isSafePath(urlObj.pathname)) {
+      throw new Error("Ruta no permitida");
+    }
+
+    sanitizedUrl = `${urlObj.protocol}//${baseUrlObj.hostname}${urlObj.pathname}${urlObj.search}${urlObj.hash}`;
   }
+} catch (error) {
+  throw new Error(
+    `URL inválida: ${error instanceof Error ? error.message : "error desconocido"}`
+  );
+}
 
   const headers: Record<string, string> = {
     "X-Importer-Session-Token": auth.token,
