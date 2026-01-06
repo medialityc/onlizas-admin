@@ -33,7 +33,8 @@ export const updateSupplierSchema = z.object({
         name: z.string().min(2).max(100),
       })
     )
-    .min(1, "Debes seleccionar al menos una categoría pendiente."),
+    .default([])
+    .optional(),
   approvedCategories: z
     .array(
       z.object({

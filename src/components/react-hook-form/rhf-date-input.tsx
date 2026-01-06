@@ -50,13 +50,13 @@ export default function RHFDateInput({
         validate,
       }}
       render={({
-        field: { onChange, onBlur, value },
+        field: { onChange, onBlur, value, ref },
         fieldState: { error },
       }) => (
         <DateInput
           id={name}
           value={value as any}
-          onChange={(d) => onChange(d)}
+          onChange={onChange}
           onBlur={onBlur}
           placeholder={placeholder}
           label={label}
