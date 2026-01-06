@@ -25,21 +25,78 @@ async function getImporterToken(): Promise<{
   return { token, importerId };
 }
 
-function isSafePath(pathname: string): boolean {
-  // Evita path traversal
-  const segments = pathname.split("/");
+// Allowlist de patrones de rutas permitidas para el portal de importadoras
+// Solo estas rutas pueden ser accedidas a través de importerFetch
+const ALLOWED_PATH_PATTERNS: RegExp[] = [
+  // Rutas de importer-access
+  /^\/importer-access\/validate$/,
+  /^\/importer-access\/data$/,
+  /^\/importer-access\/contracts$/,
+  /^\/importer-access\/pending-contracts$/,
+  /^\/importer-access\/contracts\/[A-Za-z0-9_-]+\/approve$/,
+  /^\/importer-access\/contracts\/[A-Za-z0-9_-]+\/reject$/,
+  /^\/importer-access\/[A-Za-z0-9_-]+\/generate-qr$/,
+  /^\/importer-access\/[A-Za-z0-9_-]+\/sessions$/,
+  /^\/importer-access\/[A-Za-z0-9_-]+\/revoke$/,
+  /^\/importer-access\/nomenclators\/[A-Za-z0-9_-]+$/,
+  /^\/importer-access\/nomenclators\/[A-Za-z0-9_-]+\/toggle-status$/,
+  /^\/importer-access\/categories$/,
+  // Rutas de importer-contracts
+  /^\/importer-contracts$/,
+  /^\/importer-contracts\/[A-Za-z0-9_-]+$/,
+  /^\/importer-contracts\/[A-Za-z0-9_-]+\/approve$/,
+  /^\/importer-contracts\/[A-Za-z0-9_-]+\/reject$/,
+  /^\/importer-contracts\/[A-Za-z0-9_-]+\/nomenclators$/,
+  // Rutas de importers
+  /^\/importers\/[A-Za-z0-9_-]+$/,
+  /^\/importers\/[A-Za-z0-9_-]+\/contracts$/,
+];
 
-  if (segments.some(segment => segment === "..")) {
-    return false;
-  }
+function isAllowedPath(pathname: string): boolean {
 
-  const deniedPrefixes = ["/admin", "/internal", "/metadata"];
+  const normalizedPath = pathname.replace(/\/+$/, "");
 
-  return !deniedPrefixes.some(prefix =>
-    pathname.toLowerCase().startsWith(prefix)
-  );
+  return ALLOWED_PATH_PATTERNS.some(pattern => pattern.test(normalizedPath));
 }
 
+function validateAndConstructUrl(inputUrl: string, baseUrl: string): string {
+  const baseUrlObj = new URL(baseUrl);
+  const trustedHost = baseUrlObj.hostname;
+  const trustedProtocol = baseUrlObj.protocol;
+  
+  let pathname: string;
+  let search: string;
+  
+  try {
+    if (inputUrl.startsWith("http://") || inputUrl.startsWith("https://")) {
+      const urlObj = new URL(inputUrl);
+
+      if (urlObj.hostname !== trustedHost) {
+        throw new Error("Host no permitido");
+      }
+      
+      pathname = urlObj.pathname;
+      search = urlObj.search;
+    } else {
+
+      const urlObj = new URL(inputUrl, baseUrl);
+      pathname = urlObj.pathname;
+      search = urlObj.search;
+    }
+
+    if (!isAllowedPath(pathname)) {
+      throw new Error("Ruta no permitida");
+    }
+    
+    return `${trustedProtocol}//${trustedHost}${pathname}${search}`;
+    
+  } catch (error) {
+    if (error instanceof Error && error.message !== "Ruta no permitida" && error.message !== "Host no permitido") {
+      throw new Error("URL malformada");
+    }
+    throw error;
+  }
+}
 
 async function importerFetch(
   url: string,
@@ -57,54 +114,8 @@ async function importerFetch(
     throw new Error("NEXT_PUBLIC_API_URL no está configurado");
   }
   
-  const allowedDomains = ["onlizas-api.zasdistributor.com", "zasdistributor.com"];
-  
-  let sanitizedUrl: string;
-  
-  try {
-  if (url.startsWith("http://") || url.startsWith("https://")) {
-    const urlObj = new URL(url);
-
-    if (urlObj.protocol !== "http:" && urlObj.protocol !== "https:") {
-      throw new Error("Protocolo no permitido");
-    }
-
-    const isAllowed = allowedDomains.some(domain =>
-      urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
-    );
-
-    if (!isAllowed) {
-      throw new Error("Dominio no permitido");
-    }
-
-    if (!isSafePath(urlObj.pathname)) {
-      throw new Error("Ruta no permitida");
-    }
-
-    sanitizedUrl = `${urlObj.protocol}//${urlObj.hostname}${urlObj.pathname}${urlObj.search}${urlObj.hash}`;
-  } else {
-    const urlObj = new URL(url, baseUrl);
-    const baseUrlObj = new URL(baseUrl);
-
-    if (urlObj.protocol !== "http:" && urlObj.protocol !== "https:") {
-      throw new Error("Protocolo no permitido");
-    }
-
-    if (urlObj.hostname !== baseUrlObj.hostname) {
-      throw new Error("URL inválida: hostname no coincide con base");
-    }
-
-    if (!isSafePath(urlObj.pathname)) {
-      throw new Error("Ruta no permitida");
-    }
-
-    sanitizedUrl = `${urlObj.protocol}//${baseUrlObj.hostname}${urlObj.pathname}${urlObj.search}${urlObj.hash}`;
-  }
-} catch (error) {
-  throw new Error(
-    `URL inválida: ${error instanceof Error ? error.message : "error desconocido"}`
-  );
-}
+  // Validar y construir URL segura usando allowlist
+  const safeUrl = validateAndConstructUrl(url, baseUrl);
 
   const headers: Record<string, string> = {
     "X-Importer-Session-Token": auth.token,
@@ -118,7 +129,7 @@ async function importerFetch(
     Object.assign(headers, options.headers);
   }
 
-  return fetch(sanitizedUrl, {
+  return fetch(safeUrl, {
     ...options,
     headers,
   });
