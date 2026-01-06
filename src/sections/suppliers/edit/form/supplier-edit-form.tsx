@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 
 import { SupplierDetails } from "@/types/suppliers";
 import { updateSupplierData } from "@/services/supplier";
@@ -28,9 +29,22 @@ export default function SupplierEditForm({
   supplierDetails: SupplierDetails;
 }) {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const initValue = useMemo(
-    () => ({
+  const initValue = useMemo(() => {
+    // Validar y sanitizar la fecha de expiración
+    let validExpirationDate = new Date();
+    if (supplierDetails.expirationDate) {
+      const parsedDate = new Date(supplierDetails.expirationDate);
+      // Verificar que la fecha sea válida
+      if (!isNaN(parsedDate.getTime())) {
+        validExpirationDate = parsedDate;
+      } else {
+        console.warn("Invalid expirationDate:", supplierDetails.expirationDate);
+      }
+    }
+
+    return {
       name: supplierDetails.name,
       email: supplierDetails.email,
       phone: supplierDetails.phone,
@@ -48,9 +62,7 @@ export default function SupplierEditForm({
       supplierType: supplierDetails.type
         ? Number(SUPPLIER_TYPE[supplierDetails.type])
         : 0,
-      expirationDate: supplierDetails.expirationDate
-        ? new Date(supplierDetails.expirationDate)
-        : new Date(),
+      expirationDate: validExpirationDate,
       pendingCategories:
         supplierDetails.pendingCategories?.map((cat) => ({
           id: cat.id,
@@ -63,24 +75,19 @@ export default function SupplierEditForm({
           name: cat.name,
           departmentName: cat.departmentName ?? "",
         })) || [],
-    }),
-    [supplierDetails]
-  );
+    };
+  }, [supplierDetails]);
   const methods = useForm<UpdateSupplierFormData>({
     resolver: zodResolver(updateSupplierSchemaWithRules) as any,
     defaultValues: initValue,
+    shouldFocusError: false,
+    mode: "onSubmit",
+    reValidateMode: "onSubmit",
+    criteriaMode: "all",
   });
 
   const { handleSubmit, reset } = methods;
 
-  useEffect(() => {
-    if (initValue) {
-      reset(initValue);
-    }
-  }, [initValue, reset]);
-
-  // Removed documents prefill; documents now managed outside RHF form
-  console.log(methods.formState.errors);
   const onSubmit = async (data: UpdateSupplierFormData) => {
     setIsLoading(true);
     try {
@@ -121,6 +128,8 @@ export default function SupplierEditForm({
       if (response.error)
         throw new Error(response.message || "Error al actualizar proveedor");
       toast.success("Solicitud actualizada correctamente");
+      // Redirigir a la lista de proveedores después de guardar
+      router.push("/dashboard/suppliers");
     } catch (error) {
       console.error("Error al actualizar proveedor:", error);
       toast.error("Error al actualizar proveedor");
@@ -133,10 +142,14 @@ export default function SupplierEditForm({
     reset();
   };
 
+  const onError = (errors: any) => {
+    console.error("Form validation errors:", errors);
+  };
+
   return (
     <>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form noValidate onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
           <SupplierBasicInfo />
           {/* Documents handled outside the RHF form */}
           <SupplierCategories state={supplierDetails.state} />

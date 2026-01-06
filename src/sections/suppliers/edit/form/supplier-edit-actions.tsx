@@ -1,5 +1,5 @@
 import LoaderButton from "@/components/loaders/loader-button";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 import { useMemo } from "react";
 import { UpdateSupplierFormData } from "./schema";
 import { usePermissions } from "@/hooks/use-permissions";
@@ -12,9 +12,11 @@ export default function SupplierEditActions({
   isLoading: boolean;
   onCancel: () => void;
 }) {
-  const {
-    formState: { isValid, dirtyFields, errors },
-  } = useFormContext<UpdateSupplierFormData>();
+  const { control, formState: { dirtyFields, errors } } = useFormContext<UpdateSupplierFormData>();
+  
+  // useWatch fuerza re-renders cuando cambian estos campos
+  const watchedExpirationDate = useWatch({ control, name: "expirationDate" });
+  
   // Control de permisos
   const { hasPermission } = usePermissions();
   const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
@@ -34,10 +36,11 @@ export default function SupplierEditActions({
       df?.sellerType ||
       df?.nacionalityType ||
       df?.mincexCode ||
+      df?.expirationDate ||
       df?.pendingCategories ||
       df?.approvedCategories
     );
-  }, [dirtyFields]);
+  }, [dirtyFields, watchedExpirationDate]);
 
   return (
     <div>

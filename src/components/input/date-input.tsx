@@ -62,10 +62,17 @@ export default function DateInput({
     value
   );
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const preventFocusRef = React.useRef(false);
 
   React.useEffect(() => {
-    setSelectedDate(value);
-    setInputValue(value ? formatDate(value) : "");
+    // Solo actualizar si el valor es diferente para evitar re-renders innecesarios
+    const currentTime = selectedDate?.getTime();
+    const newTime = value?.getTime();
+    if (currentTime !== newTime) {
+      setSelectedDate(value);
+      setInputValue(value ? formatDate(value) : "");
+    }
   }, [value]);
 
   React.useEffect(() => {
@@ -75,7 +82,6 @@ export default function DateInput({
         !containerRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
-        onBlur?.();
       }
     }
 
@@ -86,7 +92,7 @@ export default function DateInput({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen, onBlur]);
+  }, [isOpen]);
 
   // Validación simple usando minDate / maxDate si se proveen.
   // Si no se proveen, permitir cualquier fecha.
@@ -118,12 +124,19 @@ export default function DateInput({
       setSelectedDate(undefined);
       setInputValue("");
       onChange(undefined);
+      setIsOpen(false);
       return;
     }
     setSelectedDate(date);
     setInputValue(date ? formatDate(date) : "");
     onChange(date);
     setIsOpen(false);
+    
+    // Prevenir que el input reciba focus después de seleccionar
+    preventFocusRef.current = true;
+    setTimeout(() => {
+      preventFocusRef.current = false;
+    }, 500);
   };
 
   // ...existing code...
@@ -168,10 +181,20 @@ export default function DateInput({
 
         <div className="relative">
           <input
+            ref={inputRef}
             id={id}
+            name={id}
             type="text"
             value={inputValue}
             placeholder={placeholder}
+            autoComplete="off"
+            onFocus={(e) => {
+              if (preventFocusRef.current) {
+                e.preventDefault();
+                e.target.blur();
+                return;
+              }
+            }}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               const val = e.target.value;
               setInputValue(val);
@@ -189,19 +212,20 @@ export default function DateInput({
                 onChange(undefined);
               }
             }}
+            onBlur={onBlur}
             className={`form-input h-12 border-2 rounded-xl focus:border-blue-500 w-full ${"border-slate-200"}`}
             inputMode="numeric"
-            pattern="\\d{2}/\\d{2}/\\d{4}"
             disabled={disabled}
           />
           <button
             type="button"
-            id={id}
             className={cn(
               "absolute right-2 top-1/2 -translate-y-1/2 p-1 bg-transparent border-none outline-none",
               disabled && "cursor-not-allowed opacity-50"
             )}
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
               if (!disabled) {
                 // Sincronizar input y calendario al abrir
                 if (inputValue && inputValue.length === 10) {
@@ -229,7 +253,6 @@ export default function DateInput({
                   // Deshabilitar fechas fuera del rango si se proporcionó min/max
                   return !isWithinRange(date);
                 }}
-                initialFocus
                 // Usar defaultMonth para permitir navegación interna sin controlar el mes
                 defaultMonth={selectedDate ?? new Date()}
               />

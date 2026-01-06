@@ -8,6 +8,7 @@ import {
   SUPPLIER_NATIONALITY,
   SUPPLIER_TYPE_OPTIONS,
 } from "../../constants/supplier.options";
+import { useMemo } from "react";
 
 export default function SupplierBasicInfo() {
   const {
@@ -17,6 +18,10 @@ export default function SupplierBasicInfo() {
     setValue,
   } = useFormContext<any>();
   const nacionalityType = watch("nacionalityType");
+  
+  // Memoizar las fechas para evitar re-renders innecesarios
+  const minDate = useMemo(() => new Date(), []);
+  const maxDate = useMemo(() => new Date("2100-12-31"), []);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <RHFSelectWithLabel
@@ -68,8 +73,8 @@ export default function SupplierBasicInfo() {
         variant="custom"
       />
       <RHFDateInput
-        minDate={new Date()}
-        maxDate={new Date("2100-12-31")}
+        minDate={minDate}
+        maxDate={maxDate}
         name="expirationDate"
         label="Fecha de Expiración"
       />
