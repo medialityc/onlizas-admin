@@ -2,7 +2,7 @@ import { z } from "zod";
 import { SUPPLIER_NATIONALITY } from "../constants/supplier.options";
 
 export const suppliersSchema = z.object({
-    importersIds: z.array(z.string({ error: "Debes seleccionar al menos una importadora." })).min(1, "Debes seleccionar al menos una importadora."),
+    importersIds: z.array(z.string()).default([]).optional(),
   // Manual supplier fields: make optional here and enforce conditionally in superRefine
   name: z
     .string()

@@ -11,7 +11,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import { RHFFileUpload } from "@/components/react-hook-form/rhf-file-upload";
 import { toast } from "react-toastify";
-import { uploadDocument, validateDocument } from "@/services/documents";
+import { validateDocument } from "@/services/documents";
+import { addExtensionDocuments } from "@/services/supplier";
 
 import RejectModal from "./reject-modal";
 import RejectDetails from "./rejectdetails";
@@ -34,8 +35,6 @@ export default function SupplierPendingDocuments({
     rejectionReason?: string | null;
   }[];
 }) {
-  console.log(initialDocuments);
-
   const methods = useForm<PendingDocumentsForm>({
     resolver: zodResolver(pendingDocumentsFormSchema),
     defaultValues: {
@@ -119,26 +118,35 @@ export default function SupplierPendingDocuments({
       toast.error("Selecciona un archivo para subir.");
       return;
     }
+    
+    // Usar el nombre del archivo si fileName está vacío
+    const documentName = doc.fileName?.trim() || doc.content.name;
+    if (!documentName) {
+      toast.error("El nombre del documento es requerido.");
+      return;
+    }
+    
     try {
-      setValue(`pendingDocuments.${index}.fileName`, doc.fileName);
+      setValue(`pendingDocuments.${index}.fileName`, documentName);
       setDocLoading((m) => ({ ...m, [index]: true }));
-      const form = new FormData();
-      form.append("approvalProcessId", String(apId));
-      form.append("fileName", doc.fileName);
-      form.append("content", doc.content);
-      const res = await uploadDocument(form);
+      
+      // Usar el nuevo endpoint de extension-documents
+      const res = await addExtensionDocuments(String(apId), [
+        { fileName: documentName, content: doc.content }
+      ]);
+      
       if (res.error || !res.data) throw new Error(res.message || "Error");
-      const uploaded = res.data;
-      // Persist the returned id and content URL
-      setValue(`pendingDocuments.${index}.id`, uploaded.id, {
-        shouldDirty: false,
-      });
-      setValue(`pendingDocuments.${index}.content`, uploaded.content as any, {
-        shouldDirty: false,
-      });
+      
+      // El endpoint retorna { approvalProcessId, addedDocumentsCount, message }
+      // pero no retorna los IDs de los documentos creados
+      // Por ahora solo marcamos como subido exitosamente
       toast.success("Documento subido");
+      
+      // Marcar el documento como subido (podrías necesitar recargar la lista completa)
+      setValue(`pendingDocuments.${index}.content`, "uploaded" as any, {
+        shouldDirty: false,
+      });
     } catch (e) {
-      console.error(e);
       toast.error("No se pudo subir el documento");
     } finally {
       setDocLoading((m) => ({ ...m, [index]: false }));
@@ -167,7 +175,6 @@ export default function SupplierPendingDocuments({
         shouldDirty: false,
       });
     } catch (e) {
-      console.error(e);
       toast.error("No se pudo aprobar el documento");
     } finally {
       setApproveLoading((m) => ({ ...m, [index]: false }));
@@ -215,7 +222,6 @@ export default function SupplierPendingDocuments({
       setRejectIdx(null);
       setRejectReason("");
     } catch (e) {
-      console.error(e);
       toast.error("No se pudo rechazar el documento");
     } finally {
       setRejectLoading(false);

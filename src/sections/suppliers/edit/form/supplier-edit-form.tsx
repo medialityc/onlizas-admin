@@ -4,11 +4,20 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { Paper } from "@mantine/core";
 
 import { SupplierDetails } from "@/types/suppliers";
-import { updateSupplierData } from "@/services/supplier";
+import { 
+  updateExpirationDate, 
+  addImporterContracts, 
+  removeImporterContracts,
+  addRequestedCategories,
+  removeRequestedCategories,
+  getImporterContracts,
+} from "@/services/supplier";
 import { toast } from "react-toastify";
 import SupplierBasicInfo from "./supplier-basic-info";
+import SupplierImporters from "./supplier-importers";
 import SupplierPendingDocuments from "./documents/supplier-pending-documents";
 import SupplierApprovedDocuments from "./documents/supplier-approved-documents";
 import SupplierEditActions from "./supplier-edit-actions";
@@ -29,6 +38,8 @@ export default function SupplierEditForm({
   supplierDetails: SupplierDetails;
 }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [contractMap, setContractMap] = useState<Record<string, string>>({}); // Map de importerId -> contractId
+  const [initialImporterIds, setInitialImporterIds] = useState<string[]>([]); // IDs iniciales de importadoras
   const router = useRouter();
 
   const initValue = useMemo(() => {
@@ -39,8 +50,6 @@ export default function SupplierEditForm({
       // Verificar que la fecha sea válida
       if (!isNaN(parsedDate.getTime())) {
         validExpirationDate = parsedDate;
-      } else {
-        console.warn("Invalid expirationDate:", supplierDetails.expirationDate);
       }
     }
 
@@ -63,6 +72,7 @@ export default function SupplierEditForm({
         ? Number(SUPPLIER_TYPE[supplierDetails.type])
         : 0,
       expirationDate: validExpirationDate,
+      importersIds: (supplierDetails as any).importersIds || [],
       pendingCategories:
         supplierDetails.pendingCategories?.map((cat) => ({
           id: cat.id,
@@ -86,52 +96,117 @@ export default function SupplierEditForm({
     criteriaMode: "all",
   });
 
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit, reset, setValue } = methods;
+
+  // Cargar importadoras existentes
+  useEffect(() => {
+    const loadImporterContracts = async () => {
+      try {
+        const response = await getImporterContracts(supplierDetails.id);
+        if (!response.error && response.data) {
+          // El endpoint retorna { data: [...], page, pageSize, totalCount, hasNext, hasPrevious }
+          const contracts = Array.isArray(response.data) ? response.data : response.data?.data || [];
+          const importerIds = contracts.map((contract: any) => contract.importerId).filter(Boolean);
+          
+          // Crear mapeo de importerId -> contractId
+          const map: Record<string, string> = {};
+          contracts.forEach((contract: any) => {
+            if (contract.importerId && contract.id) {
+              map[contract.importerId] = contract.id;
+            }
+          });
+          setContractMap(map);
+          
+          // Guardar los IDs iniciales para comparar luego
+          setInitialImporterIds(importerIds);
+          
+          if (importerIds.length > 0) {
+            setValue("importersIds", importerIds);
+          }
+        }
+      } catch (error) {
+        // Error loading importer contracts - silently continue
+      }
+    };
+
+    loadImporterContracts();
+  }, [supplierDetails.id, setValue]);
 
   const onSubmit = async (data: UpdateSupplierFormData) => {
     setIsLoading(true);
     try {
-      const formData = new FormData();
-      formData.append(
-        "expirationDate",
+      const approvalProcessId = supplierDetails.id;
+      const previousImporters = initialImporterIds;
+      const newImporters = data.importersIds || [];
+      const previousCategories = supplierDetails.pendingCategories?.map(c => c.id) || [];
+      const newCategories = data.pendingCategories?.map(c => c.id) || [];
+
+      // 1. Actualizar fecha de expiración
+      const expirationDateResponse = await updateExpirationDate(
+        approvalProcessId,
         data?.expirationDate?.toISOString() || new Date().toISOString()
       );
-      formData.append("name", data.name);
-      formData.append("email", data.email);
-      formData.append("phone", data.phone);
-      if (data.countryCode) {
-        formData.append("countryCode", data.countryCode);
+      if (expirationDateResponse.error) {
+        toast.error("Error al actualizar la fecha de expiración");
       }
-      formData.append("address", data.address);
-      formData.append("message", data.message || "");
-      formData.append("active", data.active.toString());
-      formData.append("sellerType", String(data.sellerType));
-      formData.append("nacionalityType", String(data.nacionalityType));
-      formData.append("supplierType", String(data.supplierType));
-      if (data.mincexCode) {
-        console.log(data.mincexCode);
 
-        formData.append("mincexCode", data.mincexCode);
-      }
-      data.pendingCategories?.forEach((cat) => {
-        formData.append("pendingCategoryIds", cat.id.toString());
-      });
-      data.approvedCategories?.forEach((cat) => {
-        formData.append("approvedCategoryIds", cat.id.toString());
-      });
-      formData.append("approvalProcessId", supplierDetails.id);
-
-      const response = await updateSupplierData(
-        supplierDetails.userId,
-        formData
+      // 2. Manejar cambios en importadoras
+      const addedImporters = newImporters.filter(
+        (id: string) => !previousImporters.includes(id)
       );
-      if (response.error)
-        throw new Error(response.message || "Error al actualizar proveedor");
-      toast.success("Solicitud actualizada correctamente");
-      // Redirigir a la lista de proveedores después de guardar
+      const removedImporters = previousImporters.filter(
+        (id: string) => !newImporters.includes(id)
+      );
+
+      if (addedImporters.length > 0) {
+        const addResponse = await addImporterContracts(approvalProcessId, addedImporters);
+        if (addResponse.error) {
+          toast.warning("Hubo un problema al agregar los contratos de importadores");
+        }
+      }
+
+      if (removedImporters.length > 0) {
+        // Mapear importerIds a contractIds
+        const contractIdsToRemove = removedImporters
+          .map((importerId: string) => contractMap[importerId])
+          .filter(Boolean);
+
+        if (contractIdsToRemove.length > 0) {
+          const removeResponse = await removeImporterContracts(approvalProcessId, contractIdsToRemove);
+          if (removeResponse.error) {
+            toast.warning("Hubo un problema al remover los contratos de importadores");
+          }
+        }
+      }
+
+      // 3. Manejar cambios en categorías solicitadas
+      const addedCategories = newCategories.filter(
+        (id: string) => !previousCategories.includes(id)
+      );
+      const removedCategories = previousCategories.filter(
+        (id: string) => !newCategories.includes(id)
+      );
+
+      if (addedCategories.length > 0) {
+        const addCatResponse = await addRequestedCategories(approvalProcessId, addedCategories);
+        if (addCatResponse.error) {
+          toast.warning("Hubo un problema al agregar las categorías");
+        }
+      }
+
+      if (removedCategories.length > 0) {
+        const removeCatResponse = await removeRequestedCategories(approvalProcessId, removedCategories);
+        if (removeCatResponse.error) {
+          toast.warning("Hubo un problema al remover las categorías");
+        }
+      }
+
+      // Actualizar el estado de los IDs iniciales de importadoras para la próxima edición
+      setInitialImporterIds(newImporters);
+
+      toast.success("Proveedor actualizado correctamente");
       router.push("/dashboard/suppliers");
     } catch (error) {
-      console.error("Error al actualizar proveedor:", error);
       toast.error("Error al actualizar proveedor");
     } finally {
       setIsLoading(false);
@@ -143,20 +218,35 @@ export default function SupplierEditForm({
   };
 
   const onError = (errors: any) => {
-    console.error("Form validation errors:", errors);
+    // Form validation errors
   };
 
   return (
     <>
       <FormProvider {...methods}>
         <form noValidate onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
-          <SupplierBasicInfo />
-          {/* Documents handled outside the RHF form */}
+          {/* Sección de Información Básica */}
+          <Paper p="md" radius="md" withBorder styles={{
+            root: {
+              backgroundColor: "light-dark(#ffffff, #1b2e4b)",
+              borderColor: "light-dark(#e5e7eb, #253a54)",
+            },
+          }}>
+            <SupplierBasicInfo />
+          </Paper>
+
+          {/* Sección de Importadoras */}
+          <SupplierImporters initialImporterIds={(supplierDetails as any).importersIds} />
+
+          {/* Sección de Categorías */}
           <SupplierCategories state={supplierDetails.state} />
+
+          {/* Botones de Acciones */}
           <SupplierEditActions isLoading={isLoading} onCancel={handleCancel} />
         </form>
       </FormProvider>
-      {/* Standalone document managers */}
+
+      {/* Gestión de Documentos */}
       <div className="space-y-6 mt-6">
         <SupplierPendingDocuments
           approvalProcessId={supplierDetails.id}

@@ -26,6 +26,7 @@ export const updateSupplierSchema = z.object({
   active: z.boolean({
     error: "Debes especificar si el proveedor está activo.",
   }),
+  importersIds: z.array(z.string()).default([]).optional(),
   pendingCategories: z
     .array(
       z.object({

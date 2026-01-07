@@ -95,7 +95,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
         <RHFMultiSelectImporters
           name="importersIds"
           label="Importadoras de la plataforma"
-          required
         />
         <div className="space-y-3">
           <RHFSwitch

@@ -115,8 +115,11 @@ export const getErrorMessage = (error: unknown): string => {
   // Backend common shape: { statusCode, message, errors: { field: [msg] } }
   if (typeof error === "object" && error && !Array.isArray(error)) {
     const anyErr = error as Record<string, any>;
+    
+    // Priorizar el campo 'detail' si existe, luego message, title
     const baseMessage: string | undefined =
-      anyErr.message || anyErr.title || anyErr.detail;
+      anyErr.detail || anyErr.message || anyErr.title;
+    
     const errorsMap = anyErr.errors;
     if (errorsMap && typeof errorsMap === "object") {
       const fieldMessages: string[] = [];

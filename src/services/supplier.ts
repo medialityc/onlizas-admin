@@ -74,10 +74,10 @@ export async function getAllSuppliers(
 
 export async function updateSupplierData(
   id: string | number,
-  data: FormData
+  data: FormData | Record<string, any>
 ): Promise<ApiResponse<Supplier>> {
   const res = await nextAuthFetch({
-    url: backendRoutes.suppliers.update(id),
+    url: `${backendRoutes.suppliers.update(id)}`,
     method: "PUT",
     data,
     useAuth: true,
@@ -225,6 +225,8 @@ export async function countSuppliers(): Promise<
 export async function answerApprovalProcess(
   data: AnswerApprovalProcess
 ): Promise<ApiResponse<AnswerApprovalProcess>> {
+  console.log("Enviando datos de aprobación:", data);
+  
   const res = await nextAuthFetch({
     url: `${process.env.NEXT_PUBLIC_API_URL}approval-processes/approve`,
     method: "PUT",
@@ -233,7 +235,14 @@ export async function answerApprovalProcess(
     useAuth: true,
   });
 
-  if (!res.ok) return handleApiServerError(res);
+  console.log("Respuesta de aprobación:", res.status, res.statusText);
+  
+  if (!res.ok) {
+    const errorResponse = await handleApiServerError(res);
+    console.error("Error detallado de aprobación:", errorResponse);
+    return errorResponse;
+  }
+  
   updateTag("supplier");
   return buildApiResponseAsync(res);
 }
@@ -256,4 +265,158 @@ export async function createUserSupplier(
   if (!res.ok) return handleApiServerError(res);
   updateTag("supplier");
   return buildApiResponseAsync<Supplier>(res);
+}
+
+// Función para obtener los contratos de importadores existentes
+export async function getImporterContracts(
+  approvalProcessId: string | number
+): Promise<ApiResponse<any>> {
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${approvalProcessId}/contracts`,
+    method: "GET",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync(res);
+}
+
+// Funciones para manejar contratos de importadores
+export async function addImporterContracts(
+  approvalProcessId: string | number,
+  importerIds: string[]
+): Promise<ApiResponse<any>> {
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${approvalProcessId}/importer-contracts`,
+    method: "POST",
+    data: { importerIds },
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  updateTag("supplier");
+  updateTag("suppliers");
+
+  return buildApiResponseAsync(res);
+}
+
+export async function removeImporterContracts(
+  approvalProcessId: string | number,
+  contractIds: string[]
+): Promise<ApiResponse<any>> {
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${approvalProcessId}/importer-contracts`,
+    method: "DELETE",
+    data: { contractIds },
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  updateTag("supplier");
+  updateTag("suppliers");
+
+  return buildApiResponseAsync(res);
+}
+
+// Funciones para manejar fecha de expiración
+export async function updateExpirationDate(
+  approvalProcessId: string | number,
+  newExpirationDate: string
+): Promise<ApiResponse<any>> {
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${approvalProcessId}/expiration-date`,
+    method: "PUT",
+    data: { newExpirationDate },
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  updateTag("supplier");
+  updateTag("suppliers");
+
+  return buildApiResponseAsync(res);
+}
+
+// Funciones para manejar categorías solicitadas
+export async function addRequestedCategories(
+  approvalProcessId: string | number,
+  categoryIds: string[]
+): Promise<ApiResponse<any>> {
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${approvalProcessId}/requested-categories`,
+    method: "POST",
+    data: { categoryIds },
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  updateTag("supplier");
+  updateTag("suppliers");
+
+  return buildApiResponseAsync(res);
+}
+
+export async function removeRequestedCategories(
+  approvalProcessId: string | number,
+  categoryIds: string[]
+): Promise<ApiResponse<any>> {
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${approvalProcessId}/requested-categories`,
+    method: "DELETE",
+    data: { categoryIds },
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  updateTag("supplier");
+  updateTag("suppliers");
+
+  return buildApiResponseAsync(res);
+}
+
+// Funciones para manejar documentos de extensión
+export async function addExtensionDocuments(
+  approvalProcessId: string | number,
+  documents: { fileName: string; content: File }[]
+): Promise<ApiResponse<any>> {
+  const formData = new FormData();
+  
+  // Agregar documentos con la misma key sin índices
+  // Este formato es el estándar para arrays en multipart/form-data
+  documents.forEach((doc) => {
+    formData.append('DocumentNames', doc.fileName);
+    formData.append('Contents', doc.content);
+  });
+
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${approvalProcessId}/extension-documents`,
+    method: "POST",
+    data: formData,
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  updateTag("supplier");
+  updateTag("suppliers");
+
+  return buildApiResponseAsync(res);
+}
+
+export async function removeExtensionDocuments(
+  approvalProcessId: string | number,
+  documentIds: string[]
+): Promise<ApiResponse<any>> {
+  const res = await nextAuthFetch({
+    url: `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${approvalProcessId}/extension-documents`,
+    method: "DELETE",
+    data: { documentIds },
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  updateTag("supplier");
+  updateTag("suppliers");
+
+  return buildApiResponseAsync(res);
 }
