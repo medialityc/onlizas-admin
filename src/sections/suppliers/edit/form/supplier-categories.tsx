@@ -4,6 +4,7 @@ import { getAllCategories } from "@/services/categories";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Category as CategoryType } from "@/types/categories";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { Paper, Title } from "@mantine/core";
 import { UpdateSupplierFormData } from "./schema";
 import { SupplierState } from "@/types/suppliers";
 
@@ -34,29 +35,38 @@ function SupplierCategories({ state }: { state: SupplierState }) {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Autocomplete to add Approved Categories */}
+    <Paper p="md" radius="md" withBorder styles={{
+      root: {
+        backgroundColor: "light-dark(#ffffff, #1b2e4b)",
+        borderColor: "light-dark(#e5e7eb, #253a54)",
+      },
+    }}>
+      <Title order={3} className="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-100">
+        Categorías
+      </Title>
+      <div className="space-y-6">
+        {/* Autocomplete to add Approved Categories */}
 
-      {/* Autocomplete to add Pending Categories */}
-      <div className="space-y-2">
-        <RHFAutocompleteFetcherInfinity<CategoryType>
-          label="Agregar a categorías pendientes *"
-          name="__pendingCategoriesPicker"
-          onFetch={getAllCategories}
-          multiple
-          exclude={existingIds}
-          renderOption={(opt) => (
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col">
-                <span className="font-medium">{opt.name}</span>
-                {opt?.department?.name && (
-                  <span className="text-xs text-gray-500">
-                    Departamento: {opt.department.name}
-                  </span>
-                )}
+        {/* Autocomplete to add Pending Categories */}
+        <div className="space-y-2">
+          <RHFAutocompleteFetcherInfinity<CategoryType>
+            label="Agregar a categorías pendientes *"
+            name="__pendingCategoriesPicker"
+            onFetch={getAllCategories}
+            multiple
+            exclude={existingIds}
+            renderOption={(opt) => (
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="font-medium">{opt.name}</span>
+                  {opt?.department?.name && (
+                    <span className="text-xs text-gray-500">
+                      Departamento: {opt.department.name}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
           onOptionSelected={(opt) => {
             const currentApproved = getValues("approvedCategories") ?? [];
             const currentPending = getValues("pendingCategories") ?? [];
@@ -219,7 +229,8 @@ function SupplierCategories({ state }: { state: SupplierState }) {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </Paper>
   );
 }
 

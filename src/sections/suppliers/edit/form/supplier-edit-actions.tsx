@@ -16,6 +16,7 @@ export default function SupplierEditActions({
   
   // useWatch fuerza re-renders cuando cambian estos campos
   const watchedExpirationDate = useWatch({ control, name: "expirationDate" });
+  const watchedImportersIds = useWatch({ control, name: "importersIds" });
   
   // Control de permisos
   const { hasPermission } = usePermissions();
@@ -37,10 +38,11 @@ export default function SupplierEditActions({
       df?.nacionalityType ||
       df?.mincexCode ||
       df?.expirationDate ||
+      df?.importersIds ||
       df?.pendingCategories ||
       df?.approvedCategories
     );
-  }, [dirtyFields, watchedExpirationDate]);
+  }, [dirtyFields, watchedExpirationDate, watchedImportersIds]);
 
   return (
     <div>

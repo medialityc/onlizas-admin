@@ -44,16 +44,20 @@ export default function ApprovalControls({
       //  status: isApproved ? SUPPLIER_STATUS.Approved : SUPPLIER_STATUS.Rejected,
     };
     startTransition(async () => {
-      const res = await answerApprovalProcess(data);
-      if (res?.error) {
-        toast.error(res?.message || "No se pudo procesar la solicitud");
-        return;
-      }
+      try {
+        const res = await answerApprovalProcess(data);
+        if (res?.error) {
+          toast.error(res?.message || "Error procesando aprobación");
+          return;
+        }
 
-      if (res.data) {
-        toast.success(
-          res.data.isApproved ? "Solicitud aprobada" : "Solicitud rechazada"
-        );
+        if (res.data) {
+          toast.success(
+            res.data.isApproved ? "Solicitud aprobada" : "Solicitud rechazada"
+          );
+        }
+      } catch (error) {
+        toast.error("Error procesando aprobación");
       }
     });
   };

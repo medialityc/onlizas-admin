@@ -34,7 +34,7 @@ export default function WithLoginGate({
       toast.success("Usuario proveedor creado exitosamente");
       setOpen(false);
     } catch (error) {
-      console.log(error);
+      // Error handled silently
     } finally {
       setIsLoading(false);
     }
