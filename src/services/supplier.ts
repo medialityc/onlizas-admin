@@ -225,8 +225,6 @@ export async function countSuppliers(): Promise<
 export async function answerApprovalProcess(
   data: AnswerApprovalProcess
 ): Promise<ApiResponse<AnswerApprovalProcess>> {
-  console.log("Enviando datos de aprobación:", data);
-  
   const res = await nextAuthFetch({
     url: `${process.env.NEXT_PUBLIC_API_URL}approval-processes/approve`,
     method: "PUT",
@@ -235,16 +233,12 @@ export async function answerApprovalProcess(
     useAuth: true,
   });
 
-  console.log("Respuesta de aprobación:", res.status, res.statusText);
-  
   if (!res.ok) {
-    const errorResponse = await handleApiServerError(res);
-    console.error("Error detallado de aprobación:", errorResponse);
-    return errorResponse;
+    return await handleApiServerError<AnswerApprovalProcess>(res);
   }
   
   updateTag("supplier");
-  return buildApiResponseAsync(res);
+  return buildApiResponseAsync<AnswerApprovalProcess>(res);
 }
 
 export async function createUserSupplier(
