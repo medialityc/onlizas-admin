@@ -57,18 +57,21 @@ export function GatewayForm({
       // Mapear los datos del formulario al formato que espera la API
       const gatewayData = {
         name: name.charAt(0).toUpperCase() + name.slice(1),
-        code: data[`${name}-publishable`],
+        code: data[`${name}-publishable`] || data[`${name}-client-id`] || name,
         description: `Configuración de ${name.charAt(0).toUpperCase() + name.slice(1)}`,
         isEnabled:
           data[`${name}-live`] || data[`${name}-mode`] === "live" || true,
         isDefault: false,
-        key: data[`${name}-secret`],
+        key: data[`${name}-secret`] || data[`${name}-client-secret`] || "",
       };
 
       const response = await createGateway(gatewayData);
 
       if (response.error) {
-        showToast("Error al crear la pasarela", "error");
+        const errorMessage = typeof response.error === 'string' 
+          ? response.error 
+          : (response.error as any)?.message || "Error al crear la pasarela";
+        showToast(errorMessage, "error");
         return;
       }
 

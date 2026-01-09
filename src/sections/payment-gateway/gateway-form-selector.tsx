@@ -23,7 +23,7 @@ export const GatewayFormSelector = () => {
         onChange={(e) =>
           setSelectedGateway(e.target.value as TypeGateway["type"])
         }
-        className="w-full  border rounded p-2 bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
+        className="w-full border rounded-md p-2 bg-white text-gray-900 dark:bg-[#121e32] dark:text-gray-100 dark:border-[#17263c] focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors"
       >
         <option value="">Seleccione una pasarela de pago</option>
         <option value="stripe">Stripe</option>

@@ -85,7 +85,7 @@ export async function updateGateway(
   return buildApiResponseAsync<Gateway>(res);
 }
 
-export async function deleteGateway(id: string): Promise<ApiResponse<Gateway>> {
+export async function deleteGateway(id: string): Promise<ApiResponse<void>> {
   const url = backendRoutes.regions.payments.update(id);
 
   const res = await nextAuthFetch({
@@ -97,7 +97,12 @@ export async function deleteGateway(id: string): Promise<ApiResponse<Gateway>> {
 
   if (!res.ok) return handleApiServerError(res);
 
-  return buildApiResponseAsync<Gateway>(res);
+  // DELETE puede devolver 200/204 sin cuerpo, manejamos eso correctamente
+  return {
+    data: undefined as unknown as void,
+    error: false,
+    status: res.status,
+  };
 }
 
 // Establecer una pasarela como predeterminada
