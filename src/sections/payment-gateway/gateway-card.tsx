@@ -7,6 +7,7 @@ import {
   deleteGateway,
   getGatewayById,
   updateGateway,
+  setGatewayAsDefault,
 } from "@/services/gateways";
 import showToast from "@/config/toast/toastConfig";
 import { useQueryClient } from "@tanstack/react-query";
@@ -81,6 +82,15 @@ export const GatewayCard = ({
     if (!editingGateway) return;
 
     try {
+      // Si se está marcando como predeterminada, usar el endpoint específico
+      if (data.isDefault && !editingGateway.isDefault) {
+        const defaultResponse = await setGatewayAsDefault(editingGateway.id);
+        if (defaultResponse.error) {
+          showToast("Error al establecer como predeterminada", "error");
+          return;
+        }
+      }
+
       // Combinar los datos del formulario con el gateway existente
       const updatedGateway = { ...editingGateway, ...data };
       const response = await updateGateway(editingGateway.id, updatedGateway);
@@ -115,32 +125,42 @@ export const GatewayCard = ({
     setLoadingDelete(true);
     try {
       const response = await deleteGateway(gateway.id);
-      console.log(response);
-      if (!response.error) {
+      
+      // Verificar si la respuesta es exitosa
+      if (response.error !== true) {
         showToast("Pasarela eliminada exitosamente", "success");
         queryClient.invalidateQueries({ queryKey: ["gateways"] });
         setDeleteModalOpen(false);
         return;
-      } else {
-        showToast("Error al eliminar la pasarela", "error");
       }
+      
+      // Si hay error, mostrar el mensaje
+      const errorMessage = (response as any)?.message || "Error al eliminar la pasarela";
+      showToast(errorMessage, "error");
     } catch (error) {
-      showToast(`Error al eliminar la pasarela: ${error}`, "error");
+      showToast("Error al eliminar la pasarela", "error");
     } finally {
       setLoadingDelete(false);
       setDeleteModalOpen(false);
     }
   };
-  console.log(gateway);
+
+  // Estilos para el Card con soporte de modo oscuro
+  const cardStyles = {
+    root: {
+      backgroundColor: "var(--gateway-card-bg)",
+      borderColor: "var(--gateway-card-border)",
+    },
+  };
 
   return (
-    <div>
+    <div className="[--gateway-card-bg:theme(colors.gray.50)] dark:[--gateway-card-bg:theme(colors.gray.800)] [--gateway-card-border:theme(colors.gray.200)] dark:[--gateway-card-border:theme(colors.gray.700)]">
       <Card
         padding="md"
         radius="md"
         shadow="xs"
         withBorder
-        className="bg-gray-50 dark:bg-gray-800"
+        styles={cardStyles}
       >
         <Group align="center" className="flex-col sm:flex-row gap-4 sm:gap-2">
           <Group className="w-full sm:w-auto">
@@ -148,10 +168,10 @@ export const GatewayCard = ({
               <CreditCard size={18} />
             </div>
             <div>
-              <Text fw={500} className="text-gray-900 dark:text-gray-100">
+              <Text fw={500} className="text-gray-900 dark:!text-white">
                 {gateway.name}
               </Text>
-              <Text size="sm" c="dimmed" className="dark:text-gray-400">
+              <Text size="sm" c="dimmed" className="dark:!text-gray-400">
                 Código: {gateway.code}
               </Text>
             </div>

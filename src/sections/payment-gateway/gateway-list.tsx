@@ -55,7 +55,7 @@ export const GatewaysManageList = forwardRef<
     <div className="space-y-4">
       {loading ? (
         <div className="flex justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-gray-100"></div>
         </div>
       ) : (
         gateways.map((gateway: Gateway) => (
