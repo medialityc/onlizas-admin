@@ -2,10 +2,6 @@ import type {
   gatewaysSchemas,
   StripeConfig,
   PaypalConfig,
-  TropipayConfig,
-  SquareConfig,
-  AuthorizeConfig,
-  BankConfig,
 } from "@/sections/payment-gateway/settings-gateway-forms/gateway-schemas.schema";
 import { PaginatedResponse } from "./common";
 
@@ -24,11 +20,7 @@ export type GetAllGateways=PaginatedResponse<Gateway>
 
 export type GatewayType =
   | "stripe"
-  | "paypal"
-  | "tropipay"
-  | "square"
-  | "authorize"
-  | "bank";
+  | "paypal";
 
 export interface TypeGateway {
   id: number;
@@ -40,11 +32,7 @@ export interface TypeGateway {
 
 export type GatewayConfig =
   | StripeConfig
-  | PaypalConfig
-  | TropipayConfig
-  | SquareConfig
-  | AuthorizeConfig
-  | BankConfig;
+  | PaypalConfig;
 
 export interface GatewayWithConfig {
   type: GatewayType;
@@ -85,15 +73,7 @@ export type GatewayFormData<T extends GatewayType> = T extends "stripe"
   ? StripeConfig
   : T extends "paypal"
     ? PaypalConfig
-    : T extends "tropipay"
-      ? TropipayConfig
-      : T extends "square"
-        ? SquareConfig
-        : T extends "authorize"
-          ? AuthorizeConfig
-          : T extends "bank"
-            ? BankConfig
-            : never;
+    : never;
 
 export type GatewaySchema<T extends GatewayType> =
   T extends keyof typeof gatewaysSchemas ? (typeof gatewaysSchemas)[T] : never;
@@ -108,15 +88,7 @@ export interface GatewayI {
 
 export type GatewayName =
   | "Stripe"
-  | "PayPal"
-  | "Tropipay"
-  | "Square"
-  | "Authorize.Net"
-  | "Bank Transfer";
-
-export interface GatewayTest {
-  name: string;
-  status: "success" | "failed";
+  | "PayPal";
   lastTest: string;
   latency: string;
 }

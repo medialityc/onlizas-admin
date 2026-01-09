@@ -28,10 +28,6 @@ export const GatewayFormSelector = () => {
         <option value="">Seleccione una pasarela de pago</option>
         <option value="stripe">Stripe</option>
         <option value="paypal">PayPal</option>
-        <option value="tropipay">Tropipay</option>
-        <option value="square">Square</option>
-        <option value="authorize">Authorize.Net</option>
-        <option value="bank">Bank Transfer</option>
       </select>
 
       <div

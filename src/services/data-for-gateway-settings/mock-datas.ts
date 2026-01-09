@@ -58,24 +58,6 @@ export const mockGateways: GatewayI[] = [
     transactions: "3,421",
     status: "active",
   },
-  {
-    name: "Tropipay",
-    lastTest: "30 minutes ago",
-    transactions: "892",
-    status: "active",
-  },
-  {
-    name: "Bank Transfer",
-    status: "active",
-    lastTest: "N/A",
-    transactions: "300",
-  },
-  {
-    name: "Square",
-    status: "inactive",
-    lastTest: "Failed",
-    transactions: "0",
-  },
 ];
 
 export const gateways: TypeGateway[] = [
@@ -92,20 +74,6 @@ export const gateways: TypeGateway[] = [
     type: "paypal",
     status: "active",
     created: "2024-01-10",
-  },
-  {
-    id: 3,
-    name: "Tropipay",
-    type: "tropipay",
-    status: "active",
-    created: "2024-02-01",
-  },
-  {
-    id: 4,
-    name: "Square",
-    type: "square",
-    status: "inactive",
-    created: "2024-01-20",
   },
 ];
 

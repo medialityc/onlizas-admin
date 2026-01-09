@@ -32,9 +32,6 @@ export const PaymentsSection: React.FC<PaymentsSectionProps> = ({
   const mockPaymentGateways = [
     { id: 1, name: 'PayPal', code: 'paypal' },
     { id: 2, name: 'Stripe', code: 'stripe' },
-    { id: 3, name: 'MercadoPago', code: 'mercadopago' },
-    { id: 4, name: 'Banco Estado', code: 'bancoestad' },
-    { id: 5, name: 'Transbank', code: 'transbank' }
   ];
 
   // Fetch region configuration
