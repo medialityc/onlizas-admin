@@ -89,6 +89,10 @@ export interface GatewayI {
 export type GatewayName =
   | "Stripe"
   | "PayPal";
+
+export interface GatewayTest {
+  name: string;
+  status: "success" | "failed";
   lastTest: string;
   latency: string;
 }
