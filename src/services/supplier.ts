@@ -414,3 +414,33 @@ export async function removeExtensionDocuments(
 
   return buildApiResponseAsync(res);
 }
+
+// Función para actualizar información básica del proveedor
+export async function updateSupplierBasicInfo(
+  approvalProcessId: string | number,
+  data: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    phoneCountryCode?: string;
+    address?: string;
+    supplierType?: number;
+    sellerType?: number;
+    nacionalityType?: number;
+    mincexCode?: string;
+    countryId?: string;
+  }
+): Promise<ApiResponse<any>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.approvalProcesses.updateInfo(approvalProcessId),
+    method: "PUT",
+    data,
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  updateTag("supplier");
+  updateTag("suppliers");
+
+  return buildApiResponseAsync(res);
+}
