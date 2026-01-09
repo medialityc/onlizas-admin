@@ -266,6 +266,8 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${id}/extend`, // POST
     externalReviewToken: (id: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/approval-process/${id}/external-review-token`, // POST (generate external review token)
+    updateInfo: (id: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}approval-processes/${id}/info`, // PUT (update basic info)
   },
   store: {
     create: `${process.env.NEXT_PUBLIC_API_URL}stores/admin`,

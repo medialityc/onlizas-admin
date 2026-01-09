@@ -18,6 +18,13 @@ export default function SupplierEditActions({
   const watchedExpirationDate = useWatch({ control, name: "expirationDate" });
   const watchedImportersIds = useWatch({ control, name: "importersIds" });
   
+  // useWatch para campos de información básica
+  const watchedName = useWatch({ control, name: "name" });
+  const watchedEmail = useWatch({ control, name: "email" });
+  const watchedPhone = useWatch({ control, name: "phone" });
+  const watchedSupplierType = useWatch({ control, name: "supplierType" });
+  const watchedCountryId = useWatch({ control, name: "countryId" });
+  
   // Control de permisos
   const { hasPermission } = usePermissions();
   const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
@@ -25,15 +32,19 @@ export default function SupplierEditActions({
   // Consider only meaningful fields for the dirty indicator (ignore temp pickers, etc.)
   const hasMeaningfulDirty = useMemo(() => {
     const df = dirtyFields as any;
+    
     return !!(
       df?.name ||
       df?.email ||
       df?.phone ||
+      df?.phoneCountryCode ||
       df?.countryCode ||
+      df?.countryId ||
       df?.address ||
       df?.message ||
       df?.type ||
       df?.active ||
+      df?.supplierType ||
       df?.sellerType ||
       df?.nacionalityType ||
       df?.mincexCode ||
@@ -42,7 +53,16 @@ export default function SupplierEditActions({
       df?.pendingCategories ||
       df?.approvedCategories
     );
-  }, [dirtyFields, watchedExpirationDate, watchedImportersIds]);
+  }, [
+    dirtyFields, 
+    watchedExpirationDate, 
+    watchedImportersIds, 
+    watchedName, 
+    watchedEmail, 
+    watchedPhone, 
+    watchedSupplierType, 
+    watchedCountryId
+  ]);
 
   return (
     <div>

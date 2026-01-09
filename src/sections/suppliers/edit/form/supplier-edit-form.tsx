@@ -7,13 +7,14 @@ import { useRouter } from "next/navigation";
 import { Paper } from "@mantine/core";
 
 import { SupplierDetails } from "@/types/suppliers";
-import { 
+import {
   updateExpirationDate, 
   addImporterContracts, 
   removeImporterContracts,
   addRequestedCategories,
   removeRequestedCategories,
   getImporterContracts,
+  updateSupplierBasicInfo,
 } from "@/services/supplier";
 import { toast } from "react-toastify";
 import SupplierBasicInfo from "./supplier-basic-info";
@@ -38,6 +39,7 @@ export default function SupplierEditForm({
   supplierDetails: SupplierDetails;
 }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isEditingBasicInfo, setIsEditingBasicInfo] = useState(false);
   const [contractMap, setContractMap] = useState<Record<string, string>>({}); // Map de importerId -> contractId
   const [initialImporterIds, setInitialImporterIds] = useState<string[]>([]); // IDs iniciales de importadoras
   const router = useRouter();
@@ -91,12 +93,12 @@ export default function SupplierEditForm({
     resolver: zodResolver(updateSupplierSchemaWithRules) as any,
     defaultValues: initValue,
     shouldFocusError: false,
-    mode: "onSubmit",
-    reValidateMode: "onSubmit",
+    mode: "onChange",
+    reValidateMode: "onChange",
     criteriaMode: "all",
   });
 
-  const { handleSubmit, reset, setValue } = methods;
+  const { handleSubmit, reset, setValue, trigger, getValues } = methods;
 
   // Cargar importadoras existentes
   useEffect(() => {
@@ -141,7 +143,35 @@ export default function SupplierEditForm({
       const previousCategories = supplierDetails.pendingCategories?.map(c => c.id) || [];
       const newCategories = data.pendingCategories?.map(c => c.id) || [];
 
-      // 1. Actualizar fecha de expiración
+      // 1. Actualizar información básica si está en modo edición
+      if (isEditingBasicInfo) {
+        const basicInfoData = {
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          phoneCountryCode: data.phoneCountryCode,
+          address: data.address,
+          supplierType: data.supplierType,
+          sellerType: data.sellerType,
+          nacionalityType: data.nacionalityType,
+          mincexCode: data.mincexCode || "",
+          countryId: data.countryId,
+        };
+
+        const basicInfoResponse = await updateSupplierBasicInfo(approvalProcessId, basicInfoData);
+        if (basicInfoResponse.error) {
+          toast.error(basicInfoResponse.message || "Error al actualizar la información básica");
+          return;
+        } else {
+          toast.success("Información básica actualizada correctamente");
+          setIsEditingBasicInfo(false); // Salir del modo edición
+          // Redireccionar después del guardado exitoso de información básica
+          router.push("/dashboard/suppliers");
+          return;
+        }
+      }
+
+      // 2. Actualizar fecha de expiración
       const expirationDateResponse = await updateExpirationDate(
         approvalProcessId,
         data?.expirationDate?.toISOString() || new Date().toISOString()
@@ -150,7 +180,7 @@ export default function SupplierEditForm({
         toast.error("Error al actualizar la fecha de expiración");
       }
 
-      // 2. Manejar cambios en importadoras
+      // 3. Manejar cambios en importadoras
       const addedImporters = newImporters.filter(
         (id: string) => !previousImporters.includes(id)
       );
@@ -179,7 +209,7 @@ export default function SupplierEditForm({
         }
       }
 
-      // 3. Manejar cambios en categorías solicitadas
+      // 4. Manejar cambios en categorías solicitadas
       const addedCategories = newCategories.filter(
         (id: string) => !previousCategories.includes(id)
       );
@@ -204,8 +234,11 @@ export default function SupplierEditForm({
       // Actualizar el estado de los IDs iniciales de importadoras para la próxima edición
       setInitialImporterIds(newImporters);
 
-      toast.success("Proveedor actualizado correctamente");
-      router.push("/dashboard/suppliers");
+      // Solo mostrar mensaje general y redireccionar si no es solo información básica
+      if (!isEditingBasicInfo) {
+        toast.success("Proveedor actualizado correctamente");
+        router.push("/dashboard/suppliers");
+      }
     } catch (error) {
       toast.error("Error al actualizar proveedor");
     } finally {
@@ -232,7 +265,11 @@ export default function SupplierEditForm({
               borderColor: "light-dark(#e5e7eb, #253a54)",
             },
           }}>
-            <SupplierBasicInfo />
+            <SupplierBasicInfo 
+              approvalProcessId={supplierDetails.id}
+              isEditMode={isEditingBasicInfo}
+              onToggleEditMode={() => setIsEditingBasicInfo(!isEditingBasicInfo)}
+            />
           </Paper>
 
           {/* Sección de Importadoras */}

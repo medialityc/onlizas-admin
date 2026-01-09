@@ -14,7 +14,9 @@ export const updateSupplierSchema = z.object({
     .string({ error: "El teléfono es obligatorio." })
     .min(1, "El teléfono no puede estar vacío.")
     .max(20, "El teléfono no puede tener más de 20 caracteres."),
+  phoneCountryCode: z.string().optional(),
   countryCode: z.string().optional(),
+  countryId: z.string().optional(),
   address: z
     .string({ error: "La dirección es obligatoria." })
     .min(1, "La dirección no puede estar vacía.")
