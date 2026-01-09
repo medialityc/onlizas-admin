@@ -104,6 +104,9 @@ export const paths = {
       view: (id: string | number) => `${DASHBOARD}/orders/${id}`,
       edit: (id: string | number) => `${DASHBOARD}/orders/${id}/edit`,
     },
+    systemInfo: {
+      root: `${DASHBOARD}/system-info`,
+    },
   },
   finance: {
     root: "/dashboard/finance",

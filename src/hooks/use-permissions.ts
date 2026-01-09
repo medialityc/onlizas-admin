@@ -1,4 +1,5 @@
 import { usePermissions as useSSO } from "zas-sso-client";
+import { PERMISSION_ADMIN } from "@/lib/permissions";
 
 // Tipo Permission de zas-sso-client
 interface Permission {
@@ -23,7 +24,8 @@ export const usePermissions = () => {
     isError: boolean;
   };
   // Asegurar que permissions sea siempre un array válido de códigos
-  const filteredPermissions = permissions?.filter((p) => p?.subsystem?.code === "Onlizas") || [];
+  const filteredPermissions =
+    permissions?.filter((p) => p?.subsystem?.code === "Onlizas") || [];
   const safePermissionCodes = Array.isArray(filteredPermissions)
     ? filteredPermissions.map((p: Permission) => p?.code).filter(Boolean)
     : [];
@@ -82,8 +84,8 @@ export const usePermissions = () => {
    * @param adminPermissions - Array de permisos que definen un admin
    * @returns true si es admin, false si no
    */
-  const isAdmin = (adminPermissions: string[] = []): boolean => {
-    if (adminPermissions.length === 0) return false;
+  const isAdmin = (adminPermissions: string[] = PERMISSION_ADMIN): boolean => {
+    if (!adminPermissions || adminPermissions.length === 0) return false;
     return hasPermission(adminPermissions);
   };
 

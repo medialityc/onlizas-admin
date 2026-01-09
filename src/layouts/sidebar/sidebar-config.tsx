@@ -297,10 +297,10 @@ export const sidebarSections: SidebarSection[] = [
         permissions: PERMISSION_ADMIN,
       },
       {
-        id: "system-configurations",
-        label: "Configuración del Sistema",
-        path: paths.dashboard.systemConfigurations.list,
-        icon: <ShieldCheckIcon className="h-4 w-4" />,
+        id: "system-info",
+        label: "Información de la Tienda",
+        path: paths.dashboard.systemInfo.root,
+        icon: <GlobeAltIcon className="h-4 w-4" />,
         permissions: PERMISSION_ADMIN,
       },
       {

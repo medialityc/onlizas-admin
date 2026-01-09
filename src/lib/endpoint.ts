@@ -631,4 +631,46 @@ export const backendRoutes = {
     admin: `${process.env.NEXT_PUBLIC_API_URL}admin/dashboard`,
     supplier: `${process.env.NEXT_PUBLIC_API_URL}supplier/dashboard`,
   },
+  systemInfo: {
+    addresses: {
+      list: `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/addresses`,
+      create: `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/addresses`,
+      getById: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/addresses/${id}`,
+      update: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/addresses/${id}`,
+      delete: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/addresses/${id}`,
+    },
+    socialNetworks: {
+      list: `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/social-networks`,
+      create: `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/social-networks`,
+      getById: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/social-networks/${id}`,
+      update: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/social-networks/${id}`,
+      delete: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/social-networks/${id}`,
+    },
+    numbers: {
+      list: `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/numbers`,
+      create: `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/numbers`,
+      getById: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/numbers/${id}`,
+      update: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/numbers/${id}`,
+      delete: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/numbers/${id}`,
+    },
+    emails: {
+      list: `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/emails`,
+      create: `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/emails`,
+      getById: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/emails/${id}`,
+      update: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/emails/${id}`,
+      delete: (id: string | number) =>
+        `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/emails/${id}`,
+    },
+  },
 };
