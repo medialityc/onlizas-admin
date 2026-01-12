@@ -25,24 +25,22 @@ export default function StoresListContainer({
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="mb-5 flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-              Gestión de Tiendas
-            </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Administra las tiendas del sistema y sus datos asociados
-            </p>
-          </div>
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold text-dark dark:text-white-light">
+            Gestión de Tiendas
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Administra las tiendas del sistema y sus datos asociados
+          </p>
         </div>
-
-        <StoresList
-          data={storesResponse.data}
-          searchParams={query}
-          onSearchParamsChange={handleSearchParamsChange}
-        />
       </div>
+
+      <StoresList
+        data={storesResponse.data}
+        searchParams={query}
+        onSearchParamsChange={handleSearchParamsChange}
+      />
     </div>
   );
 }

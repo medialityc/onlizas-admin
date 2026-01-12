@@ -40,32 +40,30 @@ export default function InventoryCardListContainer({
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-balance">
-              Gestión de Inventarios
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Administra los inventarios del sistema y sus datos asociados
-            </p>
-          </div>
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-balance">
+            Gestión de Inventarios
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Administra los inventarios del sistema y sus datos asociados
+          </p>
         </div>
-
-        <InventoryCardGrid
-          data={inventoriesResponse.data}
-          searchParams={query}
-          onSearchParamsChange={handleSearchParamsChange}
-          onCreate={hideCreate ? () => {} : handleOpen}
-        />
-        {!hideCreate && (
-          <CreateInventoryModal
-            open={createPermissionModal.open}
-            onClose={onCloseModal}
-            provider={providerId}
-          />
-        )}
       </div>
+
+      <InventoryCardGrid
+        data={inventoriesResponse.data}
+        searchParams={query}
+        onSearchParamsChange={handleSearchParamsChange}
+        onCreate={hideCreate ? () => {} : handleOpen}
+      />
+      {!hideCreate && (
+        <CreateInventoryModal
+          open={createPermissionModal.open}
+          onClose={onCloseModal}
+          provider={providerId}
+        />
+      )}
     </div>
   );
 }

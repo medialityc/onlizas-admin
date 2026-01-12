@@ -75,55 +75,53 @@ export default function SupplierClosuresListContainer({
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="mb-5 flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-              Mis Cierres
-            </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Listado de cierres parciales y totales relacionados a mis cuentas
-            </p>
-          </div>
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold text-dark dark:text-white-light">
+            Mis Cierres
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Listado de cierres parciales y totales relacionados a mis cuentas
+          </p>
         </div>
-        <FiltersBar>
-          <div>
-            <label className="text-sm">Fecha inicio</label>
-            <input
-              type="date"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-              className="border rounded px-2 py-1"
-            />
-          </div>
-          <div>
-            <label className="text-sm">Fecha fin</label>
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              className="border rounded px-2 py-1"
-            />
-          </div>
-          <Button
-            className="px-3 py-2 rounded bg-primary text-white"
-            onClick={handleFilterDates}
-          >
-            Filtrar
-          </Button>
-        </FiltersBar>
-        {hasError ? (
-          <div className="p-4 text-sm text-red-600">
-            No se pudieron cargar los cierres.
-          </div>
-        ) : (
-          <SupplierClosuresList
-            data={closuresData}
-            searchParams={{ ...query, fromDate, toDate }}
-            onSearchParamsChange={handleSearchParamsChange}
-          />
-        )}
       </div>
+      <FiltersBar>
+        <div>
+          <label className="text-sm">Fecha inicio</label>
+          <input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="border rounded px-2 py-1"
+          />
+        </div>
+        <div>
+          <label className="text-sm">Fecha fin</label>
+          <input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="border rounded px-2 py-1"
+          />
+        </div>
+        <Button
+          className="px-3 py-2 rounded bg-primary text-white"
+          onClick={handleFilterDates}
+        >
+          Filtrar
+        </Button>
+      </FiltersBar>
+      {hasError ? (
+        <div className="p-4 text-sm text-red-600">
+          No se pudieron cargar los cierres.
+        </div>
+      ) : (
+        <SupplierClosuresList
+          data={closuresData}
+          searchParams={{ ...query, fromDate, toDate }}
+          onSearchParamsChange={handleSearchParamsChange}
+        />
+      )}
     </div>
   );
 }

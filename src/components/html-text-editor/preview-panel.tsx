@@ -1,35 +1,44 @@
-import { Button } from "@/components/button/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/cards/card"
+import { Button } from "@/components/button/button";
 import {
-    PlayIcon as Play,
-    SparklesIcon as Sparkles,
-    ComputerDesktopIcon as Monitor,
-    DeviceTabletIcon as Tablet,
-    DevicePhoneMobileIcon as Smartphone,
-} from "@heroicons/react/24/solid"
-import type { PreviewDevice } from "./types"
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/cards/card";
+import {
+  PlayIcon as Play,
+  SparklesIcon as Sparkles,
+  ComputerDesktopIcon as Monitor,
+  DeviceTabletIcon as Tablet,
+  DevicePhoneMobileIcon as Smartphone,
+} from "@heroicons/react/24/solid";
+import type { PreviewDevice } from "./types";
 
 interface PreviewPanelProps {
-  htmlContent: string
-  previewDevice: PreviewDevice
-  onDeviceChange: (device: PreviewDevice) => void
+  htmlContent: string;
+  previewDevice: PreviewDevice;
+  onDeviceChange: (device: PreviewDevice) => void;
 }
 
-export default function PreviewPanel({ htmlContent, previewDevice, onDeviceChange }: PreviewPanelProps) {
+export default function PreviewPanel({
+  htmlContent,
+  previewDevice,
+  onDeviceChange,
+}: PreviewPanelProps) {
   const getPreviewWidth = () => {
     switch (previewDevice) {
       case "mobile":
-        return "375px"
+        return "375px";
       case "tablet":
-        return "768px"
+        return "768px";
       default:
-        return "100%"
+        return "100%";
     }
-  }
+  };
 
   return (
     <Card className="bg-white/95 dark:bg-black backdrop-blur-sm border-0 shadow-2xl">
-      <CardHeader >
+      <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-xl flex items-center gap-2">
             <div className="p-2 bg-indigo-100 rounded-lg">
@@ -68,11 +77,10 @@ export default function PreviewPanel({ htmlContent, previewDevice, onDeviceChang
             className="border  rounded-xl overflow-hidden shadow-2xl transition-all duration-300"
             style={{ width: getPreviewWidth(), maxWidth: "100%" }}
           >
-            <iframe
-              srcDoc={htmlContent}
-              className="w-full min-h-[600px] border-0 "
+            <div
+              className="w-full min-h-150 border-0 p-4 "
               title="Vista previa HTML"
-              sandbox="allow-scripts allow-same-origin"
+              dangerouslySetInnerHTML={{ __html: htmlContent }}
             />
           </div>
         </div>
@@ -81,11 +89,15 @@ export default function PreviewPanel({ htmlContent, previewDevice, onDeviceChang
             <Sparkles className="h-5 w-5" />
             <p className="font-medium">
               ✨ Vista previa actualizada automáticamente • Dispositivo:{" "}
-              {previewDevice === "desktop" ? "Escritorio" : previewDevice === "tablet" ? "Tablet" : "Móvil"}
+              {previewDevice === "desktop"
+                ? "Escritorio"
+                : previewDevice === "tablet"
+                  ? "Tablet"
+                  : "Móvil"}
             </p>
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

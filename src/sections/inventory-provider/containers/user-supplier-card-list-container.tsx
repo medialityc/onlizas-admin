@@ -24,24 +24,22 @@ export default function UserSupplierCardListContainer({
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="mb-5 flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-              Usuarios proveedores
-            </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Gestionar inventario seleccionando el usuario proveedor
-            </p>
-          </div>
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold text-dark dark:text-white-light">
+            Usuarios proveedores
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Gestionar inventario seleccionando el usuario proveedor
+          </p>
         </div>
-
-        <UserProviderCardGrid
-          data={supplierUsersResponse?.data}
-          searchParams={query}
-          onSearchParamsChange={handleSearchParamsChange}
-        />
       </div>
+
+      <UserProviderCardGrid
+        data={supplierUsersResponse?.data}
+        searchParams={query}
+        onSearchParamsChange={handleSearchParamsChange}
+      />
     </div>
   );
 }

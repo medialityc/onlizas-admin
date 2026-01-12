@@ -9,6 +9,21 @@ export const backendRoutes = {
     delete: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}brands/${id}`, // DELETE
   },
+  staticPages: {
+    create: `${process.env.NEXT_PUBLIC_API_URL}static-pages`,
+    list: `${process.env.NEXT_PUBLIC_API_URL}static-pages`,
+    adminList: `${process.env.NEXT_PUBLIC_API_URL}static-pages/admin`,
+    getByIdAdmin: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}static-pages/${id}`,
+    getBySlug: (slug: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}static-pages/${slug}`,
+    update: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}static-pages/${id}`,
+    toggleStatus: (id: string | number, activate: boolean) =>
+      `${process.env.NEXT_PUBLIC_API_URL}static-pages/${id}/status?activate=${activate}`,
+    delete: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}static-pages/${id}`,
+  },
   countries: { get: `${process.env.NEXT_PUBLIC_API_URL}countries` },
   users: {
     me: `${process.env.NEXT_PUBLIC_API_URL}users/me`,

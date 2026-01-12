@@ -161,5 +161,12 @@ export const paths = {
       edit: (id: string | number) =>
         `${DASHBOARD}/content/home-banners/${id}/edit`,
     },
+    staticPages: {
+      list: `${DASHBOARD}/content/static-pages`,
+      view: (slug: string) => `${DASHBOARD}/content/static-pages/${slug}`,
+      edit: (id: string | number) =>
+        `${DASHBOARD}/content/static-pages/${id}/edit`,
+      new: `${DASHBOARD}/content/static-pages/new`,
+    },
   },
 };

@@ -27,27 +27,25 @@ export default function InventoryProviderCardListContainer({
   };
   return (
     <div className="space-y-6">
-      <div>
-        <div className="mb-5 flex items-center justify-start gap-2">
-          <div>
-            <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-              Inventario - <span className="font-bold"> {provider?.name}</span>
-            </h2>
+      <div className="mb-5 flex items-center justify-start gap-2">
+        <div>
+          <h2 className="text-xl font-semibold text-dark dark:text-white-light">
+            Inventario - <span className="font-bold"> {provider?.name}</span>
+          </h2>
 
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Gestione el inventario de sus productos -{" "}
-              <span className="font-bold"> {provider?.name}</span>
-            </p>
-          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Gestione el inventario de sus productos -{" "}
+            <span className="font-bold"> {provider?.name}</span>
+          </p>
         </div>
-
-        <InventoryProviderCardGrid
-          data={inventoriesResponse.data}
-          searchParams={query}
-          onSearchParamsChange={handleSearchParamsChange}
-          provider={provider}
-        />
       </div>
+
+      <InventoryProviderCardGrid
+        data={inventoriesResponse.data}
+        searchParams={query}
+        onSearchParamsChange={handleSearchParamsChange}
+        provider={provider}
+      />
     </div>
   );
 }

@@ -26,24 +26,22 @@ export default function ConfigurationsListContainer({
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="mb-5 flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-              Configuraciones del Sistema
-            </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Administra las configuraciones por país y tipo
-            </p>
-          </div>
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold text-dark dark:text-white-light">
+            Configuraciones del Sistema
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Administra las configuraciones por país y tipo
+          </p>
         </div>
-
-        <ConfigurationsList
-          data={response.data}
-          searchParams={query}
-          onSearchParamsChange={handleSearchParamsChange}
-        />
       </div>
+
+      <ConfigurationsList
+        data={response.data}
+        searchParams={query}
+        onSearchParamsChange={handleSearchParamsChange}
+      />
     </div>
   );
 }

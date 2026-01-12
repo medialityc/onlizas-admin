@@ -37,41 +37,39 @@ export default function InventoryProviderCardListContainer({
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="mb-5 flex items-center justify-start gap-2">
-          {showBackButton && (
-            <Button
-              onClick={handleCallBack}
-              className="bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 shadow-none text-black dark:text-white border-none"
-            >
-              <ArrowLeftIcon className="w-5 h-5" /> Volver
-            </Button>
+      <div className="mb-5 flex items-center justify-start gap-2">
+        {showBackButton && (
+          <Button
+            onClick={handleCallBack}
+            className="bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 shadow-none text-black dark:text-white border-none"
+          >
+            <ArrowLeftIcon className="w-5 h-5" /> Volver
+          </Button>
+        )}
+        <div>
+          <h2 className="text-xl font-semibold text-dark dark:text-white-light">
+            Inventario - <span className="font-bold"> {provider?.name}</span>
+          </h2>
+          {showBackButton ? (
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Gestiona el inventario del proveedor
+              <span className="font-bold"> {provider?.name}</span>
+            </p>
+          ) : (
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Gestione el inventario de sus productos
+              <span className="font-bold"> {provider?.name}</span>
+            </p>
           )}
-          <div>
-            <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-              Inventario - <span className="font-bold"> {provider?.name}</span>
-            </h2>
-            {showBackButton ? (
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Gestiona el inventario del proveedor
-                <span className="font-bold"> {provider?.name}</span>
-              </p>
-            ) : (
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Gestione el inventario de sus productos
-                <span className="font-bold"> {provider?.name}</span>
-              </p>
-            )}
-          </div>
         </div>
-
-        <InventoryProviderCardGrid
-          data={inventoriesResponse.data}
-          searchParams={query}
-          onSearchParamsChange={handleSearchParamsChange}
-          provider={provider}
-        />
       </div>
+
+      <InventoryProviderCardGrid
+        data={inventoriesResponse.data}
+        searchParams={query}
+        onSearchParamsChange={handleSearchParamsChange}
+        provider={provider}
+      />
     </div>
   );
 }

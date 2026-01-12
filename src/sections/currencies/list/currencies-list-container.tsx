@@ -24,23 +24,21 @@ export default function CurrenciesListContainer({
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-balance">
-              Gestión de Monedas
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Administra las monedas del sistema y sus tasas de cambio
-            </p>
-          </div>
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-balance">
+            Gestión de Monedas
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Administra las monedas del sistema y sus tasas de cambio
+          </p>
         </div>
-        <CurrenciesList
-          data={currenciesResponse.data}
-          searchParams={query}
-          onSearchParamsChange={handleSearchParamsChange}
-        />
       </div>
+      <CurrenciesList
+        data={currenciesResponse.data}
+        searchParams={query}
+        onSearchParamsChange={handleSearchParamsChange}
+      />
     </div>
   );
 }

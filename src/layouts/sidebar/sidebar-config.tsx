@@ -132,6 +132,13 @@ export const sidebarSections: SidebarSection[] = [
         icon: <PhotoIcon className="h-4 w-4" />,
         permissions: PERMISSION_ADMIN,
       },
+      {
+        id: "static-pages",
+        label: "Páginas Estáticas",
+        path: paths.content.staticPages.list,
+        icon: <ClipboardDocumentIcon className="h-4 w-4" />,
+        permissions: PERMISSION_ADMIN,
+      },
     ],
   },
   {

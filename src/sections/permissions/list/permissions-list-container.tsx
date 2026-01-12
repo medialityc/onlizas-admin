@@ -23,24 +23,22 @@ export default function PermissionListContainer({
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="mb-5 flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-              Gestión de Permisos
-            </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Administra los permisos del sistema y sus permisos asociados
-            </p>
-          </div>
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold text-dark dark:text-white-light">
+            Gestión de Permisos
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Administra los permisos del sistema y sus permisos asociados
+          </p>
         </div>
-
-        <PermissionList
-          data={permissionResponse.data}
-          searchParams={query}
-          onSearchParamsChange={handleSearchParamsChange}
-        />
       </div>
+
+      <PermissionList
+        data={permissionResponse.data}
+        searchParams={query}
+        onSearchParamsChange={handleSearchParamsChange}
+      />
     </div>
   );
 }
