@@ -228,38 +228,10 @@ export const sidebarSections: SidebarSection[] = [
     label: "Pagos",
     items: [
       {
-        id: "overview",
-        label: "Resumen",
-        path: paths.dashboard.gateways.overview,
-        icon: <LayoutDashboard className="size-4" />,
-        permissions: PERMISSION_ADMIN,
-      },
-      {
         id: "payment-gateway",
         label: "Pasarelas de Pago",
         path: paths.dashboard.gateways.paymentGateway,
         icon: <CreditCard className="size-4" />,
-        permissions: PERMISSION_ADMIN,
-      },
-      {
-        id: "payment-methods",
-        label: "Métodos de Pago",
-        path: paths.dashboard.gateways.paymentMethods,
-        icon: <Wallet className="size-4" />,
-        permissions: PERMISSION_ADMIN,
-      },
-      {
-        id: "testing-validation",
-        label: "Pruebas",
-        path: paths.dashboard.gateways.testingValidation,
-        icon: <ShieldCheck className="size-4" />,
-        permissions: PERMISSION_ADMIN,
-      },
-      {
-        id: "audit-history",
-        label: "Historial",
-        path: paths.dashboard.gateways.auditHistory,
-        icon: <History className="size-4" />,
         permissions: PERMISSION_ADMIN,
       },
       {
