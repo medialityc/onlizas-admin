@@ -1,8 +1,3 @@
-import type {
-  gatewaysSchemas,
-  StripeConfig,
-  PaypalConfig,
-} from "@/sections/payment-gateway/settings-gateway-forms/gateway-schemas.schema";
 import { PaginatedResponse } from "./common";
 
 export type Gateway={
@@ -28,15 +23,6 @@ export interface TypeGateway {
   type: GatewayType;
   status: "active" | "inactive";
   created: string;
-}
-
-export type GatewayConfig =
-  | StripeConfig
-  | PaypalConfig;
-
-export interface GatewayWithConfig {
-  type: GatewayType;
-  config: GatewayConfig;
 }
 
 export interface Field {
@@ -69,15 +55,6 @@ export interface GatewayFormProps {
 
 export type GatewaysConfig = Record<GatewayType, GatewayFormProps>;
 
-export type GatewayFormData<T extends GatewayType> = T extends "stripe"
-  ? StripeConfig
-  : T extends "paypal"
-    ? PaypalConfig
-    : never;
-
-export type GatewaySchema<T extends GatewayType> =
-  T extends keyof typeof gatewaysSchemas ? (typeof gatewaysSchemas)[T] : never;
-
 // Legacy interfaces for backward compatibility
 export interface GatewayI {
   name: string;
@@ -104,3 +81,4 @@ export interface TestResult {
   time: string;
   timestamp: string;
 }
+

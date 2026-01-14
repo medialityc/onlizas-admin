@@ -154,7 +154,7 @@ export const GatewayCard = ({
   };
 
   return (
-    <div className="[--gateway-card-bg:theme(colors.gray.50)] dark:[--gateway-card-bg:theme(colors.gray.800)] [--gateway-card-border:theme(colors.gray.200)] dark:[--gateway-card-border:theme(colors.gray.700)]">
+    <div className="[--gateway-card-bg:theme(colors.gray.50)] dark:[--gateway-card-bg:theme(colors.gray.800)] [--gateway-card-border:theme(colors.gray.300)] dark:[--gateway-card-border:theme(colors.gray.700)]">
       <Card
         padding="md"
         radius="md"

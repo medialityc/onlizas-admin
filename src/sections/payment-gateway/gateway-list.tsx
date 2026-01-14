@@ -12,10 +12,9 @@ export interface GatewaysManageListRef {
 export const GatewaysManageList = forwardRef<
   GatewaysManageListRef,
   {
-    tabActive: "configure" | "manage";
     onRefresh?: () => void;
   }
->(({ tabActive, onRefresh }, ref) => {
+>(({ onRefresh }, ref) => {
   const [showCredentials, setShowCredentials] = useState<
     Record<string, boolean>
   >({});
@@ -35,7 +34,6 @@ export const GatewaysManageList = forwardRef<
       }
       return response.data;
     },
-    enabled: tabActive === "manage", // Solo fetch cuando estamos en la tab manage
   });
 
   const gateways = (gatewaysResponse as Gateway[]) || [];
