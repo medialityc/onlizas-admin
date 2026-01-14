@@ -1,10 +1,11 @@
 "use client";
 
-import { gateways } from "@/services/data-for-gateway-settings/mock-datas";
 import { Label } from "@/components/label/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/cards/card";
 import { Input } from "@/components/input/input";
+import { useQuery } from "@tanstack/react-query";
+import { getAllGateways } from "@/services/gateways";
 
 interface PaymentConfigFormProps {
   selectedPaymentMethod: string;
@@ -21,6 +22,20 @@ export function PaymentConfigForm({
   onPriorityChange,
   disabled = false
 }: PaymentConfigFormProps) {
+  // Obtener las pasarelas desde el backend
+  const { data: gatewaysResponse, isLoading } = useQuery({
+    queryKey: ["gateways"],
+    queryFn: async () => {
+      const response = await getAllGateways();
+      if (response.error) {
+        return [];
+      }
+      return response.data || [];
+    },
+  });
+
+  const gateways = gatewaysResponse || [];
+
   const handlePriorityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value) || 1;
     const clampedValue = Math.max(1, Math.min(100, value));
@@ -31,16 +46,16 @@ export function PaymentConfigForm({
     <div className="space-y-4">
       <div className="space-y-2">
         <Label>Seleccionar Método de Pago</Label>
-        <Select value={selectedPaymentMethod} onValueChange={onPaymentMethodChange} disabled={disabled}>
+        <Select value={selectedPaymentMethod} onValueChange={onPaymentMethodChange} disabled={disabled || isLoading}>
           <SelectTrigger>
-            <SelectValue placeholder="Selecciona un método de pago" />
+            <SelectValue placeholder={isLoading ? "Cargando..." : "Selecciona un método de pago"} />
           </SelectTrigger>
           <SelectContent>
             {gateways.map((gateway: any) => (
               <SelectItem key={gateway.id} value={String(gateway.id)}>
                 <div className="flex items-center space-x-2">
                   <span>{gateway.name}</span>
-                  <span className="text-xs text-gray-500 capitalize">({gateway.type})</span>
+                  <span className="text-xs text-gray-500 capitalize">({gateway.code})</span>
                 </div>
               </SelectItem>
             ))}
