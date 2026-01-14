@@ -93,11 +93,7 @@ export const paths = {
       list: `${DASHBOARD}/system-configurations`,
     },
     gateways: {
-      overview: `${DASHBOARD}/overview`,
-      auditHistory: `${DASHBOARD}/audit-history`,
       paymentGateway: `${DASHBOARD}/payment-gateways`,
-      paymentMethods: `${DASHBOARD}/payment-methods`,
-      testingValidation: `${DASHBOARD}/testing-validation`,
     },
     orders: {
       list: `${DASHBOARD}/orders`,
