@@ -8,10 +8,10 @@ import {
   RHFSelectWithLabel,
   RHFSwitch,
 } from "@/components/react-hook-form";
-import RHFMultiSelectImporters from "@/components/react-hook-form/rhf-multi-select-importers";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAllUsers } from "@/services/users";
 import { getAllBusiness } from "@/services/business";
+import { getImporters } from "@/services/importers";
 import { IUser } from "@/types/users";
 import { Business } from "@/types/business";
 import { DocumentIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
@@ -92,9 +92,16 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
   return (
     <>
       <div className="space-y-8">
-        <RHFMultiSelectImporters
+        <RHFAutocompleteFetcherInfinity
           name="importersIds"
           label="Importadoras de la plataforma"
+          placeholder="Seleccionar importadoras..."
+          onFetch={getImporters}
+          objectValueKey="id"
+          objectKeyLabel="name"
+          multiple={true}
+          params={{ pageSize: 35 }}
+          queryKey="importers-supplier-create"
         />
         <div className="space-y-3">
           <RHFSwitch
