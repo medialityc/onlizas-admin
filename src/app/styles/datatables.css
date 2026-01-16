@@ -82,6 +82,81 @@ table tr .mantine-Checkbox-root {
   @apply border-t-0 !p-0 !pt-5 !bg-transparent;
 }
 
+.dark .datatables .mantine-gzzjso,
+.dark .datatables .mantine-lrzwoq {
+  @apply !bg-[#0e1726] !text-white-dark;
+}
+
+.dark .datatables .mantine-gzzjso *,
+.dark .datatables .mantine-lrzwoq * {
+  @apply !text-white-dark;
+}
+
+.dark .datatables .mantine-gzzjso select,
+.dark .datatables .mantine-lrzwoq select {
+  @apply !bg-[#1b2e4b] !border-[#253b5c] !text-white-dark;
+}
+
+.dark .datatables .mantine-gzzjso button,
+.dark .datatables .mantine-lrzwoq button {
+  @apply !text-white-dark;
+}
+
+/* Mantine DataTable Pagination - Dark Mode */
+.dark .mantine-datatable-pagination {
+  @apply !bg-[#121e32] !border-[#191e3a];
+}
+
+.dark .mantine-datatable-pagination-text {
+  @apply !text-white-dark;
+}
+
+.dark .mantine-datatable-pagination-pages-control {
+  @apply !border-[#253b5c] !text-white-dark !bg-[#1a2941];
+}
+
+.dark .mantine-datatable-pagination-pages-control:hover:not([data-active]) {
+  @apply !bg-[#253b5c];
+}
+
+.dark .mantine-datatable-page-size-selector-button {
+  @apply !bg-[#1a2941] !border-[#253b5c] !text-white-dark;
+}
+
+.dark .mantine-datatable-page-size-selector-button:hover {
+  @apply !bg-[#253b5c];
+}
+
+/* Menu dropdown del selector de página */
+.dark .mantine-datatable-page-size-selector-button[data-expanded] {
+  @apply !bg-[#253b5c];
+}
+
+.dark .mantine-datatable {
+  --mantine-datatable-background-color: #1a2941;
+  --mantine-datatable-border-color: #191e3a;
+  --mantine-datatable-row-border-color: #191e3a;
+  --mantine-datatable-color: #888ea8;
+}
+
+.dark .datatables .mantine-gzzjso,
+.dark .datatables .mantine-lrzwoq {
+  @apply !bg-[#1a2941];
+}
+
+/* Estilos adicionales para elementos dentro de la paginación */
+.dark .datatables .mantine-gzzjso button,
+.dark .datatables .mantine-lrzwoq button,
+.dark .mantine-datatable-pagination button {
+  @apply !bg-[#1a2941] !text-white-dark !border-[#253b5c];
+}
+
+.dark .datatables .mantine-gzzjso button:hover,
+.dark .datatables .mantine-lrzwoq button:hover,
+.dark .mantine-datatable-pagination button:hover:not([data-active]) {
+  @apply !bg-[#253b5c];
+}
+
 .datatables.pagination-padding .mantine-gzzjso {
   @apply !px-5;
 }

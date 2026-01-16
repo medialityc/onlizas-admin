@@ -1,4 +1,5 @@
-import RHFMultiSelectImporters from "@/components/react-hook-form/rhf-multi-select-importers";
+import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
+import { getImporters } from "@/services/importers";
 import { Paper, Title } from "@mantine/core";
 
 interface SupplierImportersProps {
@@ -21,10 +22,16 @@ export default function SupplierImporters({
       <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
         Selecciona las importadoras con las que este proveedor tiene contratos.
       </p>
-      <RHFMultiSelectImporters
+      <RHFAutocompleteFetcherInfinity
         name="importersIds"
         label="Importadoras de la plataforma"
         placeholder="Seleccionar importadoras..."
+        onFetch={getImporters}
+        objectValueKey="id"
+        objectKeyLabel="name"
+        multiple={true}
+        params={{ pageSize: 35 }}
+        queryKey="importers-supplier-select"
       />
     </Paper>
   );
