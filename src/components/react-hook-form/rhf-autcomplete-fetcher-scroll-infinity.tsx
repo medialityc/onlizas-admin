@@ -54,6 +54,7 @@ interface Props<T> extends Omit<AutocompleteProps, "data" | "renderOption"> {
   enabled?: boolean;
   inputClassName?: string;
   dropdownPosition?: "top" | "bottom";
+  defaultOptions?: T[];
 }
 
 export default function RHFAutocompleteFetcherInfinity<T>({
@@ -77,6 +78,7 @@ export default function RHFAutocompleteFetcherInfinity<T>({
   onOptionSelected,
   extraFilters = {},
   dropdownPosition,
+  defaultOptions = [],
   ...other
 }: Props<T>) {
   // Estado para el término de búsqueda
@@ -144,14 +146,25 @@ export default function RHFAutocompleteFetcherInfinity<T>({
         (page: PaginatedResponse<T> | undefined) => page?.data ?? []
       ) ?? [];
 
+    // Combina defaultOptions con las opciones del fetch, evitando duplicados
+    const combinedOptions = [...defaultOptions];
+    const defaultIds = new Set(defaultOptions.map(opt => String(opt[objectValueKey])));
+    
+    allOptions.forEach(opt => {
+      const optId = String(opt[objectValueKey]);
+      if (!defaultIds.has(optId)) {
+        combinedOptions.push(opt);
+      }
+    });
+
     if (!exclude || exclude.length === 0) {
-      return allOptions;
+      return combinedOptions;
     }
 
-    return allOptions.filter(
+    return combinedOptions.filter(
       (option) => !exclude.includes(String(option[objectValueKey]))
     );
-  }, [data, exclude, objectValueKey]);
+  }, [data, exclude, objectValueKey, defaultOptions]);
 
   const handleScrollEnd = () => {
     if (hasNextPage && !isFetchingNextPage) {

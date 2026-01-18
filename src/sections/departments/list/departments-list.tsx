@@ -8,7 +8,7 @@ import { SearchParams } from "@/types/fetch/request";
 import { DataTableColumn } from "mantine-datatable";
 import { useCallback, useMemo } from "react";
 
-import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { Department, GetAllDepartments } from "@/types/departments";
 import DepartmentsModalContainer from "../modals/department-modal-container";
 import { deleteDepartment } from "@/services/department";
@@ -26,7 +26,7 @@ export function DepartmentsList({
   onSearchParamsChange,
 }: Props) {
   const { getModalState, openModal, closeModal } = useModalState();
-  const queryClient = useQueryClient();
+  const router = useRouter();
 
   const createDepartmentModal = getModalState("create");
   const editDepartmentModal = getModalState<number>("edit");
@@ -70,7 +70,7 @@ export function DepartmentsList({
         if (res?.error) {
           showToast("Error al eliminar departamento", "error");
         } else {
-          queryClient.invalidateQueries({ queryKey: ["departments"] });
+          router.refresh();
           showToast("Departamento eliminado correctamente", "success");
         }
       } catch (error) {
@@ -78,7 +78,7 @@ export function DepartmentsList({
         showToast("Ocurrió un error, intente nuevamente", "error");
       }
     },
-    [queryClient]
+    [router]
   );
 
   const columns = useMemo<DataTableColumn<Department>[]>(

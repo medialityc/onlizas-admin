@@ -7,7 +7,7 @@ import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-aut
 import LoaderButton from "@/components/loaders/loader-button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useEffect, useMemo, useCallback } from "react";
+import { useEffect, useMemo, useCallback, useState } from "react";
 import { ZoneSchema, ZoneInput } from "../schemas/zone";
 import { createZone, updateZone } from "@/services/zones";
 import { getDistrictsByCountry } from "@/services/districts";
@@ -34,13 +34,15 @@ export default function ZoneModal({
   onSuccess,
   zone,
 }: Props) {
+  const [preloadedDistricts, setPreloadedDistricts] = useState<District[]>([]);
+  
   const methods = useForm<ZoneInput>({
     resolver: zodResolver(ZoneSchema),
     defaultValues: {
       name: zone?.name || "",
       deliveryAmount: zone?.deliveryAmount || 0,
       districtsIds: zone?.districtsIds || [],
-      countryId: zone?.countryId,
+      countryId: zone?.countryId || "c1c9c1b7-3757-4294-9591-970fba64c681", // ID de Cuba por defecto
     },
   });
 
@@ -112,19 +114,48 @@ export default function ZoneModal({
 
   useEffect(() => {
     if (zone && open) {
+      // Usar Cuba como fallback si no viene countryId del backend
+      const countryIdToUse = zone.countryId || "c1c9c1b7-3757-4294-9591-970fba64c681";
+      
+      // Cargar los distritos completos para pre-poblar el selector
+      const loadDistricts = async () => {
+        if (zone.districtsIds && zone.districtsIds.length > 0) {
+          try {
+            const response = await getDistrictsByCountry(countryIdToUse, {
+              page: 1,
+              pageSize: 100,
+            });
+            
+            if (response.data?.data) {
+              // Filtrar solo los distritos que están en la zona
+              const selectedDistricts = response.data.data.filter((d) =>
+                zone.districtsIds.includes(d.id)
+              );
+              setPreloadedDistricts(selectedDistricts);
+            }
+          } catch (error) {
+            console.error("Error cargando distritos para edición:", error);
+          }
+        }
+      };
+      
+      loadDistricts();
+      
+      // Usar Cuba como fallback si no viene countryId del backend
       reset({
         name: zone.name,
         deliveryAmount: zone.deliveryAmount,
         districtsIds: zone.districtsIds,
-        countryId: zone.countryId,
+        countryId: zone.countryId || "c1c9c1b7-3757-4294-9591-970fba64c681",
       });
     }
     if (!open && !zone) {
+      setPreloadedDistricts([]);
       reset({
         name: "",
         deliveryAmount: 0,
         districtsIds: [],
-        countryId: "",
+        countryId: "c1c9c1b7-3757-4294-9591-970fba64c681", // ID de Cuba por defecto
       });
     }
   }, [zone, open, reset]);
@@ -156,6 +187,7 @@ export default function ZoneModal({
                 variant="name"
                 fullwidth
                 inputClassname="transition-all focus:ring-2 focus:ring-green-500"
+                disabled={!zone}
               />
             </div>
             <RHFAutocompleteFetcherInfinity<District>
@@ -175,6 +207,7 @@ export default function ZoneModal({
               queryKey="no-cache"
               extraFilters={districtFilters}
               enabled={open && !!selectedCountryId}
+              defaultOptions={preloadedDistricts}
             />
             <RHFInputWithLabel
               name="deliveryAmount"
