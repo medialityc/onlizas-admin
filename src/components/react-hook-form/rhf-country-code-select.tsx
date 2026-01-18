@@ -26,6 +26,7 @@ type Props = {
   inputClassname?: string;
   fullwidth?: boolean;
   storeCode?: boolean; // ← nueva prop para almacenar código en lugar de ID
+  disabled?: boolean;
 };
 
 export function RHFCountrySelect({
@@ -34,6 +35,7 @@ export function RHFCountrySelect({
   inputClassname,
   fullwidth = false,
   storeCode = false,
+  disabled = false,
 }: Props) {
   const { control, watch } = useFormContext();
   const [countries, setCountries] = useState<Country[]>([]);
@@ -106,11 +108,16 @@ export function RHFCountrySelect({
             onChange={(val) =>
               onChange(storeCode ? (val?.code ?? "") : val?.id)
             }
+            disabled={disabled}
           >
             <div className="w-full flex flex-col gap-1 relative">
-              <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left sm:text-sm">
+              <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left sm:text-sm">
                 <ComboboxInput
-                  className={cn("form-input pl-8", inputClassname)}
+                  className={cn(
+                    "form-input pl-8 dark:bg-gray-800 dark:text-white dark:border-gray-600",
+                    inputClassname,
+                    disabled && "bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
+                  )}
                   displayValue={(country: Country) =>
                     country
                       ? variant === "code"
@@ -120,6 +127,7 @@ export function RHFCountrySelect({
                   }
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder={variant === "code" ? "286" : "Cuba"}
+                  disabled={disabled}
                 />
                 {selectedCountry && (
                   <div className="absolute z-30 left-2 top-1/2 -translate-y-1/2">
@@ -134,9 +142,9 @@ export function RHFCountrySelect({
                 leaveTo="opacity-0"
                 afterLeave={() => setQuery("")}
               >
-                <ComboboxOptions className="z-50 custom-scrollbar w-full absolute mt-10 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+                <ComboboxOptions className="z-50 custom-scrollbar w-full absolute mt-10 max-h-60 overflow-auto rounded-md bg-white dark:bg-gray-800 py-1 text-base shadow-lg ring-1 ring-black/5 dark:ring-gray-700 focus:outline-none sm:text-sm">
                   {filteredCountries.length === 0 && query !== "" ? (
-                    <div className="relative cursor-default select-none px-4 py-2 text-gray-700">
+                    <div className="relative cursor-default select-none px-4 py-2 text-gray-700 dark:text-gray-300">
                       No encontrado
                     </div>
                   ) : (
@@ -145,7 +153,7 @@ export function RHFCountrySelect({
                         key={country.id}
                         className={({ selected }) =>
                           `relative hover:bg-secondary hover:text-white cursor-pointer transition-colors duration-300 p-2 ${
-                            selected ? "bg-primary text-white" : "text-gray-900"
+                            selected ? "bg-primary text-white" : "text-gray-900 dark:text-gray-100"
                           }`
                         }
                         value={country}
