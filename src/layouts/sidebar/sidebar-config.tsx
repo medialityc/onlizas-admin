@@ -282,20 +282,6 @@ export const sidebarSections: SidebarSection[] = [
         icon: <GlobeAltIcon className="h-4 w-4" />,
         permissions: PERMISSION_ADMIN,
       },
-      {
-        id: "business",
-        label: "Negocios",
-        path: paths.dashboard.business.list,
-        icon: <BriefcaseIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ADMIN,
-      },
-      {
-        id: "notification",
-        label: "Notificaciones",
-        path: paths.dashboard.users.notification.list,
-        icon: <BellIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ADMIN,
-      },
     ],
   },
 ];

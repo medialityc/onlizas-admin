@@ -37,7 +37,7 @@ export async function deleteDepartment(
   });
 
   if (!res.ok) return handleApiServerError(res);
-  updateTag("categories");
+  updateTag("departments");
 
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
