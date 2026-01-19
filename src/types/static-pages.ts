@@ -12,6 +12,7 @@ export interface StaticPageDto {
   content: string;
   slug: string;
   status: ContentStatus;
+  section?: number;
   createdAt: string;
   updatedAt: string;
   metaDescription?: string;
@@ -23,6 +24,7 @@ export interface StaticPageSummaryDto {
   title: string;
   slug: string;
   status: ContentStatus;
+  section?: number;
   updatedAt: string;
 }
 
@@ -32,6 +34,7 @@ export interface CreateStaticPageRequest {
   title: string;
   content: string;
   slug: string;
+  section: number;
   metaDescription?: string;
   metaKeywords?: string;
 }
@@ -41,6 +44,7 @@ export interface CreateStaticPageResponse extends StaticPageDto {}
 export interface UpdateStaticPageRequest {
   title: string;
   content: string;
+  section: number;
   metaDescription?: string;
   metaKeywords?: string;
 }

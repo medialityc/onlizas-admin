@@ -34,6 +34,7 @@ export function StaticPageEditModal({
         title: data.title,
         slug: data.slug || page.slug,
         content: data.content,
+        section: data.section ?? 0,
         metaDescription: data.metaDescription || "",
         metaKeywords: data.metaKeywords || "",
       }
