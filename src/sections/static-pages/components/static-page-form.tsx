@@ -2,6 +2,7 @@
 
 import FormProvider from "@/components/react-hook-form/form-provider";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
+import RHFSelectWithLabel from "@/components/react-hook-form/rhf-select";
 import RHFHTMLEditor from "@/components/react-hook-form/rhf-html-editor";
 import LoaderButton from "@/components/loaders/loader-button";
 import { Button } from "@/components/button/button";
@@ -15,6 +16,13 @@ import { useStaticPageForm } from "../hooks/use-static-page-form";
 interface StaticPageFormProps {
   initValue?: StaticPageFormData;
 }
+
+const SECTION_OPTIONS = [
+  { value: 0, label: "Ayuda" },
+  { value: 1, label: "Sobre nosotros" },
+  { value: 2, label: "Legal" },
+  { value: 3, label: "Política de privacidad" },
+];
 
 export default function StaticPageForm({ initValue }: StaticPageFormProps) {
   const { form, isPending, onSubmit } = useStaticPageForm(initValue);
@@ -48,6 +56,14 @@ export default function StaticPageForm({ initValue }: StaticPageFormProps) {
             maxLength={120}
             disabled={isEdit}
             underLabel="El slug no puede modificarse luego de crear la página"
+          />
+
+          <RHFSelectWithLabel
+            name="section"
+            label="Sección"
+            placeholder="Selecciona una sección"
+            options={SECTION_OPTIONS}
+            required
           />
 
           <div className="pt-2">

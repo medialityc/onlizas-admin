@@ -15,6 +15,7 @@ const initValues: StaticPageFormData = {
   title: "",
   slug: "",
   content: "",
+  section: 0,
   metaDescription: "",
   metaKeywords: "",
 };
@@ -35,6 +36,7 @@ export const useStaticPageForm = (
         ? await updateStaticPage(payload.id, {
             title: payload.title,
             content: payload.content,
+            section: payload.section,
             metaDescription: payload.metaDescription,
             metaKeywords: payload.metaKeywords,
           })
@@ -42,6 +44,7 @@ export const useStaticPageForm = (
             title: payload.title,
             content: payload.content,
             slug: payload.slug,
+            section: payload.section,
             metaDescription: payload.metaDescription,
             metaKeywords: payload.metaKeywords,
           });

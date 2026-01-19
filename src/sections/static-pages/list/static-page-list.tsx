@@ -20,6 +20,13 @@ import {
 } from "@/services/static-pages";
 import { ContentStatus } from "@/types/static-pages";
 
+const SECTION_LABELS: Record<number, string> = {
+  0: "Ayuda",
+  1: "Sobre nosotros",
+  2: "Legal",
+  3: "Política de privacidad",
+};
+
 interface StaticPageListProps {
   data?: {
     data: StaticPageSummaryDto[];
@@ -106,13 +113,27 @@ export function StaticPageList({
         title: "Estado",
         width: 140,
         render: (page) => (
-          <div className="text-center">
+          <div>
             <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
               {page.status === ContentStatus.Draft
                 ? "Borrador"
                 : page.status === ContentStatus.Active
                   ? "Activa"
                   : "Inactiva"}
+            </span>
+          </div>
+        ),
+      },
+      {
+        accessor: "section",
+        title: "Sección",
+        width: 180,
+        render: (page) => (
+          <div>
+            <span className="text-sm text-gray-700 dark:text-gray-300">
+              {page.section !== undefined && page.section !== null
+                ? SECTION_LABELS[page.section] || "Desconocida"
+                : "-"}
             </span>
           </div>
         ),

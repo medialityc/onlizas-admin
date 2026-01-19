@@ -17,6 +17,10 @@ export const staticPageSchema = z.object({
   content: z
     .string({ error: "El contenido es requerido" })
     .min(1, "El contenido es requerido"),
+  section: z
+    .number({ error: "La sección es requerida" })
+    .min(0, "Selecciona una sección válida")
+    .max(3, "Selecciona una sección válida"),
   metaDescription: z.string().optional(),
   metaKeywords: z.string().optional(),
 });
