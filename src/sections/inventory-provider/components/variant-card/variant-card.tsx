@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import ImagePreview from "@/components/image/image-preview";
 import Badge from "@/components/badge/badge";
 import { Button } from "@/components/button/button";
@@ -7,6 +7,7 @@ import { Edit2, Trash2 } from "lucide-react";
 import { getVariantConditionLabel } from "@/config/variant-condition-map";
 import { ProductVariant } from "../../schemas/inventory-provider.schema";
 import { Tooltip } from "@mantine/core";
+import SimpleModal from "@/components/modal/modal";
 
 export interface VariantCardProps {
   variant: ProductVariant;
@@ -33,14 +34,24 @@ function VariantCard({
   canDelete,
   canEdit,
 }: VariantCardProps) {
+  const [showDetails, setShowDetails] = useState(false);
   const details =
     (variant.details as unknown as { key: string; value: string }[]) || [];
   const MAX_VISIBLE_DETAILS = 4;
   const visibleDetails = details.slice(0, MAX_VISIBLE_DETAILS);
   const hiddenCount = details.length - visibleDetails.length;
+  // Build a stable set of flags with consistent display: condition + 1 extra
+  const extraFlags: string[] = [];
+  if (variant.isPrime) extraFlags.push("Prime");
+  if (variant.isLimit) extraFlags.push(`Limite ${variant.purchaseLimit}`);
+  if (variant.packageDelivery) extraFlags.push("Paquetería");
+  if (variant?.warranty?.isWarranty)
+    extraFlags.push(`Garantía ${variant.warranty?.warrantyTime}m`);
+  const firstExtraFlag = extraFlags[0];
+  const moreFlagsCount = Math.max(0, extraFlags.length - 1);
 
   return (
-    <div className="group relative rounded-xl border border-gray-200 dark:border-slate-800 bg-gradient-to-br from-[#f4f8fe] via-white to-[#f4f8fe] dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/70 shadow-sm hover:shadow-md hover:border-blue-200/70 dark:hover:border-blue-400/40 transition duration-200 ease-out hover:-translate-y-0.5">
+    <div className="group relative rounded-xl border border-gray-200 dark:border-slate-800 bg-linear-to-br from-[#f4f8fe] via-white to-[#f4f8fe] dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/70 shadow-sm hover:shadow-md hover:border-blue-200/70 dark:hover:border-blue-400/40 transition duration-200 ease-out hover:-translate-y-0.5">
       {/* Header */}
       <div className="relative pt-3 px-3">
         <div className="flex gap-3">
@@ -50,7 +61,8 @@ function VariantCard({
             previewEnabled
             className="w-20 h-20 rounded-md ring-1 ring-gray-200 dark:ring-slate-700 bg-white dark:bg-slate-800"
           />
-          <div className="flex-1 min-w-0">
+          {/* Reserve consistent space to avoid grid deformation */}
+          <div className="flex-1 min-w-0 min-h-24">
             <div className="flex items-start justify-between">
               <h3 className="font-semibold text-sm text-gray-900 dark:text-white truncate tracking-tight">
                 {variant.productName}
@@ -77,24 +89,14 @@ function VariantCard({
               >
                 {getVariantConditionLabel(variant.condition)}
               </span>
-              {variant.isPrime && (
-                <Badge variant="outline-warning" className="text-[10px]">
-                  Prime
-                </Badge>
-              )}
-              {variant.isLimit && (
-                <Badge variant="outline-danger" className="text-[10px]">
-                  Limite {variant.purchaseLimit}
-                </Badge>
-              )}
-              {variant.packageDelivery && (
+              {firstExtraFlag && (
                 <Badge variant="outline-secondary" className="text-[10px]">
-                  Paquetería
+                  {firstExtraFlag}
                 </Badge>
               )}
-              {variant?.warranty?.isWarranty && (
-                <Badge variant="outline-success" className="text-[10px]">
-                  Garantía {variant.warranty?.warrantyTime}m
+              {moreFlagsCount > 0 && (
+                <Badge variant="outline-info" className="text-[10px]">
+                  +{moreFlagsCount}
                 </Badge>
               )}
             </div>
@@ -129,27 +131,6 @@ function VariantCard({
               {variant.isLimit ? variant.purchaseLimit : "Ilimitado"}
             </span>
           </div>
-          {variant?.warranty?.isWarranty && (
-            <div className="flex flex-col gap-0.5 col-span-1">
-              <span className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                Garantía
-              </span>
-              <span className="font-semibold text-fuchsia-600 dark:text-fuchsia-400 text-xs">
-                {variant.warranty?.warrantyTime}m / $
-                {variant.warranty?.warrantyPrice.toFixed(2)}
-              </span>
-            </div>
-          )}
-          {variant.packageDelivery && (
-            <div className="flex flex-col gap-0.5 col-span-1">
-              <span className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                Paquetería
-              </span>
-              <span className="font-semibold text-indigo-600 dark:text-indigo-400 text-xs">
-                {variant.volume ?? "-"}v / {variant.weight ?? "-"}w
-              </span>
-            </div>
-          )}
         </div>
 
         {/* Características con tooltips */}
@@ -163,7 +144,7 @@ function VariantCard({
               >
                 <Badge
                   variant="outline-secondary"
-                  className="text-[10px] font-normal max-w-[120px] truncate cursor-help hover:border-blue-300/60 dark:hover:border-blue-400/50 transition-colors"
+                  className="text-[10px] font-normal max-w-30 truncate cursor-help hover:border-blue-300/60 dark:hover:border-blue-400/50 transition-colors"
                 >
                   {detail.key}: {detail.value}
                 </Badge>
@@ -190,6 +171,17 @@ function VariantCard({
 
         {/* Actions */}
         <div className="flex justify-end gap-2 pt-2 border-t border-gray-100 dark:border-slate-800">
+          <Button
+            outline
+            variant="primary"
+            size="sm"
+            onClick={() => setShowDetails(true)}
+            className="gap-1 px-2 py-1 rounded-md flex items-center"
+            title="Ver detalles de la variante"
+            aria-label={`Ver detalles ${variant.sku ?? variant.productName}`}
+          >
+            <span className="hidden md:inline">Detalles</span>
+          </Button>
           {canEdit && onEdit && (
             <Button
               outline
@@ -219,6 +211,104 @@ function VariantCard({
           )}
         </div>
       </div>
+
+      {/* Details Modal */}
+      <SimpleModal
+        open={showDetails}
+        onClose={() => setShowDetails(false)}
+        title={`Variante ${variant.sku ?? ""}`}
+        subtitle={variant.productName}
+      >
+        <div className="space-y-4">
+          <div className="flex gap-3">
+            <ImagePreview
+              alt={variant.id || "variant"}
+              images={(variant.images as string[]) || []}
+              previewEnabled
+              className="w-24 h-24 rounded-md ring-1 ring-gray-200 dark:ring-slate-700 bg-white dark:bg-slate-800"
+            />
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="flex flex-col">
+                <span className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  SKU
+                </span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">
+                  {variant.sku || "-"}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  UPC
+                </span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">
+                  {variant.upc || "-"}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  EAN
+                </span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">
+                  {variant.ean || "-"}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  Condición
+                </span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">
+                  {getVariantConditionLabel(variant.condition)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3 text-xs">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                Stock
+              </span>
+              <span className="font-semibold text-emerald-600 dark:text-emerald-400 text-sm">
+                {variant.stock}
+              </span>
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                Precio
+              </span>
+              <span className="font-semibold text-blue-600 dark:text-blue-400 text-sm">
+                ${variant.price.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                Compras
+              </span>
+              <span className="font-semibold text-amber-600 dark:text-amber-400 text-sm">
+                {variant.isLimit ? variant.purchaseLimit : "Ilimitado"}
+              </span>
+            </div>
+          </div>
+
+          {details.length > 0 && (
+            <div>
+              <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">
+                Características
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {details.map((d) => (
+                  <div
+                    key={d.key}
+                    className="text-sm text-gray-700 dark:text-gray-200"
+                  >
+                    <span className="font-medium">{d.key}:</span> {d.value}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </SimpleModal>
     </div>
   );
 }

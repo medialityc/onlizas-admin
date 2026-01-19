@@ -44,10 +44,11 @@ export function OrderCard({
   };
 
   // lógica de cronómetro movida a CountdownTimer
+  console.log(order);
 
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-shadow">
-      <CardHeader className="bg-muted/50 pb-3">
+    <Card className="overflow-hidden hover:shadow-md transition-shadow pt-0">
+      <CardHeader className="bg-muted/50 py-3">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
             <Package className="h-5 w-5 text-primary" />
@@ -62,12 +63,12 @@ export function OrderCard({
                 <Clock className="h-3 w-3" />
                 {formatDate(order.createdDatetime)}
               </p>
-               {order.configuredTime > 0 && (
+              {order.configuredTime > 0 && (
                 <CountdownTimer
                   createdDatetime={order.createdDatetime}
                   configuredMinutes={order.configuredTime}
                 />
-              )} 
+              )}
               {/* Datos básicos */}
               <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
                 <div>
@@ -258,7 +259,7 @@ export function OrderCard({
                             window.open(
                               subOrder.factureUrl,
                               "_blank",
-                              "noopener,noreferrer"
+                              "noopener,noreferrer",
                             );
                           } catch {}
                         }}
@@ -279,7 +280,7 @@ export function OrderCard({
                             const suggestedName = `factura-${subOrder.subOrderNumber || subOrder.id}`;
                             const file = await urlToFile(
                               subOrder.factureUrl,
-                              suggestedName
+                              suggestedName,
                             );
                             const url = URL.createObjectURL(file);
                             const a = document.createElement("a");

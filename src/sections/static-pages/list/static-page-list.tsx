@@ -19,6 +19,8 @@ import {
   toggleStaticPageStatus,
 } from "@/services/static-pages";
 import { ContentStatus } from "@/types/static-pages";
+import Badge from "@/components/badge/badge";
+import { formatDateTime } from "@/utils/format";
 
 const SECTION_LABELS: Record<number, string> = {
   0: "Ayuda",
@@ -73,7 +75,7 @@ export function StaticPageList({
       params.set("edit", page.id.toString());
       router.push(`${paths.content.staticPages.list}?${params.toString()}`);
     },
-    [router, urlSearchParams, hasPermission]
+    [router, urlSearchParams, hasPermission],
   );
 
   const handleViewStaticPage = useCallback(
@@ -82,7 +84,7 @@ export function StaticPageList({
       params.set("view", page.id.toString());
       router.push(`${paths.content.staticPages.list}?${params.toString()}`);
     },
-    [router, urlSearchParams]
+    [router, urlSearchParams],
   );
 
   const handleCloseModal = useCallback(() => {
@@ -114,13 +116,19 @@ export function StaticPageList({
         width: 140,
         render: (page) => (
           <div>
-            <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
-              {page.status === ContentStatus.Draft
-                ? "Borrador"
-                : page.status === ContentStatus.Active
-                  ? "Activa"
-                  : "Inactiva"}
-            </span>
+            <Badge
+              variant={
+                page.status === ContentStatus.Active ? "success" : "warning"
+              }
+            >
+              <span className="text-sm font-medium dark:text-gray-200">
+                {page.status === ContentStatus.Draft
+                  ? "Borrador"
+                  : page.status === ContentStatus.Active
+                    ? "Activa"
+                    : "Inactiva"}
+              </span>
+            </Badge>
           </div>
         ),
       },
@@ -141,6 +149,7 @@ export function StaticPageList({
       {
         accessor: "updatedAt",
         title: "Actualizada",
+        render: (page) => <div>{formatDateTime(page.updatedAt)}</div>,
         width: 180,
       },
       {
@@ -171,7 +180,7 @@ export function StaticPageList({
                   if (res.error) {
                     showToast(
                       res.message || "Error al cambiar estado",
-                      "error"
+                      "error",
                     );
                   } else {
                     showToast("Estado actualizado", "success");
@@ -190,7 +199,7 @@ export function StaticPageList({
         ),
       },
     ],
-    [handleViewStaticPage, handleEditStaticPage]
+    [handleViewStaticPage, handleEditStaticPage],
   );
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -201,7 +210,7 @@ export function StaticPageList({
         onSearchParamsChange(params);
       }, 400);
     },
-    [onSearchParamsChange]
+    [onSearchParamsChange],
   );
 
   return (

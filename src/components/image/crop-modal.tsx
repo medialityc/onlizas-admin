@@ -75,7 +75,7 @@ export default function CropModal({
         0,
         0,
         cropDimensions.width,
-        cropDimensions.height
+        cropDimensions.height,
       );
 
       // Export as PNG to preserve transparency
@@ -98,7 +98,7 @@ export default function CropModal({
 
   return (
     <SimpleModal
-    className="max-w-3xl"
+      className="max-w-3xl"
       open={isOpen}
       onClose={onClose}
       title="Recortar imagen"
@@ -132,7 +132,7 @@ export default function CropModal({
       </Cropper.Root>
 
       {/* Slider para zoom */}
-      <div className="px-6 py-2 bg-gray-50 border-t">
+      <div className="px-6 py-2 my-2 bg-gray-50 border-t border-gray-400">
         <label htmlFor="zoom-slider" className="text-sm text-gray-600">
           Zoom:
         </label>
@@ -149,7 +149,7 @@ export default function CropModal({
       </div>
 
       {/* Footer */}
-      <div className="p-6 border-t flex gap-3 justify-end">
+      <div className="p-6 border-t border-gray-400 flex gap-3 justify-end">
         <button
           type="button"
           onClick={onClose}

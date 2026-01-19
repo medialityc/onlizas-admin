@@ -107,7 +107,7 @@ const ProductForm = ({ initValue }: Props) => {
         )}
       </div>
       {canSubmit && (
-        <div className="flex gap-4 pt-6 mt-6 border-t justify-end">
+        <div className="flex gap-4 pt-6 mt-6 border-t border-gray-400 justify-end">
           <Button
             type="button"
             variant="secondary"
