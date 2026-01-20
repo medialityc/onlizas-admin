@@ -38,6 +38,7 @@ const ALLOWED_PATH_PATTERNS: RegExp[] = [
   /^\/importer-access\/[A-Za-z0-9_-]+\/generate-qr$/,
   /^\/importer-access\/[A-Za-z0-9_-]+\/sessions$/,
   /^\/importer-access\/[A-Za-z0-9_-]+\/revoke$/,
+  /^\/importer-access\/nomenclators$/,
   /^\/importer-access\/nomenclators\/[A-Za-z0-9_-]+$/,
   /^\/importer-access\/nomenclators\/[A-Za-z0-9_-]+\/toggle-status$/,
   /^\/importer-access\/categories$/,
@@ -645,6 +646,102 @@ export async function toggleImporterNomenclatorStatus(
       success: false,
       error: true,
       message: "Error al cambiar estado del nomenclador",
+    };
+  }
+}
+
+export type ImporterCategory = {
+  id: string;
+  name: string;
+  active: boolean;
+  departmentId: string;
+  departmentName: string;
+  description: string;
+  image: string;
+  features: Array<{
+    featureId: string;
+    featureName: string;
+    featureDescription: string;
+    suggestions: string[];
+    isRequired: boolean;
+    isPrimary: boolean;
+  }>;
+};
+
+export type CategoriesResponse = {
+  success: boolean;
+  data?: ImporterCategory[];
+  message?: string;
+  error?: boolean;
+};
+
+export async function getImporterCategories(): Promise<CategoriesResponse> {
+  try {
+    const response = await importerFetch(backendRoutes.importerAccess.categories);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return {
+        success: false,
+        error: true,
+        message: errorData.message || "Error al obtener categorías",
+      };
+    }
+
+    const data = await response.json();
+
+    return {
+      success: true,
+      data: Array.isArray(data) ? data : [],
+    };
+  } catch (error) {
+    console.error("Error getting importer categories:", error);
+    return {
+      success: false,
+      error: true,
+      message: "Error al obtener categorías",
+    };
+  }
+}
+
+export type CreateNomenclatorPayload = {
+  name: string;
+  categoryIds: string[];
+};
+
+export async function createImporterNomenclator(
+  data: CreateNomenclatorPayload
+): Promise<NomenclatorResponse> {
+  try {
+    const response = await importerFetch(
+      backendRoutes.importerAccess.nomenclators,
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+      }
+    );
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: true,
+        message: responseData.message || "Error al crear nomenclador",
+      };
+    }
+
+    return {
+      success: true,
+      data: responseData,
+      message: "Nomenclador creado exitosamente",
+    };
+  } catch (error) {
+    console.error("Error creating nomenclator:", error);
+    return {
+      success: false,
+      error: true,
+      message: "Error al crear nomenclador",
     };
   }
 }
