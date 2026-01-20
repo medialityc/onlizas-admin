@@ -37,7 +37,7 @@ interface MenuProps {
   onModifyAttributes?: () => void;
   onChangeStatus?: () => void;
   onNomenclators?: () => void;
-  onProviders?: () => void;
+  onContracts?: () => void;
   onGenerateQR?: () => void;
   onApprove?: () => void;
   onReject?: () => void;
@@ -57,7 +57,7 @@ interface MenuProps {
   modifyAttributesPermissions?: string[];
   changeStatusPermissions?: string[];
   nomenclatorsPermissions?: string[];
-  providersPermissions?: string[];
+  contractsPermissions?: string[];
   qrPermissions?: string[];
   approvePermissions?: string[];
   rejectPermissions?: string[];
@@ -81,7 +81,7 @@ const ActionsMenu = ({
   onModifyAttributes,
   onChangeStatus,
   onNomenclators,
-  onProviders,
+  onContracts,
   onGenerateQR,
   onSetDefault,
   onApprove,
@@ -100,7 +100,7 @@ const ActionsMenu = ({
   modifyAttributesPermissions,
   changeStatusPermissions,
   nomenclatorsPermissions,
-  providersPermissions,
+  contractsPermissions,
   qrPermissions,
   approvePermissions,
   rejectPermissions,
@@ -189,13 +189,13 @@ const ActionsMenu = ({
             </Menu.Item>
           )}
 
-          {onProviders && hasPermission(providersPermissions) && (
+          {onContracts && hasPermission(contractsPermissions) && (
             <Menu.Item
               className="p-1 text-sm hover:text-white"
               leftSection={<UserPlusIcon className="h-4 w-4 " />}
-              onClick={onProviders}
+              onClick={onContracts}
             >
-              Proveedores
+              Contratos
             </Menu.Item>
           )}
 
