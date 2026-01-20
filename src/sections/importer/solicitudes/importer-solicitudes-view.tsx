@@ -16,11 +16,7 @@ import {
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import { DataGrid } from "@/components/datagrid/datagrid";
 import { DataTableColumn } from "mantine-datatable";
-import {
-  approveContract,
-  rejectContract,
-  ImporterContract,
-} from "@/services/importer-portal";
+import { ImporterContract } from "@/services/importer-portal";
 import showToast from "@/config/toast/toastConfig";
 import { usePendingContracts } from "@/hooks/react-query/use-pending-contracts";
 import { useQueryClient } from "@tanstack/react-query";
@@ -45,6 +41,7 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
     data: contracts = [],
     isLoading: isLoadingContracts,
     error,
+    isError,
   } = usePendingContracts(importerId);
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -69,8 +66,19 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
   const handleApprove = async (contract: Contract) => {
     setIsLoading(true);
     try {
-      const result = await approveContract(contract.id);
-      if (result.success) {
+      const response = await fetch(
+        `/api/importer-access/contracts/${contract.id}/approve`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         showToast("Contrato aprobado exitosamente", "success");
         // Invalidar las queries para recargar los datos
         await queryClient.invalidateQueries({
@@ -101,8 +109,20 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
 
     setIsLoading(true);
     try {
-      const result = await rejectContract(selectedContract.id, values.reason);
-      if (result.success) {
+      const response = await fetch(
+        `/api/importer-access/contracts/${selectedContract.id}/reject`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ reason: values.reason }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         showToast("Contrato rechazado", "success");
         setRejectModalOpen(false);
         rejectMethods.reset();
@@ -156,15 +176,35 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
         ),
       },
       {
-        accessor: "createdAt",
-        title: "Fecha Solicitud",
+        accessor: "startDate",
+        title: "Fecha de Inicio",
         render: (r) => (
           <Text size="sm" c="dimmed">
-            {r.createdAt
-              ? new Date(r.createdAt).toLocaleDateString("es-ES")
+            {r.startDate
+              ? new Date(r.startDate).toLocaleDateString("es-ES")
               : "-"}
           </Text>
         ),
+      },
+      {
+        accessor: "nomenclators",
+        title: "Nomencladores",
+        render: (r) => {
+          const nomenclators = r.nomenclators || [];
+          if (nomenclators.length === 0) {
+            return <Text size="sm" c="dimmed">-</Text>;
+          }
+          
+          const first3 = nomenclators.slice(0, 3).map(n => n.name).join(", ");
+          const remaining = nomenclators.length - 3;
+          
+          return (
+            <Text size="sm" c="dimmed">
+              {first3}
+              {remaining > 0 && ` y ${remaining} más`}
+            </Text>
+          );
+        },
       },
       {
         accessor: "status",
@@ -220,19 +260,18 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
         </div>
       )}
 
-      {error && (
+      {isError && error && (
         <Alert
           icon={<InformationCircleIcon className="h-5 w-5" />}
           title="Error al cargar solicitudes"
           color="red"
           className="mb-4"
         >
-          No se pudieron cargar las solicitudes de contrato. Por favor, intenta
-          nuevamente.
+          {error instanceof Error ? error.message : "No se pudieron cargar las solicitudes de contrato. Por favor, intenta nuevamente."}
         </Alert>
       )}
 
-      {!isLoadingContracts && !error && (
+      {!isLoadingContracts && !isError && (
         <DataGrid<Contract>
           simpleData={contracts}
           columns={columns}

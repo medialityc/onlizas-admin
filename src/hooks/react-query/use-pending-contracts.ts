@@ -1,31 +1,36 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPendingContracts } from "@/services/importer-portal";
 
 export function usePendingContracts(importerId: string) {
   return useQuery({
     queryKey: ["importer-pending-contracts", importerId],
     queryFn: async () => {
-      const response = await getPendingContracts(importerId, {
-        page: 1,
-        pageSize: 100, // Obtener todas las solicitudes pendientes
+      const queryParams = new URLSearchParams({
+        page: "1",
+        pageSize: "100",
       });
 
-      console.log("=== PENDING CONTRACTS RESPONSE ===");
-      console.log("Endpoint:", `/api/importer-access/pending-contracts`);
-      console.log("Response completa:", response);
-      console.log("Response.data:", response.data);
-      console.log("Response.totalCount:", response.totalCount);
-      console.log("Response.error:", response.error);
-      console.log("Response.message:", response.message);
+      const response = await fetch(
+        `/api/importer-access/pending-contracts?${queryParams.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      if (response.error) {
-        throw new Error(response.message || "Error al obtener solicitudes");
+      const data = await response.json();
+
+      if (!response.ok || data.error) {
+        throw new Error(data.message || "Error al obtener solicitudes");
       }
 
-      return response.data || [];
+      return data.data || [];
     },
-    staleTime: 30 * 1000, // 30 segundos
-    refetchOnWindowFocus: true,
+    staleTime: 5 * 60 * 1000, // 5 minutos - reducir recargas
+    refetchOnWindowFocus: false, // Desactivar recarga al cambiar foco
+    retry: 2, // Solo reintentar 2 veces
+    retryDelay: 1000, // 1 segundo entre reintentos
     enabled: !!importerId,
   });
 }
