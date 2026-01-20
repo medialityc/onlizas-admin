@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: true, message: "No autorizado" }, { status: 401 });
     }
 
-    const url = backendRoutes.categories.listImporterAccess;
+    const url = backendRoutes.importerAccess.categories;
     if (!url) {
       return NextResponse.json([], { status: 200 });
     }

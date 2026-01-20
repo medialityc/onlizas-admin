@@ -7,13 +7,13 @@ import { DataTableColumn } from "mantine-datatable";
 import { useImporterData } from "@/contexts/importer-data-context";
 import {
   ImporterNomenclator,
-  updateImporterNomenclator,
-  toggleImporterNomenclatorStatus,
+  ImporterCategory,
 } from "@/services/importer-portal";
 import ActionsMenu from "@/components/menu/actions-menu";
 import SimpleModal from "@/components/modal/modal";
 import FormProvider from "@/components/react-hook-form/form-provider";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
+import RHFMultiSelectImporterCategories from "@/components/react-hook-form/rhf-multi-select-importer-categories";
 import LoaderButton from "@/components/loaders/loader-button";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -39,6 +39,8 @@ export default function ImporterNomencladoresView({
   const [selected, setSelected] = useState<ImporterNomenclator | null>(null);
   const [localData, setLocalData] = useState<ImporterNomenclator[]>(initialNomenclators);
   const [isSaving, setIsSaving] = useState(false);
+  const [categories, setCategories] = useState<ImporterCategory[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
 
   const methods = useForm<NomenclatorForm>({
     defaultValues: {
@@ -50,29 +52,63 @@ export default function ImporterNomencladoresView({
   const { reset } = methods;
 
   useEffect(() => {
-    if (importerData?.nomenclators) {
+    if (importerData?.nomenclators && importerData.nomenclators !== localData) {
       setLocalData(importerData.nomenclators);
     }
-  }, [importerData]);
+  }, [importerData?.nomenclators]);
 
-  useEffect(() => {
-    setLocalData(initialNomenclators);
-  }, [initialNomenclators]);
-
-  const openCreate = useCallback(() => {
+  const openCreate = useCallback(async () => {
     setSelected(null);
     reset({ name: "", categoryIds: [] });
+    setLoadingCategories(true);
     setOpened(true);
+    
+    try {
+      const response = await fetch("/api/importer-access/categories");
+      const data = await response.json();
+      
+      if (!response.ok) {
+        showToast(data.message || "Error al cargar categorías", "error");
+        setCategories([]);
+      } else {
+        setCategories(Array.isArray(data) ? data : []);
+      }
+    } catch (error) {
+      console.error("Error loading categories:", error);
+      showToast("Error al cargar categorías", "error");
+      setCategories([]);
+    } finally {
+      setLoadingCategories(false);
+    }
   }, [reset]);
 
-  const openEdit = useCallback((n: ImporterNomenclator) => {
+  const openEdit = useCallback(async (n: ImporterNomenclator) => {
     setSelected(n);
     const ids = (n.categories || []).map((c) => c.id);
     reset({
       name: n.name || "",
       categoryIds: ids,
     });
+    setLoadingCategories(true);
     setOpened(true);
+    
+    try {
+      const response = await fetch("/api/importer-access/categories");
+      const data = await response.json();
+      
+      if (!response.ok) {
+        showToast(data.message || "Error al cargar categorías", "error");
+        setCategories([]);
+      } else {
+        setCategories(Array.isArray(data) ? data : []);
+      }
+    } catch (error) {
+      console.error("Error loading categories:", error);
+      showToast("Error al cargar categorías", "error");
+      setCategories([]);
+    } finally {
+      setLoadingCategories(false);
+    }
   }, [reset]);
 
   const close = useCallback(() => {
@@ -88,36 +124,70 @@ export default function ImporterNomencladoresView({
         return;
       }
 
-      if (!selected) {
-        showToast("La creación de nomencladores no está disponible", "info");
-        return;
-      }
-
       setIsSaving(true);
       try {
-        const res = await updateImporterNomenclator(selected.id, {
-          name,
-          categoryIds: values.categoryIds,
-        });
+        if (!selected) {
+          // Crear nuevo nomenclador
+          const response = await fetch("/api/importer-access/nomenclators", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name,
+              categoryIds: values.categoryIds,
+            }),
+          });
 
-        if (res.error) {
-          showToast(res.message || "Error al actualizar nomenclador", "error");
-          return;
+          const data = await response.json();
+
+          if (!response.ok || data.error) {
+            showToast(data.message || "Error al crear nomenclador", "error");
+            return;
+          }
+
+          // Agregar el nuevo nomenclador a la lista local
+          if (data && data.id) {
+            setLocalData((prev) => [...prev, data]);
+          }
+          
+          showToast("Nomenclador creado correctamente", "success");
+          router.refresh();
+          close();
+        } else {
+          // Editar nomenclador existente
+          const response = await fetch(`/api/importer-access/nomenclators/${selected.id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name,
+              categoryIds: values.categoryIds,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || data.error) {
+            showToast(data.message || "Error al actualizar nomenclador", "error");
+            return;
+          }
+
+          setLocalData((prev) =>
+            prev.map((n) =>
+              n.id === selected.id
+                ? {
+                    ...n,
+                    name,
+                  }
+                : n
+            )
+          );
+          showToast("Nomenclador actualizado correctamente", "success");
+          router.refresh();
+          close();
         }
-
-        setLocalData((prev) =>
-          prev.map((n) =>
-            n.id === selected.id
-              ? {
-                  ...n,
-                  name,
-                }
-              : n
-          )
-        );
-        showToast("Nomenclador actualizado correctamente", "success");
-        router.refresh();
-        close();
       } catch (err) {
         console.error("Error en submit nomenclador:", err);
         showToast("Ocurrió un error, intente nuevamente", "error");
@@ -131,9 +201,17 @@ export default function ImporterNomencladoresView({
   const handleToggleStatus = useCallback(
     async (nomenclator: ImporterNomenclator) => {
       try {
-        const res = await toggleImporterNomenclatorStatus(nomenclator.id);
-        if (res.error) {
-          const errorMessage = res.message || "Error al cambiar el estado del nomenclador";
+        const response = await fetch(
+          `/api/importer-access/nomenclators/${nomenclator.id}/toggle-status`,
+          {
+            method: "PATCH",
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || data.error) {
+          const errorMessage = data.message || "Error al cambiar el estado del nomenclador";
           
           // Mostrar mensaje más específico si es un error del servidor
           if (errorMessage.includes("error interno del servidor")) {
@@ -275,14 +353,13 @@ export default function ImporterNomencladoresView({
                 type="text"
                 required
               />
-              {!selected && (
-                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
-                  <p className="text-sm text-blue-800 dark:text-blue-200">
-                    <strong>Nota:</strong> La creación de nuevos nomencladores
-                    estará disponible próximamente.
-                  </p>
-                </div>
-              )}
+              <RHFMultiSelectImporterCategories
+                name="categoryIds"
+                label="Categorías"
+                placeholder={loadingCategories ? "Cargando categorías..." : "Seleccione las categorías"}
+                categories={categories}
+                disabled={loadingCategories}
+              />
             </div>
 
             <div className="flex justify-end gap-3 pt-6">
@@ -297,7 +374,7 @@ export default function ImporterNomencladoresView({
               <LoaderButton
                 type="submit"
                 loading={isSaving}
-                disabled={isSaving || !selected}
+                disabled={isSaving || loadingCategories}
               >
                 Guardar
               </LoaderButton>
