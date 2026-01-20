@@ -65,23 +65,12 @@ export default function ContractDetailsModal({ open, onClose, contract }: Props)
 
         <div>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-            Proceso de Aprobación
+            Usuario
           </p>
           <p className="text-md font-medium text-gray-900 dark:text-gray-100">
-            {contract.approvalProcessName || "-"}
+            {contract.approvalProcessUser?.userName || "-"}
           </p>
         </div>
-
-        {contract.approvalProcessUser?.userName && (
-          <div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-              Usuario
-            </p>
-            <p className="text-md font-medium text-gray-900 dark:text-gray-100">
-              {contract.approvalProcessUser.userName}
-            </p>
-          </div>
-        )}
 
         <Group grow>
           <div>
@@ -141,23 +130,6 @@ export default function ContractDetailsModal({ open, onClose, contract }: Props)
                 </Badge>
               ))}
             </div>
-          </div>
-        )}
-
-        {contract.createdAt && (
-          <div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-              Fecha de Solicitud
-            </p>
-            <p className="text-sm text-gray-900 dark:text-gray-100">
-              {new Date(contract.createdAt).toLocaleDateString("es-ES", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </p>
           </div>
         )}
       </Stack>

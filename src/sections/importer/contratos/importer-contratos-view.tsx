@@ -9,6 +9,7 @@ import { ImporterContract } from "@/services/importer-portal";
 import { useImporterData } from "@/contexts/importer-data-context";
 import ActionsMenu from "@/components/menu/actions-menu";
 import SimpleModal from "@/components/modal/modal";
+import ContractDetailsModal from "./contract-details-modal";
 import FormProvider from "@/components/react-hook-form/form-provider";
 import RHFDatePicker from "@/components/react-hook-form/rhf-date-picker";
 import { useForm } from "react-hook-form";
@@ -29,6 +30,7 @@ export default function ImporterContratosView({ importerId }: Props) {
   const router = useRouter();
   const { importerData } = useImporterData();
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [selectedContract, setSelectedContract] = useState<ImporterContract | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -43,6 +45,11 @@ export default function ImporterContratosView({ importerId }: Props) {
   });
 
   const { reset } = methods;
+
+  const handleViewDetails = (contract: ImporterContract) => {
+    setSelectedContract(contract);
+    setDetailsModalOpen(true);
+  };
 
   const handleEdit = (contract: ImporterContract) => {
     setSelectedContract(contract);
@@ -129,28 +136,21 @@ export default function ImporterContratosView({ importerId }: Props) {
       {
         accessor: "nomenclators",
         title: "Nomencladores",
-        render: () => {
-          const nomenclators = importerData?.nomenclators || [];
+        width: 250,
+        render: (r) => {
+          const nomenclators = r.nomenclators || [];
           if (nomenclators.length === 0) {
-            return (
-              <Text size="sm" c="dimmed">
-                Sin nomencladores
-              </Text>
-            );
+            return <Text size="sm" c="dimmed">-</Text>;
           }
+          
+          const first3 = nomenclators.slice(0, 3).map(n => n.name).join(", ");
+          const remaining = nomenclators.length - 3;
+          
           return (
-            <Group gap="xs">
-              {nomenclators.map((nomenclator) => (
-                <Badge 
-                  key={nomenclator.id} 
-                  color={nomenclator.isActive ? "blue" : "gray"}
-                  variant="light" 
-                  size="sm"
-                >
-                  {nomenclator.name}
-                </Badge>
-              ))}
-            </Group>
+            <Text size="sm" c="dimmed" style={{ wordWrap: "break-word", whiteSpace: "normal" }}>
+              {first3}
+              {remaining > 0 && ` y ${remaining} más`}
+            </Text>
           );
         },
       },
@@ -199,7 +199,9 @@ export default function ImporterContratosView({ importerId }: Props) {
         render: (r) => (
           <div className="flex justify-center">
             <ActionsMenu
+              onViewDetails={() => handleViewDetails(r)}
               onEdit={() => handleEdit(r)}
+              viewPermissions={[]}
               editPermissions={[]}
             />
           </div>
@@ -247,6 +249,15 @@ export default function ImporterContratosView({ importerId }: Props) {
           emptyText="No hay contratos disponibles"
         />
       )}
+
+      <ContractDetailsModal
+        open={detailsModalOpen}
+        onClose={() => {
+          setDetailsModalOpen(false);
+          setSelectedContract(null);
+        }}
+        contract={selectedContract}
+      />
 
       <SimpleModal
         open={editModalOpen}
