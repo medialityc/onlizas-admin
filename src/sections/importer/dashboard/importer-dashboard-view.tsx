@@ -1,9 +1,7 @@
 "use client";
 
-import { Paper, Text, SimpleGrid, Group, ThemeIcon, Stack, Badge, ActionIcon, Divider } from "@mantine/core";
-import { TagIcon, UsersIcon, DocumentTextIcon, ClockIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
-import { TagIcon as TagIconSolid, UsersIcon as UsersIconSolid, DocumentTextIcon as DocumentTextIconSolid, ClockIcon as ClockIconSolid } from "@heroicons/react/24/solid";
-import Link from "next/link";
+import { Paper, Text, SimpleGrid, Group, ThemeIcon, Progress, Stack, Badge, RingProgress, Center } from "@mantine/core";
+import { TagIcon as TagIconSolid, UsersIcon as UsersIconSolid, DocumentTextIcon as DocumentTextIconSolid, ClockIcon as ClockIconSolid, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import { useImporterData } from "@/contexts/importer-data-context";
 
 interface StatCardProps {
@@ -12,14 +10,19 @@ interface StatCardProps {
   subtitle?: string;
   icon: React.ReactNode;
   color: string;
+  trend?: {
+    value: number;
+    positive: boolean;
+  };
 }
 
-function StatCard({ title, value, subtitle, icon, color }: StatCardProps) {
+function StatCard({ title, value, subtitle, icon, color, trend }: StatCardProps) {
   return (
     <Paper
-      p="lg"
-      radius="md"
+      p="xl"
+      radius="lg"
       withBorder
+      className="hover:shadow-lg transition-shadow duration-200"
       styles={{
         root: {
           backgroundColor: "light-dark(#ffffff, #1b2e4b)",
@@ -27,120 +30,37 @@ function StatCard({ title, value, subtitle, icon, color }: StatCardProps) {
         },
       }}
     >
-      <Group justify="space-between" align="flex-start">
-        <div>
-          <Text size="sm" c="gray" mb={4} className="text-gray-400 dark:text-gray-400">
-            {title}
-          </Text>
-          <Text size="xl" fw={700} className="text-gray-900 dark:text-white">
-            {value}
-          </Text>
-          {subtitle && (
-            <Text size="xs" c="dimmed" mt={4}>
-              {subtitle}
-            </Text>
-          )}
-        </div>
+      <Group justify="space-between" align="flex-start" mb="md">
         <ThemeIcon
-          size={48}
+          size={56}
           radius="md"
           variant="light"
           color={color}
         >
           {icon}
         </ThemeIcon>
+        {trend && (
+          <Badge
+            size="sm"
+            color={trend.positive ? "teal" : "red"}
+            variant="light"
+          >
+            {trend.positive ? "+" : ""}{trend.value}%
+          </Badge>
+        )}
       </Group>
-    </Paper>
-  );
-}
-
-interface QuickActionProps {
-  label: string;
-  icon: React.ReactNode;
-  href: string;
-  badge?: number;
-}
-
-function QuickAction({ label, icon, href, badge }: QuickActionProps) {
-  return (
-    <Link href={href}>
-      <Paper
-        p="sm"
-        radius="md"
-        withBorder
-        className="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
-        styles={{
-          root: {
-            backgroundColor: "light-dark(#ffffff, #1b2e4b)",
-            borderColor: "light-dark(#e5e7eb, #253a54)",
-          },
-        }}
-      >
-        <Group justify="space-between">
-          <Group gap="sm">
-            <ThemeIcon size={32} radius="md" variant="light" color="blue">
-              {icon}
-            </ThemeIcon>
-            <Text size="sm" fw={500} className="text-gray-900 dark:text-white">
-              {label}
-            </Text>
-          </Group>
-          <Group gap="xs">
-            {badge !== undefined && badge > 0 && (
-              <Badge size="sm" color="yellow" variant="filled">
-                {badge}
-              </Badge>
-            )}
-            <ArrowRightIcon className="h-4 w-4 text-gray-400" />
-          </Group>
-        </Group>
-      </Paper>
-    </Link>
-  );
-}
-
-interface ActivityItemProps {
-  title: string;
-  description: string;
-  time: string;
-  status: "success" | "warning" | "error" | "info";
-}
-
-function ActivityItem({ title, description, time, status }: ActivityItemProps) {
-  const statusColors = {
-    success: "green",
-    warning: "yellow",
-    error: "red",
-    info: "gray",
-  };
-
-  return (
-    <Group justify="space-between" align="flex-start" py="xs">
-      <Group gap="sm" align="flex-start">
-        <div
-          className={`w-2 h-2 rounded-full mt-2 ${
-            status === "success"
-              ? "bg-green-500"
-              : status === "warning"
-                ? "bg-yellow-500"
-                : status === "error"
-                  ? "bg-red-500"
-                  : "bg-gray-400"
-          }`}
-        />
-        <div>
-          <Text size="sm" fw={500} className="text-gray-900 dark:text-white">
-            {title}
-          </Text>
-          <Text size="xs" c="dimmed">
-            {description}
-          </Text>
-        </div>
-      </Group>
-      <Text size="xs" c="dimmed">
-        {time}
+      <Text size="xs" c="dimmed" mb={4} className="uppercase tracking-wide font-semibold">
+        {title}
       </Text>
-    </Group>
+      <Text size="32px" fw={700} className="text-gray-900 dark:text-white" mb={4}>
+        {value}
+      </Text>
+      {subtitle && (
+        <Text size="xs" c="dimmed">
+          {subtitle}
+        </Text>
+      )}
+    </Paper>
   );
 }
 
@@ -153,14 +73,23 @@ export default function ImporterDashboardView({ importerId }: Props) {
   
   const activeNomenclators = importerData?.nomenclators?.filter((n) => n.isActive).length || 0;
   const totalNomenclators = importerData?.nomenclators?.length || 0;
+  const inactiveNomenclators = totalNomenclators - activeNomenclators;
+  
   const activeContracts = importerData?.contracts?.filter((c) => {
     const status = c.status?.toUpperCase();
     return status === "APPROVED" || status === "ACTIVE";
   }).length || 0;
+  
   const pendingContracts = importerData?.contracts?.filter((c) => {
     const status = c.status?.toUpperCase();
     return status === "PENDING";
   }).length || 0;
+  
+  const rejectedContracts = importerData?.contracts?.filter((c) => {
+    const status = c.status?.toUpperCase();
+    return status === "REJECTED";
+  }).length || 0;
+  
   const expiringContracts = importerData?.contracts?.filter((c) => {
     if (!c.endDate) return false;
     const endDate = new Date(c.endDate);
@@ -169,52 +98,61 @@ export default function ImporterDashboardView({ importerId }: Props) {
     return daysUntilExpiry <= 30 && daysUntilExpiry > 0;
   }).length || 0;
 
+  const totalContracts = importerData?.contracts?.length || 0;
+  const nomenclatorProgress = totalNomenclators > 0 ? (activeNomenclators / totalNomenclators) * 100 : 0;
+  const contractApprovalRate = totalContracts > 0 ? (activeContracts / totalContracts) * 100 : 0;
+
   return (
     <div>
-      <div className="mb-6">
-        <Text size="xl" fw={700} className="text-gray-900 dark:text-white">
+      <div className="mb-8">
+        <Text size="28px" fw={700} className="text-gray-900 dark:text-white mb-2">
           Dashboard
         </Text>
-        <Text size="sm" c="dimmed">
-          Resumen de tu actividad como importadora
+        <Text size="md" c="dimmed">
+          Vista general de tu actividad como importadora
         </Text>
       </div>
 
-      <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md" mb="xl">
+      {/* Stats principales */}
+      <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="lg" mb="xl">
         <StatCard
           title="Nomencladores Activos"
           value={activeNomenclators}
-          subtitle={totalNomenclators > activeNomenclators ? `+${totalNomenclators - activeNomenclators} inactivos` : undefined}
-          icon={<TagIconSolid className="h-6 w-6" />}
+          subtitle={totalNomenclators > activeNomenclators ? `${inactiveNomenclators} inactivos de ${totalNomenclators} totales` : `${totalNomenclators} totales`}
+          icon={<TagIconSolid className="h-7 w-7" />}
           color="teal"
+          trend={{ value: 12, positive: true }}
         />
         <StatCard
-          title="Proveedores Contratados"
+          title="Contratos Activos"
           value={activeContracts}
-          subtitle="+1 este mes"
-          icon={<UsersIconSolid className="h-6 w-6" />}
+          subtitle={`${totalContracts} contratos totales`}
+          icon={<UsersIconSolid className="h-7 w-7" />}
           color="blue"
+          trend={{ value: 8, positive: true }}
         />
         <StatCard
           title="Solicitudes Pendientes"
           value={pendingContracts}
-          subtitle="Requieren revisión"
-          icon={<DocumentTextIconSolid className="h-6 w-6" />}
+          subtitle="Requieren tu revisión"
+          icon={<DocumentTextIconSolid className="h-7 w-7" />}
           color="yellow"
         />
         <StatCard
           title="Contratos por Vencer"
           value={expiringContracts}
-          subtitle="Próximos 30 días"
-          icon={<ClockIconSolid className="h-6 w-6" />}
+          subtitle="En los próximos 30 días"
+          icon={<ClockIconSolid className="h-7 w-7" />}
           color="red"
         />
       </SimpleGrid>
 
-      <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="md">
+      {/* Cards de análisis */}
+      <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} spacing="lg">
+        {/* Progress de nomencladores */}
         <Paper
-          p="lg"
-          radius="md"
+          p="xl"
+          radius="lg"
           withBorder
           styles={{
             root: {
@@ -223,36 +161,128 @@ export default function ImporterDashboardView({ importerId }: Props) {
             },
           }}
         >
-          <Text size="lg" fw={600} mb={4} className="text-gray-900 dark:text-white">
-            Acciones Rápidas
-          </Text>
-          <Text size="sm" c="dimmed" mb="md">
-            Accede a las funciones principales
-          </Text>
+          <Group justify="space-between" mb="lg">
+            <div>
+              <Text size="sm" fw={600} className="text-gray-900 dark:text-white mb-1">
+                Estado de Nomencladores
+              </Text>
+              <Text size="xs" c="dimmed">
+                Activos vs Total
+              </Text>
+            </div>
+            <ThemeIcon size={42} radius="md" variant="light" color="teal">
+              <TagIconSolid className="h-6 w-6" />
+            </ThemeIcon>
+          </Group>
+          
+          <Center>
+            <RingProgress
+              size={150}
+              thickness={16}
+              roundCaps
+              sections={[
+                { value: nomenclatorProgress, color: 'teal' },
+              ]}
+              label={
+                <Center>
+                  <div className="text-center">
+                    <Text size="xl" fw={700} className="text-gray-900 dark:text-white">
+                      {Math.round(nomenclatorProgress)}%
+                    </Text>
+                    <Text size="xs" c="dimmed">
+                      Activos
+                    </Text>
+                  </div>
+                </Center>
+              }
+            />
+          </Center>
 
-          <Stack gap="sm">
-            <QuickAction
-              label="Gestionar Nomencladores"
-              icon={<TagIcon className="h-4 w-4" />}
-              href={`/importadora/${importerId}/nomencladores`}
+          <Group justify="space-between" mt="lg">
+            <Group gap="xs">
+              <div className="w-3 h-3 rounded-full bg-teal-500" />
+              <Text size="xs" c="dimmed">Activos: {activeNomenclators}</Text>
+            </Group>
+            <Group gap="xs">
+              <div className="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600" />
+              <Text size="xs" c="dimmed">Inactivos: {inactiveNomenclators}</Text>
+            </Group>
+          </Group>
+        </Paper>
+
+        {/* Tasa de aprobación */}
+        <Paper
+          p="xl"
+          radius="lg"
+          withBorder
+          styles={{
+            root: {
+              backgroundColor: "light-dark(#ffffff, #1b2e4b)",
+              borderColor: "light-dark(#e5e7eb, #253a54)",
+            },
+          }}
+        >
+          <Group justify="space-between" mb="lg">
+            <div>
+              <Text size="sm" fw={600} className="text-gray-900 dark:text-white mb-1">
+                Tasa de Aprobación
+              </Text>
+              <Text size="xs" c="dimmed">
+                Contratos aprobados
+              </Text>
+            </div>
+            <ThemeIcon size={42} radius="md" variant="light" color="blue">
+              <CheckCircleIcon className="h-6 w-6" />
+            </ThemeIcon>
+          </Group>
+
+          <div className="mb-lg">
+            <Text size="40px" fw={700} className="text-gray-900 dark:text-white mb-2">
+              {Math.round(contractApprovalRate)}%
+            </Text>
+            <Progress
+              value={contractApprovalRate}
+              color="blue"
+              size="lg"
+              radius="xl"
             />
-            <QuickAction
-              label="Ver Proveedores"
-              icon={<UsersIcon className="h-4 w-4" />}
-              href={`/importadora/${importerId}/proveedores`}
-            />
-            <QuickAction
-              label="Revisar Solicitudes"
-              icon={<DocumentTextIcon className="h-4 w-4" />}
-              href={`/importadora/${importerId}/solicitudes`}
-              badge={pendingContracts}
-            />
+          </div>
+
+          <Stack gap="xs" mt="lg">
+            <Group justify="space-between">
+              <Group gap="xs">
+                <CheckCircleIcon className="h-4 w-4 text-green-500" />
+                <Text size="xs" c="dimmed">Aprobados</Text>
+              </Group>
+              <Text size="xs" fw={600} className="text-gray-900 dark:text-white">
+                {activeContracts}
+              </Text>
+            </Group>
+            <Group justify="space-between">
+              <Group gap="xs">
+                <ClockIconSolid className="h-4 w-4 text-yellow-500" />
+                <Text size="xs" c="dimmed">Pendientes</Text>
+              </Group>
+              <Text size="xs" fw={600} className="text-gray-900 dark:text-white">
+                {pendingContracts}
+              </Text>
+            </Group>
+            <Group justify="space-between">
+              <Group gap="xs">
+                <XCircleIcon className="h-4 w-4 text-red-500" />
+                <Text size="xs" c="dimmed">Rechazados</Text>
+              </Group>
+              <Text size="xs" fw={600} className="text-gray-900 dark:text-white">
+                {rejectedContracts}
+              </Text>
+            </Group>
           </Stack>
         </Paper>
 
+        {/* Alertas importantes */}
         <Paper
-          p="lg"
-          radius="md"
+          p="xl"
+          radius="lg"
           withBorder
           styles={{
             root: {
@@ -261,41 +291,74 @@ export default function ImporterDashboardView({ importerId }: Props) {
             },
           }}
         >
-          <Text size="lg" fw={600} mb={4} className="text-gray-900 dark:text-white">
-            Actividad Reciente
-          </Text>
-          <Text size="sm" c="dimmed" mb="md">
-            Últimas acciones en tu cuenta
-          </Text>
+          <Group justify="space-between" mb="lg">
+            <div>
+              <Text size="sm" fw={600} className="text-gray-900 dark:text-white mb-1">
+                Alertas Importantes
+              </Text>
+              <Text size="xs" c="dimmed">
+                Requieren atención
+              </Text>
+            </div>
+            <ThemeIcon size={42} radius="md" variant="light" color="orange">
+              <ClockIconSolid className="h-6 w-6" />
+            </ThemeIcon>
+          </Group>
 
-          <Stack gap={0}>
-            <ActivityItem
-              title="Nueva solicitud de contrato"
-              description="Proveedor ABC"
-              time="Hace 2 horas"
-              status="warning"
-            />
-            <Divider />
-            <ActivityItem
-              title="Contrato aprobado"
-              description="Distribuidora XYZ"
-              time="Hace 5 horas"
-              status="success"
-            />
-            <Divider />
-            <ActivityItem
-              title="Nomenclador actualizado"
-              description="Electrónica"
-              time="Ayer"
-              status="info"
-            />
-            <Divider />
-            <ActivityItem
-              title="Solicitud rechazada"
-              description="Importadora Norte"
-              time="Hace 2 días"
-              status="error"
-            />
+          <Stack gap="md">
+            <Paper
+              p="md"
+              radius="md"
+              style={{
+                backgroundColor: pendingContracts > 0 ? "rgba(250, 204, 21, 0.1)" : "rgba(107, 114, 128, 0.1)",
+                border: pendingContracts > 0 ? "1px solid rgba(250, 204, 21, 0.3)" : "1px solid rgba(107, 114, 128, 0.2)"
+              }}
+            >
+              <Group justify="space-between" align="flex-start">
+                <div>
+                  <Text size="sm" fw={600} className="text-gray-900 dark:text-white mb-1">
+                    Solicitudes Pendientes
+                  </Text>
+                  <Text size="xs" c="dimmed">
+                    Revisa las nuevas solicitudes
+                  </Text>
+                </div>
+                <Badge
+                  size="lg"
+                  color={pendingContracts > 0 ? "yellow" : "gray"}
+                  variant="filled"
+                >
+                  {pendingContracts}
+                </Badge>
+              </Group>
+            </Paper>
+
+            <Paper
+              p="md"
+              radius="md"
+              style={{
+                backgroundColor: expiringContracts > 0 ? "rgba(239, 68, 68, 0.1)" : "rgba(107, 114, 128, 0.1)",
+                border: expiringContracts > 0 ? "1px solid rgba(239, 68, 68, 0.3)" : "1px solid rgba(107, 114, 128, 0.2)"
+              }}
+            >
+              <Group justify="space-between" align="flex-start">
+                <div>
+                  <Text size="sm" fw={600} className="text-gray-900 dark:text-white mb-1">
+                    Contratos por Vencer
+                  </Text>
+                  <Text size="xs" c="dimmed">
+                    Próximos a expirar
+                  </Text>
+                </div>
+                <Badge
+                  size="lg"
+                  color={expiringContracts > 0 ? "red" : "gray"}
+                  variant="filled"
+                >
+                  {expiringContracts}
+                </Badge>
+              </Group>
+            </Paper>
           </Stack>
         </Paper>
       </SimpleGrid>
