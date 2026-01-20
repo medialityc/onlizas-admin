@@ -12,6 +12,7 @@ import RHFMultiSelectImporterCategories from "@/components/react-hook-form/rhf-m
 import ActionsMenu from "@/components/menu/actions-menu";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { getAllCategories } from "@/services/categories";
 import {
   createNomenclator,
   getNomenclatorById,
@@ -42,6 +43,8 @@ export default function NomenclatorsListClient({
   const [selected, setSelected] = useState<ImporterNomenclatorDetail | null>(null);
   const [localData, setLocalData] = useState<ImporterNomenclatorDetail[]>(data);
   const [isSaving, setIsSaving] = useState(false);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
 
   const methods = useForm<NomenclatorForm>({
     defaultValues: {
@@ -56,13 +59,40 @@ export default function NomenclatorsListClient({
     setLocalData(data);
   }, [data]);
 
-  const openCreate = useCallback(() => {
+  const openCreate = useCallback(async () => {
     setSelected(null);
     reset({ name: "", categoryIds: [] });
     setOpened(true);
-  }, [reset]);
+    
+    // Cargar categorías si no están cargadas
+    if (categories.length === 0 && !loadingCategories) {
+      setLoadingCategories(true);
+      try {
+        const response = await getAllCategories({ page: 1, pageSize: 1000 });
+        if (!response.error && response.data?.data) {
+          const activeCategories = response.data.data
+            .filter((cat: any) => cat.active)
+            .map((cat: any) => ({
+              id: String(cat.id),
+              name: cat.name || "",
+              active: !!cat.active,
+              departmentId: cat.departmentId || "",
+              departmentName: cat.departmentName || "",
+              description: cat.description || "",
+              image: cat.image || "",
+              features: cat.features || [],
+            }));
+          setCategories(activeCategories);
+        }
+      } catch (error) {
+        // Error silencioso al cargar categorías
+      } finally {
+        setLoadingCategories(false);
+      }
+    }
+  }, [reset, categories.length, loadingCategories]);
 
-  const openEdit = useCallback((n: ImporterNomenclatorDetail) => {
+  const openEdit = useCallback(async (n: ImporterNomenclatorDetail) => {
     setSelected(n);
     const ids = (n.categories || []).map((c) => c.id);
     reset({
@@ -70,7 +100,34 @@ export default function NomenclatorsListClient({
       categoryIds: ids,
     });
     setOpened(true);
-  }, [reset]);
+    
+    // Cargar categorías si no están cargadas
+    if (categories.length === 0 && !loadingCategories) {
+      setLoadingCategories(true);
+      try {
+        const response = await getAllCategories({ page: 1, pageSize: 1000 });
+        if (!response.error && response.data?.data) {
+          const activeCategories = response.data.data
+            .filter((cat: any) => cat.active)
+            .map((cat: any) => ({
+              id: String(cat.id),
+              name: cat.name || "",
+              active: !!cat.active,
+              departmentId: cat.departmentId || "",
+              departmentName: cat.departmentName || "",
+              description: cat.description || "",
+              image: cat.image || "",
+              features: cat.features || [],
+            }));
+          setCategories(activeCategories);
+        }
+      } catch (error) {
+        // Error silencioso al cargar categorías
+      } finally {
+        setLoadingCategories(false);
+      }
+    }
+  }, [reset, categories.length, loadingCategories]);
 
   const close = useCallback(() => {
     setOpened(false);
@@ -87,7 +144,7 @@ export default function NomenclatorsListClient({
         if (selected) {
           const res = await updateNomenclator(selected.id, {
             name,
-            categoryIds: [],
+            categoryIds: values.categoryIds,
           });
           if (res.error) {
             toast.error(res.message || "Error actualizando nomenclador");
@@ -110,7 +167,7 @@ export default function NomenclatorsListClient({
           const res = await createNomenclator({
             name,
             importerId,
-            categoryIds: [],
+            categoryIds: values.categoryIds,
           });
           if (res.error) {
             toast.error(res.message || "Error creando nomenclador");
@@ -179,10 +236,23 @@ export default function NomenclatorsListClient({
       {
         accessor: "categories",
         title: "Categorías",
-        render: () => {
+        render: (r) => {
+          if (!r.categories || r.categories.length === 0) {
+            return <span className="text-gray-500 dark:text-gray-400">-</span>;
+          }
+          
           return (
             <div className="flex flex-wrap gap-1">
-              <span className="text-gray-500 dark:text-gray-400">-</span>
+              {r.categories.slice(0, 3).map((cat) => (
+                <Badge key={cat.id} variant="light" size="sm">
+                  {cat.name}
+                </Badge>
+              ))}
+              {r.categories.length > 3 && (
+                <Badge variant="outline" size="sm" className="text-gray-500">
+                  +{r.categories.length - 3}
+                </Badge>
+              )}
             </div>
           );
         },
@@ -263,6 +333,7 @@ export default function NomenclatorsListClient({
                 name="categoryIds"
                 label="Categorías"
                 placeholder="Seleccionar categorías..."
+                categories={categories}
                 required
               />
             </div>

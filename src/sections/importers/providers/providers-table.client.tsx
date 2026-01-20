@@ -261,16 +261,39 @@ export default function ProvidersTableClient({
   const columns = useMemo<DataTableColumn<Row>[]>(
     () => [
       {
-        accessor: "supplierName",
+        accessor: "approvalProcessName",
         title: "Proveedor",
+        render: (row) => row.approvalProcessName || row.supplierName || "-",
       },
       {
         accessor: "importerNomenclators",
         title: "Nomencladores",
-        render: (row) =>
-          row.importerNomenclators && row.importerNomenclators.length > 0
-            ? row.importerNomenclators.map((n) => n.name).join(", ")
-            : "-",
+        width: 250,
+        render: (row) => {
+          if (!row.importerNomenclators || row.importerNomenclators.length === 0) {
+            return <span>-</span>;
+          }
+          
+          const maxToShow = 2;
+          const total = row.importerNomenclators.length;
+          const toShow = row.importerNomenclators.slice(0, maxToShow);
+          const remaining = total - maxToShow;
+          
+          return (
+            <div className="flex flex-col gap-1" title={row.importerNomenclators.map((n) => n.name).join(", ")}>
+              {toShow.map((n, idx) => (
+                <span key={idx} className="text-sm truncate block max-w-[220px]">
+                  {n.name}
+                </span>
+              ))}
+              {remaining > 0 && (
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                  +{remaining} más
+                </span>
+              )}
+            </div>
+          );
+        },
       },
       {
         accessor: "status",

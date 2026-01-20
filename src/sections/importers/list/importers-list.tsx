@@ -12,6 +12,7 @@ import showToast from "@/config/toast/toastConfig";
 import { getImporterById, toggleImporterStatus } from "@/services/importers";
 import { useRouter } from "next/navigation";
 import Badge from "@/components/badge/badge";
+import { PERMISSION_ADMIN } from "@/lib/permissions";
 
 interface ImportersListProps {
   data?: GetImporters;
@@ -64,9 +65,9 @@ export default function ImportersList({ data }: ImportersListProps) {
     [router]
   );
 
-  const handleViewProviders = useCallback(
+  const handleViewContracts = useCallback(
     (importer: Importer) => {
-      router.push(`/dashboard/importadoras/${importer.id}/proveedores`);
+      router.push(`/dashboard/importadoras/${importer.id}/contratos`);
     },
     [router]
   );
@@ -140,18 +141,18 @@ export default function ImportersList({ data }: ImportersListProps) {
             <ActionsMenu
               onEdit={() => handleEdit(importer)}
               onNomenclators={() => handleViewNomenclators(importer)}
-              onProviders={() => handleViewProviders(importer)}
+              onContracts={() => handleViewContracts(importer)}
               onGenerateQR={() => handleShowQR(importer)}
               onActive={() => handleToggleStatus(importer)}
               active={importer.isActive}
-              nomenclatorsPermissions={["RetrieveNomenclator"]}
-              providersPermissions={["RetrieveImporterContract"]}
+              nomenclatorsPermissions={PERMISSION_ADMIN}
+              contractsPermissions={PERMISSION_ADMIN}
             />
           </div>
         ),
       },
     ],
-    [handleEdit, handleViewNomenclators, handleViewProviders, handleShowQR]
+    [handleEdit, handleViewNomenclators, handleViewContracts, handleShowQR]
   );
 
   return (

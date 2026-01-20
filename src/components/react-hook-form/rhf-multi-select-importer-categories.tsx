@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useController, useFormContext } from "react-hook-form";
 
 interface ImporterCategory {
@@ -20,7 +20,7 @@ interface Props {
   placeholder?: string;
   required?: boolean;
   className?: string;
-  endpoint?: string; // endpoint opcional para cargar categorías
+  categories?: ImporterCategory[];
 }
 
 export default function RHFMultiSelectImporterCategories({
@@ -29,7 +29,7 @@ export default function RHFMultiSelectImporterCategories({
   placeholder = "Seleccionar categorías...",
   required = false,
   className = "",
-  endpoint = "/api/importer-access/categories",
+  categories = [],
 }: Props) {
   const { control } = useFormContext();
   const { field, fieldState } = useController({
@@ -38,25 +38,8 @@ export default function RHFMultiSelectImporterCategories({
     rules: { required: required ? `${label} es requerido` : false },
   });
 
-  const [categories, setCategories] = useState<ImporterCategory[]>([]);
-  const [loading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(endpoint);
-        const data = await res.json();
-        setCategories(Array.isArray(data) ? data.filter((cat) => cat.active) : []);
-      } catch (error) {
-        setCategories([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadCategories();
-  }, [endpoint]);
+  const loading = false;
 
   const selectedIds = field.value || [];
 
@@ -79,12 +62,9 @@ export default function RHFMultiSelectImporterCategories({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          disabled={loading}
           className={`w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm bg-white dark:bg-gray-900 text-left text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${fieldState.error ? 'border-red-500' : ''}`}
         >
-          {loading ? (
-            <span className="text-gray-500 dark:text-gray-400">Cargando categorías...</span>
-          ) : selectedCategories.length > 0 ? (
+          {selectedCategories.length > 0 ? (
             <span>{selectedCategories.length} categoría(s) seleccionada(s)</span>
           ) : (
             <span className="text-gray-500 dark:text-gray-400">{placeholder}</span>
@@ -95,7 +75,7 @@ export default function RHFMultiSelectImporterCategories({
             </svg>
           </span>
         </button>
-        {isOpen && !loading && (
+        {isOpen && (
           <div className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-900 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none">
             {categories.length === 0 ? (
               <div className="px-3 py-2 text-gray-500 dark:text-gray-400 text-sm">No hay categorías disponibles</div>
