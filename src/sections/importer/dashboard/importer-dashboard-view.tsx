@@ -29,7 +29,7 @@ function StatCard({ title, value, subtitle, icon, color }: StatCardProps) {
     >
       <Group justify="space-between" align="flex-start">
         <div>
-          <Text size="sm" c="dimmed" mb={4}>
+          <Text size="sm" c="gray" mb={4} className="text-gray-400 dark:text-gray-400">
             {title}
           </Text>
           <Text size="xl" fw={700} className="text-gray-900 dark:text-white">
