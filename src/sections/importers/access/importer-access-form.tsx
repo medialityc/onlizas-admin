@@ -29,10 +29,21 @@ export default function ImporterAccessForm() {
 
   useEffect(() => {
     const storedExpiry = localStorage.getItem("importer_session_expiry");
+    const storedData = localStorage.getItem("importer_data");
+    
     if (storedExpiry) {
       const expiry = parseInt(storedExpiry);
       if (expiry > Date.now()) {
-        router.push("/importadora/dashboard");
+        // Si hay sesión activa, redirigir al dashboard
+        try {
+          const importerData = storedData ? JSON.parse(storedData) : null;
+          const importerId = importerData?.id;
+          if (importerId) {
+            router.push(`/importadora/${importerId}/dashboard`);
+          }
+        } catch (error) {
+          console.error("Error parsing importer data:", error);
+        }
       }
     }
   }, [router]);
@@ -61,7 +72,14 @@ export default function ImporterAccessForm() {
 
       setExpiresAt(expiryTime);
       toast.success("Acceso concedido");
-      router.push("/importadora/dashboard");
+      
+      // Redirigir al dashboard con el ID de la importadora
+      const importerId = result.importer?.id;
+      if (importerId) {
+        router.push(`/importadora/${importerId}/dashboard`);
+      } else {
+        router.push("/importadora/dashboard");
+      }
     } catch (error) {
       console.error(error);
       toast.error("Error al procesar el código de acceso");

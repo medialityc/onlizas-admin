@@ -50,7 +50,9 @@ export default function ImporterLayoutClient({
           isSidebarOpen ? 'ml-64' : 'ml-0 pl-16'
         }`}
       >
-        {children}
+        <div className="p-6">
+          {children}
+        </div>
       </div>
     </div>
   );
