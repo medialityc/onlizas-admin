@@ -358,7 +358,6 @@ export default function ImporterNomencladoresView({
                 label="Categorías"
                 placeholder={loadingCategories ? "Cargando categorías..." : "Seleccione las categorías"}
                 categories={categories}
-                disabled={loadingCategories}
               />
             </div>
 
