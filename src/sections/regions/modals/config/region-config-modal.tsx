@@ -187,15 +187,7 @@ export default function RegionConfigModal({
         <div className="flex-1 overflow-y-auto p-6">{renderTabContent()}</div>
 
         {/* Footer */}
-        <div className="border-t border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between bg-gray-50 dark:bg-gray-800/50">
-          <button
-            onClick={() =>
-              queryClient.invalidateQueries({ queryKey: ["regions"] })
-            }
-            className="btn btn-outline-primary"
-          >
-            Actualizar Datos
-          </button>
+        <div className="border-t border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-end bg-gray-50 dark:bg-gray-800/50">
           <button className="btn btn-outline-secondary" onClick={onClose}>
             Cerrar
           </button>
