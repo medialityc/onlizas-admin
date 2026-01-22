@@ -24,7 +24,7 @@ export function CurrencyConfigForm({
   // Fetch currencies
   const { data: currenciesResp } = useQuery({
     queryKey: ['currencies'],
-    queryFn: () => getAllCurrencies({ page: 1, limit: 200 }),
+    queryFn: () => getAllCurrencies({ page: 1, limit: 200 , active:true}),
   });
 
   const currencies = currenciesResp?.data?.data || [];
