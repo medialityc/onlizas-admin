@@ -96,6 +96,7 @@ export default function RegionConfigurationModal({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["regions"] });
+      queryClient.invalidateQueries({ queryKey: ["region-details", region.id] });
       showToast("Moneda agregada exitosamente a la región", "success");
       onSuccess?.();
       handleClose();
@@ -131,6 +132,7 @@ export default function RegionConfigurationModal({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["regions"] });
+      queryClient.invalidateQueries({ queryKey: ["region-details", region.id] });
       showToast("Método de pago agregado exitosamente a la región", "success");
       onSuccess?.();
       handleClose();
@@ -167,6 +169,7 @@ export default function RegionConfigurationModal({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["regions"] });
+      queryClient.invalidateQueries({ queryKey: ["region-details", region.id] });
       showToast(
         "Método de entrega agregado exitosamente a la región",
         "success"
