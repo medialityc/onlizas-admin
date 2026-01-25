@@ -90,13 +90,13 @@ export default function SectionForm({ initValue }: Props) {
                 placeholder="Ej: Jóvenes, Adultos"
                 required
               />
-              <RHFSelect
+              {/* <RHFSelect
                 options={TARGET_USER_DEVICE_OPTIONS}
                 name="targetDeviceType"
                 label="Tipo de dispositivo"
                 placeholder="Ej: Móvil, Escritorio"
                 required
-              />
+              /> */}
             </div>
           </div>
 
