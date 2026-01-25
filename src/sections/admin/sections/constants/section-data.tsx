@@ -12,14 +12,14 @@ export const setSectionFormData = async (
   formData.append("active", String(section.active));
   formData.append("displayOrder", String(section.displayOrder));
 
-  formData.append("templateType", String(0)); // todo section.templateType
+  formData.append("templateType", String(section.templateType)); // todo section.templateType
   formData.append("defaultItemCount", String(section.defaultItemCount));
   formData.append("backgroundColor", String(section.backgroundColor));
 
   formData.append("textColor", String(section.textColor));
   formData.append("isPersonalized", String(section.isPersonalized));
   formData.append("targetUserSegment", String(section.targetUserSegment));
-  formData.append("targetDeviceType", String(section.targetDeviceType));
+  formData.append("targetDeviceType", String("ALL"));
   formData.append(
     "startDate",
     String((section.startDate as any).toISOString())
