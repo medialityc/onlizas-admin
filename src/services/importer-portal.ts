@@ -42,6 +42,7 @@ const ALLOWED_PATH_PATTERNS: RegExp[] = [
   /^\/importer-access\/nomenclators\/[A-Za-z0-9_-]+$/,
   /^\/importer-access\/nomenclators\/[A-Za-z0-9_-]+\/toggle-status$/,
   /^\/importer-access\/categories$/,
+  /^\/importer-access\/dashboard$/,
   // Rutas de importer-contracts
   /^\/importer-contracts$/,
   /^\/importer-contracts\/[A-Za-z0-9_-]+$/,
@@ -51,6 +52,28 @@ const ALLOWED_PATH_PATTERNS: RegExp[] = [
   // Rutas de importers
   /^\/importers\/[A-Za-z0-9_-]+$/,
   /^\/importers\/[A-Za-z0-9_-]+\/contracts$/,
+  // Rutas con prefijo /api/
+  /^\/api\/importer-access\/validate$/,
+  /^\/api\/importer-access\/data$/,
+  /^\/api\/importer-access\/contracts$/,
+  /^\/api\/importer-access\/pending-contracts$/,
+  /^\/api\/importer-access\/contracts\/[A-Za-z0-9_-]+\/approve$/,
+  /^\/api\/importer-access\/contracts\/[A-Za-z0-9_-]+\/reject$/,
+  /^\/api\/importer-access\/[A-Za-z0-9_-]+\/generate-qr$/,
+  /^\/api\/importer-access\/[A-Za-z0-9_-]+\/sessions$/,
+  /^\/api\/importer-access\/[A-Za-z0-9_-]+\/revoke$/,
+  /^\/api\/importer-access\/nomenclators$/,
+  /^\/api\/importer-access\/nomenclators\/[A-Za-z0-9_-]+$/,
+  /^\/api\/importer-access\/nomenclators\/[A-Za-z0-9_-]+\/toggle-status$/,
+  /^\/api\/importer-access\/categories$/,
+  /^\/api\/importer-access\/dashboard$/,
+  /^\/api\/importer-contracts$/,
+  /^\/api\/importer-contracts\/[A-Za-z0-9_-]+$/,
+  /^\/api\/importer-contracts\/[A-Za-z0-9_-]+\/approve$/,
+  /^\/api\/importer-contracts\/[A-Za-z0-9_-]+\/reject$/,
+  /^\/api\/importer-contracts\/[A-Za-z0-9_-]+\/nomenclators$/,
+  /^\/api\/importers\/[A-Za-z0-9_-]+$/,
+  /^\/api\/importers\/[A-Za-z0-9_-]+\/contracts$/,
 ];
 
 function isAllowedPath(pathname: string): boolean {
@@ -209,6 +232,37 @@ export type ContractResponse = {
 export type ImporterDataResponse = {
   success: boolean;
   data?: ImporterData;
+  message?: string;
+  error?: boolean;
+};
+
+export type DashboardStats = {
+  nomenclators: {
+    active: number;
+    inactive: number;
+    total: number;
+  };
+  contracts: {
+    active: number;
+    pending: number;
+    rejected: number;
+    expired: number;
+    total: number;
+    expiringIn30Days: number;
+  };
+  statistics: {
+    nomenclatorActiveRate: number;
+    contractApprovalRate: number;
+  };
+  trends: {
+    nomenclatorsThisMonth: number;
+    contractsThisMonth: number;
+  };
+};
+
+export type DashboardResponse = {
+  success: boolean;
+  data?: DashboardStats;
   message?: string;
   error?: boolean;
 };
@@ -625,7 +679,6 @@ export async function toggleImporterNomenclatorStatus(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      console.log("[toggleImporterNomenclatorStatus] error data:", errorData);
       return {
         success: false,
         error: true,
@@ -742,6 +795,35 @@ export async function createImporterNomenclator(
       success: false,
       error: true,
       message: "Error al crear nomenclador",
+    };
+  }
+}
+
+export async function getImporterDashboard(): Promise<DashboardResponse> {
+  try {
+    const response = await importerFetch(backendRoutes.importerAccess.dashboard);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return {
+        success: false,
+        error: true,
+        message: errorData.message || "Error al obtener estadísticas del dashboard",
+      };
+    }
+
+    const data = await response.json();
+
+    return {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    console.error("Error getting importer dashboard:", error);
+    return {
+      success: false,
+      error: true,
+      message: error instanceof Error ? error.message : "Error al obtener estadísticas del dashboard",
     };
   }
 }
