@@ -27,6 +27,7 @@ type ImporterContract = {
   importerName: string;
   supplierId: string;
   supplierName: string;
+  approvalProcessName?: string;
   startDate: string;
   endDate: string;
   status: string;
