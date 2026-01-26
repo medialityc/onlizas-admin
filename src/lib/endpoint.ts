@@ -600,6 +600,8 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}importers/${importerId}/pending-contracts`,
     supplierContracts: (supplierId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}importers/${supplierId}/contracts`,
+    categories: (importerId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}importers/${importerId}/categories`,
     access: `${process.env.NEXT_PUBLIC_API_URL}importers/access`,
   },
   importerAccess: {
@@ -619,6 +621,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}importer-access/${importerId}/revoke`,
     nomenclators: `${process.env.NEXT_PUBLIC_API_URL}importer-access/nomenclators`,
     categories: `${process.env.NEXT_PUBLIC_API_URL}importer-access/categories`,
+    dashboard: `${process.env.NEXT_PUBLIC_API_URL}importer-access/dashboard`,
     updateNomenclator: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}importer-access/nomenclators/${id}`,
     toggleNomenclatorStatus: (id: string | number) =>

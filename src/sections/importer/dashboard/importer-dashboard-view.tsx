@@ -1,8 +1,10 @@
 "use client";
 
-import { Paper, Text, SimpleGrid, Group, ThemeIcon, Progress, Stack, Badge, RingProgress, Center } from "@mantine/core";
+import { Paper, Text, SimpleGrid, Group, ThemeIcon, Progress, Stack, Badge, RingProgress, Center, LoadingOverlay } from "@mantine/core";
 import { TagIcon as TagIconSolid, UsersIcon as UsersIconSolid, DocumentTextIcon as DocumentTextIconSolid, ClockIcon as ClockIconSolid, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
-import { useImporterData } from "@/contexts/importer-data-context";
+import { useEffect, useState } from "react";
+import { getImporterDashboard, type DashboardStats } from "@/services/importer-portal";
+import { toast } from "react-toastify";
 
 interface StatCardProps {
   title: string;
@@ -69,47 +71,50 @@ interface Props {
 }
 
 export default function ImporterDashboardView({ importerId }: Props) {
-  const { importerData } = useImporterData();
-  
-  const activeNomenclators = importerData?.nomenclators?.filter((n) => n.isActive).length || 0;
-  const totalNomenclators = importerData?.nomenclators?.length || 0;
-  const inactiveNomenclators = totalNomenclators - activeNomenclators;
-  
-  const activeContracts = importerData?.contracts?.filter((c) => {
-    const status = c.status?.toUpperCase();
-    return status === "APPROVED" || status === "ACTIVE";
-  }).length || 0;
-  
-  const pendingContracts = importerData?.contracts?.filter((c) => {
-    const status = c.status?.toUpperCase();
-    return status === "PENDING";
-  }).length || 0;
-  
-  const rejectedContracts = importerData?.contracts?.filter((c) => {
-    const status = c.status?.toUpperCase();
-    return status === "REJECTED";
-  }).length || 0;
-  
-  const expiringContracts = importerData?.contracts?.filter((c) => {
-    if (!c.endDate) return false;
-    const endDate = new Date(c.endDate);
-    const now = new Date();
-    const daysUntilExpiry = Math.floor((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    return daysUntilExpiry <= 30 && daysUntilExpiry > 0;
-  }).length || 0;
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
 
-  const totalContracts = importerData?.contracts?.length || 0;
-  const nomenclatorProgress = totalNomenclators > 0 ? (activeNomenclators / totalNomenclators) * 100 : 0;
-  const contractApprovalRate = totalContracts > 0 ? (activeContracts / totalContracts) * 100 : 0;
+  useEffect(() => {
+    async function loadDashboard() {
+      setLoading(true);
+      try {
+        const response = await getImporterDashboard();
+        
+        if (response.success && response.data) {
+          setStats(response.data);
+        } else {
+          toast.error(response.message || "No se pudieron cargar las estadísticas");
+        }
+      } catch (error) {
+        toast.error("Error al cargar el dashboard");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadDashboard();
+  }, []);
+
+  const activeNomenclators = stats?.nomenclators.active || 0;
+  const totalNomenclators = stats?.nomenclators.total || 0;
+  const inactiveNomenclators = stats?.nomenclators.inactive || 0;
+  
+  const activeContracts = stats?.contracts.active || 0;
+  const pendingContracts = stats?.contracts.pending || 0;
+  const rejectedContracts = stats?.contracts.rejected || 0;
+  const expiringContracts = stats?.contracts.expiringIn30Days || 0;
+  const totalContracts = stats?.contracts.total || 0;
+
+  const nomenclatorProgress = stats?.statistics.nomenclatorActiveRate || 0;
+  const contractApprovalRate = stats?.statistics.contractApprovalRate || 0;
 
   return (
-    <div>
-      <div className="mb-8">
-        <Text size="28px" fw={700} className="text-gray-900 dark:text-white mb-2">
+    <div style={{ position: 'relative', minHeight: '400px' }}>
+      <LoadingOverlay visible={loading} />
+      
+      <div className="mb-4">
+        <Text size="28px" fw={700} className="text-gray-900 dark:text-white">
           Dashboard
-        </Text>
-        <Text size="md" c="dimmed">
-          Vista general de tu actividad como importadora
         </Text>
       </div>
 
@@ -121,7 +126,6 @@ export default function ImporterDashboardView({ importerId }: Props) {
           subtitle={totalNomenclators > activeNomenclators ? `${inactiveNomenclators} inactivos de ${totalNomenclators} totales` : `${totalNomenclators} totales`}
           icon={<TagIconSolid className="h-7 w-7" />}
           color="teal"
-          trend={{ value: 12, positive: true }}
         />
         <StatCard
           title="Contratos Activos"
@@ -129,7 +133,6 @@ export default function ImporterDashboardView({ importerId }: Props) {
           subtitle={`${totalContracts} contratos totales`}
           icon={<UsersIconSolid className="h-7 w-7" />}
           color="blue"
-          trend={{ value: 8, positive: true }}
         />
         <StatCard
           title="Solicitudes Pendientes"

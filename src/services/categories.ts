@@ -148,3 +148,25 @@ export async function getAllMeApprovedCategories(
 
   return buildApiResponseAsync<GetAllCategories>(res);
 }
+
+// Get categories by importer (filtered by importer's nomenclators)
+export async function getCategoriesByImporter(
+  importerId: string | number,
+  params: IQueryable = {}
+): Promise<ApiResponse<GetAllCategories>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.importers.categories(importerId)
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["importer-categories"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetAllCategories>(res);
+}
