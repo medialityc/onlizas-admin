@@ -36,7 +36,7 @@ export default function ErrorBoundary({
   });
 
   if (status === 401) {
-    return <Error401Fallback error={error} reset={reset} />;
+    return <Error401Fallback error={error} />;
   }
   if (status === 403) {
     return <Error403Fallback error={error} reset={reset} />;

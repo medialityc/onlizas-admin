@@ -33,5 +33,5 @@ export default function ErrorBoundary({
     full: error,
   });
 
-  return <Error401Fallback error={error} reset={reset} />;
+  return <Error401Fallback error={error} />;
 }
