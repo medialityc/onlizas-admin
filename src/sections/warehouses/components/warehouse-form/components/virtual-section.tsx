@@ -1,4 +1,3 @@
-import { RHFInputWithLabel } from "@/components/react-hook-form";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAllSupplierUsers } from "@/services/users";
 import { WarehouseIcon } from "lucide-react";
@@ -25,6 +24,7 @@ const VirtualSection = () => {
             objectValueKey="id"
             objectKeyLabel="name"
             queryKey="suppliers"
+            required
           />
         </div>
       </div>

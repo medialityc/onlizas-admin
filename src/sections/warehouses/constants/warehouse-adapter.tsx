@@ -15,5 +15,11 @@ export const warehouseAdapter = (
     };
   }
 
-  return payload;
+  return {
+    type: payload.type,
+    id: payload.id,
+    name: payload.name,
+    supplierId: payload.supplierId,
+    address: payload.address,
+  };
 };
