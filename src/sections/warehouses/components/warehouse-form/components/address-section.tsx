@@ -8,6 +8,7 @@ import { getDistrictsByCountry } from "@/services/districts";
 import { useFormContext } from "react-hook-form";
 import { MapPinIcon } from "@heroicons/react/24/outline";
 import { Label } from "@/components/label/label";
+import { CUBA_COUNTRY_ID } from "@/sections/warehouses/constants/warehouse-initvalues";
 
 type Props = { showCountryAndDistrict?: boolean };
 
@@ -15,7 +16,9 @@ export default function AddressSection({
   showCountryAndDistrict = true,
 }: Props) {
   const { watch } = useFormContext();
-  const countryId = watch("address.countryId");
+  const countryIdFromForm = watch("address.countryId");
+  const countryId = countryIdFromForm || CUBA_COUNTRY_ID;
+  
   return (
     <section className="rounded-lg border border-gray-100 dark:border-gray-700 p-4">
       <div className="mb-4">
@@ -65,31 +68,28 @@ export default function AddressSection({
           placeholder="Notas adicionales"
         />
         {showCountryAndDistrict && (
-          <>
-            {/* País */}
-            <div className="space-y-4 mt-[3px]">
-              <Label htmlFor="countryId">País *</Label>
-              <RHFCountrySelect
-                name="address.countryId"
-                variant="name"
-                fullwidth
-              />
-            </div>
-            {/* Distrito filtrado por país */}
-            {Boolean(countryId) && (
-              <RHFAutocompleteFetcherInfinity
-                name="address.districtId"
-                label="Distrito"
-                placeholder="Selecciona el distrito"
-                onFetch={(params) =>
-                  getDistrictsByCountry(String(countryId), params)
-                }
-                objectValueKey="id"
-                objectKeyLabel="name"
-                queryKey={`districts-${countryId}`}
-              />
-            )}
-          </>
+          <div className="space-y-4 mt-[3px]">
+            <Label htmlFor="countryId">País *</Label>
+            <RHFCountrySelect
+              name="address.countryId"
+              variant="name"
+              fullwidth
+            />
+          </div>
+        )}
+        {Boolean(countryId) && (
+          <RHFAutocompleteFetcherInfinity
+            key={`districts-${countryId}`}
+            name="address.districtId"
+            label="Distrito"
+            placeholder="Selecciona el distrito"
+            onFetch={(params) =>
+              getDistrictsByCountry(String(countryId), params)
+            }
+            objectValueKey="id"
+            objectKeyLabel="name"
+            queryKey={`districts-${countryId}`}
+          />
         )}
 
         <div className="col-span-1 md:col-span-2">
