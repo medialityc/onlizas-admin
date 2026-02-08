@@ -6,13 +6,14 @@ import { SearchParams } from "@/types/fetch/request";
 
 import { GetAllWarehouses } from "@/types/warehouses";
 import { InventoryCardGrid } from "../components/warehouse-card-grid/warehouse-card-grid";
-import { WAREHOUSE_TYPE_ENUM} from "../constants/warehouse-type";
+import { WAREHOUSE_TYPE_ENUM } from "../constants/warehouse-type";
 import MeWarehouseHeader from "../components/warehouse-header/me-warehouse-header";
 
 interface Props {
   warehousesPromise: ApiResponse<GetAllWarehouses>;
   query: SearchParams;
   baseRoute?: string;
+  supplierId?: string;
 }
 
 export default function MeWarehouseListContainer({

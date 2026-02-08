@@ -21,7 +21,7 @@ export function Pagination({
   const to = Math.min(page * pageSize, totalRecords || 0);
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t pt-4">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-gray-400 pt-4">
       <div className="text-sm text-gray-600">
         {totalRecords > 0
           ? `Mostrando ${from} - ${to} de ${totalRecords}`

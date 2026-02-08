@@ -133,7 +133,7 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                     setValue("userMissingPhone", !option.hasPhoneNumber);
                     setValue(
                       "userMissingAddress",
-                      !(option.addresses && option.addresses.length > 0)
+                      !(option.addresses && option.addresses.length > 0),
                     );
                   }
                 }}
@@ -378,8 +378,8 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
             name="supplierType"
             label="Tipo de proveedor"
             options={[
-              { value: 0, label: "Persona" },
-              { value: 1, label: "Empresa" },
+              { value: 0, label: "TCP" },
+              { value: 1, label: "Mipyme" },
             ]}
             placeholder="Seleccionar..."
             required
@@ -403,7 +403,7 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
           />
         </div>
         {[SUPPLIER_NATIONALITY.Ambos, SUPPLIER_NATIONALITY.Extranjero].includes(
-          Number(nacionalityType)
+          Number(nacionalityType),
         ) && (
           <RHFInputWithLabel
             name="mincexCode"

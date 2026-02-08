@@ -25,7 +25,7 @@ const MeWarehouseHeader = ({ data }: Props) => {
 
   const handleInitTransfer = useCallback(
     () => openModal("transfer"),
-    [openModal]
+    [openModal],
   );
 
   const createWarehouseModal = getModalState("create");

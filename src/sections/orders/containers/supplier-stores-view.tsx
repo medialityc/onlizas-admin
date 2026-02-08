@@ -30,7 +30,7 @@ export default function SupplierStoresView({
 
   const apiQuery: IQueryable = useMemo(
     () => buildQueryParams(currentQuery),
-    [currentQuery]
+    [currentQuery],
   );
 
   const {
@@ -50,7 +50,7 @@ export default function SupplierStoresView({
       page: currentQuery.page || 1,
       pageSize: currentQuery.pageSize || 10,
     }),
-    [currentQuery.page, currentQuery.pageSize]
+    [currentQuery.page, currentQuery.pageSize],
   );
 
   const { data: ordersResponse, isLoading: ordersLoading } = useQuery<

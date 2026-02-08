@@ -7,6 +7,7 @@ import {
 } from "@/services/inventory-providers";
 import InventoryCardListContainer from "./inventory-card-list-container";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { getServerSession, useAuth } from "zas-sso-client";
 
 interface Props {
   query: SearchParams;
@@ -29,15 +30,16 @@ interface Props {
 export default async function InventoryServerWrapper({ query }: Props) {
   const { isAdmin, isSupplier, permissionCodes } =
     await getModulePermissions("inventory");
+  const { user } = await getServerSession();
 
   const apiQuery: IQueryable = buildQueryParams(
-    query as Record<string, unknown>
+    query as Record<string, unknown>,
   );
 
   const canCreate = permissionCodes.some(
     (code) =>
       code === PERMISSION_ENUM.CREATE ||
-      code === PERMISSION_ENUM.CREATE_INVENTORY
+      code === PERMISSION_ENUM.CREATE_INVENTORY,
   );
 
   if (isAdmin) {
@@ -57,6 +59,7 @@ export default async function InventoryServerWrapper({ query }: Props) {
 
     return (
       <InventoryCardListContainer
+        providerId={String(user?.id)}
         inventories={inventoriesResponse}
         query={query}
         hideCreate={!canCreate}

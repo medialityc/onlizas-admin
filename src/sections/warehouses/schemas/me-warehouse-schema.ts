@@ -24,5 +24,5 @@ export type MeWarehouseFormData = z.infer<typeof meWarehouseSchema> & {
   createdAt?: Date;
   updatedAt?: Date;
   addressName?: string;
-  supplierName?: string;
+  supplierId?: string;
 };

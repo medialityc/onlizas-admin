@@ -24,6 +24,6 @@ export const SUPPLIER_NATIONALITY_OPTIONS = [
   { value: SUPPLIER_NATIONALITY.Ambos, label: "Ambos" },
 ];
 export const SUPPLIER_TYPE_OPTIONS = [
-  { value: SUPPLIER_TYPE.Empresa, label: "Empresa" },
-  { value: SUPPLIER_TYPE.Persona, label: "Persona" },
+  { value: SUPPLIER_TYPE.Empresa, label: "Mipyme" },
+  { value: SUPPLIER_TYPE.Persona, label: "TCP" },
 ];

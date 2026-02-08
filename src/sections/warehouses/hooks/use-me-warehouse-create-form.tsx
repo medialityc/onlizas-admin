@@ -10,21 +10,22 @@ import {
   MeWarehouseFormData,
   meWarehouseSchema,
 } from "../schemas/me-warehouse-schema";
+import { useAuth } from "zas-sso-client";
 
 export const useMeWarehouseCreateForm = (
   defaultValues: MeWarehouseFormData = initValueMeWarehouse,
-  onClose?: () => void
+  onClose?: () => void,
 ) => {
   const { ...form } = useForm({
     resolver: zodResolver(meWarehouseSchema),
     defaultValues,
   });
-
+  const { user } = useAuth();
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: MeWarehouseFormData) => {
       const res = payload?.id
         ? await updateMeWarehouse(payload?.id, payload)
-        : await createMeWarehouse(payload);
+        : await createMeWarehouse({ ...payload, supplierId: String(user?.id) });
 
       if (res.error) {
         throw res;
@@ -34,7 +35,7 @@ export const useMeWarehouseCreateForm = (
     },
     onSuccess() {
       toast.success(
-        `Se ${defaultValues?.id ? "editó" : "creó"} correctamente el almacén`
+        `Se ${defaultValues?.id ? "editó" : "creó"} correctamente el almacén`,
       );
       onClose?.();
     },

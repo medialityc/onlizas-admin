@@ -4,6 +4,7 @@ import { getModulePermissions } from "@/components/permission/server-permission-
 import { getAllWarehouses, getAllMeWarehouses } from "@/services/warehouses";
 import WarehouseListContainer from "./warehouse-list-container";
 import MeWarehouseListContainer from "./me-warehouse-list-container";
+import { getServerSession } from "zas-sso-client";
 
 interface Props {
   query: SearchParams;
@@ -27,7 +28,7 @@ export default async function WarehousesServerWrapper({ query }: Props) {
   const { isAdmin, isSupplier } = await getModulePermissions("warehouses");
 
   const apiQuery: IQueryable = buildQueryParams(
-    query as Record<string, unknown>
+    query as Record<string, unknown>,
   );
   if (isAdmin) {
     const warehousesResponse = await getAllWarehouses(apiQuery);
@@ -42,11 +43,12 @@ export default async function WarehousesServerWrapper({ query }: Props) {
 
   if (isSupplier) {
     const warehousesResponse = await getAllMeWarehouses(apiQuery);
-
+    const { user } = await getServerSession();
     return (
       <MeWarehouseListContainer
         warehousesPromise={warehousesResponse}
         query={query}
+        supplierId={String(user?.id)}
       />
     );
   }

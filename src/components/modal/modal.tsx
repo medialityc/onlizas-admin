@@ -66,7 +66,7 @@ const SimpleModal = ({
                   as="div"
                   className={cn(
                     "panel my-8 w-full max-w-lg rounded-md border-0 p-0 max-h-[90vh] overflow-hidden",
-                    className
+                    className,
                   )}
                 >
                   {/* Header sticky */}
@@ -107,7 +107,7 @@ const SimpleModal = ({
 
                   {/* Footer sticky */}
                   {footer && (
-                    <div className="sticky bottom-0 z-10 bg-white dark:bg-[#121c2c] border-t">
+                    <div className="sticky bottom-0 z-10 bg-white dark:bg-[#121c2c] border-t border-gray-500">
                       <div className="px-5 py-3">{footer}</div>
                     </div>
                   )}
