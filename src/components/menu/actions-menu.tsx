@@ -41,7 +41,7 @@ interface MenuProps {
   onGenerateQR?: () => void;
   onApprove?: () => void;
   onReject?: () => void;
-
+  onViewSupplier?: () => void;
 
   viewPermissions?: string[];
   editPermissions?: string[];
@@ -61,6 +61,7 @@ interface MenuProps {
   qrPermissions?: string[];
   approvePermissions?: string[];
   rejectPermissions?: string[];
+  viewSupplierPermissions?: string[];
 }
 
 const ActionsMenu = ({
@@ -86,6 +87,7 @@ const ActionsMenu = ({
   onSetDefault,
   onApprove,
   onReject,
+  onViewSupplier,
   viewPermissions,
   editPermissions,
   deletePermissions,
@@ -104,6 +106,7 @@ const ActionsMenu = ({
   qrPermissions,
   approvePermissions,
   rejectPermissions,
+  viewSupplierPermissions,
 }: MenuProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [toggleStatusDialogOpen, setToggleStatusDialogOpen] = useState(false);
@@ -156,6 +159,16 @@ const ActionsMenu = ({
               onClick={onViewDetails}
             >
               Ver detalles
+            </Menu.Item>
+          )}
+
+          {onViewSupplier && hasPermission(viewSupplierPermissions) && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-white"
+              leftSection={<UserPlusIcon className="h-4 w-4" />}
+              onClick={onViewSupplier}
+            >
+              Ver proveedor
             </Menu.Item>
           )}
 

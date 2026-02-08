@@ -22,6 +22,7 @@ import { usePendingContracts } from "@/hooks/react-query/use-pending-contracts";
 import { useQueryClient } from "@tanstack/react-query";
 import ActionsMenu from "@/components/menu/actions-menu";
 import ContractDetailsModal from "./contract-details-modal";
+import SupplierDetailsModal from "../contratos/supplier-details-modal";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import FormProvider from "@/components/react-hook-form/form-provider";
 import { useForm } from "react-hook-form";
@@ -48,6 +49,7 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [supplierModalOpen, setSupplierModalOpen] = useState(false);
   const [selectedContract, setSelectedContract] = useState<Contract | null>(
     null
   );
@@ -61,6 +63,11 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
   const handleViewDetails = (contract: Contract) => {
     setSelectedContract(contract);
     setDetailsModalOpen(true);
+  };
+
+  const handleViewSupplier = (contract: Contract) => {
+    setSelectedContract(contract);
+    setSupplierModalOpen(true);
   };
 
   const handleApprove = async (contract: Contract) => {
@@ -229,9 +236,11 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
             <div className="flex justify-center">
               <ActionsMenu
                 onViewDetails={() => handleViewDetails(r)}
+                onViewSupplier={r.supplier ? () => handleViewSupplier(r) : undefined}
                 onApprove={isPending ? () => handleApprove(r) : undefined}
                 onReject={isPending ? () => handleRejectClick(r) : undefined}
                 viewPermissions={[]}
+                viewSupplierPermissions={[]}
                 approvePermissions={[]}
                 rejectPermissions={[]}
               />
@@ -290,6 +299,15 @@ export default function ImporterSolicitudesView({ importerId }: Props) {
           setSelectedContract(null);
         }}
         contract={selectedContract}
+      />
+
+      <SupplierDetailsModal
+        open={supplierModalOpen}
+        onClose={() => {
+          setSupplierModalOpen(false);
+          setSelectedContract(null);
+        }}
+        supplier={selectedContract?.supplier}
       />
 
       <Modal

@@ -111,6 +111,29 @@ export type ImporterNomenclatorDetail = {
   categories: Category[];
 };
 
+export type ApprovalProcessUser = {
+  userId: string;
+  userName: string;
+  userEmail: string;
+};
+
+export type ContractSupplier = {
+  supplierId: string;
+  supplierName: string;
+  supplierEmail: string;
+  phone: string;
+  address: string;
+  isActive: boolean;
+  supplierType: string;
+  sellerType: string;
+  nationality: string;
+  providerType: string;
+  taxId: string;
+  mincexCode: string;
+  country: string;
+  requestedCategories: Category[];
+};
+
 export type ImporterContract = {
   id: string;
   importerId: string;
@@ -121,11 +144,9 @@ export type ImporterContract = {
   endDate: string;
   status: string;
   createdAt: string;
-  approvalProcessUser?: {
-    userId: string;
-    userName: string;
-    userEmail: string;
-  };
+  approvalProcessUser?: ApprovalProcessUser;
+  supplier?: ContractSupplier;
+  nomenclators?: ImporterNomenclatorDetail[];
 };
 
 export type ImporterDataResponse = {
