@@ -10,6 +10,7 @@ import { useImporterData } from "@/contexts/importer-data-context";
 import ActionsMenu from "@/components/menu/actions-menu";
 import SimpleModal from "@/components/modal/modal";
 import ContractDetailsModal from "./contract-details-modal";
+import SupplierDetailsModal from "./supplier-details-modal";
 import FormProvider from "@/components/react-hook-form/form-provider";
 import RHFDatePicker from "@/components/react-hook-form/rhf-date-picker";
 import RHFMultiSelectNomenclators from "@/components/react-hook-form/rhf-multi-select-nomenclators";
@@ -32,6 +33,7 @@ export default function ImporterContratosView({ importerId }: Props) {
   const { importerData } = useImporterData();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [supplierModalOpen, setSupplierModalOpen] = useState(false);
   const [selectedContract, setSelectedContract] = useState<ImporterContract | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -51,6 +53,11 @@ export default function ImporterContratosView({ importerId }: Props) {
   const handleViewDetails = (contract: ImporterContract) => {
     setSelectedContract(contract);
     setDetailsModalOpen(true);
+  };
+
+  const handleViewSupplier = (contract: ImporterContract) => {
+    setSelectedContract(contract);
+    setSupplierModalOpen(true);
   };
 
   const handleEdit = (contract: ImporterContract) => {
@@ -211,8 +218,10 @@ export default function ImporterContratosView({ importerId }: Props) {
           <div className="flex justify-center">
             <ActionsMenu
               onViewDetails={() => handleViewDetails(r)}
+              onViewSupplier={r.supplier ? () => handleViewSupplier(r) : undefined}
               onEdit={() => handleEdit(r)}
               viewPermissions={[]}
+              viewSupplierPermissions={[]}
               editPermissions={[]}
             />
           </div>
@@ -268,6 +277,15 @@ export default function ImporterContratosView({ importerId }: Props) {
           setSelectedContract(null);
         }}
         contract={selectedContract}
+      />
+
+      <SupplierDetailsModal
+        open={supplierModalOpen}
+        onClose={() => {
+          setSupplierModalOpen(false);
+          setSelectedContract(null);
+        }}
+        supplier={selectedContract?.supplier}
       />
 
       <SimpleModal

@@ -21,17 +21,41 @@ type ImporterNomenclator = {
   name: string;
 };
 
+type ContractSupplier = {
+  supplierId: string;
+  supplierName: string;
+  supplierEmail: string;
+  phone: string;
+  address: string;
+  isActive: boolean;
+  supplierType: string;
+  sellerType: string;
+  nationality: string;
+  providerType: string;
+  taxId: string;
+  mincexCode: string;
+  country: string;
+  requestedCategories: any[];
+};
+
 type ImporterContract = {
   id: string;
   importerId: string;
   importerName: string;
-  supplierId: string;
-  supplierName: string;
+  approvalProcessId?: string;
   approvalProcessName?: string;
   startDate: string;
   endDate: string;
   status: string;
-  importerNomenclators?: ImporterNomenclator[]; // Nomencladores del contrato
+  createdAt?: string;
+  approvalProcessUser?: {
+    userId: string;
+    userName: string;
+    userEmail: string;
+  };
+  supplier?: ContractSupplier;
+  nomenclators?: ImporterNomenclator[];
+  importerNomenclators?: ImporterNomenclator[]; // Retrocompatibilidad
 };
 
 type Row = ImporterContract & {
@@ -121,7 +145,7 @@ export default function ProvidersTableClient({
     () => localContracts.map((c) => ({ 
       ...c, 
       // Si el contrato no tiene nomencladores específicos, usar los de la importadora
-      importerNomenclators: c.importerNomenclators || nomenclators 
+      importerNomenclators: c.nomenclators || c.importerNomenclators || nomenclators 
     })),
     [localContracts, nomenclators]
   );
@@ -264,7 +288,7 @@ export default function ProvidersTableClient({
       {
         accessor: "approvalProcessName",
         title: "Proveedor",
-        render: (row) => row.approvalProcessName || row.supplierName || "-",
+        render: (row) => row.approvalProcessName || row.supplier?.supplierName || "-",
       },
       {
         accessor: "importerNomenclators",
@@ -357,7 +381,7 @@ export default function ProvidersTableClient({
         <div className="p-5">
           {selected ? (
             <FormProvider methods={methods} onSubmit={submitEditContract}>
-              <p className="text-sm mb-4 dark:text-white font-medium">{selected.supplierName}</p>
+              <p className="text-sm mb-4 dark:text-white font-medium">{selected.supplier?.supplierName || selected.approvalProcessName || "-"}</p>
               
               <div className="space-y-4">
                 <RHFAutocompleteFetcherInfinity

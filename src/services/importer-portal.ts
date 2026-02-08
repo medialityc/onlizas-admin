@@ -161,6 +161,23 @@ async function importerFetch(
 
 export { importerFetch };
 
+export type ContractSupplier = {
+  supplierId: string;
+  supplierName: string;
+  supplierEmail: string;
+  phone: string;
+  address: string;
+  isActive: boolean;
+  supplierType: string;
+  sellerType: string;
+  nationality: string;
+  providerType: string;
+  taxId: string;
+  mincexCode: string;
+  country: string;
+  requestedCategories: NomenclatorCategory[];
+};
+
 export type ImporterContract = {
   id: string;
   importerId: string;
@@ -178,6 +195,7 @@ export type ImporterContract = {
     userName: string;
     userEmail: string;
   };
+  supplier?: ContractSupplier;
   nomenclators?: ImporterNomenclator[];
 };
 
