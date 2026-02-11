@@ -58,6 +58,7 @@ export default function SuppliersModal({
       confirmPassword: "",
       supplierType: SUPPLIER_TYPE.Persona,
       importersIds: [],
+      categoryIds: [],
       // requiredPasswordChange: false,
     },
   });
@@ -98,9 +99,11 @@ export default function SuppliersModal({
           formData.append("password", data.password);
         }
       }
-      // Agregar importersIds
       if (Array.isArray(data.importersIds)) {
         data.importersIds.forEach((id) => formData.append("importersIds", id));
+      }
+      if (Array.isArray(data.categoryIds)) {
+        data.categoryIds.forEach((id) => formData.append("categoryIds", id));
       }
       formData.append("sellerType", String(data.sellerType));
       formData.append("nacionality", String(data.nacionalityType));

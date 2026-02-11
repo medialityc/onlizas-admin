@@ -3,11 +3,19 @@ import {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
 import React from "react";
 import type { CSSProperties } from "react";
+
+const HIDDEN_STYLE: CSSProperties = {
+  position: "fixed",
+  top: -9999,
+  left: -9999,
+  visibility: "hidden",
+};
 
 const Dropdown = (props: any, forwardedRef: any) => {
   const [visibility, setVisibility] = useState<any>(false);
@@ -15,7 +23,7 @@ const Dropdown = (props: any, forwardedRef: any) => {
   const referenceRef = useRef<any>(null);
   const popperRef = useRef<any>(null);
 
-  const [popperStyle, setPopperStyle] = useState<CSSProperties>({});
+  const [popperStyle, setPopperStyle] = useState<CSSProperties>(HIDDEN_STYLE);
 
   const computePosition = () => {
     const refEl = referenceRef.current as HTMLElement | null;
@@ -24,7 +32,7 @@ const Dropdown = (props: any, forwardedRef: any) => {
 
     const rect = refEl.getBoundingClientRect();
     const placement = props.placement || "left-start";
-    const offset = props.offset || [0, 8]; // [x, y]
+    const offset = props.offset || [0, 8];
 
     let top = 0;
     let left = 0;
@@ -65,7 +73,7 @@ const Dropdown = (props: any, forwardedRef: any) => {
         break;
     }
 
-    setPopperStyle({ position: "fixed", top, left });
+    setPopperStyle({ position: "fixed", top, left, visibility: "visible" });
   };
 
   const handleDocumentClick = (event: any) => {
@@ -86,10 +94,11 @@ const Dropdown = (props: any, forwardedRef: any) => {
     };
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (visibility) {
-      // compute on open
       computePosition();
+    } else {
+      setPopperStyle(HIDDEN_STYLE);
     }
   }, [visibility]);
 

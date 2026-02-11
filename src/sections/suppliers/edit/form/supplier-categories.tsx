@@ -1,13 +1,12 @@
 import React from "react";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import { getAllCategories, getCategoriesByImporter } from "@/services/categories";
+import { getAllCategories } from "@/services/categories";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Category as CategoryType } from "@/types/categories";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Paper, Title } from "@mantine/core";
 import { UpdateSupplierFormData } from "./schema";
 import { SupplierState } from "@/types/suppliers";
-import { IQueryable } from "@/types/fetch/request";
 
 function SupplierCategories({ state }: { state: SupplierState }) {
   const {
@@ -17,22 +16,6 @@ function SupplierCategories({ state }: { state: SupplierState }) {
     watch,
     formState: { errors },
   } = useFormContext<UpdateSupplierFormData>();
-
-  const importersIds = watch("importersIds");
-  const selectedImporterId = importersIds?.[0]; // Tomamos la primera importadora seleccionada
-
-  // Función dinámica para obtener categorías
-  const fetchCategories = React.useCallback(
-    (params: IQueryable) => {
-      // Si hay una importadora seleccionada, filtrar categorías por ella
-      if (selectedImporterId) {
-        return getCategoriesByImporter(selectedImporterId, params);
-      }
-      // Si no hay importadora, mostrar todas las categorías
-      return getAllCategories(params);
-    },
-    [selectedImporterId]
-  );
 
   const {
     fields: approvedFields,
@@ -65,29 +48,13 @@ function SupplierCategories({ state }: { state: SupplierState }) {
       <div className="space-y-6">
         {/* Autocomplete to add Approved Categories */}
 
-        {/* Autocomplete to add Pending Categories */}
         <div className="space-y-2">
-          {!selectedImporterId && (
-            <div className="mb-3 p-3 rounded-md bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
-              <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                💡 <strong>Tip:</strong> Selecciona una importadora primero para ver solo las categorías de sus nomencladores.
-              </p>
-            </div>
-          )}
-          {selectedImporterId && (
-            <div className="mb-3 p-3 rounded-md bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-              <p className="text-sm text-blue-800 dark:text-blue-200">
-                ℹ️ Mostrando categorías de la importadora seleccionada.
-              </p>
-            </div>
-          )}
           <RHFAutocompleteFetcherInfinity<CategoryType>
             label="Agregar a categorías pendientes *"
             name="__pendingCategoriesPicker"
-            onFetch={fetchCategories}
+            onFetch={getAllCategories}
             multiple
             exclude={existingIds}
-            key={selectedImporterId || "all-categories"} // Re-render cuando cambie la importadora
             renderOption={(opt) => (
               <div className="flex items-center justify-between">
                 <div className="flex flex-col">
@@ -176,27 +143,12 @@ function SupplierCategories({ state }: { state: SupplierState }) {
       </div>
       {state !== "Pending" && (
         <div className="space-y-2">
-          {!selectedImporterId && (
-            <div className="mb-3 p-3 rounded-md bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
-              <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                💡 <strong>Tip:</strong> Selecciona una importadora primero para ver solo las categorías de sus nomencladores.
-              </p>
-            </div>
-          )}
-          {selectedImporterId && (
-            <div className="mb-3 p-3 rounded-md bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-              <p className="text-sm text-blue-800 dark:text-blue-200">
-                ℹ️ Mostrando categorías de la importadora seleccionada.
-              </p>
-            </div>
-          )}
           <RHFAutocompleteFetcherInfinity<CategoryType>
             label="Agregar a categorías aprobadas"
             name="__approvedCategoriesPicker"
-            onFetch={fetchCategories}
+            onFetch={getAllCategories}
             multiple
             exclude={existingIds}
-            key={selectedImporterId ? `approved-${selectedImporterId}` : "all-approved-categories"} // Re-render cuando cambie la importadora
             renderOption={(opt) => (
               <div className="flex items-center justify-between">
                 <div className="flex flex-col">

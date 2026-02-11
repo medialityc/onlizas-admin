@@ -24,6 +24,7 @@ import {
   SUPPLIER_TYPE_SELLER_OPTIONS,
 } from "../constants/supplier.options";
 import { RHFPhoneCountrySelect } from "@/components/react-hook-form/rhf-phone-country-select";
+import { getAllCategories } from "@/services/categories";
 
 function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
   const {
@@ -89,20 +90,11 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
   const { hasPermission } = usePermissions();
   const hasCreate = hasPermission([PERMISSION_ENUM.CREATE]);
 
+  const isNacional = Number(nacionalityType) === SUPPLIER_NATIONALITY.Nacional;
+
   return (
     <>
       <div className="space-y-8">
-        <RHFAutocompleteFetcherInfinity
-          name="importersIds"
-          label="Importadoras de la plataforma"
-          placeholder="Seleccionar importadoras..."
-          onFetch={getImporters}
-          objectValueKey="id"
-          objectKeyLabel="name"
-          multiple={true}
-          params={{ pageSize: 35 }}
-          queryKey="importers-supplier-create"
-        />
         <div className="space-y-3">
           <RHFSwitch
             name="createUserAutomatically"
@@ -413,6 +405,31 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
             required
           />
         )}
+
+        {!isNacional && (
+          <RHFAutocompleteFetcherInfinity
+            name="importersIds"
+            label="Importadoras de la plataforma"
+            placeholder="Seleccionar importadoras..."
+            onFetch={getImporters}
+            objectValueKey="id"
+            objectKeyLabel="name"
+            multiple={true}
+            params={{ pageSize: 35 }}
+            queryKey="importers-supplier-create"
+          />
+        )}
+
+        <RHFAutocompleteFetcherInfinity
+          name="categoryIds"
+          label="Categorías"
+          placeholder="Seleccionar categorías..."
+          onFetch={getAllCategories}
+          objectValueKey="id"
+          objectKeyLabel="name"
+          multiple
+          queryKey="categories-supplier-create"
+        />
 
         <div className="space-y-3">
           <div className="flex items-center justify-between">
