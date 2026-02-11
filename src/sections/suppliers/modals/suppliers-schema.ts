@@ -3,6 +3,7 @@ import { SUPPLIER_NATIONALITY } from "../constants/supplier.options";
 
 export const suppliersSchema = z.object({
     importersIds: z.array(z.string()).default([]).optional(),
+  categoryIds: z.array(z.string()).default([]).optional(),
   // Manual supplier fields: make optional here and enforce conditionally in superRefine
   name: z
     .string()

@@ -114,40 +114,38 @@ export default function ZoneModal({
 
   useEffect(() => {
     if (zone && open) {
-      // Usar Cuba como fallback si no viene countryId del backend
       const countryIdToUse = zone.countryId || "c1c9c1b7-3757-4294-9591-970fba64c681";
-      
-      // Cargar los distritos completos para pre-poblar el selector
-      const loadDistricts = async () => {
-        if (zone.districtsIds && zone.districtsIds.length > 0) {
+
+      const loadAndReset = async () => {
+        let districts: District[] = [];
+
+        if (zone.districtsIds?.length > 0) {
           try {
             const response = await getDistrictsByCountry(countryIdToUse, {
               page: 1,
-              pageSize: 100,
+              pageSize: 500,
             });
-            
+
             if (response.data?.data) {
-              // Filtrar solo los distritos que están en la zona
-              const selectedDistricts = response.data.data.filter((d) =>
+              districts = response.data.data.filter((d) =>
                 zone.districtsIds.includes(d.id)
               );
-              setPreloadedDistricts(selectedDistricts);
             }
           } catch (error) {
             console.error("Error cargando distritos para edición:", error);
           }
         }
+
+        setPreloadedDistricts(districts);
+        reset({
+          name: zone.name,
+          deliveryAmount: zone.deliveryAmount,
+          districtsIds: zone.districtsIds,
+          countryId: countryIdToUse,
+        });
       };
-      
-      loadDistricts();
-      
-      // Usar Cuba como fallback si no viene countryId del backend
-      reset({
-        name: zone.name,
-        deliveryAmount: zone.deliveryAmount,
-        districtsIds: zone.districtsIds,
-        countryId: zone.countryId || "c1c9c1b7-3757-4294-9591-970fba64c681",
-      });
+
+      loadAndReset();
     }
     if (!open && !zone) {
       setPreloadedDistricts([]);
@@ -155,7 +153,7 @@ export default function ZoneModal({
         name: "",
         deliveryAmount: 0,
         districtsIds: [],
-        countryId: "c1c9c1b7-3757-4294-9591-970fba64c681", // ID de Cuba por defecto
+        countryId: "c1c9c1b7-3757-4294-9591-970fba64c681",
       });
     }
   }, [zone, open, reset]);

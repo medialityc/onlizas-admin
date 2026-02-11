@@ -25,7 +25,7 @@ import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { formatNumber, formatPercentage, isValidUrl } from "@/utils/format";
+import { formatNumber, formatPercentage } from "@/utils/format";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import Link from "next/link";
@@ -44,12 +44,9 @@ export const SoreCard = ({ store }: DataCardProps) => {
   const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
   const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
 
-  // Prefer https:// if not present
-  const viewUrl = (() => {
-    if (store.url && isValidUrl(store.url)) return store.url;
-    if (store.url && /\./.test(store.url)) return `https://${store.url}`;
-    return "#";
-  })();
+  const storePublicUrl = store.url
+    ? `${process.env.NEXT_PUBLIC_CLIENT_URL}/store/${store.url}`
+    : "#";
 
   const accentColor =
     store.primaryColor || store.secondaryColor || store.accentColor;
@@ -151,11 +148,11 @@ export const SoreCard = ({ store }: DataCardProps) => {
                 <GlobeAltIcon className="w-4 h-4" />
               </span>
               <a
-                href={viewUrl}
+                href={storePublicUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium truncate hover:underline"
-                title={viewUrl}
+                title={storePublicUrl}
               >
                 /{store.url}
               </a>
@@ -309,7 +306,7 @@ export const SoreCard = ({ store }: DataCardProps) => {
         <div className="flex w-full items-center gap-2 mt-4 pb-4">
           {store.url && hasReadPermission && (
             <a
-              href={viewUrl}
+              href={storePublicUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 inline-flex items-center justify-center px-3 py-2 border rounded text-sm text-gray-700 bg-white hover:bg-gray-50 dark:text-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700"

@@ -272,10 +272,10 @@ export default function SupplierEditForm({
             />
           </Paper>
 
-          {/* Sección de Importadoras */}
-          <SupplierImporters initialImporterIds={(supplierDetails as any).importersIds} />
+          {Number(methods.watch("nacionalityType")) !== SUPPLIER_NATIONALITY.Nacional && (
+            <SupplierImporters initialImporterIds={(supplierDetails as any).importersIds} />
+          )}
 
-          {/* Sección de Categorías */}
           <SupplierCategories state={supplierDetails.state} />
 
           {/* Botones de Acciones */}
