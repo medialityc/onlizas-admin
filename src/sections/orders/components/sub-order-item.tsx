@@ -3,14 +3,7 @@ import { useState, useCallback } from "react";
 import { OrderStatus, SubOrder } from "@/types/order";
 import { Card } from "@/components/cards/card";
 import { Button } from "@/components/button/button";
-import { Eye, Download } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Eye, Download, ArrowRight } from "lucide-react";
 import { getStatusLabel } from "@/lib/order-utils";
 import { formatCurrency, formatDate } from "@/utils/format";
 import Badge from "@/components/badge/badge";
@@ -80,10 +73,12 @@ export function SubOrderItem({
   const [description, setDescription] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleStatusChange = useCallback(
-    (value: string) => {
-      const newStatus = parseInt(value) as OrderStatus;
+  const nextStatuses = getNextAllowedStatuses(selectedStatus);
+  const nextStatus =
+    nextStatuses.find((status) => status !== selectedStatus) ?? null;
 
+  const handleStatusClick = useCallback(
+    (newStatus: OrderStatus) => {
       if (newStatus === selectedStatus) return;
 
       setPendingStatus(newStatus);
@@ -210,26 +205,51 @@ export function SubOrderItem({
             </div>
 
             {/* Right: actions */}
-            <div className="flex flex-col md:w-72 gap-4 border-t pt-4 md:border-t-0 md:border-l md:border-border/60 md:pl-4">
-              <div className="space-y-2">
+            <div className="flex flex-col  gap-4 border-t pt-4 md:border-t-0 md:border-l md:border-border/60 md:pl-4">
+              <div className="space-y-3">
                 <p className="text-xs font-medium text-muted-foreground md:text-right">
-                  Cambiar estado
+                  Progreso de estado
                 </p>
-                <Select
-                  value={selectedStatus.toString()}
-                  onValueChange={handleStatusChange}
-                >
-                  <SelectTrigger className="w-full h-9 text-sm justify-between">
-                    <SelectValue placeholder="Selecciona un estado" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {getNextAllowedStatuses(selectedStatus).map((status) => (
-                      <SelectItem key={status} value={status.toString()}>
-                        {getStatusLabel(status as OrderStatus)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="flex items-center justify-center rounded-lg bg-muted/40 px-3 py-2">
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary">
+                      {getStatusLabel(selectedStatus)}
+                    </span>
+                    {nextStatus && (
+                      <>
+                        <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                        <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 font-medium text-foreground">
+                          {getStatusLabel(nextStatus)}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="flex justify-start md:justify-end">
+                  <Button
+                    size="sm"
+                    type="button"
+                    disabled={!nextStatus}
+                    onClick={() => {
+                      if (!nextStatus) return;
+                      handleStatusClick(nextStatus);
+                    }}
+                    className="w-full  gap-2"
+                  >
+                    {nextStatus ? (
+                      <>
+                        <span>Avanzar a</span>
+                        <span className="font-semibold">
+                          {getStatusLabel(nextStatus)}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">
+                        No hay más cambios de estado
+                      </span>
+                    )}
+                  </Button>
+                </div>
               </div>
 
               <div className="space-y-1">
