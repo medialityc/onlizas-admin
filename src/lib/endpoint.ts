@@ -474,7 +474,7 @@ export const backendRoutes = {
         `${process.env.NEXT_PUBLIC_API_URL}admin/sections/${id}/rollback/${versionId}`, // POST
       removeProduct: (
         sectionId: string | number,
-        productGlobalId: string | number
+        productGlobalId: string | number,
       ) =>
         `${process.env.NEXT_PUBLIC_API_URL}admin/sections/${sectionId}/products/${productGlobalId}`,
     },
@@ -532,6 +532,7 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}orders/${id}`,
     supplierList: (storeId: string) =>
       `${process.env.NEXT_PUBLIC_API_URL}orders/store/${storeId}`,
+    updateSubOrderStatus: `${process.env.NEXT_PUBLIC_API_URL}sub-order/status`,
   },
   finance: {
     closures: {

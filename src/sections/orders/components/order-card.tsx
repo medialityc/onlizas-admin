@@ -43,9 +43,6 @@ export function OrderCard({
     return `${w} g`;
   };
 
-  // lógica de cronómetro movida a CountdownTimer
-  console.log(order);
-
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow pt-0">
       <CardHeader className="bg-muted/50 py-3">

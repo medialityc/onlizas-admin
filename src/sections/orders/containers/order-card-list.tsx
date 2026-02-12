@@ -1,8 +1,11 @@
-import { SearchParams } from "@/types/fetch/request";
 import React, { useId, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Order, OrderStatus } from "@/types/order";
 import { OrderCard } from "../components/order-card";
 import { OrderDetails } from "../components/order-details";
+import showToast from "@/config/toast/toastConfig";
+import { updateSubOrderStatus } from "@/services/order";
 
 type Props = {
   data?: Order[];
@@ -11,8 +14,9 @@ type Props = {
 const OrderList = ({ data }: Props) => {
   const id = useId();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-
+  const router = useRouter();
   const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleDetailsModal = () => {
     setDetailModalOpen(true);
@@ -26,20 +30,79 @@ const OrderList = ({ data }: Props) => {
     setSelectedOrder(null);
   };
 
-  const handleUpdateSubOrderStatus = (
-    subOrderId: string,
-    status: OrderStatus
+  const handleUpdateSubOrderStatus = async (
+    subOrderIds: string | string[],
+    status: OrderStatus,
+    description: string,
   ) => {
-    // TODO: Implementar actualización de estado de sub-orden
-    console.log("Update sub-order status", subOrderId, status);
-  };
+    if (!selectedOrder) return;
 
-  const handleUpdateAddress = (
-    type: "sender" | "receiver",
-    address: string
-  ) => {
-    // TODO: Implementar actualización de dirección
-    console.log("Update address", type, address);
+    const ids = Array.isArray(subOrderIds) ? subOrderIds : [subOrderIds];
+    const subOrders = selectedOrder.subOrders.filter((so) =>
+      ids.includes(so.id),
+    );
+
+    if (subOrders.length !== ids.length) {
+      showToast(
+        "No se encontraron todas las sub-órdenes seleccionadas",
+        "error",
+      );
+      return;
+    }
+
+    const currentStatus = subOrders[0].status as OrderStatus;
+    const allSameStatus = subOrders.every(
+      (so) => (so.status as OrderStatus) === currentStatus,
+    );
+
+    if (!allSameStatus) {
+      showToast(
+        "Todas las sub-órdenes seleccionadas deben tener el mismo estado actual",
+        "error",
+      );
+      return;
+    }
+
+    if (status === currentStatus) {
+      showToast("Las sub-órdenes ya se encuentran en este estado", "info");
+      return;
+    }
+
+    const allowedNext =
+      currentStatus === OrderStatus.Pending ||
+      currentStatus === OrderStatus.Processing ||
+      currentStatus === OrderStatus.Completed ||
+      currentStatus === OrderStatus.Sent
+        ? currentStatus + 1
+        : currentStatus;
+
+    if (status !== allowedNext) {
+      showToast(
+        "Solo se puede avanzar al siguiente estado de la sub-orden",
+        "error",
+      );
+      return;
+    }
+
+    try {
+      const res = await updateSubOrderStatus({
+        orderCode: selectedOrder.id,
+        parcelCodes: subOrders.map((so) => so.id),
+        state: status,
+        description,
+      });
+
+      if (res.error && res.message) {
+        showToast(res.message, "error");
+        return;
+      }
+
+      showToast("Estado de las sub-órdenes actualizado", "success");
+      await queryClient.invalidateQueries({ queryKey: ["orders-list"] });
+    } catch (e) {
+      console.error(e);
+      showToast("Ocurrió un error al actualizar el estado", "error");
+    }
   };
 
   return (
@@ -88,7 +151,6 @@ const OrderList = ({ data }: Props) => {
           order={selectedOrder}
           onClose={handleCloseDetails}
           onUpdateSubOrderStatus={handleUpdateSubOrderStatus}
-          onUpdateAddress={handleUpdateAddress}
           isSupplier={false}
         />
       )}
