@@ -5,9 +5,7 @@ import {
   CubeIcon,
   CurrencyDollarIcon,
   LockOpenIcon,
-  UserIcon,
   ShoppingBagIcon,
-  ShieldCheckIcon,
   BriefcaseIcon,
   BellIcon,
   DocumentChartBarIcon,
@@ -247,27 +245,6 @@ export const sidebarSections: SidebarSection[] = [
     id: "security",
     label: "Seguridad y Administración",
     items: [
-      {
-        id: "users",
-        label: "Usuarios",
-        path: paths.dashboard.users.list,
-        icon: <UserIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ADMIN,
-      },
-      {
-        id: "roles",
-        label: "Roles",
-        path: paths.dashboard.roles.list,
-        icon: <LockOpenIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ADMIN,
-      },
-      {
-        id: "permissions",
-        label: "Permisos",
-        path: paths.dashboard.permissions.list,
-        icon: <ShieldCheckIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ADMIN,
-      },
       {
         id: "logs",
         label: "Logs",

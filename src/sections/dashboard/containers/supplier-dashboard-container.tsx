@@ -10,6 +10,7 @@ import QuickStats from "@/sections/dashboard/components/quick-stats";
 import GroupedSummary from "@/sections/dashboard/components/grouped-summary";
 import { ApiResponse } from "@/types/fetch/api";
 import { SupplierDashboard } from "@/types/dashboard";
+import { title } from "node:process";
 
 interface Props {
   dashboardPromise: ApiResponse<SupplierDashboard>;
@@ -27,37 +28,27 @@ export default function SupplierDashboardContainer({
     { title: "Ingresos", value: `${d?.totalRevenue ?? 0}` },
     { title: "Inventarios", value: `${d?.totalInventories ?? 0}` },
     { title: "Alertas de stock", value: `${d?.lowStockAlerts ?? 0}` },
-    { title: "Reviews", value: `${d?.totalReviews ?? 0}` },
+    { title: "Productos", value: `${d?.totalProducts ?? 0}` },
+    { title: "Inventarios", value: `${d?.totalInventories ?? 0}` },
   ];
 
   return (
-    <div className="space-y-6 p-6">
-      <QuickStats
-        items={[
-          {
-            label: "Productos",
-            value: d?.totalProducts ?? 0,
-            color: "#10b981",
-          },
-          {
-            label: "Inventarios",
-            value: d?.totalInventories ?? 0,
-            color: "#06b6d4",
-          },
-          { label: "Órdenes", value: d?.totalOrders ?? 0, color: "#4f46e5" },
-          { label: "Ingresos", value: d?.totalRevenue ?? 0, color: "#f59e0b" },
-        ]}
-      />
+    <div className="space-y-6 p-4 sm:p-6">
+      <div className="space-y-4">
+        {/* Tarjetas de resumen para rellenar mejor el layout */}
+        <SummaryCards cards={cards} />
+      </div>
+
       <InteractiveSummary items={buildSupplierSummary(d)} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <div className="lg:col-span-2 space-y-4">
           <RecentActivityTimeline
             title="Actividad reciente"
             activities={(d?.recentActivities ?? []) as any}
           />
           {/* Charts with real data for supplier */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             <PieChart
               title="Órdenes"
               segments={[
@@ -105,7 +96,7 @@ export default function SupplierDashboardContainer({
             />
           </div>
         </div>
-        <div className="lg:col-span-1 space-y-4">
+        <div className="lg:col-span-2 space-y-4">
           <GroupedSummary
             sections={[
               {

@@ -10,13 +10,13 @@ export const suppliersTabs: TabItem[] = [
   {
     label: "Solicitudes Pendientes",
     href: "/dashboard/suppliers/pending",
-    icon: "userMinus",
+    icon: "usersMinus",
     id: "pending",
   },
   {
     label: "Solicitudes Válidos",
     href: "/dashboard/suppliers/valid",
-    icon: "userGroup",
+    icon: "usersGroup",
     id: "valid",
   },
 ];
