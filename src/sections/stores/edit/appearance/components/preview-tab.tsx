@@ -127,11 +127,11 @@ function PreviewSurface({
       : "border-gray-300 shadow-sm";
 
   const TemplateComponent =
-    template === "classic"
+    template === "CLASICO"
       ? TemplateClassic
-      : template === "minimal"
+      : template === "MINIMALISTA"
       ? TemplateMinimal
-  : template === "AUDAZ"
+      : template === "AUDAZ"
       ? TemplateAudaz
       : TemplateModern;
 
