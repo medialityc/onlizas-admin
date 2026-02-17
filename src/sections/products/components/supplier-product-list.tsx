@@ -14,11 +14,12 @@ import ImagePreview from "@/components/image/image-preview";
 import { isValidUrl } from "@/utils/format";
 import { meToggleActiveProduct } from "@/services/products";
 import showToast from "@/config/toast/toastConfig";
+import { SearchParams } from "@/types/fetch/request";
 
 interface ProductListProps {
   data?: GetAllProducts;
-  searchParams: ProductSearchParams;
-  onSearchParamsChange?: (params: ProductSearchParams) => void;
+  searchParams: SearchParams;
+  onSearchParamsChange?: (params: SearchParams) => void;
 }
 
 export function SupplierProductList({
@@ -50,7 +51,7 @@ export function SupplierProductList({
       } else {
         showToast(
           `Producto ${(res.data as unknown as Product)?.aduanaCategory.active ? "activado" : "desactivado"}  correctamente`,
-          "success"
+          "success",
         );
       }
     } catch (error) {
@@ -144,7 +145,7 @@ export function SupplierProductList({
           columns={columns}
           onCreate={handleCreateProduct}
           searchParams={searchParams}
-          onSearchParamsChange={(p: ProductSearchParams) => {
+          onSearchParamsChange={(p: SearchParams) => {
             updateFiltersInUrl(p);
             onSearchParamsChange?.(p);
           }}

@@ -16,11 +16,12 @@ import { PERMISSION_ENUM } from "@/lib/permissions";
 import { usePermissions } from "@/hooks/use-permissions";
 import ImagePreview from "@/components/image/image-preview";
 import { isValidUrl } from "@/utils/format";
+import { SearchParams } from "@/types/fetch/request";
 
 interface ProductListProps {
   data?: GetAllProducts;
-  searchParams: ProductSearchParams;
-  onSearchParamsChange?: (params: ProductSearchParams) => void;
+  searchParams: SearchParams;
+  onSearchParamsChange?: (params: SearchParams) => void;
 }
 
 export function ProductList({
@@ -62,7 +63,7 @@ export function ProductList({
         } else {
           showToast(
             `Producto ${(res.data as unknown as Product)?.state ? "activado" : "desactivado"} correctamente`,
-            "success"
+            "success",
           );
         }
       } catch (error) {
@@ -70,7 +71,7 @@ export function ProductList({
         showToast("Ocurrió un error, intente nuevamente", "error");
       }
     },
-    [hasPermission]
+    [hasPermission],
   );
 
   const columns: DataTableColumn<Product>[] = [
@@ -170,7 +171,7 @@ export function ProductList({
           columns={columns}
           onCreate={handleCreateProduct}
           searchParams={searchParams}
-          onSearchParamsChange={(p: ProductSearchParams) => {
+          onSearchParamsChange={(p: SearchParams) => {
             updateFiltersInUrl(p);
             onSearchParamsChange?.(p);
           }}
