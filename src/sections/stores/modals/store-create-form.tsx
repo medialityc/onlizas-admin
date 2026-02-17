@@ -26,7 +26,7 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
   const { hasPermission } = usePermissions();
   const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
   const hasCreateStorePermission = hasPermission([
-    PERMISSION_ENUM.CREATE_STORE,
+    PERMISSION_ENUM.SUPPLIER_CREATE,
   ]);
   const { user } = useAuth();
   const isSupplierMode =

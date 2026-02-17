@@ -23,11 +23,11 @@ const InventoryProviderCard = ({ item }: Props) => {
   const { hasPermission } = usePermissions();
   const hasReadPermission = hasPermission([
     PERMISSION_ENUM.RETRIEVE,
-    PERMISSION_ENUM.RETRIEVE_INVENTORY,
+    PERMISSION_ENUM.SUPPLIER_RETRIEVE,
   ]);
   const hasUpdatePermission = hasPermission([
     PERMISSION_ENUM.UPDATE,
-    PERMISSION_ENUM.UPDATE_INVENTORY,
+    PERMISSION_ENUM.SUPPLIER_UPDATE,
   ]);
 
   return (

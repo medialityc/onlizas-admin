@@ -5,49 +5,17 @@ export enum PERMISSION_ENUM {
   UPDATE = "Update",
   DELETE = "Delete",
 
-  // Supplier specific product creation (can only create/link own products)
-  CREATE_PRODUCT = "CreateProduct",
-  RETRIEVE_PRODUCT = "RetrieveProduct",
-  UPDATE_PRODUCT = "UpdateProduct",
-  DELETE_PRODUCT = "DeleteProduct",
-
-  // Inventory specific supplier creation and retrieve
-  CREATE_INVENTORY = "CreateInventory",
-  RETRIEVE_INVENTORY = "RetrieveInventory",
-  UPDATE_INVENTORY = "UpdateInventory",
-  DELETE_INVENTORY = "DeleteInventory",
-
-  // Variant
-  CREATE_VARIANT = "CreateVariant",
-  RETRIEVE_VARIANT = "RetrieveVariant",
-  UPDATE_VARIANT = "UpdateVariant",
-  DELETE_VARIANT = "DeleteVariant",
-
-  // Store specific supplier retrieve (can only list own stores)
-  RETRIEVE_STORE = "RetrieveStore",
-  CREATE_STORE = "CreateStore",
-  UPDATE_STORE = "UpdateStore",
-  DELETE_STORE = "DeleteStore",
-
-  // Warehouse specific supplier retrieve
-  RETRIEVE_WAREHOUSE = "RetrieveWarehouse",
-  CREATE_WAREHOUSE = "CreateWarehouse",
-  UPDATE_WAREHOUSE = "UpdateWarehouse",
-  DELETE_WAREHOUSE = "DeleteWarehouse",
-
-  CREATE_TRANSFER = "CreateTransfer",
-  RETRIEVE_TRANSFER = "RetrieveTransfer",
-  UPDATE_TRANSFER = "UpdateTransfer",
-  DELETE_TRANSFER = "DeleteTransfer",
+  // Supplier generic operations
+  SUPPLIER_CREATE = "SupplierCreate",
+  SUPPLIER_RETRIEVE = "SupplierRetrieve",
+  SUPPLIER_UPDATE = "SupplierUpdate",
+  SUPPLIER_DELETE = "SupplierDelete",
 
   // Role permissions
   ASSIGN_ROLE = "AssignRole",
 
   UPDATE_BUSINESS = "UpdateBusiness",
   UPDATE_APPROVAL_PROCESS = "UpdateApprovalProcess",
-
-  RETRIEVE_ORDERS = "RetrieveOrder",
-  UPDATE_ORDERS = "UpdateOrder",
 
   // Finance - supplier closures and summary
   RETRIEVE_CLOSURES = "RetrieveClosure",
@@ -64,50 +32,50 @@ export const PERMISSION_ADMIN = [
 
 export const PERMISSION_PRODUCT = [
   ...PERMISSION_ADMIN,
-  PERMISSION_ENUM.CREATE_PRODUCT,
-  PERMISSION_ENUM.RETRIEVE_PRODUCT,
-  PERMISSION_ENUM.UPDATE_PRODUCT,
-  PERMISSION_ENUM.DELETE_PRODUCT,
+  PERMISSION_ENUM.SUPPLIER_CREATE,
+  PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+  PERMISSION_ENUM.SUPPLIER_UPDATE,
+  PERMISSION_ENUM.SUPPLIER_DELETE,
 ];
 export const PERMISSION_STORE = [
   ...PERMISSION_ADMIN,
-  PERMISSION_ENUM.CREATE_STORE,
-  PERMISSION_ENUM.RETRIEVE_STORE,
-  PERMISSION_ENUM.UPDATE_STORE,
-  PERMISSION_ENUM.DELETE_STORE,
+  PERMISSION_ENUM.SUPPLIER_CREATE,
+  PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+  PERMISSION_ENUM.SUPPLIER_UPDATE,
+  PERMISSION_ENUM.SUPPLIER_DELETE,
 ];
 export const PERMISSION_WAREHOUSE = [
   ...PERMISSION_ADMIN,
-  PERMISSION_ENUM.CREATE_WAREHOUSE,
-  PERMISSION_ENUM.RETRIEVE_WAREHOUSE,
-  PERMISSION_ENUM.UPDATE_WAREHOUSE,
-  PERMISSION_ENUM.DELETE_WAREHOUSE,
+  PERMISSION_ENUM.SUPPLIER_CREATE,
+  PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+  PERMISSION_ENUM.SUPPLIER_UPDATE,
+  PERMISSION_ENUM.SUPPLIER_DELETE,
 ];
 export const PERMISSION_VARIANT = [
   ...PERMISSION_ADMIN,
-  PERMISSION_ENUM.CREATE_VARIANT,
-  PERMISSION_ENUM.RETRIEVE_VARIANT,
-  PERMISSION_ENUM.UPDATE_VARIANT,
-  PERMISSION_ENUM.DELETE_VARIANT,
+  PERMISSION_ENUM.SUPPLIER_CREATE,
+  PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+  PERMISSION_ENUM.SUPPLIER_UPDATE,
+  PERMISSION_ENUM.SUPPLIER_DELETE,
 ];
 export const PERMISSION_TRANSFER = [
   ...PERMISSION_ADMIN,
-  PERMISSION_ENUM.CREATE_TRANSFER,
-  PERMISSION_ENUM.RETRIEVE_TRANSFER,
-  PERMISSION_ENUM.UPDATE_TRANSFER,
-  PERMISSION_ENUM.DELETE_TRANSFER,
+  PERMISSION_ENUM.SUPPLIER_CREATE,
+  PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+  PERMISSION_ENUM.SUPPLIER_UPDATE,
+  PERMISSION_ENUM.SUPPLIER_DELETE,
 ];
 export const PERMISSION_INVENTORY = [
   ...PERMISSION_ADMIN,
-  PERMISSION_ENUM.CREATE_INVENTORY,
-  PERMISSION_ENUM.RETRIEVE_INVENTORY,
-  PERMISSION_ENUM.UPDATE_INVENTORY,
-  PERMISSION_ENUM.DELETE_INVENTORY,
+  PERMISSION_ENUM.SUPPLIER_CREATE,
+  PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+  PERMISSION_ENUM.SUPPLIER_UPDATE,
+  PERMISSION_ENUM.SUPPLIER_DELETE,
 ];
 export const PERMISSION_ORDERS = [
   ...PERMISSION_ADMIN,
-  PERMISSION_ENUM.RETRIEVE_ORDERS,
-  PERMISSION_ENUM.UPDATE_ORDERS,
+  PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+  PERMISSION_ENUM.SUPPLIER_UPDATE,
 ];
 
 // Finance views
@@ -117,21 +85,13 @@ export const PERMISSION_FINANCE_SUPPLIER_CLOSURES = [
 ];
 
 export const PERMISSION_SUPPLIER_ACCOUNTS = [
-  PERMISSION_ENUM.CREATE_STORE,
-  PERMISSION_ENUM.RETRIEVE_STORE,
-  PERMISSION_ENUM.CREATE_INVENTORY,
-  PERMISSION_ENUM.RETRIEVE_INVENTORY,
-  PERMISSION_ENUM.CREATE_WAREHOUSE,
-  PERMISSION_ENUM.RETRIEVE_WAREHOUSE,
-  PERMISSION_ENUM.CREATE_PRODUCT,
-  PERMISSION_ENUM.RETRIEVE_PRODUCT,
+  PERMISSION_ENUM.SUPPLIER_CREATE,
+  PERMISSION_ENUM.SUPPLIER_RETRIEVE,
 ];
 
 export const PERMISSION_SUPPLIER_ZONES = [
-  PERMISSION_ENUM.CREATE_STORE,
-  PERMISSION_ENUM.RETRIEVE_STORE,
-  PERMISSION_ENUM.CREATE_INVENTORY,
-  PERMISSION_ENUM.RETRIEVE_INVENTORY,
+  PERMISSION_ENUM.SUPPLIER_CREATE,
+  PERMISSION_ENUM.SUPPLIER_RETRIEVE,
 ];
 
 export const PERMISSIONS = [
@@ -140,9 +100,9 @@ export const PERMISSIONS = [
     description: "This permission allows to create an entity",
   },
   {
-    code: PERMISSION_ENUM.CREATE_PRODUCT,
+    code: PERMISSION_ENUM.SUPPLIER_CREATE,
     description:
-      "This permission allows a supplier to create or link their own products",
+      "This permission allows a supplier to create entities in supplier scope",
   },
   {
     code: PERMISSION_ENUM.RETRIEVE,
@@ -161,21 +121,17 @@ export const PERMISSIONS = [
     description: "This permission allows to assign roles to users",
   },
   {
-    code: PERMISSION_ENUM.CREATE_INVENTORY,
+    code: PERMISSION_ENUM.SUPPLIER_RETRIEVE,
     description:
-      "Allows a supplier to create inventory records for own products",
+      "Allows a supplier to retrieve entities in supplier scope",
   },
   {
-    code: PERMISSION_ENUM.RETRIEVE_INVENTORY,
+    code: PERMISSION_ENUM.SUPPLIER_UPDATE,
     description:
-      "Allows a supplier to retrieve only their own inventory records",
+      "Allows a supplier to update entities in supplier scope",
   },
   {
-    code: PERMISSION_ENUM.RETRIEVE_STORE,
-    description: "Allows a supplier to retrieve only their own stores",
-  },
-  {
-    code: PERMISSION_ENUM.RETRIEVE_WAREHOUSE,
-    description: "Allows a supplier to retrieve only their own warehouses",
+    code: PERMISSION_ENUM.SUPPLIER_DELETE,
+    description: "Allows a supplier to delete entities in supplier scope",
   },
 ];

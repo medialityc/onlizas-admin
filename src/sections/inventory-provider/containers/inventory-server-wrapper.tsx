@@ -39,7 +39,7 @@ export default async function InventoryServerWrapper({ query }: Props) {
   const canCreate = permissionCodes.some(
     (code) =>
       code === PERMISSION_ENUM.CREATE ||
-      code === PERMISSION_ENUM.CREATE_INVENTORY,
+      code === PERMISSION_ENUM.SUPPLIER_CREATE,
   );
 
   if (isAdmin) {

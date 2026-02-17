@@ -29,14 +29,14 @@ export default function VariantsManager({
   const { hasPermission } = usePermissions();
   const hasDeletePermission = hasPermission([
     PERMISSION_ENUM.DELETE,
-    PERMISSION_ENUM.DELETE_VARIANT,
+    PERMISSION_ENUM.SUPPLIER_DELETE,
   ]);
   const hasCreatePermission = hasPermission([
-    PERMISSION_ENUM.CREATE_VARIANT,
+    PERMISSION_ENUM.SUPPLIER_CREATE,
     PERMISSION_ENUM.CREATE,
   ]);
   const hasUpdatePermission = hasPermission([
-    PERMISSION_ENUM.UPDATE_VARIANT,
+    PERMISSION_ENUM.SUPPLIER_UPDATE,
     PERMISSION_ENUM.UPDATE,
   ]);
   const { open, onOpen, onClose } = useToggle(false);

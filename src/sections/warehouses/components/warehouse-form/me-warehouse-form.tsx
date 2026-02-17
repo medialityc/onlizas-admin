@@ -27,7 +27,7 @@ export function MeWarehouseForm({ warehouse, onClose }: Props) {
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE_WAREHOUSE]);
+  const hasCreatePermission = hasPermission([PERMISSION_ENUM.SUPPLIER_CREATE]);
 
   return (
     <FormProvider
