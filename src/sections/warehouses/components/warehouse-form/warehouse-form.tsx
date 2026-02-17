@@ -28,7 +28,7 @@ export function WarehouseForm({ warehouse }: Props) {
   const { hasPermission } = usePermissions();
   const hasCreatePermission = hasPermission([
     PERMISSION_ENUM.CREATE,
-    PERMISSION_ENUM.CREATE_WAREHOUSE,
+    PERMISSION_ENUM.SUPPLIER_CREATE,
   ]);
 
   return (

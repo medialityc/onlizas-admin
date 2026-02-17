@@ -32,7 +32,7 @@ export default function OrdersPermissionWrapper({
   const hasSupplierRetrieve =
     !permissionsLoading &&
     !hasAdminRetrieve &&
-    hasPermission([PERMISSION_ENUM.RETRIEVE_ORDERS]);
+    hasPermission([PERMISSION_ENUM.SUPPLIER_RETRIEVE]);
   const canList = hasAdminRetrieve || hasSupplierRetrieve;
 
   const apiQuery: IQueryable = useMemo(

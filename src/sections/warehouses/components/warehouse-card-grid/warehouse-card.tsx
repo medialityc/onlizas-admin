@@ -43,11 +43,11 @@ export function WarehouseCard({
   const { hasPermission } = usePermissions();
   const hasEditPermission = hasPermission([
     PERMISSION_ENUM.UPDATE,
-    PERMISSION_ENUM.UPDATE_WAREHOUSE,
+    PERMISSION_ENUM.SUPPLIER_UPDATE,
   ]);
   const hasTransferPermission = hasPermission([
     PERMISSION_ENUM.CREATE,
-    PERMISSION_ENUM.CREATE_TRANSFER,
+    PERMISSION_ENUM.SUPPLIER_CREATE,
   ]);
   const handleEdit = () => {
     if (onEdit) {

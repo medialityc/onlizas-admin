@@ -25,9 +25,9 @@ export default function InventoryPermissionWrapper({
   const { hasPermission, isLoading: permissionsLoading } = usePermissions();
   const hasAdminRetrieve = hasPermission([PERMISSION_ENUM.RETRIEVE]);
   const hasSupplierCreate =
-    !hasAdminRetrieve && hasPermission([PERMISSION_ENUM.CREATE_INVENTORY]);
+    !hasAdminRetrieve && hasPermission([PERMISSION_ENUM.SUPPLIER_CREATE]);
   const hasSupplierRetrieveOnly =
-    !hasAdminRetrieve && hasPermission([PERMISSION_ENUM.RETRIEVE_INVENTORY]);
+    !hasAdminRetrieve && hasPermission([PERMISSION_ENUM.SUPPLIER_RETRIEVE]);
   const { user } = useAuth() as any;
   const supplierId = user?.id ? String(user.id) : undefined;
   // Memo de parámetros para evitar trigger por identidad de objeto
@@ -95,7 +95,7 @@ export default function InventoryPermissionWrapper({
   // Hide create button if only supplier retrieve permission (no CREATE nor CREATE_INVENTORY)
   const canCreate = hasPermission([
     PERMISSION_ENUM.CREATE,
-    PERMISSION_ENUM.CREATE_INVENTORY,
+    PERMISSION_ENUM.SUPPLIER_CREATE,
   ]);
 
   return (

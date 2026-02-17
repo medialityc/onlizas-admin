@@ -21,7 +21,7 @@ export function StoreListToolbar({
   const { hasPermission } = usePermissions();
   const hasCreatePermission = hasPermission([
     PERMISSION_ENUM.CREATE,
-    PERMISSION_ENUM.CREATE_STORE,
+    PERMISSION_ENUM.SUPPLIER_CREATE,
   ]);
 
   return (

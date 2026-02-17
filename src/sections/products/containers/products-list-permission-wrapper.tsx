@@ -19,7 +19,7 @@ export default function ProductsListPermissionWrapper({ query }: Props) {
 
   const hasAdminRetrieve = hasPermission([PERMISSION_ENUM.RETRIEVE]);
   const hasSupplierRetrieveOnly =
-    !hasAdminRetrieve && hasPermission([PERMISSION_ENUM.RETRIEVE_PRODUCT]);
+    !hasAdminRetrieve && hasPermission([PERMISSION_ENUM.SUPPLIER_RETRIEVE]);
 
   const apiQuery: IQueryable = useMemo(
     () => buildQueryParams(query as any),

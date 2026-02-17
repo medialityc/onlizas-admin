@@ -25,7 +25,7 @@ export default function StoresPermissionWrapper({
   const hasSupplierRetrieve =
     !permissionsLoading &&
     !hasAdminRetrieve &&
-    hasPermission([PERMISSION_ENUM.RETRIEVE_STORE]);
+    hasPermission([PERMISSION_ENUM.SUPPLIER_RETRIEVE]);
   const canList = hasAdminRetrieve || hasSupplierRetrieve;
 
   // Memo de parámetros para evitar nueva identidad

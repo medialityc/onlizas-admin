@@ -180,7 +180,7 @@ export function ProductList({
           className="mt-6"
           createPermissions={[
             PERMISSION_ENUM.CREATE,
-            PERMISSION_ENUM.CREATE_PRODUCT,
+            PERMISSION_ENUM.SUPPLIER_CREATE,
           ]}
         />
       </div>

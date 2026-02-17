@@ -32,7 +32,7 @@ const ProductForm = ({ initValue }: Props) => {
   // Permission logic: Admin (CREATE) vs Supplier (CREATE_PRODUCT)
   const hasAdminCreate = hasPermission([PERMISSION_ENUM.CREATE]);
   const hasSupplierCreate =
-    !hasAdminCreate && hasPermission([PERMISSION_ENUM.CREATE_PRODUCT]);
+    !hasAdminCreate && hasPermission([PERMISSION_ENUM.SUPPLIER_CREATE]);
   const isSupplierMode = hasSupplierCreate && !hasAdminCreate;
 
   // Initialize both hooks to satisfy React Hook rules, then select

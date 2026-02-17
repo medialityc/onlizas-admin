@@ -21,7 +21,7 @@ const InventoryEditVariantContent = ({
   const { hasPermission } = usePermissions();
   const hasUpdatePermission = hasPermission([
     PERMISSION_ENUM.UPDATE,
-    PERMISSION_ENUM.UPDATE_VARIANT,
+    PERMISSION_ENUM.SUPPLIER_UPDATE,
   ]);
 
   return (
