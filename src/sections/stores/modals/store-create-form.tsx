@@ -24,7 +24,10 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
+  const hasCreatePermission = hasPermission([
+    PERMISSION_ENUM.CREATE,
+    PERMISSION_ENUM.SUPPLIER_CREATE,
+  ]);
   const hasCreateStorePermission = hasPermission([
     PERMISSION_ENUM.SUPPLIER_CREATE,
   ]);
@@ -154,7 +157,6 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
           type="textarea"
           required
         />
-        
       </div>
 
       <div className="flex justify-end gap-3 pt-6">

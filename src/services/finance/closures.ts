@@ -15,11 +15,11 @@ import { nextAuthFetch } from "../utils/next-auth-fetch";
 import { PaginatedResponse } from "@/types/common";
 
 export async function getAllClosures(
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<GetAllClosures>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.finance.closures.list
+    backendRoutes.finance.closures.list,
   ).build();
 
   const res = await nextAuthFetch({
@@ -34,11 +34,11 @@ export async function getAllClosures(
 }
 
 export async function getMyClosures(
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<GetAllClosures>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    `${process.env.NEXT_PUBLIC_API_URL}closures/supplier`
+    `${process.env.NEXT_PUBLIC_API_URL}closures/supplier`,
   ).build();
 
   const res = await nextAuthFetch({
@@ -76,11 +76,11 @@ export type SuppliersWithPendingResponse = {
 export async function getSuppliersWithPendingAccounts(
   params: IQueryable,
   fromDate?: string,
-  toDate?: string
+  toDate?: string,
 ): Promise<ApiResponse<PaginatedResponse<SuppliersWithPendingResponse>>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.finance.approval.suppliersWithPending
+    backendRoutes.finance.approval.suppliersWithPending,
   ).build();
 
   const res = await nextAuthFetch({
@@ -129,7 +129,7 @@ export async function createPartialClosureByAccounts(data: {
 }
 
 export async function getClosureAccounts(
-  closureId: string
+  closureId: string,
 ): Promise<ApiResponse<ClosureAccountsResponse>> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}closures/${closureId}/accounts`;
   const res = await nextAuthFetch({
@@ -143,7 +143,7 @@ export async function getClosureAccounts(
 }
 
 export async function getClosureStatement(
-  closureId: string
+  closureId: string,
 ): Promise<ApiResponse<ClosureStatement>> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}closures/${closureId}/statement`;
   const res = await nextAuthFetch({
@@ -156,11 +156,18 @@ export async function getClosureStatement(
   return buildApiResponseAsync(res);
 }
 
-export async function getClosuresSummary(): Promise<
-  ApiResponse<ClosuresSummary>
-> {
+export async function getClosuresSummary(params?: {
+  startDate?: string;
+  endDate?: string;
+  closureType?: number;
+}): Promise<ApiResponse<ClosuresSummary>> {
+  const url = new QueryParamsURLFactory(
+    { ...(params || {}) },
+    backendRoutes.finance.closures.summary,
+  ).build();
+
   const res = await nextAuthFetch({
-    url: backendRoutes.finance.closures.summary,
+    url,
     method: "GET",
     useAuth: true,
     next: { tags: ["closures-summary"] },

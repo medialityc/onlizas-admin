@@ -16,4 +16,5 @@ export type SearchParams = {
   isDescending?: boolean;
   page?: number;
   pageSize?: number;
+  [key: string]: unknown;
 };
