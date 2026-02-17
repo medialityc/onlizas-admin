@@ -1,5 +1,9 @@
 import { usePermissions as useSSO } from "zas-sso-client";
 import { PERMISSION_ADMIN } from "@/lib/permissions";
+import {
+  hasAnyPermission as hasAnyPermissionMatcher,
+  hasAllPermissions as hasAllPermissionsMatcher,
+} from "@/lib/permission-utils";
 
 // Tipo Permission de zas-sso-client
 interface Permission {
@@ -40,9 +44,7 @@ export const usePermissions = () => {
     if (!Array.isArray(safePermissionCodes) || safePermissionCodes.length === 0)
       return false;
 
-    return requiredPermissions.some((perm) =>
-      safePermissionCodes.includes(perm)
-    );
+    return hasAnyPermissionMatcher(safePermissionCodes, requiredPermissions);
   };
 
   /**
@@ -55,9 +57,7 @@ export const usePermissions = () => {
     if (!Array.isArray(safePermissionCodes) || safePermissionCodes.length === 0)
       return false;
 
-    return requiredPermissions.some((perm) =>
-      safePermissionCodes.includes(perm)
-    );
+    return hasAnyPermissionMatcher(safePermissionCodes, requiredPermissions);
   };
 
   /**
@@ -68,7 +68,7 @@ export const usePermissions = () => {
   const hasSpecificPermission = (permission: string): boolean => {
     if (!Array.isArray(safePermissionCodes) || safePermissionCodes.length === 0)
       return false;
-    return safePermissionCodes.includes(permission);
+    return hasAllPermissionsMatcher(safePermissionCodes, [permission]);
   };
 
   /**

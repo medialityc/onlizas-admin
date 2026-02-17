@@ -10,7 +10,6 @@ import QuickStats from "@/sections/dashboard/components/quick-stats";
 import GroupedSummary from "@/sections/dashboard/components/grouped-summary";
 import { ApiResponse } from "@/types/fetch/api";
 import { SupplierDashboard } from "@/types/dashboard";
-import { title } from "node:process";
 
 interface Props {
   dashboardPromise: ApiResponse<SupplierDashboard>;
@@ -28,8 +27,6 @@ export default function SupplierDashboardContainer({
     { title: "Ingresos", value: `${d?.totalRevenue ?? 0}` },
     { title: "Inventarios", value: `${d?.totalInventories ?? 0}` },
     { title: "Alertas de stock", value: `${d?.lowStockAlerts ?? 0}` },
-    { title: "Productos", value: `${d?.totalProducts ?? 0}` },
-    { title: "Inventarios", value: `${d?.totalInventories ?? 0}` },
   ];
 
   return (
