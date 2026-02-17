@@ -104,10 +104,13 @@ export function hasAllPermissions(
   const normalizedCodes = createNormalizedPermissionSet(permissionCodes);
   return requiredPermissions.every((requiredPermission) => {
     const variants = getPermissionVariants(requiredPermission);
-    for (const variant of variants) {
-      if (normalizedCodes.has(variant)) return true;
-    }
-    return false;
+    let hasMatch = false;
+    variants.forEach((variant) => {
+      if (normalizedCodes.has(variant)) {
+        hasMatch = true;
+      }
+    });
+    return hasMatch;
   });
 }
 
@@ -121,10 +124,13 @@ export function hasAnyPermission(
   const normalizedCodes = createNormalizedPermissionSet(permissionCodes);
   return requiredPermissions.some((requiredPermission) => {
     const variants = getPermissionVariants(requiredPermission);
-    for (const variant of variants) {
-      if (normalizedCodes.has(variant)) return true;
-    }
-    return false;
+    let hasMatch = false;
+    variants.forEach((variant) => {
+      if (normalizedCodes.has(variant)) {
+        hasMatch = true;
+      }
+    });
+    return hasMatch;
   });
 }
 
