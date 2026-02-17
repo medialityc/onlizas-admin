@@ -33,8 +33,14 @@ export default function PromotionRow({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasReadPermission = hasPermission([
+    PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+  ]);
+  const hasUpdatePermission = hasPermission([
+    PERMISSION_ENUM.UPDATE,
+    PERMISSION_ENUM.SUPPLIER_UPDATE,
+  ]);
   const hasDeletePermission = hasPermission([PERMISSION_ENUM.DELETE]);
 
   // Mutation para toggle status
