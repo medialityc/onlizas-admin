@@ -17,9 +17,9 @@ function Value({ children }: { children: React.ReactNode }) {
 export default function SummaryCards({ cards }: { cards: Card[] }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {cards.map((c) => (
+      {cards.map((c, idx) => (
         <div
-          key={c.title}
+          key={`${c.title}-${idx}`}
           className="p-4 bg-gradient-to-br from-white/80 to-gray-50/60 dark:from-gray-900/80 dark:to-gray-800/70 rounded-xl border border-gray-200/40 dark:border-gray-700/40 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
         >
           <div className="flex items-start justify-between">
