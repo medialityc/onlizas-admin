@@ -25,7 +25,10 @@ type Props = {
 
 const UserProviderCard = ({ item, className }: Props) => {
   const { hasPermission } = usePermissions();
-  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const hasReadPermission = hasPermission([
+    PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+  ]);
 
   return (
     <Card

@@ -1,9 +1,9 @@
 import { buildQueryParams } from "@/lib/request";
-import AdminOrdersPage from "@/sections/orders/containers/order-list-container"; // retained for SSR prefetch
 import OrdersPermissionWrapper from "@/sections/orders/containers/orders-permission-wrapper";
 import { getAllOrders } from "@/services/order";
 import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { Metadata } from "next";
+import { getModulePermissions } from "@/components/permission/server-permission-wrapper";
 
 interface PageProps {
   searchParams: Promise<SearchParams>;
@@ -20,7 +20,8 @@ export const metadata: Metadata = {
 async function Page({ searchParams }: PageProps) {
   const params = await searchParams;
   const query: IQueryable = buildQueryParams(params);
-  const ordersPromise = await getAllOrders(query);
+  const { isAdmin } = await getModulePermissions("orders");
+  const ordersPromise = isAdmin ? await getAllOrders(query) : undefined;
   return (
     <OrdersPermissionWrapper
       query={params}

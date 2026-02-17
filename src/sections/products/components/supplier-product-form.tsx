@@ -38,7 +38,11 @@ const SupplierProductForm = ({ initValue, isEdit }: Props) => {
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const hasUpdatePermission = hasPermission([
+    PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+    PERMISSION_ENUM.SUPPLIER_UPDATE,
+  ]);
 
   return (
     <section>

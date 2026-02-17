@@ -94,7 +94,11 @@ export default function InventoryPromotionForm({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const hasUpdatePermission = hasPermission([
+    PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+    PERMISSION_ENUM.SUPPLIER_UPDATE,
+  ]);
 
   // Obtener información de la tienda para el supplierId
   const { data: storeData, isLoading: storeDataLoading } = useQuery({

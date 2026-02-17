@@ -40,7 +40,11 @@ export const DataCard = ({ store }: DataCardProps) => {
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const hasUpdatePermission = hasPermission([
+    PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+    PERMISSION_ENUM.SUPPLIER_UPDATE,
+  ]);
 
   // Prefer https:// if not present
   const viewUrl = (() => {

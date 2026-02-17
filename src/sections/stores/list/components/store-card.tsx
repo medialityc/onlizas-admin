@@ -41,8 +41,14 @@ export const SoreCard = ({ store }: DataCardProps) => {
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasReadPermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.UPDATE]);
+  const hasReadPermission = hasPermission([
+    PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+  ]);
+  const hasUpdatePermission = hasPermission([
+    PERMISSION_ENUM.UPDATE,
+    PERMISSION_ENUM.SUPPLIER_UPDATE,
+  ]);
 
   const storePublicUrl = store.url
     ? `${process.env.NEXT_PUBLIC_CLIENT_URL}/store/${store.url}`
