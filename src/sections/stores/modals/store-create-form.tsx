@@ -24,10 +24,7 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasCreatePermission = hasPermission([
-    PERMISSION_ENUM.CREATE,
-    PERMISSION_ENUM.SUPPLIER_CREATE,
-  ]);
+  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
   const hasCreateStorePermission = hasPermission([
     PERMISSION_ENUM.SUPPLIER_CREATE,
   ]);

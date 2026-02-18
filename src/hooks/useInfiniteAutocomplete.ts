@@ -6,7 +6,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 interface UseInfiniteAutocompleteOptions<T> {
   queryKey: string[];
-  onFetch: (params: IQueryable) => Promise<ApiResponse<PaginatedResponse<T>>>;
+  onFetch?: (params: IQueryable) => Promise<ApiResponse<PaginatedResponse<T>>>;
   params?: IQueryable;
   enabled?: boolean;
 }
@@ -21,7 +21,7 @@ export function useInfiniteAutocomplete<T>({
     queryKey,
     queryFn: async ({ pageParam = 1 }) => {
       try {
-        const response = await onFetch({
+        const response = await onFetch?.({
           page: pageParam,
           pageSize: params?.pageSize ?? 35,
           sortBy: params?.sortBy,
@@ -29,12 +29,12 @@ export function useInfiniteAutocomplete<T>({
           ...params,
         });
 
-        if (response.error) {
+        if (response?.error) {
           showToast(response.message ?? "Error al cargar datos", "error");
           throw new Error(response.message ?? "Error al cargar datos");
         }
 
-        return response.data;
+        return response?.data;
       } catch (error) {
         console.error("Error loading data:", error);
         showToast("Error al cargar opciones", "error");

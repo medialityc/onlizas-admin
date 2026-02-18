@@ -26,23 +26,19 @@ export default async function StoresServerWrapper({ query }: Props) {
   const { isAdmin, isSupplier } = await getModulePermissions("stores");
 
   const apiQuery: IQueryable = buildQueryParams(
-    query as Record<string, unknown>
+    query as Record<string, unknown>,
   );
 
   if (isAdmin) {
     const storesResponse = await getAllStores(apiQuery);
 
-    return (
-      <StoresListContainer storesPromise={storesResponse} query={query} />
-    );
+    return <StoresListContainer storesPromise={storesResponse} query={query} />;
   }
 
   if (isSupplier) {
     const storesResponse = await getProviderStores(apiQuery);
 
-    return (
-      <StoresListContainer storesPromise={storesResponse} query={query} />
-    );
+    return <StoresListContainer storesPromise={storesResponse} query={query} />;
   }
   return (
     <div className="panel p-6">

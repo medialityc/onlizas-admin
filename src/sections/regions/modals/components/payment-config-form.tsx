@@ -1,11 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { Label } from "@/components/label/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/cards/card";
 import { Input } from "@/components/input/input";
 import { useQuery } from "@tanstack/react-query";
 import { getAllGateways } from "@/services/gateways";
+import { Select as SearchSelect } from "@/components/select/select";
 
 interface PaymentConfigFormProps {
   selectedPaymentMethod: string;
@@ -20,8 +21,9 @@ export function PaymentConfigForm({
   onPaymentMethodChange,
   priority,
   onPriorityChange,
-  disabled = false
+  disabled = false,
 }: PaymentConfigFormProps) {
+  const [gatewayQuery, setGatewayQuery] = useState("");
   // Obtener las pasarelas desde el backend
   const { data: gatewaysResponse, isLoading } = useQuery({
     queryKey: ["gateways"],
@@ -46,23 +48,24 @@ export function PaymentConfigForm({
     <div className="space-y-4">
       <div className="space-y-2">
         <Label>Seleccionar Método de Pago</Label>
-        <Select value={selectedPaymentMethod} onValueChange={onPaymentMethodChange} disabled={disabled || isLoading}>
-          <SelectTrigger>
-            <SelectValue placeholder={isLoading ? "Cargando..." : "Selecciona un método de pago"} />
-          </SelectTrigger>
-          <SelectContent>
-            {gateways.map((gateway: any) => (
-              <SelectItem key={gateway.id} value={String(gateway.id)}>
-                <div className="flex items-center space-x-2">
-                  <span>{gateway.name}</span>
-                  <span className="text-xs text-gray-500 capitalize">({gateway.code})</span>
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <SearchSelect
+          options={gateways}
+          objectValueKey="id"
+          objectKeyLabel="name"
+          placeholder={
+            isLoading ? "Cargando..." : "Selecciona un método de pago"
+          }
+          value={selectedPaymentMethod ? selectedPaymentMethod : undefined}
+          onChange={(value) =>
+            onPaymentMethodChange(value !== undefined ? String(value) : "")
+          }
+          disabled={disabled || isLoading}
+          query={gatewayQuery}
+          setQuery={setGatewayQuery}
+          displayValue={(gateway: any) => `${gateway.name} (${gateway.code})`}
+        />
       </div>
-      
+
       {selectedPaymentMethod && (
         <Card className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardContent className="pt-4">
@@ -71,7 +74,10 @@ export function PaymentConfigForm({
                 Configuración del método de pago
               </h4>
               <div className="space-y-2">
-                <Label htmlFor="priority" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <Label
+                  htmlFor="priority"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Prioridad (1-100)
                 </Label>
                 <Input
@@ -85,7 +91,8 @@ export function PaymentConfigForm({
                   className="max-w-32"
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Mayor número = mayor prioridad. Este método aparecerá primero si tiene mayor prioridad.
+                  Mayor número = mayor prioridad. Este método aparecerá primero
+                  si tiene mayor prioridad.
                 </p>
               </div>
             </div>

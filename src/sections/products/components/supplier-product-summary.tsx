@@ -25,6 +25,7 @@ const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
   const product = watch("selectedProduct");
   const isDraft = watch("isDraft");
   const isOwned = watch("isOwned");
+  console.log(product);
 
   const handleCreate = useCallback(() => {
     setValue("isDraft", true, { shouldDirty: true });

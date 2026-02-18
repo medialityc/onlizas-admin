@@ -22,6 +22,7 @@ export default function AppearanceContainer({ store }: Props) {
   const { hasPermission } = usePermissions();
   const hasUpdatePermission = hasPermission([
     PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.UPDATE,
     PERMISSION_ENUM.SUPPLIER_RETRIEVE,
     PERMISSION_ENUM.SUPPLIER_UPDATE,
   ]);

@@ -1,9 +1,9 @@
 export enum PERMISSION_ENUM {
   // Generic CRUD operations
-  CREATE = "OnlizasCreate",
-  RETRIEVE = "OnlizasRetrieve",
-  UPDATE = "OnlizasUpdate",
-  DELETE = "OnlizasDelete",
+  CREATE = "OnliZasCreate",
+  RETRIEVE = "OnliZasRetrieve",
+  UPDATE = "OnliZasUpdate",
+  DELETE = "OnliZasDelete",
 
   // Supplier generic operations
   SUPPLIER_CREATE = "SupplierCreate",
@@ -124,13 +124,11 @@ export const PERMISSIONS = [
   },
   {
     code: PERMISSION_ENUM.SUPPLIER_RETRIEVE,
-    description:
-      "Allows a supplier to retrieve entities in supplier scope",
+    description: "Allows a supplier to retrieve entities in supplier scope",
   },
   {
     code: PERMISSION_ENUM.SUPPLIER_UPDATE,
-    description:
-      "Allows a supplier to update entities in supplier scope",
+    description: "Allows a supplier to update entities in supplier scope",
   },
   {
     code: PERMISSION_ENUM.SUPPLIER_DELETE,

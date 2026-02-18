@@ -12,11 +12,11 @@ import { Business, GetAllBusiness } from "@/types/business";
 import { PaginatedResponse } from "../types/common";
 
 export async function getAllBusiness(
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<GetAllBusiness>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.business.getAll
+    backendRoutes.business.getAll,
   ).build();
 
   const res = await nextAuthFetch({
@@ -31,11 +31,11 @@ export async function getAllBusiness(
   return buildApiResponseAsync<GetAllBusiness>(res);
 }
 export async function getAllBusinessByUser(
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<PaginatedResponse<Business>>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.business.getAllByUser
+    backendRoutes.business.getAllByUser,
   ).build();
 
   const res = await nextAuthFetch({
@@ -51,7 +51,7 @@ export async function getAllBusinessByUser(
 }
 
 export async function createBusiness(
-  data: FormData
+  data: FormData,
 ): Promise<ApiResponse<ApiStatusResponse>> {
   console.log("Creating business with data:");
   const res = await nextAuthFetch({
@@ -68,7 +68,7 @@ export async function createBusiness(
   return buildApiResponseAsync<ApiStatusResponse>(res);
 }
 export async function createBusinessBySupplier(
-  data: FormData
+  data: FormData,
 ): Promise<ApiResponse<ApiStatusResponse>> {
   console.log("Creating business with data:");
   const res = await nextAuthFetch({
@@ -87,7 +87,7 @@ export async function createBusinessBySupplier(
 
 export async function updateBusinessData(
   id: string | number,
-  data: FormData
+  data: FormData,
 ): Promise<ApiResponse<Business>> {
   const res = await nextAuthFetch({
     url: backendRoutes.business.update(id),
@@ -105,7 +105,7 @@ export async function updateBusinessData(
 }
 export async function updateBusinessProviderData(
   id: string | number,
-  data: FormData
+  data: FormData,
 ): Promise<ApiResponse<Business>> {
   const res = await nextAuthFetch({
     url: backendRoutes.business.updateProvider(id),
@@ -123,7 +123,7 @@ export async function updateBusinessProviderData(
 }
 
 export async function deleteBusiness(
-  id: string | number
+  id: string | number,
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.business.delete(id),
@@ -138,7 +138,7 @@ export async function deleteBusiness(
 }
 
 export async function deleteBusinessBySupplier(
-  id: string | number
+  id: string | number,
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.business.deleteBySupplier(id),
@@ -154,11 +154,11 @@ export async function deleteBusinessBySupplier(
 
 export async function getAllBusinessByProvider(
   id: string | number,
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<GetAllBusiness>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.business.getByProvider(id)
+    backendRoutes.business.getByProvider(id),
   ).build();
 
   const res = await nextAuthFetch({

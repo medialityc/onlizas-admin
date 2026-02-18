@@ -10,13 +10,7 @@ import {
   CardTitle,
 } from "@/components/cards/card";
 import { Button } from "@/components/button/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select as SearchSelect } from "@/components/select/select";
 import { Label } from "@/components/label/label";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -52,6 +46,7 @@ export default function RegionConfigurationModal({
   initialTab = "currencies",
 }: RegionConfigurationModalProps) {
   const [selectedType, setSelectedType] = useState<ConfigurationType | "">("");
+  const [typeQuery, setTypeQuery] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useState("");
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const [selectedShippingMethod, setSelectedShippingMethod] = useState("");
@@ -83,7 +78,10 @@ export default function RegionConfigurationModal({
 
   // Mutations
   const addCurrencyMutation = useMutation({
-    mutationFn: async (config: { currencyId: number|string; isPrimary: boolean }) => {
+    mutationFn: async (config: {
+      currencyId: number | string;
+      isPrimary: boolean;
+    }) => {
       const response = await addCurrenciesToRegion(region.id, {
         currencies: [
           { currencyId: config.currencyId, isEnabled: true, isPrimary: false },
@@ -96,7 +94,9 @@ export default function RegionConfigurationModal({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["regions"] });
-      queryClient.invalidateQueries({ queryKey: ["region-details", region.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["region-details", region.id],
+      });
       showToast("Moneda agregada exitosamente a la región", "success");
       onSuccess?.();
       handleClose();
@@ -109,7 +109,7 @@ export default function RegionConfigurationModal({
 
   const addPaymentMutation = useMutation({
     mutationFn: async (config: {
-      paymentGatewayId: number|string;
+      paymentGatewayId: number | string;
       priority: number;
     }) => {
       const response = await addPaymentGatewaysToRegion(region.id, {
@@ -125,14 +125,16 @@ export default function RegionConfigurationModal({
       });
       if (response.error) {
         throw new Error(
-          response.message || "Error al agregar el método de pago"
+          response.message || "Error al agregar el método de pago",
         );
       }
       return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["regions"] });
-      queryClient.invalidateQueries({ queryKey: ["region-details", region.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["region-details", region.id],
+      });
       showToast("Método de pago agregado exitosamente a la región", "success");
       onSuccess?.();
       handleClose();
@@ -141,13 +143,13 @@ export default function RegionConfigurationModal({
       console.error("Error adding payment method:", error);
       showToast(
         error?.message || "Error al agregar el método de pago",
-        "error"
+        "error",
       );
     },
   });
 
   const addShippingMutation = useMutation({
-    mutationFn: async (shippingMethodId: number|string) => {
+    mutationFn: async (shippingMethodId: number | string) => {
       const response = await addShippingMethodsToRegion(region.id, {
         shippingMethods: [
           {
@@ -162,17 +164,19 @@ export default function RegionConfigurationModal({
       });
       if (response.error) {
         throw new Error(
-          response.message || "Error al agregar el método de entrega"
+          response.message || "Error al agregar el método de entrega",
         );
       }
       return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["regions"] });
-      queryClient.invalidateQueries({ queryKey: ["region-details", region.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["region-details", region.id],
+      });
       showToast(
         "Método de entrega agregado exitosamente a la región",
-        "success"
+        "success",
       );
       onSuccess?.();
       handleClose();
@@ -181,7 +185,7 @@ export default function RegionConfigurationModal({
       console.error("Error adding shipping method:", error);
       showToast(
         error?.message || "Error al agregar el método de entrega",
-        "error"
+        "error",
       );
     },
   });
@@ -283,26 +287,32 @@ export default function RegionConfigurationModal({
             <CardContent>
               <div className="space-y-2">
                 <Label>¿Qué deseas agregar a la región?</Label>
-                <Select
-                  value={selectedType}
-                  onValueChange={(value) =>
-                    setSelectedType(value as ConfigurationType | "")
+                <SearchSelect
+                  options={[
+                    {
+                      id: "currency" as ConfigurationType,
+                      label: "💰 Agregar Moneda",
+                    },
+                    {
+                      id: "payment-method" as ConfigurationType,
+                      label: "💳 Agregar Pasarela de Pago",
+                    },
+                    {
+                      id: "shipping-method" as ConfigurationType,
+                      label: "🚚 Agregar Método de Entrega",
+                    },
+                  ]}
+                  objectValueKey="id"
+                  objectKeyLabel="label"
+                  placeholder="Selecciona qué agregar a la región"
+                  value={selectedType || undefined}
+                  onChange={(value) =>
+                    setSelectedType((value as ConfigurationType) || "")
                   }
                   disabled={!hasCreatePermission}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona qué agregar a la región" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="currency">💰 Agregar Moneda</SelectItem>
-                    <SelectItem value="payment-method">
-                      💳 Agregar Pasarela de Pago
-                    </SelectItem>
-                    <SelectItem value="shipping-method">
-                      🚚 Agregar Método de Entrega
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                  query={typeQuery}
+                  setQuery={setTypeQuery}
+                />
               </div>
             </CardContent>
           </Card>

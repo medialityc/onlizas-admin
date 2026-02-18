@@ -12,7 +12,10 @@ interface BannerHeaderProps {
 export default function BannerHeader({ onNew }: BannerHeaderProps) {
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const hasCreatePermission = hasPermission([PERMISSION_ENUM.CREATE]);
+  const hasCreatePermission = hasPermission([
+    PERMISSION_ENUM.CREATE,
+    PERMISSION_ENUM.SUPPLIER_CREATE,
+  ]);
 
   return (
     <div className="flex items-center justify-between mt-2">

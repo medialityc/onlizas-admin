@@ -10,9 +10,14 @@ import { QueryParamsURLFactory } from "@/lib/request";
 
 const DISTRICTS_TAG = "districts";
 
-export async function getDistricts(params: IQueryable = {}): Promise<ApiResponse<GetDistricts>> {
-  const url = new QueryParamsURLFactory(params, backendRoutes.districts.list).build();
-  
+export async function getDistricts(
+  params: IQueryable = {},
+): Promise<ApiResponse<GetDistricts>> {
+  const url = new QueryParamsURLFactory(
+    params,
+    backendRoutes.districts.list,
+  ).build();
+
   const res = await nextAuthFetch({
     url,
     method: "GET",
@@ -26,13 +31,13 @@ export async function getDistricts(params: IQueryable = {}): Promise<ApiResponse
 
 export async function getDistrictsByCountry(
   countryId: string,
-  params: IQueryable = {}
+  params: IQueryable = {},
 ): Promise<ApiResponse<GetDistricts>> {
   const url = new QueryParamsURLFactory(
     params,
-    backendRoutes.districts.byCountry(countryId)
+    backendRoutes.districts.byCountry(countryId),
   ).build();
-  
+
   const res = await nextAuthFetch({
     url,
     method: "GET",

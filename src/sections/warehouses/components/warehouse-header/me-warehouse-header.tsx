@@ -44,7 +44,7 @@ const MeWarehouseHeader = ({ data }: Props) => {
             Gestión de almacenes
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Administra almacenes físicos y virtuales
+            Administra tus almacenes dentro del sistema
           </p>
         </div>
         <div className="flex flex-row gap-2">

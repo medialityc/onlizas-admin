@@ -27,6 +27,7 @@ export default function StoresPermissionWrapper({
     !hasAdminRetrieve &&
     hasPermission([PERMISSION_ENUM.SUPPLIER_RETRIEVE]);
   const canList = hasAdminRetrieve || hasSupplierRetrieve;
+  console.log(hasAdminRetrieve, hasSupplierRetrieve);
 
   // Memo de parámetros para evitar nueva identidad
   const apiQuery: IQueryable = useMemo(
@@ -34,7 +35,7 @@ export default function StoresPermissionWrapper({
       externalApiQuery
         ? externalApiQuery
         : buildQueryParams((query || {}) as any),
-    [externalApiQuery, query]
+    [externalApiQuery, query],
   );
   const serializedParams = useMemo(() => JSON.stringify(apiQuery), [apiQuery]);
 

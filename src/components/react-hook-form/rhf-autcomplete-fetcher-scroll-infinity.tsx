@@ -41,9 +41,9 @@ interface Props<T> extends Omit<AutocompleteProps, "data" | "renderOption"> {
   renderOption?: (option: T) => React.ReactNode;
   renderMultiplesValues?: (
     options: T[],
-    removeSelected: (option: T) => void
+    removeSelected: (option: T) => void,
   ) => React.ReactNode;
-  onFetch: (params: IQueryable) => Promise<ApiResponse<PaginatedResponse<T>>>;
+  onFetch?: (params: IQueryable) => Promise<ApiResponse<PaginatedResponse<T>>>;
   extraFilters?: Record<string, any>;
   objectValueKey?: keyof T;
   objectKeyLabel?: keyof T;
@@ -88,7 +88,7 @@ export default function RHFAutocompleteFetcherInfinity<T>({
   // Reset search when the field identity or filters change
   const extraFiltersString = useMemo(
     () => JSON.stringify(extraFilters),
-    [extraFilters]
+    [extraFilters],
   );
   useEffect(() => {
     setSearchTerm("");
@@ -121,13 +121,13 @@ export default function RHFAutocompleteFetcherInfinity<T>({
   // Actualiza el parámetro de búsqueda en onFetch
   const fetcherWithSearch = useCallback(
     (fetchParams: IQueryable) => {
-      return onFetch({
+      return onFetch?.({
         ...fetchParams,
         ...extraFilters,
         search: debouncedSearchTerm,
       });
     },
-    [onFetch, debouncedSearchTerm, extraFilters]
+    [onFetch, debouncedSearchTerm, extraFilters],
   );
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
@@ -143,14 +143,16 @@ export default function RHFAutocompleteFetcherInfinity<T>({
   const options = useMemo(() => {
     const allOptions =
       data?.pages?.flatMap(
-        (page: PaginatedResponse<T> | undefined) => page?.data ?? []
+        (page: PaginatedResponse<T> | undefined) => page?.data ?? [],
       ) ?? [];
 
     // Combina defaultOptions con las opciones del fetch, evitando duplicados
     const combinedOptions = [...defaultOptions];
-    const defaultIds = new Set(defaultOptions.map(opt => String(opt[objectValueKey])));
-    
-    allOptions.forEach(opt => {
+    const defaultIds = new Set(
+      defaultOptions.map((opt) => String(opt[objectValueKey])),
+    );
+
+    allOptions.forEach((opt) => {
       const optId = String(opt[objectValueKey]);
       if (!defaultIds.has(optId)) {
         combinedOptions.push(opt);
@@ -162,7 +164,7 @@ export default function RHFAutocompleteFetcherInfinity<T>({
     }
 
     return combinedOptions.filter(
-      (option) => !exclude.includes(String(option[objectValueKey]))
+      (option) => !exclude.includes(String(option[objectValueKey])),
     );
   }, [data, exclude, objectValueKey, defaultOptions]);
 

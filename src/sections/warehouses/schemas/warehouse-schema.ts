@@ -7,16 +7,16 @@ export const warehouseSchema = z
     name: z.string().min(1, "El nombre del almacén es requerido"),
     type: z.nativeEnum(WAREHOUSE_TYPE_ENUM),
     address: z.object({
-      name: z.string().min(1, "Requerido"),
-      mainStreet: z.string().min(1, "Requerido"),
+      name: z.string(),
+      mainStreet: z.string(),
       difficultAccessArea: z.boolean().default(false),
       number: z.string().optional(),
       otherStreets: z.string().optional(),
-      city: z.string().min(1, "Requerido"),
+      city: z.string(),
       zipcode: z.string().optional(),
       annotations: z.string().optional(),
-      districtId: z.string().optional(),
-      countryId: z.string().optional(),
+      districtId: z.string(),
+      countryId: z.string(),
     }),
     active: z.boolean().default(true),
 
@@ -38,7 +38,7 @@ export const warehouseSchema = z
       message:
         "Capacidad y unidad de capacidad son requeridos para almacenes físicos",
       path: ["capacity"],
-    }
+    },
   )
   .refine(
     (data) => {
@@ -51,7 +51,7 @@ export const warehouseSchema = z
       message:
         "Capacidad y unidad de capacidad son requeridos para almacenes físicos",
       path: ["capacityUnit"],
-    }
+    },
   )
   // Validación adicional: capacidad debe ser un número positivo para almacenes físicos
   .refine(
@@ -67,7 +67,7 @@ export const warehouseSchema = z
     {
       message: "La capacidad debe ser un número positivo",
       path: ["capacity"],
-    }
+    },
   )
   // Validación adicional: unidad de capacidad no debe estar vacía para almacenes físicos
   .refine(
@@ -83,7 +83,7 @@ export const warehouseSchema = z
     {
       message: "La unidad de capacidad no puede estar vacía",
       path: ["capacityUnit"],
-    }
+    },
   )
   .refine(
     (data) => {
@@ -95,7 +95,7 @@ export const warehouseSchema = z
     {
       message: "Proveedor es requerido para almacenes virtuales",
       path: ["supplierId"],
-    }
+    },
   )
   .refine(
     (data) => {
@@ -107,7 +107,7 @@ export const warehouseSchema = z
     {
       message: "Proveedor son requeridos para almacenes virtuales",
       path: ["supplierId"],
-    }
+    },
   );
 
 export type WarehouseFormData = z.infer<typeof warehouseSchema> & {

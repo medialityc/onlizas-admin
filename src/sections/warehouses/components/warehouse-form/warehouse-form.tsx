@@ -20,10 +20,8 @@ type Props = {
 };
 export function WarehouseForm({ warehouse }: Props) {
   const { form, isPending, onSubmit, warehouseType } = useWarehouseCreateForm(
-    warehouse && getAdapterWarehouse(warehouse)
+    warehouse && getAdapterWarehouse(warehouse),
   );
-  console.log(form.formState.errors);
-
   // Control de permisos
   const { hasPermission } = usePermissions();
   const hasCreatePermission = hasPermission([
