@@ -1,9 +1,9 @@
 export enum PERMISSION_ENUM {
   // Generic CRUD operations
-  CREATE = "Create",
-  RETRIEVE = "Retrieve",
-  UPDATE = "Update",
-  DELETE = "Delete",
+  CREATE = "OnlizasCreate",
+  RETRIEVE = "OnlizasRetrieve",
+  UPDATE = "OnlizasUpdate",
+  DELETE = "OnlizasDelete",
 
   // Supplier generic operations
   SUPPLIER_CREATE = "SupplierCreate",
