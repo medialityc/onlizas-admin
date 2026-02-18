@@ -58,7 +58,7 @@ export function WarehouseCard({
   };
   const handleTransfer = () => {
     router.replace(
-      `/dashboard/warehouses/${route}/${warehouse.id!}/edit/transfers`
+      `/dashboard/warehouses/${route}/${warehouse.id!}/edit/transfers`,
     );
   };
 
@@ -71,7 +71,7 @@ export function WarehouseCard({
               "p-2 rounded-md w-16 h-16 flex flex-row items-center justify-center",
               isPhysical
                 ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
-                : "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                : "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400",
             )}
           >
             {!isPhysical ? (
@@ -172,7 +172,6 @@ export function WarehouseCard({
       <CardFooter className="grid grid-cols-1 sm:grid-cols-2 gap-2 ">
         {hasTransferPermission && (
           <Button
-            outline
             variant="secondary"
             onClick={handleTransfer}
             className="w-full justify-center py-1.5 px-3 text-sm"

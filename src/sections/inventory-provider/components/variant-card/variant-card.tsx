@@ -172,7 +172,6 @@ function VariantCard({
         {/* Actions */}
         <div className="flex justify-end gap-2 pt-2 border-t border-gray-100 dark:border-slate-800">
           <Button
-            outline
             variant="primary"
             size="sm"
             onClick={() => setShowDetails(true)}
@@ -184,8 +183,7 @@ function VariantCard({
           </Button>
           {canEdit && onEdit && (
             <Button
-              outline
-              variant="info"
+              variant="secondary"
               size="sm"
               onClick={() => onEdit(variant.id as string)}
               className="gap-1 px-2 py-1 rounded-md flex items-center"
@@ -198,7 +196,7 @@ function VariantCard({
           )}
           {canDelete && onDelete && (
             <Button
-              variant="danger"
+              variant="destructive"
               size="sm"
               onClick={() => onDelete(variant.id as string)}
               className="gap-1 px-2 py-1 rounded-md flex items-center"

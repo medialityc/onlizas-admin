@@ -1,269 +1,260 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { CalendarIcon } from "@heroicons/react/24/outline";
 import * as React from "react";
-import { CSSProperties } from "react";
-import { FieldError } from "react-hook-form";
-// Removed react-text-mask; using a plain input with Tailwind
+import { CalendarIcon } from "lucide-react";
+import { es } from "date-fns/locale";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Label } from "@/components/label/label";
+import MaskInputWithLabel from "@/components/input/mask-input-with-label";
 import { Calendar } from "./calendar";
-interface DateInputProps {
-  id: string;
-  value?: Date;
-  onChange: (date: Date | undefined) => void;
-  onBlur?: () => void;
-  placeholder?: string;
-  label?: string;
-  underLabel?: string;
-  disabled?: boolean;
-  required?: boolean;
-  error?: FieldError;
-  width?: CSSProperties["width"];
-  className?: string;
-  containerClassName?: string;
-  showError?: boolean;
-  minDate?: Date;
-  maxDate?: Date;
-  locale?: string;
-}
+import { IconButton } from "./icon-buton";
+export const selectClassNames = {
+  container: "w-full",
+  input:
+    "ring-offset-background dark:bg-dark flex h-10 w-full rounded-md border border-gray-200 bg-white py-2 text-sm transition-colors placeholder:text-gray-400 focus-visible:border-primary focus-visible:ring-0 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-white pl-3 pr-3",
+  menu: "dark:bg-dark absolute top-full right-0 left-0 z-20 mt-1 max-h-56 overflow-auto rounded-md border border-gray-200 bg-white shadow-md dark:border-gray-700",
+  item: "flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-800",
+};
+function formatDate(date: Date | string | undefined) {
+  if (!date) {
+    return "";
+  }
 
-export default function DateInput({
-  id,
-  minDate,
-  maxDate,
-  locale,
-  showError,
-  error,
-  value,
-  onChange,
-  className,
-  onBlur,
-  containerClassName,
-  disabled,
-  label,
-  placeholder,
-  required,
-  underLabel,
-  width,
-}: DateInputProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
-  // Formato DD/MM/YYYY
-  const formatDate = (date: Date | undefined): string => {
-    if (!date) return "";
-    const day = String(date?.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-  const [inputValue, setInputValue] = React.useState<string>(
-    value ? formatDate(value) : ""
-  );
-  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(
-    value
-  );
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const preventFocusRef = React.useRef(false);
+  let d: Date | undefined;
 
-  React.useEffect(() => {
-    // Solo actualizar si el valor es diferente para evitar re-renders innecesarios
-    const currentTime = selectedDate?.getTime();
-    const newTime = value?.getTime();
-    if (currentTime !== newTime) {
-      setSelectedDate(value);
-      setInputValue(value ? formatDate(value) : "");
-    }
-  }, [value]);
-
-  React.useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
+  if (date instanceof Date) {
+    d = date;
+  } else if (typeof date === "string") {
+    // Try native parsing first (handles ISO and common formats)
+    const nativeParsed = new Date(date);
+    if (!isNaN(nativeParsed.getTime())) {
+      d = nativeParsed;
+    } else {
+      // Fallback: parse dd/MM/yyyy with optional time HH:mm:ss
+      const match = date.match(
+        /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}):(\d{2}))?$/,
+      );
+      if (match) {
+        const [, dd, mm, yyyy, hh = "0", min = "0", ss = "0"] = match;
+        const parsed = new Date(
+          Number(yyyy),
+          Number(mm) - 1,
+          Number(dd),
+          Number(hh),
+          Number(min),
+          Number(ss),
+        );
+        if (!isNaN(parsed.getTime())) {
+          d = parsed;
+        }
       }
     }
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
-
-  // Validación simple usando minDate / maxDate si se proveen.
-  // Si no se proveen, permitir cualquier fecha.
-  const isWithinRange = (date: Date | undefined) => {
-    if (!date) return true;
-    if (minDate && date < startOfDay(minDate)) return false;
-    if (maxDate && date > endOfDay(maxDate)) return false;
-    return true;
-  };
-
-  function startOfDay(d: Date) {
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
   }
 
-  function endOfDay(d: Date) {
-    return new Date(
-      d.getFullYear(),
-      d.getMonth(),
-      d.getDate(),
-      23,
-      59,
-      59,
-      999
-    );
+  if (!d) {
+    // If we cannot parse, return the original string to avoid errors
+    return typeof date === "string" ? date : "";
   }
 
-  const handleDateSelect = (date: Date | undefined) => {
-    if (date && !isWithinRange(date)) {
-      setSelectedDate(undefined);
-      setInputValue("");
-      onChange(undefined);
-      setIsOpen(false);
-      return;
-    }
-    setSelectedDate(date);
-    setInputValue(date ? formatDate(date) : "");
-    onChange(date);
-    setIsOpen(false);
-    
-    // Prevenir que el input reciba focus después de seleccionar
-    preventFocusRef.current = true;
-    setTimeout(() => {
-      preventFocusRef.current = false;
-    }, 500);
-  };
+  // Return in dd/mm/yyyy format
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = String(d.getFullYear());
+  return `${dd}/${mm}/${yyyy}`;
+}
 
-  // ...existing code...
+function isValidDate(date: Date | undefined) {
+  if (!date) {
+    return false;
+  }
+  return !isNaN(date.getTime());
+}
 
-  // Parsear string DD/MM/YYYY a Date
-  const parseDate = (str: string): Date | undefined => {
-    const [day, month, year] = str.split("/").map(Number);
-    if (!day || !month || !year) return undefined;
-    const date = new Date(year, month - 1, day);
-    // Validar que la fecha sea válida y coincida con el input
-    if (
-      date.getFullYear() === year &&
-      date.getMonth() === month - 1 &&
-      date?.getDate() === day
-    ) {
-      return date;
+// Parse user input into a Date without enforcing format while typing.
+// Supports common formats: yyyy-MM-dd, dd/MM/yyyy, dd-MM-yyyy, compact numeric ddMMyyyy/dMyyyy, and native parse fallback.
+function parseInputToDate(input: string): Date | undefined {
+  const str = input.trim();
+  if (!str) return undefined;
+
+  // Compact numeric formats without separators
+  // Examples:
+  //   342020   -> 3/4/2020 (dMyyyy)
+  //   03042020 -> 03/04/2020 (ddMMyyyy)
+  const onlyDigits = str.replace(/\D/g, "");
+  if (onlyDigits.length === str.length) {
+    // ddMMyyyy (8 digits)
+    if (onlyDigits.length === 8) {
+      const dd = onlyDigits.slice(0, 2);
+      const mm = onlyDigits.slice(2, 4);
+      const yyyy = onlyDigits.slice(4);
+      const parsed = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
+      if (isValidDate(parsed)) return parsed;
     }
-    return undefined;
-  };
+
+    // dMyyyy (6 digits), e.g. 342020 -> 3/4/2020
+    if (onlyDigits.length === 6) {
+      const d = onlyDigits.slice(0, 1);
+      const m = onlyDigits.slice(1, 2);
+      const yyyy = onlyDigits.slice(2);
+      const parsed = new Date(Number(yyyy), Number(m) - 1, Number(d));
+      if (isValidDate(parsed)) return parsed;
+    }
+  }
+
+  // ISO-like: yyyy-MM-dd
+  const isoMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoMatch) {
+    const [, yyyy, mm, dd] = isoMatch;
+    const parsed = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
+    return isValidDate(parsed) ? parsed : undefined;
+  }
+
+  // Day-first with separators: dd/MM/yyyy or dd-MM-yyyy
+  const dmMatch = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (dmMatch) {
+    const [, dd, mm, yyyy] = dmMatch;
+    const parsed = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
+    return isValidDate(parsed) ? parsed : undefined;
+  }
+
+  // Fallback to native parse (handles full month names and locales sometimes)
+  const nativeParsed = new Date(str);
+  return isValidDate(nativeParsed) ? nativeParsed : undefined;
+}
+
+export type DayPickerWithInputProps = {
+  id?: string;
+  label?: string;
+  value?: Date | undefined;
+  onChange?: (date: Date | undefined) => void;
+  placeholder?: string;
+  labelClassName?: string;
+  onInputBlur?: () => void;
+  onInputKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  required?: boolean;
+};
+
+export function DayPickerWithInput({
+  id = "date",
+  label = "Fecha de suscripción",
+  value: controlledDate,
+  onChange,
+  placeholder = "01 de junio de 2025",
+  labelClassName,
+  onInputBlur,
+  onInputKeyDown,
+  required = false,
+}: DayPickerWithInputProps) {
+  const [open, setOpen] = React.useState(false);
+  const isControlled = controlledDate !== undefined;
+  const [date, setDate] = React.useState<Date | undefined>(controlledDate);
+  const [month, setMonth] = React.useState<Date | undefined>(date);
+  const [value, setValue] = React.useState(formatDate(date));
+
+  // // Sync internal state when controlled value changes
+  React.useEffect(() => {
+    if (controlledDate) {
+      setDate(controlledDate);
+      setMonth(controlledDate);
+      setValue(formatDate(controlledDate));
+    } else if (isControlled) {
+      // If controlled and cleared, reset internal state as well
+      setDate(undefined);
+      setMonth(undefined);
+      setValue("");
+    }
+  }, [controlledDate, isControlled]);
 
   return (
-    <div
-      ref={containerRef}
-      className={cn("w-full flex flex-col gap-1 relative", containerClassName)}
-      style={{ width }}
-    >
-      <div className={cn("flex flex-col", label && "gap-2")}>
-        <div className="flex flex-col gap-1">
-          {label && (
-            <label
-              htmlFor={id}
-              className="text-sm font-semibold text-gray-700 dark:text-gray-200"
+    <div className="flex flex-col gap-2">
+      <Label htmlFor={id} className={labelClassName ?? "px-1"}>
+        {label}
+        {required && <span className="text-red-500">*</span>}
+      </Label>
+      <div className="relative flex gap-2">
+        <MaskInputWithLabel
+          className={selectClassNames.input}
+          required={required}
+          mask={[
+            /[0-3]/,
+            /[0-9]/,
+            "/",
+            /[0-1]/,
+            /[1-9]/,
+            "/",
+            /[1-2]/,
+            /[0-9]/,
+            /[0-9]/,
+            /[0-9]/,
+          ]}
+          placeholder={placeholder}
+          onChange={(e) => {
+            setValue(e.target.value);
+          }}
+          value={value}
+          id={id}
+          type={"text"}
+          onBlur={() => {
+            // Parse and validate only when the user finishes (onBlur)
+            const parsed = parseInputToDate(value);
+            if (parsed) {
+              setDate(parsed);
+              setMonth(parsed);
+              setValue(formatDate(parsed));
+              onChange?.(parsed);
+            } else {
+              // If invalid, keep text as-is to allow correction.
+              // If the field is empty, propagate undefined.
+              if (!value) {
+                setDate(undefined);
+                setMonth(undefined);
+                onChange?.(undefined);
+              }
+            }
+            onInputBlur?.();
+          }}
+        />
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <IconButton
+              id={`${id}-picker`}
+              variant="ghost"
+              icon={<CalendarIcon className="size-3.5" />}
+              className="absolute top-1/2 right-2 size-6 -translate-y-1/2"
             >
-              {label}
-              {required && "*"}
-            </label>
-          )}
-          {underLabel && (
-            <p className="font-normal text-xs text-gray-600">{underLabel}</p>
-          )}
-        </div>
-
-        <div className="relative">
-          <input
-            ref={inputRef}
-            id={id}
-            name={id}
-            type="text"
-            value={inputValue}
-            placeholder={placeholder}
-            autoComplete="off"
-            onFocus={(e) => {
-              if (preventFocusRef.current) {
-                e.preventDefault();
-                e.target.blur();
-                return;
-              }
-            }}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              const val = e.target.value;
-              setInputValue(val);
-              if (val.length === 10) {
-                const date = parseDate(val);
-                if (date && isWithinRange(date)) {
-                  setSelectedDate(date);
-                  onChange(date);
-                } else {
-                  setSelectedDate(undefined);
-                  onChange(undefined);
-                }
-              } else {
-                setSelectedDate(undefined);
-                onChange(undefined);
-              }
-            }}
-            onBlur={onBlur}
-            className={`form-input h-12 border-2 rounded-xl focus:border-blue-500 w-full ${"border-slate-200"}`}
-            inputMode="numeric"
-            disabled={disabled}
-          />
-          <button
-            type="button"
-            className={cn(
-              "absolute right-2 top-1/2 -translate-y-1/2 p-1 bg-transparent border-none outline-none",
-              disabled && "cursor-not-allowed opacity-50"
-            )}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (!disabled) {
-                // Sincronizar input y calendario al abrir
-                if (inputValue && inputValue.length === 10) {
-                  const date = parseDate(inputValue);
-                  if (date && isWithinRange(date)) {
-                    setSelectedDate(date);
-                  }
-                }
-                setIsOpen(!isOpen);
-              }
-            }}
-            disabled={disabled}
-            tabIndex={-1}
+              <span className="sr-only">Select date</span>
+            </IconButton>
+          </PopoverTrigger>
+          <PopoverContent
+            alignOffset={40}
+            sideOffset={-80}
+            sticky="always"
+            updatePositionStrategy="always"
+            className="z-100 w-auto p-0"
+            align="end"
           >
-            <CalendarIcon className="h-5 w-5 text-gray-400" />
-          </button>
-
-          {isOpen && !disabled && (
-            <div className="absolute top-full mt-1 z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={handleDateSelect}
-                disabled={(date) => {
-                  // Deshabilitar fechas fuera del rango si se proporcionó min/max
-                  return !isWithinRange(date);
-                }}
-                // Usar defaultMonth para permitir navegación interna sin controlar el mes
-                defaultMonth={selectedDate ?? new Date()}
-              />
-            </div>
-          )}
-        </div>
+            <Calendar
+              mode="single"
+              selected={date}
+              captionLayout="dropdown"
+              locale={es}
+              month={month}
+              onMonthChange={setMonth}
+              onSelect={(date) => {
+                setDate(date);
+                setValue(formatDate(date));
+                onChange?.(date);
+                setOpen(false);
+              }}
+            />
+          </PopoverContent>
+        </Popover>
       </div>
-
-      {showError && error && (
-        <p className="text-xs ml-3 text-red-500">{error.message}</p>
-      )}
     </div>
   );
 }

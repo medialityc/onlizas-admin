@@ -200,26 +200,6 @@ function SuppliersEvaluationInfo({ supplier }: { supplier: Supplier }) {
                 Calificación Actual
               </label>
             </div>
-            <div className="flex items-center gap-2">
-              <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">
-                {supplier.currentRating.toFixed(1)}
-              </p>
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <StarIcon
-                    key={star}
-                    className={`size-5 ${
-                      star <= supplier.currentRating
-                        ? "text-yellow-400"
-                        : "text-gray-300 dark:text-gray-600"
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              de 5.0 estrellas
-            </p>
           </div>
         )}
 
@@ -280,64 +260,6 @@ function SuppliersEvaluationInfo({ supplier }: { supplier: Supplier }) {
           </div>
         )}
       </div>
-
-      {hasValidRating && (
-        <>
-          {/* Barra de calificación visual */}
-          <div className="mt-6">
-            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
-              <span>Nivel de Calificación</span>
-              <span>{((supplier.currentRating / 5) * 100).toFixed(0)}%</span>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-              <div
-                className={`h-3 rounded-full transition-all duration-300 ${
-                  supplier.currentRating >= 4.5
-                    ? "bg-green-500"
-                    : supplier.currentRating >= 3.5
-                      ? "bg-yellow-500"
-                      : supplier.currentRating >= 2.5
-                        ? "bg-orange-500"
-                        : "bg-red-500"
-                }`}
-                style={{
-                  width: `${(supplier.currentRating / 5) * 100}%`,
-                }}
-              ></div>
-            </div>
-            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-              <span>Deficiente</span>
-              <span>Excelente</span>
-            </div>
-          </div>
-
-          {/* Indicador de rendimiento */}
-          <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-              Nivel de Rendimiento
-            </h3>
-            <p
-              className={`text-lg font-medium ${
-                supplier.currentRating >= 4.5
-                  ? "text-green-600 dark:text-green-400"
-                  : supplier.currentRating >= 3.5
-                    ? "text-yellow-600 dark:text-yellow-400"
-                    : supplier.currentRating >= 2.5
-                      ? "text-orange-600 dark:text-orange-400"
-                      : "text-red-600 dark:text-red-400"
-              }`}
-            >
-              {supplier.currentRating >= 4.5
-                ? "Excelente"
-                : supplier.currentRating >= 3.5
-                  ? "Bueno"
-                  : supplier.currentRating >= 2.5
-                    ? "Regular"
-                    : "Deficiente"}
-            </p>
-          </div>
-        </>
-      )}
     </section>
   );
 }

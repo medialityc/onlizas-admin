@@ -104,8 +104,7 @@ const InventoryProviderCard = ({ item }: Props) => {
         {hasReadPermission && (
           <Link href={`/dashboard/inventory/${item?.id}/details`}>
             <Button
-              outline
-              variant="secondary"
+              variant="outline"
               className="w-full justify-center py-1.5 px-3 text-sm"
               size="sm"
             >

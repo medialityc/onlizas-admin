@@ -25,8 +25,18 @@ export function UnexpectedProductsSection({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-            <svg className="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
+            <svg
+              className="w-5 h-5 text-gray-600 dark:text-gray-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"
+              />
             </svg>
           </div>
           <div>
@@ -39,7 +49,8 @@ export function UnexpectedProductsSection({
               )}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Registra productos que llegaron pero no estaban en la lista original
+              Registra productos que llegaron pero no estaban en la lista
+              original
             </p>
           </div>
         </div>
@@ -84,30 +95,47 @@ export function UnexpectedProductsSection({
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      <span className="font-medium">Cantidad:</span> {product.quantity} {product.unit}
+                      <span className="font-medium">Cantidad:</span>{" "}
+                      {product.quantity} {product.unit}
                     </p>
                     {product.batchNumber && (
                       <p className="text-sm text-gray-600 dark:text-gray-400">
-                        <span className="font-medium">Lote:</span> {product.batchNumber}
+                        <span className="font-medium">Lote:</span>{" "}
+                        {product.batchNumber}
                       </p>
                     )}
                     {product.observations && (
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        <span className="font-medium">Observaciones:</span> {product.observations}
+                        <span className="font-medium">Observaciones:</span>{" "}
+                        {product.observations}
                       </p>
                     )}
                   </div>
                 </div>
                 <Button
                   type="button"
-                  variant="danger"
+                  variant="destructive"
                   size="sm"
                   onClick={() => onRemoveProduct(index)}
                   disabled={isReceptionCompleted}
-                  title={isReceptionCompleted ? "No puede eliminar productos después de completar la recepción" : "Eliminar producto"}
+                  title={
+                    isReceptionCompleted
+                      ? "No puede eliminar productos después de completar la recepción"
+                      : "Eliminar producto"
+                  }
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
                   </svg>
                 </Button>
               </div>
@@ -116,8 +144,18 @@ export function UnexpectedProductsSection({
         </div>
       ) : (
         <div className="text-center py-8">
-          <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
+          <svg
+            className="w-12 h-12 text-gray-400 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"
+            />
           </svg>
           <p className="text-gray-500 dark:text-gray-400">
             No se han registrado productos no esperados

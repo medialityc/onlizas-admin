@@ -34,7 +34,7 @@ export const updateSupplierSchema = z.object({
       z.object({
         id: z.string(),
         name: z.string().min(2).max(100),
-      })
+      }),
     )
     .default([])
     .optional(),
@@ -43,7 +43,7 @@ export const updateSupplierSchema = z.object({
       z.object({
         id: z.string(),
         name: z.string().min(2).max(100),
-      })
+      }),
     )
     .default([])
     .optional(),
@@ -62,6 +62,12 @@ export const updateSupplierSchema = z.object({
   mincexCode: z.string().optional(),
   // Expiration date of the supplier account (ISO date string)
   expirationDate: z.date().default(new Date()).optional(),
+  // Tarifa fija (porcentaje 0-100)
+  fixedTax: z
+    .number({ error: "La tarifa fija es obligatoria." })
+    .min(0, "La tarifa fija no puede ser negativa.")
+    .max(100, "La tarifa fija no puede ser mayor que 100%.")
+    .optional(),
   supplierType: z.coerce
     .number({
       error: "El tipo de proveedor es obligatorio.",
@@ -88,5 +94,5 @@ export const updateSupplierSchemaWithRules = updateSupplierSchema.superRefine(
         });
       }
     }
-  }
+  },
 );

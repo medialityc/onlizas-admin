@@ -139,7 +139,7 @@ const YoutubePreviewCard: React.FC<Props> = ({ url, index, compact }) => {
           <div className="text-sm text-red-600">URL inválida.</div>
         )}
         <div className="mt-4 flex justify-end">
-          <Button variant="secondary" outline onClick={() => setOpen(false)}>
+          <Button variant="secondary" onClick={() => setOpen(false)}>
             Cerrar
           </Button>
         </div>

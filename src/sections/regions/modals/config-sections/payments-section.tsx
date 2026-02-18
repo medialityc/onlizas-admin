@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Button } from '@/components/button/button';
-import { Input } from '@/components/input/input';
-import Badge from '@/components/badge/badge';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  addPaymentGatewaysToRegion, 
-  removePaymentGatewayFromRegion, 
+import React, { useState } from "react";
+import { Button } from "@/components/button/button";
+import { Input } from "@/components/input/input";
+import Badge from "@/components/badge/badge";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  addPaymentGatewaysToRegion,
+  removePaymentGatewayFromRegion,
   updatePaymentGatewayPriority,
-  getRegionById
-} from '@/services/regions';
-import { RegionPaymentGateway } from '@/types/regions';
+  getRegionById,
+} from "@/services/regions";
+import { RegionPaymentGateway } from "@/types/regions";
 
 interface PaymentsSectionProps {
-  regionId: number|string;
+  regionId: number | string;
   regionName: string;
   onClose: () => void;
 }
@@ -22,70 +22,85 @@ interface PaymentsSectionProps {
 export const PaymentsSection: React.FC<PaymentsSectionProps> = ({
   regionId,
   regionName,
-  onClose
+  onClose,
 }) => {
-  const [selectedGatewayId, setSelectedGatewayId] = useState<string>('');
-  const [editingPriority, setEditingPriority] = useState<{ id: number|string; priority: number } | null>(null);
+  const [selectedGatewayId, setSelectedGatewayId] = useState<string>("");
+  const [editingPriority, setEditingPriority] = useState<{
+    id: number | string;
+    priority: number;
+  } | null>(null);
   const queryClient = useQueryClient();
 
   // Mock payment gateways - replace with actual API call
   const mockPaymentGateways = [
-    { id: 1, name: 'PayPal', code: 'paypal' },
-    { id: 2, name: 'Stripe', code: 'stripe' },
+    { id: 1, name: "PayPal", code: "paypal" },
+    { id: 2, name: "Stripe", code: "stripe" },
   ];
 
   // Fetch region configuration
   const { data: regionData, isLoading } = useQuery({
-    queryKey: ['region-details', regionId],
+    queryKey: ["region-details", regionId],
     queryFn: () => getRegionById(regionId),
-    enabled: !!regionId
+    enabled: !!regionId,
   });
 
   const regionPayments = regionData?.data?.paymentConfig?.gateways || [];
 
   // Mutations
   const addPaymentMutation = useMutation({
-    mutationFn: ({ gatewayId }: { gatewayId: number|string }) => 
-      addPaymentGatewaysToRegion(regionId, { 
-        paymentGateways: [{
-          paymentGatewayId: gatewayId,
-          priority: 1,
-          isFallback: false,
-          isEnabled: true,
-          supportedMethods: ['card']
-        }]
+    mutationFn: ({ gatewayId }: { gatewayId: number | string }) =>
+      addPaymentGatewaysToRegion(regionId, {
+        paymentGateways: [
+          {
+            paymentGatewayId: gatewayId,
+            priority: 1,
+            isFallback: false,
+            isEnabled: true,
+            supportedMethods: ["card"],
+          },
+        ],
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['region-details', regionId] });
-      setSelectedGatewayId('');
-    }
+      queryClient.invalidateQueries({ queryKey: ["region-details", regionId] });
+      setSelectedGatewayId("");
+    },
   });
 
   const removePaymentMutation = useMutation({
-    mutationFn: (gatewayId: number|string) => removePaymentGatewayFromRegion(regionId, gatewayId),
+    mutationFn: (gatewayId: number | string) =>
+      removePaymentGatewayFromRegion(regionId, gatewayId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['region-details', regionId] });
-    }
+      queryClient.invalidateQueries({ queryKey: ["region-details", regionId] });
+    },
   });
 
   const updatePriorityMutation = useMutation({
-    mutationFn: ({ gatewayId, priority }: { gatewayId: number|string; priority: number }) => 
-      updatePaymentGatewayPriority(regionId, gatewayId, { paymentGatewayId: gatewayId, newPriority: priority }),
+    mutationFn: ({
+      gatewayId,
+      priority,
+    }: {
+      gatewayId: number | string;
+      priority: number;
+    }) =>
+      updatePaymentGatewayPriority(regionId, gatewayId, {
+        paymentGatewayId: gatewayId,
+        newPriority: priority,
+      }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['region-details', regionId] });
+      queryClient.invalidateQueries({ queryKey: ["region-details", regionId] });
       setEditingPriority(null);
-    }
+    },
   });
 
   const handleAddPayment = () => {
     if (selectedGatewayId) {
       addPaymentMutation.mutate({
-        gatewayId: parseInt(selectedGatewayId)
+        gatewayId: parseInt(selectedGatewayId),
       });
     }
   };
 
-  const handleRemovePayment = (gatewayId: number|string) => {
+  const handleRemovePayment = (gatewayId: number | string) => {
     removePaymentMutation.mutate(gatewayId);
   };
 
@@ -93,20 +108,23 @@ export const PaymentsSection: React.FC<PaymentsSectionProps> = ({
     if (editingPriority) {
       updatePriorityMutation.mutate({
         gatewayId: editingPriority.id,
-        priority: editingPriority.priority
+        priority: editingPriority.priority,
       });
     }
   };
 
   // Get available payment gateways (not already assigned)
-  const assignedGatewayIds = regionPayments.map((rp: RegionPaymentGateway) => rp.paymentGatewayId);
-  const availableGateways = mockPaymentGateways.filter(gateway => 
-    !assignedGatewayIds.includes(gateway.id)
+  const assignedGatewayIds = regionPayments.map(
+    (rp: RegionPaymentGateway) => rp.paymentGatewayId,
+  );
+  const availableGateways = mockPaymentGateways.filter(
+    (gateway) => !assignedGatewayIds.includes(gateway.id),
   );
 
   // Sort payments by priority
-  const sortedPayments = [...regionPayments].sort((a: RegionPaymentGateway, b: RegionPaymentGateway) => 
-    (a.priority || 0) - (b.priority || 0)
+  const sortedPayments = [...regionPayments].sort(
+    (a: RegionPaymentGateway, b: RegionPaymentGateway) =>
+      (a.priority || 0) - (b.priority || 0),
   );
 
   if (isLoading) {
@@ -120,7 +138,8 @@ export const PaymentsSection: React.FC<PaymentsSectionProps> = ({
           Configurar Métodos de Pago - {regionName}
         </h3>
         <p className="text-sm text-gray-600 mb-4">
-          Asocia métodos de pago disponibles para esta región. El orden determina la prioridad de aparición.
+          Asocia métodos de pago disponibles para esta región. El orden
+          determina la prioridad de aparición.
         </p>
       </div>
 
@@ -136,7 +155,7 @@ export const PaymentsSection: React.FC<PaymentsSectionProps> = ({
               disabled={availableGateways.length === 0}
             >
               <option value="">Seleccionar método de pago...</option>
-              {availableGateways.map(gateway => (
+              {availableGateways.map((gateway) => (
                 <option key={gateway.id} value={gateway.id.toString()}>
                   {gateway.name} ({gateway.code})
                 </option>
@@ -148,12 +167,13 @@ export const PaymentsSection: React.FC<PaymentsSectionProps> = ({
             disabled={!selectedGatewayId || addPaymentMutation.isPending}
             size="sm"
           >
-            {addPaymentMutation.isPending ? 'Agregando...' : 'Agregar'}
+            {addPaymentMutation.isPending ? "Agregando..." : "Agregar"}
           </Button>
         </div>
         {availableGateways.length === 0 && (
           <p className="text-sm text-gray-500 mt-2">
-            Todos los métodos de pago disponibles ya están asignados a esta región.
+            Todos los métodos de pago disponibles ya están asignados a esta
+            región.
           </p>
         )}
       </div>
@@ -167,90 +187,100 @@ export const PaymentsSection: React.FC<PaymentsSectionProps> = ({
           </div>
         ) : (
           <div className="space-y-2">
-            {sortedPayments.map((regionPayment: RegionPaymentGateway, index) => {
-              const gateway = mockPaymentGateways.find(g => g.id === regionPayment.paymentGatewayId);
-              if (!gateway) return null;
+            {sortedPayments.map(
+              (regionPayment: RegionPaymentGateway, index) => {
+                const gateway = mockPaymentGateways.find(
+                  (g) => g.id === regionPayment.paymentGatewayId,
+                );
+                if (!gateway) return null;
 
-              const isEditing = editingPriority?.id === regionPayment.paymentGatewayId;
+                const isEditing =
+                  editingPriority?.id === regionPayment.paymentGatewayId;
 
-              return (
-                <div
-                  key={`payment-${regionPayment.paymentGatewayId}-${index}`}
-                  className="flex items-center justify-between p-3 border rounded-lg"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                        #{regionPayment.priority || 0}
-                      </span>
-                      <span className="font-medium">{gateway.name}</span>
-                      <span className="text-gray-600">({gateway.code})</span>
-                    </div>
-                    <Badge variant="success">Activo</Badge>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {isEditing ? (
+                return (
+                  <div
+                    key={`payment-${regionPayment.paymentGatewayId}-${index}`}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
+                    <div className="flex items-center gap-3">
                       <div className="flex items-center gap-2">
-                        <Input
-                          type="number"
-                          value={editingPriority?.priority || 1}
-                          onChange={(e) => editingPriority && setEditingPriority({
-                            ...editingPriority,
-                            priority: parseInt(e.target.value) || 1
-                          })}
-                          className="w-20"
-                          min="1"
-                        />
-                        <Button
-                          size="sm"
-                          onClick={handleUpdatePriority}
-                          disabled={updatePriorityMutation.isPending}
-                        >
-                          Guardar
-                        </Button>
-                        <Button
-                          outline
-                          size="sm"
-                          onClick={() => setEditingPriority(null)}
-                        >
-                          Cancelar
-                        </Button>
+                        <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+                          #{regionPayment.priority || 0}
+                        </span>
+                        <span className="font-medium">{gateway.name}</span>
+                        <span className="text-gray-600">({gateway.code})</span>
                       </div>
-                    ) : (
-                      <>
-                        <Button
-                          outline
-                          size="sm"
-                          onClick={() => setEditingPriority({
-                            id: regionPayment.paymentGatewayId,
-                            priority: regionPayment.priority || 1
-                          })}
-                        >
-                          Editar Prioridad
-                        </Button>
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() => handleRemovePayment(regionPayment.paymentGatewayId)}
-                          disabled={removePaymentMutation.isPending}
-                        >
-                          Eliminar
-                        </Button>
-                      </>
-                    )}
+                      <Badge variant="success">Activo</Badge>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {isEditing ? (
+                        <div className="flex items-center gap-2">
+                          <Input
+                            type="number"
+                            value={editingPriority?.priority || 1}
+                            onChange={(e) =>
+                              editingPriority &&
+                              setEditingPriority({
+                                ...editingPriority,
+                                priority: parseInt(e.target.value) || 1,
+                              })
+                            }
+                            className="w-20"
+                            min="1"
+                          />
+                          <Button
+                            size="sm"
+                            onClick={handleUpdatePriority}
+                            disabled={updatePriorityMutation.isPending}
+                          >
+                            Guardar
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => setEditingPriority(null)}
+                          >
+                            Cancelar
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <Button
+                            size="sm"
+                            onClick={() =>
+                              setEditingPriority({
+                                id: regionPayment.paymentGatewayId,
+                                priority: regionPayment.priority || 1,
+                              })
+                            }
+                          >
+                            Editar Prioridad
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() =>
+                              handleRemovePayment(
+                                regionPayment.paymentGatewayId,
+                              )
+                            }
+                            disabled={removePaymentMutation.isPending}
+                          >
+                            Eliminar
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              },
+            )}
           </div>
         )}
       </div>
 
       {/* Actions */}
       <div className="flex justify-end gap-3 pt-4 border-t">
-        <Button outline onClick={onClose}>
-          Cerrar
-        </Button>
+        <Button onClick={onClose}>Cerrar</Button>
       </div>
     </div>
   );

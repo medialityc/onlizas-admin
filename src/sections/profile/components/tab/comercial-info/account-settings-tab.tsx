@@ -52,7 +52,7 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
 
   const [beneficiaryModalOpen, setBeneficiaryModalOpen] = useState(false);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState<any | null>(
-    null
+    null,
   );
 
   // Independent form for account settings only
@@ -159,7 +159,7 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
                               if (b?.id) {
                                 openModal<number | string>(
                                   "editBusiness",
-                                  b.id
+                                  b.id,
                                 );
                               }
                             }}
@@ -173,7 +173,7 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
                               if (b?.id) {
                                 openModal<number | string>(
                                   "deleteBusiness",
-                                  b.id
+                                  b.id,
                                 );
                               }
                             }}
@@ -197,7 +197,6 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
                       <Button
                         type="button"
                         variant="secondary"
-                        outline
                         size="sm"
                         onClick={() => openModal("createBusiness")}
                         className="flex items-center gap-2 w-auto px-4 py-2"
@@ -254,7 +253,6 @@ export function AccountSettingsTab({ user }: AccountSettingsTabProps) {
                     <Button
                       type="button"
                       variant="secondary"
-                      outline
                       size="sm"
                       onClick={() => setBeneficiaryModalOpen(true)}
                       className="flex items-center gap-2 w-auto px-4 py-2"

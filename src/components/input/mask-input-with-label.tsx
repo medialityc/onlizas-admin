@@ -1,8 +1,7 @@
 import { cn } from "@/lib/utils";
 import { CSSProperties, ChangeEvent } from "react";
 import { FieldError } from "react-hook-form";
-// Removed react-text-mask; using a plain input with Tailwind styles
-// Mask support removed; plain input used
+import MaskedInput, { Mask } from "react-text-mask";
 
 interface Props extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -25,14 +24,8 @@ interface Props extends Omit<
   autoComplete?: string;
   className?: string;
   containerClassname?: string;
-  // Mask removed; no special props
+  mask: Mask | ((value: string) => Mask);
 }
-
-const sizes = {
-  small: "form-input-sm",
-  medium: "form-input",
-  large: "form-input-lg",
-};
 
 const MaskInputWithLabel: React.FC<Props> = ({
   id,
@@ -52,10 +45,11 @@ const MaskInputWithLabel: React.FC<Props> = ({
   dataTest,
   autoComplete,
   className,
+  mask,
   ...rest
 }) => (
   <div
-    className={cn("w-full flex flex-col gap-1 relative", containerClassname)}
+    className={cn("relative flex w-full flex-col gap-1", containerClassname)}
     style={{ width }}
   >
     <div className={cn("flex flex-col", label && "gap-2")}>
@@ -70,19 +64,17 @@ const MaskInputWithLabel: React.FC<Props> = ({
           </label>
         )}
         {underLabel && (
-          <p className="font-normal text-xs text-gray-600">{underLabel}</p>
+          <p className="text-xs font-normal text-gray-600">{underLabel}</p>
         )}
       </div>
       <div className="relative">
         <div className={cn("relative")}>
-          <input
+          <MaskedInput
             className={cn(
-              "form-input",
               className,
-              sizes[size],
               errorAlert &&
                 "border-red-500 focus:border-red-500 focus:ring-red-500",
-              disabled && "cursor-not-allowed opacity-50"
+              disabled && "cursor-not-allowed opacity-50",
             )}
             autoComplete={autoComplete}
             required={required}
@@ -97,6 +89,7 @@ const MaskInputWithLabel: React.FC<Props> = ({
             disabled={disabled}
             data-test={dataTest}
             style={{ width }}
+            mask={mask}
             {...rest}
           />
         </div>
@@ -104,7 +97,7 @@ const MaskInputWithLabel: React.FC<Props> = ({
     </div>
 
     {errorAlert && (
-      <p className="text-xs ml-3 text-red-500">{errorAlert.message}</p>
+      <p className="ml-3 text-xs text-red-500">{errorAlert.message}</p>
     )}
   </div>
 );

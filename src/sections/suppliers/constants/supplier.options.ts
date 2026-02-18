@@ -7,6 +7,7 @@ export enum SUPPLIER_TYPE {
   "Empresa",
   "Persona",
 }
+
 export enum SUPPLIER_NATIONALITY {
   "Nacional",
   "Extranjero",
@@ -26,4 +27,9 @@ export const SUPPLIER_NATIONALITY_OPTIONS = [
 export const SUPPLIER_TYPE_OPTIONS = [
   { value: SUPPLIER_TYPE.Empresa, label: "Mipyme" },
   { value: SUPPLIER_TYPE.Persona, label: "TCP" },
+];
+
+export const SUPPLIER_TYPE_OPTIONS_DET = [
+  { value: "Empresa", label: "Mipyme" },
+  { value: "Persona", label: "TCP" },
 ];

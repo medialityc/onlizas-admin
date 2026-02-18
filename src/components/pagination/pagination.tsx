@@ -1,5 +1,5 @@
-import { Button } from "@/components/button/button";
 import { PAGE_SIZES } from "@/components/datagrid/constants";
+import { Button } from "../input/button";
 
 export type PaginationProps = {
   page: number;
@@ -44,8 +44,7 @@ export function Pagination({
         </div>
         <div className="flex items-center gap-2">
           <Button
-            outline
-            variant="secondary"
+            variant="outline"
             onClick={() => onPageChange(Math.max(1, page - 1))}
             disabled={page <= 1}
           >
@@ -55,8 +54,7 @@ export function Pagination({
             {page} / {totalPages}
           </span>
           <Button
-            outline
-            variant="secondary"
+            variant="outline"
             onClick={() => onPageChange(Math.min(totalPages, page + 1))}
             disabled={page >= totalPages}
           >

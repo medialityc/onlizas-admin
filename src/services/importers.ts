@@ -20,11 +20,11 @@ import { QueryParamsURLFactory } from "@/lib/request";
 const IMPORTERS_TAG = "importers";
 
 export async function getImporters(
-  params: IQueryable = {}
+  params: IQueryable = {},
 ): Promise<ApiResponse<GetImporters>> {
   const url = new QueryParamsURLFactory(
     params,
-    backendRoutes.importers.list
+    backendRoutes.importers.list,
   ).build();
 
   const res = await nextAuthFetch({
@@ -39,7 +39,7 @@ export async function getImporters(
 }
 
 export async function getImporterById(
-  id: string
+  id: string,
 ): Promise<ApiResponse<Importer>> {
   const res = await nextAuthFetch({
     url: backendRoutes.importers.getById(id),
@@ -53,7 +53,7 @@ export async function getImporterById(
 }
 
 export async function createImporter(
-  data: CreateImporterPayload
+  data: CreateImporterPayload,
 ): Promise<ApiResponse<Importer>> {
   const res = await nextAuthFetch({
     url: backendRoutes.importers.create,
@@ -71,7 +71,7 @@ export async function createImporter(
 
 export async function updateImporter(
   id: string,
-  data: UpdateImporterPayload
+  data: UpdateImporterPayload,
 ): Promise<ApiResponse<Importer>> {
   const res = await nextAuthFetch({
     url: backendRoutes.importers.update(id),
@@ -88,7 +88,7 @@ export async function updateImporter(
 }
 
 export async function toggleImporterStatus(
-  id: string
+  id: string,
 ): Promise<ApiResponse<void>> {
   const res = await nextAuthFetch({
     url: backendRoutes.importers.toggleStatus(id),
@@ -104,11 +104,11 @@ export async function toggleImporterStatus(
 
 export async function getImporterNomenclators(
   importerId: string,
-  params: IQueryable = {}
+  params: IQueryable = {},
 ): Promise<ApiResponse<GetImporterNomenclators>> {
   const url = new QueryParamsURLFactory(
     params,
-    backendRoutes.importers.nomenclators(importerId)
+    backendRoutes.importers.nomenclators(importerId),
   ).build();
 
   const res = await nextAuthFetch({
@@ -124,11 +124,11 @@ export async function getImporterNomenclators(
 
 export async function getPendingContractRequests(
   importerId: string,
-  params: IQueryable = {}
+  params: IQueryable = {},
 ): Promise<ApiResponse<GetImporterContractRequests>> {
   const url = new QueryParamsURLFactory(
     params,
-    backendRoutes.importers.pendingContracts(importerId)
+    backendRoutes.importers.pendingContracts(importerId),
   ).build();
 
   const res = await nextAuthFetch({
@@ -144,11 +144,11 @@ export async function getPendingContractRequests(
 
 export async function getSupplierContracts(
   supplierId: string,
-  params: IQueryable = {}
+  params: IQueryable = {},
 ): Promise<ApiResponse<GetSupplierContracts>> {
   const url = new QueryParamsURLFactory(
     params,
-    backendRoutes.importers.supplierContracts(supplierId)
+    backendRoutes.importers.supplierContracts(supplierId),
   ).build();
 
   const res = await nextAuthFetch({
@@ -162,7 +162,10 @@ export async function getSupplierContracts(
   return buildApiResponseAsync<GetSupplierContracts>(res);
 }
 
-export async function generateImporterQRCode(importerId: string): Promise<
+export async function generateImporterQRCode(
+  importerId: string,
+  forceRegenerate: boolean,
+): Promise<
   ApiResponse<{
     importerId: string;
     importerName: string;
@@ -177,6 +180,7 @@ export async function generateImporterQRCode(importerId: string): Promise<
     url: backendRoutes.importerAccess.generateQr(importerId),
     method: "POST",
     useAuth: true,
+    data: JSON.stringify({ forceRegenerate }),
     headers: { "Content-Type": "application/json" },
   });
 

@@ -106,7 +106,7 @@ function ProductDetailsSection() {
                   <Button
                     type="button"
                     size="sm"
-                    variant="danger"
+                    variant="destructive"
                     onClick={() => remove(index)}
                     title="Eliminar detalle"
                   >

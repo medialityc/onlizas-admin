@@ -11,6 +11,7 @@ interface Props {
   onClose: () => void;
   initValue?: ProductVariant | undefined;
   inventoryId: string;
+  supplierId?: string;
   isPacking: boolean;
 }
 
@@ -19,6 +20,7 @@ export default function CreateInventoryVariantModal({
   onClose,
   initValue,
   inventoryId,
+  supplierId,
   isPacking,
 }: Props) {
   const [error, setError] = useState<string | null>(null);
@@ -44,6 +46,7 @@ export default function CreateInventoryVariantModal({
         <InventoryEditForm
           initValue={initValue}
           inventoryId={inventoryId}
+          supplierId={supplierId}
           isPacking={isPacking}
           handleClose={handleClose}
         />

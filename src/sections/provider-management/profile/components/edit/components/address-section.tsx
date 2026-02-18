@@ -66,7 +66,6 @@ export default function AddressSection() {
           <Button
             type="button"
             size="sm"
-            outline
             onClick={addAddress}
             className="flex items-center gap-2"
           >
@@ -115,7 +114,6 @@ export default function AddressSection() {
                       <Button
                         type="button"
                         size="sm"
-                        outline
                         onClick={() => editAddress(index)}
                         className="flex items-center gap-1"
                       >
@@ -126,8 +124,7 @@ export default function AddressSection() {
                       <Button
                         type="button"
                         size="sm"
-                        variant="danger"
-                        outline
+                        variant="destructive"
                         onClick={() => removeAddress(index)}
                         className="flex items-center gap-1"
                       >

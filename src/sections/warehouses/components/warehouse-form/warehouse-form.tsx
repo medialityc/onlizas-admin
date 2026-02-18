@@ -51,7 +51,7 @@ export function WarehouseForm({ warehouse }: Props) {
       {/* Actions stickies */}
       <div className="sticky bottom-0 mt-6 -mx-6 px-6 py-4 bg-white/80 dark:bg-gray-900/60 backdrop-blur border-t border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row justify-end gap-3">
         <Link href={"/dashboard/warehouses"}>
-          <Button type="button" variant="secondary" outline>
+          <Button type="button" variant="secondary">
             Cancelar
           </Button>
         </Link>

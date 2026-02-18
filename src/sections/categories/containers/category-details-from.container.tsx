@@ -27,9 +27,7 @@ const CategoryDetailsContainer = ({ category }: Props) => {
             <Button>Editar</Button>
           </Link>
           <Link href={paths.dashboard.categories.list}>
-            <Button variant="secondary" outline>
-              Volver
-            </Button>
+            <Button variant="outline">Volver</Button>
           </Link>
         </div>
       </div>
@@ -66,9 +64,7 @@ const CategoryDetailsContainer = ({ category }: Props) => {
                     <p className="text-sm font-medium text-gray-500 leading-none">
                       Estado:
                     </p>
-                    <Badge
-                      variant={category.active ? "success" : "secondary"}
-                    >
+                    <Badge variant={category.active ? "success" : "secondary"}>
                       {category.active ? "Activo" : "Inactivo"}
                     </Badge>
                   </div>

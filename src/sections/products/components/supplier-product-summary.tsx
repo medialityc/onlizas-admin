@@ -211,7 +211,6 @@ const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
         <div className="flex gap-2">
           <Button
             variant="secondary"
-            outline
             className="flex-1 px-3 py-2 items-center text-xs font-medium rounded-md transition-colors flex  justify-center gap-1.5"
           >
             <span className="flex-1 flex flex-row gap-2 items-center">

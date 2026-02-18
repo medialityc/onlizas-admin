@@ -108,8 +108,7 @@ export function OrderCard({
             </Button>
             <Button
               size="sm"
-              variant="secondary"
-              outline
+              variant="outline"
               onClick={() => onViewDetails(order)}
             >
               Ver Detalles
@@ -244,8 +243,7 @@ export function OrderCard({
                     <div className="flex items-center gap-2">
                       <Button
                         size="sm"
-                        variant="secondary"
-                        outline
+                        variant="outline"
                         disabled={
                           !subOrder.factureUrl ||
                           subOrder.factureUrl.trim() === ""
@@ -265,8 +263,7 @@ export function OrderCard({
                       </Button>
                       <Button
                         size="sm"
-                        variant="secondary"
-                        outline
+                        variant="outline"
                         disabled={
                           !subOrder.factureUrl ||
                           subOrder.factureUrl.trim() === ""

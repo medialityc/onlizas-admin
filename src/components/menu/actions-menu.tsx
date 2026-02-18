@@ -13,6 +13,7 @@ import {
   UserPlusIcon,
   TrashIcon,
   StarIcon,
+  CalendarIcon,
 } from "@heroicons/react/24/solid";
 import DeleteDialog from "../modal/delete-modal";
 import ToggleStatusDialog from "../modal/toggle-status-modal";
@@ -21,7 +22,7 @@ import { usePermissions } from "@/hooks/use-permissions";
 interface MenuProps {
   onAddUsers?: () => void;
   onEdit?: () => void;
-  onEditFull?: () => void; 
+  onEditFull?: () => void;
   onViewDetails?: () => void;
   onViewDocuments?: () => void;
   onDelete?: () => void;
@@ -29,7 +30,7 @@ interface MenuProps {
   onDownload?: () => void;
   onActive?: () => void;
   active?: boolean;
-  onSetDefault?: () => void; 
+  onSetDefault?: () => void;
   onBlocked?: () => void;
   isBlocked?: boolean;
   onVerify?: () => void;
@@ -39,6 +40,8 @@ interface MenuProps {
   onNomenclators?: () => void;
   onContracts?: () => void;
   onGenerateQR?: () => void;
+  onChangeExpirationDate?: () => void;
+  onChangeRate?: () => void;
   onApprove?: () => void;
   onReject?: () => void;
   onViewSupplier?: () => void;
@@ -59,6 +62,8 @@ interface MenuProps {
   nomenclatorsPermissions?: string[];
   contractsPermissions?: string[];
   qrPermissions?: string[];
+  changeExpirationPermissions?: string[];
+  changeRatePermissions?: string[];
   approvePermissions?: string[];
   rejectPermissions?: string[];
   viewSupplierPermissions?: string[];
@@ -84,6 +89,8 @@ const ActionsMenu = ({
   onNomenclators,
   onContracts,
   onGenerateQR,
+  onChangeExpirationDate,
+  onChangeRate,
   onSetDefault,
   onApprove,
   onReject,
@@ -104,6 +111,8 @@ const ActionsMenu = ({
   nomenclatorsPermissions,
   contractsPermissions,
   qrPermissions,
+  changeExpirationPermissions,
+  changeRatePermissions,
   approvePermissions,
   rejectPermissions,
   viewSupplierPermissions,
@@ -199,6 +208,27 @@ const ActionsMenu = ({
               onClick={onNomenclators}
             >
               Nomencladores
+            </Menu.Item>
+          )}
+
+          {onChangeExpirationDate &&
+            hasPermission(changeExpirationPermissions) && (
+              <Menu.Item
+                className="p-1 text-sm hover:text-white"
+                leftSection={<CalendarIcon className="h-4 w-4 " />}
+                onClick={onChangeExpirationDate}
+              >
+                Modificar fecha de expiración
+              </Menu.Item>
+            )}
+
+          {onChangeRate && hasPermission(changeRatePermissions) && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-white"
+              leftSection={<CurrencyDollarIcon className="h-4 w-4 " />}
+              onClick={onChangeRate}
+            >
+              Modificar tasa de comisión
             </Menu.Item>
           )}
 

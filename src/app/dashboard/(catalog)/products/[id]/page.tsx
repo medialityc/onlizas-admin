@@ -27,9 +27,7 @@ async function ProductDetails({ id }: { id: string }) {
             <Button>Editar</Button>
           </Link>
           <Link href={paths.dashboard.products.list}>
-            <Button variant="secondary" outline>
-              Volver
-            </Button>
+            <Button variant="outline">Volver</Button>
           </Link>
         </div>
       </div>

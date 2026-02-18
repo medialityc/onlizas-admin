@@ -2,7 +2,7 @@
 
 import { Controller, useFormContext } from "react-hook-form";
 import { CSSProperties } from "react";
-import DateInput from "../input/date-input";
+import { DayPickerWithInput } from "../input/date-input";
 
 // ----------------------------------------------------------------------
 
@@ -53,24 +53,13 @@ export default function RHFDateInput({
         field: { onChange, onBlur, value, ref },
         fieldState: { error },
       }) => (
-        <DateInput
+        <DayPickerWithInput
           id={name}
           value={value as any}
           onChange={onChange}
-          onBlur={onBlur}
           placeholder={placeholder}
           label={label}
-          underLabel={underLabel}
-          disabled={disabled}
           required={required}
-          error={showError ? error : undefined}
-          width={width}
-          className={className}
-          containerClassName={containerClassName}
-          showError={showError}
-          minDate={minDate}
-          maxDate={maxDate}
-          locale={locale}
         />
       )}
     />

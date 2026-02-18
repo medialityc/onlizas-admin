@@ -164,13 +164,7 @@ export default function CreatePromotionModal({
           </Card>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              outline
-              variant="secondary"
-              onClick={onClose}
-              size="md"
-            >
+            <Button type="button" variant="secondary" onClick={onClose}>
               Cancelar
             </Button>
             <Button

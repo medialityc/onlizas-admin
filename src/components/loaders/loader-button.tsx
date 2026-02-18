@@ -1,8 +1,17 @@
-import { Button, ButtonProps } from "../button/button";
-
+import { Button } from "../button/button";
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?:
+    | "primary"
+    | "secondary"
+    | "outline"
+    | "ghost"
+    | "destructive"
+    | "link";
+  size?: "default" | "sm" | "lg" | "icon";
+  loading?: boolean;
+}
 interface LoaderButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    ButtonProps {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, ButtonProps {
   className?: string;
   loading?: boolean;
   children: React.ReactNode;

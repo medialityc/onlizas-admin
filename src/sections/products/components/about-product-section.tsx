@@ -58,7 +58,7 @@ function AboutProductSection() {
             <Button
               type="button"
               size="sm"
-              variant="danger"
+              variant="destructive"
               onClick={() => removeAbout(index)}
             >
               <IconTrash className="w-4 h-4" />

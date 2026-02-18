@@ -10,8 +10,15 @@ import { DataTableColumn } from "mantine-datatable";
 import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import SuppliersModalContainer from "../modals/suppliers-modal-container";
+import SupplierExpirationModal from "../modals/supplier-expiration-modal";
+import SupplierRateModal from "../modals/supplier-rate-modal";
 import { deleteSuppliers } from "@/services/supplier";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import {
+  SUPPLIER_TYPE,
+  SUPPLIER_TYPE_OPTIONS,
+  SUPPLIER_TYPE_OPTIONS_DET,
+} from "../constants/supplier.options";
 
 interface SuppliersListProps {
   data?: GetAllSuppliers;
@@ -30,6 +37,8 @@ export function SuppliersList({
   const createSupplierModal = getModalState("create");
   const editSupplierModal = getModalState<string>("edit");
   const viewSupplierModal = getModalState<string>("view");
+  const expirationModal = getModalState<string>("supplierExpiration");
+  const rateModal = getModalState<string>("supplierRate");
 
   const selectedSupplier = useMemo(() => {
     const editId = editSupplierModal.id;
@@ -44,23 +53,49 @@ export function SuppliersList({
     return data.data.find((supplier) => supplier.id === numericId);
   }, [editSupplierModal.id, viewSupplierModal.id, data?.data]);
 
+  const expirationSupplier = useMemo(() => {
+    const targetId = expirationModal.id;
+    if (!targetId || !data?.data) return undefined;
+    return data.data.find((supplier) => supplier.id === targetId);
+  }, [expirationModal.id, data?.data]);
+
+  const rateSupplier = useMemo(() => {
+    const targetId = rateModal.id;
+    if (!targetId || !data?.data) return undefined;
+    return data.data.find((supplier) => supplier.id === targetId);
+  }, [rateModal.id, data?.data]);
+
   const handleCreateSupplier = useCallback(
     () => openModal("create"),
-    [openModal]
+    [openModal],
   );
 
   const handleViewSupplier = useCallback(
     (supplier: Supplier) => {
       openModal<string>("view", supplier.id);
     },
-    [openModal]
+    [openModal],
   );
 
   const handleEditFullSupplier = useCallback(
     (supplier: Supplier) => {
       router.push(`/dashboard/suppliers/${supplier.id}`);
     },
-    [router]
+    [router],
+  );
+
+  const handleChangeExpiration = useCallback(
+    (supplier: Supplier) => {
+      openModal<string>("supplierExpiration", supplier.id);
+    },
+    [openModal],
+  );
+
+  const handleChangeRate = useCallback(
+    (supplier: Supplier) => {
+      openModal<string>("supplierRate", supplier.id);
+    },
+    [openModal],
   );
 
   const handleToggleActiveSupplier = useCallback(async (supplier: Supplier) => {
@@ -72,7 +107,7 @@ export function SuppliersList({
       } else {
         showToast(
           `Proveedor ${res.data?.active ? "activado" : "desactivado"} eliminado correctamente`,
-          "success"
+          "success",
         );
       }
     } catch (error) {
@@ -99,43 +134,46 @@ export function SuppliersList({
         ),
       },
       {
-        accessor: "type",
-        title: "Tipo",
+        accessor: "nacionality",
+        title: "Nacionalidad",
         sortable: true,
         render: (supplier) => (
           <span className="text-sm text-gray-600 dark:text-gray-300">
-            {supplier.type}
+            {supplier.nacionality || "No disponible"}
           </span>
         ),
       },
       {
-        accessor: "currentRating",
-        title: "Calificación",
+        accessor: "sellerType",
+        title: "Tipo de vendedor",
         sortable: true,
-        width: 120,
         render: (supplier) => (
-          <div className="flex items-center">
-            <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
-              {supplier.currentRating}
-            </span>
-            <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
-              / 5.0
-            </span>
-          </div>
+          <span className="text-sm text-gray-600 dark:text-gray-300">
+            {supplier.sellerType || "No disponible"}
+          </span>
         ),
       },
       {
-        accessor: "lastEvaluationDate",
-        title: "Última Evaluación",
+        accessor: "expirationDate",
+        title: "Fecha de Expiración",
         sortable: true,
         width: 150,
         render: (supplier) => (
           <span className="text-sm text-gray-600 dark:text-gray-300">
-            {supplier.lastEvaluationDate
-              ? new Date(supplier.lastEvaluationDate).toLocaleDateString(
-                  "es-ES"
-                )
+            {supplier.expirationDate
+              ? new Date(supplier.expirationDate).toLocaleDateString("es-ES")
               : "No disponible"}
+          </span>
+        ),
+      },
+      {
+        accessor: "fixedTax",
+        title: "Tarifa Fija",
+        sortable: true,
+        width: 120,
+        render: (supplier) => (
+          <span className="text-sm text-gray-600 dark:text-gray-300">
+            {supplier.fixedTax ? `${supplier.fixedTax}%` : "No disponible"}
           </span>
         ),
       },
@@ -189,6 +227,10 @@ export function SuppliersList({
               onEdit={() => handleEditFullSupplier(supplier)}
               viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
               editPermissions={[PERMISSION_ENUM.UPDATE]}
+              onChangeExpirationDate={() => handleChangeExpiration(supplier)}
+              onChangeRate={() => handleChangeRate(supplier)}
+              changeExpirationPermissions={[PERMISSION_ENUM.UPDATE]}
+              changeRatePermissions={[PERMISSION_ENUM.UPDATE]}
               activePermissions={[
                 PERMISSION_ENUM.UPDATE,
                 PERMISSION_ENUM.DELETE,
@@ -198,7 +240,7 @@ export function SuppliersList({
         ),
       },
     ],
-    [handleViewSupplier, handleEditFullSupplier, handleToggleActiveSupplier]
+    [handleViewSupplier, handleEditFullSupplier, handleToggleActiveSupplier],
   );
 
   return (
@@ -227,6 +269,22 @@ export function SuppliersList({
           open={viewSupplierModal.open}
           supplier={selectedSupplier}
           isDetailsView
+        />
+      )}
+
+      {expirationSupplier && (
+        <SupplierExpirationModal
+          open={expirationModal.open}
+          onClose={() => closeModal("supplierExpiration")}
+          supplier={expirationSupplier}
+        />
+      )}
+
+      {rateSupplier && (
+        <SupplierRateModal
+          open={rateModal.open}
+          onClose={() => closeModal("supplierRate")}
+          supplier={rateSupplier}
         />
       )}
     </>

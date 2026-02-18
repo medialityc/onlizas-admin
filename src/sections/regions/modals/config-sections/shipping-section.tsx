@@ -1,18 +1,15 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Button } from '@/components/button/button';
-import { Input } from '@/components/input/input';
-import Badge from '@/components/badge/badge';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  addShippingMethodsToRegion, 
-  getRegionById
-} from '@/services/regions';
-import { RegionShippingConfig, RegionShippingMethod } from '@/types/regions';
+import React, { useState } from "react";
+import { Button } from "@/components/button/button";
+import { Input } from "@/components/input/input";
+import Badge from "@/components/badge/badge";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { addShippingMethodsToRegion, getRegionById } from "@/services/regions";
+import { RegionShippingConfig, RegionShippingMethod } from "@/types/regions";
 
 interface ShippingSectionProps {
-  regionId: number|string;
+  regionId: number | string;
   regionName: string;
   onClose: () => void;
 }
@@ -20,52 +17,76 @@ interface ShippingSectionProps {
 export const ShippingSection: React.FC<ShippingSectionProps> = ({
   regionId,
   regionName,
-  onClose
+  onClose,
 }) => {
-  const [selectedMethodId, setSelectedMethodId] = useState<string>('');
-  const [baseCost, setBaseCost] = useState<string>('');
-  const [estimatedDaysMin, setEstimatedDaysMin] = useState<string>('');
-  const [estimatedDaysMax, setEstimatedDaysMax] = useState<string>('');
+  const [selectedMethodId, setSelectedMethodId] = useState<string>("");
+  const [baseCost, setBaseCost] = useState<string>("");
+  const [estimatedDaysMin, setEstimatedDaysMin] = useState<string>("");
+  const [estimatedDaysMax, setEstimatedDaysMax] = useState<string>("");
   const queryClient = useQueryClient();
 
   // Mock shipping methods - replace with actual API call
   const mockShippingMethods = [
-    { id: 1, name: 'Envío Estándar', description: 'Entrega en 3-5 días hábiles' },
-    { id: 2, name: 'Envío Express', description: 'Entrega en 1-2 días hábiles' },
-    { id: 3, name: 'Envío Same Day', description: 'Entrega el mismo día' },
-    { id: 4, name: 'Retiro en Tienda', description: 'Retiro gratuito en sucursal' },
-    { id: 5, name: 'Envío Internacional', description: 'Entrega internacional 7-15 días' }
+    {
+      id: 1,
+      name: "Envío Estándar",
+      description: "Entrega en 3-5 días hábiles",
+    },
+    {
+      id: 2,
+      name: "Envío Express",
+      description: "Entrega en 1-2 días hábiles",
+    },
+    { id: 3, name: "Envío Same Day", description: "Entrega el mismo día" },
+    {
+      id: 4,
+      name: "Retiro en Tienda",
+      description: "Retiro gratuito en sucursal",
+    },
+    {
+      id: 5,
+      name: "Envío Internacional",
+      description: "Entrega internacional 7-15 días",
+    },
   ];
 
   // Fetch region configuration
   const { data: regionData, isLoading } = useQuery({
-    queryKey: ['region-details', regionId],
+    queryKey: ["region-details", regionId],
     queryFn: () => getRegionById(regionId),
-    enabled: !!regionId
+    enabled: !!regionId,
   });
 
   const regionShippingMethods = regionData?.data?.shippingConfig?.methods || [];
 
   // Mutations
   const addShippingMutation = useMutation({
-    mutationFn: (config: { shippingMethodId: number|string; baseCost?: number; estimatedDaysMin?: number; estimatedDaysMax?: number; carrier?: string }) => 
+    mutationFn: (config: {
+      shippingMethodId: number | string;
+      baseCost?: number;
+      estimatedDaysMin?: number;
+      estimatedDaysMax?: number;
+      carrier?: string;
+    }) =>
       addShippingMethodsToRegion(regionId, {
-        shippingMethods: [{
-          shippingMethodId: config.shippingMethodId,
-          baseCost: config.baseCost || 0,
-          estimatedDaysMin: config.estimatedDaysMin || 1,
-          estimatedDaysMax: config.estimatedDaysMax || 5,
-          carrier: config.carrier || 'Default Carrier',
-          enabled: true
-        }]
+        shippingMethods: [
+          {
+            shippingMethodId: config.shippingMethodId,
+            baseCost: config.baseCost || 0,
+            estimatedDaysMin: config.estimatedDaysMin || 1,
+            estimatedDaysMax: config.estimatedDaysMax || 5,
+            carrier: config.carrier || "Default Carrier",
+            enabled: true,
+          },
+        ],
       }),
     onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['region-details', regionId] });
-      setSelectedMethodId('');
-      setBaseCost('');
-      setEstimatedDaysMin('');
-      setEstimatedDaysMax('');
-    }
+      queryClient.invalidateQueries({ queryKey: ["region-details", regionId] });
+      setSelectedMethodId("");
+      setBaseCost("");
+      setEstimatedDaysMin("");
+      setEstimatedDaysMax("");
+    },
   });
 
   const handleAddShippingMethod = () => {
@@ -73,19 +94,25 @@ export const ShippingSection: React.FC<ShippingSectionProps> = ({
       const config = {
         shippingMethodId: parseInt(selectedMethodId),
         baseCost: baseCost ? parseFloat(baseCost) : undefined,
-        estimatedDaysMin: estimatedDaysMin ? parseInt(estimatedDaysMin) : undefined,
-        estimatedDaysMax: estimatedDaysMax ? parseInt(estimatedDaysMax) : undefined,
-        carrier: 'Default Carrier'
+        estimatedDaysMin: estimatedDaysMin
+          ? parseInt(estimatedDaysMin)
+          : undefined,
+        estimatedDaysMax: estimatedDaysMax
+          ? parseInt(estimatedDaysMax)
+          : undefined,
+        carrier: "Default Carrier",
       };
-      
+
       addShippingMutation.mutate(config);
     }
   };
 
   // Get available shipping methods (not already assigned)
-  const assignedMethodIds = regionShippingMethods.map((rs: RegionShippingMethod) => rs.shippingMethodId);
-  const availableMethods = mockShippingMethods.filter(method => 
-    !assignedMethodIds.includes(method.id)
+  const assignedMethodIds = regionShippingMethods.map(
+    (rs: RegionShippingMethod) => rs.shippingMethodId,
+  );
+  const availableMethods = mockShippingMethods.filter(
+    (method) => !assignedMethodIds.includes(method.id),
   );
 
   if (isLoading) {
@@ -99,7 +126,8 @@ export const ShippingSection: React.FC<ShippingSectionProps> = ({
           Configurar Métodos de Envío - {regionName}
         </h3>
         <p className="text-sm text-gray-600 mb-4">
-          Asocia métodos de envío disponibles para esta región con sus respectivos costos y tiempos estimados.
+          Asocia métodos de envío disponibles para esta región con sus
+          respectivos costos y tiempos estimados.
         </p>
       </div>
 
@@ -109,7 +137,9 @@ export const ShippingSection: React.FC<ShippingSectionProps> = ({
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Método de Envío</label>
+              <label className="block text-sm font-medium mb-1">
+                Método de Envío
+              </label>
               <select
                 value={selectedMethodId}
                 onChange={(e) => setSelectedMethodId(e.target.value)}
@@ -117,16 +147,18 @@ export const ShippingSection: React.FC<ShippingSectionProps> = ({
                 disabled={availableMethods.length === 0}
               >
                 <option value="">Seleccionar método...</option>
-                {availableMethods.map(method => (
+                {availableMethods.map((method) => (
                   <option key={method.id} value={method.id.toString()}>
                     {method.name}
                   </option>
                 ))}
               </select>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium mb-1">Costo Base (opcional)</label>
+              <label className="block text-sm font-medium mb-1">
+                Costo Base (opcional)
+              </label>
               <Input
                 type="number"
                 step="0.01"
@@ -137,10 +169,12 @@ export const ShippingSection: React.FC<ShippingSectionProps> = ({
               />
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Días Mínimos (opcional)</label>
+              <label className="block text-sm font-medium mb-1">
+                Días Mínimos (opcional)
+              </label>
               <Input
                 type="number"
                 value={estimatedDaysMin}
@@ -149,9 +183,11 @@ export const ShippingSection: React.FC<ShippingSectionProps> = ({
                 min="0"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium mb-1">Días Máximos (opcional)</label>
+              <label className="block text-sm font-medium mb-1">
+                Días Máximos (opcional)
+              </label>
               <Input
                 type="number"
                 value={estimatedDaysMax}
@@ -161,21 +197,24 @@ export const ShippingSection: React.FC<ShippingSectionProps> = ({
               />
             </div>
           </div>
-          
+
           <div className="flex justify-end">
             <Button
               onClick={handleAddShippingMethod}
               disabled={!selectedMethodId || addShippingMutation.isPending}
               size="sm"
             >
-              {addShippingMutation.isPending ? 'Agregando...' : 'Agregar Método'}
+              {addShippingMutation.isPending
+                ? "Agregando..."
+                : "Agregar Método"}
             </Button>
           </div>
         </div>
-        
+
         {availableMethods.length === 0 && (
           <p className="text-sm text-gray-500 mt-2">
-            Todos los métodos de envío disponibles ya están asignados a esta región.
+            Todos los métodos de envío disponibles ya están asignados a esta
+            región.
           </p>
         )}
       </div>
@@ -189,55 +228,62 @@ export const ShippingSection: React.FC<ShippingSectionProps> = ({
           </div>
         ) : (
           <div className="space-y-2">
-            {regionShippingMethods.map((regionShipping: RegionShippingMethod, index: number) => {
-              const method = mockShippingMethods.find(m => m.id === regionShipping.shippingMethodId);
-              if (!method) return null;
+            {regionShippingMethods.map(
+              (regionShipping: RegionShippingMethod, index: number) => {
+                const method = mockShippingMethods.find(
+                  (m) => m.id === regionShipping.shippingMethodId,
+                );
+                if (!method) return null;
 
-              return (
-                <div
-                  key={`shipping-${regionShipping.shippingMethodId}-${index}`}
-                  className="flex items-center justify-between p-3 border rounded-lg"
-                >
-                  <div className="flex items-center gap-3">
-                    <div>
-                      <span className="font-medium">{method.name}</span>
-                      <p className="text-sm text-gray-600">{method.description}</p>
+                return (
+                  <div
+                    key={`shipping-${regionShipping.shippingMethodId}-${index}`}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div>
+                        <span className="font-medium">{method.name}</span>
+                        <p className="text-sm text-gray-600">
+                          {method.description}
+                        </p>
+                      </div>
+                      {regionShipping.isEnabled ? (
+                        <Badge variant="success">Activo</Badge>
+                      ) : (
+                        <Badge variant="secondary">Inactivo</Badge>
+                      )}
                     </div>
-                    {regionShipping.isEnabled ? (
-                      <Badge variant="success">Activo</Badge>
-                    ) : (
-                      <Badge variant="secondary">Inactivo</Badge>
-                    )}
+                    <div className="text-right">
+                      {regionShipping.baseCost && (
+                        <div className="text-sm">
+                          <span className="font-medium">
+                            ${regionShipping.baseCost}
+                          </span>
+                        </div>
+                      )}
+                      {(regionShipping.estimatedDaysMin ||
+                        regionShipping.estimatedDaysMax) && (
+                        <div className="text-xs text-gray-500">
+                          {regionShipping.estimatedDaysMin &&
+                          regionShipping.estimatedDaysMax
+                            ? `${regionShipping.estimatedDaysMin}-${regionShipping.estimatedDaysMax} días`
+                            : regionShipping.estimatedDaysMin
+                              ? `Desde ${regionShipping.estimatedDaysMin} días`
+                              : `Hasta ${regionShipping.estimatedDaysMax} días`}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-right">
-                    {regionShipping.baseCost && (
-                      <div className="text-sm">
-                        <span className="font-medium">${regionShipping.baseCost}</span>
-                      </div>
-                    )}
-                    {(regionShipping.estimatedDaysMin || regionShipping.estimatedDaysMax) && (
-                      <div className="text-xs text-gray-500">
-                        {regionShipping.estimatedDaysMin && regionShipping.estimatedDaysMax 
-                          ? `${regionShipping.estimatedDaysMin}-${regionShipping.estimatedDaysMax} días`
-                          : regionShipping.estimatedDaysMin 
-                          ? `Desde ${regionShipping.estimatedDaysMin} días`
-                          : `Hasta ${regionShipping.estimatedDaysMax} días`
-                        }
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+                );
+              },
+            )}
           </div>
         )}
       </div>
 
       {/* Actions */}
       <div className="flex justify-end gap-3 pt-4 border-t">
-        <Button outline onClick={onClose}>
-          Cerrar
-        </Button>
+        <Button onClick={onClose}>Cerrar</Button>
       </div>
     </div>
   );

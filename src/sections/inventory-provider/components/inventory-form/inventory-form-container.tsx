@@ -14,7 +14,7 @@ type Props = {
 const InventoryProviderForm = ({ provider, onClose }: Props) => {
   const { form, isPending, onSubmit } = useInventoryCreateForm(
     { supplierId: provider },
-    onClose
+    onClose,
   );
 
   return (
@@ -23,7 +23,7 @@ const InventoryProviderForm = ({ provider, onClose }: Props) => {
         <InventoryForm provider={provider} />
         {/* Botones de acción */}
         <div className="flex gap-4 pt-6 mt-6 border-t justify-end">
-          <Button type="button" variant="secondary" outline onClick={onClose}>
+          <Button type="button" variant="outline" onClick={onClose}>
             Cancelar
           </Button>
           <LoaderButton type="submit" loading={isPending} disabled={isPending}>

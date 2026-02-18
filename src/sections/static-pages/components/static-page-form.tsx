@@ -32,7 +32,7 @@ export default function StaticPageForm({ initValue }: StaticPageFormProps) {
   const { push } = useRouter();
   const handleCancel = useCallback(
     () => push("/dashboard/content/static-pages"),
-    [push]
+    [push],
   );
 
   const isEdit = !!initValue?.id;
@@ -95,12 +95,7 @@ export default function StaticPageForm({ initValue }: StaticPageFormProps) {
       </FormProvider>
 
       <div className="flex justify-end gap-3 pt-6">
-        <Button
-          type="button"
-          variant="secondary"
-          outline
-          onClick={handleCancel}
-        >
+        <Button type="button" variant="secondary" onClick={handleCancel}>
           Cancelar
         </Button>
         {hasUpdatePermission && (

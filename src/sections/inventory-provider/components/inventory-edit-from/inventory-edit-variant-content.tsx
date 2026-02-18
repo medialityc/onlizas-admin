@@ -9,6 +9,7 @@ type Props = {
   index?: number;
   isPending: boolean;
   isPacking: boolean;
+  supplierId?: string;
   handleClose: () => void;
 };
 
@@ -17,6 +18,7 @@ const InventoryEditVariantContent = ({
   handleClose,
   isPending,
   isPacking,
+  supplierId,
 }: Props) => {
   const { hasPermission } = usePermissions();
   const hasUpdatePermission = hasPermission([
@@ -27,10 +29,13 @@ const InventoryEditVariantContent = ({
   return (
     <>
       <div className="gap-2">
-        <InventoryVariantFrom variantIndex={index ?? 0} isPacking={isPacking} />
+        <InventoryVariantFrom
+          variantIndex={index ?? 0}
+          isPacking={isPacking}
+          supplierId={supplierId}
+        />
         <div className="flex justify-end gap-3 pt-6">
           <Button
-            outline
             variant="secondary"
             type="button"
             onClick={handleClose}

@@ -89,7 +89,7 @@ export default function WarehouseReceptionProcessContainer({
       <div>
         {/* Botón de navegación hacia atrás */}
         <div className="flex items-center gap-4 mb-6">
-          <Button onClick={handleBackToTransfers} variant="secondary" outline>
+          <Button onClick={handleBackToTransfers} variant="secondary">
             <ArrowLeftIcon className="h-4 w-4 mr-2" />
             Volver a Transferencias
           </Button>

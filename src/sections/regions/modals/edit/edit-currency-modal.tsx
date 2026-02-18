@@ -28,7 +28,7 @@ interface EditCurrencyModalProps {
   open: boolean;
   onClose: () => void;
   currency: Currency | null;
-  regionId: number|string;
+  regionId: number | string;
 }
 
 export default function EditCurrencyModal({
@@ -177,12 +177,7 @@ export default function EditCurrencyModal({
 
           {/* Botones */}
           <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <Button
-              type="button"
-              outline={true}
-              onClick={handleClose}
-              disabled={isSubmitting}
-            >
+            <Button type="button" onClick={handleClose} disabled={isSubmitting}>
               Cancelar
             </Button>
             {canEdit && (

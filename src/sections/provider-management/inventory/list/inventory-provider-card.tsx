@@ -92,7 +92,7 @@ const InventoryProviderCard = ({ item }: Props) => {
 
       <CardFooter className="grid grid-cols-2 gap-2 pt-2">
         <Link href={`/provider/inventory/${item?.id}/details`}>
-          <Button variant="secondary" outline size="sm" className="w-full">
+          <Button variant="secondary" size="sm" className="w-full">
             <EyeIcon className="mr-2 h-4 w-4" />
             Ver
           </Button>

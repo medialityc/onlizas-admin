@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Button } from '@/components/button/button';
-import Badge from '@/components/badge/badge';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  addCurrenciesToRegion, 
-  removeCurrencyFromRegion, 
-  setPrimaryCurrency
-} from '@/services/regions';
-import { RegionCurrency } from '@/types/regions';
-import { getAllCurrencies } from '@/services/currencies';
-import { useRegionDetails } from '@/sections/regions/hooks/use-region-details';
+import React, { useState } from "react";
+import { Button } from "@/components/button/button";
+import Badge from "@/components/badge/badge";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  addCurrenciesToRegion,
+  removeCurrencyFromRegion,
+  setPrimaryCurrency,
+} from "@/services/regions";
+import { RegionCurrency } from "@/types/regions";
+import { getAllCurrencies } from "@/services/currencies";
+import { useRegionDetails } from "@/sections/regions/hooks/use-region-details";
 
 interface CurrenciesSectionProps {
-  regionId: number|string;
+  regionId: number | string;
   regionName: string;
   onClose: () => void;
 }
@@ -22,15 +22,15 @@ interface CurrenciesSectionProps {
 export const CurrenciesSection: React.FC<CurrenciesSectionProps> = ({
   regionId,
   regionName,
-  onClose
+  onClose,
 }) => {
-  const [selectedCurrencyId, setSelectedCurrencyId] = useState<string>('');
+  const [selectedCurrencyId, setSelectedCurrencyId] = useState<string>("");
   const queryClient = useQueryClient();
 
   // Fetch available currencies
   const { data: currenciesData } = useQuery({
-    queryKey: ['currencies'],
-    queryFn: () => getAllCurrencies({ page: 1, limit: 100 })
+    queryKey: ["currencies"],
+    queryFn: () => getAllCurrencies({ page: 1, limit: 100 }),
   });
 
   const currencies = currenciesData?.data?.data || [];
@@ -38,78 +38,95 @@ export const CurrenciesSection: React.FC<CurrenciesSectionProps> = ({
   // Debug: Log what's coming from the API
   React.useEffect(() => {
     if (currencies.length > 0) {
-      console.log('Currencies from API:', currencies);
-      console.log('First currency ID type:', typeof currencies[0]?.id, currencies[0]?.id);
+      console.log("Currencies from API:", currencies);
+      console.log(
+        "First currency ID type:",
+        typeof currencies[0]?.id,
+        currencies[0]?.id,
+      );
     }
   }, [currencies]);
 
   // Fetch region configuration
   const { data: regionData, isLoading } = useRegionDetails(regionId);
 
-  const regionCurrencies = regionData?.data?.currencyConfig?.allCurrencies || [];
+  const regionCurrencies =
+    regionData?.data?.currencyConfig?.allCurrencies || [];
 
   // Mutations
   const addCurrencyMutation = useMutation({
-    mutationFn: ({ currencyId, isPrimary }: { currencyId: number|string; isPrimary?: boolean }) => 
-      addCurrenciesToRegion(regionId, { 
-        currencies: [{ 
-          currencyId, 
-          isPrimary: isPrimary || false, 
-          isEnabled: true 
-        }] 
+    mutationFn: ({
+      currencyId,
+      isPrimary,
+    }: {
+      currencyId: number | string;
+      isPrimary?: boolean;
+    }) =>
+      addCurrenciesToRegion(regionId, {
+        currencies: [
+          {
+            currencyId,
+            isPrimary: isPrimary || false,
+            isEnabled: true,
+          },
+        ],
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['region-details', regionId] });
-      setSelectedCurrencyId('');
-    }
+      queryClient.invalidateQueries({ queryKey: ["region-details", regionId] });
+      setSelectedCurrencyId("");
+    },
   });
 
   const removeCurrencyMutation = useMutation({
-    mutationFn: (currencyId: number|string) => removeCurrencyFromRegion(regionId, currencyId),
+    mutationFn: (currencyId: number | string) =>
+      removeCurrencyFromRegion(regionId, currencyId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['region-details', regionId] });
-    }
+      queryClient.invalidateQueries({ queryKey: ["region-details", regionId] });
+    },
   });
 
   const setPrimaryMutation = useMutation({
-    mutationFn: (currencyId: number|string) => setPrimaryCurrency(regionId, currencyId),
+    mutationFn: (currencyId: number | string) =>
+      setPrimaryCurrency(regionId, currencyId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['region-details', regionId] });
-    }
+      queryClient.invalidateQueries({ queryKey: ["region-details", regionId] });
+    },
   });
 
   const handleAddCurrency = () => {
     if (selectedCurrencyId) {
       const isPrimary = regionCurrencies.length === 0; // First currency is primary by default
       const currencyIdToSend = String(selectedCurrencyId);
-      
-      console.log('About to send currency:', {
+
+      console.log("About to send currency:", {
         selectedCurrencyId,
         selectedType: typeof selectedCurrencyId,
         currencyIdToSend,
         sendType: typeof currencyIdToSend,
-        isPrimary
+        isPrimary,
       });
-      
+
       addCurrencyMutation.mutate({
         currencyId: currencyIdToSend, // Ensure it's always a string
-        isPrimary
+        isPrimary,
       });
     }
   };
 
-  const handleRemoveCurrency = (currencyId: number|string) => {
+  const handleRemoveCurrency = (currencyId: number | string) => {
     removeCurrencyMutation.mutate(String(currencyId));
   };
 
-  const handleSetPrimary = (currencyId: number|string) => {
+  const handleSetPrimary = (currencyId: number | string) => {
     setPrimaryMutation.mutate(String(currencyId));
   };
 
   // Get available currencies (not already assigned)
-  const assignedCurrencyIds = regionCurrencies.map((rc: RegionCurrency) => String(rc.currencyId));
-  const availableCurrencies = currencies.filter((currency: any) => 
-    !assignedCurrencyIds.includes(String(currency.id))
+  const assignedCurrencyIds = regionCurrencies.map((rc: RegionCurrency) =>
+    String(rc.currencyId),
+  );
+  const availableCurrencies = currencies.filter(
+    (currency: any) => !assignedCurrencyIds.includes(String(currency.id)),
   );
 
   if (isLoading) {
@@ -123,7 +140,8 @@ export const CurrenciesSection: React.FC<CurrenciesSectionProps> = ({
           Configurar Monedas - {regionName}
         </h3>
         <p className="text-sm text-gray-600 mb-4">
-          Asocia monedas disponibles para esta región. Una moneda debe ser marcada como principal.
+          Asocia monedas disponibles para esta región. Una moneda debe ser
+          marcada como principal.
         </p>
       </div>
 
@@ -135,7 +153,12 @@ export const CurrenciesSection: React.FC<CurrenciesSectionProps> = ({
             <select
               value={selectedCurrencyId}
               onChange={(e) => {
-                console.log('Selected currency ID:', e.target.value, 'Type:', typeof e.target.value);
+                console.log(
+                  "Selected currency ID:",
+                  e.target.value,
+                  "Type:",
+                  typeof e.target.value,
+                );
                 setSelectedCurrencyId(e.target.value);
               }}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -155,7 +178,7 @@ export const CurrenciesSection: React.FC<CurrenciesSectionProps> = ({
             disabled={!selectedCurrencyId || addCurrencyMutation.isPending}
             size="sm"
           >
-            {addCurrencyMutation.isPending ? 'Agregando...' : 'Agregar'}
+            {addCurrencyMutation.isPending ? "Agregando..." : "Agregar"}
           </Button>
         </div>
         {availableCurrencies.length === 0 && (
@@ -174,54 +197,63 @@ export const CurrenciesSection: React.FC<CurrenciesSectionProps> = ({
           </div>
         ) : (
           <div className="space-y-2">
-            {regionCurrencies.map((regionCurrency: RegionCurrency, index: number) => {
-              const currency = currencies.find((c: any) => String(c.id) === String(regionCurrency.currencyId));
-              if (!currency) return null;
+            {regionCurrencies.map(
+              (regionCurrency: RegionCurrency, index: number) => {
+                const currency = currencies.find(
+                  (c: any) =>
+                    String(c.id) === String(regionCurrency.currencyId),
+                );
+                if (!currency) return null;
 
-              return (
-                <div
-                  key={`currency-${regionCurrency.currencyId}-${index}`}
-                  className="flex items-center justify-between p-3 border rounded-lg"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="font-medium">{currency.codIso}</span>
-                    <span className="text-gray-600">{currency.name}</span>
-                    {regionCurrency.isPrimary && (
-                      <Badge variant="success">Principal</Badge>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {!regionCurrency.isPrimary && (
+                return (
+                  <div
+                    key={`currency-${regionCurrency.currencyId}-${index}`}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-medium">{currency.codIso}</span>
+                      <span className="text-gray-600">{currency.name}</span>
+                      {regionCurrency.isPrimary && (
+                        <Badge variant="success">Principal</Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {!regionCurrency.isPrimary && (
+                        <Button
+                          size="sm"
+                          onClick={() =>
+                            handleSetPrimary(regionCurrency.currencyId)
+                          }
+                          disabled={setPrimaryMutation.isPending}
+                        >
+                          Hacer Principal
+                        </Button>
+                      )}
                       <Button
-                        outline
+                        variant="destructive"
                         size="sm"
-                        onClick={() => handleSetPrimary(regionCurrency.currencyId)}
-                        disabled={setPrimaryMutation.isPending}
+                        onClick={() =>
+                          handleRemoveCurrency(regionCurrency.currencyId)
+                        }
+                        disabled={
+                          removeCurrencyMutation.isPending ||
+                          regionCurrency.isPrimary
+                        }
                       >
-                        Hacer Principal
+                        Eliminar
                       </Button>
-                    )}
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => handleRemoveCurrency(regionCurrency.currencyId)}
-                      disabled={removeCurrencyMutation.isPending || regionCurrency.isPrimary}
-                    >
-                      Eliminar
-                    </Button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              },
+            )}
           </div>
         )}
       </div>
 
       {/* Actions */}
       <div className="flex justify-end gap-3 pt-4 border-t">
-        <Button outline onClick={onClose}>
-          Cerrar
-        </Button>
+        <Button onClick={onClose}>Cerrar</Button>
       </div>
     </div>
   );

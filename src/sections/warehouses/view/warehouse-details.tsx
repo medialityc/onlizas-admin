@@ -45,9 +45,7 @@ export async function WarehouseDetails({
             <Button>Editar</Button>
           </Link>
           <Link href={paths.dashboard.warehouses.list}>
-            <Button variant="secondary" outline>
-              Volver
-            </Button>
+            <Button variant="secondary">Volver</Button>
           </Link>
         </div>
       </div>

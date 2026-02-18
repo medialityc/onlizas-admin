@@ -74,7 +74,7 @@ export function AddressModal({
         },
         (error) => {
           console.error("Error obteniendo ubicación:", error);
-        }
+        },
       );
     }
   };
@@ -178,7 +178,6 @@ export function AddressModal({
             <Label>Coordenadas GPS</Label>
             <Button
               type="button"
-              outline
               size="sm"
               onClick={getCurrentLocation}
               className="flex items-center gap-2 text-green-600 hover:text-white border-green-600 hover:bg-green-600"
@@ -226,7 +225,7 @@ export function AddressModal({
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <Button type="button" outline onClick={onClose}>
+          <Button type="button" onClick={onClose}>
             Cancelar
           </Button>
           {hasUpdatePermission && (

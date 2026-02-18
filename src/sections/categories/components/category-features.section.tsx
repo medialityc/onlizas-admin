@@ -14,7 +14,10 @@ const CategoryFeatureSection = () => {
     <div>
       <label className="block font-semibold mb-2">Características</label>
       {fields.map((field, idx) => (
-        <div key={field.id} className="border rounded p-4 mb-4 bg-gray-50 dark:bg-gray-900 dark:border-gray-700">
+        <div
+          key={field.id}
+          className="border rounded p-4 mb-4 bg-gray-50 dark:bg-gray-900 dark:border-gray-700"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <RHFInputWithLabel
               name={`features.${idx}.featureName`}
@@ -54,7 +57,6 @@ const CategoryFeatureSection = () => {
         </div>
       ))}
       <Button
-        outline
         onClick={() =>
           append({
             featureName: "",
@@ -97,7 +99,7 @@ function ArrayStringField({
 
           <Button
             type="button"
-            variant="danger"
+            variant="destructive"
             onClick={() => remove(index)}
             title="Eliminar sugerencia"
           >
@@ -114,7 +116,7 @@ function ArrayStringField({
       )}
 
       {/* actions */}
-      <Button outline onClick={() => append("")}>
+      <Button variant="outline" onClick={() => append("")}>
         Agregar sugerencia
       </Button>
     </div>
@@ -132,7 +134,7 @@ function IconButtonRemove({
     <Button
       className="flex flex-row gap-2 items-center"
       type="button"
-      variant="danger"
+      variant="destructive"
       onClick={onClick}
       title="Eliminar"
       disabled={index === 0}

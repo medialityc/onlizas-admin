@@ -102,7 +102,6 @@ export function SubOrdersSection({
             <div className="flex justify-end gap-2">
               <Button
                 variant="secondary"
-                outline
                 type="button"
                 onClick={() => setIsBulkModalOpen(false)}
               >

@@ -34,7 +34,7 @@ export type ValidateResponse = {
 
 export async function validateImporterAccess(
   importerId: string,
-  code: string
+  code: string,
 ): Promise<ValidateResponse> {
   try {
     // Validar UUID para prevenir SSRF
@@ -281,7 +281,7 @@ export async function getImporterSessions(importerId: string): Promise<{
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     const data = await response.json();
@@ -308,7 +308,7 @@ export async function getImporterSessions(importerId: string): Promise<{
 export async function revokeImporterSession(
   importerId: string,
   sessionId: string,
-  reason?: string
+  reason?: string,
 ): Promise<{
   success: boolean;
   error?: boolean;
@@ -343,7 +343,7 @@ export async function revokeImporterSession(
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ sessionId, reason }),
-      }
+      },
     );
 
     const data = await response.json();
@@ -380,7 +380,10 @@ export type QRCodeResponse = {
   instructions: string;
 };
 
-export async function generateImporterQR(importerId: string): Promise<{
+export async function generateImporterQR(
+  importerId: string,
+  forceRegenerate: boolean,
+): Promise<{
   data?: QRCodeResponse;
   error?: boolean;
   message?: string;
@@ -397,10 +400,11 @@ export async function generateImporterQR(importerId: string): Promise<{
       backendRoutes.importerAccess.generateQr(importerId),
       {
         method: "POST",
+        body: JSON.stringify({ forceRegenerate }),
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const data = await response.json();
@@ -431,7 +435,7 @@ export type UpdateContractPayload = {
 
 export async function updateImporterContract(
   contractId: string,
-  payload: UpdateContractPayload
+  payload: UpdateContractPayload,
 ): Promise<{
   success: boolean;
   data?: any;
@@ -464,7 +468,7 @@ export async function updateImporterContract(
       {
         method: "PUT",
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     const text = await response.text();

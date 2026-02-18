@@ -24,7 +24,7 @@ export default function HomeBannerForm({ initValue }: Props) {
   const { push } = useRouter();
   const handleCancel = useCallback(
     () => push("/dashboard/content/home-banners"),
-    [push]
+    [push],
   );
 
   return (
@@ -84,12 +84,7 @@ export default function HomeBannerForm({ initValue }: Props) {
 
       {/* actions */}
       <div className="flex justify-end gap-3 pt-6">
-        <Button
-          type="button"
-          variant="secondary"
-          outline
-          onClick={handleCancel}
-        >
+        <Button type="button" variant="outline" onClick={handleCancel}>
           Cancelar
         </Button>
         <LoaderButton

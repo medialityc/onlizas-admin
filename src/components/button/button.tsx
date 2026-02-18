@@ -1,114 +1,67 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-
-type ButtonVariant =
-  | "primary"
-  | "default"
-  | "info"
-  | "success"
-  | "warning"
-  | "danger"
-  | "secondary"
-  | "dark";
-type ButtonSize = "sm" | "md" | "lg";
-type ButtonType = "button" | "submit" | "reset";
+import { Loader2 } from "lucide-react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  outline?: boolean;
-  rounded?: boolean;
-  fullWidth?: boolean;
-  iconOnly?: boolean;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
-  children?: React.ReactNode;
-  type?: ButtonType;
-  className?: string;
+  variant?:
+    | "primary"
+    | "secondary"
+    | "outline"
+    | "ghost"
+    | "destructive"
+    | "link";
+  size?: "default" | "sm" | "lg" | "icon";
+  loading?: boolean;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
-      variant = "primary",
-      size = "md",
-      outline = false,
-      rounded = false,
-      fullWidth = false,
-      iconOnly = false,
-      leftIcon,
-      rightIcon,
-      children,
-      type = "button",
       className,
+      variant = "primary",
+      size = "default",
+      loading,
+      children,
       disabled,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const getVariantClasses = () => {
-      const prefix = outline ? "btn-outline-" : "btn-";
-      return `${prefix}${variant}`;
+    const variants = {
+      primary:
+        "bg-primary text-white hover:opacity-90 shadow-md shadow-primary/20",
+      secondary: "bg-[var(--color-secondary-gold)] text-white hover:opacity-90",
+      outline: "border border-primary text-primary hover:bg-primary/5",
+      ghost:
+        "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 hover:text-primary",
+      destructive: "bg-red-500 text-white hover:bg-red-600",
+      link: "text-primary underline-offset-4 hover:underline",
     };
 
-    const getSizeClasses = () => {
-      switch (size) {
-        case "sm":
-          return "btn-sm";
-        case "lg":
-          return "btn-lg";
-        default:
-          return "";
-      }
+    const sizes = {
+      default: "h-10 px-4 py-2",
+      sm: "h-8 px-3 rounded-md text-xs",
+      lg: "h-11 px-8 rounded-md",
+      icon: "h-10 w-10 p-0",
     };
-
-    const getShapeClasses = () => {
-      if (iconOnly && rounded) {
-        return "w-10 h-10 p-0 rounded-full";
-      }
-      if (rounded) {
-        return "rounded-full";
-      }
-      return "";
-    };
-
-    const buttonClasses = cn(
-      "btn",
-      getVariantClasses(),
-      getSizeClasses(),
-      getShapeClasses(),
-      {
-        "w-full": fullWidth,
-      },
-      className
-    );
-
-    const showChildren = children && !iconOnly;
 
     return (
       <button
         ref={ref}
-        type={type}
-        className={buttonClasses}
-        disabled={disabled}
+        className={cn(
+          "ring-offset-background focus-visible:ring-ring inline-flex items-center justify-center rounded-md text-sm font-bold whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
+          variants[variant],
+          sizes[size],
+          className,
+        )}
+        disabled={disabled || loading}
         {...props}
       >
-        {leftIcon && (
-          <span className={showChildren ? "mr-2" : ""}>{leftIcon}</span>
-        )}
-
-        {showChildren && children}
-
-        {rightIcon && (
-          <span className={showChildren ? "ml-2" : ""}>{rightIcon}</span>
-        )}
-
-        {iconOnly && !leftIcon && !rightIcon && children}
+        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {children}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";
-
-export { Button, type ButtonProps };

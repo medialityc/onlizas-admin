@@ -2,7 +2,7 @@ import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import RHFSelectWithLabel from "@/components/react-hook-form/rhf-select";
 import { useFormContext } from "react-hook-form";
 import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
-import { Title, Button, Group } from "@mantine/core";
+import { Title, Group } from "@mantine/core";
 import { RHFCountrySelect } from "@/components/react-hook-form/rhf-country-code-select";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { RHFPhoneCountrySelect } from "@/components/react-hook-form/rhf-phone-country-select";
@@ -15,6 +15,7 @@ import {
 import { useMemo, useEffect } from "react";
 import { useCountries } from "@/components/phone-input/use-countries";
 import { getCountriesPaginated } from "@/services/countries";
+import { Button } from "@/components/button/button";
 
 interface SupplierBasicInfoProps {
   approvalProcessId: string | number;
@@ -22,10 +23,10 @@ interface SupplierBasicInfoProps {
   onToggleEditMode?: () => void;
 }
 
-export default function SupplierBasicInfo({ 
-  approvalProcessId, 
-  isEditMode = false, 
-  onToggleEditMode 
+export default function SupplierBasicInfo({
+  approvalProcessId,
+  isEditMode = false,
+  onToggleEditMode,
 }: SupplierBasicInfoProps) {
   const {
     formState: { errors },
@@ -34,9 +35,9 @@ export default function SupplierBasicInfo({
     trigger,
     getValues,
   } = useFormContext<any>();
-  
+
   const { countries } = useCountries();
-  
+
   // Memoizar las fechas para evitar re-renders innecesarios
   const minDate = useMemo(() => new Date(), []);
   const maxDate = useMemo(() => new Date("2100-12-31"), []);
@@ -48,7 +49,7 @@ export default function SupplierBasicInfo({
 
   // Encontrar Cuba en la lista de países
   const cubaCountry = countries?.find(
-    (country) => country.code === "CU" || country.name === "Cuba"
+    (country) => country.code === "CU" || country.name === "Cuba",
   );
 
   // Aplicar reglas de nacionalidad
@@ -79,36 +80,47 @@ export default function SupplierBasicInfo({
 
     // Obtener labels
     const getSupplierTypeLabel = () => {
-      const option = SUPPLIER_TYPE_OPTIONS.find(o => o.value === supplierType);
+      const option = SUPPLIER_TYPE_OPTIONS.find(
+        (o) => o.value === supplierType,
+      );
       return option?.label || "-";
     };
 
     const getSellerTypeLabel = () => {
-      const option = SUPPLIER_TYPE_SELLER_OPTIONS.find(o => o.value === sellerType);
+      const option = SUPPLIER_TYPE_SELLER_OPTIONS.find(
+        (o) => o.value === sellerType,
+      );
       return option?.label || "-";
     };
 
     const getNationalityLabel = () => {
-      const option = SUPPLIER_NATIONALITY_OPTIONS.find(o => o.value === nacionalityType);
+      const option = SUPPLIER_NATIONALITY_OPTIONS.find(
+        (o) => o.value === nacionalityType,
+      );
       return option?.label || "-";
     };
 
     const getCountryLabel = () => {
-      const country = countries?.find(c => String(c.id) === String(countryId));
+      const country = countries?.find(
+        (c) => String(c.id) === String(countryId),
+      );
       return country?.name || "-";
     };
 
     return (
       <>
         <div className="flex justify-between items-center mb-4">
-          <Title order={3} className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+          <Title
+            order={3}
+            className="text-lg font-semibold text-gray-800 dark:text-gray-100"
+          >
             Información Básica
           </Title>
-          <Button variant="outline" size="sm" onClick={onToggleEditMode}>
+          <Button size="sm" onClick={onToggleEditMode}>
             Editar
           </Button>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Tipo de Proveedor */}
           <div className="space-y-2">
@@ -150,8 +162,12 @@ export default function SupplierBasicInfo({
                 const phoneCountryCode = watch("phoneCountryCode");
                 const phoneValue = phone || "-";
                 if (phoneCountryCode && phone) {
-                  const country = countries?.find(c => c.code === phoneCountryCode);
-                  return country ? `+${country.phoneNumberCode} ${phoneValue}` : phoneValue;
+                  const country = countries?.find(
+                    (c) => c.code === phoneCountryCode,
+                  );
+                  return country
+                    ? `+${country.phoneNumberCode} ${phoneValue}`
+                    : phoneValue;
                 }
                 return phoneValue;
               })()}
@@ -178,16 +194,6 @@ export default function SupplierBasicInfo({
             </div>
           </div>
 
-          {/* País */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              País
-            </label>
-            <div className="px-3 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
-              {getCountryLabel()}
-            </div>
-          </div>
-
           {/* Dirección */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -199,20 +205,24 @@ export default function SupplierBasicInfo({
           </div>
 
           {/* Código Mincex */}
-          {nacionalityType !== undefined && nacionalityType !== SUPPLIER_NATIONALITY.Nacional && (
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Código Mincex
-              </label>
-              <div className="px-3 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
-                {mincexCode || "-"}
+          {nacionalityType !== undefined &&
+            nacionalityType !== SUPPLIER_NATIONALITY.Nacional && (
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Código Mincex
+                </label>
+                <div className="px-3 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                  {mincexCode || "-"}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Fecha de Expiración */}
           <div className="md:col-span-2 pt-4 border-t border-gray-300 dark:border-gray-600">
-            <Title order={4} className="mb-4 text-base font-semibold text-gray-800 dark:text-gray-100">
+            <Title
+              order={4}
+              className="mb-4 text-base font-semibold text-gray-800 dark:text-gray-100"
+            >
               Fecha de Expiración
             </Title>
             <div className="w-full md:w-1/2">
@@ -233,22 +243,27 @@ export default function SupplierBasicInfo({
   return (
     <>
       <div className="flex justify-between items-center mb-4">
-        <Title order={3} className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+        <Title
+          order={3}
+          className="text-lg font-semibold text-gray-800 dark:text-gray-100"
+        >
           Editar Información Básica
         </Title>
       </div>
-      
+
       <div className="flex justify-end gap-2 mb-6">
         <Group gap="xs">
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="destructive"
+            type="reset"
+            size="sm"
             onClick={onToggleEditMode}
           >
             Cancelar
           </Button>
           <span className="text-sm text-gray-600 dark:text-gray-400">
-            Usa el botón "Guardar Cambios" del final para guardar
+            Usa el botón "Guardar información básica" de esta sección para
+            guardar los cambios
           </span>
         </Group>
       </div>
@@ -309,39 +324,6 @@ export default function SupplierBasicInfo({
           required
         />
 
-        {/* País */}
-        <div className="space-y-2">
-          {nacionalityType === SUPPLIER_NATIONALITY.Nacional ? (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                País
-              </label>
-              <div className="px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
-                Cuba (Asignado automáticamente)
-              </div>
-            </div>
-          ) : (
-            <RHFAutocompleteFetcherInfinity
-              name="countryId"
-              label="País"
-              placeholder="Buscar país..."
-              required
-              onFetch={getCountriesPaginated}
-              objectValueKey="id"
-              objectKeyLabel="name"
-              params={{ pageSize: 35 }}
-              queryKey="countries-supplier-select"
-              enabled={nacionalityType !== SUPPLIER_NATIONALITY.Nacional}
-            />
-          )}
-          <label className="block text-xs text-gray-600 dark:text-gray-400">
-            {nacionalityType === SUPPLIER_NATIONALITY.Nacional 
-              ? "Se asigna automáticamente Cuba para proveedores nacionales"
-              : "Seleccione el país del proveedor (búsqueda con scroll infinito)"
-            }
-          </label>
-        </div>
-
         {/* Dirección */}
         <RHFInputWithLabel
           name="address"
@@ -351,16 +333,15 @@ export default function SupplierBasicInfo({
         />
 
         {/* Código Mincex - Solo visible para extranjeros y ambos */}
-        {nacionalityType !== undefined && nacionalityType !== SUPPLIER_NATIONALITY.Nacional && (
-          <div className="md:col-span-2">
+        {nacionalityType !== undefined &&
+          nacionalityType !== SUPPLIER_NATIONALITY.Nacional && (
             <RHFInputWithLabel
               name="mincexCode"
               label="Código Mincex"
               placeholder="Ingrese el código MINCEX (requerido para extranjeros)"
               required
             />
-          </div>
-        )}
+          )}
 
         {/* Información sobre reglas de nacionalidad */}
         <div className="md:col-span-2 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
@@ -368,16 +349,31 @@ export default function SupplierBasicInfo({
             Reglas de Nacionalidad:
           </h4>
           <ul className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
-            <li>• <strong>Nacional:</strong> Se asigna automáticamente Cuba como país y se limpia el código MINCEX</li>
-            <li>• <strong>Extranjero:</strong> Se requiere código MINCEX y seleccionar país (búsqueda con scroll infinito)</li>
-            <li>• <strong>Ambos:</strong> Se requiere código MINCEX y seleccionar país (búsqueda con scroll infinito)</li>
-            <li>• <strong>Teléfono:</strong> El código de país se aplica automáticamente según el país seleccionado</li>
+            <li>
+              • <strong>Nacional:</strong> Se asigna automáticamente Cuba como
+              país y se limpia el código MINCEX
+            </li>
+            <li>
+              • <strong>Extranjero:</strong> Se requiere código MINCEX y
+              seleccionar país (búsqueda con scroll infinito)
+            </li>
+            <li>
+              • <strong>Ambos:</strong> Se requiere código MINCEX y seleccionar
+              país (búsqueda con scroll infinito)
+            </li>
+            <li>
+              • <strong>Teléfono:</strong> El código de país se aplica
+              automáticamente según el país seleccionado
+            </li>
           </ul>
         </div>
 
         {/* Fecha de Expiración - EDITABLE */}
         <div className="md:col-span-2 pt-4 border-t border-gray-300 dark:border-gray-600">
-          <Title order={4} className="mb-4 text-base font-semibold text-gray-800 dark:text-gray-100">
+          <Title
+            order={4}
+            className="mb-4 text-base font-semibold text-gray-800 dark:text-gray-100"
+          >
             Fecha de Expiración
           </Title>
           <div className="w-full md:w-1/2">

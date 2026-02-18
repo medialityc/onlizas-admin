@@ -8,8 +8,8 @@ import { Paper } from "@mantine/core";
 
 import { SupplierDetails } from "@/types/suppliers";
 import {
-  updateExpirationDate, 
-  addImporterContracts, 
+  updateExpirationDate,
+  addImporterContracts,
   removeImporterContracts,
   addRequestedCategories,
   removeRequestedCategories,
@@ -21,7 +21,6 @@ import SupplierBasicInfo from "./supplier-basic-info";
 import SupplierImporters from "./supplier-importers";
 import SupplierPendingDocuments from "./documents/supplier-pending-documents";
 import SupplierApprovedDocuments from "./documents/supplier-approved-documents";
-import SupplierEditActions from "./supplier-edit-actions";
 import SupplierCategories from "./supplier-categories";
 import {
   UpdateSupplierFormData,
@@ -32,6 +31,7 @@ import {
   SUPPLIER_TYPE,
   SUPPLIER_TYPE_SELLER,
 } from "../../constants/supplier.options";
+import { Button } from "@/components/button/button";
 
 export default function SupplierEditForm({
   supplierDetails,
@@ -107,9 +107,13 @@ export default function SupplierEditForm({
         const response = await getImporterContracts(supplierDetails.id);
         if (!response.error && response.data) {
           // El endpoint retorna { data: [...], page, pageSize, totalCount, hasNext, hasPrevious }
-          const contracts = Array.isArray(response.data) ? response.data : response.data?.data || [];
-          const importerIds = contracts.map((contract: any) => contract.importerId).filter(Boolean);
-          
+          const contracts = Array.isArray(response.data)
+            ? response.data
+            : response.data?.data || [];
+          const importerIds = contracts
+            .map((contract: any) => contract.importerId)
+            .filter(Boolean);
+
           // Crear mapeo de importerId -> contractId
           const map: Record<string, string> = {};
           contracts.forEach((contract: any) => {
@@ -118,10 +122,10 @@ export default function SupplierEditForm({
             }
           });
           setContractMap(map);
-          
+
           // Guardar los IDs iniciales para comparar luego
           setInitialImporterIds(importerIds);
-          
+
           if (importerIds.length > 0) {
             setValue("importersIds", importerIds);
           }
@@ -134,64 +138,84 @@ export default function SupplierEditForm({
     loadImporterContracts();
   }, [supplierDetails.id, setValue]);
 
-  const onSubmit = async (data: UpdateSupplierFormData) => {
+  const onSubmitBasicInfo = async (data: UpdateSupplierFormData) => {
     setIsLoading(true);
     try {
       const approvalProcessId = supplierDetails.id;
-      const previousImporters = initialImporterIds;
-      const newImporters = data.importersIds || [];
-      const previousCategories = supplierDetails.pendingCategories?.map(c => c.id) || [];
-      const newCategories = data.pendingCategories?.map(c => c.id) || [];
 
-      // 1. Actualizar información básica si está en modo edición
+      // 1) Actualizar información básica solo si está en modo edición
       if (isEditingBasicInfo) {
         const basicInfoData = {
           name: data.name,
           email: data.email,
           phone: data.phone,
-          phoneCountryCode: data.phoneCountryCode,
           address: data.address,
           supplierType: data.supplierType,
           sellerType: data.sellerType,
           nacionalityType: data.nacionalityType,
           mincexCode: data.mincexCode || "",
-          countryId: data.countryId,
+          countryId: data.phoneCountryCode,
         };
 
-        const basicInfoResponse = await updateSupplierBasicInfo(approvalProcessId, basicInfoData);
+        const basicInfoResponse = await updateSupplierBasicInfo(
+          approvalProcessId,
+          basicInfoData,
+        );
+
         if (basicInfoResponse.error) {
-          toast.error(basicInfoResponse.message || "Error al actualizar la información básica");
-          return;
-        } else {
-          toast.success("Información básica actualizada correctamente");
-          setIsEditingBasicInfo(false); // Salir del modo edición
-          // Redireccionar después del guardado exitoso de información básica
-          router.push("/dashboard/suppliers");
+          toast.error(
+            basicInfoResponse.message ||
+              "Error al actualizar la información básica",
+          );
           return;
         }
+
+        setIsEditingBasicInfo(false);
       }
 
-      // 2. Actualizar fecha de expiración
+      // 2) Actualizar fecha de expiración de forma independiente
       const expirationDateResponse = await updateExpirationDate(
         approvalProcessId,
-        data?.expirationDate?.toISOString() || new Date().toISOString()
+        data?.expirationDate?.toISOString() || new Date().toISOString(),
       );
       if (expirationDateResponse.error) {
         toast.error("Error al actualizar la fecha de expiración");
       }
 
-      // 3. Manejar cambios en importadoras
+      if (isEditingBasicInfo) {
+        toast.success("Información básica y fecha de expiración actualizadas");
+      } else {
+        toast.success("Fecha de expiración actualizada correctamente");
+      }
+    } catch (error) {
+      toast.error("Error al actualizar proveedor");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSubmitImporters = async (data: UpdateSupplierFormData) => {
+    setIsLoading(true);
+    try {
+      const approvalProcessId = supplierDetails.id;
+      const previousImporters = initialImporterIds;
+      const newImporters = data.importersIds || [];
       const addedImporters = newImporters.filter(
-        (id: string) => !previousImporters.includes(id)
+        (id: string) => !previousImporters.includes(id),
       );
       const removedImporters = previousImporters.filter(
-        (id: string) => !newImporters.includes(id)
+        (id: string) => !newImporters.includes(id),
       );
 
       if (addedImporters.length > 0) {
-        const addResponse = await addImporterContracts(approvalProcessId, addedImporters);
+        const addResponse = await addImporterContracts(
+          approvalProcessId,
+          addedImporters,
+        );
         if (addResponse.error) {
-          toast.warning("Hubo un problema al agregar los contratos de importadores");
+          toast.warning(
+            "Hubo un problema al agregar los contratos de importadores",
+          );
         }
       }
 
@@ -202,45 +226,66 @@ export default function SupplierEditForm({
           .filter(Boolean);
 
         if (contractIdsToRemove.length > 0) {
-          const removeResponse = await removeImporterContracts(approvalProcessId, contractIdsToRemove);
+          const removeResponse = await removeImporterContracts(
+            approvalProcessId,
+            contractIdsToRemove,
+          );
           if (removeResponse.error) {
-            toast.warning("Hubo un problema al remover los contratos de importadores");
+            toast.warning(
+              "Hubo un problema al remover los contratos de importadores",
+            );
           }
         }
       }
+      setInitialImporterIds(newImporters);
 
-      // 4. Manejar cambios en categorías solicitadas
+      toast.success("Importadoras actualizadas correctamente");
+      router.push("/dashboard/suppliers");
+    } catch (error) {
+      toast.error("Error al actualizar importadoras");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSubmitCategories = async (data: UpdateSupplierFormData) => {
+    setIsLoading(true);
+    try {
+      const approvalProcessId = supplierDetails.id;
+      const previousCategories =
+        supplierDetails.pendingCategories?.map((c) => c.id) || [];
+      const newCategories = data.pendingCategories?.map((c) => c.id) || [];
+
       const addedCategories = newCategories.filter(
-        (id: string) => !previousCategories.includes(id)
+        (id: string) => !previousCategories.includes(id),
       );
       const removedCategories = previousCategories.filter(
-        (id: string) => !newCategories.includes(id)
+        (id: string) => !newCategories.includes(id),
       );
 
       if (addedCategories.length > 0) {
-        const addCatResponse = await addRequestedCategories(approvalProcessId, addedCategories);
+        const addCatResponse = await addRequestedCategories(
+          approvalProcessId,
+          addedCategories,
+        );
         if (addCatResponse.error) {
           toast.warning("Hubo un problema al agregar las categorías");
         }
       }
 
       if (removedCategories.length > 0) {
-        const removeCatResponse = await removeRequestedCategories(approvalProcessId, removedCategories);
+        const removeCatResponse = await removeRequestedCategories(
+          approvalProcessId,
+          removedCategories,
+        );
         if (removeCatResponse.error) {
           toast.warning("Hubo un problema al remover las categorías");
         }
       }
 
-      // Actualizar el estado de los IDs iniciales de importadoras para la próxima edición
-      setInitialImporterIds(newImporters);
-
-      // Solo mostrar mensaje general y redireccionar si no es solo información básica
-      if (!isEditingBasicInfo) {
-        toast.success("Proveedor actualizado correctamente");
-        router.push("/dashboard/suppliers");
-      }
+      toast.success("Categorías actualizadas correctamente");
     } catch (error) {
-      toast.error("Error al actualizar proveedor");
+      toast.error("Error al actualizar categorías");
     } finally {
       setIsLoading(false);
     }
@@ -255,31 +300,71 @@ export default function SupplierEditForm({
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <FormProvider {...methods}>
-        <form noValidate onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
-          {/* Sección de Información Básica */}
-          <Paper p="md" radius="md" withBorder styles={{
-            root: {
-              backgroundColor: "light-dark(#ffffff, #1b2e4b)",
-              borderColor: "light-dark(#e5e7eb, #253a54)",
-            },
-          }}>
-            <SupplierBasicInfo 
+        {/* Sección de Información Básica */}
+        <form
+          noValidate
+          onSubmit={handleSubmit(onSubmitBasicInfo, onError)}
+          className="space-y-4"
+        >
+          <Paper
+            p="md"
+            radius="md"
+            withBorder
+            styles={{
+              root: {
+                backgroundColor: "light-dark(#ffffff, #1b2e4b)",
+                borderColor: "light-dark(#e5e7eb, #253a54)",
+              },
+            }}
+          >
+            <SupplierBasicInfo
               approvalProcessId={supplierDetails.id}
               isEditMode={isEditingBasicInfo}
-              onToggleEditMode={() => setIsEditingBasicInfo(!isEditingBasicInfo)}
+              onToggleEditMode={() =>
+                setIsEditingBasicInfo(!isEditingBasicInfo)
+              }
             />
+            <div className="mt-6 flex justify-end">
+              <Button type="submit" loading={isLoading}>
+                Guardar información básica
+              </Button>
+            </div>
           </Paper>
+        </form>
 
-          {Number(methods.watch("nacionalityType")) !== SUPPLIER_NATIONALITY.Nacional && (
-            <SupplierImporters initialImporterIds={(supplierDetails as any).importersIds} />
-          )}
+        {/* Sección de Importadoras */}
+        {Number(methods.watch("nacionalityType")) !==
+          SUPPLIER_NATIONALITY.Nacional && (
+          <form
+            noValidate
+            onSubmit={handleSubmit(onSubmitImporters, onError)}
+            className="space-y-4"
+          >
+            <SupplierImporters
+              initialImporterIds={(supplierDetails as any).importersIds}
+            />
+            <div className="mt-4 flex justify-end">
+              <Button type="submit" loading={isLoading}>
+                Guardar importadoras
+              </Button>
+            </div>
+          </form>
+        )}
 
+        {/* Sección de Categorías */}
+        <form
+          noValidate
+          onSubmit={handleSubmit(onSubmitCategories, onError)}
+          className="space-y-4"
+        >
           <SupplierCategories state={supplierDetails.state} />
-
-          {/* Botones de Acciones */}
-          <SupplierEditActions isLoading={isLoading} onCancel={handleCancel} />
+          <div className="mt-4 flex justify-end">
+            <Button type="submit" loading={isLoading}>
+              Guardar categorías
+            </Button>
+          </div>
         </form>
       </FormProvider>
 
@@ -295,6 +380,6 @@ export default function SupplierEditForm({
           />
         )}
       </div>
-    </>
+    </div>
   );
 }

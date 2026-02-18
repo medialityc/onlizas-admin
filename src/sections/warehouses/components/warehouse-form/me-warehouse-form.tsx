@@ -17,7 +17,7 @@ type Props = {
 export function MeWarehouseForm({ warehouse, onClose }: Props) {
   const { form, isPending, onSubmit } = useMeWarehouseCreateForm(
     warehouse,
-    onClose
+    onClose,
   );
 
   const handleClose = useCallback(() => {
@@ -52,7 +52,7 @@ export function MeWarehouseForm({ warehouse, onClose }: Props) {
       </div>
       {/* Actions stickies */}
       <div className="sticky bottom-0 mt-6 -mx-6 px-6 py-4 bg-white/80 dark:bg-gray-900/60 backdrop-blur border-t border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row justify-end gap-3">
-        <Button onClick={handleClose} type="button" variant="secondary" outline>
+        <Button onClick={handleClose} type="button" variant="secondary">
           Cancelar
         </Button>
 

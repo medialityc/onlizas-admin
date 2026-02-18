@@ -109,12 +109,7 @@ const SupplierProductForm = ({ initValue, isEdit }: Props) => {
             "flex gap-4 pt-6 mt-6 border-t dark:border-slate-700 justify-end",
           )}
         >
-          <Button
-            type="button"
-            variant="secondary"
-            outline
-            onClick={handleCancel}
-          >
+          <Button type="button" variant="secondary" onClick={handleCancel}>
             Cancelar
           </Button>
           {hasUpdatePermission && (

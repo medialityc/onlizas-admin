@@ -28,12 +28,17 @@ export default function SectionForm({ initValue }: Props) {
   const { push } = useRouter();
   const handleCancel = useCallback(
     () => push("/dashboard/content/sections"),
-    [push]
+    [push],
   );
 
   return (
     <section className="w-full px-2 sm:px-4 py-6">
-      <FormProvider methods={form} onSubmit={onSubmit} id="section-form" noValidate>
+      <FormProvider
+        methods={form}
+        onSubmit={onSubmit}
+        id="section-form"
+        noValidate
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {/* Card 1: Info principal */}
           <div className="bg-white dark:bg-slate-900 rounded-xl shadow p-6 flex flex-col gap-4 col-span-1 md:col-span-2 xl:col-span-3">
@@ -147,8 +152,7 @@ export default function SectionForm({ initValue }: Props) {
       <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6">
         <Button
           type="button"
-          variant="secondary"
-          outline
+          variant="outline"
           onClick={handleCancel}
           className="w-full sm:w-auto"
         >

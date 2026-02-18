@@ -11,11 +11,18 @@ export type Supplier = {
   email: string;
   phone: string;
   address: string;
-  currentRating: number;
-  lastEvaluationDate: string;
+  // Nuevos campos devueltos por la vista de proveedores
+  countryName: string;
+  businessName: string;
+  businessCode: string;
+  userId: string;
+  // Campos antiguos que pueden no venir en todas las vistas
+  currentRating?: number;
+  lastEvaluationDate?: string;
   active: boolean;
   isAproved: boolean;
   state: SupplierState;
+  fixedTax: number;
   expirationDate: string;
   message: string;
   sellerType?: SUPPLIER_TYPE_SELLER;
@@ -159,6 +166,7 @@ export type SupplierApprovalProcess = {
   sellerType: string;
   mincexCode: string;
   expirationDate: string;
+  fixedTax?: number | null;
   pendingDocuments: EnhancedDocument[];
   approvedDocuments: EnhancedDocument[];
   pendingCategories: EnhancedCategory[];

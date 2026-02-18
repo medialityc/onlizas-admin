@@ -16,10 +16,15 @@ import { MultiSelect } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { getMyZones, getOnlizasZones } from "@/services/zones";
 import { usePermissions } from "@/hooks/use-permissions";
+import {
+  getSupplierApprovalProcess,
+  getSupplierApprovalProcessById,
+} from "@/services/supplier";
 
 type Props = {
   variantIndex: number;
   isPacking: boolean;
+  supplierId?: string;
 };
 
 // Opciones de condición de variante (enum VariantCondition del backend)
@@ -33,10 +38,15 @@ const variantConditionOptions = [
   { value: 7, label: "Reacondicionado" },
 ];
 
-const InventoryVariantFrom = ({ variantIndex, isPacking }: Props) => {
+const InventoryVariantFrom = ({
+  variantIndex,
+  isPacking,
+  supplierId,
+}: Props) => {
   const { watch, control, setValue } = useFormContext<ProductVariant>();
-  const { hasSpecificPermission, isLoading: permissionsLoading } = usePermissions();
-  
+  const { hasSpecificPermission, isLoading: permissionsLoading } =
+    usePermissions();
+
   const [isWarranty, isLimit, id, deliveryMode] = watch([
     "warranty.isWarranty",
     "isLimit",
@@ -46,8 +56,10 @@ const InventoryVariantFrom = ({ variantIndex, isPacking }: Props) => {
 
   // Verificar si el usuario tiene permisos de administrador
   // Por defecto asumir que es proveedor hasta que carguen los permisos
-  const isAdmin = !permissionsLoading && hasSpecificPermission("inventory_providers.create.admin");
-  
+  const isAdmin =
+    !permissionsLoading &&
+    hasSpecificPermission("inventory_providers.create.admin");
+
   // Opciones de modo de entrega según el rol
   const deliveryModeOptions = useMemo(() => {
     if (isAdmin) {
@@ -78,25 +90,31 @@ const InventoryVariantFrom = ({ variantIndex, isPacking }: Props) => {
   });
 
   // Fetch zonas del proveedor (cuando es entrega gestionada por el proveedor)
-  const { data: supplierZonesData, isLoading: supplierZonesLoading } = useQuery({
-    queryKey: ["my-zones-variant"],
-    queryFn: async () => {
-      const res = await getMyZones();
-      if (res.error) {
-        throw new Error(res.message);
-      }
-      return res.data?.data || [];
+  const { data: supplierZonesData, isLoading: supplierZonesLoading } = useQuery(
+    {
+      queryKey: ["my-zones-variant"],
+      queryFn: async () => {
+        const res = await getMyZones();
+        if (res.error) {
+          throw new Error(res.message);
+        }
+        return res.data?.data || [];
+      },
+      enabled: !isOnlizasDelivery && !!deliveryMode && !isAdmin,
     },
-    enabled: !isOnlizasDelivery && !!deliveryMode && !isAdmin,
-  });
+  );
 
   const zonesData = isOnlizasDelivery ? onlizasZonesData : supplierZonesData;
-  const zonesLoading = isOnlizasDelivery ? onlizasZonesLoading : supplierZonesLoading;
+  const zonesLoading = isOnlizasDelivery
+    ? onlizasZonesLoading
+    : supplierZonesLoading;
 
   const zoneOptions = useMemo(() => {
     return (zonesData || []).map((z) => ({
       value: z.id,
-      label: z.name ? `${z.name} - $${z.deliveryAmount.toFixed(2)}` : `${z.districtsIds.length} distrito(s) - $${z.deliveryAmount.toFixed(2)}`,
+      label: z.name
+        ? `${z.name} - $${z.deliveryAmount.toFixed(2)}`
+        : `${z.districtsIds.length} distrito(s) - $${z.deliveryAmount.toFixed(2)}`,
     }));
   }, [zonesData]);
 
@@ -105,7 +123,7 @@ const InventoryVariantFrom = ({ variantIndex, isPacking }: Props) => {
     setValue("zoneIds", []);
     setValue("zones", []);
   }, [deliveryMode, setValue]);
-  
+
   // Si es admin, establecer automáticamente el modo de entrega a ONLIZAS
   React.useEffect(() => {
     if (isAdmin && !deliveryMode) {
@@ -148,9 +166,11 @@ const InventoryVariantFrom = ({ variantIndex, isPacking }: Props) => {
             control={control}
             render={({ field, fieldState: { error } }) => (
               <MultiSelect
-                label={isOnlizasDelivery 
-                  ? "Zonas de entrega de la plataforma" 
-                  : "Mis zonas de entrega"}
+                label={
+                  isOnlizasDelivery
+                    ? "Zonas de entrega de la plataforma"
+                    : "Mis zonas de entrega"
+                }
                 placeholder={zonesLoading ? "Cargando..." : "Seleccione zonas"}
                 data={zoneOptions}
                 value={field.value || []}
@@ -158,7 +178,7 @@ const InventoryVariantFrom = ({ variantIndex, isPacking }: Props) => {
                   field.onChange(selectedIds);
                   // Guardar también los objetos completos de las zonas seleccionadas
                   const selectedZones = (zonesData || []).filter((zone) =>
-                    selectedIds.includes(zone.id)
+                    selectedIds.includes(zone.id),
                   );
                   setValue("zones", selectedZones);
                 }}
@@ -168,14 +188,15 @@ const InventoryVariantFrom = ({ variantIndex, isPacking }: Props) => {
                 disabled={zonesLoading}
                 classNames={{
                   input: "form-input",
-                  label: "text-sm font-semibold text-gray-900 dark:text-gray-300",
+                  label:
+                    "text-sm font-semibold text-gray-900 dark:text-gray-300",
                 }}
                 maxDropdownHeight={200}
               />
             )}
           />
           <p className="text-xs text-muted-foreground">
-            {isOnlizasDelivery 
+            {isOnlizasDelivery
               ? "Las zonas de la plataforma definen dónde Onlizas puede entregar este producto."
               : "Tus zonas definen los distritos donde puedes entregar este producto y el costo de envío."}
           </p>
@@ -299,7 +320,7 @@ const InventoryVariantFrom = ({ variantIndex, isPacking }: Props) => {
             step="0.01"
             required
           />
-          <PrecioNetoDisplay />
+          <PrecioNetoDisplay supplierId={supplierId} />
         </div>
       </div>
 
@@ -396,10 +417,50 @@ const InventoryVariantFrom = ({ variantIndex, isPacking }: Props) => {
 export default InventoryVariantFrom;
 
 // Componente auxiliar dentro del mismo archivo para mostrar precios netos con estilos según margen
-const PrecioNetoDisplay = () => {
+type PrecioNetoDisplayProps = {
+  supplierId?: string;
+};
+
+const PrecioNetoDisplay = ({ supplierId }: PrecioNetoDisplayProps) => {
   const { watch } = useFormContext<ProductVariant>();
   const [price, costPrice] = watch(["price", "costPrice"]);
-  const commissionRate = 0.15;
+
+  const { hasSpecificPermission, isLoading: permissionsLoading } =
+    usePermissions();
+  const isAdmin =
+    !permissionsLoading &&
+    hasSpecificPermission("inventory_providers.create.admin");
+
+  const { data: fixedTax, isLoading: fixedTaxLoading } = useQuery({
+    queryKey: ["supplier-fixed-tax", isAdmin ? (supplierId ?? null) : "me"],
+    queryFn: async () => {
+      if (isAdmin) {
+        if (!supplierId) return null;
+        const res = await getSupplierApprovalProcessById(supplierId);
+        if (res.error) {
+          throw new Error(
+            res.message || "Error al obtener datos del proveedor",
+          );
+        }
+        return res.data?.fixedTax ?? null;
+      }
+
+      const res = await getSupplierApprovalProcess();
+      if (res.error) {
+        throw new Error(res.message || "Error al obtener datos del proveedor");
+      }
+      return res.data?.fixedTax ?? null;
+    },
+    enabled: !permissionsLoading && (!!supplierId || !isAdmin),
+  });
+
+  const effectiveFixedTax =
+    typeof fixedTax === "number"
+      ? fixedTax
+      : fixedTax == null
+        ? 15
+        : Number(fixedTax) || 15;
+  const commissionRate = effectiveFixedTax / 100;
   const validPrice =
     typeof price === "number" ? price : parseFloat(price as any) || 0;
   const descuento = validPrice * commissionRate;
@@ -440,7 +501,12 @@ const PrecioNetoDisplay = () => {
     <div className="flex flex-col gap-1 rounded-md border p-3 bg-muted/30">
       <p className="text-xs font-medium">Resumen</p>
       <p className="text-[11px] text-muted-foreground">
-        Descuento plataforma (15%):{" "}
+        Descuento plataforma{" "}
+        {fixedTaxLoading ? (
+          "(cargando...)"
+        ) : (
+          <>({effectiveFixedTax.toFixed(2)}%): </>
+        )}
         <span className="font-semibold">{descuento.toFixed(2)}</span>
       </p>
       <p className="text-[11px] text-muted-foreground">
@@ -456,7 +522,7 @@ const PrecioNetoDisplay = () => {
             className={cn(
               "px-1.5 py-0.5 rounded text-[10px] inline-flex items-center",
               marginClass,
-              marginDisplay === "-" && "text-gray-500"
+              marginDisplay === "-" && "text-gray-500",
             )}
             style={{ backgroundColor: pillBg() }}
           >

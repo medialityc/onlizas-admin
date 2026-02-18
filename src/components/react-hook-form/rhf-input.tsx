@@ -8,11 +8,10 @@ import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 // ----------------------------------------------------------------------
 
-interface Props
-  extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    "onChange" | "onBlur" | "value" | "size"
-  > {
+interface Props extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "onChange" | "onBlur" | "value" | "size"
+> {
   name: string;
   type?: string;
   disabled?: boolean;
@@ -63,7 +62,25 @@ export default function RHFInputWithLabel({
     (event: ChangeEvent<HTMLInputElement>) => {
       if (type === "number") {
         if (isNotAccountant) {
-          onChange(+event.target.value);
+          const raw = event.target.value;
+          if (raw === "") {
+            onChange("");
+            return;
+          }
+
+          let numericValue = +raw;
+
+          if (!Number.isNaN(numericValue) && minMax) {
+            const { min, max } = minMax;
+            if (typeof min === "number") {
+              numericValue = Math.max(min, numericValue);
+            }
+            if (typeof max === "number") {
+              numericValue = Math.min(max, numericValue);
+            }
+          }
+
+          onChange(Number.isNaN(numericValue) ? 0 : numericValue);
         } else {
           handleNumberChange(event?.target.value, onChange);
         }
@@ -84,7 +101,18 @@ export default function RHFInputWithLabel({
       if (value.endsWith(".")) {
         onChange(value);
       } else {
-        const numericValue = parseFloat(value);
+        let numericValue = parseFloat(value);
+
+        if (!isNaN(numericValue) && minMax) {
+          const { min, max } = minMax;
+          if (typeof min === "number") {
+            numericValue = Math.max(min, numericValue);
+          }
+          if (typeof max === "number") {
+            numericValue = Math.min(max, numericValue);
+          }
+        }
+
         onChange(isNaN(numericValue) ? 0 : numericValue);
       }
     }
@@ -132,7 +160,7 @@ export default function RHFInputWithLabel({
           <div
             className={cn(
               "w-full flex flex-col gap-1 relative",
-              containerClassname
+              containerClassname,
             )}
             style={{ width }}
           >
@@ -191,7 +219,7 @@ export default function RHFInputWithLabel({
                     if (onCountryChange) {
                       const parsed = parsePhoneNumberFromString(
                         val || "",
-                        "US"
+                        "US",
                       );
                       const detectedCode = parsed?.country || undefined;
                       onCountryChange(detectedCode);
@@ -214,7 +242,7 @@ export default function RHFInputWithLabel({
                       showError &&
                         error &&
                         "border-red-500 focus:border-red-500 focus:ring-red-500",
-                      disabled && "cursor-not-allowed opacity-50"
+                      disabled && "cursor-not-allowed opacity-50",
                     ),
                     style: { width },
                   }}

@@ -83,7 +83,6 @@ export default function PromotionBasicInfo({
             <div className="flex-shrink-0">
               <Button
                 type="button"
-                size="md"
                 variant="secondary"
                 onClick={handleGenerate}
                 disabled={generating}

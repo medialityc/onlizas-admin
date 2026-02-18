@@ -4,7 +4,11 @@ import { useState } from "react";
 import { TransferReception } from "@/types/warehouse-transfer-receptions";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { Button } from "@/components/button/button";
-import { ChatBubbleLeftIcon, PhoneIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import {
+  ChatBubbleLeftIcon,
+  PhoneIcon,
+  ExclamationTriangleIcon,
+} from "@heroicons/react/24/outline";
 
 interface Props {
   reception: TransferReception;
@@ -12,7 +16,10 @@ interface Props {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function ReceptionDiscrepanciesTab({ reception: _reception, warehouse: _warehouse }: Props) {
+export default function ReceptionDiscrepanciesTab({
+  reception: _reception,
+  warehouse: _warehouse,
+}: Props) {
   const [selectedAction, setSelectedAction] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
@@ -21,7 +28,7 @@ export default function ReceptionDiscrepanciesTab({ reception: _reception, wareh
     name: "Laptop Dell Inspiron 15 - 8GB RAM",
     transferred: 10,
     received: 10,
-    status: "incompleto" // "incompleto" | "correcto" | "pendiente"
+    status: "incompleto", // "incompleto" | "correcto" | "pendiente"
   };
 
   const handleActionChange = (action: string) => {
@@ -70,7 +77,9 @@ export default function ReceptionDiscrepanciesTab({ reception: _reception, wareh
 
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <span className="text-gray-500 dark:text-gray-400">Transferido:</span>
+            <span className="text-gray-500 dark:text-gray-400">
+              Transferido:
+            </span>
             <span className="ml-2 font-medium text-dark dark:text-white-light">
               {discrepantProduct.transferred} unidades
             </span>
@@ -93,10 +102,11 @@ export default function ReceptionDiscrepanciesTab({ reception: _reception, wareh
             <div className="flex gap-3 mb-4">
               <button
                 onClick={() => handleActionChange("message")}
-                className={`flex items-center gap-2 px-3 py-2 text-sm border rounded-lg ${selectedAction === "message"
+                className={`flex items-center gap-2 px-3 py-2 text-sm border rounded-lg ${
+                  selectedAction === "message"
                     ? "border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
                     : "border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
-                  }`}
+                }`}
               >
                 <ChatBubbleLeftIcon className="h-4 w-4" />
                 Mensaje
@@ -104,10 +114,11 @@ export default function ReceptionDiscrepanciesTab({ reception: _reception, wareh
 
               <button
                 onClick={() => handleActionChange("call")}
-                className={`flex items-center gap-2 px-3 py-2 text-sm border rounded-lg ${selectedAction === "call"
+                className={`flex items-center gap-2 px-3 py-2 text-sm border rounded-lg ${
+                  selectedAction === "call"
                     ? "border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
                     : "border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
-                  }`}
+                }`}
               >
                 <PhoneIcon className="h-4 w-4" />
                 Llamada
@@ -132,36 +143,16 @@ export default function ReceptionDiscrepanciesTab({ reception: _reception, wareh
 
             {/* Botones de acción adicionales */}
             <div className="flex flex-wrap gap-2 mb-4">
-              <Button
-                variant="secondary"
-                outline
-                size="sm"
-                className="text-xs"
-              >
+              <Button variant="secondary" size="sm" className="text-xs">
                 📞 Notificar Origen
               </Button>
-              <Button
-                variant="secondary"
-                outline
-                size="sm"
-                className="text-xs"
-              >
+              <Button variant="secondary" size="sm" className="text-xs">
                 📄 Solicitar Devolución
               </Button>
-              <Button
-                variant="secondary"
-                outline
-                size="sm"
-                className="text-xs"
-              >
+              <Button variant="secondary" size="sm" className="text-xs">
                 📋 Registrar Llamada
               </Button>
-              <Button
-                variant="secondary"
-                outline
-                size="sm"
-                className="text-xs"
-              >
+              <Button variant="secondary" size="sm" className="text-xs">
                 ⚠️ Escalar Incidencia
               </Button>
             </div>

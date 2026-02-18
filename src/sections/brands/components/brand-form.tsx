@@ -38,12 +38,7 @@ export default function BrandForm({ initValue }: BrandFormProps) {
       </FormProvider>
 
       <div className="flex justify-end gap-3 pt-6">
-        <Button
-          type="button"
-          variant="secondary"
-          outline
-          onClick={handleCancel}
-        >
+        <Button type="button" variant="outline" onClick={handleCancel}>
           Cancelar
         </Button>
         {hasUpdatePermission && (

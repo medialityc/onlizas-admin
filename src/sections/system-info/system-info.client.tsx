@@ -78,7 +78,7 @@ export default function SystemInfoClient({
   };
   const openEdit = (
     type: "addr" | "social" | "number" | "email",
-    item: any
+    item: any,
   ) => {
     setOpen({ type });
     setEditingItem(item);
@@ -91,7 +91,7 @@ export default function SystemInfoClient({
   const requestDelete = (
     type: "addr" | "social" | "number" | "email",
     id: string,
-    title?: string
+    title?: string,
   ) => {
     if (!canDelete) return;
     setConfirm({ open: true, type, id, title });
@@ -142,7 +142,6 @@ export default function SystemInfoClient({
                   {canUpdate && (
                     <Button
                       variant="secondary"
-                      outline
                       onClick={() => openEdit("addr", a)}
                     >
                       Editar
@@ -151,8 +150,7 @@ export default function SystemInfoClient({
                   {canDelete && (
                     <Tooltip label="Eliminar" withArrow>
                       <Button
-                        variant="danger"
-                        outline
+                        variant="destructive"
                         onClick={() => requestDelete("addr", a.id, a.address)}
                         aria-label="Eliminar"
                       >
@@ -192,7 +190,6 @@ export default function SystemInfoClient({
                   {canUpdate && (
                     <Button
                       variant="secondary"
-                      outline
                       onClick={() => openEdit("social", s)}
                     >
                       Editar
@@ -201,8 +198,7 @@ export default function SystemInfoClient({
                   {canDelete && (
                     <Tooltip label="Eliminar" withArrow>
                       <Button
-                        variant="danger"
-                        outline
+                        variant="destructive"
                         onClick={() =>
                           requestDelete("social", s.id, s.platform)
                         }
@@ -242,7 +238,6 @@ export default function SystemInfoClient({
                   {canUpdate && (
                     <Button
                       variant="secondary"
-                      outline
                       onClick={() => openEdit("number", n)}
                     >
                       Editar
@@ -251,13 +246,12 @@ export default function SystemInfoClient({
                   {canDelete && (
                     <Tooltip label="Eliminar" withArrow>
                       <Button
-                        variant="danger"
-                        outline
+                        variant="destructive"
                         onClick={() =>
                           requestDelete(
                             "number",
                             n.id,
-                            n.label ?? n.phoneNumber
+                            n.label ?? n.phoneNumber,
                           )
                         }
                         aria-label="Eliminar"
@@ -296,7 +290,6 @@ export default function SystemInfoClient({
                   {canUpdate && (
                     <Button
                       variant="secondary"
-                      outline
                       onClick={() => openEdit("email", e)}
                     >
                       Editar
@@ -305,8 +298,7 @@ export default function SystemInfoClient({
                   {canDelete && (
                     <Tooltip label="Eliminar" withArrow>
                       <Button
-                        variant="danger"
-                        outline
+                        variant="destructive"
                         onClick={() =>
                           requestDelete("email", e.id, e.label ?? e.email)
                         }

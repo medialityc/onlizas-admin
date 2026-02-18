@@ -27,14 +27,25 @@ export function ProductReceptionTable({
   onDiscrepancyToggle,
   onQuantityChange,
 }: ProductReceptionTableProps) {
-  const { register, setValue } = useFormContext<CreateTransferReceptionFormData>();
+  const { register, setValue } =
+    useFormContext<CreateTransferReceptionFormData>();
 
   return (
     <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
       <div className="flex items-center space-x-3 mb-4">
         <div className="w-8 h-8 bg-green-100 dark:bg-green-800 rounded-lg flex items-center justify-center">
-          <svg className="w-5 h-5 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
+          <svg
+            className="w-5 h-5 text-green-600 dark:text-green-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"
+            />
           </svg>
         </div>
         <div>
@@ -72,18 +83,21 @@ export function ProductReceptionTable({
                     minMax={{ min: 0, max: item.quantityRequested }}
                     required
                     className={
-                      (items[index]?.quantityReceived || 0) < item.quantityRequested 
-                        ? "border-red-500 focus:border-red-500 focus:ring-red-500" 
+                      (items[index]?.quantityReceived || 0) <
+                      item.quantityRequested
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
                         : ""
                     }
                   />
                   {/* Mensaje de validación */}
-                  {(items[index]?.quantityReceived || 0) < item.quantityRequested && 
-                   !discrepancies.has(item.id.toString()) && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                      ⚠️ Cantidad menor a la esperada. Debe marcar una incidencia para continuar.
-                    </p>
-                  )}
+                  {(items[index]?.quantityReceived || 0) <
+                    item.quantityRequested &&
+                    !discrepancies.has(item.id.toString()) && (
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                        ⚠️ Cantidad menor a la esperada. Debe marcar una
+                        incidencia para continuar.
+                      </p>
+                    )}
                 </div>
 
                 {/* Sección de discrepancia - Solo se muestra cuando se marca manualmente */}
@@ -115,11 +129,14 @@ export function ProductReceptionTable({
               <div className="ml-4">
                 <Button
                   type="button"
-                  variant={discrepancies.has(item.id.toString()) ? "danger" : "secondary"}
                   size="sm"
                   onClick={() => onDiscrepancyToggle(index)}
                 >
-                  {discrepancies.has(item.id.toString()) ? <IconTrash /> : "Marcar Incidencia"}
+                  {discrepancies.has(item.id.toString()) ? (
+                    <IconTrash />
+                  ) : (
+                    "Marcar Incidencia"
+                  )}
                 </Button>
               </div>
             </div>

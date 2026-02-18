@@ -16,7 +16,6 @@ export const FormActions = ({ isSubmitting, onCancel }: FormActionsProps) => {
     <div className="flex justify-end gap-4 pt-6">
       <Button
         type="button"
-        outline
         variant="secondary"
         size="lg"
         onClick={onCancel}

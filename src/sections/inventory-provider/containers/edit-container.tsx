@@ -32,7 +32,7 @@ function EditContainer({ inventory, features }: Props) {
     (variantId: string) => {
       openModal("edit", variantId);
     },
-    [openModal]
+    [openModal],
   );
 
   const handleCreateOpen = () => {
@@ -53,8 +53,8 @@ function EditContainer({ inventory, features }: Props) {
         };
 
         return [feature?.name ?? "", val];
-      }
-    )
+      },
+    ),
   );
 
   const initValue = useMemo(
@@ -82,7 +82,7 @@ function EditContainer({ inventory, features }: Props) {
       zones: [],
       zoneIds: [],
     }),
-    [featuresNormalized]
+    [featuresNormalized],
   );
 
   return (
@@ -101,6 +101,7 @@ function EditContainer({ inventory, features }: Props) {
         onClose={() => closeModal("create")}
         initValue={initValue}
         inventoryId={inventory.id as string}
+        supplierId={inventory.supplierId}
         isPacking={inventory.isPacking}
       />
 
@@ -110,6 +111,7 @@ function EditContainer({ inventory, features }: Props) {
           onClose={() => closeModal("edit")}
           initValue={selectedVariant}
           inventoryId={inventory.id as string}
+          supplierId={inventory.supplierId}
           isPacking={inventory.isPacking}
         />
       )}

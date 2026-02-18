@@ -34,7 +34,7 @@ const UserProviderCard = ({ item, className }: Props) => {
     <Card
       className={cn(
         "group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full dark:border-slate-700",
-        className
+        className,
       )}
     >
       <CardHeader className="flex flex-row gap-2 items-start justify-between">
@@ -42,7 +42,7 @@ const UserProviderCard = ({ item, className }: Props) => {
           <div
             className={cn(
               "p-3 rounded-lg",
-              "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+              "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400",
             )}
           >
             <UserGroupIcon className="h-6 w-6" />
@@ -107,7 +107,7 @@ const UserProviderCard = ({ item, className }: Props) => {
         <div className="flex justify-end w-full">
           {hasReadPermission && (
             <Link href={`/dashboard/inventory/list/${item?.id}/${item?.name}`}>
-              <Button outline className="w-full" variant="secondary">
+              <Button className="w-full" variant="outline">
                 Ver inventario
               </Button>
             </Link>

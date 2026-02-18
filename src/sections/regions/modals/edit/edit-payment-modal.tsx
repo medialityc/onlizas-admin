@@ -18,9 +18,9 @@ import RHFSwitch from "@/components/react-hook-form/rhf-switch";
 // Importar schemas y tipos desde el archivo centralizado
 import {
   paymentGatewaySchema,
-  PaymentGatewayFormData, 
+  PaymentGatewayFormData,
   AVAILABLE_PAYMENT_METHODS,
-  PaymentGateway
+  PaymentGateway,
 } from "@/sections/regions/schemas/region-modal-schemas";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
@@ -28,7 +28,7 @@ interface EditPaymentModalProps {
   open: boolean;
   onClose: () => void;
   paymentGateway: PaymentGateway | null;
-  regionId: number|string;
+  regionId: number | string;
 }
 
 export default function EditPaymentModal({
@@ -108,7 +108,7 @@ export default function EditPaymentModal({
     if (isSelected) {
       setValue(
         "supportedMethods",
-        currentMethods.filter((m) => m !== method)
+        currentMethods.filter((m) => m !== method),
       );
     } else {
       setValue("supportedMethods", [...currentMethods, method]);
@@ -266,12 +266,7 @@ export default function EditPaymentModal({
 
           {/* Botones */}
           <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <Button
-              type="button"
-              outline={true}
-              onClick={handleClose}
-              disabled={isSubmitting}
-            >
+            <Button type="button" onClick={handleClose} disabled={isSubmitting}>
               Cancelar
             </Button>
             {canEdit && (

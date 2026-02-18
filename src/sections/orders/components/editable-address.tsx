@@ -28,7 +28,7 @@ export function EditableAddress({
       <div className="flex items-center justify-between mb-2">
         <h3 className="font-semibold">{title}</h3>
         {!isEditing && (
-          <Button variant="secondary" outline size="sm" onClick={onEdit}>
+          <Button variant="outline" size="sm" onClick={onEdit}>
             Editar
           </Button>
         )}
@@ -44,7 +44,7 @@ export function EditableAddress({
             <Button size="sm" onClick={onSave}>
               Guardar
             </Button>
-            <Button size="sm" variant="secondary" outline onClick={onCancel}>
+            <Button size="sm" variant="outline" onClick={onCancel}>
               Cancelar
             </Button>
           </div>

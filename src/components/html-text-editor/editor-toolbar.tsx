@@ -69,8 +69,7 @@ export default function EditorToolbar({
             {!onlyPreview && (
               <Button
                 onClick={onClear}
-                variant="secondary"
-                outline={true}
+                variant="outline"
                 className="border-slate-200 text-slate-600 hover:bg-slate-50 bg-transparent"
               >
                 <Trash2 className="h-4 w-4 mr-2" />

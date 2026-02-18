@@ -1,7 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Modal, Stack, Title, Text, Image, Button, Alert, LoadingOverlay } from "@mantine/core";
+import {
+  Modal,
+  Stack,
+  Title,
+  Text,
+  Image,
+  Button,
+  Alert,
+  LoadingOverlay,
+} from "@mantine/core";
 import { generateImporterQR } from "@/services/importer-access";
 import showToast from "@/config/toast/toastConfig";
 import IconInfoCircle from "@/components/icon/icon-info-circle";
@@ -13,19 +22,25 @@ interface Props {
   onClose: () => void;
 }
 
-export default function QRSetupModal({ importerId, importerName, opened, onClose }: Props) {
+export default function QRSetupModal({
+  importerId,
+  importerName,
+  opened,
+  onClose,
+}: Props) {
   const [qrData, setQrData] = useState<{
     qrCodeImageBase64: string;
     secretKey: string;
     instructions: string;
   } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [forceRegenerate, setForceRegenerate] = useState(false);
 
   const handleGenerateQR = async () => {
     setIsLoading(true);
     try {
-      const result = await generateImporterQR(importerId);
-      
+      const result = await generateImporterQR(importerId, forceRegenerate);
+
       if (result.error || !result.data) {
         showToast(result.message || "Error al generar el código QR", "error");
         return;
@@ -59,11 +74,7 @@ export default function QRSetupModal({ importerId, importerName, opened, onClose
       closeOnEscape={false}
       withCloseButton={!!qrData}
       size="lg"
-      title={
-        <Title order={3}>
-          Configuración de Autenticación 2FA
-        </Title>
-      }
+      title={<Title order={3}>Configuración de Autenticación 2FA</Title>}
       styles={{
         content: {
           backgroundColor: "light-dark(#ffffff, #0e1726)",
@@ -71,11 +82,41 @@ export default function QRSetupModal({ importerId, importerName, opened, onClose
       }}
     >
       <LoadingOverlay visible={isLoading} />
-      
+
       <Stack gap="md">
         <Alert icon={<IconInfoCircle />} color="blue" variant="light">
-          Es la primera vez que accede como <strong>{importerName}</strong>. 
+          Es la primera vez que accede como <strong>{importerName}</strong>.
           Debe configurar la autenticación de dos factores (2FA) para continuar.
+        </Alert>
+
+        <Alert color="gray" variant="light">
+          <Text size="sm">
+            <strong>¿Qué deseas hacer con el QR actual?</strong>
+          </Text>
+          <Text size="xs" c="dimmed" mt={4}>
+            - "Mantener QR actual": si ya existe un QR válido, se reutilizará y
+            no se invalidará.
+            <br />- "Invalidar y regenerar": revoca el QR anterior y crea uno
+            nuevo.
+          </Text>
+          <Stack gap="xs" mt="sm">
+            <Button
+              size="xs"
+              variant={forceRegenerate ? "subtle" : "filled"}
+              color={forceRegenerate ? "gray" : "green"}
+              onClick={() => setForceRegenerate(false)}
+            >
+              Mantener QR actual (si existe)
+            </Button>
+            <Button
+              size="xs"
+              variant={forceRegenerate ? "filled" : "subtle"}
+              color={forceRegenerate ? "red" : "gray"}
+              onClick={() => setForceRegenerate(true)}
+            >
+              Invalidar y regenerar QR
+            </Button>
+          </Stack>
         </Alert>
 
         {!qrData ? (
@@ -104,9 +145,11 @@ export default function QRSetupModal({ importerId, importerName, opened, onClose
                 h={250}
                 fit="contain"
               />
-              
+
               <Stack gap="xs" align="center">
-                <Text size="xs" c="dimmed">Clave secreta (manual):</Text>
+                <Text size="xs" c="dimmed">
+                  Clave secreta (manual):
+                </Text>
                 <Text
                   size="sm"
                   fw={500}
@@ -124,8 +167,9 @@ export default function QRSetupModal({ importerId, importerName, opened, onClose
 
             <Alert color="yellow" variant="light">
               <Text size="sm">
-                <strong>Importante:</strong> Guarde esta clave secreta en un lugar seguro. 
-                La necesitará si pierde acceso a su aplicación de autenticación.
+                <strong>Importante:</strong> Guarde esta clave secreta en un
+                lugar seguro. La necesitará si pierde acceso a su aplicación de
+                autenticación.
               </Text>
             </Alert>
 

@@ -26,7 +26,6 @@ const InventoryActon = ({ inventoryId }: Props) => {
             selectAllProducts(inventoryId);
             addSelectedProductsToItems();
           }}
-          outline
           className="px-2   bg-transparent  "
         >
           <ChevronsUp className="h-4 w-4" />
@@ -39,7 +38,6 @@ const InventoryActon = ({ inventoryId }: Props) => {
             resetInventory(inventoryId);
             removeItemsByInventory(inventoryId);
           }}
-          outline
           className="px-2   bg-transparent  "
         >
           <RefreshCcwIcon className="h-4 w-4" />

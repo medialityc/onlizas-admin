@@ -36,10 +36,10 @@ export default function WarehouseReceptionsContainer({
   const handleViewReception = useCallback(
     (transferId: string) => {
       router.push(
-        `/dashboard/warehouses/${warehouse.type}/${warehouse.id}/reception/${transferId}`
+        `/dashboard/warehouses/${warehouse.type}/${warehouse.id}/reception/${transferId}`,
       );
     },
-    [router, warehouse.type, warehouse.id]
+    [router, warehouse.type, warehouse.id],
   );
 
   const columns = useMemo<DataTableColumn<TransferReception>[]>(
@@ -82,7 +82,6 @@ export default function WarehouseReceptionsContainer({
           <Button
             onClick={() => handleViewReception(reception.transferId)}
             variant="secondary"
-            outline
             size="sm"
           >
             <EyeIcon className="h-4 w-4 mr-2" />
@@ -91,11 +90,11 @@ export default function WarehouseReceptionsContainer({
         ),
       },
     ],
-    [handleViewReception]
+    [handleViewReception],
   );
 
   const getStatusColor = (
-    status: TransferReceptionStatus
+    status: TransferReceptionStatus,
   ): "primary" | "success" | "warning" | "danger" | "info" => {
     switch (status) {
       case "PENDING":

@@ -47,7 +47,6 @@ const AdressField = ({
             {hasUpdatePermission && (
               <Button
                 type="button"
-                outline
                 size="sm"
                 onClick={() => handleEditAddress(field)}
               >
@@ -57,7 +56,6 @@ const AdressField = ({
             {hasDeletePermission && (
               <Button
                 type="button"
-                outline
                 size="sm"
                 onClick={() => removeAddress(index)}
                 className="text-red-600 hover:text-red-700"

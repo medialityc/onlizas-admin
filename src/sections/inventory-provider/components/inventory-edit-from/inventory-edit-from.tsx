@@ -8,6 +8,7 @@ type Props = {
   initValue?: ProductVariant;
   inventoryId?: string;
   index?: number;
+  supplierId?: string;
   isPacking: boolean;
   handleClose: () => void;
 };
@@ -16,13 +17,14 @@ const InventoryEditForm = ({
   initValue,
   inventoryId,
   index,
+  supplierId,
   isPacking,
   handleClose,
 }: Props) => {
   const { form, isPending, reset, onSubmit } = useInventoryProviderEditForm(
     initValue,
     inventoryId as string,
-    handleClose
+    handleClose,
   );
 
   return (
@@ -33,6 +35,7 @@ const InventoryEditForm = ({
           index={index}
           isPending={isPending}
           isPacking={isPacking}
+          supplierId={supplierId}
           handleClose={handleClose}
         />
       </FormProvider>

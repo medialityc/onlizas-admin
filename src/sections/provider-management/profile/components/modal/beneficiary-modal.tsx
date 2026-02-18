@@ -62,7 +62,7 @@ export default function BeneficiaryModal({
         name: "",
         emails: [{ address: "", isVerified: false }],
         phones: [""],
-      }
+      },
     );
   }, [initial, reset]);
 
@@ -157,7 +157,7 @@ export default function BeneficiaryModal({
           </div>
 
           <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" outline onClick={onClose}>
+            <Button type="button" onClick={onClose}>
               Cancelar
             </Button>
             <Button type="submit" className="bg-primary text-white">

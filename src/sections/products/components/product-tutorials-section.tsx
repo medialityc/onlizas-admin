@@ -19,11 +19,11 @@ function ProductTutorialsSection() {
   const tutorialsWatch = watch("tutorials");
   const tutorials: string[] = useMemo(
     () => tutorialsWatch || [],
-    [tutorialsWatch]
+    [tutorialsWatch],
   );
   const previews = useMemo(
     () => tutorials.map(getYoutubeEmbedUrl),
-    [tutorials]
+    [tutorials],
   );
 
   return (
@@ -67,7 +67,7 @@ function ProductTutorialsSection() {
                 <Button
                   type="button"
                   size="sm"
-                  variant="danger"
+                  variant="destructive"
                   onClick={() => remove(index)}
                 >
                   <IconTrash className="w-4 h-4" />

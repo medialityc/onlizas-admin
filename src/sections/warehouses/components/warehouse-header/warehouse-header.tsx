@@ -13,7 +13,7 @@ const WarehouseHeader = () => {
 
   const handleInitTransfer = useCallback(
     () => openModal("transfer"),
-    [openModal]
+    [openModal],
   );
 
   const transferModal = getModalState<number>("transfer");
@@ -36,7 +36,7 @@ const WarehouseHeader = () => {
         </div>
         <div className="flex flex-row gap-2">
           {hasTransferPermission && (
-            <Button onClick={handleInitTransfer} variant="secondary" outline>
+            <Button onClick={handleInitTransfer} variant="secondary">
               <ArrowsRightLeftIcon className="h-4 w-4 mr-2" /> Transferencias
             </Button>
           )}

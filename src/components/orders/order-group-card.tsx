@@ -46,8 +46,7 @@ export function OrderGroupCard({
             </p>
           </div>
           <Button
-            variant="secondary"
-            outline
+            variant="outline"
             size="sm"
             onClick={(e) => {
               e.stopPropagation();
@@ -57,8 +56,7 @@ export function OrderGroupCard({
             Ver Detalles
           </Button>
           <Button
-            variant="secondary"
-            outline
+            variant="outline"
             size="sm"
             aria-label={expanded ? "Contraer" : "Expandir"}
           >
@@ -141,8 +139,7 @@ export function OrderGroupCard({
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <Button
-                        variant="secondary"
-                        outline
+                        variant="outline"
                         size="sm"
                         onClick={() =>
                           onPrintLabel &&

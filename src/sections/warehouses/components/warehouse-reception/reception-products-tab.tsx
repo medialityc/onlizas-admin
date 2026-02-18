@@ -4,7 +4,10 @@ import { useState } from "react";
 import { TransferReception } from "@/types/warehouse-transfer-receptions";
 import { WarehouseFormData } from "../../schemas/warehouse-schema";
 import { Button } from "@/components/button/button";
-import { ExclamationTriangleIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import {
+  ExclamationTriangleIcon,
+  CheckCircleIcon,
+} from "@heroicons/react/24/outline";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface Props {
@@ -19,38 +22,47 @@ const mockProducts = [
     name: "Laptop Dell Inspiron 15 - 8GB RAM",
     transferred: 10,
     received: 10,
-    status: "correct"
+    status: "correct",
   },
   {
     id: 2,
     name: "Mouse Inalámbrico Logitech MX Master 3",
     transferred: 25,
     received: 25,
-    status: "correct"
+    status: "correct",
   },
   {
     id: 3,
     name: "Teclado Mecánico Corsair K95 RGB",
     transferred: 15,
     received: null,
-    status: "pending"
-  }
+    status: "pending",
+  },
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function ReceptionProductsTab({ reception: _reception, warehouse: _warehouse }: Props) {
+export default function ReceptionProductsTab({
+  reception: _reception,
+  warehouse: _warehouse,
+}: Props) {
   const [products, setProducts] = useState(mockProducts);
 
-  const handleReceivedQuantityChange = (productId: number, quantity: number) => {
-    setProducts(prev => prev.map(product =>
-      product.id === productId
-        ? {
-          ...product,
-          received: quantity,
-          status: quantity === product.transferred ? "correct" : "discrepancy"
-        }
-        : product
-    ));
+  const handleReceivedQuantityChange = (
+    productId: number,
+    quantity: number,
+  ) => {
+    setProducts((prev) =>
+      prev.map((product) =>
+        product.id === productId
+          ? {
+              ...product,
+              received: quantity,
+              status:
+                quantity === product.transferred ? "correct" : "discrepancy",
+            }
+          : product,
+      ),
+    );
   };
 
   const getStatusIcon = (status: string, received: number | null) => {
@@ -95,7 +107,9 @@ export default function ReceptionProductsTab({ reception: _reception, warehouse:
                 </h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-gray-500 dark:text-gray-400">Cantidad transferida:</span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Cantidad transferida:
+                    </span>
                     <span className="ml-2 font-medium text-dark dark:text-white-light">
                       {product.transferred} unidades
                     </span>
@@ -104,12 +118,7 @@ export default function ReceptionProductsTab({ reception: _reception, warehouse:
               </div>
 
               {product.status !== "pending" && (
-                <Button
-                  variant="secondary"
-                  outline
-                  size="sm"
-                  className="text-xs"
-                >
+                <Button variant="secondary" size="sm" className="text-xs">
                   ⚠️ Marcar Discrepancia
                 </Button>
               )}
@@ -125,7 +134,12 @@ export default function ReceptionProductsTab({ reception: _reception, warehouse:
                   min="0"
                   max={product.transferred}
                   value={product.received || ""}
-                  onChange={(e) => handleReceivedQuantityChange(product.id, parseInt(e.target.value) || 0)}
+                  onChange={(e) =>
+                    handleReceivedQuantityChange(
+                      product.id,
+                      parseInt(e.target.value) || 0,
+                    )
+                  }
                   className="w-20 p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
                   placeholder="0"
                 />
@@ -134,10 +148,13 @@ export default function ReceptionProductsTab({ reception: _reception, warehouse:
               <div className="flex items-center gap-2">
                 {getStatusIcon(product.status, product.received)}
                 {product.received !== null && (
-                  <span className={`text-sm font-medium ${product.status === "correct"
-                      ? "text-green-600 dark:text-green-400"
-                      : "text-amber-600 dark:text-amber-400"
-                    }`}>
+                  <span
+                    className={`text-sm font-medium ${
+                      product.status === "correct"
+                        ? "text-green-600 dark:text-green-400"
+                        : "text-amber-600 dark:text-amber-400"
+                    }`}
+                  >
                     {product.status === "correct" ? "Correcto" : "Discrepancia"}
                   </span>
                 )}
@@ -149,17 +166,8 @@ export default function ReceptionProductsTab({ reception: _reception, warehouse:
 
       {/* Botones de acción */}
       <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-        <Button
-          variant="secondary"
-          outline
-        >
-          Guardar Borrador
-        </Button>
-        <Button
-          variant="primary"
-        >
-          Completar Recepción
-        </Button>
+        <Button variant="secondary">Guardar Borrador</Button>
+        <Button variant="primary">Completar Recepción</Button>
       </div>
     </div>
   );

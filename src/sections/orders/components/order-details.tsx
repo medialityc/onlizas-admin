@@ -38,7 +38,6 @@ export function OrderDetails({
           {trackUrl && (
             <Button
               variant="secondary"
-              outline
               type="button"
               onClick={() => {
                 try {

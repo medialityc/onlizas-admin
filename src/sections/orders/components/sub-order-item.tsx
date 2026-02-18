@@ -260,7 +260,6 @@ export function SubOrderItem({
                   <Button
                     size="sm"
                     variant="secondary"
-                    outline
                     disabled={!hasFacture}
                     onClick={handleViewFacture}
                     className="gap-1"
@@ -271,7 +270,6 @@ export function SubOrderItem({
                   <Button
                     size="sm"
                     variant="secondary"
-                    outline
                     disabled={!hasFacture}
                     onClick={handleDownloadFacture}
                     className="gap-1"
@@ -303,7 +301,6 @@ export function SubOrderItem({
           <div className="flex justify-end gap-2">
             <Button
               variant="secondary"
-              outline
               type="button"
               onClick={() => {
                 setIsModalOpen(false);

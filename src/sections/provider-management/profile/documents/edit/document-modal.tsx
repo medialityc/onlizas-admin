@@ -86,7 +86,7 @@ export function DocumentModal({
         isEditing
           ? "Documento actualizado exitosamente"
           : "Documento creado exitosamente",
-        "success"
+        "success",
       );
 
       onSuccess?.();
@@ -130,7 +130,7 @@ export function DocumentModal({
             />
 
             <div className="flex justify-end gap-3 pt-4">
-              <Button type="button" outline onClick={handleClose}>
+              <Button type="button" onClick={handleClose}>
                 Cancelar
               </Button>
               {hasUpdatePermission && (

@@ -21,7 +21,7 @@ import {
   pendingDocumentsFormSchema,
 } from "./pending-docs-schema";
 import { usePermissions } from "@/hooks/use-permissions";
-import { PERMISSION_ENUM } from "@/lib/permissions";
+import { PERMISSION_ENUM, PERMISSIONS } from "@/lib/permissions";
 
 export default function SupplierPendingDocuments({
   approvalProcessId,
@@ -58,7 +58,7 @@ export default function SupplierPendingDocuments({
   const docs = methods.watch("pendingDocuments");
   const [docLoading, setDocLoading] = useState<Record<number, boolean>>({});
   const [approveLoading, setApproveLoading] = useState<Record<number, boolean>>(
-    {}
+    {},
   );
   const [rejectIdx, setRejectIdx] = useState<number | null>(null);
   const [rejectReason, setRejectReason] = useState("");
@@ -74,7 +74,7 @@ export default function SupplierPendingDocuments({
 
   const withObjectUrl = async (
     file: File,
-    cb: (url: string) => void
+    cb: (url: string) => void,
   ): Promise<void> => {
     const url = URL.createObjectURL(file);
     try {
@@ -119,30 +119,30 @@ export default function SupplierPendingDocuments({
       toast.error("Selecciona un archivo para subir.");
       return;
     }
-    
+
     // Usar el nombre del archivo si fileName está vacío
     const documentName = doc.fileName?.trim() || doc.content.name;
     if (!documentName) {
       toast.error("El nombre del documento es requerido.");
       return;
     }
-    
+
     try {
       setValue(`pendingDocuments.${index}.fileName`, documentName);
       setDocLoading((m) => ({ ...m, [index]: true }));
-      
+
       // Usar el nuevo endpoint de extension-documents
       const res = await addExtensionDocuments(String(apId), [
-        { fileName: documentName, content: doc.content }
+        { fileName: documentName, content: doc.content },
       ]);
-      
+
       if (res.error || !res.data) throw new Error(res.message || "Error");
-      
+
       // El endpoint retorna { approvalProcessId, addedDocumentsCount, message }
       // pero no retorna los IDs de los documentos creados
       // Por ahora solo marcamos como subido exitosamente
       toast.success("Documento subido");
-      
+
       // Marcar el documento como subido (podrías necesitar recargar la lista completa)
       setValue(`pendingDocuments.${index}.content`, "uploaded" as any, {
         shouldDirty: false,
@@ -218,7 +218,7 @@ export default function SupplierPendingDocuments({
       setValue(
         `pendingDocuments.${rejectIdx}.rejectionReason`,
         rejectReason.trim() as any,
-        { shouldDirty: false }
+        { shouldDirty: false },
       );
       setRejectIdx(null);
       setRejectReason("");
