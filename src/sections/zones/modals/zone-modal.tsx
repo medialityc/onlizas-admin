@@ -197,7 +197,12 @@ export default function ZoneModal({
                   ? "Buscar distritos"
                   : "Seleccione un país primero"
               }
-              onFetch={fetchDistricts}
+              onFetch={
+                selectedCountryId
+                  ? (params) =>
+                      fetchDistricts({ ...params, searchTerm: params.search })
+                  : undefined
+              }
               multiple
               required
               objectValueKey="id"
@@ -209,7 +214,7 @@ export default function ZoneModal({
             />
             <RHFInputWithLabel
               name="deliveryAmount"
-              label="Costo de Entrega"
+              label="Costo de Entrega (USD)"
               placeholder="Ej: 5.00"
               type="number"
               step="0.01"

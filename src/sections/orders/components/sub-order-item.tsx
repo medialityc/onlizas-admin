@@ -251,7 +251,7 @@ export function SubOrderItem({
                         </span>
                       </>
                     ) : (
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs">
                         No hay más cambios de estado
                       </span>
                     )}

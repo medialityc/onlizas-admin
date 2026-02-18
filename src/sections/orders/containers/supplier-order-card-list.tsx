@@ -1,5 +1,4 @@
-import React, { useId, useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useId, useState } from "react";
 import { Order, OrderStatus } from "@/types/order";
 import { OrderGroupCard } from "@/components/orders/order-group-card";
 import { OrderDetails } from "../components/order-details";
@@ -14,7 +13,11 @@ const SupplierOrderCardList = ({ data, onPrintLabel }: Props) => {
   const id = useId();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const router = useRouter();
+  const [orders, setOrders] = useState<Order[]>(data ?? []);
+
+  useEffect(() => {
+    setOrders(data ?? []);
+  }, [data]);
 
   const handleDetailsModal = () => {
     setDetailModalOpen(true);
@@ -33,7 +36,7 @@ const SupplierOrderCardList = ({ data, onPrintLabel }: Props) => {
   return (
     <>
       <section className="grid grid-cols-1 gap-3 md:gap-6 mb-4">
-        {data?.map((order: Order, idx) => (
+        {orders.map((order: Order, idx) => (
           <div className="col-span-1" key={`${id}-${order?.id}${idx}`}>
             <OrderGroupCard
               order={order}
@@ -49,6 +52,20 @@ const SupplierOrderCardList = ({ data, onPrintLabel }: Props) => {
           orderId={selectedOrder.id}
           onClose={handleCloseDetails}
           isSupplier={true}
+          onSubOrdersUpdated={(orderId, updates) => {
+            setOrders((prev) =>
+              prev.map((order) => {
+                if (order.id !== orderId) return order;
+                return {
+                  ...order,
+                  subOrders: order.subOrders.map((so) => {
+                    const match = updates.find((u) => u.id === so.id);
+                    return match ? { ...so, status: match.status } : so;
+                  }),
+                };
+              }),
+            );
+          }}
         />
       )}
     </>

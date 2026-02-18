@@ -1,4 +1,4 @@
-import React, { useId, useState } from "react";
+import React, { useEffect, useId, useState } from "react";
 import { Order, OrderStatus } from "@/types/order";
 import { OrderCard } from "../components/order-card";
 import { OrderDetails } from "../components/order-details";
@@ -12,6 +12,11 @@ const OrderList = ({ data }: Props) => {
   const id = useId();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [orders, setOrders] = useState<Order[]>(data ?? []);
+
+  useEffect(() => {
+    setOrders(data ?? []);
+  }, [data]);
 
   const handleDetailsModal = () => {
     setDetailModalOpen(true);
@@ -30,7 +35,7 @@ const OrderList = ({ data }: Props) => {
     <>
       {data && data.length > 0 ? (
         <section className="grid grid-cols-1 gap-3 md:gap-6 mb-4">
-          {data?.map((order: Order, idx) => (
+          {orders.map((order: Order, idx) => (
             <div className="col-span-1" key={`${id}-${order?.id}${idx}`}>
               <OrderCard
                 order={order}
@@ -72,6 +77,20 @@ const OrderList = ({ data }: Props) => {
           orderId={selectedOrder.id}
           onClose={handleCloseDetails}
           isSupplier={false}
+          onSubOrdersUpdated={(orderId, updates) => {
+            setOrders((prev) =>
+              prev.map((order) => {
+                if (order.id !== orderId) return order;
+                return {
+                  ...order,
+                  subOrders: order.subOrders.map((so) => {
+                    const match = updates.find((u) => u.id === so.id);
+                    return match ? { ...so, status: match.status } : so;
+                  }),
+                };
+              }),
+            );
+          }}
         />
       )}
     </>

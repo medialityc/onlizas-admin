@@ -6,7 +6,7 @@ export const isApiError = (error: unknown): error is ApiError => {
 };
 
 export const handleApiServerError = async <T>(
-  response: Response
+  response: Response,
 ): Promise<ApiResponse<T>> => {
   try {
     const contentType = response.headers.get("content-type");
@@ -71,7 +71,7 @@ export const handleApiServerError = async <T>(
 };
 
 export const buildApiResponseAsync = async <T>(
-  response: Response
+  response: Response,
 ): Promise<ApiResponse<T>> => {
   try {
     if (
@@ -115,13 +115,39 @@ export const getErrorMessage = (error: unknown): string => {
   // Backend common shape: { statusCode, message, errors: { field: [msg] } }
   if (typeof error === "object" && error && !Array.isArray(error)) {
     const anyErr = error as Record<string, any>;
-    
+
     // Priorizar el campo 'detail' si existe, luego message, title
     const baseMessage: string | undefined =
       anyErr.detail || anyErr.message || anyErr.title;
-    
+
     const errorsMap = anyErr.errors;
-    if (errorsMap && typeof errorsMap === "object") {
+
+    // Caso 1: errors como array de objetos { name, reason, ... }
+    if (Array.isArray(errorsMap)) {
+      const fieldMessages: string[] = [];
+      for (const item of errorsMap) {
+        if (!item || typeof item !== "object") continue;
+        const name = (item as any).name || (item as any).field;
+        const reason =
+          (item as any).reason ||
+          (item as any).message ||
+          (item as any).detail ||
+          (item as any).code;
+
+        if (name && reason) fieldMessages.push(`${name}: ${reason}`);
+        else if (reason) fieldMessages.push(reason);
+      }
+      if (fieldMessages.length > 0) {
+        return fieldMessages.join(" | ");
+      }
+    }
+
+    // Caso 2: errors como objeto { field: ["msg"] }
+    if (
+      errorsMap &&
+      typeof errorsMap === "object" &&
+      !Array.isArray(errorsMap)
+    ) {
       const fieldMessages: string[] = [];
       for (const [field, messages] of Object.entries(errorsMap)) {
         if (Array.isArray(messages)) {
@@ -139,7 +165,15 @@ export const getErrorMessage = (error: unknown): string => {
   if (Array.isArray(error)) {
     // array of error objects or strings
     return (error as any[])
-      .map((e) => (typeof e === "string" ? e : e?.detail || e?.message))
+      .map((e) => {
+        if (typeof e === "string") return e;
+        if (!e || typeof e !== "object") return undefined;
+        const anyE = e as any;
+        const name = anyE.name || anyE.field;
+        const reason = anyE.reason || anyE.message || anyE.detail || anyE.code;
+        if (name && reason) return `${name}: ${reason}`;
+        return reason;
+      })
       .filter(Boolean)
       .join(", ");
   }

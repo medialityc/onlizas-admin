@@ -20,6 +20,7 @@ export function OrderGroupCard({
   const subOrders = order.subOrders;
   const [expanded, setExpanded] = useState(true);
   const orderTotal = subOrders.reduce((sum, so) => sum + so.amountPaid, 0);
+  console.log(order);
 
   return (
     <div className="rounded-lg border bg-card overflow-hidden">

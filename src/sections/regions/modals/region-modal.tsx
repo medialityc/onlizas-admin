@@ -44,7 +44,7 @@ export default function RegionModal({
   // Obtener los datos completos de la región cuando se está editando
   const { data: regionData, isLoading: isLoadingRegion } = useRegionDetails(
     region?.id,
-    open && !!region?.id && !isDetailsView
+    open && !!region?.id && !isDetailsView,
   );
 
   // Usar los datos completos si están disponibles, sino usar los datos básicos
@@ -77,12 +77,8 @@ export default function RegionModal({
     setError(null);
     onClose();
   };
-  console.log(methods.formState.errors);
-console.log("Messi");
 
   const onSubmit = async (data: any) => {
-    console.log("Entro");
-    
     setError(null);
     try {
       // Convertir el valor booleano del status a numérico para el backend
@@ -106,7 +102,7 @@ console.log("Messi");
         toast.success(
           fullRegion
             ? "Región actualizada exitosamente"
-            : "Región creada exitosamente"
+            : "Región creada exitosamente",
         );
         handleClose();
       } else {
@@ -137,8 +133,17 @@ console.log("Messi");
             )}
 
             {/* Estado - fila completa */}
-            <div className="flex items-center space-x-3">
-              <RHFSwitch name="moveCountries" label="Mover Países asociados" />
+            <div className="flex flex-col gap-1 mb-4">
+              <RHFSwitch
+                name="moveCountries"
+                label="Mover países asociados de otras regiones"
+                helperText="Si está activo, los países seleccionados dejarán de pertenecer a su región actual y se moverán a esta región."
+              />
+              <p className="text-xs text-muted-foreground">
+                Usa esta opción solo cuando quieras reasignar países que ya
+                forman parte de otra región. Si no la activas, los países se
+                mantendrán en su región actual.
+              </p>
             </div>
 
             {/* Segunda fila: Código y Nombre */}

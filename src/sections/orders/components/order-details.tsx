@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { ApiResponse } from "@/types/fetch/api";
 import { Order, OrderStatus } from "@/types/order";
 import { Button } from "@/components/button/button";
@@ -17,6 +18,10 @@ interface OrderDetailsProps {
   orderId: string;
   onClose: () => void;
   isSupplier?: boolean;
+  onSubOrdersUpdated?: (
+    orderId: string,
+    updates: { id: string; status: OrderStatus }[],
+  ) => void;
 }
 
 export function OrderDetails({
@@ -24,8 +29,9 @@ export function OrderDetails({
   orderId,
   onClose,
   isSupplier = false,
+  onSubOrdersUpdated,
 }: OrderDetailsProps) {
-  const queryClient = useQueryClient();
+  const router = useRouter();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isProcessingLocked, setIsProcessingLocked] = useState(false);
 
@@ -148,9 +154,14 @@ export function OrderDetails({
       }
 
       showToast("Estado de las sub-órdenes actualizado", "success");
-      // Revalidar detalles de la orden y cualquier lista asociada
+      // Actualizar lista en memoria (admin / proveedor)
+      const updates = subOrders.map((so) => ({ id: so.id, status }));
+      onSubOrdersUpdated?.(order.id, updates);
+      // Revalidar detalles de la orden
       await refetch();
-      await queryClient.invalidateQueries({ queryKey: ["orders-list"] });
+      // Forzar refresco de las páginas de listas (admin y proveedor),
+      // que dependen del tag "orders" en el backend
+      router.refresh();
     } catch (e) {
       console.error(e);
       showToast("Ocurrió un error al actualizar el estado", "error");
