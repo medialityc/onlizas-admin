@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import ImagePreview from "@/components/image/image-preview";
 import Badge from "@/components/badge/badge";
 import { Button } from "@/components/button/button";
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, Eye, Trash2 } from "lucide-react";
 import { getVariantConditionLabel } from "@/config/variant-condition-map";
 import { ProductVariant } from "../../schemas/inventory-provider.schema";
 import { Tooltip } from "@mantine/core";
@@ -179,11 +179,11 @@ function VariantCard({
             title="Ver detalles de la variante"
             aria-label={`Ver detalles ${variant.sku ?? variant.productName}`}
           >
+            <Eye className="w-3.5 h-3.5" />
             <span className="hidden md:inline">Detalles</span>
           </Button>
           {canEdit && onEdit && (
             <Button
-              variant="secondary"
               size="sm"
               onClick={() => onEdit(variant.id as string)}
               className="gap-1 px-2 py-1 rounded-md flex items-center"

@@ -2,7 +2,7 @@
 import { backendRoutes } from "@/lib/endpoint";
 import { QueryParamsURLFactory } from "@/lib/request";
 import { IQueryable } from "@/types/fetch/request";
-import { GetAllOrders } from "@/types/order";
+import { GetAllOrders, Order } from "@/types/order";
 
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { ApiResponse, ApiStatusResponse } from "@/types/fetch/api";
@@ -42,6 +42,20 @@ export async function getOrdersByStore(
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<GetAllOrders>(res);
+}
+
+export async function getOrderById(
+  id: string | number,
+): Promise<ApiResponse<Order>> {
+  const res = await nextAuthFetch({
+    url: backendRoutes.orders.getById(id),
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["orders"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<Order>(res);
 }
 
 export type UpdateSubOrderStatusPayload = {

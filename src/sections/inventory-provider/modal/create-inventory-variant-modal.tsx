@@ -34,8 +34,8 @@ export default function CreateInventoryVariantModal({
     <SimpleModal
       open={open}
       onClose={handleClose}
+      size="lg"
       title={initValue?.id ? "Editar variante" : "Crear variante"}
-      className="max-w-4xl"
     >
       <div className="p-5">
         {error && (

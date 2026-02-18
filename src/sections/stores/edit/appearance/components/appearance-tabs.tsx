@@ -11,7 +11,6 @@ export default function AppearanceTabs() {
       tabs={[
         { label: "Tema y Colores", content: <ThemeAndColorsTab /> },
         { label: "HomeBanners", content: <HomeBannersTab /> },
-        { label: "Vista Previa", content: <PreviewTab /> },
       ]}
     />
   );

@@ -19,6 +19,7 @@ interface Props {
   loading?: boolean;
   className?: string;
   footer?: React.ReactNode;
+  size?: "sm" | "md" | "lg";
 }
 
 const SimpleModal = ({
@@ -29,6 +30,7 @@ const SimpleModal = ({
   loading,
   subtitle,
   // className,
+  size = "md",
   footer,
 }: Props) => {
   if (!open) return null;
@@ -43,7 +45,14 @@ const SimpleModal = ({
         >
           <DialogPanel
             as="div"
-            className="w-full max-w-[650px] animate-in zoom-in-95 m-4 flex max-h-[95vh] flex-col overflow-hidden rounded-xl bg-white shadow-2xl transition-all duration-200 dark:bg-[#1a1c23]"
+            className={cn(
+              "w-full animate-in zoom-in-95 m-4 flex max-h-[95vh] flex-col overflow-hidden rounded-xl bg-white shadow-2xl transition-all duration-200 dark:bg-[#1a1c23]",
+              size === "sm"
+                ? "max-w-md"
+                : size === "lg"
+                  ? "max-w-4xl"
+                  : "max-w-[650px]",
+            )}
           >
             {/* Header */}
             <div className="flex shrink-0 items-center justify-between border-b border-gray-100 bg-white px-6 py-4 dark:border-gray-800 dark:bg-[#1a1c23]">

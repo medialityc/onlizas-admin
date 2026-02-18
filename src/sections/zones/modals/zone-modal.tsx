@@ -35,14 +35,14 @@ export default function ZoneModal({
   zone,
 }: Props) {
   const [preloadedDistricts, setPreloadedDistricts] = useState<District[]>([]);
-  
+
   const methods = useForm<ZoneInput>({
     resolver: zodResolver(ZoneSchema),
     defaultValues: {
       name: zone?.name || "",
       deliveryAmount: zone?.deliveryAmount || 0,
       districtsIds: zone?.districtsIds || [],
-      countryId: zone?.countryId || "c1c9c1b7-3757-4294-9591-970fba64c681", // ID de Cuba por defecto
+      countryId: zone?.countryId, // ID de Cuba por defecto
     },
   });
 
@@ -77,7 +77,7 @@ export default function ZoneModal({
       }
       return getDistrictsByCountry(selectedCountryId, params);
     },
-    [selectedCountryId]
+    [selectedCountryId],
   );
 
   const handleClose = () => {
@@ -114,7 +114,8 @@ export default function ZoneModal({
 
   useEffect(() => {
     if (zone && open) {
-      const countryIdToUse = zone.countryId || "c1c9c1b7-3757-4294-9591-970fba64c681";
+      const countryIdToUse =
+        zone.countryId || "c1c9c1b7-3757-4294-9591-970fba64c681";
 
       const loadAndReset = async () => {
         let districts: District[] = [];
@@ -128,7 +129,7 @@ export default function ZoneModal({
 
             if (response.data?.data) {
               districts = response.data.data.filter((d) =>
-                zone.districtsIds.includes(d.id)
+                zone.districtsIds.includes(d.id),
               );
             }
           } catch (error) {
@@ -185,7 +186,6 @@ export default function ZoneModal({
                 variant="name"
                 fullwidth
                 inputClassname="transition-all focus:ring-2 focus:ring-green-500"
-                disabled={!zone}
               />
             </div>
             <RHFAutocompleteFetcherInfinity<District>

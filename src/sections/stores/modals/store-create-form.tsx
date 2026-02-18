@@ -14,6 +14,7 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { useAuth } from "zas-sso-client";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import { RHFPhoneCountrySelect } from "@/components/react-hook-form/rhf-phone-country-select";
+import { getValidSuppliers } from "@/services/supplier";
 type Props = {
   isSubmitting: boolean;
   handleClose: VoidFunction;
@@ -78,7 +79,8 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
             label="Propietario"
             placeholder="Buscar propietario..."
             required
-            onFetch={getAllSupplierUsers}
+            onFetch={getValidSuppliers}
+            objectValueKey="userId"
             size="medium"
             key={`owner-${ownerId}`}
           />
@@ -165,7 +167,7 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
         >
           Cancelar
         </button>
-        {hasCreatePermission && (
+        {(hasCreatePermission || hasCreateStorePermission) && (
           <LoaderButton
             type="submit"
             loading={isSubmitting}

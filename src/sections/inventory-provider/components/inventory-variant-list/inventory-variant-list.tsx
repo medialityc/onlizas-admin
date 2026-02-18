@@ -24,7 +24,7 @@ export default function VariantsManager({
   inventoryId,
 }: Props) {
   const { onDelete, isPending: isDeleting } = useInventoryVariantDelete(
-    inventoryId as string
+    inventoryId as string,
   );
   const { hasPermission } = usePermissions();
   const hasDeletePermission = hasPermission([
@@ -41,7 +41,7 @@ export default function VariantsManager({
   ]);
   const { open, onOpen, onClose } = useToggle(false);
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
-    null
+    null,
   );
 
   const handleDelete = (variantId: string) => {

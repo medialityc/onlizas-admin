@@ -210,8 +210,8 @@ const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
       <div className="px-4 pb-4">
         <div className="flex gap-2">
           <Button
-            variant="secondary"
-            className="flex-1 px-3 py-2 items-center text-xs font-medium rounded-md transition-colors flex  justify-center gap-1.5"
+            variant="outline"
+            className="flex-1  px-3 py-2 items-center text-xs font-medium rounded-md transition-colors flex  justify-center gap-1.5"
           >
             <span className="flex-1 flex flex-row gap-2 items-center">
               <CopyIcon className="w-3.5 h-3.5" />

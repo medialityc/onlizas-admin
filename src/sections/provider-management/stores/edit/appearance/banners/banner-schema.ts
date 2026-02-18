@@ -5,7 +5,7 @@ import { z } from "zod";
 export const BannerSchema = z
   .object({
     title: z.string().min(1, "El título es requerido"),
-    urlDestinity: z.string().min(1, "La URL de destino es requerida"),
+    urlDestinity: z.string(),
     position: z.coerce
       .number()
       .int()
@@ -29,7 +29,7 @@ export const BannerSchema = z
         },
         {
           message: "La imagen es obligatoria",
-        }
+        },
       ),
     mobileImage: z.union([z.instanceof(File), z.string()]).optional(),
     active: z.boolean(),

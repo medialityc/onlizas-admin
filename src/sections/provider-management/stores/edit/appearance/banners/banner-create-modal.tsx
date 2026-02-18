@@ -13,6 +13,8 @@ import LoaderButton from "@/components/loaders/loader-button";
 import { BannerSchema, type BannerForm } from "./banner-schema";
 import { BannerItem } from "@/types/stores";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
+import RHFDatePicker from "@/components/react-hook-form/rhf-date-picker";
+import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
 
 type Props = {
   open: boolean;
@@ -105,7 +107,7 @@ export default function BannerCreateModal({
       // try {
       //   console.warn("Errores Banner:", JSON.stringify(errors));
       // } catch {}
-    }
+    },
   );
 
   const modalTitle = isEditing ? "Editar Banner" : "Crear Nuevo Banner";
@@ -135,12 +137,12 @@ export default function BannerCreateModal({
             ]}
           />
           <div className="grid grid-cols-1  dark:text-gray-100 sm:grid-cols-2 gap-4">
-            <RHFDatePickerBanner
+            <RHFDateInput
               name="initDate"
               label="Fecha de Inicio"
               minDate={isEditing ? undefined : new Date()}
             />
-            <RHFDatePickerBanner
+            <RHFDateInput
               name="endDate"
               label="Fecha de Fin"
               minDate={isEditing ? undefined : new Date()}

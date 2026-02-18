@@ -8,7 +8,6 @@ import {
   RHFInputWithLabel,
   RHFSelectWithLabel,
 } from "@/components/react-hook-form";
-import RHFDatePicker from "@/components/react-hook-form/rhf-date-picker";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { promotionFormSchema, PromotionFormValues } from "../schema";
 import {
@@ -20,6 +19,7 @@ import {
 import { Button } from "@/components/button/button";
 import LoaderButton from "@/components/loaders/loader-button";
 import { Promotion } from "@/types/promotions";
+import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
 
 const defaultValues: Partial<PromotionFormValues> = {
   type: "percent",
@@ -157,8 +157,8 @@ export default function CreatePromotionModal({
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <RHFDatePicker name="startDate" label="Fecha de Inicio" />
-                <RHFDatePicker name="endDate" label="Fecha de Fin" />
+                <RHFDateInput name="startDate" label="Fecha de Inicio" />
+                <RHFDateInput name="endDate" label="Fecha de Fin" />
               </div>
             </CardContent>
           </Card>

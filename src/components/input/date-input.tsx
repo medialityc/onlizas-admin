@@ -233,8 +233,6 @@ export function DayPickerWithInput({
           <PopoverContent
             alignOffset={40}
             sideOffset={-80}
-            sticky="always"
-            updatePositionStrategy="always"
             className="z-100 w-auto p-0"
             align="end"
           >

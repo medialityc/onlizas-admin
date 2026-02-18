@@ -30,7 +30,7 @@ const promotionSchema = z.object({
 const homeBannerSchema = z.object({
   id: z.union([z.string(), z.number().nonnegative()]).optional(),
   title: z.string().min(1, "El título es obligatorio"),
-  urlDestinity: z.string().min(1, "La URL de destino es obligatoria"),
+  urlDestinity: z.string(),
   position: z.coerce
     .number()
     .int()
