@@ -15,12 +15,14 @@ interface SubOrdersSectionProps {
     description: string,
   ) => void;
   isSupplier: boolean;
+  isProcessingLocked?: boolean;
 }
 
 export function SubOrdersSection({
   subOrders,
   onUpdateStatus,
   isSupplier,
+  isProcessingLocked = false,
 }: SubOrdersSectionProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
@@ -72,13 +74,25 @@ export function SubOrdersSection({
           <Button
             size="sm"
             variant="primary"
-            disabled={selectedIds.length === 0 || !nextStatus}
+            disabled={
+              selectedIds.length === 0 ||
+              !nextStatus ||
+              (isProcessingLocked &&
+                baseStatus === OrderStatus.Pending &&
+                nextStatus === OrderStatus.Processing)
+            }
             onClick={handleOpenBulkModal}
           >
             Cambiar estado seleccionadas
           </Button>
         )}
       </div>
+      {isProcessingLocked && (
+        <p className="mb-2 text-xs text-amber-600">
+          No se puede avanzar a "Procesando" hasta que termine el tiempo de
+          espera configurado para la orden.
+        </p>
+      )}
       <div className="space-y-4">
         {subOrders.map((subOrder) => (
           <SubOrderItem
@@ -88,6 +102,7 @@ export function SubOrdersSection({
             isSupplier={isSupplier}
             selected={selectedIds.includes(subOrder.id)}
             onToggleSelected={() => handleToggleSelected(subOrder.id)}
+            isProcessingLocked={isProcessingLocked}
           />
         ))}
       </div>

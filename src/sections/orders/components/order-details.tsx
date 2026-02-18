@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ApiResponse } from "@/types/fetch/api";
 import { Order, OrderStatus } from "@/types/order";
@@ -10,6 +10,7 @@ import { SubOrdersSection } from "./sub-orders-section";
 import SimpleModal from "@/components/modal/modal";
 import { getOrderById, updateSubOrderStatus } from "@/services/order";
 import showToast from "@/config/toast/toastConfig";
+import { CountdownTimer } from "@/components/orders/countdown-timer";
 
 interface OrderDetailsProps {
   onOpen: boolean;
@@ -26,6 +27,7 @@ export function OrderDetails({
 }: OrderDetailsProps) {
   const queryClient = useQueryClient();
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isProcessingLocked, setIsProcessingLocked] = useState(false);
 
   const { data, isLoading, isFetching, refetch } = useQuery<ApiResponse<Order>>(
     {
@@ -39,6 +41,26 @@ export function OrderDetails({
 
   const baseTrackUrl = process.env.NEXT_PUBLIC_TRACK_URL;
   const trackUrl = order ? `${baseTrackUrl}/${order.orderNumber}` : undefined;
+
+  // Lock to prevent moving sub-orders from Pending -> Processing
+  useEffect(() => {
+    if (!order || !order.configuredTime || order.configuredTime <= 0) {
+      setIsProcessingLocked(false);
+      return;
+    }
+
+    const createdMs = new Date(order.createdDatetime).getTime();
+    const targetMs = createdMs + order.configuredTime * 60 * 1000;
+
+    const updateLock = () => {
+      const remaining = targetMs - Date.now();
+      setIsProcessingLocked(remaining > 0);
+    };
+
+    updateLock();
+    const interval = setInterval(updateLock, 1000);
+    return () => clearInterval(interval);
+  }, [order]);
 
   const handleUpdateSubOrderStatus = async (
     subOrderIds: string | string[],
@@ -90,6 +112,25 @@ export function OrderDetails({
         "error",
       );
       return;
+    }
+
+    // Enforce configured waiting time before allowing Pending -> Processing
+    if (
+      order.configuredTime > 0 &&
+      currentStatus === OrderStatus.Pending &&
+      status === OrderStatus.Processing
+    ) {
+      const createdMs = new Date(order.createdDatetime).getTime();
+      const targetMs = createdMs + order.configuredTime * 60 * 1000;
+      const now = Date.now();
+      if (now < targetMs) {
+        const remainingMinutes = Math.ceil((targetMs - now) / (60 * 1000));
+        showToast(
+          `Aún no puedes procesar la orden. Tiempo restante aproximado: ${remainingMinutes} minuto(s).`,
+          "error",
+        );
+        return;
+      }
     }
 
     try {
@@ -169,6 +210,12 @@ export function OrderDetails({
         {order && (
           <>
             <GeneralInfo order={order} />
+            {order.configuredTime > 0 && (
+              <CountdownTimer
+                createdDatetime={order.createdDatetime}
+                configuredMinutes={order.configuredTime}
+              />
+            )}
             <Separator />
             <div className="space-y-2 text-sm">
               <p className="font-medium">Dirección de Entrega (Destinatario)</p>
@@ -181,6 +228,7 @@ export function OrderDetails({
               subOrders={order.subOrders}
               onUpdateStatus={handleUpdateSubOrderStatus}
               isSupplier={isSupplier}
+              isProcessingLocked={isProcessingLocked}
             />
           </>
         )}

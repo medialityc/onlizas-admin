@@ -6,6 +6,7 @@ import { Order, SubOrder, OrderStatus } from "@/types/order";
 import { formatCurrency, formatDate } from "@/lib/order-utils";
 import { StatusBadge } from "@/components/orders/status-badge";
 import { Button } from "@/components/button/button";
+import { CountdownTimer } from "@/components/orders/countdown-timer";
 
 export function OrderGroupCard({
   order,
@@ -34,6 +35,12 @@ export function OrderGroupCard({
               <Clock className="h-3 w-3" />
               {formatDate(order.createdDatetime)}
             </p>
+            {order.configuredTime > 0 && (
+              <CountdownTimer
+                createdDatetime={order.createdDatetime}
+                configuredMinutes={order.configuredTime}
+              />
+            )}
           </div>
         </div>
         <div className="flex items-center gap-4">

@@ -39,7 +39,7 @@ export default function AppearanceContainer({ store }: Props) {
             </p>
           </div>
           <div className="border-t border-gray-100 dark:border-gray-700 pt-4 min-h-16">
-            <AppearanceTabs />
+            <AppearanceTabs store={store} />
           </div>
 
           {/* Botón de guardar para toda la apariencia */}

@@ -80,9 +80,17 @@ export default function SupplierStoresView({
     }
 
     return (
-      <div>
-        <div className="mb-4">
-          <Button variant="secondary" onClick={() => setSelectedStoreId(null)}>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <StoreIcon className="h-4 w-4" />
+            <span>Órdenes por tienda</span>
+          </div>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setSelectedStoreId(null)}
+          >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver a tiendas
           </Button>
@@ -125,16 +133,22 @@ export default function SupplierStoresView({
   const stores = storesResponse?.data?.data ?? [];
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-8 px-4 space-y-8">
+    <div className="min-h-screen bg-gradient-to-b from-background via-muted/40 to-background">
+      <div className="container mx-auto space-y-8 px-4 py-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-balance">Mis Tiendas</h1>
-            <p className="text-muted-foreground mt-1">
-              Selecciona una tienda para ver sus órdenes
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+              <StoreIcon className="h-3.5 w-3.5" />
+              Tiendas con órdenes
+            </div>
+            <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
+              Mis Tiendas
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Selecciona una tienda para revisar y gestionar sus órdenes.
             </p>
           </div>
-          <Button variant="secondary" onClick={router.back}>
+          <Button variant="secondary" size="sm" onClick={router.back}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver
           </Button>
@@ -148,14 +162,16 @@ export default function SupplierStoresView({
           enableColumnToggle={false}
           component={
             stores.length === 0 ? (
-              <div className="text-center py-12">
-                <StoreIcon className="h-16 w-16 mx-auto text-muted-foreground/50" />
-                <p className="text-muted-foreground mt-4">
-                  No tienes tiendas asociadas
+              <div className="py-12 text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                  <StoreIcon className="h-8 w-8 text-muted-foreground/60" />
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  No tienes tiendas con órdenes registradas todavía.
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {stores.map((store: Store) => (
                   <StoreCard
                     key={store.id}

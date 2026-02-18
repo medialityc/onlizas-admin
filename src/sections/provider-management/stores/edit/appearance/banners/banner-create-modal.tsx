@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import SimpleModal from "@/components/modal/modal";
 import { FormProvider as RHFFormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +15,7 @@ import { BannerItem } from "@/types/stores";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import RHFDatePicker from "@/components/react-hook-form/rhf-date-picker";
 import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
+import { Button } from "@/components/button/button";
 
 type Props = {
   open: boolean;
@@ -31,6 +32,7 @@ export default function BannerCreateModal({
   onUpdate,
   editingBanner,
 }: Props) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditing = !!editingBanner;
   const todayLocal = () => {
     const t = new Date();
@@ -90,13 +92,25 @@ export default function BannerCreateModal({
     }
   }, [open, isEditing, editingBanner, methods]);
 
-  const submitOnly = (data: BannerForm) => {
-    if (isEditing && editingBanner && onUpdate && editingBanner.id != null) {
-      onUpdate(editingBanner.id, data);
-    } else {
-      onCreate(data);
+  const submitOnly = async (data: BannerForm) => {
+    try {
+      setIsSubmitting(true);
+
+      let result: any;
+
+      if (isEditing && editingBanner && onUpdate && editingBanner.id != null) {
+        result = await onUpdate(editingBanner.id, data);
+      } else {
+        result = await onCreate(data);
+      }
+
+      if (result?.success) {
+        onClose();
+      }
+      // Si falla, el toast ya se mostró en el hook y el modal permanece abierto
+    } finally {
+      setIsSubmitting(false);
     }
-    onClose();
   };
 
   // Log de errores de validación si el submit es inválido (además de los mensajes bajo los inputs)
@@ -121,11 +135,13 @@ export default function BannerCreateModal({
             name="title"
             label="Título"
             placeholder="Título del banner"
+            disabled={isSubmitting}
           />
           <RHFInputWithLabel
             name="urlDestinity"
             label="URL de Destino"
             placeholder="/productos/ofertas"
+            disabled={isSubmitting}
           />
           <RHFSelectWithLabel
             name="position"
@@ -135,17 +151,20 @@ export default function BannerCreateModal({
               { label: "Sidebar", value: "1" },
               { label: "Footer", value: "2" },
             ]}
+            disabled={isSubmitting}
           />
           <div className="grid grid-cols-1  dark:text-gray-100 sm:grid-cols-2 gap-4">
             <RHFDateInput
               name="initDate"
               label="Fecha de Inicio"
               minDate={isEditing ? undefined : new Date()}
+              disabled={isSubmitting}
             />
             <RHFDateInput
               name="endDate"
               label="Fecha de Fin"
               minDate={isEditing ? undefined : new Date()}
+              disabled={isSubmitting}
             />
           </div>
           <div className="flex flex-col gap-2 w-full">
@@ -159,6 +178,7 @@ export default function BannerCreateModal({
                 height: 1080,
                 width: 1920,
               }}
+              disabled={isSubmitting}
             />
             <RHFImageUpload
               name="mobileImage"
@@ -170,17 +190,24 @@ export default function BannerCreateModal({
                 height: 730,
                 width: 470,
               }}
+              disabled={isSubmitting}
             />
           </div>
         </div>
         <div className="mt-6 flex justify-end gap-3">
-          <button type="button" className="btn btn-outline" onClick={onClose}>
+          <Button
+            variant="secondary"
+            type="button"
+            className="btn btn-outline"
+            onClick={onClose}
+          >
             Cancelar
-          </button>
+          </Button>
           <LoaderButton
             type="button"
-            className="btn btn-dark"
             onClick={handleSubmit}
+            disabled={isSubmitting}
+            loading={isSubmitting}
           >
             {submitButtonText}
           </LoaderButton>

@@ -10,13 +10,16 @@ import { getPositionLabel } from "./banner-utils";
 import { AppearanceFormData } from "../schemas/appearance-schema";
 import { useBanners } from "../hooks/use-banners";
 
+interface BannersTabProps {
+  storeId: number | string;
+}
 
-export default function BannersTab() {
-  const { register, setValue, getValues } = useFormContext<AppearanceFormData>(); // Usar any para evitar conflictos de tipos
+export default function BannersTab({ storeId }: BannersTabProps) {
+  const { register, setValue, getValues } =
+    useFormContext<AppearanceFormData>();
 
   // Solo usar datos del formulario (backend) o array vacío
   const backendBanners = getValues("banners") || [];
-
 
   // Register virtual field under appearance to sync into global form
   // useEffect(() => {
@@ -35,7 +38,7 @@ export default function BannersTab() {
     handleUpdateBanner,
     handleToggleBanner,
     handleDeleteBanner,
-  } = useBanners({ backendBanners, setValue });
+  } = useBanners({ backendBanners, setValue, storeId });
 
   // Calcular métricas
   const metrics = useMemo(() => {
@@ -47,7 +50,7 @@ export default function BannersTab() {
 
   return (
     <div className="space-y-4">
-      <BannerMetrics 
+      <BannerMetrics
         total={metrics.total}
         active={metrics.active}
         positions={metrics.positions}

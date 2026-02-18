@@ -1,5 +1,3 @@
-"use client";
-
 import { GetZones } from "@/types/zones";
 import ZonesList from "./zones-list";
 

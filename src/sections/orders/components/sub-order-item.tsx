@@ -21,6 +21,7 @@ interface SubOrderItemProps {
   isSupplier: boolean;
   selected: boolean;
   onToggleSelected: () => void;
+  isProcessingLocked?: boolean;
 }
 
 const getNextAllowedStatuses = (current: OrderStatus): OrderStatus[] => {
@@ -65,6 +66,7 @@ export function SubOrderItem({
   isSupplier,
   selected,
   onToggleSelected,
+  isProcessingLocked = false,
 }: SubOrderItemProps) {
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus>(
     subOrder.status as OrderStatus,
@@ -229,7 +231,12 @@ export function SubOrderItem({
                   <Button
                     size="sm"
                     type="button"
-                    disabled={!nextStatus}
+                    disabled={
+                      !nextStatus ||
+                      (isProcessingLocked &&
+                        selectedStatus === OrderStatus.Pending &&
+                        nextStatus === OrderStatus.Processing)
+                    }
                     onClick={() => {
                       if (!nextStatus) return;
                       handleStatusClick(nextStatus);
