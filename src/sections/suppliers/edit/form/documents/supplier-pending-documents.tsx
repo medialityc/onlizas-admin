@@ -21,6 +21,7 @@ import {
   pendingDocumentsFormSchema,
 } from "./pending-docs-schema";
 import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION_ENUM } from "@/lib/permissions";
 
 export default function SupplierPendingDocuments({
   approvalProcessId,
@@ -66,7 +67,7 @@ export default function SupplierPendingDocuments({
 
   // Control de permisos
   const { hasPermission } = usePermissions();
-  const canValidateDocuments = hasPermission(["Update"]);
+  const canValidateDocuments = hasPermission([PERMISSION_ENUM.UPDATE]);
 
   const onAdd = () => append({ fileName: "", content: undefined });
   const onRemove = (index: number) => remove(index);
