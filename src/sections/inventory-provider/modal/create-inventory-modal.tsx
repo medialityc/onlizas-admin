@@ -10,12 +10,14 @@ interface CreateInventoryModalProps {
   open: boolean;
   onClose: () => void;
   provider?: string;
+  forProvider?: boolean;
 }
 
 export default function CreateInventoryModal({
   open,
   onClose,
   provider,
+  forProvider,
 }: CreateInventoryModalProps) {
   const [error, setError] = useState<string | null>(null);
 
@@ -44,7 +46,11 @@ export default function CreateInventoryModal({
             <AlertBox title="Error" variant="danger" message={error} />
           </div>
         )}
-        <InventoryProviderForm provider={provider} onClose={handleClose} />
+        <InventoryProviderForm
+          forProvider={forProvider}
+          provider={provider}
+          onClose={handleClose}
+        />
       </div>
     </SimpleModal>
   );

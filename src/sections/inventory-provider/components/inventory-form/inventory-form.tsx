@@ -14,9 +14,10 @@ import { SUPPLIER_TYPE_SELLER } from "@/sections/suppliers/constants/supplier.op
 
 type Props = {
   provider?: string;
+  forProvider?: boolean;
 };
 
-function InventoryForm({ provider }: Props) {
+function InventoryForm({ provider, forProvider }: Props) {
   const { watch } = useFormContext<InventoryEasy>();
 
   const supplierId = watch("supplierId") ?? provider;
@@ -125,6 +126,7 @@ function InventoryForm({ provider }: Props) {
             isPaqueteria={isPaqueteria}
             meWarehouse={meWarehouse}
             supplierId={supplierId}
+            forProvider={forProvider}
           />
         </>
       )}

@@ -19,10 +19,6 @@ type Props = {
 export default async function EditWarehousePage({ params }: Props) {
   const { id, type } = await params;
 
-  if (!Object.keys(WAREHOUSE_TYPE_ENUM).includes(type)) {
-    notFound();
-  }
-
   /* services */
   const warehouse = await getWarehouseById(id, type);
 

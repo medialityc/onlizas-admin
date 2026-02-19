@@ -11,6 +11,7 @@ interface Props {
   searchParams: SearchParams;
   onSearchParamsChange: (params: SearchParams) => void;
   provider: { id: string; name: string };
+  forProvider?: boolean;
 }
 
 export function InventoryProviderCardGrid({
@@ -18,6 +19,7 @@ export function InventoryProviderCardGrid({
   searchParams,
   provider,
   onSearchParamsChange,
+  forProvider,
 }: Props) {
   const { getModalState, openModal, closeModal } = useModalState();
   const createModal = getModalState("create");
@@ -49,6 +51,7 @@ export function InventoryProviderCardGrid({
         open={createModal.open}
         onClose={handleClose}
         provider={provider?.id as string}
+        forProvider={forProvider}
       />
     </>
   );

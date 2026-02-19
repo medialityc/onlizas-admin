@@ -21,10 +21,6 @@ export default async function EditWarehouseTransfersPage({
 }: PageProps) {
   const { id, type } = await params;
 
-  if (!Object.keys(WAREHOUSE_TYPE_ENUM).includes(type)) {
-    notFound();
-  }
-
   const warehouse = await getWarehouseById(id, type);
 
   if (!warehouse?.data) {

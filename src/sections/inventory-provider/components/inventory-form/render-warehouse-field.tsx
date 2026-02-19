@@ -3,6 +3,7 @@
 import {
   getAllWarehousesBySupplier,
   getAllWarehousesByType,
+  getAllMeWarehouses,
 } from "@/services/warehouses";
 import { useEffect, useMemo } from "react";
 import { WAREHOUSE_TYPE_ENUM } from "@/sections/warehouses/constants/warehouse-type";
@@ -14,6 +15,7 @@ interface RenderWarehouseFieldProps {
   meWarehouse?: boolean;
   isPaqueteria?: boolean;
   supplierId?: string;
+  forProvider?: boolean;
 }
 
 interface WarehouseFieldConfig {
@@ -29,6 +31,7 @@ export const RenderWarehouseField = ({
   meWarehouse,
   isPaqueteria,
   supplierId,
+  forProvider,
 }: RenderWarehouseFieldProps) => {
   type ConfigKey = "meWarehouse" | "isPaqueteria" | "default";
 
@@ -37,7 +40,12 @@ export const RenderWarehouseField = ({
       name: "virtualWarehouseId",
       label: "Almacenes del proveedor",
       placeholder: "Seleccionar almacenes del proveedor",
-      onFetch: (params) => getAllWarehousesBySupplier(supplierId!, params),
+      // Admin (con supplierId explícito) usa getAllWarehousesBySupplier.
+      // Vista proveedor (sin supplierId) usa getAllMeWarehouses.
+      onFetch: (params) =>
+        !forProvider
+          ? getAllWarehousesBySupplier(supplierId!, params)
+          : getAllMeWarehouses(params),
       queryKey: `warehouses-virtual-${supplierId}`,
       disabled: false,
     },

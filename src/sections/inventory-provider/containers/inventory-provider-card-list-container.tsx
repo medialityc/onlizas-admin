@@ -16,6 +16,7 @@ interface Props {
   query: SearchParams;
   provider: { id: string; name: string };
   showBackButton?: boolean;
+  forProvider?: boolean;
 }
 
 export default function InventoryProviderCardListContainer({
@@ -23,6 +24,7 @@ export default function InventoryProviderCardListContainer({
   query,
   provider,
   showBackButton = true,
+  forProvider,
 }: Props) {
   const inventoriesResponse = use(inventories);
   const { updateFiltersInUrl } = useFiltersUrl();
@@ -69,6 +71,7 @@ export default function InventoryProviderCardListContainer({
         searchParams={query}
         onSearchParamsChange={handleSearchParamsChange}
         provider={provider}
+        forProvider={forProvider}
       />
     </div>
   );

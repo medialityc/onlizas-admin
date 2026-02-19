@@ -13,7 +13,9 @@ interface Props {
   inventories: ApiResponse<GetAllInventoryProviderResponse>;
   query: SearchParams;
   hideCreate?: boolean;
-  providerId?: string; // supplier id for supplier create mode
+  providerId?: string; // s
+  // upplier id for supplier create mode
+  forProvider?: boolean;
 }
 
 export default function InventoryCardListContainer({
@@ -21,6 +23,7 @@ export default function InventoryCardListContainer({
   query,
   hideCreate = false,
   providerId,
+  forProvider,
 }: Props) {
   const { getModalState, openModal, closeModal } = useModalState();
 
@@ -59,6 +62,7 @@ export default function InventoryCardListContainer({
       />
       {!hideCreate && (
         <CreateInventoryModal
+          forProvider={forProvider}
           open={createPermissionModal.open}
           onClose={onCloseModal}
           provider={providerId}

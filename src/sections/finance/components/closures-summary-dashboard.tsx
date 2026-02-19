@@ -13,7 +13,7 @@ export default function ClosuresSummaryDashboard({ summary }: Props) {
         <h2 className="text-lg font-semibold mb-4">Estados de cuentas</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
-            label="Onlizas (15%)"
+            label="Onlizas"
             value={formatCurrency(summary.platformFee)}
             bgColor="bg-gradient-to-br from-blue-50 to-blue-100/40"
             textColor="text-blue-700"
@@ -107,7 +107,7 @@ export default function ClosuresSummaryDashboard({ summary }: Props) {
               <span className="text-xs text-gray-500">Fecha de corte</span>
               <p className="text-sm font-medium">
                 {new Date(
-                  summary.latestClosure.cutoffDate
+                  summary.latestClosure.cutoffDate,
                 ).toLocaleDateString()}
               </p>
             </div>

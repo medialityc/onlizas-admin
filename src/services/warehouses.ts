@@ -23,11 +23,11 @@ import { MeWarehouseFormData } from "@/sections/warehouses/schemas/me-warehouse-
 import { getWarehouseRoute } from "@/sections/warehouses/utils/warehouse";
 
 export async function getAllWarehouses(
-  params: IQueryable & WarehouseFilter
+  params: IQueryable & WarehouseFilter,
 ): Promise<ApiResponse<GetAllWarehouses>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.warehouses.list
+    backendRoutes.warehouses.list,
   ).build();
   const res = await nextAuthFetch({
     url,
@@ -44,11 +44,11 @@ export async function getAllWarehouses(
  */
 export async function getAllWarehousesByType(
   params: IQueryable & WarehouseFilter,
-  type: WAREHOUSE_TYPE_ENUM
+  type: WAREHOUSE_TYPE_ENUM,
 ): Promise<ApiResponse<GetAllWarehouses>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.warehouses.listByType(getWarehouseRoute(type))
+    backendRoutes.warehouses.listByType(getWarehouseRoute(type)),
   ).build();
   const res = await nextAuthFetch({
     url,
@@ -65,11 +65,11 @@ export async function getAllWarehousesByType(
  */
 export async function getAllWarehouseInventories(
   warehouseId: string,
-  params?: IQueryable
+  params?: IQueryable,
 ): Promise<ApiResponse<PaginatedResponse<InventoryProviderFormData>>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.warehouses.inventoryList(warehouseId)
+    backendRoutes.warehouses.inventoryList(warehouseId),
   ).build();
   const res = await nextAuthFetch({
     url,
@@ -79,7 +79,7 @@ export async function getAllWarehouseInventories(
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<PaginatedResponse<InventoryProviderFormData>>(
-    res
+    res,
   );
 }
 
@@ -88,11 +88,11 @@ export async function getAllWarehouseInventories(
  */
 export async function getAllWarehouseProductVariants(
   warehouseId: string | number,
-  params?: IQueryable
+  params?: IQueryable,
 ): Promise<ApiResponse<InventoryProductItem[]>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.warehouses.variantList(warehouseId)
+    backendRoutes.warehouses.variantList(warehouseId),
   ).build();
   const res = await nextAuthFetch({
     url,
@@ -108,11 +108,11 @@ export async function getAllWarehouseProductVariants(
  * lista de proveedores asociados
  */
 export async function getAllSupplierWarehouses(
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<GetAllUsersResponse>> {
   const url = new QueryParamsURLFactory(
     { ...params, role: "ONL_SUPPLIER" },
-    backendRoutes.warehouses.listSupplier
+    backendRoutes.warehouses.listSupplier,
   ).build();
 
   const res = await nextAuthFetch({
@@ -128,7 +128,7 @@ export async function getAllSupplierWarehouses(
 
 export async function getWarehouseById(
   warehouseId: string,
-  type: string
+  type: string,
 ): Promise<ApiResponse<WarehouseFormData>> {
   const res = await nextAuthFetch({
     url: backendRoutes.warehouses.edit(warehouseId, getWarehouseRoute(type)),
@@ -141,7 +141,7 @@ export async function getWarehouseById(
 }
 
 export async function createWarehouse(
-  data: Partial<WarehouseFormData>
+  data: Partial<WarehouseFormData>,
 ): Promise<ApiResponse<Warehouse>> {
   const res = await nextAuthFetch({
     url: `${backendRoutes.warehouses.create}/${getWarehouseRoute(data?.type as string)}`,
@@ -157,7 +157,7 @@ export async function createWarehouse(
 export async function updateWarehouse(
   id: string,
   type: WAREHOUSE_TYPE_ENUM,
-  data: WarehouseFormData
+  data: WarehouseFormData,
 ): Promise<ApiResponse<Warehouse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.warehouses.updateByType(id, getWarehouseRoute(type)),
@@ -172,7 +172,7 @@ export async function updateWarehouse(
 
 export async function deleteWarehouse(
   id: string,
-  audit: { reason?: string } = {}
+  audit: { reason?: string } = {},
 ): Promise<ApiResponse<{ success: boolean }>> {
   const res = await nextAuthFetch({
     url: backendRoutes.warehouses.delete(id),
@@ -187,11 +187,11 @@ export async function deleteWarehouse(
 
 export async function getAllWarehousesBySupplier(
   supplierId: string,
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<GetAllWarehouses>> {
   const url = new QueryParamsURLFactory(
     params,
-    backendRoutes.warehouses.listBySupplier(supplierId)
+    backendRoutes.warehouses.listBySupplier(supplierId),
   ).build();
 
   const res = await nextAuthFetch({
@@ -223,11 +223,11 @@ export async function warehouseMetric(): Promise<
 
 // ME WAREHOUSE
 export async function getAllMeWarehouses(
-  params: IQueryable & WarehouseFilter
+  params: IQueryable & WarehouseFilter,
 ): Promise<ApiResponse<GetAllWarehouses>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.warehouse_me.list
+    backendRoutes.warehouse_me.list,
   ).build();
   const res = await nextAuthFetch({
     url,
@@ -242,7 +242,7 @@ export async function getAllMeWarehouses(
 // me supplier warehouse
 
 export async function createMeWarehouse(
-  data: MeWarehouseFormData
+  data: MeWarehouseFormData,
 ): Promise<ApiResponse<Warehouse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.warehouse_me.create,
@@ -257,7 +257,7 @@ export async function createMeWarehouse(
 
 export async function updateMeWarehouse(
   id: number,
-  data: MeWarehouseFormData
+  data: MeWarehouseFormData,
 ): Promise<ApiResponse<Warehouse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.warehouse_me.update(id),
@@ -271,13 +271,29 @@ export async function updateMeWarehouse(
 }
 
 export async function getMeWarehouseById(
-  id: string
+  id: string,
 ): Promise<ApiResponse<WarehouseFormData>> {
   const res = await nextAuthFetch({
     url: backendRoutes.warehouse_me.byId(id),
     method: "GET",
     useAuth: true,
     next: { tags: ["supplier-warehouses", String(id)] },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<WarehouseFormData>(res);
+}
+export async function getMeWarehouses(
+  params: IQueryable & WarehouseFilter,
+): Promise<ApiResponse<WarehouseFormData>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.warehouse_me.list,
+  ).build();
+  const res = await nextAuthFetch({
+    url: backendRoutes.warehouse_me.list,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["supplier-warehouses"] },
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<WarehouseFormData>(res);

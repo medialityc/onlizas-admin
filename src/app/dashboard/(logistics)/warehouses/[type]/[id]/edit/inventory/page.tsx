@@ -33,10 +33,6 @@ export default async function EditWarehouseInventoryPage({
   const search = await searchParams;
   const query = buildQueryParams(search);
 
-  if (!Object.keys(WAREHOUSE_TYPE_ENUM).includes(type)) {
-    notFound();
-  }
-
   /* services */
   const inventory = await getAllWarehouseInventories(id, query);
   const warehouse = await getWarehouseById(id, type);

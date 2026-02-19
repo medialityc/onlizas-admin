@@ -43,6 +43,8 @@ export default async function WarehousesServerWrapper({ query }: Props) {
 
   if (isSupplier) {
     const warehousesResponse = await getAllMeWarehouses(apiQuery);
+    console.log(warehousesResponse.data?.data[0]);
+
     const { user } = await getServerSession();
     return (
       <MeWarehouseListContainer

@@ -63,6 +63,7 @@ export default async function InventoryServerWrapper({ query }: Props) {
         inventories={inventoriesResponse}
         query={query}
         hideCreate={!canCreate}
+        forProvider={true}
       />
     );
   }

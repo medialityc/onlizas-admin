@@ -63,8 +63,8 @@ export function WarehouseCard({
   };
 
   return (
-    <Card className="group transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5 h-full dark:border-slate-700">
-      <CardHeader className="space-y-0 ">
+    <Card className="group transition-all duration-300 hover:shadow-xl dark:hover:shadow-primary/10 h-full min-h-[230px] md:min-h-[260px] dark:border-slate-700 bg-gradient-to-b from-white to-gray-50 dark:from-slate-950 dark:to-slate-900">
+      <CardHeader className="space-y-0 px-5 pt-4 pb-3">
         <div className="flex items-center gap-3 min-w-0">
           <div
             className={cn(
@@ -83,7 +83,7 @@ export function WarehouseCard({
           <div className="min-w-0">
             <Link
               href={`/dashboard/warehouses/${route}/${warehouse.id!}`}
-              className="block w-full text-base font-medium text-gray-900 dark:text-white hover:text-primary dark:hover:text-primary cursor-pointer truncate"
+              className="block w-full text-lg md:text-xl font-semibold text-gray-900 dark:text-white hover:text-primary dark:hover:text-primary cursor-pointer truncate"
               title={warehouse.name}
             >
               <span className="block w-full truncate">{warehouse.name}</span>
@@ -92,11 +92,11 @@ export function WarehouseCard({
               <Badge variant={isPhysical ? "info" : "success"}>
                 {isPhysical ? "General" : "Para proveedor"}
               </Badge>
-              <Badge
+              {/* <Badge
                 variant={warehouse?.active ? "outline-info" : "outline-danger"}
               >
                 {warehouse?.active ? "Activo" : "Inactivo"}
-              </Badge>
+              </Badge> */}
               {warehouse?.isDeleted && (
                 <Badge variant="danger">Eliminado</Badge>
               )}
@@ -106,7 +106,7 @@ export function WarehouseCard({
       </CardHeader>
 
       {/* Body - contenido que crece */}
-      <CardContent className="flex flex-col gap-2 flex-grow">
+      <CardContent className="flex flex-col gap-4 flex-grow px-5 pb-4 pt-1">
         {/* Tipo Virtual */}
         {warehouse.virtualTypeName && (
           <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
@@ -128,16 +128,30 @@ export function WarehouseCard({
             </div>
           </div>
         )}
-        {/* Dirección */}
+        {/* Dirección enriquecida */}
         {warehouse.address && (
-          <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-            <MapPinIcon className="h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
-            <div>
-              <p className="truncate">
-                {warehouse.address?.name ||
-                  warehouse.address?.city ||
-                  "Sin dirección"}
+          <div className="flex items-start gap-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300 rounded-md border border-dashed border-gray-200 dark:border-slate-700 bg-gray-50/60 dark:bg-slate-900/40 px-2.5 py-2">
+            <MapPinIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
+            <div className="space-y-0.5 min-w-0">
+              <p className="font-medium truncate">
+                {warehouse.address?.name || "Sin alias de dirección"}
               </p>
+              <p className="truncate text-[11px] sm:text-xs text-gray-600 dark:text-gray-400">
+                {[warehouse.address.mainStreet, warehouse.address.number]
+                  .filter(Boolean)
+                  .join(" ") || "Calle principal no registrada"}
+              </p>
+              <p className="truncate text-[11px] sm:text-xs text-gray-600 dark:text-gray-400">
+                {[warehouse.address.city, warehouse.address.zipcode]
+                  .filter(Boolean)
+                  .join(", ") || "Ciudad no registrada"}
+              </p>
+              {warehouse.address.difficultAccessArea && (
+                <p className="inline-flex items-center gap-1 text-[11px] sm:text-xs text-amber-700 dark:text-amber-300 mt-0.5">
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-500" />
+                  Zona de difícil acceso
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -169,7 +183,7 @@ export function WarehouseCard({
       </CardContent>
 
       {/* Botones de acción - siempre al final */}
-      <CardFooter className="grid grid-cols-1 sm:grid-cols-2 gap-2 ">
+      <CardFooter className="grid grid-cols-1 sm:grid-cols-2 gap-2 px-5 pb-4 pt-0">
         {hasTransferPermission && (
           <Button
             variant="secondary"

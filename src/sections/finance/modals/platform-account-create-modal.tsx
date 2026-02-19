@@ -147,7 +147,7 @@ export default function PlatformAccountCreateModal({
                 placeholder="Seleccionar..."
                 options={[
                   { value: "1", label: "Cuenta madre" },
-                  { value: "2", label: "Retención plataforma (15%)" },
+                  { value: "2", label: "Retención plataforma" },
                   { value: "3", label: "Logística" },
                   { value: "4", label: "Impuestos (7%)" },
                 ]}
