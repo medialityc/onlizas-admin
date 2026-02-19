@@ -100,6 +100,11 @@ export default function SupplierEditForm({
 
   const { handleSubmit, reset, setValue, trigger, getValues } = methods;
 
+  // Re-sincronizar el formulario cuando los datos del proveedor se revaliden en el servidor
+  useEffect(() => {
+    reset(initValue);
+  }, [initValue, reset]);
+
   // Cargar importadoras existentes
   useEffect(() => {
     const loadImporterContracts = async () => {
@@ -187,6 +192,9 @@ export default function SupplierEditForm({
       } else {
         toast.success("Fecha de expiración actualizada correctamente");
       }
+
+      // Revalidar y obtener datos actualizados del proveedor en el layout/página
+      router.refresh();
     } catch (error) {
       toast.error("Error al actualizar proveedor");
     } finally {
@@ -240,7 +248,8 @@ export default function SupplierEditForm({
       setInitialImporterIds(newImporters);
 
       toast.success("Importadoras actualizadas correctamente");
-      router.push("/dashboard/suppliers");
+      // Asegura que vistas relacionadas al proveedor se rehidraten con datos nuevos
+      router.refresh();
     } catch (error) {
       toast.error("Error al actualizar importadoras");
     } finally {
@@ -284,6 +293,8 @@ export default function SupplierEditForm({
       }
 
       toast.success("Categorías actualizadas correctamente");
+      // Refrescar datos del proveedor (categorías, estado, etc.)
+      router.refresh();
     } catch (error) {
       toast.error("Error al actualizar categorías");
     } finally {

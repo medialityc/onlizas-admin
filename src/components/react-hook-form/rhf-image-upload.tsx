@@ -54,7 +54,7 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
       cropDimensions = { width: 1024, height: 1024 },
       ...props
     },
-    forwardedRef
+    forwardedRef,
   ) {
     const { field, fieldState } = useController(props);
     const { setError, clearErrors } = useFormContext();
@@ -141,14 +141,14 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
 
           if (img.width < minSize || img.height < minSize) {
             resolve(
-              `La imagen debe tener al menos ${minSize}×${minSize} píxeles (actual: ${img.width}×${img.height})`
+              `La imagen debe tener al menos ${minSize}×${minSize} píxeles (actual: ${img.width}×${img.height})`,
             );
             return;
           }
 
           if (img.width > maxSize || img.height > maxSize) {
             resolve(
-              `La imagen no debe superar ${maxSize}×${maxSize} píxeles (actual: ${img.width}×${img.height})`
+              `La imagen no debe superar ${maxSize}×${maxSize} píxeles (actual: ${img.width}×${img.height})`,
             );
             return;
           }
@@ -159,7 +159,7 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
         img.onerror = () => {
           URL.revokeObjectURL(objectUrl);
           resolve(
-            "Error al cargar la imagen. Verifica que el archivo no esté corrupto"
+            "Error al cargar la imagen. Verifica que el archivo no esté corrupto",
           );
         };
 
@@ -340,7 +340,7 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
                 "border-red-500 focus:ring-red-500 focus:border-red-500",
               isDisabledOrValidating
                 ? "cursor-not-allowed opacity-60"
-                : "cursor-pointer hover:border-gray-400"
+                : "cursor-pointer hover:border-gray-400",
             )}
             onClick={handleClick}
             onKeyDown={handleKeyDown}
@@ -369,6 +369,7 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
                   width={200}
                   height={200}
                   className="w-full h-full object-cover"
+                  unoptimized
                 />
 
                 {imageInfo && (showDimensions || showFileSize) && (
@@ -470,5 +471,5 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
         />
       </>
     );
-  }
+  },
 );

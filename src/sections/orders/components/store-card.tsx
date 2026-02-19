@@ -2,7 +2,7 @@
 import { Store } from "@/types/stores";
 import { Card, CardContent, CardHeader } from "@/components/cards/card";
 import { Store as StoreIcon } from "lucide-react";
-import Image from "next/image";
+import ProgressiveImage from "@/components/image/progressive-image";
 
 interface StoreCardProps {
   store: Store;
@@ -19,7 +19,7 @@ export function StoreCard({ store, onClick }: StoreCardProps) {
         <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20 transition group-hover:bg-primary group-hover:text-primary-foreground">
             {store.logoStyle ? (
-              <Image
+              <ProgressiveImage
                 src={store.logoStyle}
                 alt={store.name}
                 width={40}

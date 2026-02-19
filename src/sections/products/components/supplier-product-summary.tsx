@@ -46,10 +46,10 @@ const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
 
   const defaultImage = "/assets/images/placeholder-product.webp";
   const imageUrl =
-    product?.mainImage &&
-    typeof product?.mainImage === "string" &&
-    isValidUrl(product?.mainImage)
-      ? product?.mainImage
+    product?.image &&
+    typeof product?.image === "string" &&
+    isValidUrl(product?.image)
+      ? product?.image
       : defaultImage;
 
   const hasDetails = product.details && Object.keys(product.details).length > 0;
@@ -64,7 +64,7 @@ const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
           <ImagePreview
             images={[imageUrl]}
             alt={product.name}
-            className="w-16 h-16 rounded-md flex-shrink-0"
+            className="w-16 h-16 rounded-md shrink-0"
           />
           <div className="flex-1 min-w-0">
             <h4 className="font-medium text-gray-900 dark:text-white text-sm truncate">
@@ -96,46 +96,66 @@ const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
 
       {/* Información condensada */}
       <div className="p-4 space-y-3">
-        {/* Categorías y proveedores en una línea */}
-        <div className="flex flex-wrap gap-1.5 text-xs">
-          {product.categories?.map((category: any) => (
-            <span
-              key={category.id}
-              className="inline-flex items-center px-2 py-1 rounded bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
-            >
-              <TagIcon className="w-3 h-3 mr-1" />
-              {category.name}
-            </span>
-          ))}
-          {product.suppliers?.map((supplier: any) => (
-            <span
-              key={supplier.id}
-              className="inline-flex items-center px-2 py-1 rounded bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400"
-            >
-              {supplier.name}
-            </span>
-          ))}
+        {/* Categorías y proveedores en una línea, claramente diferenciados */}
+        <div className="flex flex-wrap items-center gap-1.5 text-xs">
+          {product.categories?.length > 0 && (
+            <>
+              <span className="font-semibold text-gray-700 dark:text-gray-300 mr-1">
+                Categorías:
+              </span>
+              {product.categories.map((category: any) => (
+                <span
+                  key={category.id}
+                  className="inline-flex items-center px-2 py-1 rounded bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                >
+                  <TagIcon className="w-3 h-3 mr-1" />
+                  {category.name}
+                </span>
+              ))}
+            </>
+          )}
+
+          {product.categories?.length && product.suppliers?.length ? (
+            <Separator orientation="vertical" className="h-4 mx-1" />
+          ) : null}
+
+          {product.suppliers?.length > 0 && (
+            <>
+              <span
+                className="font-semibold text-gray-700 dark:text-gray-300 mr-1"
+                title="Estos son los proveedores que ya venden este producto."
+              >
+                Proveedores:
+              </span>
+              {product.suppliers.map((supplier: any) => (
+                <span
+                  key={supplier.id}
+                  className="inline-flex items-center px-2 py-1 rounded bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400"
+                >
+                  {supplier.name}
+                </span>
+              ))}
+            </>
+          )}
         </div>
 
-        {/* Especificaciones en grid compacto */}
+        {/* Especificaciones: mostrar todos los detalles */}
         {hasDetails && (
           <div className="flex flex-wrap gap-2">
-            {detailsObjectToArray(product.details)
-              ?.slice(0, 4)
-              .map((detail) => (
-                <Badge
-                  key={detail.key}
-                  variant="outline-dark"
-                  className="flex items-center gap-1 text-xs"
-                >
-                  <span className="text-gray-500 dark:text-gray-400 truncate">
-                    {detail.key}:
-                  </span>
-                  <span className="text-gray-900 dark:text-white font-medium">
-                    {detail.value}
-                  </span>
-                </Badge>
-              ))}
+            {detailsObjectToArray(product.details)?.map((detail) => (
+              <Badge
+                key={detail.key}
+                variant="outline-dark"
+                className="flex items-center gap-1 text-xs"
+              >
+                <span className="text-gray-500 dark:text-gray-400 truncate">
+                  {detail.key}:
+                </span>
+                <span className="text-gray-900 dark:text-white font-medium">
+                  {detail.value}
+                </span>
+              </Badge>
+            ))}
           </div>
         )}
 
@@ -174,33 +194,23 @@ const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
           </div>
         )}
 
-        {/* About this - solo primeros elementos */}
+        {/* About this - mostrar todos los puntos */}
         {product.aboutThis && product.aboutThis.length > 0 && (
           <div className="flex items-center justify-between text-xs bg-gray-50 dark:bg-slate-700/30 rounded-md p-2">
             <div className="flex flex-row gap-2 items-center">
               <InformationCircleIcon className="w-3 h-3 text-gray-400" />
               Acerca de este producto
             </div>
-            <div className="flex gap-3">
-              {product.aboutThis
-                .slice(0, 4)
-                .map((item: string, index: number) => (
-                  <Badge
-                    key={index}
-                    variant="outline-success"
-                    className="text-xs font-medium"
-                  >
-                    {item}
-                  </Badge>
-                ))}
-              {product.aboutThis.length > 4 && (
+            <div className="flex gap-3 flex-wrap">
+              {product.aboutThis.map((item: string, index: number) => (
                 <Badge
+                  key={index}
                   variant="outline-success"
                   className="text-xs font-medium"
                 >
-                  ...
+                  {item}
                 </Badge>
-              )}
+              ))}
             </div>
           </div>
         )}
@@ -209,16 +219,13 @@ const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
       {/* Botones compactos */}
       <div className="px-4 pb-4">
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="flex-1  px-3 py-2 items-center text-xs font-medium rounded-md transition-colors flex  justify-center gap-1.5"
-          >
+          <div className="flex-1  px-3 py-2 items-center text-xs font-medium rounded-md transition-colors flex  justify-center gap-1.5">
             <span className="flex-1 flex flex-row gap-2 items-center">
               <CopyIcon className="w-3.5 h-3.5" />
               Usar como plantilla
             </span>
             <RHFSwitch name="isDraft" />
-          </Button>
+          </div>
           <LoaderButton
             disabled={isDraft || isOwned}
             loading={isLoading}

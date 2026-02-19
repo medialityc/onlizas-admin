@@ -6,8 +6,8 @@ import {
   ClipboardDocumentIcon,
   CheckIcon,
 } from "@heroicons/react/24/outline";
-import Image from "next/image";
-import React, { useMemo, useState } from "react";
+import ProgressiveImage from "@/components/image/progressive-image";
+import React, { useEffect, useMemo, useState } from "react";
 
 type UIDocument = {
   id?: number;
@@ -28,12 +28,12 @@ export default function SupplierApprovedDocuments({
         id: d.id,
         fileName: d.fileName,
         content: d.content,
-      })) || []
+      })) || [],
   );
   const [docLoading] = useState<Record<number, boolean>>({});
   const fields = useMemo(
     () => docs.map((_, i) => ({ id: `doc-${i}` })),
-    [docs]
+    [docs],
   );
   const onRemove = (index: number) =>
     setDocs((prev) => prev.filter((_, i) => i !== index));
@@ -58,6 +58,17 @@ export default function SupplierApprovedDocuments({
       a.remove();
     }
   };
+
+  // Re-sincronizar documentos aprobados cuando cambie la lista inicial desde el backend
+  useEffect(() => {
+    setDocs(
+      initialDocuments?.map((d) => ({
+        id: d.id,
+        fileName: d.fileName,
+        content: d.content,
+      })) || [],
+    );
+  }, [initialDocuments]);
 
   const copyLink = async (index: number) => {
     const url = docs[index]?.content;
@@ -136,7 +147,7 @@ export default function SupplierApprovedDocuments({
                   {docs[index]?.content ? (
                     <div className="flex items-center gap-3 p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/40">
                       {getKind(docs[index]?.fileName) === "image" ? (
-                        <Image
+                        <ProgressiveImage
                           src={docs[index]!.content!}
                           alt={docs[index]?.fileName || "Documento"}
                           width={40}

@@ -18,7 +18,7 @@ import { updateSupplierStore } from "@/services/stores";
 import { buildStoreFormData } from "../utils/transform";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
-import PoliciesCardTinyMCE from './components/policies-card-tinymce';
+import PoliciesCardTinyMCE from "./components/policies-card-tinymce";
 
 interface Props {
   store: Store;
@@ -49,9 +49,6 @@ export default function GeneralContainer({ store }: Props) {
         store,
         data,
       });
-      /* const plainObject = Object.fromEntries(formData.entries());
-      console.log("FormData como objeto:", plainObject);
- */
       const res = await updateSupplierStore(store.id, formData);
       if (!res.error) {
         toast.success("Tienda actualizada correctamente");
@@ -86,8 +83,8 @@ export default function GeneralContainer({ store }: Props) {
         </div>
 
         {/* Políticas de la tienda */}
-       {/*  <PoliciesCard /> */}
-        <PoliciesCardTinyMCE/>
+        {/*  <PoliciesCard /> */}
+        <PoliciesCardTinyMCE />
 
         {/* Botón de guardar */}
         <div className="flex justify-end pt-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 -mx-6 px-6 py-4 mt-8">

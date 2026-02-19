@@ -20,7 +20,7 @@ export default function OptimizedCountryCard({
   return (
     <div className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors min-h-[68px] flex items-center gap-3">
       <div className="flex-shrink-0 w-12 h-8 flex items-center justify-center overflow-hidden rounded-sm">
-        <Image
+        <ProgressiveImage
           src={flagUrl}
           alt={`Bandera de ${country.name}`}
           className="w-full h-full object-cover"

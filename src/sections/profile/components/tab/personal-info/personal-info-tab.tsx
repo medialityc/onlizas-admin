@@ -53,12 +53,6 @@ export function PersonalInfoTab({ user, documents }: PersonalInfoTabProps) {
               <SparklesIcon className="h-5 w-5" />
               <h2 className="font-bold">Información básica</h2>
             </div>
-
-            <AvatarSection
-              user={user}
-              errors={errors}
-              isLoading={updateProviderMutation.isPending}
-            />
           </CardHeader>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

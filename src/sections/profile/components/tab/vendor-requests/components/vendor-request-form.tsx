@@ -13,8 +13,8 @@ import {
   CalendarIcon,
   PlusIcon,
 } from "@heroicons/react/24/outline";
-import { usePermissions } from "zas-sso-client";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { usePermissions } from "@/hooks/use-permissions";
 
 interface VendorRequestFormProps {
   categoryModalOpen: boolean;
@@ -30,11 +30,12 @@ export function VendorRequestForm({
   setExpirationModalOpen,
 }: VendorRequestFormProps) {
   // Control de permisos
-  const { data: permissions = [] } = usePermissions();
-  const hasPermission = (requiredPerms: string[]) => {
-    return requiredPerms.every(perm => permissions.some(p => p.code === perm));
-  };
-  const canExtendApprovalRequest = hasPermission([PERMISSION_ENUM.UPDATE_APPROVAL_PROCESS]);
+  const { hasPermission } = usePermissions();
+
+  const canExtendApprovalRequest = hasPermission([
+    PERMISSION_ENUM.UPDATE,
+    PERMISSION_ENUM.SUPPLIER_UPDATE,
+  ]);
 
   return (
     <Card className="dark:bg-gray-800 dark:border-gray-700 shadow-md">
@@ -52,7 +53,9 @@ export function VendorRequestForm({
           </p>
         </div>
 
-        <div className={`grid gap-4 ${canExtendApprovalRequest ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
+        <div
+          className={`grid gap-4 ${canExtendApprovalRequest ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"}`}
+        >
           {/* Solicitar Categorías */}
           {canExtendApprovalRequest && (
             <div className="border border-blue-200 dark:border-blue-800 rounded-lg p-6 bg-blue-50 dark:bg-blue-900/20">

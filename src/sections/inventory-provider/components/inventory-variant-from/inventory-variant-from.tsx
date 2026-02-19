@@ -206,7 +206,7 @@ const InventoryVariantFrom = ({
       <Separator className="my-2" />
 
       {/* Imágenes */}
-      <RHFMultiImageUpload name={"images"} label="Images de producto" />
+      <RHFMultiImageUpload name={"images"} label="Imágenes de producto" />
       <Separator className="my-2" />
 
       {/* inventory info */}
@@ -345,7 +345,7 @@ const InventoryVariantFrom = ({
         <RHFCheckbox
           name={`isLimit`}
           label="Tiene límite de compras?"
-          className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
+          className="form-checkbox h-4 w-4 text-primary border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded focus:ring-primary"
         />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {isLimit && (
@@ -370,7 +370,7 @@ const InventoryVariantFrom = ({
         <RHFCheckbox
           name={`warranty.isWarranty`}
           label="Tiene garantía?"
-          className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
+          className="form-checkbox h-4 w-4 text-primary border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded focus:ring-primary"
         />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {isWarranty && (
@@ -405,7 +405,7 @@ const InventoryVariantFrom = ({
             <RHFCheckbox
               name={`packageDelivery`}
               label="Habilitar entrega por paquetería"
-              className="form-checkbox h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
+              className="form-checkbox h-4 w-4 text-primary border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded focus:ring-primary"
             />
           </div>
         </>

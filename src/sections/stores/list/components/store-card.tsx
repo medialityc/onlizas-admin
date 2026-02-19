@@ -22,7 +22,7 @@ import { Store } from "@/types/stores";
 
 import { Button } from "@/components/button/button";
 import { Cog6ToothIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
+import ProgressiveImage from "@/components/image/progressive-image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatNumber, formatPercentage } from "@/utils/format";
@@ -75,7 +75,7 @@ export const SoreCard = ({ store }: DataCardProps) => {
       <div className="relative h-20 w-full overflow-hidden">
         {bannerUrl && !hasHomeBannerError ? (
           <>
-            <Image
+            <ProgressiveImage
               src={bannerUrl}
               alt={store.name + " banner"}
               fill
@@ -103,7 +103,7 @@ export const SoreCard = ({ store }: DataCardProps) => {
               style={accentColor ? { borderColor: accentColor } : undefined}
             >
               {store.logoStyle && !hasImageError ? (
-                <Image
+                <ProgressiveImage
                   src={store.logoStyle}
                   alt={store.name + " logo"}
                   width={56}

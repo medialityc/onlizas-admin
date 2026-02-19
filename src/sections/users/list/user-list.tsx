@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { SearchParams } from "@/types/fetch/request";
 import { GetAllUsersResponse, IUser } from "@/types/users";
 import { DataTableColumn } from "mantine-datatable";
-import Image from "next/image";
+import ProgressiveImage from "@/components/image/progressive-image";
 import Link from "next/link";
 import { useCallback, useMemo } from "react";
 import UserCreateModal from "../create/user-create-container";
@@ -48,18 +48,18 @@ export function UserList({
         toast.error(
           user.active
             ? "Error al desactivar el usuario"
-            : "Error al activar el usuario"
+            : "Error al activar el usuario",
         );
       }
     } catch (error) {
       console.error(
         user.active ? "Error desactivando usuario" : "Error activando usuario",
-        error
+        error,
       );
       toast.error(
         user.active
           ? "Error al desactivar el usuario"
-          : "Error al activar el usuario"
+          : "Error al activar el usuario",
       );
     }
   }, []);
@@ -75,7 +75,7 @@ export function UserList({
         render: (user) => (
           <div className="flex items-center justify-center">
             {user.profilePicturePath ? (
-              <Image
+              <ProgressiveImage
                 src={user.profilePicturePath}
                 alt={`${user.name}`}
                 width={64}
@@ -114,7 +114,7 @@ export function UserList({
             <span
               className={cn(
                 "badge",
-                user.active ? "badge-outline-success" : "badge-outline-danger"
+                user.active ? "badge-outline-success" : "badge-outline-danger",
               )}
             >
               {user.active ? "Activo" : "Inactivo"}
@@ -141,7 +141,7 @@ export function UserList({
                       "badge",
                       isVerified
                         ? "badge-outline-success"
-                        : "badge-outline-danger"
+                        : "badge-outline-danger",
                     )}
                   >
                     {isVerified ? "Verificado" : "Sin verificar"}
@@ -173,7 +173,7 @@ export function UserList({
                       "badge",
                       isVerified
                         ? "badge-outline-success"
-                        : "badge-outline-danger"
+                        : "badge-outline-danger",
                     )}
                   >
                     {isVerified ? "Verificado" : "Sin verificar"}
@@ -228,7 +228,7 @@ export function UserList({
         ),
       },
     ],
-    [router, toggleActive]
+    [router, toggleActive],
   );
 
   return (

@@ -5,7 +5,7 @@ import {
   CheckIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFieldArray, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
@@ -22,6 +22,7 @@ import {
 } from "./pending-docs-schema";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM, PERMISSIONS } from "@/lib/permissions";
+import { useRouter } from "next/navigation";
 
 export default function SupplierPendingDocuments({
   approvalProcessId,
@@ -36,6 +37,8 @@ export default function SupplierPendingDocuments({
     rejectionReason?: string | null;
   }[];
 }) {
+  const router = useRouter();
+
   const methods = useForm<PendingDocumentsForm>({
     resolver: zodResolver(pendingDocumentsFormSchema),
     defaultValues: {
@@ -64,6 +67,21 @@ export default function SupplierPendingDocuments({
   const [rejectReason, setRejectReason] = useState("");
   const [rejectLoading, setRejectLoading] = useState(false);
   const [viewReasonIdx, setViewReasonIdx] = useState<number | null>(null);
+
+  // Re-sincronizar documentos pendientes cuando cambie la lista inicial desde el backend
+  useEffect(() => {
+    methods.reset({
+      approvalProcessId,
+      pendingDocuments:
+        initialDocuments?.map((d) => ({
+          id: d.id,
+          fileName: d.fileName,
+          content: d.content,
+          beApproved: d.beApproved,
+          rejectionReason: d.rejectionReason ?? null,
+        })) || [],
+    });
+  }, [approvalProcessId, initialDocuments, methods]);
 
   // Control de permisos
   const { hasPermission } = usePermissions();
@@ -138,15 +156,10 @@ export default function SupplierPendingDocuments({
 
       if (res.error || !res.data) throw new Error(res.message || "Error");
 
-      // El endpoint retorna { approvalProcessId, addedDocumentsCount, message }
-      // pero no retorna los IDs de los documentos creados
-      // Por ahora solo marcamos como subido exitosamente
       toast.success("Documento subido");
 
-      // Marcar el documento como subido (podrías necesitar recargar la lista completa)
-      setValue(`pendingDocuments.${index}.content`, "uploaded" as any, {
-        shouldDirty: false,
-      });
+      // Forzar revalidación para obtener la lista completa actualizada desde el backend
+      router.refresh();
     } catch (e) {
       toast.error("No se pudo subir el documento");
     } finally {
@@ -168,13 +181,9 @@ export default function SupplierPendingDocuments({
       });
       if (res.error) throw new Error(res.message || "Error");
       toast.success("Documento aprobado");
-      // Update local status
-      setValue(`pendingDocuments.${index}.beApproved`, true, {
-        shouldDirty: false,
-      });
-      setValue(`pendingDocuments.${index}.rejectionReason`, null as any, {
-        shouldDirty: false,
-      });
+
+      // Revalidar datos del proveedor (mueve doc de pendientes a aprobados, etc.)
+      router.refresh();
     } catch (e) {
       toast.error("No se pudo aprobar el documento");
     } finally {
@@ -211,15 +220,8 @@ export default function SupplierPendingDocuments({
       });
       if (res.error) throw new Error(res.message || "Error");
       toast.success("Documento rechazado");
-      // Update local status
-      setValue(`pendingDocuments.${rejectIdx}.beApproved`, false, {
-        shouldDirty: false,
-      });
-      setValue(
-        `pendingDocuments.${rejectIdx}.rejectionReason`,
-        rejectReason.trim() as any,
-        { shouldDirty: false },
-      );
+      // Revalidar datos del proveedor para reflejar el estado actualizado
+      router.refresh();
       setRejectIdx(null);
       setRejectReason("");
     } catch (e) {

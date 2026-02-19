@@ -151,6 +151,15 @@ export function useBanners({
         isUpdate: false,
       });
 
+      const entries = Array.from(formData.entries());
+      console.log("FormData entries:", entries);
+      entries.forEach(([key, value]) => {
+        console.log(
+          `${key}:`,
+          value instanceof File ? `File(${value.name})` : value,
+        );
+      });
+
       const response = await createBannersStore(formData);
 
       if (response.error) {
@@ -225,7 +234,6 @@ export function useBanners({
         mobileImage: banner.mobileImage,
         active: banner.active ?? true,
       };
-
       const formData = await buildBannersFormData({
         banners: [payload],
         isUpdate: true,

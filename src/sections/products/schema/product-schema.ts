@@ -68,14 +68,14 @@ export const productSchema = z.object({
     .refine(
       (suggestions) => {
         const uniqueSuggestions = new Set(
-          suggestions.map((s) => s.toLowerCase().trim())
+          suggestions.map((s) => s.toLowerCase().trim()),
         );
         return uniqueSuggestions.size === suggestions.length;
       },
       {
         message:
           "Las sugerencias deben ser únicas (no se permiten duplicados).",
-      }
+      },
     ),
 
   // Tutoriales de video (solo YouTube) - máximo 10
@@ -88,14 +88,14 @@ export const productSchema = z.object({
           /^(?:https?:\/\/)?(?:(?:www|m)\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})(?:[?&].*)?$/;
         return tutorials.every((t: string) => pattern.test(t));
       },
-      { message: "Solo se permiten URLs válidas de YouTube" }
+      { message: "Solo se permiten URLs válidas de YouTube" },
     )
     .refine(
       (tutorials: string[]) => {
         const uniques = new Set(tutorials.map((t: string) => t.trim()));
         return uniques.size === tutorials.length;
       },
-      { message: "Las URLs de tutorial deben ser únicas" }
+      { message: "Las URLs de tutorial deben ser únicas" },
     )
     .default([]),
 
@@ -105,7 +105,7 @@ export const productSchema = z.object({
         z.object({
           key: z.string().trim().min(1, "Clave requerida"),
           value: z.string().trim().min(1, "Valor requerido para el detalle"),
-        })
+        }),
       ),
       z.record(z.string(), z.string()),
     ])
@@ -122,14 +122,14 @@ export const productSchema = z.object({
           return false;
         }
         const uniqueKeys = new Set(
-          arrayDetails.map((d) => d.key.toLowerCase().trim())
+          arrayDetails.map((d) => d.key.toLowerCase().trim()),
         );
         return uniqueKeys.size === arrayDetails.length;
       },
       {
         message:
           "Las claves de detalles deben ser únicas (no se permiten duplicados).",
-      }
+      },
     ),
 
   image: z
@@ -145,6 +145,10 @@ export const productSchema = z.object({
 export type ProductFormData = z.infer<typeof productSchema> & {
   id?: string;
   state?: boolean;
+  brand?: {
+    id: string;
+    name: string;
+  };
   suppliers?: {
     id: string;
     name: string;

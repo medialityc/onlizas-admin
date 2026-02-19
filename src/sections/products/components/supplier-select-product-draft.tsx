@@ -64,9 +64,10 @@ const SupplierSelectProductDraft = ({
   const { setValue } = useFormContext();
 
   const handleProductSelected = (
-    product: ProductFormData & { isOwned?: boolean }
+    product: ProductFormData & { isOwned?: boolean },
   ) => {
     if (!product) return;
+    console.log(product.brand);
 
     // Actualizar los campos del formulario con la información del producto
     setValue("id", product?.id);
@@ -82,16 +83,16 @@ const SupplierSelectProductDraft = ({
     setValue("active", product?.active);
     setValue(
       "categoryIds",
-      product?.categories?.map((cat: any) => cat?.id || cat)
+      product?.categories?.map((cat: any) => cat?.id || cat),
     );
     setValue("aboutThis", product?.aboutThis);
     setValue("details", detailsObjectToArray(product?.details));
     setValue("detailsArray", detailsObjectToArray(product?.details));
     setValue(
       "image",
-      isValidUrl(product?.image as string) ? product?.image : null
+      isValidUrl(product?.image as string) ? product?.image : null,
     );
-    setValue("brandId", product?.brandId || "");
+    setValue("brandId", product?.brand?.id || "");
     setValue("gtin", product?.gtin || "");
     setValue("aduanaCategoryGuid", product?.aduanaCategoryGuid || "");
   };

@@ -44,9 +44,8 @@ export default function BannerCard({
 }
 
 function BannerImage({ banner }: { banner: BannerItem }) {
-  console.log(banner.desktopImage)
+  console.log(banner.desktopImage);
   if (banner.desktopImage) {
-    // Si es File, crear URL temporal
     return (
       <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
         <Image
@@ -58,6 +57,7 @@ function BannerImage({ banner }: { banner: BannerItem }) {
           alt={banner.title}
           width={48}
           height={48}
+          unoptimized
           className="w-full h-full object-cover"
         />
       </div>

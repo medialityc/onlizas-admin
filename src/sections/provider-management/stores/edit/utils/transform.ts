@@ -19,15 +19,21 @@ export function buildStoreFormData({ store, data }: BuildStoreFormDataParams) {
   const template = data?.template ?? store.template ?? "";
 
   // Banners desde el form (aplanado)
-//  const banners = Array.isArray(data?.banners) ? data.banners : [];
+  //  const banners = Array.isArray(data?.banners) ? data.banners : [];
 
-  // Logo: archivo si hay; si no, el string actual
+  // Logo: solo enviar si es archivo; si es string/URL no se envía
   const isFileLike = (v: unknown): v is File =>
-    typeof v === "object" && v !== null && "name" in (v as any) && "size" in (v as any) && "type" in (v as any);
-  const logoAsFile = isFileLike(data?.logoStyle as unknown) ? (data?.logoStyle as File) : null;
-  const logoAsString = logoAsFile ? null : (typeof data?.logoStyle === "string" ? data.logoStyle : store.logoStyle ?? "");
-  if (logoAsFile) formData.append("logoStyle", logoAsFile);
-  //else formData.append("logoStyle", logoAsString ?? "");
+    typeof v === "object" &&
+    v !== null &&
+    "name" in (v as any) &&
+    "size" in (v as any) &&
+    "type" in (v as any);
+  const logoAsFile = isFileLike(data?.logoStyle as unknown)
+    ? (data?.logoStyle as File)
+    : null;
+  if (logoAsFile) {
+    formData.append("logoStyle", logoAsFile);
+  }
 
   // Campos escalares
   formData.append("id", String(store.id));
@@ -37,9 +43,18 @@ export function buildStoreFormData({ store, data }: BuildStoreFormDataParams) {
   formData.append("email", data?.email ?? store.email ?? "");
   formData.append("phoneNumber", data?.phoneNumber ?? store.phoneNumber ?? "");
   formData.append("address", data?.address ?? store.address ?? "");
-  formData.append("returnPolicy", data?.returnPolicy ?? store.returnPolicy ?? "");
-  formData.append("shippingPolicy", data?.shippingPolicy ?? store.shippingPolicy ?? "");
-  formData.append("termsOfService", data?.termsOfService ?? store.termsOfService ?? "");
+  formData.append(
+    "returnPolicy",
+    data?.returnPolicy ?? store.returnPolicy ?? "",
+  );
+  formData.append(
+    "shippingPolicy",
+    data?.shippingPolicy ?? store.shippingPolicy ?? "",
+  );
+  formData.append(
+    "termsOfService",
+    data?.termsOfService ?? store.termsOfService ?? "",
+  );
   //formData.append("primaryColor", primaryColor);
   //formData.append("secondaryColor", secondaryColor);
   //formData.append("accentColor", accentColor);
@@ -57,14 +72,15 @@ export function buildStoreFormData({ store, data }: BuildStoreFormDataParams) {
     "banners",
     JSON.stringify(data.banners)
   ); */
-  
 
   // Debug legible del FormData (clave: valor)
   try {
     const lines: string[] = [];
     for (const [key, value] of Array.from(formData.entries())) {
       if (value instanceof File) {
-        lines.push(`${key}: [File name=${value.name} size=${value.size} type=${value.type}]`);
+        lines.push(
+          `${key}: [File name=${value.name} size=${value.size} type=${value.type}]`,
+        );
       } else {
         lines.push(`${key}: ${String(value)}`);
       }

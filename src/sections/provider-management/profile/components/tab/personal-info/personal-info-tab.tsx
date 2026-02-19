@@ -72,14 +72,23 @@ export function PersonalInfoTab({ user, documents }: PersonalInfoTabProps) {
               {/* Row 1: Estado de la cuenta (right) */}
               <AccountStatusSection user={user} />
 
-              {/* Row 2: Emails - full width */}
-              <EmailsSection
-                emailFields={emailFields}
-                errors={errors}
-                appendEmail={appendEmail}
-                handleRemoveEmail={handleRemoveEmail}
-              />
+              <div className="grid grid-cols-2">
+                {/* Row 2: Emails - full width */}
+                <EmailsSection
+                  emailFields={emailFields}
+                  errors={errors}
+                  appendEmail={appendEmail}
+                  handleRemoveEmail={handleRemoveEmail}
+                />
 
+                {/* Row 3: Teléfonos (right) */}
+                <PhonesSection
+                  phoneFields={phoneFields}
+                  errors={errors}
+                  appendPhone={appendPhone}
+                  handleRemovePhone={handleRemovePhone}
+                />
+              </div>
               {/* Row 3: Direcciones (left) */}
               <AddressesSection
                 addressFields={addressFields}
@@ -87,14 +96,6 @@ export function PersonalInfoTab({ user, documents }: PersonalInfoTabProps) {
                 openModal={openModal}
                 handleEditAddress={handleEditAddress}
                 removeAddress={removeAddress}
-              />
-
-              {/* Row 3: Teléfonos (right) */}
-              <PhonesSection
-                phoneFields={phoneFields}
-                errors={errors}
-                appendPhone={appendPhone}
-                handleRemovePhone={handleRemovePhone}
               />
 
               {/* Row 4: Documentos - full width and last */}

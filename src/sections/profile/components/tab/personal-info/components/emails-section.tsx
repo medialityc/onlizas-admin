@@ -19,7 +19,7 @@ export function EmailsSection({
   handleRemoveEmail,
 }: EmailsSectionProps) {
   return (
-    <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4 md:col-span-2 h-96 flex flex-col">
+    <div className="border rounded-lg dark:border-gray-800 bg-white dark:bg-gray-900 p-4 h-96 flex flex-col">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-md bg-sky-50 dark:bg-sky-900/10">
