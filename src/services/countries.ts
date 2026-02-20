@@ -5,20 +5,27 @@ import { ApiResponse } from "@/types/fetch/api";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { Country } from "@/types/countries";
 import { PaginatedResponse } from "@/types/common";
+import { backendRoutes } from "@/lib/endpoint";
+import { QueryParamsURLFactory } from "@/lib/request";
 
-export async function getCountries(): Promise<ApiResponse<Country[]>> {
+export async function getCountries(
+  q?: string,
+): Promise<ApiResponse<PaginatedResponse<Country>>> {
+  const url = new QueryParamsURLFactory(
+    { page: 1, pageSize: 1000000, active: true, q },
+    backendRoutes.countries.get,
+  ).build();
   const res = await nextAuthFetch({
-    url: `${process.env.NEXT_PUBLIC_API_URL}countries`,
+    url,
     method: "GET",
     useAuth: true,
-    cache: "no-store",
     next: { tags: ["countries"] },
+    cache: "no-cache",
   });
 
   if (!res.ok) return handleApiServerError(res);
-  return buildApiResponseAsync<Country[]>(res);
+  return buildApiResponseAsync<PaginatedResponse<Country>>(res);
 }
-
 export async function getCountriesPaginated(params: {
   search?: string;
   page?: number;
@@ -37,7 +44,7 @@ export async function getCountriesPaginated(params: {
       message: allRes.message,
     };
 
-  const all = allRes.data || [];
+  const all = allRes.data?.data || [];
   const q = params.search?.toString().trim().toLowerCase() ?? "";
   const filtered =
     q === ""
@@ -45,7 +52,7 @@ export async function getCountriesPaginated(params: {
       : all.filter(
           (c) =>
             String(c.name).toLowerCase().includes(q) ||
-            String(c.code).toLowerCase().includes(q)
+            String(c.code).toLowerCase().includes(q),
         );
 
   const start = (page - 1) * pageSize;

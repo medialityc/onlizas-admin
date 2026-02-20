@@ -67,6 +67,7 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
     const [showCropModal, setShowCropModal] = useState(false);
     const [tempImageSrc, setTempImageSrc] = useState<string>("");
     const [tempFileName, setTempFileName] = useState<string>("");
+    const [showPreviewModal, setShowPreviewModal] = useState(false);
 
     // Combinar refs
     const combinedRef = (node: HTMLDivElement) => {
@@ -329,10 +330,8 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
           <div
             ref={combinedRef}
             className={cn(
-              "relative border-2 border-dashed border-gray-300 flex flex-col items-center justify-center overflow-hidden transition-all",
+              "relative border-2 border-dashed border-gray-300 rounded-md p-4 text-center flex flex-col items-center justify-center transition-all",
               "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-              sizeClasses[size],
-              variantClasses[variant],
               isDragging &&
                 !isDisabledOrValidating &&
                 "border-blue-500 bg-blue-50",
@@ -340,7 +339,7 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
                 "border-red-500 focus:ring-red-500 focus:border-red-500",
               isDisabledOrValidating
                 ? "cursor-not-allowed opacity-60"
-                : "cursor-pointer hover:border-gray-400",
+                : "cursor-pointer hover:border-gray-50",
             )}
             onClick={handleClick}
             onKeyDown={handleKeyDown}
@@ -361,52 +360,8 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
                   Validando imagen...
                 </span>
               </div>
-            ) : preview ? (
-              <>
-                <Image
-                  src={preview}
-                  alt="Vista previa de imagen"
-                  width={200}
-                  height={200}
-                  className="w-full h-full object-cover"
-                  unoptimized
-                />
-
-                {imageInfo && (showDimensions || showFileSize) && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white text-xs p-2">
-                    {showDimensions && (
-                      <div className="flex items-center justify-between">
-                        <span>
-                          {imageInfo.width}×{imageInfo.height} px
-                        </span>
-                        {showFileSize && (
-                          <span>{formatFileSize(imageInfo.size)}</span>
-                        )}
-                      </div>
-                    )}
-                    {!showDimensions && showFileSize && (
-                      <div className="text-center">
-                        <span>{formatFileSize(imageInfo.size)}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {!isDisabledOrValidating && (
-                  <button
-                    type="button"
-                    className="absolute top-1 right-1 bg-white rounded-full p-1 shadow-sm hover:bg-gray-100 transition-colors z-10 focus:outline-none focus:ring-2 focus:ring-red-500"
-                    onClick={handleRemove}
-                    onKeyDown={handleRemoveKeyDown}
-                    aria-label="Remover imagen"
-                    tabIndex={0}
-                  >
-                    <XMarkIcon className="text-gray-600 size-4" />
-                  </button>
-                )}
-              </>
             ) : (
-              <div className="flex flex-col items-center justify-center text-center p-4">
+              <div className="flex flex-col items-center justify-center text-center">
                 <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-3">
                   <ArrowUpTrayIcon className="text-gray-400 size-5" />
                 </div>
@@ -414,11 +369,11 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
                   <p className="text-sm font-medium text-gray-900">
                     {isDisabledOrValidating
                       ? "Procesando..."
-                      : "Sube tu imagen"}
+                      : "Haz clic o arrastra una imagen"}
                   </p>
                   {!isDisabledOrValidating && (
                     <p className="text-xs text-gray-500">
-                      500×500 - 3200×3200 px • Máx 10MB
+                      Solo imágenes entre 500×500 y 3200×3200 px, máximo 10MB
                     </p>
                   )}
                 </div>
@@ -435,6 +390,61 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
               aria-hidden="true"
             />
           </div>
+
+          {preview && !fieldState.error && (
+            <div className="mt-3 flex items-center gap-3">
+              <div
+                className={cn(
+                  "relative overflow-hidden border",
+                  sizeClasses[size],
+                  variantClasses[variant],
+                )}
+              >
+                <Image
+                  src={preview}
+                  alt="Vista previa de imagen"
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+
+                {!isDisabledOrValidating && (
+                  <button
+                    type="button"
+                    className="absolute top-1 right-1 bg-white rounded-full p-1 shadow-sm hover:bg-gray-100 transition-colors z-10 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    onClick={handleRemove}
+                    onKeyDown={handleRemoveKeyDown}
+                    aria-label="Remover imagen"
+                    tabIndex={0}
+                  >
+                    <XMarkIcon className="text-gray-600 size-4" />
+                  </button>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                {imageInfo && (showDimensions || showFileSize) && (
+                  <p className="text-xs text-gray-500">
+                    {showDimensions && (
+                      <>
+                        {imageInfo.width}×{imageInfo.height} px
+                      </>
+                    )}
+                    {showDimensions && showFileSize && " • "}
+                    {showFileSize && formatFileSize(imageInfo.size)}
+                  </p>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setShowPreviewModal(true)}
+                  className="text-xs font-medium text-blue-600 hover:text-blue-800 underline self-start"
+                >
+                  Ver vista previa completa
+                </button>
+              </div>
+            </div>
+          )}
 
           {fieldState.error && (
             <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-md">
@@ -460,6 +470,31 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
             </div>
           )}
         </div>
+
+        {showPreviewModal && preview && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+            <div className="relative max-h-[90vh] max-w-[90vw] rounded-lg bg-white p-4 shadow-lg">
+              <button
+                type="button"
+                onClick={() => setShowPreviewModal(false)}
+                className="absolute right-2 top-2 rounded-full bg-white p-1 shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label="Cerrar vista previa"
+              >
+                <XMarkIcon className="size-5 text-gray-600" />
+              </button>
+              <div className="mt-4 flex max-h-[80vh] max-w-full items-center justify-center overflow-auto">
+                <Image
+                  src={preview}
+                  alt="Vista previa completa de la imagen"
+                  width={1200}
+                  height={800}
+                  className="h-auto max-h-[80vh] w-auto max-w-full object-contain"
+                  unoptimized
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
         <CropModal
           isOpen={showCropModal}

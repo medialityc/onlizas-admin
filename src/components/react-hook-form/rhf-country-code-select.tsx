@@ -58,9 +58,11 @@ export function RHFCountrySelect({
     const fetchCountries = async () => {
       try {
         const res = await getCountries();
+        console.log(res);
+
         const data = res.data;
         if (data) {
-          setCountries(data);
+          setCountries(data.data);
         } else {
           throw new Error("No data received");
         }

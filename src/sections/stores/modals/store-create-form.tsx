@@ -6,7 +6,7 @@ import {
   getAllBusinessByProvider,
   getAllBusinessByUser,
 } from "@/services/business";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { StoreFormData } from "./stores-schema";
 import { useFormContext } from "react-hook-form";
 import { getAllSupplierUsers } from "@/services/users";
@@ -22,6 +22,9 @@ type Props = {
 function StoreCreateForm({ handleClose, isSubmitting }: Props) {
   const { watch, setValue } = useFormContext<StoreFormData>();
   const ownerId = watch("ownerId");
+  const storeName = watch("name");
+  const storeUrl = watch("url");
+  const urlTouchedRef = useRef(false);
 
   // Control de permisos
   const { hasPermission } = usePermissions();
@@ -49,10 +52,27 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
     }
   }, [isSupplierMode, user, ownerId, setValue]);
 
+  // Auto-generar URL a partir del nombre mientras el usuario no la edite manualmente
+  useEffect(() => {
+    // Si no hay nombre o el usuario ya tocó el campo URL, no autogenerar
+    if (!storeName || urlTouchedRef.current) return;
+
+    const slug = storeName
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 60);
+
+    // Mientras el usuario no haya editado la URL, sincronizarla con el nombre
+    setValue("url", slug, { shouldValidate: true });
+  }, [storeName, setValue]);
+
   return (
     <>
       <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <RHFInputWithLabel
             name="name"
             label="Nombre de Tienda"
@@ -63,15 +83,47 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
             size="medium"
             containerClassname="[&>div>div>label]:text-base"
           />
-          <RHFInputWithLabel
-            name="url"
-            label="URL de la Tienda"
-            placeholder="tu-tienda-online"
-            type="text"
-            required
-            size="medium"
-            containerClassname="[&>div>div>label]:text-base"
-          />
+          <div>
+            <RHFInputWithLabel
+              name="url"
+              label="URL de la Tienda"
+              placeholder="tu-tienda-online"
+              type="text"
+              required
+              size="medium"
+              containerClassname="[&>div>div>label]:text-base"
+              onFocus={() => {
+                urlTouchedRef.current = true;
+              }}
+              onChange={(e) => {
+                urlTouchedRef.current = true;
+                const raw = (e.target as HTMLInputElement).value;
+                const slug = raw
+                  .toLowerCase()
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "")
+                  .replace(/[^a-z0-9]+/g, "-")
+                  .replace(/^-+|-+$/g, "")
+                  .slice(0, 60);
+                setValue("url", slug, { shouldValidate: true });
+              }}
+            />
+            {process.env.NEXT_PUBLIC_CLIENT_URL && (
+              <div className="mt-2 flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded px-3 py-2">
+                <span className="text-xs text-gray-600 dark:text-gray-300 font-semibold">
+                  Vista previa:
+                </span>
+                <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">
+                  {process.env.NEXT_PUBLIC_CLIENT_URL}/store/
+                  {storeUrl || "tu-tienda-online"}
+                </span>
+              </div>
+            )}
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              La URL será pública y única para tu tienda. Puedes editarla si lo
+              deseas.
+            </p>
+          </div>
         </div>
         {!isSupplierMode && (
           <RHFAutocompleteFetcherInfinity
@@ -117,7 +169,7 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
           name="logoStyle"
           label="Logo de la tienda "
           variant="rounded"
-          size="full"
+          size="md"
           className="[&>label]:text-base"
         />
         {/* Email Input */}

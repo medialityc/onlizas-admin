@@ -10,7 +10,7 @@ import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 interface Props extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
-  "onChange" | "onBlur" | "value" | "size"
+  "onBlur" | "value" | "size"
 > {
   name: string;
   type?: string;
