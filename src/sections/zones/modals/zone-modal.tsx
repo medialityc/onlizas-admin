@@ -17,7 +17,11 @@ import { IQueryable } from "@/types/fetch/request";
 import { ApiResponse } from "@/types/fetch/api";
 import { GetDistricts } from "@/types/zones";
 import { RHFCountrySelect } from "@/components/react-hook-form/rhf-country-code-select";
-import { Label } from "@/components/label/label";
+import {
+  getStatesByCountry,
+  getDistrictsByState,
+  State,
+} from "@/services/countries";
 
 interface Props {
   open: boolean;
@@ -42,6 +46,7 @@ export default function ZoneModal({
       name: zone?.name || "",
       deliveryAmount: zone?.deliveryAmount || 0,
       districtsIds: zone?.districtsIds || [],
+      stateIds: [],
       countryId: zone?.countryId, // ID de Cuba por defecto
     },
   });
@@ -49,9 +54,11 @@ export default function ZoneModal({
   const {
     reset,
     setValue,
+    getValues,
     formState: { isSubmitting },
   } = methods;
   const selectedCountryId = methods.watch("countryId");
+  const selectedStateIds = methods.watch("stateIds");
 
   // Memoize extraFilters to avoid unnecessary re-renders
   const districtFilters = useMemo(() => {
@@ -84,6 +91,39 @@ export default function ZoneModal({
     reset();
     onClose();
   };
+
+  const handleSelectAllDistrictsForStates = useCallback(async () => {
+    const stateIds = getValues("stateIds") || [];
+
+    if (!stateIds.length) return;
+
+    try {
+      const allDistricts: District[] = [];
+
+      for (const stateId of stateIds) {
+        const res = await getDistrictsByState(String(stateId), {
+          page: 1,
+          pageSize: 1000,
+        });
+
+        if (!res.error && res.data?.data) {
+          allDistricts.push(...res.data.data);
+        }
+      }
+
+      const currentIds = getValues("districtsIds") || [];
+      const uniqueIds = Array.from(
+        new Set<string>([...currentIds, ...allDistricts.map((d) => d.id)]),
+      );
+
+      setValue("districtsIds", uniqueIds, { shouldValidate: true });
+      toast.success(
+        "Se seleccionaron todos los distritos de los estados elegidos",
+      );
+    } catch {
+      toast.error("Error seleccionando distritos por estado");
+    }
+  }, [getValues, setValue]);
 
   const submit = async (data: ZoneInput) => {
     try {
@@ -187,6 +227,48 @@ export default function ZoneModal({
                 fullwidth
                 inputClassname="transition-all focus:ring-2 focus:ring-green-500"
               />
+            </div>
+            <RHFAutocompleteFetcherInfinity<State>
+              key={`states-${selectedCountryId || "none"}`}
+              name="stateIds"
+              label="Estados / Provincias"
+              placeholder={
+                selectedCountryId
+                  ? "Selecciona uno o varios estados"
+                  : "Seleccione un país primero"
+              }
+              onFetch={
+                selectedCountryId
+                  ? (params) =>
+                      getStatesByCountry(String(selectedCountryId), {
+                        page: params.page as number,
+                        pageSize: params.pageSize as number,
+                        search: params.search as any,
+                      })
+                  : undefined
+              }
+              multiple
+              objectValueKey="id"
+              objectKeyLabel="name"
+              disabled={!selectedCountryId}
+              queryKey={`zone-states-${selectedCountryId || "none"}`}
+            />
+            <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
+              <p>
+                Puedes seleccionar distritos individuales o elegir estados y
+                usar la acción masiva para incluir todos sus distritos.
+              </p>
+              <button
+                type="button"
+                onClick={handleSelectAllDistrictsForStates}
+                disabled={!selectedStateIds || selectedStateIds.length === 0}
+                className="btn btn-xs btn-outline-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-disabled={
+                  !selectedStateIds || selectedStateIds.length === 0
+                }
+              >
+                Seleccionar distritos de estados
+              </button>
             </div>
             <RHFAutocompleteFetcherInfinity<District>
               key={`districts-${selectedCountryId || "none"}`}

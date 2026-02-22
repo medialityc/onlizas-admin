@@ -95,8 +95,8 @@ export default async function WelcomePage() {
             <p className="max-w-2xl text-sm text-muted-foreground">
               Esta vista te acompaña paso a paso para dejar tu cuenta lista:
               crear productos, configurar tiendas y almacenes, (de forma
-              opcional) zonas de entrega, y como último paso crear el inventario
-              antes de registrar tus cuentas bancarias para cobrar. Puedes
+              opcional) zonas de entrega, registrar tus cuentas bancarias para
+              cobrar y, como último paso, crear el inventario. Puedes
               completarla a tu ritmo, siempre retomando desde donde la dejaste.
             </p>
             <p className="text-xs text-muted-foreground">

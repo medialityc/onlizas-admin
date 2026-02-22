@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import WarehouseCreateContainer from "@/sections/warehouses/containers/warehouse-create-container";
 import { Button } from "@/components/button/button";
 import { getSupplierItemsCount } from "@/services/dashboard";
+import { WelcomeMeWarehouseFormSection } from "@/sections/warehouses/components/welcome-me-warehouse-form-section";
 
 export const metadata: Metadata = {
   title: "Paso 3: Define un almacén | Onlizas",
@@ -39,7 +39,7 @@ export default async function WelcomeWarehousesPage() {
       </div>
 
       <div className="rounded-xl border bg-white/90 p-4 shadow-sm dark:bg-gray-950/80">
-        <WarehouseCreateContainer afterCreateRedirectTo="/dashboard/welcome/zones" />
+        <WelcomeMeWarehouseFormSection afterCreateRedirectTo="/dashboard/welcome/zones" />
       </div>
 
       <footer className="flex items-center justify-between border-t pt-4 text-xs text-muted-foreground">

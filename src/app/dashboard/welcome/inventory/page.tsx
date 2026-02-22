@@ -1,36 +1,35 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
+import { getServerSession } from "zas-sso-client";
 import { Button } from "@/components/button/button";
 import { getSupplierItemsCount } from "@/services/dashboard";
-import InventoryServerWrapper from "@/sections/inventory-provider/containers/inventory-server-wrapper";
-import { InventoryListSkeleton } from "@/sections/inventory-provider/components/skeleton/inventory-list-skeleton";
-import type { SearchParams } from "@/types/fetch/request";
+import { WelcomeInventoryFormSection } from "@/sections/inventory-provider/components/welcome-inventory-form-section";
 
 export const metadata: Metadata = {
-  title: "Paso 5: Crea tu inventario | Onlizas",
+  title: "Paso 6: Crea tu inventario | Onlizas",
 };
 
-export default async function WelcomeInventoryPage({
-  searchParams,
-}: {
-  searchParams: Promise<SearchParams>;
-}) {
+export default async function WelcomeInventoryPage() {
   const { data } = await getSupplierItemsCount();
 
   if (data?.inventoryCount && data.inventoryCount > 0) {
-    redirect("/dashboard/welcome/acdata");
+    redirect("/dashboard");
   }
 
-  const search = await searchParams;
+  const session = await getServerSession();
+  const userId = session?.user?.id?.toString();
+
+  if (!userId) {
+    redirect("/dashboard");
+  }
 
   return (
     <div className="space-y-6 p-4 sm:p-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-info">
-            Paso 5 de 6
+            Paso 6 de 6
           </p>
           <h1 className="text-xl font-bold">Crea tu primer inventario</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
@@ -49,24 +48,20 @@ export default async function WelcomeInventoryPage({
       </div>
 
       <div className="rounded-xl border bg-white/90 p-4 shadow-sm dark:bg-gray-950/80">
-        <Suspense fallback={<InventoryListSkeleton />}>
-          <InventoryServerWrapper
-            query={search}
-            afterCreateRedirectTo="/dashboard/welcome/acdata"
-          />
-        </Suspense>
+        <WelcomeInventoryFormSection
+          providerId={userId}
+          afterCreateRedirectTo={""}
+        />
       </div>
 
       <footer className="flex items-center justify-between border-t pt-4 text-xs text-muted-foreground">
-        <Link href="/dashboard/welcome/zones">
-          <Button variant="outline" size="sm">
-            Anterior: Zonas de entrega
-          </Button>
-        </Link>
         <Link href="/dashboard/welcome/acdata">
           <Button variant="outline" size="sm">
-            Siguiente: Cuenta bancaria
+            Anterior: Cuenta bancaria
           </Button>
+        </Link>
+        <Link href="/dashboard">
+          <Button size="sm">Finalizar y ver dashboard</Button>
         </Link>
       </footer>
     </div>

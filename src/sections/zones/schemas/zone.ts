@@ -8,6 +8,8 @@ export const ZoneSchema = z.object({
   districtsIds: z
     .array(z.string())
     .min(1, "Debe seleccionar al menos un distrito"),
+  // Estados seleccionados (solo para facilitar la selección masiva de distritos)
+  stateIds: z.array(z.string()).optional(),
   countryId: z.string(),
 });
 

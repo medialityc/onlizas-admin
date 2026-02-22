@@ -1,26 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import StoresServerWrapper from "@/sections/stores/list/stores-server-wrapper";
 import { Button } from "@/components/button/button";
 import { getSupplierItemsCount } from "@/services/dashboard";
+import { WelcomeStoreFormSection } from "@/sections/stores/components/welcome-store-form-section";
 
 export const metadata: Metadata = {
   title: "Paso 2: Configura una tienda | Onlizas",
 };
 
-export default async function WelcomeStoresPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[]>>;
-}) {
+export default async function WelcomeStoresPage() {
   const { data } = await getSupplierItemsCount();
 
   if (data?.storeCount && data.storeCount > 0) {
     redirect("/dashboard/welcome/warehouses");
   }
-
-  const params = await searchParams;
 
   return (
     <div className="space-y-6 p-4 sm:p-6">
@@ -45,10 +39,7 @@ export default async function WelcomeStoresPage({
       </div>
 
       <div className="rounded-xl border bg-white/90 p-4 shadow-sm dark:bg-gray-950/80">
-        <StoresServerWrapper
-          query={params}
-          afterCreateRedirectTo="/dashboard/welcome/warehouses"
-        />
+        <WelcomeStoreFormSection afterCreateRedirectTo="/dashboard/welcome/warehouses" />
       </div>
 
       <footer className="flex items-center justify-between border-t pt-4 text-xs text-muted-foreground">

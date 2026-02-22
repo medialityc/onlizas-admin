@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerSession } from "zas-sso-client";
-import { getMyZones } from "@/services/zones";
-import ZonesClient from "@/sections/zones/list/zones.client";
 import { Button } from "@/components/button/button";
 import { getSupplierItemsCount } from "@/services/dashboard";
+import { WelcomeZoneFormSection } from "@/sections/zones/components/welcome-zone-form-section";
 
 export const metadata: Metadata = {
   title: "Paso 4: Configura zonas de entrega | Onlizas",
@@ -24,8 +23,6 @@ export default async function WelcomeZonesPage() {
   if (!userId) {
     redirect("/dashboard");
   }
-
-  const zonesRes = await getMyZones();
 
   return (
     <div className="space-y-6 p-4 sm:p-6">
@@ -50,7 +47,7 @@ export default async function WelcomeZonesPage() {
       </div>
 
       <div className="rounded-xl border bg-white/90 p-4 shadow-sm dark:bg-gray-950/80">
-        <ZonesClient initialData={zonesRes.data} />
+        <WelcomeZoneFormSection afterCreateRedirectTo="/dashboard/welcome/inventory" />
       </div>
 
       <footer className="flex items-center justify-between border-t pt-4 text-xs text-muted-foreground">
