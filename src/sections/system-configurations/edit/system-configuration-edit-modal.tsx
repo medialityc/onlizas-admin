@@ -21,6 +21,9 @@ import {
 } from "@/types/system-configuration";
 import { updateSystemConfiguration } from "@/services/system-configuration";
 import { getCountries } from "@/services/countries";
+import { Country } from "@/types/countries";
+import { ApiResponse } from "@/types/fetch/api";
+import { PaginatedResponse } from "@/types/common";
 
 interface SystemConfigurationEditModalProps {
   open: boolean;
@@ -61,13 +64,15 @@ export default function SystemConfigurationEditModal({
     });
   }, [item, reset]);
 
-  const [countriesMap, setCountriesMap] = useState<Record<number|string, string>>({});
+  const [countriesMap, setCountriesMap] = useState<
+    Record<number | string, string>
+  >({});
   useEffect(() => {
     // Build a map id -> code to compute countryCode on submit
     getCountries()
-      .then((res) => {
-        const list = res.data || [];
-        const map: Record<number|string, string> = {};
+      .then((res: ApiResponse<PaginatedResponse<Country>>) => {
+        const list = res.data?.data || [];
+        const map: Record<number | string, string> = {};
         for (const c of list) map[c.id] = c.code;
         setCountriesMap(map);
       })
@@ -79,11 +84,10 @@ export default function SystemConfigurationEditModal({
     setError(null);
     onClose();
   };
-
   const onSubmit = async (data: CreateSystemConfigurationSchema) => {
     setError(null);
     try {
-      const countryCode = countriesMap[(data.countryId)] ?? item.countryCode;
+      const countryCode = countriesMap[data.countryId] ?? item.countryCode;
       const body: UpdateSystemConfiguration = {
         updateData: {
           configurationType: data.configurationType,

@@ -13,7 +13,8 @@ import { useRouter } from "next/navigation";
 
 export const useInventoryCreateForm = (
   initValues: Partial<InventoryEasy>,
-  onClose: () => void
+  onClose: () => void,
+  options?: { afterCreateRedirectTo?: string },
 ) => {
   const form = useForm<InventoryEasy>({
     resolver: zodResolver(inventoryEasySchema),
@@ -50,10 +51,16 @@ export const useInventoryCreateForm = (
           return Array.isArray(key) && key[0] === "stores";
         },
       });
+      if (options?.afterCreateRedirectTo) {
+        push(options.afterCreateRedirectTo);
+        return;
+      }
+
       if (data) {
         onRedirect(data.id);
         return;
       }
+
       onClose();
     },
     onError: async (error: any) => {

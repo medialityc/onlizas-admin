@@ -4,12 +4,14 @@ interface StoresModalContainerProps {
   open: boolean;
   onClose: () => void;
   onSuccess?: () => void;
+  afterCreateRedirectTo?: string;
 }
 
 export default function StoresModalContainer({
   open,
   onClose,
   onSuccess,
+  afterCreateRedirectTo,
 }: StoresModalContainerProps) {
   if (!open) return null;
 
@@ -19,6 +21,7 @@ export default function StoresModalContainer({
       onClose={onClose}
       open={open}
       onSuccess={onSuccess}
+      afterCreateRedirectTo={afterCreateRedirectTo}
     />
   );
 }

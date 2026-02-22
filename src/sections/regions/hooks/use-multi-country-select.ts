@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { getCountries } from "@/services/countries";
 import { Country } from "@/types/countries";
 import { ApiResponse } from "@/types/fetch/api";
+import { PaginatedResponse } from "@/types/common";
 
 export interface UseMultiCountrySelectOptions {
   initialCountryIds?: string[];
@@ -28,34 +29,35 @@ export function useMultiCountrySelect({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   // Initialize selectedCountryIds with initialCountryIds
   const [selectedCountryIds, setSelectedCountryIds] = useState<string[]>(() => {
     return initialCountryIds || [];
   });
-  
+
   // Track the previous initialCountryIds to detect changes
   const prevInitialCountryIds = useRef<string[]>([]);
 
   // Fetch countries only once on mount
   useEffect(() => {
     let isMounted = true;
-    
+
     const fetchCountries = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response: ApiResponse<Country[]> = await getCountries();
-        
+        const response: ApiResponse<PaginatedResponse<Country>> =
+          await getCountries();
+
         if (!isMounted) return;
-        
+
         if (response.error) {
           setError(response.message || "Error al cargar países");
           return;
         }
 
-        if (response.data) {
-          setCountries(response.data);
+        if (response.data && response.data.data) {
+          setCountries(response.data.data);
         }
       } catch (err) {
         if (!isMounted) return;
@@ -69,7 +71,7 @@ export function useMultiCountrySelect({
     };
 
     fetchCountries();
-    
+
     return () => {
       isMounted = false;
     };
@@ -78,7 +80,7 @@ export function useMultiCountrySelect({
   // Update selectedCountryIds only when initialCountryIds actually changes
   useEffect(() => {
     const newIds = initialCountryIds || [];
-    
+
     // Only update if the initialCountryIds actually changed (not just re-rendered)
     if (!arraysEqual(prevInitialCountryIds.current, newIds)) {
       setSelectedCountryIds(newIds);
@@ -95,26 +97,28 @@ export function useMultiCountrySelect({
   }
 
   // Get selected countries objects (memoized to avoid recalculation)
-  const selectedCountries = useMemo(() => 
-    countries.filter(country => selectedCountryIds.includes(country.id)), 
-    [countries, selectedCountryIds]
+  const selectedCountries = useMemo(
+    () =>
+      countries.filter((country) => selectedCountryIds.includes(country.id)),
+    [countries, selectedCountryIds],
   );
 
   // Filter countries based on search term (memoized to avoid recalculation)
   const filteredCountries = useMemo(() => {
     if (!searchTerm.trim()) return countries;
     const search = searchTerm.toLowerCase();
-    return countries.filter(country => 
-      country.name.toLowerCase().includes(search) ||
-      country.code.toLowerCase().includes(search)
+    return countries.filter(
+      (country) =>
+        country.name.toLowerCase().includes(search) ||
+        country.code.toLowerCase().includes(search),
     );
   }, [countries, searchTerm]);
 
   // Toggle country selection
   const toggleCountry = useCallback((countryId: string) => {
-    setSelectedCountryIds(prev => {
+    setSelectedCountryIds((prev) => {
       if (prev.includes(countryId)) {
-        return prev.filter(id => id !== countryId);
+        return prev.filter((id) => id !== countryId);
       } else {
         return [...prev, countryId];
       }
@@ -123,7 +127,7 @@ export function useMultiCountrySelect({
 
   // Remove country from selection
   const removeCountry = useCallback((countryId: string) => {
-    setSelectedCountryIds(prev => prev.filter(id => id !== countryId));
+    setSelectedCountryIds((prev) => prev.filter((id) => id !== countryId));
   }, []);
 
   // Stable wrapper for setSelectedCountryIds

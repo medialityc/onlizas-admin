@@ -45,14 +45,14 @@ export const supplierProductSchema = z
       .refine(
         (suggestions) => {
           const uniqueSuggestions = new Set(
-            suggestions.map((s) => s.toLowerCase().trim())
+            suggestions.map((s) => s.toLowerCase().trim()),
           );
           return uniqueSuggestions.size === suggestions.length;
         },
         {
           message:
             "Las sugerencias deben ser únicas (no se permiten duplicados).",
-        }
+        },
       ),
 
     // Tutoriales de video (solo YouTube) - máximo 10
@@ -65,14 +65,14 @@ export const supplierProductSchema = z
             /^(?:https?:\/\/)?(?:(?:www|m)\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})(?:[?&].*)?$/;
           return tutorials.every((t) => pattern.test(t));
         },
-        { message: "Solo se permiten URLs válidas de YouTube" }
+        { message: "Solo se permiten URLs válidas de YouTube" },
       )
       .refine(
         (tutorials: string[]) => {
           const uniques = new Set(tutorials.map((t) => t.trim()));
           return uniques.size === tutorials.length;
         },
-        { message: "Las URLs de tutorial deben ser únicas" }
+        { message: "Las URLs de tutorial deben ser únicas" },
       )
       .default([]),
 
@@ -83,7 +83,7 @@ export const supplierProductSchema = z
           z.object({
             key: z.string().trim().min(1, "Clave requerida"),
             value: z.string().trim().min(1, "Valor requerido para el detalle"),
-          })
+          }),
         ),
         z.record(z.string(), z.string()),
       ])
@@ -97,14 +97,14 @@ export const supplierProductSchema = z
       .refine(
         (arrayDetails) => {
           const uniqueKeys = new Set(
-            arrayDetails.map((d) => d.key.toLowerCase().trim())
+            arrayDetails.map((d) => d.key.toLowerCase().trim()),
           );
           return uniqueKeys.size === arrayDetails.length;
         },
         {
           message:
             "Las claves de detalles deben ser únicas (no se permiten duplicados).",
-        }
+        },
       ),
 
     image: z
@@ -115,12 +115,8 @@ export const supplierProductSchema = z
     additionalImages: z
       .array(z.union([z.string(), z.instanceof(File)]))
       .optional(),
-    aduanaCategoryGuid: z
-      .union([z.string(), z.number()])
-      .refine((val) => val !== "" && val !== undefined && val !== null, {
-        message: "Debe seleccionar una categoría aduanal",
-      }),
-    brandId: z.string().min(1, "Debe seleccionar al menos un proveedor."),
+    aduanaCategoryGuid: z.union([z.string(), z.number()]),
+    brandId: z.string(),
     gtin: z.string().min(1, "Debe ingresar un GTIN válido."),
   })
   .superRefine((data, ctx) => {
@@ -130,16 +126,6 @@ export const supplierProductSchema = z
           code: z.ZodIssueCode.custom,
           path: ["image"],
           message: "La imagen es obligatoria.",
-        });
-      }
-      if (
-        !data.details ||
-        (Array.isArray(data.details) && data.details.length === 0)
-      ) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["details"],
-          message: "Los detalles son obligatorios.",
         });
       }
     }

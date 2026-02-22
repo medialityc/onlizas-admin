@@ -43,7 +43,9 @@ interface Props<T> extends Omit<AutocompleteProps, "data" | "renderOption"> {
     options: T[],
     removeSelected: (option: T) => void,
   ) => React.ReactNode;
-  onFetch?: (params: IQueryable) => Promise<ApiResponse<PaginatedResponse<T>>>;
+  onFetch?: (
+    params: IQueryable,
+  ) => Promise<ApiResponse<PaginatedResponse<T>>> | undefined;
   extraFilters?: Record<string, any>;
   objectValueKey?: keyof T;
   objectKeyLabel?: keyof T;

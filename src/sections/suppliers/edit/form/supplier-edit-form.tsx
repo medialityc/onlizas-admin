@@ -73,6 +73,13 @@ export default function SupplierEditForm({
       supplierType: supplierDetails.type
         ? Number(SUPPLIER_TYPE[supplierDetails.type])
         : 0,
+      countryId: supplierDetails.countryId
+        ? String(supplierDetails.countryId)
+        : "",
+      stateId: supplierDetails.city ? String(supplierDetails.city) : "",
+      districtId: supplierDetails.districtId
+        ? String(supplierDetails.districtId)
+        : "",
       expirationDate: validExpirationDate,
       importersIds: (supplierDetails as any).importersIds || [],
       pendingCategories:
@@ -99,6 +106,20 @@ export default function SupplierEditForm({
   });
 
   const { handleSubmit, reset, setValue, trigger, getValues } = methods;
+
+  // Inferir nacionalidad a partir del tipo de proveedor (TCP/Mipyme/Extranjero)
+  useEffect(() => {
+    const supplierTypeValue = methods.watch("supplierType");
+
+    if (supplierTypeValue === SUPPLIER_TYPE.Extranjero) {
+      setValue("nacionalityType", SUPPLIER_NATIONALITY.Extranjero);
+    } else if (
+      supplierTypeValue === SUPPLIER_TYPE.Empresa ||
+      supplierTypeValue === SUPPLIER_TYPE.Persona
+    ) {
+      setValue("nacionalityType", SUPPLIER_NATIONALITY.Nacional);
+    }
+  }, [methods, setValue]);
 
   // Re-sincronizar el formulario cuando los datos del proveedor se revaliden en el servidor
   useEffect(() => {
@@ -159,7 +180,9 @@ export default function SupplierEditForm({
           sellerType: data.sellerType,
           nacionalityType: data.nacionalityType,
           mincexCode: data.mincexCode || "",
-          countryId: data.phoneCountryCode,
+          countryId: data.countryId,
+          city: data.stateId,
+          districtId: data.districtId,
         };
 
         const basicInfoResponse = await updateSupplierBasicInfo(

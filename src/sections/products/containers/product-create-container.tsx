@@ -1,7 +1,11 @@
 import React from "react";
 import ProductForm from "../components/product-form";
 
-const ProductCreateContainer = () => {
+type Props = {
+  afterCreateRedirectTo?: string;
+};
+
+const ProductCreateContainer = ({ afterCreateRedirectTo }: Props) => {
   return (
     <div>
       <div className="mb-5">
@@ -12,7 +16,7 @@ const ProductCreateContainer = () => {
           Define el producto y sus características
         </p>
       </div>
-      <ProductForm />
+      <ProductForm afterCreateRedirectTo={afterCreateRedirectTo} />
     </div>
   );
 };

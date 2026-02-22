@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import LoaderButton from "@/components/loaders/loader-button";
 import BasicInfoSection from "./basic-info-section";
 import CategoriesAndSuppliersSection from "./categories-suppliers-section";
+import SupplierCategoriesSection from "./supplier-categories-section";
 import ProductDimensionSection from "./product-dimension-section";
 import AboutProductSection from "./about-product-section";
 import ProductDetailsSection from "./product-details-section";
@@ -67,7 +68,7 @@ const SupplierProductForm = ({ initValue, isEdit }: Props) => {
               </div>
 
               <div className="col-span-1 lg:col-span-1 z-10">
-                <CategoriesAndSuppliersSection hideSupplier />
+                <SupplierCategoriesSection />
               </div>
 
               <div className="col-span-1 lg:col-span-2">

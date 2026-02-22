@@ -14,7 +14,14 @@ import {
 } from "../../constants/supplier.options";
 import { useMemo, useEffect } from "react";
 import { useCountries } from "@/components/phone-input/use-countries";
-import { getCountriesPaginated } from "@/services/countries";
+import {
+  District,
+  State,
+  getCountries,
+  getCountriesPaginated,
+  getDistrictsByState,
+  getStatesByCountry,
+} from "@/services/countries";
 import { Button } from "@/components/button/button";
 
 interface SupplierBasicInfoProps {
@@ -46,6 +53,7 @@ export default function SupplierBasicInfo({
   const nacionalityType = watch("nacionalityType");
   const mincexCode = watch("mincexCode");
   const countryId = watch("countryId");
+  const stateId = watch("stateId");
 
   // Encontrar Cuba en la lista de países
   const cubaCountry = countries?.find(
@@ -324,13 +332,50 @@ export default function SupplierBasicInfo({
           required
         />
 
-        {/* Dirección */}
-        <RHFInputWithLabel
-          name="address"
-          label="Dirección"
-          placeholder="Ingrese la dirección completa"
-          required
-        />
+        {/* País */}
+        <div className="space-y-2">
+          <RHFAutocompleteFetcherInfinity
+            name="countryId"
+            label="País"
+            placeholder="Seleccione un país"
+            objectValueKey="id"
+            objectKeyLabel="name"
+            queryKey="supplier-edit-countries"
+            onFetch={(params) => getCountries(params.search)}
+          />
+        </div>
+
+        {/* Provincia / Estado */}
+        <div className="space-y-2">
+          <RHFAutocompleteFetcherInfinity<State>
+            name="stateId"
+            label="Provincia / Estado"
+            placeholder="Seleccione una provincia/estado"
+            objectValueKey="id"
+            objectKeyLabel="name"
+            queryKey={"supplier-edit-states-" + String(countryId || "none")}
+            disabled={!countryId}
+            onFetch={(params) =>
+              countryId ? getStatesByCountry(countryId, params) : undefined
+            }
+          />
+        </div>
+
+        {/* Distrito */}
+        <div className="space-y-2">
+          <RHFAutocompleteFetcherInfinity<District>
+            name="districtId"
+            label="Distrito"
+            placeholder="Seleccione un distrito"
+            objectValueKey="id"
+            objectKeyLabel="name"
+            queryKey={"supplier-edit-districts-" + String(stateId || "none")}
+            disabled={!stateId}
+            onFetch={(params) =>
+              stateId ? getDistrictsByState(stateId, params) : undefined
+            }
+          />
+        </div>
 
         {/* Código Mincex - Solo visible para extranjeros y ambos */}
         {nacionalityType !== undefined &&

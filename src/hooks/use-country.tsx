@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Country } from "@/types/countries";
 import { getCountries } from "@/services/countries";
 import { ApiResponse } from "@/types/fetch/api";
+import { PaginatedResponse } from "@/types/common";
 
 interface UseCountryReturn {
   country: Country | null;
@@ -27,14 +28,14 @@ export function useCountry(countryId?: string | number): UseCountryReturn {
     setError(false);
 
     getCountries()
-      .then((countries: ApiResponse<Country[]>) => {
-        if (!countries.data) {
+      .then((countries: ApiResponse<PaginatedResponse<Country>>) => {
+        if (!countries.data || !countries.data.data) {
           throw new Error("No se pudieron obtener los países");
         }
 
-        const found = countries.data.find(
-          (c) => String(c.id) === String(countryId)
-        );
+        const list = countries.data.data;
+
+        const found = list.find((c) => String(c.id) === String(countryId));
 
         setCountry(found || null);
         if (!found) {

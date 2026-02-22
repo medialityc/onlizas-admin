@@ -22,9 +22,19 @@ import {
   SUPPLIER_NATIONALITY,
   SUPPLIER_NATIONALITY_OPTIONS,
   SUPPLIER_TYPE_SELLER_OPTIONS,
+  SUPPLIER_TYPE,
 } from "../constants/supplier.options";
 import { RHFPhoneCountrySelect } from "@/components/react-hook-form/rhf-phone-country-select";
 import { getAllCategories } from "@/services/categories";
+import {
+  District,
+  State,
+  getCountries,
+  getCountriesPaginated,
+  getDistrictsByState,
+  getStatesByCountry,
+} from "@/services/countries";
+import { IQueryable } from "@/types/fetch/request";
 
 function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
   const {
@@ -39,7 +49,22 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
   const [selectedBusiness, setSelectedBusiness] =
     React.useState<Business | null>(null);
   const nacionalityType = watch("nacionalityType");
+  const supplierType = watch("supplierType");
+  const countryId = watch("countryId");
+  const stateId = watch("stateId");
   console.log(errors, selectedUser);
+
+  // Inferir nacionalidad a partir del tipo de proveedor (TCP/Mipyme/Extranjero)
+  React.useEffect(() => {
+    if (supplierType === SUPPLIER_TYPE.Extranjero) {
+      setValue("nacionalityType", SUPPLIER_NATIONALITY.Extranjero);
+    } else if (
+      supplierType === SUPPLIER_TYPE.Empresa ||
+      supplierType === SUPPLIER_TYPE.Persona
+    ) {
+      setValue("nacionalityType", SUPPLIER_NATIONALITY.Nacional);
+    }
+  }, [supplierType, setValue]);
 
   React.useEffect(() => {
     if (useExistingUser) {
@@ -289,6 +314,64 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
               name="requiredPasswordChange"
               label="Requerir cambio de contraseña en el primer inicio de sesión"
             />
+            {/* Dirección detallada: País, Estado/Provincia, Distrito y texto libre */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <RHFAutocompleteFetcherInfinity
+                name="countryId"
+                label="País"
+                placeholder="Selecciona un país"
+                onFetch={(params: IQueryable) => getCountries(params.search)}
+                objectValueKey="id"
+                objectKeyLabel="name"
+                required
+                queryKey="supplier-create-countries"
+              />
+
+              <RHFAutocompleteFetcherInfinity<State>
+                key={`states-${countryId}`}
+                name="stateId"
+                label="Estado / Provincia"
+                placeholder="Selecciona un estado"
+                onFetch={
+                  countryId
+                    ? (params) =>
+                        getStatesByCountry(String(countryId), {
+                          page: params.page as number,
+                          pageSize: params.pageSize as number,
+                          search: params.search as any,
+                        })
+                    : undefined
+                }
+                objectValueKey="id"
+                objectKeyLabel="name"
+                disabled={!countryId}
+                required
+                queryKey={`supplier-create-states-${countryId ?? "none"}`}
+              />
+
+              <RHFAutocompleteFetcherInfinity<District>
+                key={`districts-${stateId}`}
+                name="districtId"
+                label="Distrito"
+                placeholder="Selecciona un distrito"
+                onFetch={
+                  stateId
+                    ? (params) =>
+                        getDistrictsByState(String(stateId), {
+                          page: params.page as number,
+                          pageSize: params.pageSize as number,
+                          search: params.search as any,
+                        })
+                    : undefined
+                }
+                objectValueKey="id"
+                objectKeyLabel="name"
+                disabled={!stateId}
+                required
+                queryKey={`supplier-create-districts-${stateId ?? "none"}`}
+              />
+            </div>
+
             <RHFInputWithLabel
               name="address"
               label="Dirección"
@@ -370,8 +453,9 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
             name="supplierType"
             label="Tipo de proveedor"
             options={[
-              { value: 0, label: "TCP" },
-              { value: 1, label: "Mipyme" },
+              { value: SUPPLIER_TYPE.Persona, label: "TCP" },
+              { value: SUPPLIER_TYPE.Empresa, label: "Mipyme" },
+              { value: SUPPLIER_TYPE.Extranjero, label: "Extranjero" },
             ]}
             placeholder="Seleccionar..."
             required

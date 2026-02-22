@@ -19,12 +19,14 @@ interface StoresListProps {
   data?: GetAllStores;
   searchParams: SearchParams;
   onSearchParamsChange: (params: SearchParams) => void;
+  afterCreateRedirectTo?: string;
 }
 
 export function StoresList({
   data,
   searchParams,
   onSearchParamsChange,
+  afterCreateRedirectTo,
 }: StoresListProps) {
   const { getModalState, openModal, closeModal } = useModalState();
 
@@ -46,7 +48,7 @@ export function StoresList({
       onSearchParamsChange?.(params);
       updateFiltersInUrl(params);
     },
-    [onSearchParamsChange, updateFiltersInUrl]
+    [onSearchParamsChange, updateFiltersInUrl],
   );
 
   const { handlePageChange, handlePageSizeChange } = useDataGridHandlers({
@@ -109,6 +111,7 @@ export function StoresList({
       <StoresModalContainer
         open={createStoreModal.open}
         onClose={() => closeModal("create")}
+        afterCreateRedirectTo={afterCreateRedirectTo}
       />
     </div>
   );

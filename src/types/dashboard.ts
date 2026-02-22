@@ -83,3 +83,12 @@ export interface SupplierDashboard {
   recentActivities: RecentActivitySupplier[];
   topSellingProducts: TopSellingProduct[];
 }
+
+export interface SupplierItemsCount {
+  productCount: number;
+  storeCount: number;
+  warehouseCount: number;
+  zoneCount: number;
+  inventoryCount: number;
+  bankAccountCount: number;
+}

@@ -38,9 +38,14 @@ const initValues: SupplierProductFormData = {
   aduanaCategoryGuid: "",
 };
 
+type UseSupplierProductCreateFormOptions = {
+  afterCreateRedirectTo?: string;
+};
+
 export const useSupplierProductCreateForm = (
   defaultValues: SupplierProductFormData = initValues,
-  isEdit: boolean = false
+  isEdit: boolean = false,
+  options?: UseSupplierProductCreateFormOptions,
 ) => {
   const { push } = useRouter();
   const form = useForm({
@@ -52,7 +57,7 @@ export const useSupplierProductCreateForm = (
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (
-      payload: SupplierProductFormData & { isLink?: boolean }
+      payload: SupplierProductFormData & { isLink?: boolean },
     ) => {
       const fromData = await setSupplierProductFormData(payload);
 
@@ -73,9 +78,14 @@ export const useSupplierProductCreateForm = (
     },
     onSuccess() {
       toast.success(
-        `Se ${defaultValues?.id ? "editó" : "creó"} correctamente el producto`
+        `Se ${defaultValues?.id ? "editó" : "creó"} correctamente el producto`,
       );
-      push("/dashboard/products");
+      const isEditMode = !!defaultValues?.id;
+      const redirectTo = !isEditMode
+        ? (options?.afterCreateRedirectTo ?? "/dashboard/products")
+        : "/dashboard/products";
+
+      push(redirectTo);
     },
     onError: async (error: any) => {
       toast.error(error?.message);
@@ -93,7 +103,7 @@ export const useSupplierProductCreateForm = (
       },
       (errors) => {
         focusFirstError(errors, form.setFocus);
-      }
+      },
     ),
 
     onSubmitLink: form.handleSubmit((values) => {

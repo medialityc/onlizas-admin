@@ -15,6 +15,7 @@ import {
 } from "@heroicons/react/24/solid";
 
 import CropModal from "@/components/image/crop-modal";
+import SimpleModal from "../modal/modal";
 
 interface CropDimensions {
   width: number;
@@ -472,28 +473,34 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
         </div>
 
         {showPreviewModal && preview && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-            <div className="relative max-h-[90vh] max-w-[90vw] rounded-lg bg-white p-4 shadow-lg">
-              <button
-                type="button"
-                onClick={() => setShowPreviewModal(false)}
-                className="absolute right-2 top-2 rounded-full bg-white p-1 shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                aria-label="Cerrar vista previa"
-              >
-                <XMarkIcon className="size-5 text-gray-600" />
-              </button>
-              <div className="mt-4 flex max-h-[80vh] max-w-full items-center justify-center overflow-auto">
-                <Image
-                  src={preview}
-                  alt="Vista previa completa de la imagen"
-                  width={1200}
-                  height={800}
-                  className="h-auto max-h-[80vh] w-auto max-w-full object-contain"
-                  unoptimized
-                />
+          <SimpleModal
+            title="Vista previa de la imagen"
+            open={showPreviewModal}
+            onClose={() => setShowPreviewModal(false)}
+          >
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+              <div className="relative max-h-[90vh] max-w-[90vw] rounded-lg bg-white p-4 shadow-lg">
+                <button
+                  type="button"
+                  onClick={() => setShowPreviewModal(false)}
+                  className="absolute right-2 top-2 rounded-full bg-white p-1 shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  aria-label="Cerrar vista previa"
+                >
+                  <XMarkIcon className="size-5 text-gray-600" />
+                </button>
+                <div className="mt-4 flex max-h-[80vh] max-w-full items-center justify-center overflow-auto">
+                  <Image
+                    src={preview}
+                    alt="Vista previa completa de la imagen"
+                    width={1200}
+                    height={800}
+                    className="h-auto max-h-[80vh] w-auto max-w-full object-contain"
+                    unoptimized
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          </SimpleModal>
         )}
 
         <CropModal

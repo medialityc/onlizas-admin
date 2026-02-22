@@ -1,7 +1,6 @@
 "use client";
-import React from "react";
 
-type StatItem = {
+export type StatItem = {
   label: string;
   value: number | string;
   percent?: number; // 0..100
@@ -122,53 +121,6 @@ export function buildAdminSummary(d?: {
       value: d?.activeStores ?? 0,
       percent: d?.totalStores
         ? ((d.activeStores ?? 0) / d.totalStores) * 100
-        : undefined,
-      color: "#f59e0b",
-    },
-  ];
-  return items;
-}
-
-export function buildSupplierSummary(d?: {
-  totalProducts?: number;
-  activeProducts?: number;
-  totalInventories?: number;
-  activeInventories?: number;
-  totalOrders?: number;
-  completedOrders?: number;
-  totalReviews?: number;
-  reviewsThisMonth?: number;
-}) {
-  const items: StatItem[] = [
-    {
-      label: "Productos activos",
-      value: d?.activeProducts ?? 0,
-      percent: d?.totalProducts
-        ? ((d.activeProducts ?? 0) / d.totalProducts) * 100
-        : undefined,
-      color: "#10b981",
-    },
-    {
-      label: "Inventarios activos",
-      value: d?.activeInventories ?? 0,
-      percent: d?.totalInventories
-        ? ((d.activeInventories ?? 0) / d.totalInventories) * 100
-        : undefined,
-      color: "#06b6d4",
-    },
-    {
-      label: "Órdenes completadas",
-      value: d?.completedOrders ?? 0,
-      percent: d?.totalOrders
-        ? ((d.completedOrders ?? 0) / d.totalOrders) * 100
-        : undefined,
-      color: "#4f46e5",
-    },
-    {
-      label: "Reviews del mes",
-      value: d?.reviewsThisMonth ?? 0,
-      percent: d?.totalReviews
-        ? ((d.reviewsThisMonth ?? 0) / d.totalReviews) * 100
         : undefined,
       color: "#f59e0b",
     },

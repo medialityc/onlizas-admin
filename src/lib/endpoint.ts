@@ -25,6 +25,10 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}static-pages/${id}`,
   },
   countries: { get: `${process.env.NEXT_PUBLIC_API_URL}countries` },
+  states: (countryId: string) =>
+    `${process.env.NEXT_PUBLIC_API_URL}countries/${countryId}/states`,
+  districtsByState: (stateId: string) =>
+    `${process.env.NEXT_PUBLIC_API_URL}states/${stateId}/districts`,
   users: {
     me: `${process.env.NEXT_PUBLIC_API_URL}users/me`,
     register: `${process.env.NEXT_PUBLIC_API_URL}Users/register`,
@@ -651,6 +655,7 @@ export const backendRoutes = {
   dashboard: {
     admin: `${process.env.NEXT_PUBLIC_API_URL}admin/dashboard`,
     supplier: `${process.env.NEXT_PUBLIC_API_URL}supplier/dashboard`,
+    supplierItemsCount: `${process.env.NEXT_PUBLIC_API_URL}supplier/counters`,
   },
   systemInfo: {
     addresses: {

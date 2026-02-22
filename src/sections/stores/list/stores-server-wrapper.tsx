@@ -4,10 +4,6 @@ import { getModulePermissions } from "@/components/permission/server-permission-
 import { getAllStores, getProviderStores } from "@/services/stores";
 import StoresListContainer from "./stores-list-container";
 
-interface Props {
-  query: SearchParams;
-}
-
 /**
  * Server-side wrapper para la lista de tiendas.
  *
@@ -22,7 +18,15 @@ interface Props {
  * - Los datos llegan pre-fetcheados desde el servidor
  * - Mejor experiencia de usuario (sin skeleton de permisos)
  */
-export default async function StoresServerWrapper({ query }: Props) {
+interface Props {
+  query: SearchParams;
+  afterCreateRedirectTo?: string;
+}
+
+export default async function StoresServerWrapper({
+  query,
+  afterCreateRedirectTo,
+}: Props) {
   const { isAdmin, isSupplier } = await getModulePermissions("stores");
 
   const apiQuery: IQueryable = buildQueryParams(
@@ -38,7 +42,13 @@ export default async function StoresServerWrapper({ query }: Props) {
   if (isSupplier) {
     const storesResponse = await getProviderStores(apiQuery);
 
-    return <StoresListContainer storesPromise={storesResponse} query={query} />;
+    return (
+      <StoresListContainer
+        storesPromise={storesResponse}
+        query={query}
+        afterCreateRedirectTo={afterCreateRedirectTo}
+      />
+    );
   }
   return (
     <div className="panel p-6">

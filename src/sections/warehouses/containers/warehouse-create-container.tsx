@@ -1,7 +1,11 @@
 import React from "react";
 import { WarehouseForm } from "../components/warehouse-form/warehouse-form";
 
-const WarehouseCreateContainer = () => {
+type Props = {
+  afterCreateRedirectTo?: string;
+};
+
+const WarehouseCreateContainer = ({ afterCreateRedirectTo }: Props) => {
   return (
     <div>
       <div className="mb-5">
@@ -12,7 +16,7 @@ const WarehouseCreateContainer = () => {
           Crea un almacén físico o virtual
         </p>
       </div>
-      <WarehouseForm />
+      <WarehouseForm afterCreateRedirectTo={afterCreateRedirectTo} />
     </div>
   );
 };

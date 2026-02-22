@@ -50,7 +50,6 @@ export const ProductCustomsInfoSection = () => {
         objectKeyLabel="name"
         objectValueKey="guid"
         placeholder="Seleccione una categoría aduanal"
-        required
       />
       {/* Marca */}
       <RHFAutocompleteFetcherInfinity
@@ -60,7 +59,6 @@ export const ProductCustomsInfoSection = () => {
         objectKeyLabel="name"
         objectValueKey="id"
         placeholder="Seleccione una marca"
-        required
       />
       {/* GTIN */}
       <RHFInputWithLabel

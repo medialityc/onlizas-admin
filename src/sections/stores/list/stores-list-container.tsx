@@ -10,11 +10,13 @@ import { StoresList } from "./stores-list";
 interface StoresListPageProps {
   storesPromise: ApiResponse<GetAllStores>;
   query: SearchParams;
+  afterCreateRedirectTo?: string;
 }
 
 export default function StoresListContainer({
   storesPromise,
   query,
+  afterCreateRedirectTo,
 }: StoresListPageProps) {
   const storesResponse = storesPromise;
 
@@ -40,6 +42,7 @@ export default function StoresListContainer({
         data={storesResponse.data}
         searchParams={query}
         onSearchParamsChange={handleSearchParamsChange}
+        afterCreateRedirectTo={afterCreateRedirectTo}
       />
     </div>
   );

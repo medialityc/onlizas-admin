@@ -12,10 +12,20 @@ type Props = {
   forProvider?: boolean;
 };
 
-const InventoryProviderForm = ({ provider, onClose, forProvider }: Props) => {
+type InventoryProviderFormProps = Props & {
+  afterCreateRedirectTo?: string;
+};
+
+const InventoryProviderForm = ({
+  provider,
+  onClose,
+  forProvider,
+  afterCreateRedirectTo,
+}: InventoryProviderFormProps) => {
   const { form, isPending, onSubmit } = useInventoryCreateForm(
     { supplierId: provider },
     onClose,
+    { afterCreateRedirectTo },
   );
 
   return (

@@ -448,6 +448,8 @@ export async function updateSupplierBasicInfo(
     nacionalityType?: number;
     mincexCode?: string;
     countryId?: string;
+    city?: string;
+    districtId?: string;
   },
 ): Promise<ApiResponse<any>> {
   const res = await nextAuthFetch({

@@ -8,10 +8,7 @@ import {
 import InventoryCardListContainer from "./inventory-card-list-container";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import { getServerSession, useAuth } from "zas-sso-client";
-
-interface Props {
-  query: SearchParams;
-}
+import { getSupplierItemsCount } from "@/services/dashboard";
 
 /**
  * Server-side wrapper para la lista de inventarios.
@@ -27,7 +24,15 @@ interface Props {
  * - Los datos llegan pre-fetcheados desde el servidor
  * - Mejor experiencia de usuario (sin skeleton de permisos)
  */
-export default async function InventoryServerWrapper({ query }: Props) {
+interface Props {
+  query: SearchParams;
+  afterCreateRedirectTo?: string;
+}
+
+export default async function InventoryServerWrapper({
+  query,
+  afterCreateRedirectTo,
+}: Props) {
   const { isAdmin, isSupplier, permissionCodes } =
     await getModulePermissions("inventory");
   const { user } = await getServerSession();
@@ -56,6 +61,7 @@ export default async function InventoryServerWrapper({ query }: Props) {
 
   if (isSupplier) {
     const inventoriesResponse = await getAllMyInventoryProvider(apiQuery);
+    const counters = await getSupplierItemsCount();
 
     return (
       <InventoryCardListContainer
@@ -63,7 +69,9 @@ export default async function InventoryServerWrapper({ query }: Props) {
         inventories={inventoriesResponse}
         query={query}
         hideCreate={!canCreate}
+        counters={counters.data}
         forProvider={true}
+        afterCreateRedirectTo={afterCreateRedirectTo}
       />
     );
   }

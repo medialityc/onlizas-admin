@@ -11,6 +11,7 @@ interface CreateInventoryModalProps {
   onClose: () => void;
   provider?: string;
   forProvider?: boolean;
+  afterCreateRedirectTo?: string;
 }
 
 export default function CreateInventoryModal({
@@ -18,6 +19,7 @@ export default function CreateInventoryModal({
   onClose,
   provider,
   forProvider,
+  afterCreateRedirectTo,
 }: CreateInventoryModalProps) {
   const [error, setError] = useState<string | null>(null);
 
@@ -25,6 +27,7 @@ export default function CreateInventoryModal({
 
   const handleClose = () => {
     setError(null);
+    afterCreateRedirectTo = { afterCreateRedirectTo };
     onClose();
     queryClient.invalidateQueries({
       predicate: (query) => {
@@ -50,6 +53,7 @@ export default function CreateInventoryModal({
           forProvider={forProvider}
           provider={provider}
           onClose={handleClose}
+          afterCreateRedirectTo={undefined}
         />
       </div>
     </SimpleModal>

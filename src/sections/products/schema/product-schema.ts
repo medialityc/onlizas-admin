@@ -39,11 +39,7 @@ export const productSchema = z.object({
     .refine((val) => val !== "" && val !== undefined && val !== null, {
       message: "Debe seleccionar una unidad",
     }), */
-  aduanaCategoryGuid: z
-    .union([z.string(), z.number()])
-    .refine((val) => val !== "" && val !== undefined && val !== null, {
-      message: "Debe seleccionar una categoría aduanal",
-    }),
+  aduanaCategoryGuid: z.union([z.string(), z.number()]),
   /* dimensiones */
   width: z
     .number()
@@ -138,7 +134,7 @@ export const productSchema = z.object({
       z.instanceof(File, { message: "Debe ser un archivo válido." }),
     ])
     .optional(),
-  brandId: z.string().min(1, "Debe seleccionar al menos un proveedor."),
+  brandId: z.string(),
   gtin: z.string().min(1, "Debe ingresar un GTIN válido."),
 });
 

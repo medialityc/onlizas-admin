@@ -17,10 +17,12 @@ import { getWarehouseRoute } from "../../utils/warehouse";
 
 type Props = {
   warehouse?: WarehouseFormData;
+  afterCreateRedirectTo?: string;
 };
-export function WarehouseForm({ warehouse }: Props) {
+export function WarehouseForm({ warehouse, afterCreateRedirectTo }: Props) {
   const { form, isPending, onSubmit, warehouseType } = useWarehouseCreateForm(
     warehouse && getAdapterWarehouse(warehouse),
+    { afterCreateRedirectTo },
   );
   // Control de permisos
   const { hasPermission } = usePermissions();

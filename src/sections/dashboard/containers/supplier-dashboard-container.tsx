@@ -1,15 +1,60 @@
-"use client";
-
 import SummaryCards from "@/sections/dashboard/summary-cards";
 import PieChart from "@/sections/dashboard/charts/pie-chart";
 import InteractiveSummary, {
-  buildSupplierSummary,
+  StatItem,
 } from "@/sections/dashboard/components/interactive-summary";
 import RecentActivityTimeline from "@/sections/dashboard/components/recent-activity-timeline";
 import QuickStats from "@/sections/dashboard/components/quick-stats";
 import GroupedSummary from "@/sections/dashboard/components/grouped-summary";
+import { SupplierInventorySteps } from "@/sections/dashboard/components/supplier-inventory-steps";
 import { ApiResponse } from "@/types/fetch/api";
 import { SupplierDashboard } from "@/types/dashboard";
+export function buildSupplierSummary(d?: {
+  totalProducts?: number;
+  activeProducts?: number;
+  totalInventories?: number;
+  activeInventories?: number;
+  totalOrders?: number;
+  completedOrders?: number;
+  totalReviews?: number;
+  reviewsThisMonth?: number;
+}) {
+  const items: StatItem[] = [
+    {
+      label: "Productos activos",
+      value: d?.activeProducts ?? 0,
+      percent: d?.totalProducts
+        ? ((d.activeProducts ?? 0) / d.totalProducts) * 100
+        : undefined,
+      color: "#10b981",
+    },
+    {
+      label: "Inventarios activos",
+      value: d?.activeInventories ?? 0,
+      percent: d?.totalInventories
+        ? ((d.activeInventories ?? 0) / d.totalInventories) * 100
+        : undefined,
+      color: "#06b6d4",
+    },
+    {
+      label: "Órdenes completadas",
+      value: d?.completedOrders ?? 0,
+      percent: d?.totalOrders
+        ? ((d.completedOrders ?? 0) / d.totalOrders) * 100
+        : undefined,
+      color: "#4f46e5",
+    },
+    {
+      label: "Reviews del mes",
+      value: d?.reviewsThisMonth ?? 0,
+      percent: d?.totalReviews
+        ? ((d.reviewsThisMonth ?? 0) / d.totalReviews) * 100
+        : undefined,
+      color: "#f59e0b",
+    },
+  ];
+  return items;
+}
 
 interface Props {
   dashboardPromise: ApiResponse<SupplierDashboard>;
@@ -31,6 +76,7 @@ export default function SupplierDashboardContainer({
 
   return (
     <div className="space-y-6 p-4 sm:p-6">
+      <SupplierInventorySteps />
       <div className="space-y-4">
         {/* Tarjetas de resumen para rellenar mejor el layout */}
         <SummaryCards cards={cards} />
@@ -227,13 +273,15 @@ export default function SupplierDashboardContainer({
               <div>Fecha aprobación</div>
               <div className="text-right font-semibold">
                 {d?.approvalStatus?.approvedAt
-                  ? new Date(d.approvalStatus.approvedAt).toLocaleString()
+                  ? new Date(d!.approvalStatus!.approvedAt!).toLocaleString()
                   : "-"}
               </div>
               <div>Expira</div>
               <div className="text-right font-semibold">
                 {d?.approvalStatus?.expirationDate
-                  ? new Date(d.approvalStatus.expirationDate).toLocaleString()
+                  ? new Date(
+                      d!.approvalStatus!.expirationDate!,
+                    ).toLocaleString()
                   : "-"}
               </div>
               <div>Categorías aprobadas</div>

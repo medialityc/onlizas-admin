@@ -14,10 +14,15 @@ import { WAREHOUSE_TYPE_ENUM } from "../constants/warehouse-type";
 import { initValueWarehouse } from "../constants/warehouse-initvalues";
 import { warehouseAdapter } from "../constants/warehouse-adapter";
 
+type UseWarehouseCreateFormOptions = {
+  afterCreateRedirectTo?: string;
+};
+
 export const useWarehouseCreateForm = (
-  defaultValues: WarehouseFormData = initValueWarehouse
+  defaultValues: WarehouseFormData = initValueWarehouse,
+  options?: UseWarehouseCreateFormOptions,
 ) => {
-  const { back } = useRouter();
+  const { back, push } = useRouter();
 
   const { ...form } = useForm({
     resolver: zodResolver(warehouseSchema),
@@ -32,7 +37,7 @@ export const useWarehouseCreateForm = (
         ? await updateWarehouse(
             payload?.id,
             payload?.type as WAREHOUSE_TYPE_ENUM,
-            payload
+            payload,
           )
         : await createWarehouse(warehouseAdapter(payload));
 
@@ -44,8 +49,15 @@ export const useWarehouseCreateForm = (
     },
     onSuccess() {
       toast.success(
-        `Se ${defaultValues?.id ? "editó" : "creó"} correctamente el almacén`
+        `Se ${defaultValues?.id ? "editó" : "creó"} correctamente el almacén`,
       );
+      const isEdit = !!defaultValues?.id;
+
+      if (!isEdit && options?.afterCreateRedirectTo) {
+        push(options.afterCreateRedirectTo);
+        return;
+      }
+
       back();
     },
     onError: async (error: any) => {

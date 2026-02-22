@@ -20,6 +20,7 @@ interface StoresModalProps {
   store?: CreateStore; // Opcional si se usa para editar
   loading: boolean;
   onSuccess?: () => void; // Opcional si se usa para editar
+  afterCreateRedirectTo?: string;
 }
 
 export default function StoresCreateModal({
@@ -28,6 +29,7 @@ export default function StoresCreateModal({
   store,
   loading,
   onSuccess,
+  afterCreateRedirectTo,
 }: StoresModalProps) {
   const [error, setError] = useState<string | null>(null);
 
@@ -98,6 +100,10 @@ export default function StoresCreateModal({
           (response.data as any)?.id ?? (response.data as any)?.storeId;
         toast.success("Tienda creada exitosamente");
         onSuccess?.();
+        if (afterCreateRedirectTo) {
+          routerHook.push(afterCreateRedirectTo);
+          return;
+        }
         if (createdId) {
           routerHook.push(`/dashboard/stores/${createdId}`);
           return;

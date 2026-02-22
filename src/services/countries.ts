@@ -69,3 +69,65 @@ export async function getCountriesPaginated(params: {
 
   return { data: paginated, status: 200, error: false };
 }
+
+// Estados y distritos (ubicación jerárquica)
+export type State = {
+  id: string;
+  name: string;
+  code: string;
+  isActive: boolean;
+};
+
+export type District = {
+  id: string;
+  name: string;
+  isActive?: boolean;
+};
+
+export async function getStatesByCountry(
+  countryId: string,
+  params: { search?: string; page?: number; pageSize?: number } = {},
+): Promise<ApiResponse<PaginatedResponse<State>>> {
+  const page = params.page ?? 1;
+  const pageSize = params.pageSize ?? 35;
+
+  const url = new URL(backendRoutes.states(countryId));
+  url.searchParams.set("page", String(page));
+  url.searchParams.set("pageSize", String(pageSize));
+  if (params.search)
+    url.searchParams.set("search", params.search.toString().trim());
+
+  const res = await nextAuthFetch({
+    url: url.toString(),
+    method: "GET",
+    useAuth: true,
+    cache: "no-cache",
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<PaginatedResponse<State>>(res);
+}
+
+export async function getDistrictsByState(
+  stateId: string,
+  params: { search?: string; page?: number; pageSize?: number } = {},
+): Promise<ApiResponse<PaginatedResponse<District>>> {
+  const page = params.page ?? 1;
+  const pageSize = params.pageSize ?? 35;
+
+  const url = new URL(backendRoutes.districtsByState(stateId));
+  url.searchParams.set("page", String(page));
+  url.searchParams.set("pageSize", String(pageSize));
+  if (params.search)
+    url.searchParams.set("search", params.search.toString().trim());
+
+  const res = await nextAuthFetch({
+    url: url.toString(),
+    method: "GET",
+    useAuth: true,
+    cache: "no-cache",
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<PaginatedResponse<District>>(res);
+}

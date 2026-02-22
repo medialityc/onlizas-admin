@@ -44,6 +44,9 @@ export default function SuppliersModal({
       email: "",
       phone: "",
       countryCode: "",
+      countryId: "",
+      stateId: "",
+      districtId: "",
       address: "",
       documents: [],
       createUserAutomatically: false,
@@ -84,14 +87,22 @@ export default function SuppliersModal({
           if (data.email) formData.append("email", data.email);
           if (data.phone) formData.append("phone", data.phone);
           if (data.name) formData.append("name", data.name);
-          if (data.countryCode) formData.append("countryId", data.countryCode);
+          if (data.countryId)
+            formData.append("countryId", String(data.countryId));
+          if (data.stateId) formData.append("city", String(data.stateId));
+          if (data.districtId)
+            formData.append("districtId", String(data.districtId));
           if (data.address) formData.append("address", data.address);
           formData.append("requirePasswordChange", "false");
         }
       } else {
         if (data.name) formData.append("name", data.name);
         if (data.email) formData.append("email", data.email);
-        if (data.countryCode) formData.append("countryId", data.countryCode);
+        if (data.countryId)
+          formData.append("countryId", String(data.countryId));
+        if (data.stateId) formData.append("city", String(data.stateId));
+        if (data.districtId)
+          formData.append("districtId", String(data.districtId));
         if (data.phone) formData.append("phone", data.phone);
         if (data.address) formData.append("address", data.address);
         formData.append("createUserAutomatically", "true");
@@ -140,7 +151,7 @@ export default function SuppliersModal({
       try {
         console.log(
           "[SuppliersModal] FormData JSON:",
-          JSON.stringify(aggregate)
+          JSON.stringify(aggregate),
         );
       } catch (e) {
         console.warn("No se pudo serializar FormData agregado", e);

@@ -120,6 +120,9 @@ export type SupplierDetails = Supplier & {
   id: number;
   state: SupplierState;
   userId: number;
+  countryId?: number;
+  city?: string | number;
+  districtId?: string | number;
 
   pendingDocuments: [
     {

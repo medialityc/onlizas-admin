@@ -2,7 +2,7 @@ import { z } from "zod";
 import { SUPPLIER_NATIONALITY } from "../constants/supplier.options";
 
 export const suppliersSchema = z.object({
-    importersIds: z.array(z.string()).default([]).optional(),
+  importersIds: z.array(z.string()).default([]).optional(),
   categoryIds: z.array(z.string()).default([]).optional(),
   // Manual supplier fields: make optional here and enforce conditionally in superRefine
   name: z
@@ -15,6 +15,9 @@ export const suppliersSchema = z.object({
     .max(20, "El teléfono no puede tener más de 20 caracteres.")
     .optional(),
   countryCode: z.string().min(1, "El código de país es obligatorio."),
+  countryId: z.string().min(1, "El país es obligatorio."),
+  stateId: z.string().min(1, "La provincia/estado es obligatoria."),
+  districtId: z.string().min(1, "El distrito es obligatorio."),
   address: z
     .string()
     .max(200, "La dirección no puede tener más de 200 caracteres.")
@@ -34,7 +37,7 @@ export const suppliersSchema = z.object({
         content: z.instanceof(File, {
           message: "El contenido debe ser un archivo válido.",
         }),
-      })
+      }),
     )
     .min(1, "Debes agregar al menos un documento."),
   sellerType: z
@@ -167,6 +170,30 @@ export const suppliersSchemaWithRules = suppliersSchema.superRefine(
         });
       }
 
+      if (!data.countryId || data.countryId.trim().length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["countryId"],
+          message: "El país es obligatorio.",
+        });
+      }
+
+      if (!data.stateId || data.stateId.trim().length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["stateId"],
+          message: "La provincia/estado es obligatoria.",
+        });
+      }
+
+      if (!data.districtId || data.districtId.trim().length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["districtId"],
+          message: "El distrito es obligatorio.",
+        });
+      }
+
       if (!data.address || data.address.trim().length === 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -179,7 +206,7 @@ export const suppliersSchemaWithRules = suppliersSchema.superRefine(
     // Existing rule for mincexCode depending on nationality
     if (
       [SUPPLIER_NATIONALITY.Extranjero, SUPPLIER_NATIONALITY.Ambos].includes(
-        data.nacionalityType
+        data.nacionalityType,
       )
     ) {
       if (!data.mincexCode || data.mincexCode.trim().length === 0) {
@@ -256,5 +283,5 @@ export const suppliersSchemaWithRules = suppliersSchema.superRefine(
         });
       }
     }
-  }
+  },
 );

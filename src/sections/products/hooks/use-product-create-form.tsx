@@ -28,8 +28,13 @@ const initValues: ProductFormData = {
   aduanaCategoryGuid: "",
 };
 
+type UseProductCreateFormOptions = {
+  afterCreateRedirectTo?: string;
+};
+
 export const useProductCreateForm = (
-  defaultValues: ProductFormData = initValues
+  defaultValues: ProductFormData = initValues,
+  options?: UseProductCreateFormOptions,
 ) => {
   const { push } = useRouter();
   const form = useForm({
@@ -54,9 +59,14 @@ export const useProductCreateForm = (
     },
     onSuccess() {
       toast.success(
-        `Se ${defaultValues?.id ? "editó" : "creó"} correctamente el producto`
+        `Se ${defaultValues?.id ? "editó" : "creó"} correctamente el producto`,
       );
-      push("/dashboard/products");
+      const isEdit = !!defaultValues?.id;
+      const redirectTo = !isEdit
+        ? (options?.afterCreateRedirectTo ?? "/dashboard/products")
+        : "/dashboard/products";
+
+      push(redirectTo);
     },
     onError: async (error: any) => {
       toast.error(error?.message);

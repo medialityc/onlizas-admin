@@ -19,13 +19,15 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import SupplierSelectProductDraft from "./supplier-select-product-draft";
 import SupplierProductSummary from "./supplier-product-summary";
+import SupplierCategoriesSection from "./supplier-categories-section";
 
 type Props = {
   initValue?: ProductFormData;
   isEdit?: boolean;
+  afterCreateRedirectTo?: string;
 };
 
-const ProductForm = ({ initValue }: Props) => {
+const ProductForm = ({ initValue, afterCreateRedirectTo }: Props) => {
   const isEdit = useMemo(() => !!initValue?.id, [initValue?.id]);
   const { hasPermission } = usePermissions();
 
@@ -36,8 +38,10 @@ const ProductForm = ({ initValue }: Props) => {
   const isSupplierMode = hasSupplierCreate && !hasAdminCreate;
 
   // Initialize both hooks to satisfy React Hook rules, then select
-  const supplierHook = useSupplierProductCreateForm(initValue as any, isEdit);
-  const adminHook = useProductCreateForm(initValue);
+  const supplierHook = useSupplierProductCreateForm(initValue as any, isEdit, {
+    afterCreateRedirectTo,
+  });
+  const adminHook = useProductCreateForm(initValue, { afterCreateRedirectTo });
   const hook: any = isSupplierMode ? supplierHook : adminHook;
   const { form, isPending, onSubmit, isDraft } = hook;
   const onSubmitLink =
@@ -84,10 +88,14 @@ const ProductForm = ({ initValue }: Props) => {
             <div className="col-span-1 lg:col-span-2">
               <BasicInfoSection />
             </div>
-            <div className="col-span-1 lg:col-span-1 z-10">
-              <CategoriesAndSuppliersSection hideSupplier={isSupplierMode} />
+            <div className="col-span-1 lg:col-span-2 z-10">
+              {isSupplierMode ? (
+                <SupplierCategoriesSection />
+              ) : (
+                <CategoriesAndSuppliersSection hideSupplier={isSupplierMode} />
+              )}
             </div>
-            <div className="col-span-1 lg:col-span-1">
+            <div className="col-span-1 lg:col-span-2">
               <ProductDimensionSection />
             </div>
 
