@@ -27,7 +27,7 @@ export default function CreateInventoryModal({
 
   const handleClose = () => {
     setError(null);
-    afterCreateRedirectTo = { afterCreateRedirectTo };
+    afterCreateRedirectTo = afterCreateRedirectTo;
     onClose();
     queryClient.invalidateQueries({
       predicate: (query) => {

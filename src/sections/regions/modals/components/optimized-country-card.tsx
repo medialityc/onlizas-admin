@@ -1,5 +1,6 @@
 "use client";
 
+import ProgressiveImage from "@/components/image/progressive-image";
 import Image from "next/image";
 
 interface OptimizedCountryCardProps {

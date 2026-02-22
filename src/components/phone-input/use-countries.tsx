@@ -3,7 +3,7 @@ import { getCountries } from "@/services/countries";
 // import { getCountries } from "@/services/countries"; // Comentado temporalmente para usar mock
 import { Country } from "@/types/countries";
 import { ApiResponse } from "@/types/fetch/api";
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { PaginatedResponse } from "@/types/common";
 
 // Query key constant to avoid typos across the app
@@ -20,9 +20,7 @@ interface UseCountriesResult {
   isFetching: boolean;
   isError: boolean;
   error: unknown;
-  refetch: () => Promise<
-    UseQueryResult<ApiResponse<PaginatedResponse<Country>>, unknown>
-  >;
+  refetch: () => Promise<void>;
 }
 
 export function useCountries(
@@ -51,11 +49,9 @@ export function useCountries(
     isFetching: query.isFetching,
     isError: query.isError,
     error: query.error,
-    refetch: async () =>
-      (await query.refetch()) as UseQueryResult<
-        ApiResponse<PaginatedResponse<Country>>,
-        unknown
-      >,
+    refetch: async () => {
+      await query.refetch();
+    },
   };
 }
 
