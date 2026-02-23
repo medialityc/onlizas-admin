@@ -24,6 +24,7 @@ function InventoryForm({ provider, forProvider }: Props) {
   const [meWarehouse, isPaqueteria] = watch(["meWarehouse", "isPaqueteria"]);
   const { setValue } = useFormContext<InventoryEasy>();
   const [canMarkMayorista, setCanMarkMayorista] = useState(false);
+  const [nacionality, setNacionality] = useState("");
   const [sellerTypeLoading, setSellerTypeLoading] = useState(false);
   const [sellerTypeError, setSellerTypeError] = useState<string | null>(null);
 
@@ -47,7 +48,9 @@ function InventoryForm({ provider, forProvider }: Props) {
           return;
         }
         const sellerTypeStr = res.data?.sellerType?.toString() || "";
-        console.log("[InventoryForm] sellerType fetched", sellerTypeStr);
+        console.log(res.data);
+
+        setNacionality(res.data?.nacionality ?? "");
         const allow = ["Mayorista", "Ambos"].includes(sellerTypeStr);
         setCanMarkMayorista(allow);
         if (!allow) {
@@ -90,12 +93,13 @@ function InventoryForm({ provider, forProvider }: Props) {
             required
             queryKey={"products"}
           />
-
-          <RHFCheckbox name="isPaqueteria" label="¿Es paquetería?" />
+          {nacionality !== "Nacional" && (
+            <RHFCheckbox name="isPaqueteria" label="¿Es paquetería?" />
+          )}
 
           {sellerTypeLoading && (
             <div className="text-xs text-muted-foreground">
-              Cargando tipo de vendedor...
+              Cargando información del proveedor...
             </div>
           )}
           {!sellerTypeLoading && canMarkMayorista && (
