@@ -6,7 +6,6 @@ import {
   type UserRole,
 } from "./permission-utils";
 
-
 export type { UserRole, ModuleName } from "./permission-utils";
 
 export interface Permission extends SSOPermission {
@@ -38,11 +37,11 @@ export async function getServerPermissions(): Promise<Permission[]> {
 
     const permissions = await fetchMyPermissions();
 
-    if (!Array.isArray(permissions)) {
+    if (!Array.isArray(permissions.data)) {
       return [];
     }
 
-    return permissions as Permission[];
+    return permissions.data as Permission[];
   } catch (error) {
     console.error("[ServerPermissions] Error obteniendo permisos:", error);
     return [];
@@ -50,7 +49,7 @@ export async function getServerPermissions(): Promise<Permission[]> {
 }
 
 export async function getServerPermissionsData(
-  modulePermissions?: readonly string[]
+  modulePermissions?: readonly string[],
 ): Promise<ServerPermissionsData> {
   const permissions = await getServerPermissions();
   const permissionCodes = getPermissionCodes(permissions);
@@ -63,9 +62,7 @@ export async function getServerPermissionsData(
     const session = await getServerSession();
     userId = session?.user?.id?.toString();
     userName = session?.user?.name;
-  } catch {
-    
-  }
+  } catch {}
 
   return {
     permissions,

@@ -22,14 +22,15 @@ export const usePermissions = () => {
     error,
     isError,
   } = useSSO() as {
-    data: Permission[] | undefined;
+    data: { data: Permission[] } | undefined;
     isLoading: boolean;
     error: any;
     isError: boolean;
   };
+
   // Asegurar que permissions sea siempre un array válido de códigos
   const filteredPermissions =
-    permissions?.filter((p) => p?.subsystem?.code === "Onlizas") || [];
+    permissions?.data?.filter((p) => p?.subsystem?.code === "Onlizas") || [];
   const safePermissionCodes = Array.isArray(filteredPermissions)
     ? filteredPermissions.map((p: Permission) => p?.code).filter(Boolean)
     : [];
@@ -97,7 +98,7 @@ export const usePermissions = () => {
    */
   const filterByPermissions = <T extends Record<string, any>>(
     items: T[],
-    permissionKey: string = "permissions"
+    permissionKey: string = "permissions",
   ): T[] => {
     return items.filter((item) => hasPermission(item[permissionKey]));
   };
