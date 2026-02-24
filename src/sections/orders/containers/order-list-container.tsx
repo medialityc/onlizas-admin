@@ -2,6 +2,7 @@
 
 import { Download, RefreshCw } from "lucide-react";
 import { useTransition } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ApiResponse } from "zas-sso-client/dist/lib/api";
 import { GetAllOrders, OrderStatus } from "@/types/order";
 import useFiltersUrl from "@/hooks/use-filters-url";
@@ -35,10 +36,29 @@ const STATUS_OPTIONS = Object.entries(ORDER_STATUS_MAP).map(([key, value]) => ({
 export default function AdminOrdersPage({ data, query }: Props) {
   const [isPending, startTransition] = useTransition();
   const { updateFiltersInUrl } = useFiltersUrl();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const onSearchParamsChange = (params: SearchParams) => {
     startTransition(() => {
       updateFiltersInUrl(params);
     });
+  };
+
+  const statusParam = searchParams.get("status");
+  const activeStatus = statusParam
+    ? (Number(statusParam) as OrderStatus)
+    : undefined;
+
+  const handleStatsFilterChange = (status?: OrderStatus) => {
+    const params = new URLSearchParams(searchParams);
+
+    if (status === undefined) {
+      params.delete("status");
+    } else {
+      params.set("status", String(status));
+    }
+
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
 
   return (
@@ -57,7 +77,11 @@ export default function AdminOrdersPage({ data, query }: Props) {
         </div>
 
         {/* Stats */}
-        <OrderStats orders={data.data?.data ?? []} />
+        <OrderStats
+          orders={data.data?.data ?? []}
+          activeStatus={activeStatus}
+          onStatusFilterChange={handleStatsFilterChange}
+        />
 
         {/* Grid con Búsqueda y Filtros */}
         <DataGridCard

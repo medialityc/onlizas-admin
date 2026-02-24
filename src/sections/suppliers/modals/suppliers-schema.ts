@@ -18,10 +18,6 @@ export const suppliersSchema = z.object({
   countryId: z.string().min(1, "El país es obligatorio."),
   stateId: z.string().min(1, "La provincia/estado es obligatoria."),
   districtId: z.string().min(1, "El distrito es obligatorio."),
-  address: z
-    .string()
-    .max(200, "La dirección no puede tener más de 200 caracteres.")
-    .optional(),
   // When selecting an existing user
   createUserAutomatically: z.boolean().optional(),
   userMissingEmail: z.boolean().optional(),
@@ -86,7 +82,7 @@ export const suppliersSchemaWithRules = suppliersSchema.superRefine(
         });
       }
 
-      // If user is missing email/phone/address, require those fields to be completed
+      // If user is missing email/phone, require those fields to be completed
       if (data.userMissingEmail) {
         if (!data.email || data.email.trim().length === 0) {
           ctx.addIssue({
@@ -112,17 +108,6 @@ export const suppliersSchemaWithRules = suppliersSchema.superRefine(
             code: z.ZodIssueCode.custom,
             path: ["phone"],
             message: "El teléfono es obligatorio para el usuario seleccionado.",
-          });
-        }
-      }
-
-      if (data.userMissingAddress) {
-        if (!data.address || data.address.trim().length === 0) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ["address"],
-            message:
-              "La dirección es obligatoria para el usuario seleccionado.",
           });
         }
       }
@@ -191,14 +176,6 @@ export const suppliersSchemaWithRules = suppliersSchema.superRefine(
           code: z.ZodIssueCode.custom,
           path: ["districtId"],
           message: "El distrito es obligatorio.",
-        });
-      }
-
-      if (!data.address || data.address.trim().length === 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["address"],
-          message: "La dirección es obligatoria.",
         });
       }
     }

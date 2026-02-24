@@ -71,7 +71,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
       setValue("name", undefined);
       setValue("email", undefined);
       setValue("phone", undefined);
-      setValue("address", undefined);
       setValue("mincexCode", undefined);
       setValue("countryCode", undefined);
       setValue("userMissingEmail", false);
@@ -91,7 +90,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
       setValue("email", undefined);
       setValue("phone", undefined);
       setValue("countryCode", undefined);
-      setValue("address", undefined);
     }
   }, [useExistingUser, setValue]);
 
@@ -148,10 +146,7 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                     }
                     setValue("userMissingEmail", !option.hasEmail);
                     setValue("userMissingPhone", !option.hasPhoneNumber);
-                    setValue(
-                      "userMissingAddress",
-                      !(option.addresses && option.addresses.length > 0),
-                    );
+                    setValue("userMissingAddress", false);
                   }
                 }}
               />
@@ -196,12 +191,8 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                 (() => {
                   const needEmail = !selectedUser.hasEmail;
                   const needPhone = !selectedUser.hasPhoneNumber;
-                  const needAddress = !(
-                    selectedUser.addresses && selectedUser.addresses.length > 0
-                  );
                   const needName = !selectedUser.name;
-                  if (!needEmail && !needPhone && !needAddress && !needName)
-                    return null;
+                  if (!needEmail && !needPhone && !needName) return null;
                   return (
                     <div className="mt-3 p-3 border rounded bg-white dark:bg-gray-900">
                       <div className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
@@ -232,16 +223,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                             phoneFieldName="phone"
                           />
                         )}
-                        {needAddress && (
-                          <RHFInputWithLabel
-                            name="address"
-                            label="Dirección"
-                            placeholder="Calle, Ciudad, País"
-                            type="textarea"
-                            required
-                            rows={2}
-                          />
-                        )}
                       </div>
                     </div>
                   );
@@ -270,7 +251,7 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
             <div>
               <label
                 htmlFor="phoneNumber"
-                className="mb-[14px] block text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="mb-3.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 Teléfono <span className="text-danger">*</span>
               </label>
@@ -314,75 +295,70 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
               name="requiredPasswordChange"
               label="Requerir cambio de contraseña en el primer inicio de sesión"
             />
-            {/* Dirección detallada: País, Estado/Provincia, Distrito y texto libre */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <RHFAutocompleteFetcherInfinity
-                name="countryId"
-                label="País"
-                placeholder="Selecciona un país"
-                onFetch={(params: IQueryable) => getCountries(params.search)}
-                objectValueKey="id"
-                objectKeyLabel="name"
-                required
-                queryKey="supplier-create-countries"
-              />
-
-              <RHFAutocompleteFetcherInfinity<State>
-                key={`states-${countryId}`}
-                name="stateId"
-                label="Estado / Provincia"
-                placeholder="Selecciona un estado"
-                onFetch={
-                  countryId
-                    ? (params) =>
-                        getStatesByCountry(String(countryId), {
-                          page: params.page as number,
-                          pageSize: params.pageSize as number,
-                          search: params.search as any,
-                        })
-                    : undefined
-                }
-                objectValueKey="id"
-                objectKeyLabel="name"
-                disabled={!countryId}
-                required
-                queryKey={`supplier-create-states-${countryId ?? "none"}`}
-              />
-
-              <RHFAutocompleteFetcherInfinity<District>
-                key={`districts-${stateId}`}
-                name="districtId"
-                label="Distrito"
-                placeholder="Selecciona un distrito"
-                onFetch={
-                  stateId
-                    ? (params) =>
-                        getDistrictsByState(String(stateId), {
-                          page: params.page as number,
-                          pageSize: params.pageSize as number,
-                          search: params.search as any,
-                        })
-                    : undefined
-                }
-                objectValueKey="id"
-                objectKeyLabel="name"
-                disabled={!stateId}
-                required
-                queryKey={`supplier-create-districts-${stateId ?? "none"}`}
-              />
-            </div>
-
-            <RHFInputWithLabel
-              name="address"
-              label="Dirección"
-              placeholder="Calle Principal 123, Ciudad, País"
-              maxLength={200}
-              rows={3}
-              type="textarea"
-              required
-            />
           </div>
         )}
+
+        {/* Dirección detallada: País, Estado/Provincia, Distrito y texto libre */}
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <RHFAutocompleteFetcherInfinity
+              name="countryId"
+              label="País"
+              placeholder="Selecciona un país"
+              onFetch={(params: IQueryable) => getCountries(params.search)}
+              objectValueKey="id"
+              objectKeyLabel="name"
+              required
+              queryKey="supplier-create-countries"
+            />
+
+            <RHFAutocompleteFetcherInfinity<State>
+              key={`states-${countryId}`}
+              name="stateId"
+              label="Estado / Provincia"
+              placeholder="Selecciona un estado"
+              onFetch={
+                countryId
+                  ? (params) =>
+                      getStatesByCountry(String(countryId), {
+                        page: params.page as number,
+                        pageSize: params.pageSize as number,
+                        search: params.search as any,
+                      })
+                  : undefined
+              }
+              objectValueKey="id"
+              objectKeyLabel="name"
+              disabled={!countryId}
+              required
+              queryKey={`supplier-create-states-${countryId ?? "none"}`}
+            />
+
+            <RHFAutocompleteFetcherInfinity<District>
+              key={`districts-${stateId}`}
+              name="districtId"
+              label="Distrito"
+              placeholder="Selecciona un distrito"
+              onFetch={
+                stateId
+                  ? (params) =>
+                      getDistrictsByState(String(stateId), {
+                        page: params.page as number,
+                        pageSize: params.pageSize as number,
+                        search: params.search as any,
+                      })
+                  : undefined
+              }
+              objectValueKey="id"
+              objectKeyLabel="name"
+              disabled={!stateId}
+              required
+              queryKey={`supplier-create-districts-${stateId ?? "none"}`}
+            />
+          </div>
+
+          {/* Campo de dirección eliminado; ya no es necesario en creación */}
+        </div>
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -465,14 +441,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
             name="sellerType"
             label="Tipo de vendedor"
             options={SUPPLIER_TYPE_SELLER_OPTIONS}
-            placeholder="Seleccionar..."
-            required
-            variant="custom"
-          />
-          <RHFSelectWithLabel
-            name="nacionalityType"
-            label="Nacionalidad"
-            options={SUPPLIER_NATIONALITY_OPTIONS}
             placeholder="Seleccionar..."
             required
             variant="custom"

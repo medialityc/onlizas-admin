@@ -324,13 +324,7 @@ export default function SupplierBasicInfo({
           required
         />
 
-        {/* Nacionalidad */}
-        <RHFSelectWithLabel
-          name="nacionalityType"
-          label="Nacionalidad"
-          options={SUPPLIER_NATIONALITY_OPTIONS}
-          required
-        />
+        {/* Nacionalidad: se infiere desde Tipo de Proveedor, no editable */}
 
         {/* País */}
         <div className="space-y-2">

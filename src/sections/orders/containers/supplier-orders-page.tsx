@@ -1,8 +1,9 @@
 "use client";
 
 import { Download, RefreshCw } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ApiResponse } from "@/types/fetch/api";
-import { GetAllOrders } from "@/types/order";
+import { GetAllOrders, OrderStatus } from "@/types/order";
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { SearchParams } from "@/types/fetch/request";
 import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
@@ -22,11 +23,30 @@ export default function SupplierOrdersPage({
   supplierName,
 }: Props) {
   const { updateFiltersInUrl } = useFiltersUrl();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const onSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
   };
 
   const allSubOrders = data.data?.data?.flatMap((o) => o.subOrders) ?? [];
+
+  const statusParam = searchParams.get("status");
+  const activeStatus = statusParam
+    ? (Number(statusParam) as OrderStatus)
+    : undefined;
+
+  const handleStatsFilterChange = (status?: OrderStatus) => {
+    const params = new URLSearchParams(searchParams);
+
+    if (status === undefined) {
+      params.delete("status");
+    } else {
+      params.set("status", String(status));
+    }
+
+    router.replace(`?${params.toString()}`, { scroll: false });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -44,7 +64,11 @@ export default function SupplierOrdersPage({
         </div>
 
         {/* Stats */}
-        <SupplierOrderStatsCards subOrders={allSubOrders as any} />
+        <SupplierOrderStatsCards
+          subOrders={allSubOrders as any}
+          activeStatus={activeStatus}
+          onStatusFilterChange={handleStatsFilterChange}
+        />
 
         <div className="space-y-4">
           {data.data?.data.length === 0 ? (

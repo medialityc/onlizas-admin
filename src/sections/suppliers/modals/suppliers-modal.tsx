@@ -47,7 +47,6 @@ export default function SuppliersModal({
       countryId: "",
       stateId: "",
       districtId: "",
-      address: "",
       documents: [],
       createUserAutomatically: false,
       userId: undefined,
@@ -65,6 +64,7 @@ export default function SuppliersModal({
       // requiredPasswordChange: false,
     },
   });
+  console.log(methods.formState.errors);
 
   const { reset } = methods;
   const handleClose = () => {
@@ -92,7 +92,6 @@ export default function SuppliersModal({
           if (data.stateId) formData.append("city", String(data.stateId));
           if (data.districtId)
             formData.append("districtId", String(data.districtId));
-          if (data.address) formData.append("address", data.address);
           formData.append("requirePasswordChange", "false");
         }
       } else {
@@ -104,7 +103,6 @@ export default function SuppliersModal({
         if (data.districtId)
           formData.append("districtId", String(data.districtId));
         if (data.phone) formData.append("phone", data.phone);
-        if (data.address) formData.append("address", data.address);
         formData.append("createUserAutomatically", "true");
         if (data.password) {
           formData.append("password", data.password);
@@ -123,6 +121,7 @@ export default function SuppliersModal({
       if (data.useExistingBusiness && data.businessId) {
         formData.append("businessId", String(data.businessId));
       }
+      formData.append("mainStreet", String("esto no hace falta"));
 
       data.documents?.forEach((doc) => {
         if (doc.content) {

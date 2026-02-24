@@ -6,7 +6,7 @@ import { Button } from "@/components/button/button";
 import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
 // Vista de proveedor: recibe órdenes ya filtradas por backend con solo sus sub-órdenes
 import { ApiResponse } from "@/types/fetch/api";
-import { GetAllOrders, Order } from "@/types/order";
+import { GetAllOrders, Order, OrderStatus } from "@/types/order";
 import { OrderGroupCard } from "@/components/orders/order-group-card";
 import { SupplierOrderStatsCards } from "@/components/orders/supplier-order-stats-cards";
 
@@ -22,12 +22,36 @@ export default function SupplierOrderListContainer({
   onShowStores,
 }: Props) {
   const [searchValue, setSearchValue] = useState("");
+  const [statusFilter, setStatusFilter] = useState<OrderStatus | undefined>();
   const orders: Order[] = useMemo(() => data.data?.data ?? [], [data]);
 
   const filteredOrders = useMemo(() => {
-    if (!searchValue) return orders;
+    let base = orders;
+
+    if (statusFilter !== undefined) {
+      base = base.filter((o) =>
+        o.subOrders.some((so) => {
+          if (statusFilter === OrderStatus.Processing) {
+            return (
+              so.status === OrderStatus.Processing ||
+              so.status === OrderStatus.Sent
+            );
+          }
+          if (statusFilter === OrderStatus.Completed) {
+            return (
+              so.status === OrderStatus.Completed ||
+              so.status === OrderStatus.Received
+            );
+          }
+          return so.status === statusFilter;
+        }),
+      );
+    }
+
+    if (!searchValue) return base;
+
     const q = searchValue.toLowerCase();
-    return orders.filter((o) => {
+    return base.filter((o) => {
       const baseMatch =
         o.orderNumber.toLowerCase().includes(q) ||
         o.senderName.toLowerCase().includes(q) ||
@@ -35,15 +59,15 @@ export default function SupplierOrderListContainer({
       const subMatch = o.subOrders.some(
         (so) =>
           so.productName.toLowerCase().includes(q) ||
-          so.subOrderNumber.toLowerCase().includes(q)
+          so.subOrderNumber.toLowerCase().includes(q),
       );
       return baseMatch || subMatch;
     });
-  }, [searchValue, orders]);
+  }, [searchValue, orders, statusFilter]);
 
   const allSubOrders = useMemo(
     () => orders.flatMap((o) => o.subOrders),
-    [orders]
+    [orders],
   );
 
   return (
@@ -62,7 +86,11 @@ export default function SupplierOrderListContainer({
           </div>
         </div>
 
-        <SupplierOrderStatsCards subOrders={allSubOrders as any} />
+        <SupplierOrderStatsCards
+          subOrders={allSubOrders as any}
+          activeStatus={statusFilter}
+          onStatusFilterChange={(status) => setStatusFilter(status)}
+        />
 
         {/* <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
