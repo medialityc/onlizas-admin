@@ -111,10 +111,12 @@ export default function InventoryCardListContainer({
                       cobros.
                     </li>
                   )}
-                  <li>
-                    • (Opcional) Definir una o más zonas de entrega para tus
-                    pedidos.
-                  </li>
+                  {counters?.zoneCount === 0 && (
+                    <li>
+                      • (Opcional) Definir una o más zonas de entrega para tus
+                      pedidos.
+                    </li>
+                  )}
                 </ul>
 
                 <div className="mt-3 flex items-center justify-between gap-3 text-[11px] text-muted-foreground">

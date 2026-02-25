@@ -60,12 +60,18 @@ export default function AddressSection({
           required
           queryKey={`districts-${countryId}`}
         />
-        <RHFInput name="address.city" label="Ciudad" placeholder="Ciudad" />
+        <RHFInput
+          name="address.city"
+          label="Ciudad"
+          required
+          placeholder="Ciudad"
+        />
 
         <RHFInput
           name="address.mainStreet"
           label="Calle principal"
           placeholder="Calle principal"
+          required
         />
         <RHFInput name="address.number" label="Número" placeholder="Número" />
 

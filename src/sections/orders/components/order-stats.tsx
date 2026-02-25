@@ -1,6 +1,13 @@
 import { Card, CardContent } from "@/components/cards/card";
 import { Order, OrderStatus } from "@/types/order";
-import { Package, Clock, CheckCircle, TruckIcon } from "lucide-react";
+import {
+  Package,
+  Clock,
+  CheckCircle,
+  TruckIcon,
+  XCircle,
+  RotateCcw,
+} from "lucide-react";
 
 interface OrderStatsProps {
   orders: Order[];
@@ -40,27 +47,51 @@ export function OrderStats({
       status: OrderStatus.Pending,
     },
     {
-      label: "En Proceso",
-      value: allSubOrders.filter(
-        (so) =>
-          so.status === OrderStatus.Processing ||
-          so.status === OrderStatus.Sent,
-      ).length,
-      icon: TruckIcon,
+      label: "Procesando",
+      value: allSubOrders.filter((so) => so.status === OrderStatus.Processing)
+        .length,
+      icon: Clock,
       color: "text-blue-600",
-      // Usamos Processing como valor de filtro representativo del grupo
       status: OrderStatus.Processing,
     },
     {
       label: "Completadas",
-      value: allSubOrders.filter(
-        (so) =>
-          so.status === OrderStatus.Completed ||
-          so.status === OrderStatus.Received,
-      ).length,
+      value: allSubOrders.filter((so) => so.status === OrderStatus.Completed)
+        .length,
       icon: CheckCircle,
       color: "text-green-600",
       status: OrderStatus.Completed,
+    },
+    {
+      label: "Enviadas",
+      value: allSubOrders.filter((so) => so.status === OrderStatus.Sent).length,
+      icon: TruckIcon,
+      color: "text-indigo-600",
+      status: OrderStatus.Sent,
+    },
+    {
+      label: "Recibidas",
+      value: allSubOrders.filter((so) => so.status === OrderStatus.Received)
+        .length,
+      icon: CheckCircle,
+      color: "text-emerald-600",
+      status: OrderStatus.Received,
+    },
+    {
+      label: "Canceladas",
+      value: allSubOrders.filter((so) => so.status === OrderStatus.Cancelled)
+        .length,
+      icon: XCircle,
+      color: "text-red-600",
+      status: OrderStatus.Cancelled,
+    },
+    {
+      label: "Reembolsadas",
+      value: allSubOrders.filter((so) => so.status === OrderStatus.Refunded)
+        .length,
+      icon: RotateCcw,
+      color: "text-purple-600",
+      status: OrderStatus.Refunded,
     },
   ];
 

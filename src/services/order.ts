@@ -31,7 +31,7 @@ export async function getOrdersByStore(
   params: IQueryable,
 ): Promise<ApiResponse<GetAllOrders>> {
   const url = new QueryParamsURLFactory(
-    { ...params.pagination },
+    { ...params },
     backendRoutes.orders.supplierList(storeId),
   ).build();
   const res = await nextAuthFetch({

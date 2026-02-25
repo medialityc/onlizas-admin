@@ -30,21 +30,7 @@ export default function SupplierOrderListContainer({
 
     if (statusFilter !== undefined) {
       base = base.filter((o) =>
-        o.subOrders.some((so) => {
-          if (statusFilter === OrderStatus.Processing) {
-            return (
-              so.status === OrderStatus.Processing ||
-              so.status === OrderStatus.Sent
-            );
-          }
-          if (statusFilter === OrderStatus.Completed) {
-            return (
-              so.status === OrderStatus.Completed ||
-              so.status === OrderStatus.Received
-            );
-          }
-          return so.status === statusFilter;
-        }),
+        o.subOrders.some((so) => so.status === statusFilter),
       );
     }
 

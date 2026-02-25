@@ -1,20 +1,16 @@
 "use client";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getProviderStores } from "@/services/stores";
+import { useRouter, useSearchParams } from "next/navigation";
 import { buildQueryParams } from "@/lib/request";
-import { IQueryable } from "@/types/fetch/request";
+import { IQueryable, SearchParams } from "@/types/fetch/request";
 import { GetAllStores, Store } from "@/types/stores";
 import { StoreCard } from "@/sections/orders/components/store-card";
-import SupplierOrdersPage from "./supplier-orders-page";
-import { SearchParams } from "@/types/fetch/request";
-import { getOrdersByStore } from "@/services/order";
-import { GetAllOrders } from "@/types/order";
 import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
-import { ApiResponse } from "@/types/fetch/api";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/button/button";
 import { ArrowLeft, Store as StoreIcon } from "lucide-react";
+import { ApiResponse } from "@/types/fetch/api";
+import { getProviderStores } from "@/services/stores";
 
 interface SupplierStoresViewProps {
   query: SearchParams;
@@ -25,7 +21,8 @@ export default function SupplierStoresView({
   query,
   supplierName,
 }: SupplierStoresViewProps) {
-  const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [currentQuery, setCurrentQuery] = useState<SearchParams>(query);
 
   const apiQuery: IQueryable = useMemo(
@@ -40,69 +37,7 @@ export default function SupplierStoresView({
   } = useQuery<ApiResponse<GetAllStores>>({
     queryKey: ["supplier-stores", JSON.stringify(apiQuery)],
     queryFn: () => getProviderStores(apiQuery),
-    enabled: !selectedStoreId,
   });
-
-  const router = useRouter();
-
-  const storeQuery = useMemo(
-    () => ({
-      page: currentQuery.page || 1,
-      pageSize: currentQuery.pageSize || 10,
-    }),
-    [currentQuery.page, currentQuery.pageSize],
-  );
-
-  const { data: ordersResponse, isLoading: ordersLoading } = useQuery<
-    ApiResponse<GetAllOrders>
-  >({
-    queryKey: ["supplier-orders", selectedStoreId, JSON.stringify(storeQuery)],
-    queryFn: () =>
-      getOrdersByStore(selectedStoreId!, buildQueryParams(storeQuery)),
-    enabled: !!selectedStoreId,
-  });
-
-  if (selectedStoreId) {
-    if (ordersLoading) {
-      return (
-        <div className="space-y-4">
-          <div className="h-10 w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-40 bg-gray-100 dark:bg-gray-800 animate-pulse rounded"
-              />
-            ))}
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <StoreIcon className="h-4 w-4" />
-            <span>Órdenes por tienda</span>
-          </div>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setSelectedStoreId(null)}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Volver a tiendas
-          </Button>
-        </div>
-        <SupplierOrdersPage
-          data={ordersResponse as any}
-          query={storeQuery}
-          supplierName={supplierName}
-        />
-      </div>
-    );
-  }
 
   if (isLoading) {
     return (
@@ -130,10 +65,15 @@ export default function SupplierStoresView({
     );
   }
 
-  const stores = storesResponse?.data?.data ?? [];
+  const stores: Store[] = storesResponse?.data?.data ?? [];
+
+  const handleStoreClick = (storeId: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    router.push(`/dashboard/orders/store/${storeId}?${params.toString()}`);
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-muted/40 to-background">
+    <div className="min-h-screen bg-linear-to-b from-background via-muted/40 to-background">
       <div className="container mx-auto space-y-8 px-4 py-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="space-y-1">
@@ -176,7 +116,7 @@ export default function SupplierStoresView({
                   <StoreCard
                     key={store.id}
                     store={store}
-                    onClick={setSelectedStoreId}
+                    onClick={handleStoreClick}
                   />
                 ))}
               </div>

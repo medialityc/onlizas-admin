@@ -46,7 +46,7 @@ export async function SupplierInventorySteps() {
       title: "Define un almacén",
       description:
         "Registra el almacén desde el cual saldrá el inventario físico.",
-      href: "/dashboard/warehouses/new",
+      href: "/dashboard/welcome/warehouses",
       cta: "Ir a almacenes",
     },
     {

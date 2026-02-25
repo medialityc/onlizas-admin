@@ -1,5 +1,12 @@
 "use client";
-import { Package, Clock, TruckIcon, CheckCircle } from "lucide-react";
+import {
+  Package,
+  Clock,
+  TruckIcon,
+  CheckCircle,
+  XCircle,
+  RotateCcw,
+} from "lucide-react";
 import { OrderStatus, SubOrder } from "@/types/order";
 
 type Stat = {
@@ -37,26 +44,47 @@ export function SupplierOrderStatsCards({
       status: OrderStatus.Pending,
     },
     {
-      label: "En Proceso",
-      value: subOrders.filter(
-        (s) =>
-          s.status === OrderStatus.Processing || s.status === OrderStatus.Sent,
-      ).length,
-      icon: TruckIcon,
+      label: "Procesando",
+      value: subOrders.filter((s) => s.status === OrderStatus.Processing)
+        .length,
+      icon: Clock,
       color: "text-blue-600",
-      // Usamos Processing como valor representativo del grupo
       status: OrderStatus.Processing,
     },
     {
       label: "Completadas",
-      value: subOrders.filter(
-        (s) =>
-          s.status === OrderStatus.Completed ||
-          s.status === OrderStatus.Received,
-      ).length,
+      value: subOrders.filter((s) => s.status === OrderStatus.Completed).length,
       icon: CheckCircle,
       color: "text-green-600",
       status: OrderStatus.Completed,
+    },
+    {
+      label: "Enviadas",
+      value: subOrders.filter((s) => s.status === OrderStatus.Sent).length,
+      icon: TruckIcon,
+      color: "text-indigo-600",
+      status: OrderStatus.Sent,
+    },
+    {
+      label: "Recibidas",
+      value: subOrders.filter((s) => s.status === OrderStatus.Received).length,
+      icon: CheckCircle,
+      color: "text-emerald-600",
+      status: OrderStatus.Received,
+    },
+    {
+      label: "Canceladas",
+      value: subOrders.filter((s) => s.status === OrderStatus.Cancelled).length,
+      icon: XCircle,
+      color: "text-red-600",
+      status: OrderStatus.Cancelled,
+    },
+    {
+      label: "Reembolsadas",
+      value: subOrders.filter((s) => s.status === OrderStatus.Refunded).length,
+      icon: RotateCcw,
+      color: "text-purple-600",
+      status: OrderStatus.Refunded,
     },
   ];
 

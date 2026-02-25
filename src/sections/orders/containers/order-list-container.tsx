@@ -26,6 +26,7 @@ const ORDER_STATUS_MAP: Record<number, string> = {
   [OrderStatus.Sent]: "Enviada",
   [OrderStatus.Received]: "Recibida",
   [OrderStatus.Cancelled]: "Cancelada",
+  [OrderStatus.Refunded]: "Reembolsada",
 };
 
 const STATUS_OPTIONS = Object.entries(ORDER_STATUS_MAP).map(([key, value]) => ({
