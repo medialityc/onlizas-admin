@@ -111,7 +111,7 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
             {process.env.NEXT_PUBLIC_CLIENT_URL && (
               <div className="mt-2 flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded px-3 py-2">
                 <span className="text-xs text-gray-600 dark:text-gray-300 font-semibold">
-                  Vista previa:
+                  La URL de tu tienda será:
                 </span>
                 <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">
                   {process.env.NEXT_PUBLIC_CLIENT_URL}/store/
