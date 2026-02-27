@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ImporterData, logoutImporter } from "@/services/importer-access";
+import type { ImporterData } from "@/services/importer-portal";
+import { logoutImporter } from "@/services/importer-access";
 import { useRouter } from "next/navigation";
 import SessionTimer from "@/components/importer/session-timer";
 import showToast from "@/config/toast/toastConfig";

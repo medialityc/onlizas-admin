@@ -2,10 +2,11 @@
 
 import { backendRoutes } from "@/lib/endpoint";
 import { cookies } from "next/headers";
-import { ImporterData, importerFetch } from "./importer-portal";
+import { importerFetch } from "./importer-portal";
+import type { ImporterData } from "./importer-portal";
 
-// Re-exportar el tipo para mantener compatibilidad
-export type { ImporterData };
+// Re-exportar solo el tipo para mantener compatibilidad sin crear export de valor
+export type { ImporterData } from "./importer-portal";
 
 const IMPORTER_TOKEN_COOKIE = "importer_access_token";
 const IMPORTER_ID_COOKIE = "importer_id";
