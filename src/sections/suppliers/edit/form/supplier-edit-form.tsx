@@ -60,7 +60,6 @@ export default function SupplierEditForm({
       email: supplierDetails.email,
       phone: supplierDetails.phone,
       countryCode: supplierDetails.countryCode ?? "",
-      address: supplierDetails.address,
       message: supplierDetails.message || "",
       active: supplierDetails.active,
       sellerType: supplierDetails.sellerType
@@ -175,7 +174,6 @@ export default function SupplierEditForm({
           name: data.name,
           email: data.email,
           phone: data.phone,
-          address: data.address,
           supplierType: data.supplierType,
           sellerType: data.sellerType,
           nacionalityType: data.nacionalityType,

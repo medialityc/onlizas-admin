@@ -19,10 +19,6 @@ export const updateSupplierSchema = z.object({
   countryId: z.string().optional(),
   stateId: z.string().optional(),
   districtId: z.string().optional(),
-  address: z
-    .string({ error: "La dirección es obligatoria." })
-    .min(1, "La dirección no puede estar vacía.")
-    .max(200, "La dirección no puede tener más de 200 caracteres."),
   message: z
     .string()
     .max(500, "El mensaje no puede tener más de 500 caracteres.")
