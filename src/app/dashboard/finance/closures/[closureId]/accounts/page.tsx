@@ -75,10 +75,16 @@ export default async function ClosureAccountsPage({
     <div className="space-y-6 p-4">
       {/* Breadcrumb + Back */}
       <div className="flex items-center justify-between">
-        <nav className="text-sm text-gray-600" aria-label="Breadcrumb">
+        <nav
+          className="text-sm text-gray-600 dark:text-gray-300"
+          aria-label="Breadcrumb"
+        >
           <ol className="inline-flex items-center gap-1">
             <li>
-              <Link href="/dashboard" className="hover:underline text-gray-700">
+              <Link
+                href="/dashboard"
+                className="hover:underline text-gray-700 dark:text-gray-200"
+              >
                 Dashboard
               </Link>
             </li>
@@ -86,7 +92,7 @@ export default async function ClosureAccountsPage({
             <li>
               <Link
                 href="/dashboard/finance"
-                className="hover:underline text-gray-700"
+                className="hover:underline text-gray-700 dark:text-gray-200"
               >
                 Finanzas
               </Link>
@@ -95,31 +101,31 @@ export default async function ClosureAccountsPage({
             <li>
               <Link
                 href="/dashboard/finance/closures"
-                className="hover:underline text-gray-700"
+                className="hover:underline text-gray-700 dark:text-gray-200"
               >
                 Cierres
               </Link>
             </li>
             <li className="text-gray-400">/</li>
-            <li className="text-gray-500">Cuentas</li>
+            <li className="text-gray-500 dark:text-gray-300">Cuentas</li>
           </ol>
         </nav>
         <Link
           href="/dashboard/finance/closures"
-          className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm hover:bg-gray-50"
+          className="inline-flex items-center gap-2 rounded-md border border-gray-200 dark:border-gray-700 px-3 py-1.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800/60"
         >
           <ArrowLeft className="h-4 w-4" />
           Volver a cierres
         </Link>
       </div>
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
           Cuentas del cierre{" "}
           {statement
             ? `de ${formatDate(statement.fromDate)} a ${formatDate(statement.toDate)}`
             : ""}
         </h1>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Resumen y detalle de cuentas asociadas al cierre seleccionado.
         </p>
       </div>
@@ -127,16 +133,20 @@ export default async function ClosureAccountsPage({
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {cards.map((c) => {
           const tone = c.tone ?? "gray";
-          const ring = `ring-1 ring-${tone}-200`;
-          const bg = `bg-gradient-to-br from-${tone}-50 to-white`;
+          const border = `border border-${tone}-200`;
+          const bg = "bg-white";
           const text = `text-${tone}-700`;
           return (
             <div
               key={c.label}
-              className={`rounded-xl ${ring} ${bg} p-4 shadow-sm hover:shadow-md transition-shadow`}
+              className={`rounded-xl ${border} ${bg} dark:border-gray-700 dark:bg-gray-900 p-4 shadow-sm hover:shadow-md transition-shadow`}
             >
-              <div className="text-xs text-gray-500">{c.label}</div>
-              <div className={`text-xl font-semibold ${text}`}>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                {c.label}
+              </div>
+              <div
+                className={`text-xl font-semibold ${text} dark:text-gray-100`}
+              >
                 {c.currency
                   ? new Intl.NumberFormat(undefined, {
                       style: "currency",
@@ -150,7 +160,7 @@ export default async function ClosureAccountsPage({
       </div>
 
       {statement?.supplierBalances?.length ? (
-        <div className="rounded-xl border bg-white p-4 shadow-sm">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <div className="font-medium">Balances por proveedor</div>
             <div className="text-xs text-gray-500">
@@ -160,17 +170,19 @@ export default async function ClosureAccountsPage({
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>
-                <tr className="text-left border-b border-b-gray-300 bg-gray-50">
-                  <th className="py-2 pr-4 font-medium text-gray-700">
+                <tr className="text-left border-b border-b-gray-300 dark:border-b-gray-700 bg-gray-50 dark:bg-gray-800/60">
+                  <th className="py-2 pr-4 font-medium text-gray-700 dark:text-gray-200">
                     Proveedor
                   </th>
-                  <th className="py-2 pr-4 font-medium text-gray-700">
+                  <th className="py-2 pr-4 font-medium text-gray-700 dark:text-gray-200">
                     Productos
                   </th>
-                  <th className="py-2 pr-4 font-medium text-gray-700">
+                  <th className="py-2 pr-4 font-medium text-gray-700 dark:text-gray-200">
                     Delivery
                   </th>
-                  <th className="py-2 pr-4 font-medium text-gray-700">Total</th>
+                  <th className="py-2 pr-4 font-medium text-gray-700 dark:text-gray-200">
+                    Total
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -179,22 +191,22 @@ export default async function ClosureAccountsPage({
                     key={b.supplierId}
                     className="border-b last:border-0 hover:bg-gray-50/50"
                   >
-                    <td className="py-2 pr-4 text-gray-800">
+                    <td className="py-2 pr-4 text-gray-800 dark:text-gray-100">
                       {b.supplierName}
                     </td>
-                    <td className="py-2 pr-4">
+                    <td className="py-2 pr-4 text-gray-800 dark:text-gray-100">
                       {new Intl.NumberFormat(undefined, {
                         style: "currency",
                         currency: "USD",
                       }).format(b.productAmount ?? 0)}
                     </td>
-                    <td className="py-2 pr-4">
+                    <td className="py-2 pr-4 text-gray-800 dark:text-gray-100">
                       {new Intl.NumberFormat(undefined, {
                         style: "currency",
                         currency: "USD",
                       }).format(b.deliveryAmount ?? 0)}
                     </td>
-                    <td className="py-2 pr-4 font-semibold">
+                    <td className="py-2 pr-4 font-semibold text-gray-900 dark:text-gray-100">
                       {new Intl.NumberFormat(undefined, {
                         style: "currency",
                         currency: "USD",
@@ -207,7 +219,7 @@ export default async function ClosureAccountsPage({
           </div>
         </div>
       ) : (
-        <div className="rounded-xl border bg-white p-4 text-sm text-gray-500">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 text-sm text-gray-500 dark:text-gray-400">
           No hay balances por proveedor para este cierre.
         </div>
       )}
@@ -215,14 +227,14 @@ export default async function ClosureAccountsPage({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="font-medium">Lista de cuentas</div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-gray-500 dark:text-gray-400">
             {accountsResp?.accounts?.length ?? 0} cuentas
           </div>
         </div>
         {accountsResp?.accounts?.length ? (
           <ClosureAccountsCardsClient items={accountsResp?.accounts ?? []} />
         ) : (
-          <div className="rounded-xl border bg-white p-4 text-sm text-gray-500">
+          <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 text-sm text-gray-500 dark:text-gray-400">
             No hay cuentas registradas en este cierre.
           </div>
         )}

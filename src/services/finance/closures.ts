@@ -78,8 +78,11 @@ export async function getSuppliersWithPendingAccounts(
   fromDate?: string,
   toDate?: string,
 ): Promise<ApiResponse<PaginatedResponse<SuppliersWithPendingResponse>>> {
+  // Clonamos los params base y agregamos los filtros específicos del endpoint
+  const query: IQueryable = { ...params, fromDate, toDate };
+
   const url = new QueryParamsURLFactory(
-    { ...params },
+    query,
     backendRoutes.finance.approval.suppliersWithPending,
   ).build();
 

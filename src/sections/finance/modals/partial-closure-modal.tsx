@@ -2,18 +2,13 @@
 import React from "react";
 import SimpleModal from "@/components/modal/modal";
 import { useModalState } from "@/hooks/use-modal-state";
-import { Form, FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import {
   GeneratePartialClosureInput,
   GeneratePartialClosureSchema,
 } from "../schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import RHFDatePicker from "@/components/react-hook-form/rhf-date-picker";
-import { RHFInputWithLabel } from "@/components/react-hook-form";
-import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getSuppliersWithPendingAccounts } from "@/services/finance/closures";
-import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
-import { formatDate } from "@/utils/format";
 import { createPartialClosureByAccounts } from "@/services/finance/closures";
 import showToast from "@/config/toast/toastConfig";
 
@@ -23,6 +18,7 @@ import { TabsBar } from "./partial-closure/TabsBar";
 import { DatosTab } from "./partial-closure/DatosTab";
 import { ProveedoresTab } from "./partial-closure/ProveedoresTab";
 import { SelectedAccount, Supplier } from "./partial-closure/types";
+import { formatDate } from "date-fns";
 
 type PartialClosureForm = GeneratePartialClosureInput & {
   selectedAccounts?: SelectedAccount[];
@@ -60,17 +56,17 @@ export function PartialClosureModal() {
   const toDate = methods.watch("toDate");
   const suppliers = methods.watch("suppliers");
   const selectedAccounts = methods.watch(
-    "selectedAccounts"
+    "selectedAccounts",
   ) as SelectedAccount[];
 
   const toggleAccount = (supplierId: string, accountId: string) => {
     const current = Array.isArray(selectedAccounts) ? selectedAccounts : [];
     const exists = current.some(
-      (a) => a.accountId === accountId && a.supplierId === supplierId
+      (a) => a.accountId === accountId && a.supplierId === supplierId,
     );
     const next = exists
       ? current.filter(
-          (a) => !(a.accountId === accountId && a.supplierId === supplierId)
+          (a) => !(a.accountId === accountId && a.supplierId === supplierId),
         )
       : [...current, { supplierId, accountId }];
     methods.setValue("selectedAccounts", next, {
@@ -80,13 +76,13 @@ export function PartialClosureModal() {
   };
 
   const [activeTab, setActiveTab] = React.useState<"datos" | "proveedores">(
-    "datos"
+    "datos",
   );
 
   // Utilidades de resumen
   const computeSupplierAmount = (supplier: Supplier) => {
     const supplierSelections = selectedAccounts.filter(
-      (a) => a.supplierId === supplier.userId
+      (a) => a.supplierId === supplier.userId,
     );
     return supplierSelections.reduce((sum, sel) => {
       const acc = supplier.accounts?.find((x) => x.accountId === sel.accountId);
@@ -97,10 +93,10 @@ export function PartialClosureModal() {
   const computeTotalAmount = () => {
     return selectedAccounts.reduce((sum, sel) => {
       const supplier = suppliers?.find(
-        (s: Supplier) => s.userId === sel.supplierId
+        (s: Supplier) => s.userId === sel.supplierId,
       );
       const acc = supplier?.accounts?.find(
-        (x) => x.accountId === sel.accountId
+        (x) => x.accountId === sel.accountId,
       );
       return sum + (acc?.totalAmount ?? 0);
     }, 0);
@@ -134,12 +130,23 @@ export function PartialClosureModal() {
     setSubmitting(false);
   };
 
+  // Clave de cache para el autocomplete de proveedores, dependiente de las fechas
+  const suppliersQueryKey = React.useMemo(() => {
+    if (fromDate && toDate) {
+      return `suppliers-with-pending-${formatDate(fromDate, "yyyy-MM-dd")}-${formatDate(
+        toDate,
+        "yyyy-MM-dd",
+      )}`;
+    }
+    return "suppliers-with-pending";
+  }, [fromDate, toDate]);
+
   return (
     <SimpleModal
       open={partialModal?.open}
       onClose={() => closeModal("partial-closure")}
       title="Cierre Parcial"
-      className="w-[980px] max-w-[95vw] max-h-[85vh]"
+      className="w-245 max-w-[95vw] max-h-[85vh]"
     >
       <FormProvider {...methods}>
         <div className="flex flex-col gap-4">
@@ -171,7 +178,14 @@ export function PartialClosureModal() {
           {activeTab === "proveedores" && (
             <ProveedoresTab
               suppliers={(suppliers as Supplier[]) || []}
-              onFetch={(params) => getSuppliersWithPendingAccounts(params)}
+              queryKey={suppliersQueryKey}
+              onFetch={(params) =>
+                getSuppliersWithPendingAccounts(
+                  params,
+                  formatDate(fromDate, "yyyy-MM-dd"),
+                  formatDate(toDate, "yyyy-MM-dd"),
+                )
+              }
               selectedAccounts={selectedAccounts || []}
               toggleAccount={toggleAccount}
               computeSupplierAmount={computeSupplierAmount}
