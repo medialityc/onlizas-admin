@@ -19,7 +19,6 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import SupplierSelectProductDraft from "./supplier-select-product-draft";
 import SupplierProductSummary from "./supplier-product-summary";
-import SupplierCategoriesSection from "./supplier-categories-section";
 
 type Props = {
   initValue?: ProductFormData;
@@ -89,11 +88,7 @@ const ProductForm = ({ initValue, afterCreateRedirectTo }: Props) => {
               <BasicInfoSection />
             </div>
             <div className="col-span-1 lg:col-span-2 z-10">
-              {isSupplierMode ? (
-                <SupplierCategoriesSection />
-              ) : (
-                <CategoriesAndSuppliersSection hideSupplier={isSupplierMode} />
-              )}
+              <CategoriesAndSuppliersSection hideSupplier={isSupplierMode} />
             </div>
             <div className="col-span-1 lg:col-span-2">
               <ProductDimensionSection />

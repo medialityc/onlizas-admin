@@ -22,13 +22,15 @@ import ProductTutorialsSection from "./product-tutorials-section";
 import { ProductCustomsInfoSection } from "./product-custom-info";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { SupplierApprovalProcess } from "@/types/suppliers";
 
 type Props = {
   initValue?: SupplierProductFormData;
   isEdit?: boolean;
+  approvalProcess?: SupplierApprovalProcess;
 };
 
-const SupplierProductForm = ({ initValue, isEdit }: Props) => {
+const SupplierProductForm = ({ initValue, isEdit, approvalProcess }: Props) => {
   const { form, isPending, onSubmit, onSubmitLink, isDraft } =
     useSupplierProductCreateForm(initValue, isEdit);
 
@@ -67,10 +69,15 @@ const SupplierProductForm = ({ initValue, isEdit }: Props) => {
                 <BasicInfoSection />
               </div>
 
-              <div className="col-span-1 lg:col-span-1 z-10">
-                <SupplierCategoriesSection />
+              <div className="col-span-1 lg:col-span-2 z-10">
+                <SupplierCategoriesSection
+                  categories={approvalProcess?.approvedCategories ?? []}
+                />
               </div>
 
+              <div className="col-span-1 lg:col-span-2">
+                <ProductDimensionSection />
+              </div>
               <div className="col-span-1 lg:col-span-2">
                 <div className="bg-blur-card flex-1 h-full">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
@@ -83,10 +90,6 @@ const SupplierProductForm = ({ initValue, isEdit }: Props) => {
                 </div>
               </div>
 
-              <div className="col-span-1 lg:col-span-1">
-                <ProductDimensionSection />
-              </div>
-
               <div className="col-span-1 lg:col-span-2">
                 <AboutProductSection />
               </div>
@@ -97,7 +100,9 @@ const SupplierProductForm = ({ initValue, isEdit }: Props) => {
                 <ProductTutorialsSection />
               </div>
               <div className="col-span-1 lg:col-span-2">
-                <ProductCustomsInfoSection />
+                <ProductCustomsInfoSection
+                  nacionality={approvalProcess?.nacionality}
+                />
               </div>
             </>
           )}

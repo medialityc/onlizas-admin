@@ -1,7 +1,9 @@
 import React from "react";
 import SupplierProductForm from "../components/supplier-product-form";
+import { getSupplierApprovalProcess } from "@/services/supplier";
 
-const SupplierProductCreateContainer = () => {
+const SupplierProductCreateContainer = async () => {
+  const { data: approvalProcess } = await getSupplierApprovalProcess();
   return (
     <div>
       <div className="mb-5">
@@ -12,7 +14,7 @@ const SupplierProductCreateContainer = () => {
           Define el producto y sus características
         </p>
       </div>
-      <SupplierProductForm />
+      <SupplierProductForm approvalProcess={approvalProcess} />
     </div>
   );
 };

@@ -7,7 +7,11 @@ import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-aut
 import { getAduanaCategories } from "@/services/categories";
 import { getAllBrands } from "@/services/brands";
 
-export const ProductCustomsInfoSection = () => {
+export const ProductCustomsInfoSection = ({
+  nacionality,
+}: {
+  nacionality?: string;
+}) => {
   const pathname = usePathname();
   return (
     <div className="bg-blur-card p-4 rounded-md flex flex-col w-full gap-4">
@@ -42,15 +46,16 @@ export const ProductCustomsInfoSection = () => {
         <RHFCheckbox name="active" label="Producto activo" />
       )}
 
-      {/* Categoría Aduanal */}
-      <RHFAutocompleteFetcherInfinity
-        name="aduanaCategoryGuid"
-        onFetch={getAduanaCategories}
-        label="Categoría Aduanal"
-        objectKeyLabel="name"
-        objectValueKey="guid"
-        placeholder="Seleccione una categoría aduanal"
-      />
+      {nacionality !== "Nacional" && (
+        <RHFAutocompleteFetcherInfinity
+          name="aduanaCategoryGuid"
+          onFetch={getAduanaCategories}
+          label="Categoría Aduanal"
+          objectKeyLabel="name"
+          objectValueKey="guid"
+          placeholder="Seleccione una categoría aduanal"
+        />
+      )}
       {/* Marca */}
       <RHFAutocompleteFetcherInfinity
         name="brandId"
