@@ -2,8 +2,7 @@
 
 import { backendRoutes } from "@/lib/endpoint";
 import { cookies } from "next/headers";
-import { importerFetch } from "./importer-portal";
-import type { ImporterData } from "./importer-portal";
+import { ImporterData, importerFetch } from "./importer-portal";
 
 // Re-exportar el tipo para mantener compatibilidad
 export type { ImporterData };
