@@ -2,12 +2,15 @@ import React from "react";
 import SupplierProductForm from "../components/supplier-product-form";
 import { supplierProductTransformData } from "../utils/supplier-product-transform-data";
 import { Product } from "@/types/products";
+import { getSupplierApprovalProcess } from "@/services/supplier";
 
 type Props = {
   product: Product;
 };
 
-const SupplierProductEditContainer = ({ product }: Props) => {
+const SupplierProductEditContainer = async ({ product }: Props) => {
+  const { data: approvalProcess } = await getSupplierApprovalProcess();
+
   return (
     <div>
       <div className="mb-5">
@@ -20,6 +23,7 @@ const SupplierProductEditContainer = ({ product }: Props) => {
       </div>
       <SupplierProductForm
         initValue={supplierProductTransformData(product)}
+        approvalProcess={approvalProcess}
         isEdit
       />
     </div>
