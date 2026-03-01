@@ -4,14 +4,24 @@ import useFiltersUrl from "@/hooks/use-filters-url";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 
-export function ClosuresSummaryFilters() {
+interface ClosuresSummaryFiltersProps {
+  defaultStartDate?: string;
+  defaultEndDate?: string;
+  defaultClosureType?: string;
+}
+
+export function ClosuresSummaryFilters({
+  defaultStartDate,
+  defaultEndDate,
+  defaultClosureType,
+}: ClosuresSummaryFiltersProps = {}) {
   const { updateFiltersInUrl } = useFiltersUrl();
   const searchParams = useSearchParams();
 
   const { startDate, endDate, closureType } = useMemo(() => {
-    const start = searchParams.get("startDate") ?? "";
-    const end = searchParams.get("endDate") ?? "";
-    const type = searchParams.get("closureType") ?? "";
+    const start = searchParams.get("startDate") ?? defaultStartDate ?? "";
+    const end = searchParams.get("endDate") ?? defaultEndDate ?? "";
+    const type = searchParams.get("closureType") ?? defaultClosureType ?? "";
 
     return {
       startDate: start,

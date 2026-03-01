@@ -10,6 +10,7 @@ import {
   ClosuresSummary,
   ClosureStatement,
   ClosureAccountsResponse,
+  SupplierFinancialSummaryItem,
 } from "@/types/finance";
 import { nextAuthFetch } from "../utils/next-auth-fetch";
 import { PaginatedResponse } from "@/types/common";
@@ -164,8 +165,18 @@ export async function getClosuresSummary(params?: {
   endDate?: string;
   closureType?: number;
 }): Promise<ApiResponse<ClosuresSummary>> {
+  const query: Record<string, unknown> = { ...(params || {}) };
+
+  // Normalizar fechas a DateTime UTC si vienen solo como YYYY-MM-DD
+  if (typeof query.startDate === "string" && !query.startDate.includes("T")) {
+    query.startDate = `${query.startDate}T00:00:00Z`;
+  }
+  if (typeof query.endDate === "string" && !query.endDate.includes("T")) {
+    query.endDate = `${query.endDate}T23:59:59Z`;
+  }
+
   const url = new QueryParamsURLFactory(
-    { ...(params || {}) },
+    query,
     backendRoutes.finance.closures.summary,
   ).build();
 
@@ -178,4 +189,26 @@ export async function getClosuresSummary(params?: {
 
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<ClosuresSummary>(res);
+}
+
+export async function getSupplierFinancialSummary(params?: {
+  fromDate?: string;
+  toDate?: string;
+  pendingAccountsOnly?: boolean;
+  supplierId?: string;
+}): Promise<ApiResponse<SupplierFinancialSummaryItem[]>> {
+  const url = new QueryParamsURLFactory(
+    { ...(params || {}) },
+    backendRoutes.finance.suppliersFinancialSummary,
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["supplier-financial-summary"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<SupplierFinancialSummaryItem[]>(res);
 }

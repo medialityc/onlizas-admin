@@ -1,6 +1,10 @@
-import { getClosuresSummary } from "@/services/finance/closures";
+import {
+  getClosuresSummary,
+  getSupplierFinancialSummary,
+} from "@/services/finance/closures";
 import ClosuresSummaryDashboard from "@/sections/finance/components/closures-summary-dashboard";
-import { ClosuresSummaryFilters } from "@/sections/finance/components/closures-summary-filters";
+import { SupplierFinancialSummaryTable } from "@/sections/finance/components/supplier-financial-summary-table";
+import { AccountStatesActions } from "@/sections/finance/components/account-states-actions";
 
 type PageSearchParams = {
   startDate?: string | string[];
@@ -18,14 +22,36 @@ export default async function FinanceAccountStatesPage({
   const endDateParam = params?.endDate;
   const closureTypeParam = params?.closureType;
 
-  const startDate = Array.isArray(startDateParam)
+  const rawStartDate = Array.isArray(startDateParam)
     ? startDateParam[0]
     : startDateParam;
-  const endDate = Array.isArray(endDateParam) ? endDateParam[0] : endDateParam;
+  const rawEndDate = Array.isArray(endDateParam)
+    ? endDateParam[0]
+    : endDateParam;
   const closureTypeStr = Array.isArray(closureTypeParam)
     ? closureTypeParam[0]
     : closureTypeParam;
   const closureType = closureTypeStr ? Number(closureTypeStr) : undefined;
+
+  // Si no vienen fechas en la URL, usar rango por defecto de 1 mes
+  let startDate = rawStartDate;
+  let endDate = rawEndDate;
+
+  if (!startDate || !endDate) {
+    const today = new Date();
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+    const formatDate = (d: Date) => {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
+    startDate = formatDate(oneMonthAgo);
+    endDate = formatDate(today);
+  }
 
   const filters: {
     startDate?: string;
@@ -37,9 +63,16 @@ export default async function FinanceAccountStatesPage({
   if (endDate) filters.endDate = endDate;
   if (typeof closureType === "number") filters.closureType = closureType;
 
-  const res = await getClosuresSummary(filters);
+  const [closuresRes, suppliersRes] = await Promise.all([
+    getClosuresSummary(filters),
+    getSupplierFinancialSummary({
+      fromDate: `${startDate}T00:00:00Z`,
+      toDate: `${endDate}T23:59:59Z`,
+      pendingAccountsOnly: true,
+    }),
+  ]);
 
-  if (res.error || !res.data) {
+  if (closuresRes.error || !closuresRes.data) {
     return (
       <div className="p-6">
         <h1 className="text-xl font-semibold mb-2">Estados de cuentas</h1>
@@ -59,9 +92,27 @@ export default async function FinanceAccountStatesPage({
             Filtra por rango de fechas y tipo de cierre.
           </p>
         </div>
-        <ClosuresSummaryFilters />
+        <AccountStatesActions
+          summary={closuresRes.data}
+          suppliers={
+            suppliersRes.error || !suppliersRes.data ? [] : suppliersRes.data
+          }
+          startDate={startDate}
+          endDate={endDate}
+          closureType={closureType}
+        />
       </div>
-      <ClosuresSummaryDashboard summary={res.data} />
+      <ClosuresSummaryDashboard summary={closuresRes.data} />
+      <SupplierFinancialSummaryTable
+        items={
+          suppliersRes.error || !suppliersRes.data ? [] : suppliersRes.data
+        }
+        emptyText={
+          suppliersRes.error
+            ? "No se pudo cargar la información de proveedores."
+            : undefined
+        }
+      />
     </div>
   );
 }

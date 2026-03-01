@@ -142,3 +142,18 @@ export type ClosureAccountsResponse = {
   totalAccounts: number;
   totalAmount: number;
 };
+
+export type SupplierFinancialSummaryItem = {
+  supplierId: string;
+  supplierName: string;
+  email: string;
+  supplierAmount: number;
+  platformFeeAmount: number;
+  taxAmount: number;
+  productAmount: number;
+  deliveryAmount: number;
+  subOrdersCount: number;
+  pendingAccountsCount: number;
+};
+
+export type SupplierFinancialSummary = SupplierFinancialSummaryItem[];

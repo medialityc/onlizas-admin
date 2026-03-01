@@ -570,6 +570,7 @@ export const backendRoutes = {
       setPrimary: (id: string | number) =>
         `${process.env.NEXT_PUBLIC_API_URL}supplier-accounts/${id}/set-primary`,
     },
+    suppliersFinancialSummary: `${process.env.NEXT_PUBLIC_API_URL}supplier/financial-summary`,
   },
   zones: {
     list: `${process.env.NEXT_PUBLIC_API_URL}zones`,
