@@ -14,28 +14,28 @@ export default function ClosuresSummaryDashboard({ summary }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             label="Onlizas"
-            value={formatCurrency(summary.platformFee)}
+            value={formatCurrency(summary.platformFee, "USD")}
             bgColor="bg-gradient-to-br from-blue-50 to-blue-100/40"
             textColor="text-blue-700"
             ringColor="ring-blue-200"
           />
           <MetricCard
             label="Impuestos (7%)"
-            value={formatCurrency(summary.taxes)}
+            value={formatCurrency(summary.taxes, "USD")}
             bgColor="bg-gradient-to-br from-purple-50 to-purple-100/40"
             textColor="text-purple-700"
             ringColor="ring-purple-200"
           />
           <MetricCard
             label="Proveedores"
-            value={formatCurrency(summary.suppliersTotal)}
+            value={formatCurrency(summary.suppliersTotal, "USD")}
             bgColor="bg-gradient-to-br from-green-50 to-green-100/40"
             textColor="text-green-700"
             ringColor="ring-green-200"
           />
           <MetricCard
             label="Logística"
-            value={formatCurrency(summary.logisticsTotal)}
+            value={formatCurrency(summary.logisticsTotal, "USD")}
             bgColor="bg-gradient-to-br from-orange-50 to-orange-100/40"
             textColor="text-orange-700"
             ringColor="ring-orange-200"
@@ -56,7 +56,7 @@ export default function ClosuresSummaryDashboard({ summary }: Props) {
             <div className="flex justify-between">
               <span className="text-sm text-gray-600">Ingresos totales</span>
               <span className="text-sm font-medium">
-                {formatCurrency(summary.totalIncome)}
+                {formatCurrency(summary.totalIncome, "USD")}
               </span>
             </div>
             <div className="flex justify-between">
@@ -114,7 +114,7 @@ export default function ClosuresSummaryDashboard({ summary }: Props) {
             <div>
               <span className="text-xs text-gray-500">Ingresos</span>
               <p className="text-sm font-medium">
-                {formatCurrency(summary.latestClosure.totalIncome)}
+                {formatCurrency(summary.latestClosure.totalIncome, "USD")}
               </p>
             </div>
           </div>

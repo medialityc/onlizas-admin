@@ -157,7 +157,7 @@ export const ShippingSection: React.FC<ShippingSectionProps> = ({
 
             <div>
               <label className="block text-sm font-medium mb-1">
-                Costo Base (opcional)
+                Costo Base (USD) (opcional)
               </label>
               <Input
                 type="number"
@@ -257,7 +257,7 @@ export const ShippingSection: React.FC<ShippingSectionProps> = ({
                       {regionShipping.baseCost && (
                         <div className="text-sm">
                           <span className="font-medium">
-                            ${regionShipping.baseCost}
+                            ${regionShipping.baseCost} USD
                           </span>
                         </div>
                       )}

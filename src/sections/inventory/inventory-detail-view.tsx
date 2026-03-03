@@ -217,7 +217,7 @@ export default function InventoryDetailView({ inventory }: Props) {
                         </div>
                         <div className="text-center sm:text-right">
                           <div className="text-sm text-gray-500 dark:text-gray-400">
-                            Precio
+                            Precio (USD)
                           </div>
                           <div className="font-semibold text-gray-900 dark:text-white">
                             ${p.price.toFixed(2)}
@@ -283,7 +283,7 @@ export default function InventoryDetailView({ inventory }: Props) {
               </h4>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-sm text-gray-600 dark:text-gray-300">
-                  Precio total:
+                  Precio total (USD):
                 </span>
                 <span className="font-semibold text-gray-900 dark:text-white">
                   ${inventory.totalPrice.toFixed(2)}

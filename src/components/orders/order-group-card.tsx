@@ -50,7 +50,7 @@ export function OrderGroupCard({
               {subOrders.length} producto(s)
             </p>
             <p className="text-lg font-bold text-primary">
-              {formatCurrency(orderTotal)}
+              {formatCurrency(orderTotal, "USD")}
             </p>
           </div>
           <Button
@@ -135,13 +135,13 @@ export function OrderGroupCard({
                       <div>
                         <p className="text-muted-foreground">Monto</p>
                         <p className="font-semibold text-primary">
-                          {formatCurrency(so.amountPaid)}
+                          {formatCurrency(so.amountPaid, "USD")}
                         </p>
                       </div>
                       <div>
                         <p className="text-muted-foreground">Envío</p>
                         <p className="font-semibold">
-                          {formatCurrency(so.deliveryAmount)}
+                          {formatCurrency(so.deliveryAmount, "USD")}
                         </p>
                       </div>
                     </div>

@@ -47,7 +47,7 @@ export default function PurchaseRequirements({ amountName = "minimumAmount", ite
           {mode === "minAmount" && (
             <div className="mt-3 w-40">
               {/* RHFInputWithLabel already uses Controller internally, avoid wrapping it again */}
-              <RHFInputWithLabel name={amountName} label="Monto mínimo" type="number" />
+              <RHFInputWithLabel name={amountName} label="Monto mínimo (USD)" type="number" />
             </div>
           )}
         </div>

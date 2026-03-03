@@ -34,7 +34,7 @@ const ProductVariantCard = ({ variant }: Props) => {
             </Badge>
           </div>
           <div className="flex flex-row gap-1 items-center mb-auto">
-            <span className="font-bold">Precio:</span> ${variant.price}
+            <span className="font-bold">Precio (USD):</span> ${variant.price}
           </div>
         </div>
       </div>

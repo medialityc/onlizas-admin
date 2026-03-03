@@ -254,7 +254,7 @@ export default function InventoryPromotionForm({
           <CardContent className="space-y-4">
             <FormInput
               name="minimumAmount"
-              label="Monto mínimo de compra"
+              label="Monto mínimo de compra (USD)"
               type="number"
               step="0.01"
             />

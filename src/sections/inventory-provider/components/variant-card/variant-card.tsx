@@ -131,7 +131,7 @@ function VariantCard({
           </div>
           <div className="flex flex-col gap-0.5">
             <span className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">
-              Precio
+              Precio (USD)
             </span>
             <span className="font-semibold text-blue-600 dark:text-blue-400 text-sm">
               ${variant.price.toFixed(2)}
@@ -286,7 +286,7 @@ function VariantCard({
             </div>
             <div className="flex flex-col gap-0.5">
               <span className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                Precio
+                Precio (USD)
               </span>
               <span className="font-semibold text-blue-600 dark:text-blue-400 text-sm">
                 ${variant.price.toFixed(2)}

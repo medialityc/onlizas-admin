@@ -172,9 +172,9 @@ export default function EditShippingModal({
             <RHFInputWithLabel
               name="baseCost"
               type="number"
-              label="Costo Base"
+              label="Costo Base (USD)"
               placeholder="0.00"
-              underLabel="Costo base del envío en la moneda local"
+              underLabel="Costo base del envío en USD"
               disabled={!canEdit || isSubmitting}
               minMax={{ min: 0, max: 999999 }}
               required

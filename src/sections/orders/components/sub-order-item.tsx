@@ -192,7 +192,7 @@ export function SubOrderItem({
                     Monto
                   </span>
                   <span className="mt-1 text-sm font-semibold text-foreground">
-                    {formatCurrency(subOrder.amountPaid)}
+                    {formatCurrency(subOrder.amountPaid, "USD")}
                   </span>
                 </div>
                 <div className="flex flex-col rounded-lg bg-muted/40 px-3 py-2">

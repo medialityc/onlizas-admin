@@ -130,11 +130,11 @@ export default function RegionShippingSection({
         {(minBaseCost !== undefined && minBaseCost !== null && maxBaseCost !== undefined && maxBaseCost !== null) && (
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
-              <span className="text-xs text-blue-600 dark:text-blue-400">Costo Mínimo</span>
+              <span className="text-xs text-blue-600 dark:text-blue-400">Costo Mínimo (USD)</span>
               <p className="text-lg font-medium text-blue-900 dark:text-blue-100">${minBaseCost.toFixed(2)}</p>
             </div>
             <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
-              <span className="text-xs text-green-600 dark:text-green-400">Costo Máximo</span>
+              <span className="text-xs text-green-600 dark:text-green-400">Costo Máximo (USD)</span>
               <p className="text-lg font-medium text-green-900 dark:text-green-100">${maxBaseCost.toFixed(2)}</p>
             </div>
           </div>
@@ -153,7 +153,7 @@ export default function RegionShippingSection({
                     {method.name} ({method.code})
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    Transportista: {method.carrier} | Costo: ${method.baseCost?.toFixed(2)}
+                    Transportista: {method.carrier} | Costo (USD): ${method.baseCost?.toFixed(2)}
                   </div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">
                     Tiempo estimado: {method.estimatedDaysMin}-{method.estimatedDaysMax} días
