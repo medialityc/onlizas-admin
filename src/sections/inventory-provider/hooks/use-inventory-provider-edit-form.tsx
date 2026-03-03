@@ -1,6 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import {
@@ -49,8 +50,12 @@ export const useInventoryProviderEditForm = (
   inventoryId: string,
   handleClose?: () => void
 ) => {
-  const { reset, ...form } = useForm({
-    defaultValues,
+  const { reset, ...form } = useForm<
+    z.input<typeof productVariants>,
+    unknown,
+    z.output<typeof productVariants>
+  >({
+    defaultValues: defaultValues as z.input<typeof productVariants>,
     resolver: zodResolver(productVariants),
   });
 

@@ -12,10 +12,9 @@ const toNumber = (val: unknown, fallback = 0): number => {
 export const productVariants = z
   .object({
     id: z.string().optional(),
-    limitPurchaseLimit: z.preprocess(
-      (v) => toNumber(v),
-      z.number().optional()
-    ),
+    limitPurchaseLimit: z
+      .preprocess((v) => toNumber(v), z.number())
+      .optional(),
     sku: z.string().min(1, "El SKU es requerida"),
     upc: z.string().min(1, "EL UPC es requerida"),
     ean: z.string().min(1, "EL EAN es requerida"),
