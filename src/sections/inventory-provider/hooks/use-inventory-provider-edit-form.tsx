@@ -29,8 +29,10 @@ const initValue: ProductVariant = {
   purchaseLimit: 0,
   warranty: {
     isWarranty: false,
+    warrantyType: "GRATIS",
     warrantyTime: 0,
     warrantyPrice: 0,
+    timeUnit: 1,
   },
   isLimit: false,
   isPrime: false,
@@ -96,8 +98,8 @@ export const useInventoryProviderEditForm = (
     form: form,
     reset,
     isPending,
-    onSubmit: form.handleSubmit((values) => {
+    onSubmit: (values: ProductVariant) => {
       mutate(values);
-    }),
+    },
   };
 };

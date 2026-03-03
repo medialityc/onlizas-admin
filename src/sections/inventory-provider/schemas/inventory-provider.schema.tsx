@@ -1,26 +1,42 @@
 import { featureSchema } from "@/sections/categories/schemas/category-schema";
 import { detailsArrayToObject } from "@/utils/format";
 import { z } from "zod";
+
+// Helper para coerción robusta de números
+const toNumber = (val: unknown, fallback = 0): number => {
+  if (val == null || val === "") return fallback;
+  const n = Number(val);
+  return Number.isNaN(n) ? fallback : n;
+};
+
 export const productVariants = z
   .object({
     id: z.string().optional(),
-    limitPurchaseLimit: z.number().optional(),
+    limitPurchaseLimit: z.preprocess(
+      (v) => toNumber(v),
+      z.number().optional()
+    ),
     sku: z.string().min(1, "El SKU es requerida"),
     upc: z.string().min(1, "EL UPC es requerida"),
     ean: z.string().min(1, "EL EAN es requerida"),
-    condition: z.number().min(1, "La condición es requerida"),
-    isActive: z.boolean().default(true),
+    condition: z.preprocess(
+      (v) => toNumber(v),
+      z.number().min(1, "La condición es requerida")
+    ),
+    isActive: z.preprocess(
+      (v) => (v === null || v === undefined ? true : v),
+      z.boolean().default(true)
+    ),
     details: z
       .union([
         z
           .array(
             z.object({
               key: z.string(),
-              value: z.string().min(1, "Requerido"),
+              value: z.string(),
               isRequired: z.boolean().optional(),
             })
-          )
-          .min(1, "Es requerido al menos una característica"),
+          ),
         z.record(
           z.string(),
           z.union([
@@ -50,41 +66,77 @@ export const productVariants = z
           }))
         );
       }),
-    stock: z.number().min(1, "La cantidad debe ser al menos 1").default(1),
-    price: z.number().min(0, "El precio es requerido").default(0),
-    costPrice: z.number().min(0, "El costo es requerido").default(0),
+    stock: z.preprocess(
+      (v) => toNumber(v, 0),
+      z.number().min(0, "La cantidad no puede ser negativa").default(0)
+    ),
+    price: z.preprocess(
+      (v) => toNumber(v, 0),
+      z.number().min(0, "El precio es requerido").default(0)
+    ),
+    costPrice: z.preprocess(
+      (v) => toNumber(v, 0),
+      z.number().min(0, "El costo es requerido").default(0)
+    ),
     deliveryMode: z.enum(["ONLIZAS", "PROVEEDOR"]).default("ONLIZAS"),
-    isLimit: z.boolean().default(false),
-    purchaseLimit: z.number().default(0),
-    isPrime: z.boolean().default(false),
+    isLimit: z.preprocess(
+      (v) => (v === null || v === undefined ? false : v),
+      z.boolean().default(false)
+    ),
+    purchaseLimit: z.preprocess(
+      (v) => toNumber(v, 0),
+      z.number().default(0)
+    ),
+    isPrime: z.preprocess(
+      (v) => (v === null || v === undefined ? false : v),
+      z.boolean().default(false)
+    ),
     warranty: z.object({
       isWarranty: z.preprocess(
         (val) => (val === null ? false : val),
         z.boolean().default(false)
       ),
+      warrantyType: z.enum(["GRATIS", "PAGO"]).default("GRATIS"),
       warrantyPrice: z.preprocess(
-        (val) => (val == null ? 0 : val),
+        (val) => (val == null || val === "" ? 0 : Number(val)),
         z.number().default(0)
       ),
       warrantyTime: z.preprocess(
-        (val) => (val == null ? 0 : val),
+        (val) => (val == null || val === "" ? 0 : Number(val)),
         z.number().default(0)
       ),
+      timeUnit: z.preprocess(
+        (val) => (val == null || val === "" ? 1 : Number(val)),
+        z.number().int().min(0).max(2).default(1)
+      ),
     }),
-    packageDelivery: z.boolean().optional().default(false),
+    packageDelivery: z.preprocess(
+      (v) => (v === null || v === undefined ? false : v),
+      z.boolean().optional().default(false)
+    ),
     images: z
-      .array(
-        z.union([
-          z.string().url("Debe ser una URL válida para la imagen."),
-          z.instanceof(File, { message: "Debe ser un archivo válido." }),
-        ])
-      )
-      .max(5, { message: "Máximo 5 imágenes permitidas." })
-      .optional(),
+      .preprocess(
+        (v) => (Array.isArray(v) ? v.filter((i: any) => i != null && i !== "") : []),
+        z
+          .array(
+            z.union([
+              z.string().min(1),
+              z.instanceof(File, { message: "Debe ser un archivo válido." }),
+            ])
+          )
+          .max(5, { message: "Máximo 5 imágenes permitidas." })
+          .optional()
+      ),
 
     // ⚡️ Campos de paquetería
-    volume: z.number().optional(),
-    weight: z.number().optional(),
+    volume: z.preprocess(
+      (v) => (v == null || v === "" ? undefined : Number(v)),
+      z.number().optional()
+    ),
+    weight: z.preprocess(
+      (v) => (v == null || v === "" ? undefined : Number(v)),
+      z.number().optional()
+    ),
 
     // Zonas de entrega - ahora acepta objetos completos
     zoneIds: z.array(z.string()).optional().default([]),
@@ -93,6 +145,15 @@ export const productVariants = z
   .transform((data) => ({
     ...data,
     purchaseLimit: data.isLimit ? data.purchaseLimit : 0,
+    warranty: {
+      ...data.warranty,
+      warrantyPrice:
+        !data.warranty.isWarranty || data.warranty.warrantyType === "GRATIS"
+          ? 0
+          : data.warranty.warrantyPrice,
+      warrantyTime: data.warranty.isWarranty ? data.warranty.warrantyTime : 0,
+      timeUnit: data.warranty.timeUnit ?? 1,
+    },
   }))
   .superRefine((data, ctx) => {
     // ✅ Validación límite de compras
@@ -118,6 +179,24 @@ export const productVariants = z
           code: z.ZodIssueCode.custom,
           path: ["weight"],
           message: "El peso es requerido y debe ser mayor a 0",
+        });
+      }
+    }
+
+    if (data.warranty?.isWarranty) {
+      if ((data.warranty.warrantyTime ?? 0) < 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["warranty", "warrantyTime"],
+          message: "El tiempo de garantía no puede ser negativo",
+        });
+      }
+
+      if ((data.warranty.warrantyPrice ?? 0) < 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["warranty", "warrantyPrice"],
+          message: "El precio de garantía no puede ser negativo",
         });
       }
     }

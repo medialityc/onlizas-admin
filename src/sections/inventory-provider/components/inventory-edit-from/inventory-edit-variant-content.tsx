@@ -1,9 +1,6 @@
 import InventoryVariantFrom from "../inventory-variant-from/inventory-variant-from";
 import LoaderButton from "@/components/loaders/loader-button";
-import { useFormContext } from "react-hook-form";
 import { Button } from "@/components/button/button";
-import { usePermissions } from "@/hooks/use-permissions";
-import { PERMISSION_ENUM } from "@/lib/permissions";
 
 type Props = {
   index?: number;
@@ -20,12 +17,6 @@ const InventoryEditVariantContent = ({
   isPacking,
   supplierId,
 }: Props) => {
-  const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([
-    PERMISSION_ENUM.UPDATE,
-    PERMISSION_ENUM.SUPPLIER_UPDATE,
-  ]);
-
   return (
     <>
       <div className="gap-2">
@@ -43,15 +34,13 @@ const InventoryEditVariantContent = ({
           >
             Cancelar
           </Button>
-          {hasUpdatePermission && (
-            <LoaderButton
-              type="submit"
-              loading={isPending}
-              className="btn btn-primary"
-            >
-              Guardar
-            </LoaderButton>
-          )}
+          <LoaderButton
+            type="submit"
+            loading={isPending}
+            className="btn btn-primary"
+          >
+            Guardar
+          </LoaderButton>
         </div>
       </div>
     </>

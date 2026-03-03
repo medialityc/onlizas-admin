@@ -2,6 +2,7 @@ import {
   FormProvider as Form,
   SubmitHandler,
   UseFormReturn,
+  FieldErrors,
 } from "react-hook-form";
 
 // ----------------------------------------------------------------------
@@ -10,6 +11,7 @@ type Props = {
   children: React.ReactNode;
   methods: UseFormReturn<any>;
   onSubmit: SubmitHandler<any>;
+  onError?: (errors: FieldErrors) => void;
   autocomplete?: string | undefined;
   className?: string;
   id?: string;
@@ -19,6 +21,7 @@ type Props = {
 export default function FormProvider({
   children,
   onSubmit,
+  onError,
   methods,
   autocomplete,
   className,
@@ -28,14 +31,13 @@ export default function FormProvider({
   return (
     <Form {...methods}>
       <form
-        onSubmit={methods.handleSubmit(onSubmit)}
+        onSubmit={methods.handleSubmit(onSubmit, onError)}
         autoComplete={autocomplete}
         className={className}
         noValidate={noValidate}
         id={id ?? "form"}
       >
         {children}
-        {/* ...existing code... */}
       </form>
     </Form>
   );

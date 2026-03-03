@@ -7,6 +7,18 @@ import Tippy from "@tippyjs/react";
 import { Tooltip } from "@mantine/core";
 import { getVariantConditionLabel } from "@/config/variant-condition-map";
 
+const getWarrantyUnitLabel = (timeUnit?: number) => {
+  switch (timeUnit) {
+    case 0:
+      return "días";
+    case 2:
+      return "año(s)";
+    case 1:
+    default:
+      return "mes(es)";
+  }
+};
+
 const InventoryProviderDetailSection = () => {
   const { control, watch, setValue } = useFormContext();
 
@@ -79,7 +91,7 @@ const InventoryProviderDetailSection = () => {
               <div className="flex flex-col">
                 <span className="text-xs text-gray-500">Garantía</span>
                 <span className="text-sm font-medium">
-                  {warranty.warrantyTime} meses / ${warranty.warrantyPrice}
+                  {warranty.warrantyTime} {getWarrantyUnitLabel(warranty.timeUnit)} / {Number(warranty.warrantyPrice || 0) > 0 ? `$${warranty.warrantyPrice}` : "GRATIS"}
                 </span>
               </div>
             )}
@@ -214,7 +226,7 @@ const InventoryProviderDetailSection = () => {
               <div className="flex flex-col">
                 <span className="text-xs text-gray-500">Garantía</span>
                 <span className="text-sm font-medium">
-                  {warranty.warrantyTime} meses / ${warranty.warrantyPrice}
+                  {warranty.warrantyTime} {getWarrantyUnitLabel(warranty.timeUnit)} / {Number(warranty.warrantyPrice || 0) > 0 ? `$${warranty.warrantyPrice}` : "GRATIS"}
                 </span>
               </div>
             )}

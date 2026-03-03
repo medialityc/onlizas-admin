@@ -71,8 +71,10 @@ function EditContainer({ inventory, features }: Props) {
       isPrime: false,
       warranty: {
         isWarranty: false,
+        warrantyType: "GRATIS",
         warrantyTime: 0,
         warrantyPrice: 0,
+        timeUnit: 1,
       },
       packageDelivery: false,
       images: [],

@@ -31,11 +31,21 @@ export const getInventoryEditAdapter = (inventory: InventoryProvider): Inventory
         isPacking: inventory.isPacking,
         details: detailsObjectToArray(prod?.details) as any,
         warranty: prod.warranty
-          ? prod.warranty
+          ? {
+              ...prod.warranty,
+              warrantyType:
+                (prod.warranty.warrantyPrice ?? 0) > 0 ? "PAGO" : "GRATIS",
+              timeUnit:
+                typeof (prod.warranty as any).timeUnit === "number"
+                  ? (prod.warranty as any).timeUnit
+                  : 1,
+            }
           : {
               isWarranty: false,
+              warrantyType: "GRATIS",
               warrantyTime: 0,
               warrantyPrice: 0,
+              timeUnit: 1,
             },
         purchaseLimit: prod?.limitPurchaseLimit || 0,
         packageDelivery: false,

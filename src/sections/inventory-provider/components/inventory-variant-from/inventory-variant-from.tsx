@@ -38,6 +38,17 @@ const variantConditionOptions = [
   { value: 7, label: "Reacondicionado" },
 ];
 
+const warrantyTypeOptions = [
+  { value: "GRATIS", label: "GRATIS" },
+  { value: "PAGO", label: "PAGO" },
+];
+
+const warrantyTimeUnitOptions = [
+  { value: 0, label: "Días" },
+  { value: 1, label: "Meses" },
+  { value: 2, label: "Año" },
+];
+
 const InventoryVariantFrom = ({
   variantIndex,
   isPacking,
@@ -47,11 +58,12 @@ const InventoryVariantFrom = ({
   const { hasSpecificPermission, isLoading: permissionsLoading } =
     usePermissions();
 
-  const [isWarranty, isLimit, id, deliveryMode] = watch([
+  const [isWarranty, isLimit, id, deliveryMode, warrantyType] = watch([
     "warranty.isWarranty",
     "isLimit",
     "id",
     "deliveryMode",
+    "warranty.warrantyType",
   ]);
 
   // Verificar si el usuario tiene permisos de administrador
@@ -130,6 +142,18 @@ const InventoryVariantFrom = ({
       setValue("deliveryMode", "ONLIZAS");
     }
   }, [isAdmin, deliveryMode, setValue]);
+
+  React.useEffect(() => {
+    if (!isWarranty) {
+      setValue("warranty.warrantyType", "GRATIS");
+      setValue("warranty.warrantyPrice", 0);
+      return;
+    }
+
+    if (warrantyType === "GRATIS") {
+      setValue("warranty.warrantyPrice", 0);
+    }
+  }, [isWarranty, warrantyType, setValue]);
 
   return (
     <div className="flex flex-col gap-2  ">
@@ -288,7 +312,6 @@ const InventoryVariantFrom = ({
                   min="0"
                   step="0.1"
                   required
-                  defaultValue={0}
                 />
               </div>
             </>
@@ -304,7 +327,7 @@ const InventoryVariantFrom = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <RHFInputWithLabel
             name="costPrice"
-            label="Precio de costo"
+            label="Precio de costo (USD)"
             type="number"
             placeholder="0"
             min="0"
@@ -313,7 +336,7 @@ const InventoryVariantFrom = ({
           />
           <RHFInputWithLabel
             name="price"
-            label="Precio Final (venta)"
+            label="Precio Final (venta) (USD)"
             type="number"
             placeholder="0"
             min="0"
@@ -375,22 +398,44 @@ const InventoryVariantFrom = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {isWarranty && (
             <>
+              <RHFSelectWithLabel
+                name={`warranty.warrantyType`}
+                label="Tipo de garantía"
+                required
+                options={warrantyTypeOptions}
+                placeholder="Seleccionar..."
+                emptyOption="Seleccione tipo"
+                variant="custom"
+              />
+
+              <RHFSelectWithLabel
+                name={`warranty.timeUnit`}
+                label="Unidad de tiempo"
+                required
+                options={warrantyTimeUnitOptions}
+                placeholder="Seleccionar..."
+                emptyOption="Seleccione unidad"
+                variant="custom"
+              />
+
               <RHFInputWithLabel
                 name={`warranty.warrantyTime`}
-                label="Tiempo de garantía (meses)"
+                label="Tiempo de garantía"
                 type="number"
                 placeholder="Ej: 12"
                 min="0"
                 step="0"
               />
-              <RHFInputWithLabel
-                name={`warranty.warrantyPrice`}
-                label="Precio de la garantía"
-                type="number"
-                placeholder="Ej: 50"
-                min="0"
-                step="0"
-              />
+              {warrantyType === "PAGO" && (
+                <RHFInputWithLabel
+                  name={`warranty.warrantyPrice`}
+                  label="Precio de la garantía (USD)"
+                  type="number"
+                  placeholder="Ej: 50"
+                  min="0"
+                  step="0"
+                />
+              )}
             </>
           )}
         </div>

@@ -42,7 +42,8 @@ function DashboardSkeleton() {
 }
 
 export default async function DashboardPage() {
-  const { isSupplier } = await getModulePermissions("dashboard");
+  const modulePermissions = await getModulePermissions("dashboard");
+  const { isSupplier } = modulePermissions;
 
   let showOnboardingBanner = false;
 
@@ -82,7 +83,7 @@ export default async function DashboardPage() {
       )}
 
       <Suspense fallback={<DashboardSkeleton />}>
-        <DashboardServerWrapper />
+        <DashboardServerWrapper permissions={modulePermissions} />
       </Suspense>
     </>
   );
