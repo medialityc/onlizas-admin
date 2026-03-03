@@ -27,6 +27,18 @@ const conditionColorMap: Record<number, string> = {
   5: "bg-gray-50 text-gray-600 border border-gray-200 dark:bg-gray-800/40 dark:text-gray-300 dark:border-gray-700",
 };
 
+const getWarrantyUnitShortLabel = (timeUnit?: number) => {
+  switch (timeUnit) {
+    case 0:
+      return "d";
+    case 2:
+      return "a";
+    case 1:
+    default:
+      return "m";
+  }
+};
+
 function VariantCard({
   variant,
   onEdit,
@@ -45,8 +57,10 @@ function VariantCard({
   if (variant.isPrime) extraFlags.push("Prime");
   if (variant.isLimit) extraFlags.push(`Limite ${variant.purchaseLimit}`);
   if (variant.packageDelivery) extraFlags.push("Paquetería");
-  if (variant?.warranty?.isWarranty)
-    extraFlags.push(`Garantía ${variant.warranty?.warrantyTime}m`);
+  if (variant?.warranty?.isWarranty) {
+    const unit = getWarrantyUnitShortLabel((variant.warranty as any)?.timeUnit);
+    extraFlags.push(`Garantía ${variant.warranty?.warrantyTime}${unit}`);
+  }
   const firstExtraFlag = extraFlags[0];
   const moreFlagsCount = Math.max(0, extraFlags.length - 1);
 

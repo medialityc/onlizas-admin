@@ -4,6 +4,18 @@ import ImagePreview from "@/components/image/image-preview";
 import { InventoryProductItem, InventoryProvider } from "@/types/inventory";
 import { getVariantConditionLabel } from "@/config/variant-condition-map";
 
+const getWarrantyUnitLabel = (timeUnit?: number) => {
+  switch (timeUnit) {
+    case 0:
+      return "días";
+    case 2:
+      return "año(s)";
+    case 1:
+    default:
+      return "mes(es)";
+  }
+};
+
 interface Props {
   inventory: InventoryProvider;
 }
@@ -226,7 +238,7 @@ export default function InventoryDetailView({ inventory }: Props) {
 
                       {p.warranty && p.warranty.isWarranty && (
                         <div className="mt-2 text-sm text-green-600 dark:text-green-400 text-center sm:text-left">
-                          Garantía: {p.warranty.warrantyTime} días
+                          Garantía: {p.warranty.warrantyTime} {getWarrantyUnitLabel((p.warranty as any).timeUnit)}
                         </div>
                       )}
                       {p.isPrime && (

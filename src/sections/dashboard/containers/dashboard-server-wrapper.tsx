@@ -3,8 +3,19 @@ import { getAdminDashboard, getSupplierDashboard } from "@/services/dashboard";
 import AdminDashboardContainer from "./admin-dashboard-container";
 import SupplierDashboardContainer from "./supplier-dashboard-container";
 
-export default async function DashboardServerWrapper() {
-  const { isAdmin, isSupplier } = await getModulePermissions("dashboard");
+interface DashboardServerWrapperProps {
+  permissions?: {
+    isAdmin: boolean;
+    isSupplier: boolean;
+  };
+}
+
+export default async function DashboardServerWrapper({
+  permissions,
+}: DashboardServerWrapperProps = {}) {
+  const resolvedPermissions =
+    permissions ?? (await getModulePermissions("dashboard"));
+  const { isAdmin, isSupplier } = resolvedPermissions;
 
   if (isAdmin) {
     const adminDashboardPromise = await getAdminDashboard();

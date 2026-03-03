@@ -55,13 +55,16 @@ export async function buildCreateProductVariantFormData(
     JSON.stringify({
       isWarranty: input.warranty?.isWarranty ?? false,
       warrantyTime: input.warranty?.warrantyTime ?? 0,
-      warrantyPrice: input.warranty?.warrantyPrice ?? 0,
+      warrantyPrice:
+        input.warranty?.warrantyType === "PAGO"
+          ? (input.warranty?.warrantyPrice ?? 0)
+          : 0,
+      timeUnit: input.warranty?.timeUnit ?? 1,
     })
   );
 
   if (input.zoneIds?.length) {
     const zoneIdsString = input.zoneIds.join(",");
-    console.log("📍 Enviando zoneIds como string:", zoneIdsString);
     fd.append("zoneIds", zoneIdsString);
   }
 

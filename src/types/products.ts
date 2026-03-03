@@ -151,6 +151,7 @@ export type ProductVariantItem = {
     isWarranty: boolean;
     warrantyPrice: number;
     warrantyTime: number;
+    timeUnit?: number;
   };
   isPrime: boolean;
   stock: number;

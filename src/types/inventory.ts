@@ -16,6 +16,7 @@ export type InventoryProductItem = {
     isWarranty: boolean;
     warrantyTime: number;
     warrantyPrice: number;
+    timeUnit?: number;
   };
   isPrime: boolean;
   stock: number;

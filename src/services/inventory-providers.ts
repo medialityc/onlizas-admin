@@ -13,7 +13,6 @@ import {
   InventoryProvider,
 } from "@/types/inventory";
 import { GetAllProductVariant } from "@/types/products";
-import { fetchUserMe } from "./users";
 
 const INVENTORY_TAG_KEY = "inventory-provider";
 
@@ -145,18 +144,6 @@ export async function addVariantToInventory(
   inventoryId: string | number,
   variantData: FormData
 ): Promise<ApiResponse<InventoryProvider>> {
-  // Debug: Obtener y mostrar ID del proveedor autenticado
-  const userRes = await fetchUserMe();
-  const currentUser = userRes?.data;
-  console.log(
-    "DEBUG - ID del proveedor autenticado (addVariantToInventory):",
-    currentUser?.id
-  );
-  console.log(
-    "DEBUG - Datos completos del usuario (addVariantToInventory):",
-    currentUser
-  );
-
   const res = await nextAuthFetch({
     url: backendRoutes.inventoryProvider.AddVariantToInventory(inventoryId),
     method: "POST",
@@ -173,18 +160,6 @@ export async function editVariantInventory(
   variantId: string | number,
   variantData: FormData
 ): Promise<ApiResponse<InventoryProvider>> {
-  // Debug: Obtener y mostrar ID del proveedor autenticado
-  const userRes = await fetchUserMe();
-  const currentUser = userRes?.data;
-  console.log(
-    "DEBUG - ID del proveedor autenticado (editVariantInventory):",
-    currentUser?.id
-  );
-  console.log(
-    "DEBUG - Datos completos del usuario (editVariantInventory):",
-    currentUser
-  );
-
   const res = await nextAuthFetch({
     url: backendRoutes.inventoryProvider.editVariantInventory(variantId),
     method: "PUT",

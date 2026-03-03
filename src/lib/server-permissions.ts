@@ -27,6 +27,42 @@ export interface ServerPermissionsData {
   userName?: string;
 }
 
+function extractPermissionsFromResponse(response: unknown): Permission[] {
+  const payload = response as
+    | { data?: unknown; permissions?: unknown }
+    | undefined;
+
+  if (Array.isArray(payload?.data)) {
+    return payload.data as Permission[];
+  }
+
+  if (
+    payload?.data &&
+    typeof payload.data === "object" &&
+    Array.isArray((payload.data as { data?: unknown }).data)
+  ) {
+    return (payload.data as { data: Permission[] }).data;
+  }
+
+  if (
+    payload?.data &&
+    typeof payload.data === "object" &&
+    Array.isArray((payload.data as { permissions?: unknown }).permissions)
+  ) {
+    return (payload.data as { permissions: Permission[] }).permissions;
+  }
+
+  if (Array.isArray(payload?.permissions)) {
+    return payload.permissions as Permission[];
+  }
+
+  if (Array.isArray(response)) {
+    return response as Permission[];
+  }
+
+  return [];
+}
+
 export async function getServerPermissions(): Promise<Permission[]> {
   try {
     const session = await getServerSession();
@@ -37,11 +73,13 @@ export async function getServerPermissions(): Promise<Permission[]> {
 
     const permissions = await fetchMyPermissions();
 
-    if (!Array.isArray(permissions.data)) {
+    const resolvedPermissions = extractPermissionsFromResponse(permissions);
+
+    if (!Array.isArray(resolvedPermissions) || resolvedPermissions.length === 0) {
       return [];
     }
 
-    return permissions.data as Permission[];
+    return resolvedPermissions;
   } catch (error) {
     console.error("[ServerPermissions] Error obteniendo permisos:", error);
     return [];

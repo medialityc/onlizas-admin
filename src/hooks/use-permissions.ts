@@ -28,12 +28,54 @@ export const usePermissions = () => {
     isError: boolean;
   };
 
-  // Asegurar que permissions sea siempre un array válido de códigos
-  const filteredPermissions =
-    permissions?.data?.filter((p) => p?.subsystem?.code === "Onlizas") || [];
-  const safePermissionCodes = Array.isArray(filteredPermissions)
-    ? filteredPermissions.map((p: Permission) => p?.code).filter(Boolean)
-    : [];
+  const normalize = (value?: string) =>
+    (value || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
+
+  const extractPermissions = (): Permission[] => {
+    if (Array.isArray(permissions as unknown)) {
+      return permissions as unknown as Permission[];
+    }
+
+    const payload = permissions as any;
+
+    if (Array.isArray(payload?.data)) {
+      return payload.data as Permission[];
+    }
+
+    if (Array.isArray(payload?.data?.data)) {
+      return payload.data.data as Permission[];
+    }
+
+    if (Array.isArray(payload?.permissions)) {
+      return payload.permissions as Permission[];
+    }
+
+    if (Array.isArray(payload?.data?.permissions)) {
+      return payload.data.permissions as Permission[];
+    }
+
+    return [];
+  };
+
+  const rawPermissions = extractPermissions();
+
+  const onlizasPermissions = rawPermissions.filter((permission) => {
+    const subsystemCode = normalize(permission?.subsystem?.code);
+    if (!subsystemCode) return true;
+    return subsystemCode === normalize("Onlizas") || subsystemCode === normalize("OnliZas");
+  });
+
+  // Si el filtro por subsistema no encuentra nada, usar los permisos crudos
+  // para evitar ocultar toda la navegación por una diferencia de casing/shape.
+  const sourcePermissions =
+    onlizasPermissions.length > 0 ? onlizasPermissions : rawPermissions;
+
+  const safePermissionCodes = sourcePermissions
+    .map((permission) => permission?.code)
+    .filter(Boolean) as string[];
 
   /**
    * Verifica si el usuario tiene los permisos requeridos
