@@ -68,7 +68,7 @@ const InventoryProviderCard = ({ item }: Props) => {
             <p className="font-medium">{item.products.length}</p>
           </div>
           <div>
-            <p className="text-muted-foreground">Precio base</p>
+            <p className="text-muted-foreground">Precio base (USD)</p>
             <p className="font-medium">${item.products[0]?.price.toFixed(2)}</p>
           </div>
           <div>

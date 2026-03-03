@@ -198,7 +198,7 @@ export default function OrderValueForm({
               {/* Aquí pediste un único spinner para la cantidad mínima */}
               <RHFInputWithLabel
                 name="minimumAmount"
-                label="Cantidad mínima (C$)"
+                label="Cantidad mínima (USD)"
                 type="number"
               />
             </div>

@@ -81,7 +81,7 @@ export function ClosuresList({
       },
       {
         accessor: "totalAmount",
-        title: "Total a Pagar",
+        title: "Total a Pagar (USD)",
         render: (r) =>
           ((r as any).totalAmount ?? 0).toLocaleString(undefined, {
             style: "currency",

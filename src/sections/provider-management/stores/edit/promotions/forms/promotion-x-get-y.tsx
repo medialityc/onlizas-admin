@@ -219,7 +219,7 @@ export default function GetYForm({
               {/* Aquí pediste un único spinner para la cantidad mínima */}
               <RHFInputWithLabel
                 name="minimumAmount"
-                label="Cantidad mínima de producto X (C$)"
+                label="Cantidad mínima de producto X (USD)"
                 type="number"
               />
             </div>

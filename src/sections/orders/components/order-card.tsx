@@ -78,26 +78,26 @@ export function OrderCard({
                   <span className="font-medium text-foreground">
                     Impuesto Total:
                   </span>{" "}
-                  {formatCurrency(order.totalTaxAmount)}
+                  {formatCurrency(order.totalTaxAmount, "USD")}
                 </div>
                 <div>
                   <span className="font-medium text-foreground">
                     Envio Total:
                   </span>{" "}
-                  {formatCurrency(order.totalDeliveryAmount)}
+                  {formatCurrency(order.totalDeliveryAmount, "USD")}
                 </div>
                 <div>
                   <span className="font-medium text-foreground">
-                    Monto Total:
+                    Monto Total (USD):
                   </span>{" "}
-                  {formatCurrency(order.totalAmountPaid)}
+                  {formatCurrency(order.totalAmountPaid, "USD")}
                 </div>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-lg font-bold text-primary">
-              {formatCurrency(order.totalAmountPaid)}
+              {formatCurrency(order.totalAmountPaid, "USD")}
             </span>
             <Button size="sm" onClick={() => setIsExpanded(!isExpanded)}>
               {isExpanded ? (
@@ -177,7 +177,7 @@ export function OrderCard({
           </div>
           <div className="flex items-center gap-1">
             <DollarSign className="h-4 w-4 text-muted-foreground" />
-            <span>Envío: {formatCurrency(order.totalDeliveryAmount)}</span>
+            <span>Envío: {formatCurrency(order.totalDeliveryAmount, "USD")}</span>
           </div>
         </div>
 
@@ -219,15 +219,15 @@ export function OrderCard({
                     </div>
                     <div>
                       <span className="font-medium">Pagado:</span>{" "}
-                      {formatCurrency(subOrder.amountPaid)}
+                      {formatCurrency(subOrder.amountPaid, "USD")}
                     </div>
                     <div>
                       <span className="font-medium">Impuesto:</span>{" "}
-                      {formatCurrency(subOrder.taxAmount)}
+                      {formatCurrency(subOrder.taxAmount, "USD")}
                     </div>
                     <div>
                       <span className="font-medium">Envío:</span>{" "}
-                      {formatCurrency(subOrder.deliveryAmount)}
+                      {formatCurrency(subOrder.deliveryAmount, "USD")}
                     </div>
                     <div>
                       <span className="font-medium">Peso:</span>{" "}

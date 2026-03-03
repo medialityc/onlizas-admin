@@ -274,7 +274,7 @@ export default function PromotionDetailsModal({
                               )}
                               {product.price && (
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                                  <span className="font-medium">Precio:</span> $
+                                  <span className="font-medium">Precio (USD):</span> $
                                   {product.price}
                                 </p>
                               )}

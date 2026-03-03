@@ -59,7 +59,9 @@ export default function InventorySelect({
       ? `Almacén: ${option.warehouseName}`
       : "";
     const store = option.storeName ? `Tienda: ${option.storeName}` : "";
-    const priceText = option.totalPrice ? `Precio: $${option.totalPrice}` : "";
+    const priceText = option.totalPrice
+      ? `Precio (USD): $${option.totalPrice}`
+      : "";
     const products = option.products.length
       ? `Productos: ${option.products.length}`
       : "0";

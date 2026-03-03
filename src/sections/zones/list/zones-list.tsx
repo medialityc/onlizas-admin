@@ -86,7 +86,7 @@ export default function ZonesList({ data }: ZonesListProps) {
       },
       {
         accessor: "deliveryAmount",
-        title: "Costo de Entrega",
+        title: "Costo de Entrega (USD)",
         render: (r) => (
           <span className="font-medium">${r.deliveryAmount.toFixed(2)}</span>
         ),

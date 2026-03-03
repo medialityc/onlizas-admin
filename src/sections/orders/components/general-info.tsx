@@ -16,7 +16,7 @@ export function GeneralInfo({ order }: GeneralInfoProps) {
             <strong>Fecha:</strong> {formatDate(order.createdDatetime)}
           </p>
           <p>
-            <strong>Total:</strong> {formatCurrency(order.totalAmountPaid)}
+            <strong>Total:</strong> {formatCurrency(order.totalAmountPaid, "USD")}
           </p>
           <p>
             <strong>Peso Total:</strong> {order.totalWeight}g
