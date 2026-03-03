@@ -77,7 +77,9 @@ export function RHFMultiImageUpload({
       setCropFileName("");
       setCropTargetIndex(null);
       // Forzar actualización inmediata de previews
-      const newPreviews = current.map((item) => (typeof item === "string" ? item : URL.createObjectURL(item as File)));
+      const newPreviews = current.map((item) =>
+        typeof item === "string" ? item : URL.createObjectURL(item as File),
+      );
       setPreviews(newPreviews);
       return;
     }
@@ -86,7 +88,11 @@ export function RHFMultiImageUpload({
     const after = [...current, croppedFile];
     field.onChange(after);
     // Forzar actualización inmediata de previews
-    setPreviews(after.map((item) => (typeof item === "string" ? item : URL.createObjectURL(item as File))));
+    setPreviews(
+      after.map((item) =>
+        typeof item === "string" ? item : URL.createObjectURL(item as File),
+      ),
+    );
 
     // Si venimos de la cola, limpiar el primer elemento en pendings
     if (pendingCropQueue.length > 0) {
@@ -161,12 +167,16 @@ export function RHFMultiImageUpload({
     // Mantener lista previa para revocar objectURLs que queden obsoletas
     const old = previews.slice();
 
-    const previewUrls = value.map((item) => (typeof item === "string" ? item : URL.createObjectURL(item)));
+    const previewUrls = value.map((item) =>
+      typeof item === "string" ? item : URL.createObjectURL(item),
+    );
 
     if (mounted) setPreviews(previewUrls);
 
     // Revocar URLs antiguas que ya no estén en la nueva lista
-    const toRevoke = old.filter((u) => u.startsWith("blob:") && !previewUrls.includes(u));
+    const toRevoke = old.filter(
+      (u) => u.startsWith("blob:") && !previewUrls.includes(u),
+    );
     toRevoke.forEach((u) => {
       try {
         URL.revokeObjectURL(u);
@@ -189,7 +199,7 @@ export function RHFMultiImageUpload({
 
   // Carga una imagen desde File y devuelve dimensiones + objectURL
   const loadImageFromFile = (
-    file: File
+    file: File,
   ): Promise<{ width: number; height: number; src: string }> => {
     return new Promise((resolve, reject) => {
       const img = new window.Image();
@@ -239,7 +249,7 @@ export function RHFMultiImageUpload({
         // Reglas: mínimo 500x500, máximo 3200x3200
         if (width < 500 || height < 500) {
           errors.push(
-            `${file.name}: La imagen es demasiado pequeña (mínimo 500×500).`
+            `${file.name}: La imagen es demasiado pequeña (mínimo 500×500).`,
           );
           URL.revokeObjectURL(src);
           continue;
@@ -306,7 +316,11 @@ export function RHFMultiImageUpload({
 
   return (
     <div className={cn("flex flex-col gap-3", className)}>
-      {label && <label className="font-medium text-sm">{label}</label>}
+      {label && (
+        <label className="font-medium text-sm dark:text-black-light">
+          {label}
+        </label>
+      )}
 
       <div
         className="cursor-pointer border-2 border-dashed border-gray-300 rounded-md p-4 text-center hover:bg-gray-50"
@@ -346,7 +360,12 @@ export function RHFMultiImageUpload({
                   unoptimized
                 />
               ) : (
-                <Image src={src} alt={`Preview ${index}`} fill className="object-cover" />
+                <Image
+                  src={src}
+                  alt={`Preview ${index}`}
+                  fill
+                  className="object-cover"
+                />
               )}
               <div className="absolute top-1 right-1 flex gap-1 flex-row items-center">
                 <Button

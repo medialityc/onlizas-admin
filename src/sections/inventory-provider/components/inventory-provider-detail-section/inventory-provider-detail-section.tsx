@@ -58,47 +58,65 @@ const InventoryProviderDetailSection = () => {
     return (
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2 mb-2">
-          <p className="font-bold text-sm">Características del Producto</p>
+          <p className="font-bold text-sm dark:text-black-light">
+            Características del Producto
+          </p>
           {/* Bloque de propiedades nuevas */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 bg-gray-50 dark:bg-gray-800/40 p-3 rounded-lg">
             <div className="flex flex-col">
-              <span className="text-xs text-gray-500">Condición</span>
-              <span className="text-sm font-medium">
+              <span className="text-xs text-gray-500 dark:text-black-light">
+                Condición
+              </span>
+              <span className="text-sm font-medium dark:text-black-light">
                 {getVariantConditionLabel(condition)}
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-xs text-gray-500">Estado</span>
-              <span className="text-sm font-medium">
+              <span className="text-xs text-gray-500 dark:text-black-light">
+                Estado
+              </span>
+              <span className="text-sm font-medium dark:text-black-light">
                 {isActive ? "Activa" : "Inactiva"}
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-xs text-gray-500">Prime</span>
-              <span className="text-sm font-medium">
+              <span className="text-xs text-gray-500 dark:text-black-light">
+                Prime
+              </span>
+              <span className="text-sm font-medium dark:text-black-light">
                 {isPrime ? "Sí" : "No"}
               </span>
             </div>
             {isLimit && (
               <div className="flex flex-col">
-                <span className="text-xs text-gray-500">Límite de compra</span>
-                <span className="text-sm font-medium">
+                <span className="text-xs text-gray-500 dark:text-black-light">
+                  Límite de compra
+                </span>
+                <span className="text-sm font-medium dark:text-black-light">
                   {purchaseLimit || 0}
                 </span>
               </div>
             )}
             {warranty?.isWarranty && (
               <div className="flex flex-col">
-                <span className="text-xs text-gray-500">Garantía</span>
-                <span className="text-sm font-medium">
-                  {warranty.warrantyTime} {getWarrantyUnitLabel(warranty.timeUnit)} / {Number(warranty.warrantyPrice || 0) > 0 ? `$${warranty.warrantyPrice}` : "GRATIS"}
+                <span className="text-xs text-gray-500 dark:text-black-light">
+                  Garantía
+                </span>
+                <span className="text-sm font-medium dark:text-black-light">
+                  {warranty.warrantyTime}{" "}
+                  {getWarrantyUnitLabel(warranty.timeUnit)} /{" "}
+                  {Number(warranty.warrantyPrice || 0) > 0
+                    ? `$${warranty.warrantyPrice}`
+                    : "GRATIS"}
                 </span>
               </div>
             )}
             {packageDelivery && (
               <div className="flex flex-col">
-                <span className="text-xs text-gray-500">Paquetería</span>
-                <span className="text-sm font-medium">
+                <span className="text-xs text-gray-500 dark:text-black-light">
+                  Paquetería
+                </span>
+                <span className="text-sm font-medium dark:text-black-light">
                   {volume ? `${volume} vol` : "-"}{" "}
                   {weight ? ` / ${weight} lb` : ""}
                 </span>
@@ -193,47 +211,65 @@ const InventoryProviderDetailSection = () => {
     return (
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2 mb-2">
-          <p className="font-bold text-sm">Características del Producto</p>
+          <p className="font-bold text-sm dark:text-black-light">
+            Características del Producto
+          </p>
           {/* Bloque de propiedades nuevas */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 bg-gray-50 dark:bg-gray-800/40 p-3 rounded-lg">
             <div className="flex flex-col">
-              <span className="text-xs text-gray-500">Condición</span>
-              <span className="text-sm font-medium">
+              <span className="text-xs text-gray-500 dark:text-black-light">
+                Condición
+              </span>
+              <span className="text-sm font-medium dark:text-black-light">
                 {getVariantConditionLabel(condition)}
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-xs text-gray-500">Estado</span>
-              <span className="text-sm font-medium">
+              <span className="text-xs text-gray-500 dark:text-black-light">
+                Estado
+              </span>
+              <span className="text-sm font-medium dark:text-black-light">
                 {isActive ? "Activa" : "Inactiva"}
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-xs text-gray-500">Prime</span>
-              <span className="text-sm font-medium">
+              <span className="text-xs text-gray-500 dark:text-black-light">
+                Prime
+              </span>
+              <span className="text-sm font-medium dark:text-black-light">
                 {isPrime ? "Sí" : "No"}
               </span>
             </div>
             {isLimit && (
               <div className="flex flex-col">
-                <span className="text-xs text-gray-500">Límite de compra</span>
-                <span className="text-sm font-medium">
+                <span className="text-xs text-gray-500 dark:text-black-light">
+                  Límite de compra
+                </span>
+                <span className="text-sm font-medium dark:text-black-light">
                   {purchaseLimit || 0}
                 </span>
               </div>
             )}
             {warranty?.isWarranty && (
               <div className="flex flex-col">
-                <span className="text-xs text-gray-500">Garantía</span>
-                <span className="text-sm font-medium">
-                  {warranty.warrantyTime} {getWarrantyUnitLabel(warranty.timeUnit)} / {Number(warranty.warrantyPrice || 0) > 0 ? `$${warranty.warrantyPrice}` : "GRATIS"}
+                <span className="text-xs text-gray-500 dark:text-black-light">
+                  Garantía
+                </span>
+                <span className="text-sm font-medium dark:text-black-light">
+                  {warranty.warrantyTime}{" "}
+                  {getWarrantyUnitLabel(warranty.timeUnit)} /{" "}
+                  {Number(warranty.warrantyPrice || 0) > 0
+                    ? `$${warranty.warrantyPrice}`
+                    : "GRATIS"}
                 </span>
               </div>
             )}
             {packageDelivery && (
               <div className="flex flex-col">
-                <span className="text-xs text-gray-500">Paquetería</span>
-                <span className="text-sm font-medium">
+                <span className="text-xs text-gray-500 dark:text-black-light">
+                  Paquetería
+                </span>
+                <span className="text-sm font-medium dark:text-black-light">
                   {volume ? `${volume} vol` : "-"}{" "}
                   {weight ? ` / ${weight} lb` : ""}
                 </span>
@@ -250,10 +286,9 @@ const InventoryProviderDetailSection = () => {
               ? `${detailName}.${key}.value`
               : `${detailName}.${key}`;
             const placeholder = String(
-              (isObj ? (value as any).value : value) ?? ""
+              (isObj ? (value as any).value : value) ?? "",
             );
             const required = isObj ? (value as any).isRequired === true : false;
-            console.log(value);
 
             return (
               <div className="col-span-1" key={key}>
@@ -305,7 +340,7 @@ const InventoryProviderDetailSection = () => {
                                   {sugg}
                                 </button>
                               );
-                            }
+                            },
                           )}
                         </div>
                       )}

@@ -163,7 +163,7 @@ const InventoryVariantFrom = ({
 
       {/* Sección Entrega */}
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-bold">Entrega</p>
+        <p className="text-sm font-bold dark:text-black-light">Entrega</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <RHFSelectWithLabel
             name="deliveryMode"
@@ -184,7 +184,9 @@ const InventoryVariantFrom = ({
       {/* Sección Zonas de Entrega */}
       {deliveryMode && (
         <div className="flex flex-col gap-2">
-          <p className="text-sm font-bold">Zonas de Entrega</p>
+          <p className="text-sm font-bold dark:text-black-light">
+            Zonas de Entrega
+          </p>
           <Controller
             name="zoneIds"
             control={control}
@@ -235,7 +237,9 @@ const InventoryVariantFrom = ({
 
       {/* inventory info */}
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-bold">Información de Inventario</p>
+        <p className="text-sm font-bold dark:text-black-light">
+          Información de Inventario
+        </p>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
@@ -323,7 +327,7 @@ const InventoryVariantFrom = ({
 
       {/* Sección Precios */}
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-bold">Precios</p>
+        <p className="text-sm font-bold dark:text-black-light">Precios</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <RHFInputWithLabel
             name="costPrice"
@@ -351,7 +355,9 @@ const InventoryVariantFrom = ({
 
       {/* Sección Restricciones y Límites */}
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-bold">Restricciones y Límites</p>
+        <p className="text-sm font-bold dark:text-black-light">
+          Restricciones y Límites
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           <RHFSwitch name={`isPrime`} label="Entrega express" />
@@ -363,7 +369,9 @@ const InventoryVariantFrom = ({
 
       {/* Sección garantía */}
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-bold">Restricciones y Límites</p>
+        <p className="text-sm font-bold dark:text-black-light">
+          Restricciones y Límites
+        </p>
 
         <RHFCheckbox
           name={`isLimit`}
@@ -388,7 +396,7 @@ const InventoryVariantFrom = ({
 
       {/* Sección garantía */}
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-bold">Garantía</p>
+        <p className="text-sm font-bold dark:text-black-light">Garantía</p>
 
         <RHFCheckbox
           name={`warranty.isWarranty`}
@@ -446,7 +454,9 @@ const InventoryVariantFrom = ({
         <>
           <Separator className="my-2" />
           <div className="flex flex-col gap-2">
-            <p className="text-sm font-bold">Producto por Paquetería</p>
+            <p className="text-sm font-bold dark:text-black-light">
+              Producto por Paquetería
+            </p>
             <RHFCheckbox
               name={`packageDelivery`}
               label="Habilitar entrega por paquetería"
@@ -544,7 +554,7 @@ const PrecioNetoDisplay = ({ supplierId }: PrecioNetoDisplayProps) => {
 
   return (
     <div className="flex flex-col gap-1 rounded-md border p-3 bg-muted/30">
-      <p className="text-xs font-medium">Resumen</p>
+      <p className="text-xs font-medium dark:text-black-light">Resumen</p>
       <p className="text-[11px] text-muted-foreground">
         Descuento plataforma{" "}
         {fixedTaxLoading ? (
