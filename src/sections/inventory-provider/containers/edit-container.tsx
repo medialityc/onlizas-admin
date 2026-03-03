@@ -57,8 +57,8 @@ function EditContainer({ inventory, features }: Props) {
     ),
   );
 
-  const initValue = useMemo(
-    () => ({
+  const initValue = useMemo<ProductVariant>(
+    (): ProductVariant => ({
       sku: "",
       upc: "",
       ean: "",
