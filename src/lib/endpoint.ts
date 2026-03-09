@@ -390,6 +390,10 @@ export const backendRoutes = {
     variantByCategory: `${process.env.NEXT_PUBLIC_API_URL}inventories/variants/by-categories`,
     variantBySupplier: `${process.env.NEXT_PUBLIC_API_URL}inventories/variants/by-supplier`,
   },
+  reviews: {
+    byInventoryId: (inventoryId: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}reviews/${inventoryId}`,
+  },
   regions: {
     listById: (regionId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}regions/${regionId}/config`,

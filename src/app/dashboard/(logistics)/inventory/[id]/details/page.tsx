@@ -1,4 +1,5 @@
 import { getInventoryById } from "@/services/inventory-providers";
+import { getReviewsByInventoryId } from "@/services/reviews";
 import { notFound, redirect } from "next/navigation";
 import InventoryDetailView from "@/sections/inventory/inventory-detail-view";
 import { InventoryProvider } from "@/types/inventory";
@@ -13,7 +14,10 @@ export const metadata = {
 
 export default async function InventoryDetailPage({ params }: Props) {
   const { id } = await params;
-  const res = await getInventoryById(id);
+  const [res, reviewsResponse] = await Promise.all([
+    getInventoryById(id),
+    getReviewsByInventoryId(id, { page: 1, pageSize: 10 }),
+  ]);
 
   if (res.status === 401) {
     // auth expired, send to home/login
@@ -28,5 +32,11 @@ export default async function InventoryDetailPage({ params }: Props) {
 
   const inventory: InventoryProvider = res.data;
 
-  return <InventoryDetailView inventory={inventory} />;
+  return (
+    <InventoryDetailView
+      inventory={inventory}
+      reviews={reviewsResponse.data}
+      reviewsError={reviewsResponse.error ? reviewsResponse.message : undefined}
+    />
+  );
 }
