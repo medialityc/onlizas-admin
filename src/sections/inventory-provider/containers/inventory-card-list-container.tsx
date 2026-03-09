@@ -8,11 +8,10 @@ import { InventoryCardGrid } from "../components/inventory-provider-card-grid/in
 import { useModalState } from "@/hooks/use-modal-state";
 import CreateInventoryModal from "../modal/create-inventory-modal";
 import { GetAllInventoryProviderResponse } from "@/types/inventory";
-import { useEffect, useState } from "react";
-import { getSupplierItemsCount } from "@/services/dashboard";
 import Link from "next/link";
 import { Button } from "@/components/button/button";
 import { SupplierItemsCount } from "@/types/dashboard";
+import { InventoryReviewsSummaryMap } from "@/types/reviews";
 
 interface Props {
   inventories: ApiResponse<GetAllInventoryProviderResponse>;
@@ -23,6 +22,7 @@ interface Props {
   forProvider?: boolean;
   counters?: SupplierItemsCount;
   afterCreateRedirectTo?: string;
+  reviewsSummaryByInventoryId?: InventoryReviewsSummaryMap;
 }
 
 export default function InventoryCardListContainer({
@@ -33,6 +33,7 @@ export default function InventoryCardListContainer({
   forProvider,
   counters,
   afterCreateRedirectTo,
+  reviewsSummaryByInventoryId,
 }: Props) {
   const { getModalState, openModal, closeModal } = useModalState();
 
@@ -72,6 +73,7 @@ export default function InventoryCardListContainer({
       <div className="relative">
         <InventoryCardGrid
           data={inventoriesResponse.data}
+          reviewsSummaryByInventoryId={reviewsSummaryByInventoryId}
           searchParams={query}
           onSearchParamsChange={handleSearchParamsChange}
           onCreate={hideCreate || showBlockingOverlay ? () => {} : handleOpen}

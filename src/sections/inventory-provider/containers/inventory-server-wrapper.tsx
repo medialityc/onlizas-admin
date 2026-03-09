@@ -7,8 +7,12 @@ import {
 } from "@/services/inventory-providers";
 import InventoryCardListContainer from "./inventory-card-list-container";
 import { PERMISSION_ENUM } from "@/lib/permissions";
-import { getServerSession, useAuth } from "zas-sso-client";
+import { getServerSession } from "zas-sso-client";
 import { getSupplierItemsCount } from "@/services/dashboard";
+import { InventoryProvider } from "@/types/inventory";
+import { getReviewsByInventoryId } from "@/services/reviews";
+import { InventoryReviewsSummaryMap } from "@/types/reviews";
+import { buildInventoryReviewSummary } from "@/utils/reviews";
 
 /**
  * Server-side wrapper para la lista de inventarios.
@@ -28,6 +32,26 @@ interface Props {
   query: SearchParams;
   afterCreateRedirectTo?: string;
 }
+
+const buildReviewsSummaryMap = async (
+  inventories: InventoryProvider[] = []
+): Promise<InventoryReviewsSummaryMap> => {
+  const reviewEntries = await Promise.all(
+    inventories.map(async (inventory) => {
+      const response = await getReviewsByInventoryId(inventory.id, {
+        page: 1,
+        pageSize: 10,
+      });
+
+      return [
+        String(inventory.id),
+        buildInventoryReviewSummary(response.data?.data ?? []),
+      ] as const;
+    })
+  );
+
+  return Object.fromEntries(reviewEntries);
+};
 
 export default async function InventoryServerWrapper({
   query,
@@ -49,19 +73,28 @@ export default async function InventoryServerWrapper({
 
   if (isAdmin) {
     const inventoriesResponse = await getAllInventoryProvider(apiQuery);
+    const reviewsSummaryByInventoryId = await buildReviewsSummaryMap(
+      inventoriesResponse.data?.data ?? []
+    );
 
     return (
       <InventoryCardListContainer
         inventories={inventoriesResponse}
         query={query}
         hideCreate={!canCreate}
+        reviewsSummaryByInventoryId={reviewsSummaryByInventoryId}
       />
     );
   }
 
   if (isSupplier) {
-    const inventoriesResponse = await getAllMyInventoryProvider(apiQuery);
-    const counters = await getSupplierItemsCount();
+    const [inventoriesResponse, counters] = await Promise.all([
+      getAllMyInventoryProvider(apiQuery),
+      getSupplierItemsCount(),
+    ]);
+    const reviewsSummaryByInventoryId = await buildReviewsSummaryMap(
+      inventoriesResponse.data?.data ?? []
+    );
 
     return (
       <InventoryCardListContainer
@@ -72,6 +105,7 @@ export default async function InventoryServerWrapper({
         counters={counters.data}
         forProvider={true}
         afterCreateRedirectTo={afterCreateRedirectTo}
+        reviewsSummaryByInventoryId={reviewsSummaryByInventoryId}
       />
     );
   }

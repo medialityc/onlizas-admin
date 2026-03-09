@@ -5,12 +5,18 @@ import { Button } from "@/components/button/button";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { InventoryProvider } from "@/types/inventory";
 import { useModalState } from "@/hooks/use-modal-state";
+import { InventoryReviewsSummaryMap } from "@/types/reviews";
 
 type Props = {
   data?: InventoryProvider[];
   searchParams: SearchParams;
+  reviewsSummaryByInventoryId?: InventoryReviewsSummaryMap;
 };
-const InventoryProviderList = ({ data, searchParams }: Props) => {
+const InventoryProviderList = ({
+  data,
+  searchParams,
+  reviewsSummaryByInventoryId,
+}: Props) => {
   const id = useId();
   const { openModal } = useModalState();
 
@@ -39,7 +45,10 @@ const InventoryProviderList = ({ data, searchParams }: Props) => {
     <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 md:gap-6 mb-4">
       {data?.map((provider: InventoryProvider, idx) => (
         <div className="col-span-1" key={`${id}-${provider?.id}${idx}`}>
-          <InventoryProviderCard item={provider} />
+          <InventoryProviderCard
+            item={provider}
+            reviewSummary={reviewsSummaryByInventoryId?.[String(provider.id)]}
+          />
         </div>
       ))}
     </section>

@@ -3,12 +3,14 @@ import { DataGridCard } from "@/components/datagrid-card/datagrid-card";
 import InventoryProviderList from "../inventory-provider-card/inventory-provider-list";
 import { GetAllInventoryProviderResponse } from "@/types/inventory";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { InventoryReviewsSummaryMap } from "@/types/reviews";
 
 interface Props {
   data?: GetAllInventoryProviderResponse;
   searchParams: SearchParams;
   onSearchParamsChange: (params: SearchParams) => void;
   onCreate: VoidFunction;
+  reviewsSummaryByInventoryId?: InventoryReviewsSummaryMap;
 }
 
 export function InventoryCardGrid({
@@ -16,6 +18,7 @@ export function InventoryCardGrid({
   searchParams,
   onSearchParamsChange,
   onCreate,
+  reviewsSummaryByInventoryId,
 }: Props) {
   return (
     <>
@@ -35,6 +38,7 @@ export function InventoryCardGrid({
           <InventoryProviderList
             data={data?.data}
             searchParams={searchParams}
+            reviewsSummaryByInventoryId={reviewsSummaryByInventoryId}
           />
         }
       />

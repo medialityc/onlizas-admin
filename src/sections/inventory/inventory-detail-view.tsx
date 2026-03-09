@@ -1,7 +1,10 @@
 "use client";
 import Badge from "@/components/badge/badge";
 import ImagePreview from "@/components/image/image-preview";
+import { RatingStars } from "@/components/ui/rating-stars";
 import { InventoryProductItem, InventoryProvider } from "@/types/inventory";
+import { GetInventoryReviewsResponse } from "@/types/reviews";
+import { buildInventoryReviewSummary } from "@/utils/reviews";
 import { getVariantConditionLabel } from "@/config/variant-condition-map";
 
 const getWarrantyUnitLabel = (timeUnit?: number) => {
@@ -18,16 +21,23 @@ const getWarrantyUnitLabel = (timeUnit?: number) => {
 
 interface Props {
   inventory: InventoryProvider;
+  reviews?: GetInventoryReviewsResponse;
+  reviewsError?: string;
 }
 
-export default function InventoryDetailView({ inventory }: Props) {
-  console.log(inventory);
+export default function InventoryDetailView({
+  inventory,
+  reviews,
+  reviewsError,
+}: Props) {
+  const reviewSummary = buildInventoryReviewSummary(reviews?.data ?? []);
+
   return (
     <div className="space-y-6 px-4 sm:px-6 py-4">
       {/* Top header card with location + summary */}
       <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center flex-shrink-0">
+          <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center shrink-0">
             {/* simple store icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -163,6 +173,60 @@ export default function InventoryDetailView({ inventory }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-4">
             <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                  <h3 className="text-base font-medium text-gray-900 dark:text-white">
+                    Calificaciones del inventario
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {reviews?.totalCount ?? 0} calificaciones registradas
+                  </p>
+                </div>
+                <RatingStars
+                  value={reviewSummary.averageScore}
+                  showValue
+                  size="md"
+                />
+              </div>
+
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    Calidad del producto
+                  </p>
+                  <RatingStars
+                    value={reviewSummary.productQuality}
+                    size="sm"
+                  />
+                </div>
+                <div className="rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    Calidad del proveedor
+                  </p>
+                  <RatingStars
+                    value={reviewSummary.supplierQuality}
+                    size="sm"
+                  />
+                </div>
+                <div className="rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    Calidad de entrega
+                  </p>
+                  <RatingStars
+                    value={reviewSummary.deliveryQuality}
+                    size="sm"
+                  />
+                </div>
+              </div>
+
+              {reviewsError && (
+                <p className="text-xs text-danger mt-3">
+                  No fue posible cargar todas las calificaciones.
+                </p>
+              )}
+            </div>
+
+            <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
               <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between">
                 <div className="text-center sm:text-left mb-2 sm:mb-0">
                   <h3 className="text-base font-medium text-gray-900 dark:text-white">
@@ -255,6 +319,78 @@ export default function InventoryDetailView({ inventory }: Props) {
                   </div>
                 ))}
               </div>
+            </div>
+
+            <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                <h3 className="text-base font-medium text-gray-900 dark:text-white">
+                  Reseñas del inventario
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {reviews?.totalCount ?? 0} reseñas
+                </p>
+              </div>
+
+              {(reviews?.data?.length ?? 0) === 0 ? (
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Este inventario todavía no tiene reseñas.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {reviews?.data?.map((review) => (
+                    <div
+                      key={review.id}
+                      className="rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                        <div>
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">
+                            {review.userName}
+                          </p>
+                        </div>
+                        <RatingStars value={review.averageScore} showValue size="sm" />
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
+                        <div className="rounded-md border border-gray-200 dark:border-gray-700 p-2">
+                          <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                            Producto
+                          </p>
+                          <RatingStars value={review.productQuality} size="sm" />
+                        </div>
+                        <div className="rounded-md border border-gray-200 dark:border-gray-700 p-2">
+                          <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                            Proveedor
+                          </p>
+                          <RatingStars value={review.supplierQuality} size="sm" />
+                        </div>
+                        <div className="rounded-md border border-gray-200 dark:border-gray-700 p-2">
+                          <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                            Entrega
+                          </p>
+                          <RatingStars value={review.deliveryQuality} size="sm" />
+                        </div>
+                      </div>
+
+                      {review.message && (
+                        <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap mb-3">
+                          {review.message}
+                        </p>
+                      )}
+
+                      {(review.media?.length ?? 0) > 0 && (
+                        <div className="w-24 h-24">
+                          <ImagePreview
+                            className="w-24 h-24 bg-gray-100"
+                            images={review.media}
+                            alt={`media-review-${review.id}`}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 

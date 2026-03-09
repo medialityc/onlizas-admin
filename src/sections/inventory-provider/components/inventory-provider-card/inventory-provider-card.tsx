@@ -13,13 +13,16 @@ import Link from "next/link";
 import { usePermissions } from "@/hooks/use-permissions";
 import { Button } from "@/components/button/button";
 import { PERMISSION_ENUM } from "@/lib/permissions";
+import { InventoryReviewSummary } from "@/types/reviews";
+import { RatingStars } from "@/components/ui/rating-stars";
 
 type Props = {
   item: InventoryProvider;
   className?: string;
+  reviewSummary?: InventoryReviewSummary;
 };
 
-const InventoryProviderCard = ({ item }: Props) => {
+const InventoryProviderCard = ({ item, reviewSummary }: Props) => {
   const { hasPermission } = usePermissions();
   const hasReadPermission = hasPermission([
     PERMISSION_ENUM.RETRIEVE,
@@ -58,7 +61,7 @@ const InventoryProviderCard = ({ item }: Props) => {
               <Package className="h-4 w-4" />
             </div>
           </div>
-          <div className="flex flex-col items-end gap-2 flex-shrink-0">
+          <div className="flex flex-col items-end gap-2 shrink-0">
             <Badge
               variant={item.active ? "info" : "danger"}
               className="size-fit"
@@ -97,6 +100,30 @@ const InventoryProviderCard = ({ item }: Props) => {
             <p className="text-muted-foreground">Tienda</p>
             <p className="font-medium line-clamp-1">{item.storeName}</p>
           </div>
+        </div>
+
+        <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-3 space-y-1.5">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-muted-foreground">Producto</span>
+            <RatingStars value={reviewSummary?.productQuality ?? 0} size="sm" />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-muted-foreground">Proveedor</span>
+            <RatingStars
+              value={reviewSummary?.supplierQuality ?? 0}
+              size="sm"
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-muted-foreground">Entrega</span>
+            <RatingStars
+              value={reviewSummary?.deliveryQuality ?? 0}
+              size="sm"
+            />
+          </div>
+          <p className="text-xs text-muted-foreground pt-1">
+            {reviewSummary?.totalReviews ?? 0} calificaciones
+          </p>
         </div>
       </CardContent>
 
