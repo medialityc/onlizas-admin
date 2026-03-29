@@ -22,7 +22,7 @@ const initValue: ProductVariant = {
   ean: "",
   gtin: "",
   condition: 0,
-  details: [],
+  details: {},
   isActive: true,
   stock: 0,
   price: 0,
