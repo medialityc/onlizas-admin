@@ -86,6 +86,7 @@ export interface SupplierDashboard {
 
 export interface SupplierItemsCount {
   productCount: number;
+  brandCount: number;
   storeCount: number;
   warehouseCount: number;
   zoneCount: number;

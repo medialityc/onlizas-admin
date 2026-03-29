@@ -7,14 +7,14 @@ import { getSupplierItemsCount } from "@/services/dashboard";
 import { WelcomeZoneFormSection } from "@/sections/zones/components/welcome-zone-form-section";
 
 export const metadata: Metadata = {
-  title: "Paso 4: Configura zonas de entrega | Onlizas",
+  title: "Paso 5: Configura zonas de entrega | Onlizas",
 };
 
 export default async function WelcomeZonesPage() {
   const { data } = await getSupplierItemsCount();
 
   if (data?.zoneCount && data.zoneCount > 0) {
-    redirect("/dashboard/welcome/inventory");
+    redirect("/dashboard/welcome/acdata");
   }
 
   const session = await getServerSession();
@@ -29,7 +29,7 @@ export default async function WelcomeZonesPage() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-info">
-            Paso 4 de 6 (opcional)
+            Paso 5 de 7 (opcional)
           </p>
           <h1 className="text-xl font-bold">Configura tus zonas de entrega</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
@@ -47,7 +47,7 @@ export default async function WelcomeZonesPage() {
       </div>
 
       <div className="rounded-xl border bg-white/90 p-4 shadow-sm dark:bg-gray-950/80">
-        <WelcomeZoneFormSection afterCreateRedirectTo="/dashboard/welcome/inventory" />
+        <WelcomeZoneFormSection afterCreateRedirectTo="/dashboard/welcome/acdata" />
       </div>
 
       <footer className="flex items-center justify-between border-t pt-4 text-xs text-muted-foreground">
@@ -56,9 +56,9 @@ export default async function WelcomeZonesPage() {
             Anterior: Almacenes
           </Button>
         </Link>
-        <Link href="/dashboard/welcome/inventory">
+        <Link href="/dashboard/welcome/acdata">
           <Button variant="outline" size="sm">
-            Siguiente: Inventario
+            Siguiente: Cuenta bancaria
           </Button>
         </Link>
       </footer>

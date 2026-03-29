@@ -14,7 +14,7 @@ export default async function WelcomeProductsPage() {
 
   if (data?.productCount && data.productCount > 0) {
     // Si ya creó productos, saltar al siguiente paso pendiente
-    redirect("/dashboard/welcome/stores");
+    redirect("/dashboard/welcome/brands");
   }
 
   return (
@@ -22,7 +22,7 @@ export default async function WelcomeProductsPage() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-info">
-            Paso 1 de 6
+            Paso 1 de 7
           </p>
           <h1 className="text-xl font-bold">Crea tu primer producto</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
@@ -41,16 +41,16 @@ export default async function WelcomeProductsPage() {
       </div>
 
       <div className="rounded-xl border bg-white/90 p-4 shadow-sm dark:bg-gray-950/80">
-        <ProductCreateContainer afterCreateRedirectTo="/dashboard/welcome/stores" />
+        <ProductCreateContainer afterCreateRedirectTo="/dashboard/welcome/brands" />
       </div>
 
       <footer className="flex items-center justify-between border-t pt-4 text-xs text-muted-foreground">
         <span>
-          Próximo paso: configurar una tienda para mostrar tus productos.
+          Próximo paso: crear una marca para organizar tus productos.
         </span>
-        <Link href="/dashboard/welcome/stores">
+        <Link href="/dashboard/welcome/brands">
           <Button variant="outline" size="sm">
-            Siguiente: Tiendas
+            Siguiente: Marcas
           </Button>
         </Link>
       </footer>
