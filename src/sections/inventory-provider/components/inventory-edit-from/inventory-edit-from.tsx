@@ -6,6 +6,7 @@ import { ProductVariant } from "../../schemas/inventory-provider.schema";
 
 type Props = {
   initValue?: ProductVariant;
+  allVariants?: ProductVariant[];
   inventoryId?: string;
   index?: number;
   supplierId?: string;
@@ -15,6 +16,7 @@ type Props = {
 
 const InventoryEditForm = ({
   initValue,
+  allVariants = [],
   inventoryId,
   index,
   supplierId,
@@ -24,6 +26,7 @@ const InventoryEditForm = ({
   const { form, isPending, reset, onSubmit } = useInventoryProviderEditForm(
     initValue,
     inventoryId as string,
+    allVariants,
     handleClose,
   );
 

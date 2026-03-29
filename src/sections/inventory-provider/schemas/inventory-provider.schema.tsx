@@ -9,6 +9,8 @@ const toNumber = (val: unknown, fallback = 0): number => {
   return Number.isNaN(n) ? fallback : n;
 };
 
+const gtinRegex = /^(?:\d{8}|\d{12}|\d{13}|\d{14})$/;
+
 export const productVariants = z
   .object({
     id: z.string().optional(),
@@ -18,6 +20,11 @@ export const productVariants = z
     sku: z.string().min(1, "El SKU es requerida"),
     upc: z.string().min(1, "EL UPC es requerida"),
     ean: z.string().min(1, "EL EAN es requerida"),
+    gtin: z
+      .string()
+      .trim()
+      .min(1, "Debe ingresar un GTIN válido.")
+      .regex(gtinRegex, "GTIN inválido. Usa 8, 12, 13 o 14 dígitos."),
     condition: z.preprocess(
       (v) => toNumber(v),
       z.number().min(1, "La condición es requerida")

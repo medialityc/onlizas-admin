@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const homeBannerSchema = z.object({
   id: z.string().optional(),
-  link: z.string({ error: "Requerido" }).min(5, "Mínimo 5 caracteres"),
+  link: z.string().optional(),
   regionIds: z.array(z.any()).refine((arr) => arr.length > 0, {
     message: "La región es obligatoria.",
     path: ["regionIds"],

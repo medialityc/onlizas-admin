@@ -162,6 +162,8 @@ export function DatePickerBanner({
         <input
           className={cn(
             "w-full border rounded-md px-3 py-2 font-normal pr-10 focus:outline-none focus:ring-2 focus:ring-primary-500",
+            "bg-white text-gray-900 border-gray-300 placeholder:text-gray-400",
+            "dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:placeholder:text-gray-500",
             buttonClassname
           )}
           placeholder="dd/mm/aaaa"
@@ -175,7 +177,7 @@ export function DatePickerBanner({
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-primary-500"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-primary-500 dark:text-gray-400 dark:hover:text-primary-400"
               tabIndex={-1}
               aria-label="Abrir calendario"
             >
@@ -183,15 +185,19 @@ export function DatePickerBanner({
             </button>
           </PopoverTrigger>
           <PopoverContent
-            className={cn("w-auto overflow-hidden p-0 z-[70] bg-white")}
+            className={cn("z-110 w-auto overflow-hidden border-gray-200 bg-white p-0 dark:border-gray-700 dark:bg-gray-800")}
             align="start"
+            side="bottom"
+            sideOffset={4}
+            avoidCollisions
+            collisionPadding={12}
           >
             <Calendar
               mode="single"
               locale={es}
               selected={date}
               onSelect={handleDateChange}
-              className={cn("rounded-md border w-fit", calendarClassname)}
+              className={cn("w-fit rounded-md border dark:border-gray-700", calendarClassname)}
               startMonth={startMonth}
               endMonth={endMonth}
               month={currentMonth}

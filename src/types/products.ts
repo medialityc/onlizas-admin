@@ -144,6 +144,7 @@ export type ProductVariantItem = {
   price: number;
   upc: string;
   ean: string;
+  gtin?: string;
   condition: number;
   limitPurchaseLimit: number;
   warranty: {

@@ -12,6 +12,7 @@ declare module "@origin-space/image-cropper" {
     image: string;
     aspectRatio?: number;
     onCropChange?: (area: Area | null) => void;
+    onZoomChange?: (zoom: number) => void;
     className?: string;
     cropPadding?: number;
     minZoom?: number;

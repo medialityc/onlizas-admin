@@ -5,6 +5,7 @@ export const bannerAdapter = (
 ): HomeBannerFormData => {
   return {
     ...banner,
+    link: banner?.link || "",
     regionIds: banner?.regionIds || [],
   };
 };

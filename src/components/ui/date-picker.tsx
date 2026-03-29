@@ -172,17 +172,19 @@ export function DatePicker({
             </button>
           </PopoverTrigger>
           <PopoverContent
-            className={cn("w-auto overflow-hidden p-0 z-70 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700")}
+            className={cn("z-110 w-auto overflow-hidden border-gray-200 bg-white p-0 dark:border-gray-700 dark:bg-gray-800")}
             align="start"
             side="bottom"
             sideOffset={4}
+            avoidCollisions
+            collisionPadding={12}
           >
             <Calendar
               mode="single"
               locale={es}
               selected={date}
               onSelect={handleDateChange}
-              className={cn("rounded-md border w-fit dark:border-gray-700", calendarClassname)}
+              className={cn("w-fit rounded-md border dark:border-gray-700 dark:bg-gray-800", calendarClassname)}
               startMonth={new Date(1930, 0)} // Enero 1930
               endMonth={new Date(2030, 11)} // Diciembre 2030
               month={currentMonth}

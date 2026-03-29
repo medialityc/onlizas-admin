@@ -153,7 +153,7 @@ export default function BannerCreateModal({
             ]}
             disabled={isSubmitting}
           />
-          <div className="grid grid-cols-1  dark:text-gray-100 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 dark:text-gray-100">
             <RHFDateInput
               name="initDate"
               label="Fecha de Inicio"

@@ -94,6 +94,7 @@ function VariantCard({
               <span className="font-mono">SKU: {variant.sku || "-"}</span>
               <span className="font-mono">UPC: {variant.upc || "-"}</span>
               <span className="font-mono">EAN: {variant.ean || "-"}</span>
+              <span className="font-mono">GTIN: {variant.gtin || "-"}</span>
             </div>
             <div className="mt-1 flex flex-wrap gap-1 items-center">
               <span
@@ -262,6 +263,14 @@ function VariantCard({
                 </span>
                 <span className="font-semibold text-gray-900 dark:text-gray-100">
                   {variant.ean || "-"}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  GTIN
+                </span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">
+                  {variant.gtin || "-"}
                 </span>
               </div>
               <div className="flex flex-col">

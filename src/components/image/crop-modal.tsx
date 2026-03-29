@@ -4,6 +4,11 @@ import React, { useState } from "react";
 import { Cropper } from "@origin-space/image-cropper";
 import SimpleModal from "../modal/modal";
 
+const MIN_ZOOM = 0.2;
+const MAX_ZOOM = 8;
+const ZOOM_STEP = 0.05;
+const DEFAULT_ZOOM = 1;
+
 interface CropDimensions {
   width: number;
   height: number;
@@ -33,7 +38,8 @@ export default function CropModal({
 }) {
   const [cropData, setCropData] = useState<Area | null>(null);
   const [isCropping, setIsCropping] = useState(false);
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(DEFAULT_ZOOM);
+  const [cropperKey, setCropperKey] = useState(0);
 
   const aspectRatio = cropDimensions.width / cropDimensions.height;
 
@@ -96,28 +102,38 @@ export default function CropModal({
     }
   };
 
+  const handleFit = () => {
+    // Lower zoom to show as much of the source image as possible.
+    setZoom(MIN_ZOOM);
+  };
+
+  const handleReset = () => {
+    setZoom(DEFAULT_ZOOM);
+    setCropData(null);
+    // Force remount to reset internal pan/crop state from the cropper runtime.
+    setCropperKey((prev) => prev + 1);
+  };
+
   return (
     <SimpleModal
-      className="max-w-3xl"
+      className="max-w-5xl"
       open={isOpen}
       onClose={onClose}
       title="Recortar imagen"
-      subtitle={`Usa la rueda del mouse para hacer zoom y arrastra para mover la
-            imagen. Resultado final: ${cropDimensions.width}×${cropDimensions.height}px`}
+      subtitle={`Usa la rueda del mouse para hacer zoom y arrastra para mover la imagen. Puedes usar Fit para encuadrar rápido y Reset para reiniciar. Resultado final: ${cropDimensions.width}×${cropDimensions.height}px`}
     >
       <Cropper.Root
+        key={cropperKey}
         image={imageSrc}
         aspectRatio={aspectRatio}
         onCropChange={setCropData}
-        // @ts-expect-error: `onZoomChange` is supported by the runtime Cropper implementation
-        // (the library's compiled code exposes this prop) but its types are missing here.
         onZoomChange={setZoom}
-        className="relative flex h-96 w-full cursor-move touch-none items-center justify-center overflow-hidden rounded-md border focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        className="relative flex h-[52vh] min-h-72 max-h-136 w-full cursor-move touch-none items-center justify-center overflow-hidden rounded-md border focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         cropPadding={25}
-        minZoom={1}
-        maxZoom={3}
+        minZoom={MIN_ZOOM}
+        maxZoom={MAX_ZOOM}
         zoom={zoom}
-        zoomSensitivity={0.005}
+        zoomSensitivity={0.0025}
         keyboardStep={10}
       >
         <Cropper.Description className="sr-only" />
@@ -132,19 +148,39 @@ export default function CropModal({
       </Cropper.Root>
 
       {/* Slider para zoom */}
-      <div className="px-6 py-2 my-2 bg-gray-50 border-t border-gray-400">
-        <label htmlFor="zoom-slider" className="text-sm text-gray-600">
-          Zoom:
-        </label>
+      <div className="my-2 border-t border-gray-400 bg-gray-50 px-6 py-3">
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <label htmlFor="zoom-slider" className="text-sm text-gray-600">
+            Zoom: {zoom.toFixed(2)}x
+          </label>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleFit}
+              disabled={isCropping}
+              className="rounded bg-white px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 disabled:opacity-50"
+            >
+              Fit
+            </button>
+            <button
+              type="button"
+              onClick={handleReset}
+              disabled={isCropping}
+              className="rounded bg-white px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 disabled:opacity-50"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
         <input
           id="zoom-slider"
           type="range"
-          min="1"
-          max="3"
-          step="0.1"
+          min={MIN_ZOOM}
+          max={MAX_ZOOM}
+          step={ZOOM_STEP}
           value={zoom}
           onChange={(e) => setZoom(parseFloat(e.target.value))}
-          className="w-full mt-2"
+          className="mt-2 w-full"
         />
       </div>
 

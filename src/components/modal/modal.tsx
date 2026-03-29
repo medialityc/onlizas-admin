@@ -51,7 +51,7 @@ const SimpleModal = ({
                 ? "max-w-md"
                 : size === "lg"
                   ? "max-w-4xl"
-                  : "max-w-[650px]",
+                  : "max-w-162.5",
             )}
           >
             {/* Header */}
@@ -78,7 +78,7 @@ const SimpleModal = ({
             </div>
 
             {/* Content */}
-            <div className="custom-scrollbar max-h-[85vh] flex-1 overflow-y-auto bg-white px-6 py-4 dark:bg-[#1a1c23]">
+            <div className="custom-scrollbar max-h-[85vh] flex-1 overflow-x-visible overflow-y-auto bg-white px-6 py-4 dark:bg-[#1a1c23]">
               {loading ? (
                 <div className="flex h-72 w-full items-center justify-center">
                   <div className="flex items-center gap-2 text-primary animate-pulse duration-1000 ease-in-out">

@@ -67,7 +67,7 @@ export default function HomeBannerCreateModal({
               { label: "Slideshow", value: "slideshow" },
             ]}
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <RHFDateInput name="startDate" label="Fecha de Inicio" />
             <RHFDateInput name="endDate" label="Fecha de Fin" />
           </div>

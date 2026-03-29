@@ -449,7 +449,7 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
 
           {fieldState.error && (
             <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-md">
-              <ExclamationTriangleIcon className="size-4 text-red-500 mt-0.5 flex-shrink-0" />
+              <ExclamationTriangleIcon className="size-4 text-red-500 mt-0.5 shrink-0" />
               <div>
                 <p className="text-sm font-medium text-red-800 mb-1">
                   Error de validación
