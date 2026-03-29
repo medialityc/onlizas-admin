@@ -2,6 +2,8 @@
  * Utility functions for formatting data
  */
 
+export const DETAILS_MAX_ITEMS = 50;
+
 /**
  * Format a date string or Date object to locale string
  */
@@ -288,7 +290,7 @@ export function detailsArrayToObject(
   {
     trim = true,
     skipEmpty = true,
-    max = 50,
+    max = DETAILS_MAX_ITEMS,
   }: { trim?: boolean; skipEmpty?: boolean; max?: number } = {}
 ) {
   const out: Record<string, string | { value: string; isRequired?: boolean }> =
@@ -322,7 +324,7 @@ export function detailsArrayToObject(
     trimKeys = true,
     trimValues = true,
     skipEmpty = true,
-    max = 50,
+    max = DETAILS_MAX_ITEMS,
     sort = "none",
   }: {
     trimKeys?: boolean;

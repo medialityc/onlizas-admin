@@ -7,7 +7,7 @@ import { getSupplierItemsCount } from "@/services/dashboard";
 import { WelcomeInventoryFormSection } from "@/sections/inventory-provider/components/welcome-inventory-form-section";
 
 export const metadata: Metadata = {
-  title: "Paso 6: Crea tu inventario | Onlizas",
+  title: "Paso 7: Crea tu inventario | Onlizas",
 };
 
 export default async function WelcomeInventoryPage() {
@@ -29,7 +29,7 @@ export default async function WelcomeInventoryPage() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-info">
-            Paso 6 de 6
+            Paso 7 de 7
           </p>
           <h1 className="text-xl font-bold">Crea tu primer inventario</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {
   Boxes,
+  Tag,
   ChevronLeft,
   ChevronRight,
   CreditCard,
@@ -28,10 +29,21 @@ export async function SupplierInventorySteps() {
       cta: "Ir a productos",
     },
     {
+      id: "brands",
+      count: data?.brandCount ?? 0,
+      icon: Tag,
+      label: "Paso 2",
+      title: "Crea una marca",
+      description:
+        "Registra al menos una marca para clasificar tus productos en el catálogo.",
+      href: "/dashboard/brands/new",
+      cta: "Ir a marcas",
+    },
+    {
       id: "stores",
       count: data?.storeCount ?? 0,
       icon: Store,
-      label: "Paso 2",
+      label: "Paso 3",
       title: "Configura una tienda",
       description:
         "Crea al menos una tienda donde se mostrarán y venderán tus productos.",
@@ -42,7 +54,7 @@ export async function SupplierInventorySteps() {
       id: "warehouses",
       count: data?.warehouseCount ?? 0,
       icon: Warehouse,
-      label: "Paso 3",
+      label: "Paso 4",
       title: "Define un almacén",
       description:
         "Registra el almacén desde el cual saldrá el inventario físico.",
@@ -53,7 +65,7 @@ export async function SupplierInventorySteps() {
       id: "zones",
       count: data?.zoneCount ?? 0,
       icon: MapPin,
-      label: "Paso 4",
+      label: "Paso 5",
       title: "Configura zonas de entrega",
       description:
         "(Opcional) Si lo necesitas, crea zonas de entrega para indicar dónde puedes distribuir tus productos.",
@@ -68,14 +80,14 @@ export async function SupplierInventorySteps() {
       title: "Configura tu cuenta bancaria",
       description:
         "Completa los datos de tu cuenta bancaria en tu perfil de proveedor para poder recibir el dinero de tus ventas.",
-      href: "/dashboard/my-acdata",
+      href: "/dashboard/welcome/acdata",
       cta: "Ir a cuentas bancarias",
     },
     {
       id: "inventories",
       count: data?.inventoryCount ?? 0,
       icon: Boxes,
-      label: "Paso 5",
+      label: "Paso 7",
       title: "Crea el inventario",
       description:
         "Este es el último paso de configuración: genera un inventario que relacione producto, tienda, almacén y, si aplican, zonas de entrega.",

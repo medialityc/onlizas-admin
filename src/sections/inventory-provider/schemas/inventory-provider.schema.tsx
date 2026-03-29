@@ -1,5 +1,5 @@
 import { featureSchema } from "@/sections/categories/schemas/category-schema";
-import { detailsArrayToObject } from "@/utils/format";
+import { DETAILS_MAX_ITEMS, detailsArrayToObject } from "@/utils/format";
 import { z } from "zod";
 
 // Helper para coerción robusta de números
@@ -10,6 +10,80 @@ const toNumber = (val: unknown, fallback = 0): number => {
 };
 
 const gtinRegex = /^(?:\d{8}|\d{12}|\d{13}|\d{14})$/;
+
+const detailsArraySchema = z
+  .array(
+    z.object({
+      key: z.string(),
+      value: z.string(),
+      isRequired: z.boolean().optional(),
+    })
+  )
+  .max(DETAILS_MAX_ITEMS, `Máximo ${DETAILS_MAX_ITEMS} detalles permitidos.`)
+  .superRefine((details, ctx) => {
+    const keyCount = new Map<string, number>();
+
+    details.forEach((detail, index) => {
+      const normalizedKey = (detail.key ?? "").trim().toLowerCase();
+
+      if (!normalizedKey) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [index, "key"],
+          message: "La clave es obligatoria.",
+        });
+        return;
+      }
+
+      keyCount.set(normalizedKey, (keyCount.get(normalizedKey) ?? 0) + 1);
+    });
+
+    details.forEach((detail, index) => {
+      const normalizedKey = (detail.key ?? "").trim().toLowerCase();
+      if (!normalizedKey) return;
+
+      if ((keyCount.get(normalizedKey) ?? 0) > 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [index, "key"],
+          message: "La clave ya existe en otro detalle.",
+        });
+      }
+    });
+  });
+
+const detailsRecordSchema = z
+  .record(
+    z.string(),
+    z.union([
+      z.string(),
+      z.object({
+        value: z.string(),
+        isRequired: z.boolean().optional(),
+      }),
+    ])
+  )
+  .superRefine((details, ctx) => {
+    const keys = Object.keys(details);
+
+    if (keys.length > DETAILS_MAX_ITEMS) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: [],
+        message: `Máximo ${DETAILS_MAX_ITEMS} detalles permitidos.`,
+      });
+    }
+
+    keys.forEach((key) => {
+      if (!key.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [key],
+          message: "La clave es obligatoria.",
+        });
+      }
+    });
+  });
 
 export const productVariants = z
   .object({
@@ -34,26 +108,7 @@ export const productVariants = z
       z.boolean().default(true)
     ),
     details: z
-      .union([
-        z
-          .array(
-            z.object({
-              key: z.string(),
-              value: z.string(),
-              isRequired: z.boolean().optional(),
-            })
-          ),
-        z.record(
-          z.string(),
-          z.union([
-            z.string(),
-            z.object({
-              value: z.string(),
-              isRequired: z.boolean().optional(),
-            }),
-          ])
-        ),
-      ])
+      .union([detailsArraySchema, detailsRecordSchema])
       .transform((details) => {
         if (typeof details === "object" && !Array.isArray(details)) {
           return details; // ya es record
