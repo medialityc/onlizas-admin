@@ -9,7 +9,7 @@ import { setHomeBannerFormData } from "../constants/banner-data";
 import { createHomeBanner, updateHomeBanner } from "@/services/homebanner";
 
 const initValues: HomeBannerFormData = {
-  link: "/products",
+  link: "",
   imageMobileUrl: "",
   imageDesktopUrl: "",
   active: true,

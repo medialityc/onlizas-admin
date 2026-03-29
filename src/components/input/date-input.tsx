@@ -225,22 +225,25 @@ export function DayPickerWithInput({
               id={`${id}-picker`}
               variant="ghost"
               icon={<CalendarIcon className="size-3.5" />}
-              className="absolute top-1/2 right-2 size-6 -translate-y-1/2"
+              className="absolute top-1/2 right-2 size-6 -translate-y-1/2 text-gray-600 hover:text-primary-500 dark:text-gray-300 dark:hover:text-primary-400"
             >
               <span className="sr-only">Select date</span>
             </IconButton>
           </PopoverTrigger>
           <PopoverContent
-            alignOffset={40}
-            sideOffset={-80}
-            className="z-100 w-auto p-0"
-            align="end"
+            className="z-110 w-auto border-gray-200 bg-white p-0 dark:border-gray-700 dark:bg-gray-800"
+            align="start"
+            side="bottom"
+            sideOffset={4}
+            avoidCollisions
+            collisionPadding={12}
           >
             <Calendar
               mode="single"
               selected={date}
               captionLayout="dropdown"
               locale={es}
+              className="dark:border-gray-700"
               month={month}
               onMonthChange={setMonth}
               onSelect={(date) => {

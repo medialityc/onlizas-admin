@@ -269,6 +269,15 @@ const InventoryVariantFrom = ({
               required
             />
           </div>
+          <div>
+            <RHFInputWithLabel
+              name="gtin"
+              label="GTIN"
+              type="text"
+              placeholder="Ingrese GTIN"
+              required
+            />
+          </div>
 
           <div>
             <RHFSelectWithLabel

@@ -8,10 +8,13 @@ export async function buildCreateProductVariantFormData(
   input: ProductVariant
 ): Promise<FormData> {
   const fd = new FormData();
+  const normalizedGtin = String(input.gtin ?? "").trim();
 
   if (input.sku) fd.append("sku", input.sku);
   if (input.upc) fd.append("upc", input.upc);
   if (input.ean) fd.append("ean", input.ean);
+  // Backend expects gtin as string field in multipart/form-data.
+  fd.set("gtin", String(normalizedGtin));
 
   if (input.details && typeof input.details === "object") {
     const d: Record<string, string> = {};

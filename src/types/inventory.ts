@@ -7,6 +7,7 @@ export type InventoryProductItem = {
   productName: string;
   upc: string;
   ean: string;
+  gtin?: string;
   sku: string;
   condition: number;
   price: number;

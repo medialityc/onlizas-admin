@@ -62,6 +62,7 @@ function EditContainer({ inventory, features }: Props) {
       sku: "",
       upc: "",
       ean: "",
+      gtin: "",
       condition: 0,
       details: featuresNormalized,
       isActive: true,
@@ -102,6 +103,7 @@ function EditContainer({ inventory, features }: Props) {
         open={createModal.open}
         onClose={() => closeModal("create")}
         initValue={initValue}
+        allVariants={inventory?.products || []}
         inventoryId={inventory.id as string}
         supplierId={inventory.supplierId}
         isPacking={inventory.isPacking}
@@ -112,6 +114,7 @@ function EditContainer({ inventory, features }: Props) {
           open={editModal.open}
           onClose={() => closeModal("edit")}
           initValue={selectedVariant}
+          allVariants={inventory?.products || []}
           inventoryId={inventory.id as string}
           supplierId={inventory.supplierId}
           isPacking={inventory.isPacking}

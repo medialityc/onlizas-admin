@@ -20,6 +20,7 @@ const initValue: ProductVariant = {
   sku: "",
   upc: "",
   ean: "",
+  gtin: "",
   condition: 0,
   details: {},
   isActive: true,
@@ -48,6 +49,7 @@ const initValue: ProductVariant = {
 export const useInventoryProviderEditForm = (
   defaultValues: ProductVariant = initValue,
   inventoryId: string,
+  allVariants: ProductVariant[] = [],
   handleClose?: () => void
 ) => {
   const { reset, ...form } = useForm<
@@ -62,6 +64,7 @@ export const useInventoryProviderEditForm = (
   // Solo resetear cuando el ID cambia (edición de diferentes variantes)
   // No resetear en cada cambio de defaultValues para evitar perder valores del formulario
   const variantId = defaultValues?.id;
+  const normalizeGtin = (value?: string) => (value || "").trim();
   
   useEffect(() => {
     if (defaultValues && variantId) {
@@ -104,7 +107,28 @@ export const useInventoryProviderEditForm = (
     reset,
     isPending,
     onSubmit: (values: ProductVariant) => {
-      mutate(values);
+      const normalizedGtin = normalizeGtin(values.gtin);
+
+      const hasDuplicateGtin = allVariants.some((variant) => {
+        if (!variant?.id || variant.id === values.id) {
+          return false;
+        }
+        return normalizeGtin(variant.gtin) === normalizedGtin;
+      });
+
+      if (hasDuplicateGtin) {
+        form.setError("gtin", {
+          type: "manual",
+          message: "El código GTIN ya existe en otra variante de este producto.",
+        });
+        return;
+      }
+
+      form.clearErrors("gtin");
+      mutate({
+        ...values,
+        gtin: normalizedGtin,
+      });
     },
   };
 };

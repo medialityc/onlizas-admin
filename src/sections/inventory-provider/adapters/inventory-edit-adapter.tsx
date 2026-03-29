@@ -22,6 +22,7 @@ export const getInventoryEditAdapter = (inventory: InventoryProvider): Inventory
         sku: prod.sku || "",
         upc: prod.upc || "",
         ean: prod.ean || "",
+        gtin: prod.gtin || "",
         condition: prod.condition || 0,
         stock: prod.stock || 0,
         price: prod.price || 0,

@@ -10,6 +10,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   initValue?: ProductVariant | undefined;
+  allVariants?: ProductVariant[];
   inventoryId: string;
   supplierId?: string;
   isPacking: boolean;
@@ -19,6 +20,7 @@ export default function CreateInventoryVariantModal({
   open,
   onClose,
   initValue,
+  allVariants = [],
   inventoryId,
   supplierId,
   isPacking,
@@ -45,6 +47,7 @@ export default function CreateInventoryVariantModal({
         )}
         <InventoryEditForm
           initValue={initValue}
+          allVariants={allVariants}
           inventoryId={inventoryId}
           supplierId={supplierId}
           isPacking={isPacking}

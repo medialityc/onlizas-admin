@@ -31,7 +31,9 @@ export const setHomeBannerFormData = async (
   }
 
   // Datos básicos del banner
-  formData.append("link", String(banner.link));
+  if (typeof banner.link === "string" && banner.link.trim().length > 0) {
+    formData.append("link", banner.link.trim());
+  }
   formData.append("active", String(banner.active));
 
   formData.append(`regionIds`, JSON.stringify(banner?.regionIds));
