@@ -26,7 +26,6 @@ export function WelcomeMeWarehouseFormSection({
         id: Number.isNaN(existingWarehouseId) ? undefined : existingWarehouseId,
         name: existingWarehouse.name,
         active: existingWarehouse.active,
-        rules: existingWarehouse.rules,
         address: {
           name: existingWarehouse.address?.name ?? "Principal",
           mainStreet: existingWarehouse.address?.mainStreet ?? "",
