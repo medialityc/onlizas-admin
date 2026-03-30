@@ -18,13 +18,20 @@ import { getValidSuppliers } from "@/services/supplier";
 type Props = {
   isSubmitting: boolean;
   handleClose: VoidFunction;
+  isEditMode?: boolean;
 };
-function StoreCreateForm({ handleClose, isSubmitting }: Props) {
+function StoreCreateForm({ handleClose, isSubmitting, isEditMode = false }: Props) {
   const { watch, setValue } = useFormContext<StoreFormData>();
   const ownerId = watch("ownerId");
   const storeName = watch("name");
   const storeUrl = watch("url");
   const urlTouchedRef = useRef(false);
+
+  useEffect(() => {
+    if (isEditMode) {
+      urlTouchedRef.current = true;
+    }
+  }, [isEditMode]);
 
   // Control de permisos
   const { hasPermission } = usePermissions();
@@ -225,7 +232,7 @@ function StoreCreateForm({ handleClose, isSubmitting }: Props) {
             loading={isSubmitting}
             className="btn btn-primary"
           >
-            Crear Tienda
+            {isEditMode ? "Guardar Cambios" : "Crear Tienda"}
           </LoaderButton>
         )}
       </div>

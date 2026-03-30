@@ -12,32 +12,36 @@ import {
   StoreFormData,
   storeSchema,
 } from "@/sections/stores/modals/stores-schema";
-import { createStore } from "@/services/stores";
+import { createStore, updateSupplierStore } from "@/services/stores";
 import { isValidUrl, urlToFile } from "@/utils/format";
 import StoreCreateForm from "@/sections/stores/modals/store-create-form";
+import { Store } from "@/types/stores";
 
 interface WelcomeStoreFormSectionProps {
   afterCreateRedirectTo: string;
+  existingStore?: Partial<StoreFormData> & Pick<Store, "id">;
 }
 
 export function WelcomeStoreFormSection({
   afterCreateRedirectTo,
+  existingStore,
 }: WelcomeStoreFormSectionProps) {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const isEditMode = Boolean(existingStore?.id);
 
   const methods = useForm<StoreFormData>({
     resolver: zodResolver(storeSchema),
     defaultValues: {
-      name: "",
-      url: "",
-      email: "",
-      phoneNumber: "",
-      countryCode: "",
-      address: "",
-      logoStyle: undefined,
-      ownerId: undefined,
-      businessId: undefined,
+      name: existingStore?.name ?? "",
+      url: existingStore?.url ?? "",
+      email: existingStore?.email ?? "",
+      phoneNumber: existingStore?.phoneNumber ?? "",
+      countryCode: existingStore?.countryCode ?? "",
+      address: existingStore?.address ?? "",
+      logoStyle: existingStore?.logoStyle ?? undefined,
+      ownerId: existingStore?.ownerId ?? undefined,
+      businessId: existingStore?.businessId ?? undefined,
     },
   });
 
@@ -84,10 +88,14 @@ export function WelcomeStoreFormSection({
       formData.append("countryCode", data.countryCode);
       formData.append("address", data.address);
 
-      const response = await createStore(formData);
+      const response = isEditMode
+        ? await updateSupplierStore(existingStore!.id, formData)
+        : await createStore(formData);
 
-      if (response && response.status === 200) {
-        toast.success("Tienda creada exitosamente");
+      if (response && (response.status === 200 || response.status === 201)) {
+        toast.success(
+          isEditMode ? "Tienda actualizada exitosamente" : "Tienda creada exitosamente",
+        );
         router.push(afterCreateRedirectTo);
       } else if (response.status === 409) {
         toast.error("Ya existe un negocio con ese código");
@@ -114,6 +122,7 @@ export function WelcomeStoreFormSection({
         <StoreCreateForm
           isSubmitting={isSubmitting}
           handleClose={handleClose}
+          isEditMode={isEditMode}
         />
       </FormProvider>
     </div>

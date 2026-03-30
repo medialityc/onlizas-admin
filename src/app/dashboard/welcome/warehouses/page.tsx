@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/button/button";
+import { getAllMeWarehouses } from "@/services/warehouses";
 import { WelcomeMeWarehouseFormSection } from "@/sections/warehouses/components/welcome-me-warehouse-form-section";
 
 export const metadata: Metadata = {
@@ -8,6 +9,11 @@ export const metadata: Metadata = {
 };
 
 export default async function WelcomeWarehousesPage() {
+  const warehousesResponse = await getAllMeWarehouses({
+    pagination: { page: 1, pageSize: 1 },
+  });
+  const existingWarehouse = warehousesResponse.data?.data?.[0];
+
   return (
     <div className="space-y-6 p-4 sm:p-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -31,7 +37,10 @@ export default async function WelcomeWarehousesPage() {
       </div>
 
       <div className="rounded-xl border bg-white/90 p-4 shadow-sm dark:bg-gray-950/80">
-        <WelcomeMeWarehouseFormSection afterCreateRedirectTo="/dashboard/welcome/zones" />
+        <WelcomeMeWarehouseFormSection
+          afterCreateRedirectTo="/dashboard/welcome/zones"
+          existingWarehouse={existingWarehouse}
+        />
       </div>
 
       <footer className="flex items-center justify-between border-t pt-4 text-xs text-muted-foreground">
