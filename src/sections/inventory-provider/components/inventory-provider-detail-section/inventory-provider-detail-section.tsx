@@ -1,11 +1,14 @@
 import React from "react";
 import { RHFInputWithLabel } from "@/components/react-hook-form";
-import Badge from "@/components/badge/badge";
+import { Button } from "@/components/button/button";
+import { AlertBox } from "@/components/alert/alert-box";
+import IconClipboardText from "@/components/icon/icon-clipboard-text";
+import IconTrash from "@/components/icon/icon-trash";
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import Tippy from "@tippyjs/react";
-import { Tooltip } from "@mantine/core";
 import { getVariantConditionLabel } from "@/config/variant-condition-map";
+import { DETAILS_MAX_ITEMS } from "@/utils/format";
 
 const getWarrantyUnitLabel = (timeUnit?: number) => {
   switch (timeUnit) {
@@ -20,7 +23,7 @@ const getWarrantyUnitLabel = (timeUnit?: number) => {
 };
 
 const InventoryProviderDetailSection = () => {
-  const { control, watch, setValue } = useFormContext();
+  const { control, watch, setValue, formState } = useFormContext();
 
   // Nuevas propiedades de variante que queremos mostrar en sección de detalles
   const [
@@ -49,108 +52,169 @@ const InventoryProviderDetailSection = () => {
 
   const detailName = `details`;
 
-  const { fields } = useFieldArray({ control, name: detailName });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: detailName,
+  });
 
   const watchedDetails = watch(detailName);
 
-  // Si es un array (fieldArray), usamos el render original
-  if (Array.isArray(watchedDetails) && fields?.length > 0) {
-    return (
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-2 mb-2">
+  if (!Array.isArray(watchedDetails)) {
+    return null;
+  }
+
+  const mappedDetails = fields.map((field, index) => {
+    const watched = watchedDetails?.[index] as any;
+    const fallback = field as any;
+
+    const key = String(watched?.key ?? fallback?.key ?? "");
+    const featureName = watched?.featureName ?? fallback?.featureName ?? key;
+
+    return {
+      index,
+      id: fallback?.id ?? `${key}-${index}`,
+      key,
+      featureName,
+      featureDescription:
+        watched?.featureDescription ?? fallback?.featureDescription,
+      suggestions: watched?.suggestions ?? fallback?.suggestions ?? [],
+      isRequired:
+        watched?.isRequired === true || fallback?.isRequired === true,
+      isFeature:
+        watched?.isFeature === true || fallback?.isFeature === true,
+    };
+  });
+
+  const featureDetails = mappedDetails.filter((detail) => detail.isFeature);
+  const customDetails = mappedDetails.filter((detail) => !detail.isFeature);
+  const isLimitReached = fields.length >= DETAILS_MAX_ITEMS;
+
+  const addCustomDetail = () => {
+    if (isLimitReached) return;
+
+    append({
+      key: "",
+      value: "",
+      isFeature: false,
+    } as any);
+  };
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2 mb-2">
+        <div className="flex items-center justify-between">
           <p className="font-bold text-sm dark:text-black-light">
             Características del Producto
           </p>
-          {/* Bloque de propiedades nuevas */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 bg-gray-50 dark:bg-gray-800/40 p-3 rounded-lg">
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-500 dark:text-black-light">
-                Condición
-              </span>
-              <span className="text-sm font-medium dark:text-black-light">
-                {getVariantConditionLabel(condition)}
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-500 dark:text-black-light">
-                Estado
-              </span>
-              <span className="text-sm font-medium dark:text-black-light">
-                {isActive ? "Activa" : "Inactiva"}
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-500 dark:text-black-light">
-                Prime
-              </span>
-              <span className="text-sm font-medium dark:text-black-light">
-                {isPrime ? "Sí" : "No"}
-              </span>
-            </div>
-            {isLimit && (
-              <div className="flex flex-col">
-                <span className="text-xs text-gray-500 dark:text-black-light">
-                  Límite de compra
-                </span>
-                <span className="text-sm font-medium dark:text-black-light">
-                  {purchaseLimit || 0}
-                </span>
-              </div>
-            )}
-            {warranty?.isWarranty && (
-              <div className="flex flex-col">
-                <span className="text-xs text-gray-500 dark:text-black-light">
-                  Garantía
-                </span>
-                <span className="text-sm font-medium dark:text-black-light">
-                  {warranty.warrantyTime}{" "}
-                  {getWarrantyUnitLabel(warranty.timeUnit)} /{" "}
-                  {Number(warranty.warrantyPrice || 0) > 0
-                    ? `$${warranty.warrantyPrice}`
-                    : "GRATIS"}
-                </span>
-              </div>
-            )}
-            {packageDelivery && (
-              <div className="flex flex-col">
-                <span className="text-xs text-gray-500 dark:text-black-light">
-                  Paquetería
-                </span>
-                <span className="text-sm font-medium dark:text-black-light">
-                  {volume ? `${volume} vol` : "-"}{" "}
-                  {weight ? ` / ${weight} lb` : ""}
-                </span>
-              </div>
-            )}
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-slate-800 rounded-full">
+            <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
+              {fields.length}
+            </span>
+            <span className="text-xs text-gray-400 dark:text-gray-500">
+              /{DETAILS_MAX_ITEMS}
+            </span>
           </div>
         </div>
 
+        {/* Bloque de propiedades nuevas */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 bg-gray-50 dark:bg-gray-800/40 p-3 rounded-lg">
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-500 dark:text-black-light">
+              Condición
+            </span>
+            <span className="text-sm font-medium dark:text-black-light">
+              {getVariantConditionLabel(condition)}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-500 dark:text-black-light">
+              Estado
+            </span>
+            <span className="text-sm font-medium dark:text-black-light">
+              {isActive ? "Activa" : "Inactiva"}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-500 dark:text-black-light">
+              Prime
+            </span>
+            <span className="text-sm font-medium dark:text-black-light">
+              {isPrime ? "Sí" : "No"}
+            </span>
+          </div>
+          {isLimit && (
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500 dark:text-black-light">
+                Límite de compra
+              </span>
+              <span className="text-sm font-medium dark:text-black-light">
+                {purchaseLimit || 0}
+              </span>
+            </div>
+          )}
+          {warranty?.isWarranty && (
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500 dark:text-black-light">
+                Garantía
+              </span>
+              <span className="text-sm font-medium dark:text-black-light">
+                {warranty.warrantyTime} {getWarrantyUnitLabel(warranty.timeUnit)} /
+                {" "}
+                {Number(warranty.warrantyPrice || 0) > 0
+                  ? `$${warranty.warrantyPrice}`
+                  : "GRATIS"}
+              </span>
+            </div>
+          )}
+          {packageDelivery && (
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500 dark:text-black-light">
+                Paquetería
+              </span>
+              <span className="text-sm font-medium dark:text-black-light">
+                {volume ? `${volume} vol` : "-"} {weight ? ` / ${weight} lb` : ""}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {typeof formState?.errors?.details?.message === "string" && (
+        <AlertBox
+          message={formState.errors.details.message}
+          title="Error en detalles"
+          variant="danger"
+        />
+      )}
+
+      {featureDetails.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {fields?.map((feat: any, detailIndex: number) => {
-            const inputPath = `${detailName}.${detailIndex}.value`;
+          {featureDetails.map((feat) => {
+            const inputPath = `${detailName}.${feat.index}.value`;
+            const keyPath = `${detailName}.${feat.index}.key`;
             const currentValue = watch(inputPath) ?? "";
+
             return (
-              <div className="col-span-1" key={feat?.id || detailIndex}>
+              <div className="col-span-1" key={feat.id}>
                 <div className="sr-only">
                   <RHFInputWithLabel
-                    name={`${detailName}.${detailIndex}.key`}
+                    name={keyPath}
                     type="text"
-                    label={feat?.featureName || feat?.key}
-                    placeholder={feat?.featureDescription ?? feat?.featureName}
+                    label={feat.featureName}
                     readOnly
                   />
                 </div>
                 <div className="flex flex-row">
                   <RHFInputWithLabel
-                    name={`${detailName}.${detailIndex}.value`}
+                    name={inputPath}
                     type="text"
                     label={
                       <div className="flex flex-row gap-1">
-                        <p>{feat?.featureName || feat?.key}</p>
-                        {feat?.featureDescription && (
+                        <p>{feat.featureName}</p>
+                        {feat.featureDescription && (
                           <Tippy
                             trigger="mouseenter focus"
-                            content={feat?.featureDescription}
+                            content={feat.featureDescription}
                             className=""
                           >
                             <InformationCircleIcon className="w-5 h-5 text-blue-500" />
@@ -158,13 +222,11 @@ const InventoryProviderDetailSection = () => {
                         )}
                       </div>
                     }
-                    placeholder={feat?.featureDescription ?? feat?.featureName}
-                    required={
-                      watchedDetails?.[detailIndex]?.isRequired === true
-                    }
+                    placeholder={feat.featureDescription ?? feat.featureName}
+                    required={feat.isRequired}
                   />
                   <div className="ml-2 self-center flex flex-col gap-1">
-                    {feat?.suggestions && feat?.suggestions.length > 0 && (
+                    {feat.suggestions && feat.suggestions.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-1">
                         {feat.suggestions.map((sugg: string, i: number) => {
                           const isActive = currentValue === sugg;
@@ -177,10 +239,18 @@ const InventoryProviderDetailSection = () => {
                               onKeyDown={(e) => {
                                 if (e.key === "Enter" || e.key === " ") {
                                   e.preventDefault();
-                                  setValue(inputPath, sugg);
+                                  setValue(inputPath, sugg, {
+                                    shouldDirty: true,
+                                    shouldValidate: true,
+                                  });
                                 }
                               }}
-                              onClick={() => setValue(inputPath, sugg)}
+                              onClick={() =>
+                                setValue(inputPath, sugg, {
+                                  shouldDirty: true,
+                                  shouldValidate: true,
+                                })
+                              }
                               className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded focus:outline-none focus:ring-2 focus:ring-offset-1 ${
                                 isActive
                                   ? "bg-blue-600 text-white dark:bg-blue-500"
@@ -199,162 +269,90 @@ const InventoryProviderDetailSection = () => {
             );
           })}
         </div>
-      </div>
-    );
-  }
+      )}
 
-  // Si es un objeto { key: value }, iteramos sus entradas
-  if (watchedDetails && typeof watchedDetails === "object") {
-    const entries = Object.entries(watchedDetails || {});
-    if (entries.length === 0) return null;
-
-    return (
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-2 mb-2">
-          <p className="font-bold text-sm dark:text-black-light">
-            Características del Producto
-          </p>
-          {/* Bloque de propiedades nuevas */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 bg-gray-50 dark:bg-gray-800/40 p-3 rounded-lg">
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-500 dark:text-black-light">
-                Condición
-              </span>
-              <span className="text-sm font-medium dark:text-black-light">
-                {getVariantConditionLabel(condition)}
-              </span>
+      <div className="bg-blur-card">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-50 dark:bg-blue-950/50 rounded-lg">
+              <IconClipboardText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-500 dark:text-black-light">
-                Estado
-              </span>
-              <span className="text-sm font-medium dark:text-black-light">
-                {isActive ? "Activa" : "Inactiva"}
-              </span>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                Detalles adicionales
+              </h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Agrega pares clave-valor personalizados para esta variante
+              </p>
             </div>
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-500 dark:text-black-light">
-                Prime
-              </span>
-              <span className="text-sm font-medium dark:text-black-light">
-                {isPrime ? "Sí" : "No"}
-              </span>
-            </div>
-            {isLimit && (
-              <div className="flex flex-col">
-                <span className="text-xs text-gray-500 dark:text-black-light">
-                  Límite de compra
-                </span>
-                <span className="text-sm font-medium dark:text-black-light">
-                  {purchaseLimit || 0}
-                </span>
-              </div>
-            )}
-            {warranty?.isWarranty && (
-              <div className="flex flex-col">
-                <span className="text-xs text-gray-500 dark:text-black-light">
-                  Garantía
-                </span>
-                <span className="text-sm font-medium dark:text-black-light">
-                  {warranty.warrantyTime}{" "}
-                  {getWarrantyUnitLabel(warranty.timeUnit)} /{" "}
-                  {Number(warranty.warrantyPrice || 0) > 0
-                    ? `$${warranty.warrantyPrice}`
-                    : "GRATIS"}
-                </span>
-              </div>
-            )}
-            {packageDelivery && (
-              <div className="flex flex-col">
-                <span className="text-xs text-gray-500 dark:text-black-light">
-                  Paquetería
-                </span>
-                <span className="text-sm font-medium dark:text-black-light">
-                  {volume ? `${volume} vol` : "-"}{" "}
-                  {weight ? ` / ${weight} lb` : ""}
-                </span>
-              </div>
-            )}
           </div>
+
+          <Button
+            type="button"
+            onClick={addCustomDetail}
+            disabled={isLimitReached}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-slate-700 text-white rounded-lg font-medium text-sm transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 shadow-sm hover:shadow-md"
+          >
+            Agregar
+          </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {entries.map(([key, value]) => {
-            const isObj =
-              value && typeof value === "object" && "value" in value;
-            const inputName = isObj
-              ? `${detailName}.${key}.value`
-              : `${detailName}.${key}`;
-            const placeholder = String(
-              (isObj ? (value as any).value : value) ?? "",
-            );
-            const required = isObj ? (value as any).isRequired === true : false;
-
-            return (
-              <div className="col-span-1" key={key}>
-                <div className="flex flex-row">
-                  <RHFInputWithLabel
-                    name={inputName}
-                    type="text"
-                    label={key}
-                    placeholder={placeholder}
-                    required={required}
-                  />
-                  <div className="ml-2 self-center flex flex-col gap-1">
-                    {isObj && (value as any).featureDescription && (
-                      <Tooltip
-                        label={(value as any).featureDescription}
-                        className="text-xs"
-                      >
-                        <InformationCircleIcon className="w-5 h-5 text-blue-500" />
-                      </Tooltip>
-                    )}
-
-                    {isObj &&
-                      (value as any).suggestions &&
-                      (value as any).suggestions.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {(value as any).suggestions.map(
-                            (sugg: string, i: number) => {
-                              const currentValueObj = watch(inputName) ?? "";
-                              const isActive = currentValueObj === sugg;
-                              return (
-                                <button
-                                  key={i}
-                                  type="button"
-                                  tabIndex={0}
-                                  aria-pressed={isActive}
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter" || e.key === " ") {
-                                      e.preventDefault();
-                                      setValue(inputName, sugg);
-                                    }
-                                  }}
-                                  onClick={() => setValue(inputName, sugg)}
-                                  className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded focus:outline-none focus:ring-2 focus:ring-offset-1 ${
-                                    isActive
-                                      ? "bg-blue-600 text-white dark:bg-blue-500"
-                                      : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
-                                  }`}
-                                >
-                                  {sugg}
-                                </button>
-                              );
-                            },
-                          )}
-                        </div>
-                      )}
+        {customDetails.length === 0 ? (
+          <div className="py-8 text-center">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              No hay detalles adicionales configurados.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {customDetails.map((detail) => (
+              <div
+                key={detail.id}
+                className="group p-4 bg-gray-50/50 dark:bg-slate-800/50 rounded-lg border border-gray-100 dark:border-slate-700/50 hover:border-gray-200 dark:hover:border-slate-600 transition-all duration-200 hover:shadow-sm"
+              >
+                <div className="flex flex-col sm:flex-row gap-3 items-end">
+                  <div className="flex-1 min-w-0">
+                    <RHFInputWithLabel
+                      label="Clave"
+                      name={`details.${detail.index}.key`}
+                      placeholder="Ej: Color comercial, Acabado, Línea..."
+                      className="w-full"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <RHFInputWithLabel
+                      label="Valor"
+                      name={`details.${detail.index}.value`}
+                      placeholder="Ej: Azul marino, Mate, Premium..."
+                      className="w-full"
+                    />
+                  </div>
+                  <div className="shrink-0">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => remove(detail.index)}
+                      title="Eliminar detalle"
+                    >
+                      <IconTrash className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
+            ))}
+          </div>
+        )}
 
-  return null;
+        {isLimitReached && (
+          <p className="text-xs text-amber-600 dark:text-amber-400 mt-3">
+            Alcanzaste el límite de {DETAILS_MAX_ITEMS} detalles entre
+            características y adicionales.
+          </p>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default InventoryProviderDetailSection;

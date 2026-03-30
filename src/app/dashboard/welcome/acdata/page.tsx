@@ -7,7 +7,7 @@ import { getSupplierItemsCount } from "@/services/dashboard";
 import { WelcomeSupplierAccountFormSection } from "@/sections/finance/components/welcome-supplier-account-form-section";
 
 export const metadata: Metadata = {
-  title: "Paso 5: Configura tu cuenta bancaria | Onlizas",
+  title: "Paso 6: Configura tu cuenta bancaria | Onlizas",
 };
 
 export default async function WelcomeAcdataPage() {
@@ -29,7 +29,7 @@ export default async function WelcomeAcdataPage() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-info">
-            Paso 5 de 6
+            Paso 6 de 7
           </p>
           <h1 className="text-xl font-bold">Configura tu cuenta bancaria</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">

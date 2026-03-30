@@ -6,7 +6,7 @@ import { getSupplierItemsCount } from "@/services/dashboard";
 import { WelcomeStoreFormSection } from "@/sections/stores/components/welcome-store-form-section";
 
 export const metadata: Metadata = {
-  title: "Paso 2: Configura una tienda | Onlizas",
+  title: "Paso 3: Configura una tienda | Onlizas",
 };
 
 export default async function WelcomeStoresPage() {
@@ -21,7 +21,7 @@ export default async function WelcomeStoresPage() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-info">
-            Paso 2 de 6
+            Paso 3 de 7
           </p>
           <h1 className="text-xl font-bold">Configura tu primera tienda</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
@@ -43,9 +43,9 @@ export default async function WelcomeStoresPage() {
       </div>
 
       <footer className="flex items-center justify-between border-t pt-4 text-xs text-muted-foreground">
-        <Link href="/dashboard/welcome/products">
+        <Link href="/dashboard/welcome/brands">
           <Button variant="outline" size="sm">
-            Anterior: Productos
+            Anterior: Marcas
           </Button>
         </Link>
         <Link href="/dashboard/welcome/warehouses">

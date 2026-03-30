@@ -14,6 +14,7 @@ const STEP_ORDER: Array<{
   description: string;
   counterKey:
     | "productCount"
+    | "brandCount"
     | "storeCount"
     | "warehouseCount"
     | "zoneCount"
@@ -25,6 +26,12 @@ const STEP_ORDER: Array<{
     label: "Productos",
     description: "Crea tu catálogo inicial de productos.",
     counterKey: "productCount",
+  },
+  {
+    id: "brands",
+    label: "Marcas",
+    description: "Crea una marca inicial para tus productos.",
+    counterKey: "brandCount",
   },
   {
     id: "stores",
@@ -71,7 +78,9 @@ export default async function WelcomePage() {
     redirect("/dashboard");
   }
 
-  const firstPending = STEP_ORDER.find((step) => data[step.counterKey] === 0);
+  const firstPending = STEP_ORDER.find(
+    (step) => (data[step.counterKey] ?? 0) === 0,
+  );
 
   if (!firstPending) {
     redirect("/dashboard");
@@ -94,9 +103,9 @@ export default async function WelcomePage() {
             </h1>
             <p className="max-w-2xl text-sm text-muted-foreground">
               Esta vista te acompaña paso a paso para dejar tu cuenta lista:
-              crear productos, configurar tiendas y almacenes, (de forma
-              opcional) zonas de entrega, registrar tus cuentas bancarias para
-              cobrar y, como último paso, crear el inventario. Puedes
+              crear productos y marcas, configurar tiendas y almacenes, (de
+              forma opcional) zonas de entrega, registrar tus cuentas bancarias
+              para cobrar y, como último paso, crear el inventario. Puedes
               completarla a tu ritmo, siempre retomando desde donde la dejaste.
             </p>
             <p className="text-xs text-muted-foreground">

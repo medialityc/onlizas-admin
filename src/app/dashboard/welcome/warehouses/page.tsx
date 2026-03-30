@@ -1,27 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Button } from "@/components/button/button";
-import { getSupplierItemsCount } from "@/services/dashboard";
 import { WelcomeMeWarehouseFormSection } from "@/sections/warehouses/components/welcome-me-warehouse-form-section";
 
 export const metadata: Metadata = {
-  title: "Paso 3: Define un almacén | Onlizas",
+  title: "Paso 4: Define un almacén | Onlizas",
 };
 
 export default async function WelcomeWarehousesPage() {
-  const { data } = await getSupplierItemsCount();
-
-  if (data?.warehouseCount && data.warehouseCount > 0) {
-    redirect("/dashboard/welcome/zones");
-  }
-
   return (
     <div className="space-y-6 p-4 sm:p-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-info">
-            Paso 3 de 6
+            Paso 4 de 7
           </p>
           <h1 className="text-xl font-bold">Registra tu primer almacén</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">

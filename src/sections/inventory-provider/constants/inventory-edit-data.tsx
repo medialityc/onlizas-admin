@@ -2,6 +2,7 @@ import { isFileLike } from "@/utils/is-file";
 import { ProductVariant } from "../schemas/inventory-provider.schema";
 import { processImageFile } from "@/utils/image-helpers";
 import { toast } from "react-toastify";
+import { detailsArrayToObject } from "@/utils/format";
 
 // FormData builder para crear/editar variantes (según Swagger)
 export async function buildCreateProductVariantFormData(
@@ -16,10 +17,14 @@ export async function buildCreateProductVariantFormData(
   // Backend expects gtin as string field in multipart/form-data.
   fd.set("gtin", String(normalizedGtin));
 
-  if (input.details && typeof input.details === "object") {
+  const normalizedDetails = Array.isArray(input.details)
+    ? detailsArrayToObject(input.details as Array<{ key: string; value: string; isRequired?: boolean }>)
+    : input.details;
+
+  if (normalizedDetails && typeof normalizedDetails === "object") {
     const d: Record<string, string> = {};
 
-    Object.entries(input.details).forEach(([key, value]) => {
+    Object.entries(normalizedDetails).forEach(([key, value]) => {
       const val =
         value == null
           ? ""

@@ -87,7 +87,7 @@ export function WelcomeSupplierAccountFormSection({
           loading={isSubmitting}
           disabled={isSubmitting}
         >
-          Guardar cuenta y finalizar
+          Guardar cuenta y continuar
         </LoaderButton>
       </div>
     </FormProvider>

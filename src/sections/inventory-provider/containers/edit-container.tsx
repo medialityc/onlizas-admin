@@ -11,6 +11,17 @@ import { useModalState } from "@/hooks/use-modal-state";
 import CreateInventoryVariantModal from "../modal/create-inventory-variant-modal";
 import VariantsManager from "../components/inventory-variant-list/inventory-variant-list";
 import { ProductVariant } from "../schemas/inventory-provider.schema";
+import { DETAILS_MAX_ITEMS } from "@/utils/format";
+
+type VariantDetailRow = {
+  key: string;
+  value: string;
+  isRequired?: boolean;
+  featureName?: string;
+  featureDescription?: string;
+  suggestions?: string[];
+  isFeature?: boolean;
+};
 
 type Props = {
   inventory: InventoryStoreFormData;
@@ -39,23 +50,80 @@ function EditContainer({ inventory, features }: Props) {
     openModal("create");
   };
 
-  const featuresNormalized: Record<
-    string,
-    { value: string; isRequired?: boolean }
-  > = Object.fromEntries(
-    getCategoryFeature(features as unknown as FeatureFormData[]).map(
-      (feature: any) => {
-        const val = {
+  const featureDetails = useMemo<VariantDetailRow[]>(
+    () =>
+      getCategoryFeature(features as unknown as FeatureFormData[]).map(
+        (feature: any) => ({
+          key: feature?.name ?? "",
           value: feature?.value ?? "",
+          featureName: feature?.name ?? "",
           isRequired: feature?.isRequired,
           featureDescription: feature?.featureDescription,
           suggestions: feature?.suggestions ?? [],
-        };
-
-        return [feature?.name ?? "", val];
-      },
-    ),
+          isFeature: true,
+        }),
+      ),
+    [features],
   );
+
+  const mergeDetailsForForm = useCallback(
+    (variant?: ProductVariant | null): VariantDetailRow[] => {
+      const currentDetails = Array.isArray(variant?.details)
+        ? (variant?.details as VariantDetailRow[])
+        : [];
+
+      const detailValue = (input: unknown) => {
+        if (input && typeof input === "object" && "value" in (input as any)) {
+          return String((input as any).value ?? "").trim();
+        }
+        return String(input ?? "").trim();
+      };
+
+      const byKey = new Map(
+        currentDetails
+          .map((detail) => {
+            const key = String(detail?.key ?? "").trim();
+            return [key.toLowerCase(), detail] as const;
+          })
+          .filter(([key]) => !!key),
+      );
+
+      const featureRows = featureDetails.map((feature) => {
+        const normalizedKey = feature.key.trim().toLowerCase();
+        const current = byKey.get(normalizedKey);
+
+        if (!current) {
+          return feature;
+        }
+
+        byKey.delete(normalizedKey);
+
+        return {
+          ...feature,
+          value: detailValue(current.value),
+        };
+      });
+
+      const customRows = Array.from(byKey.values()).map((detail) => ({
+        key: String(detail?.key ?? "").trim(),
+        value: detailValue(detail?.value),
+        isRequired: detail?.isRequired,
+        isFeature: false,
+      }));
+
+      return [...featureRows, ...customRows].slice(0, DETAILS_MAX_ITEMS);
+    },
+    [featureDetails],
+  );
+
+  const selectedVariantWithDetails = useMemo(() => {
+    if (!selectedVariant) return null;
+
+    return {
+      ...selectedVariant,
+      details: mergeDetailsForForm(selectedVariant) as any,
+    };
+  }, [mergeDetailsForForm, selectedVariant]);
 
   const initValue = useMemo<ProductVariant>(
     (): ProductVariant => ({
@@ -64,7 +132,7 @@ function EditContainer({ inventory, features }: Props) {
       ean: "",
       gtin: "",
       condition: 0,
-      details: featuresNormalized,
+      details: featureDetails as any,
       isActive: true,
       stock: 0,
       price: 0,
@@ -85,7 +153,7 @@ function EditContainer({ inventory, features }: Props) {
       zones: [],
       zoneIds: [],
     }),
-    [featuresNormalized],
+    [featureDetails],
   );
 
   return (
@@ -109,11 +177,11 @@ function EditContainer({ inventory, features }: Props) {
         isPacking={inventory.isPacking}
       />
 
-      {selectedVariant && (
+      {selectedVariantWithDetails && (
         <CreateInventoryVariantModal
           open={editModal.open}
           onClose={() => closeModal("edit")}
-          initValue={selectedVariant}
+          initValue={selectedVariantWithDetails}
           allVariants={inventory?.products || []}
           inventoryId={inventory.id as string}
           supplierId={inventory.supplierId}
