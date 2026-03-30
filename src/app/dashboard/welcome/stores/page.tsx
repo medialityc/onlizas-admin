@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Button } from "@/components/button/button";
-import { getSupplierItemsCount } from "@/services/dashboard";
+import { getProviderStores } from "@/services/stores";
 import { WelcomeStoreFormSection } from "@/sections/stores/components/welcome-store-form-section";
 
 export const metadata: Metadata = {
@@ -10,11 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default async function WelcomeStoresPage() {
-  const { data } = await getSupplierItemsCount();
-
-  if (data?.storeCount && data.storeCount > 0) {
-    redirect("/dashboard/welcome/warehouses");
-  }
+  const storesResponse = await getProviderStores({
+    pagination: { page: 1, pageSize: 1 },
+  });
+  const existingStore = storesResponse.data?.data?.[0];
 
   return (
     <div className="space-y-6 p-4 sm:p-6">
@@ -39,7 +37,10 @@ export default async function WelcomeStoresPage() {
       </div>
 
       <div className="rounded-xl border bg-white/90 p-4 shadow-sm dark:bg-gray-950/80">
-        <WelcomeStoreFormSection afterCreateRedirectTo="/dashboard/welcome/warehouses" />
+        <WelcomeStoreFormSection
+          afterCreateRedirectTo="/dashboard/welcome/warehouses"
+          existingStore={existingStore}
+        />
       </div>
 
       <footer className="flex items-center justify-between border-t pt-4 text-xs text-muted-foreground">
