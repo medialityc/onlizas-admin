@@ -41,7 +41,7 @@ export function WelcomeZoneFormSection({
       deliveryAmount: 0,
       districtsIds: [],
       stateIds: [],
-      countryId: "c1c9c1b7-3757-4294-9591-970fba64c681",
+      countryId: "",
     },
   });
 
@@ -136,13 +136,14 @@ export function WelcomeZoneFormSection({
           required
         />
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-[13px]">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3.25">
             País
             <span className="text-red-500"> *</span>
           </label>
           <RHFCountrySelect
             name="countryId"
             variant="name"
+            placeholder="Selecciona un país"
             fullwidth
             inputClassname="transition-all focus:ring-2 focus:ring-green-500"
           />
