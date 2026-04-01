@@ -5,8 +5,8 @@ import RHFInputWithLabel from "@/components/react-hook-form/rhf-input";
 import RHFSelectWithLabel from "@/components/react-hook-form/rhf-select";
 import LoaderButton from "@/components/loaders/loader-button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { useEffect, useState } from "react";
 import {
   PlatformAccountCreateSchema,
   PlatformAccountCreateInput,
@@ -17,6 +17,12 @@ import {
 } from "@/services/finance/platform-accounts";
 import { PlatformAccount } from "@/types/finance";
 import { toast } from "react-toastify";
+import Cards, { Focused } from "react-credit-cards-2";
+
+const formatCardNumber = (value: string) => {
+  const digits = value.replace(/\D/g, "").slice(0, 16);
+  return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
+};
 
 interface Props {
   open: boolean;
@@ -87,7 +93,7 @@ export default function PlatformAccountCreateModal({
     if (account && open) {
       reset({
         name: account.name,
-        accountNumber: account.accountNumber,
+        accountNumber: formatCardNumber(account.accountNumber),
         purpose: String(account.purpose) as any,
         bank: account.bank,
         isMainAccount: account.isMainAccount,
@@ -106,7 +112,9 @@ export default function PlatformAccountCreateModal({
       });
     }
   }, [account, open, reset]);
-
+  const cardNumber = methods.watch("accountNumber");
+  const cardName = methods.watch("name");
+  const [focused, setFocused] = useState<Focused>("");
   return (
     <SimpleModal
       open={open}
@@ -126,19 +134,76 @@ export default function PlatformAccountCreateModal({
               autoFocus
               maxLength={100}
             />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <RHFInputWithLabel
-                name="accountNumber"
-                label="Número de cuenta"
-                placeholder="Ej: 1234567890"
-                maxLength={30}
-              />
-              <RHFInputWithLabel
-                name="bank"
-                label="Banco"
-                placeholder="Ej: Banco XYZ"
-                maxLength={60}
-              />
+            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 space-y-3">
+              <div className="flex justify-center">
+                <Cards
+                  number={cardNumber || ""}
+                  name={cardName || "TITULAR"}
+                  expiry=""
+                  cvc=""
+                  focused={focused}
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Controller
+                  name="accountNumber"
+                  control={methods.control}
+                  render={({ field, fieldState: { error } }) => (
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+                        Número de tarjeta
+                      </label>
+                      <div className="relative">
+                        <input
+                          {...field}
+                          value={field.value}
+                          onChange={(e) =>
+                            field.onChange(formatCardNumber(e.target.value))
+                          }
+                          onFocus={() => setFocused("number")}
+                          onBlur={() => setFocused("")}
+                          placeholder="0000 0000 0000 0000"
+                          maxLength={19}
+                          inputMode="numeric"
+                          className={`form-input w-full pl-10 font-mono tracking-widest${
+                            error ? " border-red-500 focus:border-red-500" : ""
+                          }`}
+                        />
+                        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                          <svg
+                            className="h-4 w-4"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <rect
+                              x={1}
+                              y={4}
+                              width={22}
+                              height={16}
+                              rx={2}
+                              ry={2}
+                            />
+                            <line x1={1} y1={10} x2={23} y2={10} />
+                          </svg>
+                        </span>
+                      </div>
+                      {error && (
+                        <span className="text-sm text-red-600">
+                          {error.message}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                />
+                <RHFInputWithLabel
+                  name="bank"
+                  label="Banco"
+                  placeholder="Ej: Banco XYZ"
+                  maxLength={60}
+                />
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <RHFSelectWithLabel

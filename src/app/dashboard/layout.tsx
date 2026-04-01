@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import "tippy.js/dist/tippy.css";
+import "react-credit-cards-2/dist/es/styles-compiled.css";
 import DashboardGeneric from "@/layouts/dashboard-generic";
 import Sidebar from "@/layouts/sidebar/sidebar";
 

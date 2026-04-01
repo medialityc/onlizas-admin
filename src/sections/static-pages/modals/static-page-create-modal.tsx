@@ -18,7 +18,8 @@ export function StaticPageCreateModal({
       subtitle="Registra una nueva página estática"
       open={open}
       onClose={onClose}
-      className="max-w-7xl max-h-[95vh]"
+      size="lg"
+      className=" max-h-[95vh]"
     >
       <div className="pt-2">
         <StaticPageForm />

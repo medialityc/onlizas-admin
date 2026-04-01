@@ -120,8 +120,8 @@ export async function SupplierInventorySteps() {
         </div>
       </div>
 
-      <div className="relative mx-auto mt-3 max-w-6xl overflow-x-auto pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <ol className="relative flex min-w-max gap-3 px-2 md:gap-4 md:px-3">
+      <div className="relative mx-auto mt-3 max-w-6xl overflow-x-auto pb-3 ">
+        <ol className="relative flex flex-wrap min-w-max gap-3 px-2 md:gap-4 md:px-3">
           {pendingSteps.map((step, index) => {
             const Icon = step.icon;
             return (

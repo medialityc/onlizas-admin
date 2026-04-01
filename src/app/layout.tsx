@@ -9,6 +9,7 @@ import { ThemeProvider } from "next-themes";
 import { ToastContainer } from "react-toastify";
 import "./styles/custom-scrollbar.css";
 import "react-phone-number-input/style.css";
+import "react-credit-cards-2/dist/es/styles-compiled.css";
 import { mantineHtmlProps } from "@mantine/core";
 import { SSOProvider } from "zas-sso-client";
 

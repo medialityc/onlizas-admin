@@ -41,7 +41,7 @@ interface Props {
 export default function ExternalReviewClient({ token, data }: Props) {
   const [commentValue, setCommentValue] = useState("");
   const [actionStatus, setActionStatus] = useState<"idle" | "submitting">(
-    "idle"
+    "idle",
   );
   const router = useRouter();
 
@@ -156,6 +156,7 @@ export default function ExternalReviewClient({ token, data }: Props) {
         title="Documentos Pendientes"
         docs={data.approvalProcess.pendingDocuments}
         empty="No hay documentos pendientes"
+        showHint
       />
       <DocumentsSection
         title="Documentos Aprobados"

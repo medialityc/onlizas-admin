@@ -223,8 +223,7 @@ export function SuppliersList({
             <ActionsMenu
               active={supplier.active}
               onActive={() => handleToggleActiveSupplier(supplier)}
-              onViewDetails={() => handleViewSupplier(supplier)}
-              onEdit={() => handleEditFullSupplier(supplier)}
+              onViewDetails={() => handleEditFullSupplier(supplier)}
               viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
               editPermissions={[PERMISSION_ENUM.UPDATE]}
               onChangeExpirationDate={() => handleChangeExpiration(supplier)}

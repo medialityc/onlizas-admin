@@ -4,12 +4,14 @@ import {
   CheckCircleIcon,
   ClockIcon,
   XCircleIcon,
+  InformationCircleIcon,
 } from "@heroicons/react/24/solid";
 
 interface Props {
   title: string;
   docs: ExternalReviewApprovalProcessResponse["approvalProcess"]["pendingDocuments"];
   empty: string;
+  showHint?: boolean;
 }
 
 // Helper para icono según extensión
@@ -33,7 +35,12 @@ function getFileMeta(fileName: string) {
   );
 }
 
-export default function DocumentsSection({ title, docs, empty }: Props) {
+export default function DocumentsSection({
+  title,
+  docs,
+  empty,
+  showHint,
+}: Props) {
   const headingId = `${title.replace(/\s+/g, "-").toLowerCase()}-heading`;
 
   if (!docs.length)
@@ -63,6 +70,22 @@ export default function DocumentsSection({ title, docs, empty }: Props) {
           {docs.length}
         </span>
       </div>
+      {showHint && (
+        <div
+          className="flex items-start gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2.5 text-xs text-blue-700"
+          role="note"
+        >
+          <InformationCircleIcon
+            className="mt-0.5 h-4 w-4 shrink-0 text-blue-500"
+            aria-hidden="true"
+          />
+          <p className="leading-relaxed">
+            <span className="font-semibold">Revisión individual opcional.</span>{" "}
+            No es obligatorio aprobar o rechazar cada documento por separado. Si
+            todo está en orden, puedes aprobar la solicitud directamente.
+          </p>
+        </div>
+      )}
       <ul className="space-y-3" role="list">
         {docs.map((d) => {
           const fileMeta = getFileMeta(d.fileName);

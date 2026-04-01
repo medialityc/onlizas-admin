@@ -21,11 +21,11 @@ type Props = {
 };
 
 const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
-  const { watch, setValue } = useFormContext();
+  const { watch, setValue, formState } = useFormContext();
   const product = watch("selectedProduct");
   const isDraft = watch("isDraft");
   const isOwned = watch("isOwned");
-  console.log(product);
+  console.log(formState.errors);
 
   const handleCreate = useCallback(() => {
     setValue("isDraft", true, { shouldDirty: true });
