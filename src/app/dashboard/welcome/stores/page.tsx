@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ComponentProps } from "react";
 import Link from "next/link";
 import { Button } from "@/components/button/button";
 import { getProviderStores } from "@/services/stores";
@@ -14,7 +15,9 @@ export default async function WelcomeStoresPage() {
   });
   const rawStore = storesResponse.data?.data?.[0];
 
-  const existingStore = rawStore
+  const existingStore: ComponentProps<
+    typeof WelcomeStoreFormSection
+  >["existingStore"] = rawStore
     ? {
         id: rawStore.id,
         name: rawStore.name,
