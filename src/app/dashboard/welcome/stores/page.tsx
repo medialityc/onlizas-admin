@@ -12,7 +12,30 @@ export default async function WelcomeStoresPage() {
   const storesResponse = await getProviderStores({
     pagination: { page: 1, pageSize: 1 },
   });
-  const existingStore = storesResponse.data?.data?.[0];
+  const rawStore = storesResponse.data?.data?.[0];
+
+  const existingStore = rawStore
+    ? {
+        id: rawStore.id,
+        name: rawStore.name,
+        url: rawStore.url,
+        email: rawStore.email,
+        phoneNumber: rawStore.phoneNumber,
+        address: rawStore.address,
+        logoStyle: rawStore.logoStyle,
+        active: rawStore.active,
+        primaryColor: rawStore.primaryColor || "#3B82F6",
+        secondaryColor: rawStore.secondaryColor || "#111827",
+        accentColor: rawStore.accentColor || "#F59E0B",
+        font: rawStore.font === "ARGELIAN" ? "ARGELIAN" : "ARIAL",
+        template:
+          rawStore.template === "CLASICO" ||
+          rawStore.template === "MINIMALISTA" ||
+          rawStore.template === "AUDAZ"
+            ? rawStore.template
+            : "MODERNO",
+      }
+    : undefined;
 
   return (
     <div className="space-y-6 p-4 sm:p-6">
