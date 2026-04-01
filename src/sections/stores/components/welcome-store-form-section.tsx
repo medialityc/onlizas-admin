@@ -40,6 +40,12 @@ export function WelcomeStoreFormSection({
       countryCode: existingStore?.countryCode ?? "",
       address: existingStore?.address ?? "",
       logoStyle: existingStore?.logoStyle ?? undefined,
+      active: existingStore?.active ?? true,
+      primaryColor: existingStore?.primaryColor ?? "#3B82F6",
+      secondaryColor: existingStore?.secondaryColor ?? "#111827",
+      accentColor: existingStore?.accentColor ?? "#F59E0B",
+      font: existingStore?.font ?? "ARIAL",
+      template: existingStore?.template ?? "MODERNO",
       ownerId: existingStore?.ownerId ?? undefined,
       businessId: existingStore?.businessId ?? undefined,
     },
@@ -87,6 +93,12 @@ export function WelcomeStoreFormSection({
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("countryCode", data.countryCode);
       formData.append("address", data.address);
+      formData.append("active", data.active ? "true" : "false");
+      formData.append("primaryColor", data.primaryColor);
+      formData.append("secondaryColor", data.secondaryColor);
+      formData.append("accentColor", data.accentColor);
+      formData.append("font", data.font);
+      formData.append("template", data.template);
 
       const response = isEditMode
         ? await updateSupplierStore(existingStore!.id, formData)
