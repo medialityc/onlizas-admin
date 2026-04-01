@@ -38,6 +38,15 @@ export default function ZoneModal({
   onSuccess,
   zone,
 }: Props) {
+  const getDistrictsFromZone = useCallback((zoneData: Zone): District[] => {
+    if (!zoneData.districtsIds?.length) return [];
+
+    return zoneData.districtsIds.map((id, index) => ({
+      id,
+      name: zoneData.districtsNames?.[index] || id,
+    }));
+  }, []);
+
   const [preloadedDistricts, setPreloadedDistricts] = useState<District[]>([]);
 
   const methods = useForm<ZoneInput>({
@@ -175,9 +184,12 @@ export default function ZoneModal({
         zone.countryId || "c1c9c1b7-3757-4294-9591-970fba64c681";
 
       const loadAndReset = async () => {
-        let districts: District[] = [];
+        let districts = getDistrictsFromZone(zone);
 
-        if (zone.districtsIds?.length > 0) {
+        if (
+          zone.districtsIds?.length > 0 &&
+          (!zone.districtsNames || zone.districtsNames.length === 0)
+        ) {
           try {
             const response = await getDistrictsByCountry(countryIdToUse, {
               page: 1,
@@ -199,6 +211,7 @@ export default function ZoneModal({
           name: zone.name,
           deliveryAmount: zone.deliveryAmount,
           districtsIds: zone.districtsIds,
+          stateIds: [],
           countryId: countryIdToUse,
         });
       };
@@ -211,10 +224,11 @@ export default function ZoneModal({
         name: "",
         deliveryAmount: 0,
         districtsIds: [],
+        stateIds: [],
         countryId: "c1c9c1b7-3757-4294-9591-970fba64c681",
       });
     }
-  }, [zone, open, reset]);
+  }, [zone, open, reset, getDistrictsFromZone]);
 
   return (
     <SimpleModal

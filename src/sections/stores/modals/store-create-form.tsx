@@ -1,7 +1,12 @@
 import LoaderButton from "@/components/loaders/loader-button";
-import { RHFInputWithLabel } from "@/components/react-hook-form";
+import {
+  RHFInputWithLabel,
+  RHFSelectWithLabel,
+} from "@/components/react-hook-form";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
+import RHFColorPicker from "@/components/react-hook-form/rhf-color-picker";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
+import RHFSwitch from "@/components/react-hook-form/rhf-switch";
 import {
   getAllBusinessByProvider,
   getAllBusinessByUser,
@@ -15,6 +20,19 @@ import { useAuth } from "zas-sso-client";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import { RHFPhoneCountrySelect } from "@/components/react-hook-form/rhf-phone-country-select";
 import { getValidSuppliers } from "@/services/supplier";
+
+const FONT_OPTIONS = [
+  { value: "ARIAL", label: "Arial" },
+  { value: "ARGELIAN", label: "Argelian" },
+];
+
+const TEMPLATE_OPTIONS = [
+  { value: "MODERNO", label: "Moderno" },
+  { value: "CLASICO", label: "Clásico" },
+  { value: "MINIMALISTA", label: "Minimalista" },
+  { value: "AUDAZ", label: "Audaz" },
+];
+
 type Props = {
   isSubmitting: boolean;
   handleClose: VoidFunction;
@@ -193,7 +211,7 @@ function StoreCreateForm({ handleClose, isSubmitting, isEditMode = false }: Prop
         <div>
           <label
             htmlFor="phoneNumber"
-            className="mb-[14px] block text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="mb-3.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
           >
             Teléfono <span className="text-danger">*</span>
           </label>
@@ -215,6 +233,35 @@ function StoreCreateForm({ handleClose, isSubmitting, isEditMode = false }: Prop
           type="textarea"
           required
         />
+
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 p-4 space-y-4">
+          <RHFSwitch
+            name="active"
+            label="Tienda activa y visible para clientes"
+            checkedClassName="peer-checked:bg-gradient-to-r peer-checked:from-secondary peer-checked:to-indigo-600"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <RHFColorPicker name="primaryColor" label="Color primario" />
+            <RHFColorPicker name="secondaryColor" label="Color secundario" />
+            <RHFColorPicker name="accentColor" label="Color de acento" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <RHFSelectWithLabel
+              name="font"
+              label="Fuente"
+              variant="custom"
+              options={FONT_OPTIONS}
+            />
+            <RHFSelectWithLabel
+              name="template"
+              label="Plantilla"
+              variant="custom"
+              options={TEMPLATE_OPTIONS}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="flex justify-end gap-3 pt-6">
