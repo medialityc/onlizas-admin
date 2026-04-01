@@ -4,6 +4,13 @@ import {
   TagIcon,
   CubeIcon,
   InformationCircleIcon,
+  GlobeAltIcon,
+  ScaleIcon,
+  SparklesIcon,
+  PlayIcon,
+  BuildingLibraryIcon,
+  StarIcon,
+  CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
 import ImagePreview from "@/components/image/image-preview";
 import { useFormContext } from "react-hook-form";
@@ -55,153 +62,288 @@ const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
   const hasDetails = product.details && Object.keys(product.details).length > 0;
   const hasDimensions =
     product.length || product.width || product.height || product.weight;
+  const hasGeneralInfo =
+    product.brand?.name ||
+    product.niso ||
+    product.source ||
+    product.shortDescription ||
+    product.quantityValue ||
+    product.minimumQuantity ||
+    product.points ||
+    product.stock;
+  const hasCustoms =
+    product.customsValue ||
+    product.customsValueAduanaUsd ||
+    product.aduanaCategory?.name;
 
   return (
-    <div className="bg-blur-card">
-      {/* Header compacto */}
+    <div className="bg-blur-card flex flex-col">
+      {/* Header */}
       <div className="p-4 border-b border-gray-100 dark:border-slate-700">
-        <div className="flex items-center gap-3">
+        <div className="flex items-start gap-3">
           <ImagePreview
             images={[imageUrl]}
             alt={product.name}
             className="w-16 h-16 rounded-md shrink-0"
           />
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-gray-900 dark:text-white text-sm truncate">
+            <h4 className="font-medium text-gray-900 dark:text-white text-sm leading-tight">
               {product.name}
             </h4>
+            {product.shortDescription && (
+              <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1 mt-0.5 italic">
+                {product.shortDescription}
+              </p>
+            )}
             {product.description && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1 mt-0.5">
+              <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mt-0.5">
                 {product.description}
               </p>
             )}
-            {/* Estado compacto */}
-            <div
-              className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium mt-1 ${
-                product.state
-                  ? "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400"
-                  : "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400"
-              }`}
-            >
+            <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
               <div
-                className={`w-1 h-1 rounded-full mr-1 ${
-                  product.state ? "bg-green-500" : "bg-red-500"
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                  product.state
+                    ? "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400"
+                    : "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400"
                 }`}
-              />
-              {product.state ? "Activo" : "Inactivo"}
+              >
+                <div
+                  className={`w-1 h-1 rounded-full mr-1 ${
+                    product.state ? "bg-green-500" : "bg-red-500"
+                  }`}
+                />
+                {product.state ? "Activo" : "Inactivo"}
+              </div>
+              {product.brand?.name && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300">
+                  <SparklesIcon className="w-3 h-3" />
+                  {product.brand.name}
+                </span>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Información condensada */}
-      <div className="p-4 space-y-3">
-        {/* Categorías y proveedores en una línea, claramente diferenciados */}
-        <div className="flex flex-wrap items-center gap-1.5 text-xs">
-          {product.categories?.length > 0 && (
-            <>
-              <span className="font-semibold text-gray-700 dark:text-gray-300 mr-1">
-                Categorías:
-              </span>
-              {product.categories.map((category: any) => (
+      <div className="p-4 space-y-3 overflow-y-auto flex-1">
+        {/* Categorías y proveedores */}
+        {(product.categories?.length > 0 || product.suppliers?.length > 0) && (
+          <div className="flex flex-wrap items-center gap-1.5 text-xs">
+            {product.categories?.length > 0 && (
+              <>
+                <span className="font-semibold text-gray-700 dark:text-gray-300 mr-1">
+                  Categorías:
+                </span>
+                {product.categories.map((category: any) => (
+                  <span
+                    key={category.id}
+                    className="inline-flex items-center px-2 py-1 rounded bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                  >
+                    <TagIcon className="w-3 h-3 mr-1" />
+                    {category.name}
+                  </span>
+                ))}
+              </>
+            )}
+            {product.categories?.length > 0 &&
+              product.suppliers?.length > 0 && (
+                <Separator orientation="vertical" className="h-4 mx-1" />
+              )}
+            {product.suppliers?.length > 0 && (
+              <>
                 <span
-                  key={category.id}
-                  className="inline-flex items-center px-2 py-1 rounded bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                  className="font-semibold text-gray-700 dark:text-gray-300 mr-1"
+                  title="Proveedores que ya venden este producto."
                 >
-                  <TagIcon className="w-3 h-3 mr-1" />
-                  {category.name}
+                  Proveedores:
                 </span>
-              ))}
-            </>
-          )}
-
-          {product.categories?.length && product.suppliers?.length ? (
-            <Separator orientation="vertical" className="h-4 mx-1" />
-          ) : null}
-
-          {product.suppliers?.length > 0 && (
-            <>
-              <span
-                className="font-semibold text-gray-700 dark:text-gray-300 mr-1"
-                title="Estos son los proveedores que ya venden este producto."
-              >
-                Proveedores:
-              </span>
-              {product.suppliers.map((supplier: any) => (
-                <span
-                  key={supplier.id}
-                  className="inline-flex items-center px-2 py-1 rounded bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400"
-                >
-                  {supplier.name}
-                </span>
-              ))}
-            </>
-          )}
-        </div>
-
-        {/* Especificaciones: mostrar todos los detalles */}
-        {hasDetails && (
-          <div className="flex flex-wrap gap-2">
-            {detailsObjectToArray(product.details)?.map((detail) => (
-              <Badge
-                key={detail.key}
-                variant="outline-dark"
-                className="flex items-center gap-1 text-xs"
-              >
-                <span className="text-gray-500 dark:text-gray-400 truncate">
-                  {detail.key}:
-                </span>
-                <span className="text-gray-900 dark:text-white font-medium">
-                  {detail.value}
-                </span>
-              </Badge>
-            ))}
+                {product.suppliers.map((supplier: any) => (
+                  <span
+                    key={supplier.id}
+                    className="inline-flex items-center px-2 py-1 rounded bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400"
+                  >
+                    {supplier.name}
+                  </span>
+                ))}
+              </>
+            )}
           </div>
         )}
 
-        {/* Dimensiones compactas */}
+        {/* Información general */}
+        {hasGeneralInfo && (
+          <div className="rounded-md bg-gray-50 dark:bg-slate-700/30 p-2.5 space-y-2 text-xs">
+            <div className="flex items-center gap-1.5 font-semibold text-gray-600 dark:text-gray-300">
+              <InformationCircleIcon className="w-3.5 h-3.5" />
+              Información general
+            </div>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+              {product.niso && (
+                <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                    NISO:
+                  </span>
+                  <span>{product.niso}</span>
+                </div>
+              )}
+              {product.source && (
+                <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                  <GlobeAltIcon className="w-3 h-3 shrink-0" />
+                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                    Origen:
+                  </span>
+                  <span>{product.source}</span>
+                </div>
+              )}
+              {product.quantityValue && (
+                <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                    Cantidad:
+                  </span>
+                  <span>{product.quantityValue}</span>
+                </div>
+              )}
+              {product.minimumQuantity > 0 && (
+                <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                    Mín. compra:
+                  </span>
+                  <span>{product.minimumQuantity}</span>
+                </div>
+              )}
+              {product.stock > 0 && (
+                <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                    Stock:
+                  </span>
+                  <span>{product.stock}</span>
+                </div>
+              )}
+              {product.points > 0 && (
+                <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                  <StarIcon className="w-3 h-3 shrink-0 text-amber-400" />
+                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                    Puntos:
+                  </span>
+                  <span>{product.points}</span>
+                </div>
+              )}
+              {product.rateXValue > 0 && (
+                <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                    Rate x valor:
+                  </span>
+                  <span>{product.rateXValue}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Aduana / Customs */}
+        {hasCustoms && (
+          <div className="rounded-md bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-800/30 p-2.5 space-y-2 text-xs">
+            <div className="flex items-center gap-1.5 font-semibold text-amber-700 dark:text-amber-400">
+              <BuildingLibraryIcon className="w-3.5 h-3.5" />
+              Aduana
+            </div>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+              {product.aduanaCategory?.name && (
+                <div className="col-span-2 flex items-center gap-1 text-gray-600 dark:text-gray-400">
+                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                    Categoría:
+                  </span>
+                  <span>{product.aduanaCategory.name}</span>
+                </div>
+              )}
+              {product.customsValue > 0 && (
+                <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+                  <CurrencyDollarIcon className="w-3 h-3 shrink-0 text-amber-500" />
+                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                    Valor:
+                  </span>
+                  <span>{product.customsValue}</span>
+                </div>
+              )}
+              {product.customsValueAduanaUsd > 0 && (
+                <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+                  <CurrencyDollarIcon className="w-3 h-3 shrink-0 text-amber-500" />
+                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                    Valor USD:
+                  </span>
+                  <span>${product.customsValueAduanaUsd}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Especificaciones */}
+        {hasDetails && (
+          <div className="space-y-1.5">
+            <p className="text-xs font-semibold text-gray-600 dark:text-gray-300">
+              Especificaciones
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {detailsObjectToArray(product.details)?.map((detail) => (
+                <Badge
+                  key={detail.key}
+                  variant="outline-dark"
+                  className="flex items-center gap-1 text-xs"
+                >
+                  <span className="text-gray-500 dark:text-gray-400 truncate">
+                    {detail.key}:
+                  </span>
+                  <span className="text-gray-900 dark:text-white font-medium">
+                    {detail.value}
+                  </span>
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Dimensiones */}
         {hasDimensions && (
-          <div className="flex items-center justify-between text-xs bg-gray-50 dark:bg-slate-700/30 rounded-md p-2">
-            <div className="flex flex-row gap-2 items-center">
-              <CubeIcon className="w-3 h-3 text-gray-400" />
+          <div className="rounded-md bg-gray-50 dark:bg-slate-700/30 p-2.5 text-xs">
+            <div className="flex items-center gap-1.5 font-semibold text-gray-600 dark:text-gray-300 mb-2">
+              <CubeIcon className="w-3.5 h-3.5" />
               Dimensiones
             </div>
-            <div className="flex gap-3">
-              {product.length && (
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+              {product.length > 0 && (
                 <span className="text-gray-600 dark:text-gray-400">
-                  Largo: {product.length}
+                  Largo: <strong>{product.length}</strong>
                 </span>
               )}
-              <Separator orientation="vertical" className="h-4" />
-              {product.width && (
+              {product.width > 0 && (
                 <span className="text-gray-600 dark:text-gray-400">
-                  Ancho: {product.width}
+                  Ancho: <strong>{product.width}</strong>
                 </span>
               )}
-              <Separator orientation="vertical" className="h-4" />
-              {product.height && (
+              {product.height > 0 && (
                 <span className="text-gray-600 dark:text-gray-400">
-                  Alto: {product.height}
+                  Alto: <strong>{product.height}</strong>
                 </span>
               )}
-              <Separator orientation="vertical" className="h-4" />
-              {product.weight && (
+              {product.weight > 0 && (
                 <span className="text-gray-600 dark:text-gray-400">
-                  Peso: {product.weight}
+                  Peso: <strong>{product.weight}</strong>
                 </span>
               )}
             </div>
           </div>
         )}
 
-        {/* About this - mostrar todos los puntos */}
+        {/* Acerca de este producto */}
         {product.aboutThis && product.aboutThis.length > 0 && (
-          <div className="flex items-center justify-between text-xs bg-gray-50 dark:bg-slate-700/30 rounded-md p-2">
-            <div className="flex flex-row gap-2 items-center">
-              <InformationCircleIcon className="w-3 h-3 text-gray-400" />
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300">
+              <InformationCircleIcon className="w-3.5 h-3.5" />
               Acerca de este producto
             </div>
-            <div className="flex gap-3 flex-wrap">
+            <div className="flex flex-wrap gap-1.5">
               {product.aboutThis.map((item: string, index: number) => (
                 <Badge
                   key={index}
@@ -214,12 +356,36 @@ const SupplierProductSummary = ({ onSubmitLink, isLoading }: Props) => {
             </div>
           </div>
         )}
+
+        {/* Tutoriales */}
+        {product.tutorials && product.tutorials.length > 0 && (
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300">
+              <PlayIcon className="w-3.5 h-3.5" />
+              Tutoriales
+            </div>
+            <ul className="space-y-1">
+              {product.tutorials.map((url: string, index: number) => (
+                <li key={index}>
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 underline break-all"
+                  >
+                    {url}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
-      {/* Botones compactos */}
-      <div className="px-4 pb-4">
+      {/* Botones */}
+      <div className="px-4 pb-4 pt-3 border-t border-gray-100 dark:border-slate-700">
         <div className="flex gap-2">
-          <div className="flex-1  px-3 py-2 items-center text-xs font-medium rounded-md transition-colors flex  justify-center gap-1.5">
+          <div className="flex-1 px-3 py-2 items-center text-xs font-medium rounded-md transition-colors flex justify-center gap-1.5">
             <span className="flex-1 flex flex-row gap-2 items-center">
               <CopyIcon className="w-3.5 h-3.5" />
               Usar como plantilla

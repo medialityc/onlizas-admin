@@ -4,7 +4,7 @@ import { SupplierProductFormData } from "../schema/supplier-product-schema";
 import { processImageFile } from "@/utils/image-helpers";
 
 export const setSupplierProductFormData = async (
-  product: SupplierProductFormData
+  product: SupplierProductFormData,
 ): Promise<FormData> => {
   const formData = new FormData();
   // Procesar imagen principal
@@ -30,7 +30,7 @@ export const setSupplierProductFormData = async (
               toast.error(`Error al procesar la imagen desde URL (${image})`);
             }
           }
-        })
+        }),
       );
     }
   }
@@ -49,12 +49,11 @@ export const setSupplierProductFormData = async (
   formData.append("tutorials", JSON.stringify(product.tutorials));
   formData.append("aduanaCategoryGuid", String(product.aduanaCategoryGuid));
   formData.append("brandId", String(product.brandId));
-  formData.append("gtin", String(product.gtin));
 
   if (product.details) {
     formData.append(
       "details",
-      JSON.stringify(detailsArrayToObject(product.details as any[]))
+      JSON.stringify(detailsArrayToObject(product.details as any[])),
     );
   }
 

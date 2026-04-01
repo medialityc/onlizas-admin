@@ -18,26 +18,26 @@ export async function SupplierInventorySteps() {
 
   const steps = [
     {
-      id: "products",
-      count: data?.productCount ?? 0,
-      icon: Package,
-      label: "Paso 1",
-      title: "Crea un producto",
-      description:
-        "Registra el producto en el catálogo para poder asociarlo a tus inventarios.",
-      href: "/dashboard/products/new",
-      cta: "Ir a productos",
-    },
-    {
       id: "brands",
       count: data?.brandCount ?? 0,
       icon: Tag,
-      label: "Paso 2",
+      label: "Paso 1",
       title: "Crea una marca",
       description:
         "Registra al menos una marca para clasificar tus productos en el catálogo.",
       href: "/dashboard/brands/new",
       cta: "Ir a marcas",
+    },
+    {
+      id: "products",
+      count: data?.productCount ?? 0,
+      icon: Package,
+      label: "Paso 2",
+      title: "Crea un producto",
+      description:
+        "Registra el producto en el catálogo para poder asociarlo a tus inventarios.",
+      href: "/dashboard/products/new",
+      cta: "Ir a productos",
     },
     {
       id: "stores",

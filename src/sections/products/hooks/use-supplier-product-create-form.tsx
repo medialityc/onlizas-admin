@@ -34,7 +34,6 @@ const initValues: SupplierProductFormData = {
   details: [],
   image: null,
   brandId: "",
-  gtin: "",
   aduanaCategoryGuid: "",
 };
 

@@ -135,7 +135,6 @@ export const productSchema = z.object({
     ])
     .optional(),
   brandId: z.string(),
-  gtin: z.string().min(1, "Debe ingresar un GTIN válido."),
 });
 
 export type ProductFormData = z.infer<typeof productSchema> & {

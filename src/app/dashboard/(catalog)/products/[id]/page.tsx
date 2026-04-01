@@ -143,15 +143,6 @@ async function ProductDetails({ id }: { id: string }) {
 
                   <div>
                     <span className="text-sm font-medium text-gray-500">
-                      Código GTIN / NISO:
-                    </span>
-                    <div className="mt-1 text-xs font-mono text-gray-700 flex flex-col">
-                      <span>GTIN: {product.gtin || "-"}</span>
-                      <span>NISO: {product.niso || "-"}</span>
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-sm font-medium text-gray-500">
                       Fuente:
                     </span>
                     <div className="mt-1 text-sm text-gray-900">

@@ -6,14 +6,14 @@ import { getSupplierItemsCount } from "@/services/dashboard";
 import { WelcomeBrandFormSection } from "@/sections/brands/components/welcome-brand-form-section";
 
 export const metadata: Metadata = {
-  title: "Paso 2: Crea una marca | Onlizas",
+  title: "Paso 1: Crea una marca | Onlizas",
 };
 
 export default async function WelcomeBrandsPage() {
   const { data } = await getSupplierItemsCount();
 
   if (data?.brandCount && data.brandCount > 0) {
-    redirect("/dashboard/welcome/stores");
+    redirect("/dashboard/welcome/products");
   }
 
   return (
@@ -21,7 +21,7 @@ export default async function WelcomeBrandsPage() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-info">
-            Paso 2 de 7
+            Paso 1 de 7
           </p>
           <h1 className="text-xl font-bold">Crea tu primera marca</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
@@ -39,18 +39,14 @@ export default async function WelcomeBrandsPage() {
       </div>
 
       <div className="rounded-xl border bg-white/90 p-4 shadow-sm dark:bg-gray-950/80">
-        <WelcomeBrandFormSection afterCreateRedirectTo="/dashboard/welcome/stores" />
+        <WelcomeBrandFormSection afterCreateRedirectTo="/dashboard/welcome/products" />
       </div>
 
       <footer className="flex items-center justify-between border-t pt-4 text-xs text-muted-foreground">
+        <span>Primer paso de la guía de configuración.</span>
         <Link href="/dashboard/welcome/products">
           <Button variant="outline" size="sm">
-            Anterior: Productos
-          </Button>
-        </Link>
-        <Link href="/dashboard/welcome/stores">
-          <Button variant="outline" size="sm">
-            Siguiente: Tiendas
+            Siguiente: Productos
           </Button>
         </Link>
       </footer>

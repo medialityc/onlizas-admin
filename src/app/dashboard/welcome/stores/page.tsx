@@ -44,9 +44,9 @@ export default async function WelcomeStoresPage() {
       </div>
 
       <footer className="flex items-center justify-between border-t pt-4 text-xs text-muted-foreground">
-        <Link href="/dashboard/welcome/brands">
+        <Link href="/dashboard/welcome/products">
           <Button variant="outline" size="sm">
-            Anterior: Marcas
+            Anterior: Productos
           </Button>
         </Link>
         <Link href="/dashboard/welcome/warehouses">

@@ -4,7 +4,7 @@ import { ProductFormData } from "../schema/product-schema";
 import { processImageFile } from "@/utils/image-helpers";
 
 export const setProductFormData = async (
-  product: ProductFormData
+  product: ProductFormData,
 ): Promise<FormData> => {
   const formData = new FormData();
 
@@ -32,7 +32,6 @@ export const setProductFormData = async (
   formData.append("weight", String(product.weight));
   formData.append("aduanaCategoryGuid", String(product.aduanaCategoryGuid));
   formData.append("brandId", String(product.brandId));
-  formData.append("gtin", String(product.gtin));
   // formData.append("isDurable", String(product.isDurable));
   formData.append("aboutThis", JSON.stringify(product.aboutThis));
   formData.append("tutorials", JSON.stringify(product.tutorials));
@@ -40,7 +39,7 @@ export const setProductFormData = async (
   if (product.details) {
     formData.append(
       "details",
-      JSON.stringify(detailsArrayToObject(product.details))
+      JSON.stringify(detailsArrayToObject(product.details)),
     );
   }
 

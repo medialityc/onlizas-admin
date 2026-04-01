@@ -24,9 +24,14 @@ type Props = {
   initValue?: ProductFormData;
   isEdit?: boolean;
   afterCreateRedirectTo?: string;
+  hideCancel?: boolean;
 };
 
-const ProductForm = ({ initValue, afterCreateRedirectTo }: Props) => {
+const ProductForm = ({
+  initValue,
+  afterCreateRedirectTo,
+  hideCancel,
+}: Props) => {
   const isEdit = useMemo(() => !!initValue?.id, [initValue?.id]);
   const { hasPermission } = usePermissions();
 
@@ -111,9 +116,11 @@ const ProductForm = ({ initValue, afterCreateRedirectTo }: Props) => {
       </div>
       {canSubmit && (
         <div className="flex gap-4 pt-6 mt-6 border-t border-gray-400 justify-end">
-          <Button type="button" variant="secondary" onClick={handleCancel}>
-            Cancelar
-          </Button>
+          {!hideCancel && (
+            <Button type="button" variant="secondary" onClick={handleCancel}>
+              Cancelar
+            </Button>
+          )}
           {canSubmit && (
             <LoaderButton
               form="product-form"

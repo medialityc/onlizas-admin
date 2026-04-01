@@ -44,7 +44,6 @@ export interface Product {
   id: string;
   name: string;
   niso: string;
-  gtin: string;
   brand: Brand;
   description: string;
   image: string;

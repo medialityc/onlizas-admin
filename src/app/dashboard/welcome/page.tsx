@@ -22,16 +22,16 @@ const STEP_ORDER: Array<{
     | "bankAccountCount";
 }> = [
   {
-    id: "products",
-    label: "Productos",
-    description: "Crea tu catálogo inicial de productos.",
-    counterKey: "productCount",
-  },
-  {
     id: "brands",
     label: "Marcas",
     description: "Crea una marca inicial para tus productos.",
     counterKey: "brandCount",
+  },
+  {
+    id: "products",
+    label: "Productos",
+    description: "Crea tu catálogo inicial de productos.",
+    counterKey: "productCount",
   },
   {
     id: "stores",

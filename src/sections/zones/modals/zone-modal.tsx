@@ -101,15 +101,32 @@ export default function ZoneModal({
       const allDistricts: District[] = [];
 
       for (const stateId of stateIds) {
-        const res = await getDistrictsByState(String(stateId), {
-          page: 1,
-          pageSize: 1000,
-        });
+        let page = 1;
+        let hasNext = true;
 
-        if (!res.error && res.data?.data) {
-          allDistricts.push(...res.data.data);
+        while (hasNext) {
+          const res = await getDistrictsByState(String(stateId), {
+            page,
+            pageSize: 100,
+          });
+
+          if (!res.error && res.data?.data) {
+            res.data.data.forEach((p) => allDistricts.push(p));
+            hasNext = res.data.hasNext;
+            page++;
+          } else {
+            hasNext = false;
+          }
         }
       }
+
+      // Agregar los distritos obtenidos a las opciones precargadas para que
+      // el componente autocomplete los muestre como pills seleccionados
+      setPreloadedDistricts((prev) => {
+        const existingIds = new Set(prev.map((d) => d.id));
+        const newDistricts = allDistricts.filter((d) => !existingIds.has(d.id));
+        return [...prev, ...newDistricts];
+      });
 
       const currentIds = getValues("districtsIds") || [];
       const uniqueIds = Array.from(
@@ -118,7 +135,7 @@ export default function ZoneModal({
 
       setValue("districtsIds", uniqueIds, { shouldValidate: true });
       toast.success(
-        "Se seleccionaron todos los distritos de los estados elegidos",
+        `Se seleccionaron ${allDistricts.length} distritos de los estados elegidos`,
       );
     } catch {
       toast.error("Error seleccionando distritos por estado");

@@ -93,7 +93,6 @@ const SupplierSelectProductDraft = ({
       isValidUrl(product?.image as string) ? product?.image : null,
     );
     setValue("brandId", product?.brand?.id || "");
-    setValue("gtin", product?.gtin || "");
     setValue("aduanaCategoryGuid", product?.aduanaCategoryGuid || "");
   };
 

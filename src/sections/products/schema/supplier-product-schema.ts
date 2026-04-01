@@ -117,7 +117,6 @@ export const supplierProductSchema = z
       .optional(),
     aduanaCategoryGuid: z.union([z.string(), z.number()]),
     brandId: z.string(),
-    gtin: z.string().min(1, "Debe ingresar un GTIN válido."),
   })
   .superRefine((data, ctx) => {
     if (data.isDraft) {

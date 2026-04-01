@@ -65,13 +65,7 @@ export const ProductCustomsInfoSection = ({
         objectValueKey="id"
         placeholder="Seleccione una marca"
       />
-      {/* GTIN */}
-      <RHFInputWithLabel
-        name="gtin"
-        label="GTIN"
-        placeholder="Ej: 1234567890123"
-        required
-      />
+
       {/* <RHFAutocompleteFetcherInfinity
         name="unitGuid"
         onFetch={getAllUnits}

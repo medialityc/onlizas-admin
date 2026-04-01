@@ -3,9 +3,13 @@ import ProductForm from "../components/product-form";
 
 type Props = {
   afterCreateRedirectTo?: string;
+  hideCancel?: boolean;
 };
 
-const ProductCreateContainer = ({ afterCreateRedirectTo }: Props) => {
+const ProductCreateContainer = ({
+  afterCreateRedirectTo,
+  hideCancel,
+}: Props) => {
   return (
     <div>
       <div className="mb-5">
@@ -16,7 +20,10 @@ const ProductCreateContainer = ({ afterCreateRedirectTo }: Props) => {
           Define el producto y sus características
         </p>
       </div>
-      <ProductForm afterCreateRedirectTo={afterCreateRedirectTo} />
+      <ProductForm
+        hideCancel={hideCancel}
+        afterCreateRedirectTo={afterCreateRedirectTo}
+      />
     </div>
   );
 };

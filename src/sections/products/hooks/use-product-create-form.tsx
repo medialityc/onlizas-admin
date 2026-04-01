@@ -24,7 +24,6 @@ const initValues: ProductFormData = {
   details: [],
   image: "",
   brandId: "",
-  gtin: "",
   aduanaCategoryGuid: "",
 };
 
