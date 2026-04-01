@@ -45,6 +45,12 @@ export default function StoresCreateModal({
       countryCode: store?.countryCode ?? "",
       address: store?.address ?? "",
       logoStyle: store?.logoStyle ?? undefined,
+      active: true,
+      primaryColor: "#3B82F6",
+      secondaryColor: "#111827",
+      accentColor: "#F59E0B",
+      font: "ARIAL",
+      template: "MODERNO",
       ownerId: store?.ownerId ?? undefined,
       businessId: store?.businessId ?? undefined,
     },
@@ -81,6 +87,11 @@ export default function StoresCreateModal({
         }
       }
 
+      if (!data.ownerId || !data.businessId) {
+        toast.error("Debe seleccionar propietario y negocio");
+        return;
+      }
+
       formData.append("ownerId", data.ownerId.toString());
       formData.append("businessId", data.businessId.toString());
       // url es obligatorio según el schema
@@ -90,6 +101,12 @@ export default function StoresCreateModal({
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("countryCode", data.countryCode);
       formData.append("address", data.address);
+      formData.append("active", data.active ? "true" : "false");
+      formData.append("primaryColor", data.primaryColor);
+      formData.append("secondaryColor", data.secondaryColor);
+      formData.append("accentColor", data.accentColor);
+      formData.append("font", data.font);
+      formData.append("template", data.template);
 
       let response = null;
       response = await createStore(formData);
