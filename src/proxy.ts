@@ -1,7 +1,7 @@
+import { unauthorized } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { getLoginUrl, getServerSession } from "zas-sso-client";
-
+import { getLoginUrl, getServerSession, redirectToLogin } from "zas-sso-client";
 
 function isProtected(pathname: string, protectedRoutes: string[] | null) {
   if (!protectedRoutes) return true;
@@ -21,15 +21,15 @@ export async function proxy(req: NextRequest) {
     // Formato: /importadora/[id] o /importadora/[id]/algo
     const importerIdMatch = pathname.match(/^\/importadora\/([^\/]+)/);
     const importerId = importerIdMatch ? importerIdMatch[1] : null;
-    
+
     // Permitir acceso sin token a:
     // - /importadora (raíz sin ID)
     // - /importadora/[id] (página de login con ID específico)
     // - /importadora/login (por compatibilidad)
     // - /importadora/acceso (por compatibilidad)
     if (
-      pathname === "/importadora" || 
-      pathname === "/importadora/login" || 
+      pathname === "/importadora" ||
+      pathname === "/importadora/login" ||
       pathname === "/importadora/acceso" ||
       (importerId && pathname === `/importadora/${importerId}`)
     ) {
@@ -41,16 +41,16 @@ export async function proxy(req: NextRequest) {
 
     // Si no hay token o expiró, redirigir al login con el ID
     if (!token || !expiresAt) {
-      const loginUrl = importerId 
-        ? `/importadora/${importerId}` 
+      const loginUrl = importerId
+        ? `/importadora/${importerId}`
         : "/importadora/login";
       return NextResponse.redirect(new URL(loginUrl, req.url));
     }
 
     const expiresAtNum = parseInt(expiresAt.value);
     if (Date.now() > expiresAtNum) {
-      const loginUrl = importerId 
-        ? `/importadora/${importerId}` 
+      const loginUrl = importerId
+        ? `/importadora/${importerId}`
         : "/importadora/login";
       const response = NextResponse.redirect(new URL(loginUrl, req.url));
       response.cookies.delete("importer_access_token");
@@ -75,7 +75,9 @@ export async function proxy(req: NextRequest) {
         !!session?.tokens?.refreshToken;
     } catch {}
 
-    if (hasSession) return NextResponse.next();
+    if (hasSession) {
+      return NextResponse.next();
+    };
 
     const loginUrl = new URL(getLoginUrl());
     loginUrl.searchParams.set("callbackUrl", req.url);

@@ -1,143 +1,207 @@
-"use server";
+'use server';
 
-import { unauthorized } from "next/navigation";
-import { getServerSession } from "zas-sso-client";
+import { getServerSession, getServerValidToken } from 'zas-sso-client';
+import { forbidden, unauthorized } from 'next/navigation';
+import { cache } from 'react';
 
 /**
  * Parámetros para la función `nextAuthFetch`.
  */
-interface FetchWithAuthParams<T = unknown>
-  extends Omit<RequestInit, "headers" | "body"> {
-  /**
-   * URL a la que se enviará la solicitud.
-   */
+interface FetchWithAuthParams<T = unknown> extends Omit<
+  RequestInit,
+  'headers' | 'body'
+> {
   url: string;
-
-  /**
-   * Cuerpo de la solicitud. Puede ser un objeto serializable o `FormData`.
-   */
   data?: BodyInit | T;
-
-  /**
-   * Headers personalizados a incluir en la solicitud.
-   */
   headers?: Record<string, string>;
-
-  /**
-   * Si se debe usar autenticación mediante token. Por defecto es `true`.
-   */
   useAuth?: boolean;
-
-  /**
-   * Token de acceso personalizado. Si no se proporciona, se intentará obtener automáticamente.
-   */
   token?: string;
-
-  /**
-   * Tipo de contenido para el encabezado `Content-Type`. Por defecto es `application/json`.
-   * Si se pasa `false`, no se establecerá ningún `Content-Type`.
-   */
   contentType?: string;
 }
 
-/**
- * Realiza una solicitud `fetch` con soporte opcional para autenticación
- *
- * Esta función maneja automáticamente:
- * - El encabezado `Authorization` con un token de sesión si `useAuth` está activado.
- * - Serialización JSON o `FormData` como cuerpo de la solicitud.
- * - Inclusión opcional de encabezados personalizados.
- *
- * @param {FetchWithAuthParams} params - Parámetros para construir la solicitud.
- * @returns {Promise<Response>} - Respuesta de la solicitud `fetch`.
- *
- * @throws {Error} - Lanza error si `useAuth` es `true` pero no se puede obtener un token.
- *
- * @example
- * ```ts
- * const response = await nextAuthFetch({
- *   url: "/api/endpoint",
- *   method: "POST",
- *   data: { name: "John" },
- * });
- * const result = await response.json();
- * ```
- */
+const FgCyan = '\x1b[36m';
+const FgYellow = '\x1b[33m';
+const FgRed = '\x1b[31m';
+const FgGreen = '\x1b[32m';
+const FgBlue = '\x1b[34m';
+const FgOrange = '\x1b[38;5;208m';
+const FgGray = '\x1b[90m';
+const Reset = '\x1b[0m';
 
-interface FetchWithAuthParams<T> extends Omit<RequestInit, "headers" | "body"> {
-  url: string;
-  data?: BodyInit | T;
-  headers?: Record<string, string>;
-  useAuth?: boolean;
-  token?: string;
-  contentType?: string; // e.g. "application/xml"; omit para JSON, false para dejar vacío
-}
+// Cambia este flag a false para desactivar todos los logs de nextAuthFetch
+const ENABLE_NEXT_AUTH_FETCH_LOGS = true;
 
-export async function nextAuthFetch<T>({
-  url,
-  method = "GET",
-  data,
-  headers = {},
-  useAuth = true,
-  token,
-  contentType = "application/json",
-  ...rest
-}: FetchWithAuthParams<T>): Promise<Response> {
-  // --- Obtener token si es necesario ---
-  const accessToken =
-    token ??
-    (useAuth ? (await getServerSession())?.tokens?.accessToken : undefined);
+export async function nextAuthFetch<T>(
+  params: FetchWithAuthParams<T>,
+): Promise<Response> {
+  const {
+    url,
+    method = 'GET',
+    data,
+    headers = {},
+    useAuth = true,
+    token,
+    contentType = 'application/json',
+    ...rest
+  } = params;
+
+  // 1. Obtener sesión y token inicial
+  const session = useAuth ? await getMemoizedSession() : null;
+  let accessToken = token ?? session?.tokens?.accessToken;
+
   if (useAuth && !accessToken) {
-    console.error(`No se ha proporcionado token de acceso para ${url}`);
+    if (ENABLE_NEXT_AUTH_FETCH_LOGS) {
+      console.error(`No se ha proporcionado token de acceso para ${url}`);
+    }
   }
 
-  // --- Construir los headers ---
-  const hdrs = new Headers(headers);
+  // --- Helper interno para ejecutar el fetch y no repetir lógica de headers/body ---
+  const executeRequest = async (currentSafeToken?: string) => {
+    const hdrs = new Headers(headers);
+    if (useAuth && currentSafeToken) {
+      hdrs.set('Authorization', `Bearer ${currentSafeToken}`);
+    }
 
-  if (useAuth && accessToken) {
-    hdrs.set("Authorization", `Bearer ${accessToken}`);
+    const isFormData = data instanceof FormData;
+    if (isFormData) {
+      // No establecemos Content-Type, fetch lo hace solo para FormData
+    } else if (
+      contentType &&
+      ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method.toUpperCase())
+    ) {
+      hdrs.set('Content-Type', contentType);
+    }
+
+    let body: BodyInit | undefined;
+    if (method.toUpperCase() !== 'GET' && data != null) {
+      body = isFormData
+        ? (data as FormData)
+        : typeof data === 'object' && contentType === 'application/json'
+          ? JSON.stringify(data)
+          : (data as BodyInit);
+    }
+
+    // Log del request en formato curl estándar (incluyendo headers y body)
+    if (ENABLE_NEXT_AUTH_FETCH_LOGS) {
+      try {
+        const curlLines: string[] = [];
+        curlLines.push(`'${method.toUpperCase()}' \\`);
+        curlLines.push(`  '${FgBlue}${url}${Reset}' \\`);
+
+        hdrs.forEach((value, key) => {
+          curlLines.push(`  ${FgYellow}-H '${key}: ${value}'${Reset} \\`);
+        });
+
+        if (body) {
+          // Representar correctamente el body según su tipo
+          if (isFormData && data instanceof FormData) {
+            // Para FormData, usar -F por cada campo
+            for (const [key, value] of Array.from(data.entries())) {
+              if (value instanceof File) {
+                const fileDesc = `@${value.name};type=${value.type || 'application/octet-stream'}`;
+                curlLines.push(
+                  `  ${FgOrange}-F '${key}=${fileDesc}'${Reset} \\\
+`,
+                );
+              } else {
+                curlLines.push(
+                  `  ${FgOrange}-F '${key}=${String(value)}'${Reset} \\\
+`,
+                );
+              }
+            }
+          } else {
+            // Para JSON u otros cuerpos textuales, usar -d
+            const bodyStr =
+              typeof body === 'string' ? body : JSON.stringify(body);
+            curlLines.push(
+              `  ${FgOrange}-d '${bodyStr}'${Reset} \\\
+`,
+            );
+          }
+        }
+
+        // Quitar la barra invertida de la última línea
+        if (curlLines.length > 0) {
+          curlLines[curlLines.length - 1] = curlLines[
+            curlLines.length - 1
+          ].replace(/ \\\\$/, '');
+        }
+
+        console.log(`${FgGreen}curl -X :${Reset}${curlLines.join('\n')}`);
+      } catch (err) {
+        console.error('Error generando curl para nextAuthFetch:', err);
+      }
+    }
+
+    return await fetch(url, {
+      ...rest,
+      method,
+      headers: hdrs,
+      body,
+      cache: rest.cache,
+    });
+  };
+
+  // --- PRIMER INTENTO ---
+  let res = await executeRequest(accessToken);
+
+  // --- LÓGICA DE SEMÁFORO ---
+  if (res.status === 401 && useAuth) {
+    if (ENABLE_NEXT_AUTH_FETCH_LOGS) {
+      console.warn(
+        `401 detectado en ${url}. Intentando validación/refresco de token...`,
+      );
+    }
+
+    // El coordinador se encarga de que si hay 20 peticiones, solo una refresque
+    const newToken = await getServerValidToken(session?.tokens?.refreshToken);
+
+    if (newToken) {
+      if (ENABLE_NEXT_AUTH_FETCH_LOGS) {
+        console.log(`Reintentando petición a ${url} con nuevo token.`);
+      }
+      res = await executeRequest(newToken);
+    } else {
+      // Si el coordinador no pudo obtener un token nuevo, sesión expirada
+      unauthorized();
+    }
   }
 
-  const isFormData = data instanceof FormData;
-  if (isFormData) {
-    // No fijamos Content-Type manualmente para FormData (el navegador añade boundary)
-    contentType = "multipart/form-data";
-  }
-  const upperMethod = method.toUpperCase();
-  if (
-    !isFormData &&
-    contentType &&
-    upperMethod !== "GET" &&
-    upperMethod !== "HEAD"
-  ) {
-    hdrs.set("Content-Type", contentType);
-  }
-
-  // --- Preparar body ---
-  let body: BodyInit | undefined;
-  if (method.toUpperCase() !== "GET" && data != null) {
-    body = isFormData
-      ? data
-      : typeof data === "object" && contentType === "application/json"
-        ? JSON.stringify(data)
-        : (data as BodyInit);
-  }
-  console.log(url, {
-    method,
-    headers: hdrs,
-    body,
-    ...rest,
-  });
-
-  const res = await fetch(url, {
-    method,
-    headers: hdrs,
-    body,
-    ...rest,
-  });
+  // Verificación final tras el reintento
   if (res.status === 401) {
     unauthorized();
   }
-  // --- Ejecutar fetch ---
+  if (res.status === 403) {
+    forbidden();
+  }
+
+  // Log de respuesta en caso de error (status no OK)
+  if (!res.ok) {
+    try {
+      const cloned = res.clone();
+      const text = await cloned.text();
+      if (ENABLE_NEXT_AUTH_FETCH_LOGS) {
+        console.error(
+          `${FgRed}nextAuthFetch ERROR - ${method.toUpperCase()} ${url} - Status: ${res.status} - Body: ${text}${Reset}`,
+        );
+      }
+    } catch (err) {
+      if (ENABLE_NEXT_AUTH_FETCH_LOGS) {
+        console.error('Error leyendo respuesta de nextAuthFetch:', err);
+      }
+    }
+  }
+
+  if (ENABLE_NEXT_AUTH_FETCH_LOGS) {
+    console.log(
+      `${FgGray}[nextAuthFetch] Puedes desactivar estos logs cambiando la constante ENABLE_NEXT_AUTH_FETCH_LOGS a false en este archivo.${Reset}`,
+    );
+  }
+
   return res;
 }
+
+export const getMemoizedSession = cache(async () => {
+  return await getServerSession();
+});
