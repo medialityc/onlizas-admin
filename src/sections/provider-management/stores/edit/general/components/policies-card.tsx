@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
-import RHFSimpleEditor from "@/components/react-hook-form/rhf-tiny-editor";
+import { RHFTiptapEditor } from "@/components/react-hook-form";
 
 export default function PoliciesCard() {
   return (
@@ -19,31 +19,28 @@ export default function PoliciesCard() {
         </p>
       </div>
 
-      <RHFSimpleEditor
+      <RHFTiptapEditor
         name="returnPolicy"
         label="Política de Devoluciones"
         required
         placeholder="Explica cómo los clientes pueden devolver productos..."
-        height={150}
       />
 
       <div className="border-t border-gray-100 dark:border-gray-700 pt-4">
-        <RHFSimpleEditor
+        <RHFTiptapEditor
           name="shippingPolicy"
           label="Política de Envíos"
           required
           placeholder="Describe los tiempos y costos de envío..."
-          height={150}
         />
       </div>
 
       <div className="border-t border-gray-100 dark:border-gray-700 pt-4">
-        <RHFSimpleEditor
+        <RHFTiptapEditor
           name="termsOfService"
           label="Términos de Servicio"
           required
           placeholder="Establece las reglas y condiciones de tu tienda..."
-          height={150}
         />
       </div>
     </div>

@@ -68,7 +68,7 @@ export default function DepartmentModal({
 
   const onSubmit = async (
     data: DepartmentFormData,
-    event?: React.BaseSyntheticEvent
+    event?: React.BaseSyntheticEvent,
   ) => {
     event?.preventDefault();
     setError(null);
@@ -101,7 +101,7 @@ export default function DepartmentModal({
         toast.success(
           department
             ? "Departamento editado exitosamente"
-            : "Departamento creado exitosamente"
+            : "Departamento creado exitosamente",
         );
         handleClose();
       } else {
@@ -109,7 +109,7 @@ export default function DepartmentModal({
           toast.error("Ya existe un departamento con ese nombre");
         } else {
           toast.error(
-            response.message || "No se pudo procesar el departamento"
+            response.message || "No se pudo procesar el departamento",
           );
         }
       }
@@ -141,7 +141,7 @@ export default function DepartmentModal({
           {/* Name Input */}
           <RHFInputWithLabel
             name="name"
-            label="Nombre de la Categoría"
+            label="Nombre"
             placeholder="Ej: Frutas y Verduras"
             autoFocus
             maxLength={100}
@@ -149,23 +149,12 @@ export default function DepartmentModal({
 
           {/* Description Textarea */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Descripción *
-            </label>
-            <div className="relative">
-              <textarea
-                {...methods.register("description")}
-                placeholder="Descripción detallada de la categoría..."
-                maxLength={500}
-                rows={4}
-                className="form-textarea"
-              />
-              {methods.formState.errors.description && (
-                <div className="text-red-500 text-sm mt-1">
-                  {methods.formState.errors.description.message}
-                </div>
-              )}
-            </div>
+            <RHFInputWithLabel
+              name="description"
+              label="Descripción"
+              placeholder="Descripción detallada de la categoría..."
+              type="textarea"
+            />
           </div>
 
           {/* Image URL Input */}

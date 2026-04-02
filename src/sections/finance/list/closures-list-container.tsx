@@ -8,6 +8,7 @@ import { FiltersBar } from "../components/filters-bar";
 import { useState, useCallback, useMemo } from "react";
 import showToast from "@/config/toast/toastConfig";
 import { Button } from "@mantine/core";
+import { ClosuresListExportActions } from "../components/closures-export-actions";
 
 interface ClosuresListContainerProps {
   closuresPromise: ApiResponse<GetAllClosures>;
@@ -39,7 +40,7 @@ export default function ClosuresListContainer({
         toDate: toDate || undefined,
       } as ExtendedSearchParams);
     },
-    [updateFiltersInUrl, query, fromDate, toDate]
+    [updateFiltersInUrl, query, fromDate, toDate],
   );
 
   const validateDateRange = useCallback(() => {
@@ -86,6 +87,7 @@ export default function ClosuresListContainer({
             Listado de cierres totales y parciales
           </p>
         </div>
+        <ClosuresListExportActions closures={closuresData?.data ?? []} />
       </div>
       <FiltersBar>
         <div>

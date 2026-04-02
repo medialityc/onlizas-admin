@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { RHFTinyMCEEditor } from "@/components/react-hook-form";
+import { RHFTiptapEditor } from "@/components/react-hook-form";
 import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
 
 export default function PoliciesCardTinyMCE() {
@@ -19,31 +19,28 @@ export default function PoliciesCardTinyMCE() {
         </p>
       </div>
 
-      <RHFTinyMCEEditor
+      <RHFTiptapEditor
         name="returnPolicy"
         label="Política de Devoluciones"
         placeholder="Describe tu política de devoluciones..."
         required
-        height={200}
       />
 
       <div className="border-t border-gray-100 dark:border-gray-700 pt-4">
-        <RHFTinyMCEEditor
+        <RHFTiptapEditor
           name="shippingPolicy"
           label="Política de Envíos"
           placeholder="Describe tu política de envíos..."
           required
-          height={200}
         />
       </div>
 
       <div className="border-t border-gray-100 dark:border-gray-700 pt-4">
-        <RHFTinyMCEEditor
+        <RHFTiptapEditor
           name="termsOfService"
           label="Términos de Servicio"
           placeholder="Describe tus términos de servicio..."
           required
-          height={200}
         />
       </div>
     </div>

@@ -46,10 +46,9 @@ export default function SupplierEditForm({
 
   const initValue = useMemo(() => {
     // Validar y sanitizar la fecha de expiración
-    let validExpirationDate = new Date();
+    let validExpirationDate: Date | null = null;
     if (supplierDetails.expirationDate) {
       const parsedDate = new Date(supplierDetails.expirationDate);
-      // Verificar que la fecha sea válida
       if (!isNaN(parsedDate.getTime())) {
         validExpirationDate = parsedDate;
       }
@@ -72,13 +71,6 @@ export default function SupplierEditForm({
       supplierType: supplierDetails.type
         ? Number(SUPPLIER_TYPE[supplierDetails.type])
         : 0,
-      countryId: supplierDetails.countryId
-        ? String(supplierDetails.countryId)
-        : "",
-      stateId: supplierDetails.city ? String(supplierDetails.city) : "",
-      districtId: supplierDetails.districtId
-        ? String(supplierDetails.districtId)
-        : "",
       expirationDate: validExpirationDate,
       importersIds: (supplierDetails as any).importersIds || [],
       pendingCategories:
@@ -178,9 +170,6 @@ export default function SupplierEditForm({
           sellerType: data.sellerType,
           nacionalityType: data.nacionalityType,
           mincexCode: data.mincexCode || "",
-          countryId: data.countryId,
-          city: data.stateId,
-          districtId: data.districtId,
         };
 
         const basicInfoResponse = await updateSupplierBasicInfo(
@@ -199,19 +188,21 @@ export default function SupplierEditForm({
         setIsEditingBasicInfo(false);
       }
 
-      // 2) Actualizar fecha de expiración de forma independiente
-      const expirationDateResponse = await updateExpirationDate(
-        approvalProcessId,
-        data?.expirationDate?.toISOString() || new Date().toISOString(),
-      );
-      if (expirationDateResponse.error) {
-        toast.error("Error al actualizar la fecha de expiración");
+      // 2) Actualizar fecha de expiración solo si viene con valor
+      if (data?.expirationDate) {
+        const expirationDateResponse = await updateExpirationDate(
+          approvalProcessId,
+          data.expirationDate.toISOString(),
+        );
+        if (expirationDateResponse.error) {
+          toast.error("Error al actualizar la fecha de expiración");
+        }
       }
 
       if (isEditingBasicInfo) {
-        toast.success("Información básica y fecha de expiración actualizadas");
+        toast.success("Información básica actualizada");
       } else {
-        toast.success("Fecha de expiración actualizada correctamente");
+        toast.success("Proveedor actualizado correctamente");
       }
 
       // Revalidar y obtener datos actualizados del proveedor en el layout/página

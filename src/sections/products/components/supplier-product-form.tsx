@@ -94,9 +94,6 @@ const SupplierProductForm = ({ initValue, isEdit, approvalProcess }: Props) => {
                 <AboutProductSection />
               </div>
               <div className="col-span-1 lg:col-span-2">
-                <ProductDetailsSection />
-              </div>
-              <div className="col-span-1 lg:col-span-2">
                 <ProductTutorialsSection />
               </div>
               <div className="col-span-1 lg:col-span-2">

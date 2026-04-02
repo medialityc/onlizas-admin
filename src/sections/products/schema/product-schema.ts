@@ -13,9 +13,7 @@ export const productSchema = z.object({
     .max(500, "La descripción no puede tener más de 500 caracteres.")
     .default(""),
   active: z.boolean(),
-  supplierUserIds: z
-    .array(z.string())
-    .min(1, "Debe seleccionar al menos un proveedor."),
+  supplierUserIds: z.array(z.string()),
   categoryIds: z
     .array(z.string())
     .min(1, "Debe seleccionar al menos una categoría."),
@@ -94,39 +92,6 @@ export const productSchema = z.object({
       { message: "Las URLs de tutorial deben ser únicas" },
     )
     .default([]),
-
-  details: z
-    .union([
-      z.array(
-        z.object({
-          key: z.string().trim().min(1, "Clave requerida"),
-          value: z.string().trim().min(1, "Valor requerido para el detalle"),
-        }),
-      ),
-      z.record(z.string(), z.string()),
-    ])
-    .default([])
-    .transform((details) => {
-      if (Array.isArray(details)) {
-        return details;
-      }
-      return detailsObjectToArray(details);
-    })
-    .refine(
-      (arrayDetails) => {
-        if (arrayDetails.length === 0) {
-          return false;
-        }
-        const uniqueKeys = new Set(
-          arrayDetails.map((d) => d.key.toLowerCase().trim()),
-        );
-        return uniqueKeys.size === arrayDetails.length;
-      },
-      {
-        message:
-          "Las claves de detalles deben ser únicas (no se permiten duplicados).",
-      },
-    ),
 
   image: z
     .union([

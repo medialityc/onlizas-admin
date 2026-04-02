@@ -60,6 +60,11 @@ export const sidebarSections: SidebarSection[] = [
   {
     id: "sales",
     label: "Ventas y Pedidos",
+    permissions: [
+      ...PERMISSION_STORE,
+      ...PERMISSION_ORDERS,
+      ...PERMISSION_ADMIN,
+    ],
     items: [
       {
         id: "stores",
@@ -86,7 +91,8 @@ export const sidebarSections: SidebarSection[] = [
   },
   {
     id: "catalog",
-    label: "Catálogo de Productos",
+    label: "Catálogo",
+    permissions: [...PERMISSION_ADMIN, ...PERMISSION_PRODUCT],
     items: [
       {
         id: "departments",
@@ -141,7 +147,8 @@ export const sidebarSections: SidebarSection[] = [
   },
   {
     id: "inventory",
-    label: "Inventario y Logística",
+    label: "Inventario",
+    permissions: [...PERMISSION_ADMIN, ...PERMISSION_INVENTORY],
     items: [
       {
         id: "inventory",
@@ -190,6 +197,11 @@ export const sidebarSections: SidebarSection[] = [
   {
     id: "finance",
     label: "Finanzas",
+    permissions: [
+      ...PERMISSION_ADMIN,
+      ...PERMISSION_FINANCE_SUPPLIER_CLOSURES,
+      ...PERMISSION_SUPPLIER_ACCOUNTS,
+    ],
     items: [
       {
         id: "finance-closures",
@@ -224,6 +236,8 @@ export const sidebarSections: SidebarSection[] = [
   {
     id: "payments",
     label: "Pagos",
+    icon: <Wallet className="size-4" />,
+    permissions: [...PERMISSION_ADMIN],
     items: [
       {
         id: "payment-gateway",
@@ -243,7 +257,8 @@ export const sidebarSections: SidebarSection[] = [
   },
   {
     id: "security",
-    label: "Seguridad y Administración",
+    label: "Seguridad",
+    permissions: [...PERMISSION_ADMIN],
     items: [
       {
         id: "logs",

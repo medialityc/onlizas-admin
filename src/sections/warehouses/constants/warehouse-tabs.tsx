@@ -4,7 +4,7 @@ import { WAREHOUSE_TYPE_ENUM } from "./warehouse-type";
 
 export const warehouseTabs = (
   warehouseId: string,
-  warehouseType: WAREHOUSE_TYPE_ENUM
+  warehouseType: WAREHOUSE_TYPE_ENUM,
 ): Tab[] => [
   {
     id: "general",
@@ -23,28 +23,8 @@ export const warehouseTabs = (
   },
   {
     id: "history",
-    label: "Historial de trasferencia",
+    label: "Historial de transferencia",
     path: `/dashboard/warehouses/${warehouseType}/${warehouseId}/edit/transfers/list`,
   },
 ];
 
-export const meWarehouseTabs = (
-  warehouseId: number,
-  warehouseType: WAREHOUSE_TYPE_ENUM
-): Tab[] => [
-  {
-    id: "inventory",
-    label: "Inventarios",
-    path: `/provider/warehouses/${warehouseType}/${warehouseId}/edit/inventory`,
-  },
-  {
-    id: "transfers",
-    label: "Transferencias",
-    path: `/provider/warehouses/${warehouseType}/${warehouseId}/edit/transfers`,
-  },
-  {
-    id: "history",
-    label: "Historial de trasferencia",
-    path: `/provider/warehouses/${warehouseType}/${warehouseId}/edit/transfers/list`,
-  },
-];

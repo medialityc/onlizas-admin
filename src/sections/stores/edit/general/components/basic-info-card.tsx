@@ -13,13 +13,35 @@ export default function BasicInfoCard() {
           <span className="inline-flex items-center justify-center h-10 w-10 rounded-md bg-blue-600/10 shadow">
             <InformationCircleIcon className="w-6 h-6 text-blue-700" />
           </span>
-          <div className="font-semibold text-base">Información Básica</div>
+          <div className="font-semibold text-base">Información General</div>
         </div>
         <p className="text-xs text-gray-500 mt-1">
-          Nombre, descripción, URL y logo que se mostrarán a tus clientes.
+          Datos básicos y de contacto de la tienda.
         </p>
       </div>
-      <RHFInputWithLabel name="name" label="Nombre de la Tienda" required />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <RHFInputWithLabel name="name" label="Nombre de la Tienda" required />
+        <RHFInputWithLabel
+          name="email"
+          label="Email de Contacto"
+          type="email"
+          required
+        />
+        <RHFInputWithLabel
+          name="url"
+          label="URL Amigable"
+          prefix="/tienda/"
+          required
+        />
+        <RHFInputWithLabel
+          name="phoneNumber"
+          label="Teléfono de Contacto"
+          type="tel"
+          placeholder="+123456789"
+        />
+      </div>
+
       <RHFInputWithLabel
         name="description"
         label="Descripción"
@@ -28,11 +50,12 @@ export default function BasicInfoCard() {
         required
       />
       <RHFInputWithLabel
-        name="url"
-        label="URL Amigable"
-        prefix="/tienda/"
-        required
+        name="address"
+        label="Dirección"
+        type="textarea"
+        rows={2}
       />
+
       <RHFImageUpload
         variant="rounded"
         size="full"

@@ -8,6 +8,8 @@ import { WarehouseInventoryCardGrid } from "../components/warehouse-inventory-ca
 
 import { InventoryProviderFormData } from "@/sections/inventory-provider/schemas/inventory-provider.schema";
 import { PaginatedResponse } from "@/types/common";
+import { WarehouseInventoryExportActions } from "../components/warehouse-inventory-export-actions";
+import { InventoryProvider } from "@/types/inventory";
 
 interface Props {
   inventoryPromise: ApiResponse<PaginatedResponse<InventoryProviderFormData>>;
@@ -26,6 +28,17 @@ export default function WarehouseInventoryListContainer({
   return (
     <div className="space-y-6">
       <div className="panel flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+            Inventario del Almacén
+          </h2>
+          <WarehouseInventoryExportActions
+            items={
+              (inventoryPromise?.data
+                ?.data as unknown as InventoryProvider[]) ?? []
+            }
+          />
+        </div>
         <WarehouseInventoryCardGrid
           data={inventoryPromise?.data?.data}
           searchParams={query}

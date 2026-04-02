@@ -1,6 +1,6 @@
 export enum WAREHOUSE_TYPE_ENUM {
-  virtualwarehouse = "virtualwarehouse",
-  warehouse = "warehouse",
+  virtualwarehouse = "proveedor",
+  warehouse = "fisico",
 }
 
 export const WAREHOUSE_TYPE_OPTIONS = [

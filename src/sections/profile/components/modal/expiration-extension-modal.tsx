@@ -27,7 +27,7 @@ interface ExpirationExtensionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (
-    data: ExpirationExtensionFormData & { extendExpiration: boolean }
+    data: ExpirationExtensionFormData & { extendExpiration: boolean },
   ) => void;
   loading?: boolean;
   currentExpirationDate?: string;
@@ -112,12 +112,12 @@ export default function ExpirationExtensionModal({
               const sel = new Date(
                 value.getFullYear(),
                 value.getMonth(),
-                value.getDate()
+                value.getDate(),
               );
               const t = new Date(
                 today.getFullYear(),
                 today.getMonth(),
-                today.getDate()
+                today.getDate(),
               );
               if (sel <= t) return "La fecha debe ser posterior a hoy";
               if (currentExpirationDate) {
@@ -125,14 +125,13 @@ export default function ExpirationExtensionModal({
                 const c = new Date(
                   currentDate.getFullYear(),
                   currentDate.getMonth(),
-                  currentDate.getDate()
+                  currentDate.getDate(),
                 );
                 if (sel <= c)
                   return "La nueva fecha debe ser posterior a la fecha actual de expiración";
               }
               return true;
             }}
-            className="dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
           />
           <p className="text-xs text-gray-500">
             Seleccione la nueva fecha hasta la cual desea que sea válida su

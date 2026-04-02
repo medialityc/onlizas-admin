@@ -14,14 +14,13 @@ export interface SidebarMenuItem {
   disabled?: boolean;
   subsections?: SidebarSubsection[];
   isCollapsible?: boolean;
-  permissions?: string[]; // Permisos requeridos para mostrar este item
+  permissions?: string[]; // Added permissions array for more flexible permission handling
 }
 
 export interface SidebarSubsection {
   id: string;
   label: string;
   items: SidebarSubItem[];
-  adminOnly?: boolean;
 }
 
 export interface SidebarSubItem {
@@ -29,9 +28,8 @@ export interface SidebarSubItem {
   label: string;
   path: string;
   disabled?: boolean;
-  adminOnly?: boolean;
-  permissions?: string[]; // Permisos requeridos para mostrar este subitem
   permission?: string;
+  permissions?: string[]; // Added permissions array for more flexible permission handling
 }
 
 export interface SidebarSection {
@@ -42,6 +40,7 @@ export interface SidebarSection {
   noSection?: boolean;
   /** Optional grouped subsections inside a section (alternative to flat items) */
   groups?: SidebarSectionGroup[];
+  permissions?: string[]; // Added permissions array for more flexible permission handling
 }
 
 export interface SidebarSectionGroup {
@@ -50,7 +49,6 @@ export interface SidebarSectionGroup {
   items: SidebarMenuItem[]; // regular menu items
   /** If true, group is collapsible (default true) */
   collapsible?: boolean;
-  adminOnly?: boolean; // Solo para admin
 }
 
 export interface SidebarProps {
@@ -68,7 +66,7 @@ export interface SidebarSectionProps {
 
 export interface SidebarItemProps {
   item: SidebarMenuItem;
-  active: boolean;
+  isActive: boolean;
   isExpanded?: boolean;
   onToggle?: () => void;
   isActiveLink: (path: string) => boolean;

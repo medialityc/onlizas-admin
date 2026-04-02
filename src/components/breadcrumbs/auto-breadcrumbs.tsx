@@ -4,7 +4,9 @@ import React, { useMemo } from "react";
 import BreadcrumbLinks, { BreadcrumbItem } from "./breadcrumbs";
 
 // Mapa de etiquetas legibles para segmentos de ruta.
-const LABEL_MAP: Record<string, string> = {
+const LABEL_MAP: (hasParent: boolean) => Record<string, string> = (
+  hasParent: boolean,
+) => ({
   dashboard: "Dashboard",
   users: "Usuarios",
   roles: "Roles",
@@ -16,23 +18,62 @@ const LABEL_MAP: Record<string, string> = {
   edit: "Editar",
   create: "Crear",
   new: "Nuevo",
-  content: "Contenido",
-  sections: "Secciones",
-  "home-banners": "Banners",
-  "static-pages": "Páginas Estáticas",
-};
+  "order-status": "Estados de orden",
+  dispatch: "Despacho",
+  reception: hasParent ? "Entrega" : "Recepción",
+  parcels: "Bultos",
+  orders: "Órdenes",
+  summary: "Resumen",
+  scan: "Escanear",
+  "order-types": "Tipo de Orden",
+  "accounts-payable": "Cuentas por pagar",
+  "accounts-receivable": "Cuentas por cobrar",
+  business: "Negocios",
+  details: "Detalles",
+  transfer: "Transferencias",
+  "partial-closures": "Cierres parciales",
+  "closures-report": "Cierres de reporte",
+  "daily-closures": "Cierres diarios",
+  categories: "Categorías",
+  strategies: "Estrategias",
+  products: "Productos",
+  "hbl-range": "Rango HBL",
+  units: "Unidades",
+  "payment-methods": "Métodos de pago",
+  "shipping-types": "Tipos de envío",
+  countries: "Países",
+  transports: "Transportes",
+  ports: "Puertos marítimos",
+  airports: "Aeropuertos",
+  airlines: "Aerolíneas",
+  airwaybills: "Guías aéreas",
+  "shipping-lines": "Líneas marítimas",
+  "land-fleets": "Flotas terrestres",
+  "land-terminals": "Terminales terrestres",
+  "land-waybills": "Guías terrestres",
+  states: "Estados",
+  districts: "Distritos",
+  "maritime-bills-of-lading": "B/L marítimos",
+  cargoUnits: "Unidades de carga",
+  closure: "Cierres",
+  labels: "Factura",
+  "shipping-agents": "Transitarias",
+  list: "Lista",
+});
 
 // Detecta si un segmento es un valor dinámico (id numérico, uuid, hash largo, etc.)
 function isDynamicValue(segment: string) {
   if (!segment) return false;
   if (/^\d+$/.test(segment)) return true; // solo números
-  if (/^[0-9a-fA-F-]{8,}$/.test(segment) && segment.includes("-")) return true; // uuid
-  if (/^[0-9a-zA-Z]{10,}$/.test(segment)) return true; // hash/alfanum largo
+  if (/^[0-9a-fA-F-]{8,}$/.test(segment) && segment.includes("-")) return true; // uuid tipo 8-4-4-4-12
+  // Cadenas largas alfanuméricas que contengan al menos un dígito (evita palabras como "businesses")
+  if (/^[0-9a-zA-Z]{10,}$/.test(segment) && /\d/.test(segment)) return true; // hash/alfanum largo con números
   return false;
 }
 
-function segmentToLabel(segment: string): string {
-  if (LABEL_MAP[segment]) return LABEL_MAP[segment];
+function segmentToLabel(segment: string, hasParent: boolean): string {
+  const labels = LABEL_MAP(hasParent);
+  if (labels[segment]) return labels[segment];
   if (isDynamicValue(segment)) return segment;
   return segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
 }
@@ -63,6 +104,7 @@ const AutoBreadcrumbs: React.FC<AutoBreadcrumbsProps> = ({
   segmentLabelResolver,
 }) => {
   const pathname = usePathname();
+  const hasParent = false;
 
   const items: BreadcrumbItem[] = useMemo(() => {
     if (!pathname) return [];
@@ -73,30 +115,35 @@ const AutoBreadcrumbs: React.FC<AutoBreadcrumbsProps> = ({
     const relevant = segments.slice(dashboardIndex);
     if (relevant.length === 1 && !showOnRoot) return [];
 
+    // Build cumulative hrefs including dynamic segments, but only show labels for non-dynamic segments
     const acc: BreadcrumbItem[] = [];
-    let cumulative = "";
+    let cumulativeSegments: string[] = [];
 
     relevant.forEach((seg, idx) => {
-      cumulative += `/${seg}`;
+      cumulativeSegments.push(seg);
       const isLast = idx === relevant.length - 1;
-      // 1) Override literal por diccionario
-      let label: string | undefined | null = segmentOverrides?.[seg];
-      // 2) Resolver dinámico vía callback si no lo resolvió el diccionario
-      if (label == null && segmentLabelResolver) {
-        label = segmentLabelResolver({
-          segment: seg,
-          index: idx,
-          segments: relevant,
-        });
-      }
-      // 3) Fallback a label normal
-      if (label == null) {
-        label = segmentToLabel(seg);
-      }
-      if (isLast && finalLabelOverride) label = finalLabelOverride;
       const dynamic = isDynamicValue(seg);
-      const href = !isLast && !dynamic ? cumulative : undefined;
-      acc.push({ label: String(label), href });
+
+      // Only show breadcrumb for non-dynamic segments, but href includes all segments up to this point
+      if (!dynamic) {
+        // 1) Override literal por diccionario
+        let label: string | undefined | null = segmentOverrides?.[seg];
+        // 2) Resolver dinámico vía callback si no lo resolvió el diccionario
+        if (label == null && segmentLabelResolver) {
+          label = segmentLabelResolver({
+            segment: seg,
+            index: idx,
+            segments: relevant,
+          });
+        }
+        // 3) Fallback a label normal
+        if (label == null) {
+          label = segmentToLabel(seg, hasParent);
+        }
+        if (isLast && finalLabelOverride) label = finalLabelOverride;
+        const href = !isLast ? "/" + cumulativeSegments.join("/") : undefined;
+        acc.push({ label: String(label), linkTo: href });
+      }
     });
     return acc;
   }, [
@@ -108,7 +155,11 @@ const AutoBreadcrumbs: React.FC<AutoBreadcrumbsProps> = ({
   ]);
 
   if (!items.length) return null;
-  return <BreadcrumbLinks items={items} />;
+  return (
+    <div className="p-4 pb-0">
+      <BreadcrumbLinks items={items} />
+    </div>
+  );
 };
 
 export default AutoBreadcrumbs;

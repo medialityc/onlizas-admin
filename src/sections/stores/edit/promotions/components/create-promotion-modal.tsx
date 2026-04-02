@@ -17,63 +17,99 @@ import {
   CardTitle,
 } from "@/components/cards/card";
 import { Button } from "@/components/button/button";
-import LoaderButton from "@/components/loaders/loader-button";
 import { Promotion } from "@/types/promotions";
 import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
 
-const defaultValues: Partial<PromotionFormValues> = {
+const emptyDefaults: Partial<PromotionFormValues> = {
   type: "percent",
   value: 0,
   usageLimit: 100,
 };
 
+function promotionToFormValues(p: Promotion): Partial<PromotionFormValues> {
+  return {
+    name: p.name,
+    description: p.description ?? "",
+    type: p.discountType === 0 ? "percent" : "amount",
+    value: p.discountValue,
+    code: p.code ?? "",
+    usageLimit: p.usageLimit ?? 0,
+    startDate: p.startDate ? new Date(p.startDate) : undefined,
+    endDate: p.endDate ? new Date(p.endDate) : undefined,
+  };
+}
+
 export default function CreatePromotionModal({
   open,
   onClose,
   onCreate,
+  initialValues,
+  onEdit,
 }: {
   open: boolean;
   onClose: () => void;
   onCreate: (p: Promotion) => void;
+  initialValues?: Promotion;
+  onEdit?: (p: Promotion) => void;
 }) {
+  const isEditing = !!initialValues;
+
   const methods = useForm<PromotionFormValues>({
-    defaultValues,
+    defaultValues: emptyDefaults,
     resolver: zodResolver(promotionFormSchema),
     mode: "onChange",
   });
+
+  // Reset form whenever the modal opens or the target promotion changes
+  React.useEffect(() => {
+    if (open) {
+      methods.reset(
+        isEditing ? promotionToFormValues(initialValues!) : emptyDefaults,
+      );
+    }
+  }, [open, initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toYMD = (d?: Date) =>
     d ? new Date(d).toISOString().slice(0, 10) : undefined;
 
   const onSubmit = (data: PromotionFormValues) => {
-    // Normalizar el objeto y devolverlo al contenedor para que actualice el form global
-    onCreate({
-      id: Date.now().toString(),
+    const promotion: Promotion = {
+      ...(initialValues ?? {
+        id: Date.now().toString(),
+        usedCount: 0,
+        active: true,
+        storeId: 0,
+        storeName: "",
+        mediaFile: "",
+        promotionCategoriesDTOs: [],
+        promotionProductsDTOs: [],
+      }),
       name: data.name,
       description: data.description ?? "",
-      discountType: data.type === "percent" ? 0 : 1, // Mapear string a número
+      discountType: data.type === "percent" ? 0 : 1,
       discountValue: Number(data.value),
       code: data.code ?? "",
       usageLimit: data.usageLimit ?? 0,
-      usedCount: 0,
       startDate: toYMD(data.startDate),
       endDate: toYMD(data.endDate),
-      active: true,
+    };
 
-      // Propiedades adicionales requeridas por la interfaz Promotion
-      storeId: 0,
-      storeName: "",
-      mediaFile: "",
-      promotionCategoriesDTOs: [],
-      promotionProductsDTOs: [],
-    });
+    if (isEditing) {
+      onEdit?.(promotion);
+    } else {
+      onCreate(promotion);
+    }
 
-    methods.reset(defaultValues);
+    methods.reset(emptyDefaults);
     onClose();
   };
 
   return (
-    <SimpleModal open={open} onClose={onClose} title="Crear Nueva Promoción">
+    <SimpleModal
+      open={open}
+      onClose={onClose}
+      title={isEditing ? "Editar Promoción" : "Crear Nueva Promoción"}
+    >
       <RHFFormProvider {...methods}>
         <div className="space-y-5">
           {/* Básicos */}
@@ -172,7 +208,7 @@ export default function CreatePromotionModal({
               type="button"
               onClick={() => methods.handleSubmit(onSubmit)()}
             >
-              Guardar
+              {isEditing ? "Guardar cambios" : "Guardar"}
             </Button>
           </div>
         </div>

@@ -9,7 +9,11 @@ const SidebarContent = ({
   expandedItems,
   onToggleItem,
   isActiveLink,
-}: SidebarProps & { isActiveLink: (path: string) => boolean }) => {
+  hasActiveSearch = false,
+}: SidebarProps & {
+  isActiveLink: (path: string) => boolean;
+  hasActiveSearch?: boolean;
+}) => {
   const { recentSection } = useRecentRoutes();
 
   // Insert recent section at the top if exists
@@ -19,8 +23,8 @@ const SidebarContent = ({
   }, [recentSection, sections]);
 
   return (
-    <div className="relative flex-1 overflow-y-auto overflow-x-hidden ultra-thin-scrollbar">
-      <ul className="relative space-y-1 p-4 font-semibold">
+    <div className="ultra-thin-scrollbar relative max-h-[calc(100vh-80px)] overflow-auto">
+      <ul className="relative space-y-1 p-4 pb-36 font-semibold">
         {fullSections.map((section) => (
           <SidebarSection
             key={section.id}
@@ -28,6 +32,7 @@ const SidebarContent = ({
             expandedItems={expandedItems}
             onToggleItem={onToggleItem}
             isActiveLink={isActiveLink}
+            hasActiveSearch={hasActiveSearch}
           />
         ))}
       </ul>

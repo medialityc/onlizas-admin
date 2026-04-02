@@ -1,29 +1,25 @@
 "use client";
 import { useTheme } from "next-themes";
 import { useMemo, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
 import SearchBar from "./search-bar";
 import { sidebarSections } from "./sidebar-config";
-// import { filterSectionsByPermissions } from "./sidebar-utils"; // Uncomment when integrating permissions
 import SidebarContent from "./sidebar-content";
 import SidebarHeader from "./sidebar-header";
+import { filterSectionsByPermissions } from "./sidebar-utils";
 import { useSidebar } from "./use-sidebar";
+import { usePermissions } from "@/hooks/use-permissions";
 
 const Sidebar = () => {
   const { theme } = useTheme();
   const { expandedItems, isActiveLink, toggleItem } = useSidebar();
-  const themeConfig = useSelector((state: RootState) => state.themeConfig);
   const [search, setSearch] = useState("");
-
-  // Placeholder for future permission integration
-  // const userPermissions = ["orders.view", "business.view", ...];
-  // const permittedSections = useMemo(
-  //   () => filterSectionsByPermissions(sidebarSections, userPermissions),
-  //   [userPermissions]
-  // );
-  // const baseSections = permittedSections;
+  const { permissions, isLoading: permissionsLoading } = usePermissions();
   const baseSections = sidebarSections;
+
+  const permissionFilteredSections = useMemo(() => {
+    if (permissionsLoading) return baseSections;
+    return filterSectionsByPermissions(baseSections, permissions);
+  }, [baseSections, permissions, permissionsLoading]);
 
   const normalize = (str: string) =>
     str
@@ -33,18 +29,39 @@ const Sidebar = () => {
       .toLowerCase();
 
   const filteredSections = useMemo(() => {
-    if (!search.trim()) return baseSections;
+    if (!search.trim()) return permissionFilteredSections;
     const term = normalize(search);
-    return baseSections
+    return permissionFilteredSections
       .map((section) => {
+        // Filter regular items
         const matchedItems = section.items.filter((item) => {
           const baseMatch = normalize(item.label).includes(term);
           const subsectionMatch = item.subsections?.some((s) =>
-            s.items.some((si) => normalize(si.label).includes(term))
+            s.items.some((si) => normalize(si.label).includes(term)),
           );
           return baseMatch || subsectionMatch;
         });
-        if (!matchedItems.length) return null;
+
+        // Filter groups (e.g., nomencladores)
+        const matchedGroups = section.groups
+          ?.map((group) => {
+            const groupItems = group.items.filter((item) => {
+              const baseMatch = normalize(item.label).includes(term);
+              const subsectionMatch = item.subsections?.some((s) =>
+                s.items.some((si) => normalize(si.label).includes(term)),
+              );
+              return baseMatch || subsectionMatch;
+            });
+            if (!groupItems.length) return null;
+            return { ...group, items: groupItems };
+          })
+          .filter(Boolean) as typeof section.groups;
+
+        // Skip section if no matches found
+        if (!matchedItems.length && (!matchedGroups || !matchedGroups.length)) {
+          return null;
+        }
+
         const processedItems = matchedItems.map((mi) => {
           if (!mi.subsections) return mi;
           return {
@@ -52,7 +69,7 @@ const Sidebar = () => {
             subsections: mi.subsections
               .map((sub) => {
                 const filteredSubItems = sub.items.filter((si) =>
-                  normalize(si.label).includes(term)
+                  normalize(si.label).includes(term),
                 );
                 if (!filteredSubItems.length) return null;
                 return { ...sub, items: filteredSubItems };
@@ -60,30 +77,33 @@ const Sidebar = () => {
               .filter(Boolean) as typeof mi.subsections,
           };
         });
-        return { ...section, items: processedItems };
-      })
-      .filter(Boolean) as typeof baseSections;
-  }, [search, baseSections]);
 
+        return {
+          ...section,
+          items: processedItems,
+          groups: matchedGroups,
+        };
+      })
+      .filter(Boolean) as typeof permissionFilteredSections;
+  }, [search, permissionFilteredSections]);
+
+  const hasActiveSearch = !!search.trim();
   return (
     <div className={theme == "dark" ? "dark" : ""}>
       <nav
-        className={`sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-65 shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300 ${
-          !themeConfig.sidebar
-            ? "-translate-x-full lg:translate-x-0"
-            : "translate-x-0"
-        } ${theme == "dark" ? "text-white-dark" : ""}`}
+        className={`sidebar fixed top-0 bottom-0 z-51 h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-[width,background,box-shadow] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] will-change-transform ${
+          theme == "dark" ? "text-white-dark" : ""
+        }`}
       >
-        <div className="h-full flex flex-col bg-white dark:bg-black">
-          <div className="shrink-0">
-            <SidebarHeader />
-            <SearchBar value={search} onChange={setSearch} />
-          </div>
+        <div className="h-full bg-white dark:bg-black">
+          <SidebarHeader />
+          <SearchBar value={search} onChange={setSearch} />
           <SidebarContent
             sections={filteredSections}
             expandedItems={expandedItems}
             onToggleItem={toggleItem}
             isActiveLink={isActiveLink}
+            hasActiveSearch={hasActiveSearch}
           />
         </div>
       </nav>

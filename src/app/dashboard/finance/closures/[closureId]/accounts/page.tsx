@@ -6,7 +6,7 @@ import { ClosureAccountsCardsClient } from "@/sections/finance/list/closure-acco
 import { formatDate } from "@/utils/format";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { ClosureAccountsReportActions } from "@/sections/finance/components/closure-accounts-report-actions";
+import { ClosureAccountsExportActions } from "@/sections/finance/components/closure-accounts-export-actions";
 
 export default async function ClosureAccountsPage({
   params,
@@ -230,7 +230,7 @@ export default async function ClosureAccountsPage({
           <div className="font-medium">Lista de cuentas</div>
           <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
             <span>{accountsResp?.accounts?.length ?? 0} cuentas</span>
-            <ClosureAccountsReportActions
+            <ClosureAccountsExportActions
               closureId={closureId}
               statement={statement}
               accounts={accountsResp?.accounts ?? []}

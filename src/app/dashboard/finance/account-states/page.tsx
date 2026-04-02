@@ -4,7 +4,7 @@ import {
 } from "@/services/finance/closures";
 import ClosuresSummaryDashboard from "@/sections/finance/components/closures-summary-dashboard";
 import { SupplierFinancialSummaryTable } from "@/sections/finance/components/supplier-financial-summary-table";
-import { AccountStatesActions } from "@/sections/finance/components/account-states-actions";
+import { ClosuresSummaryExportActions } from "@/sections/finance/components/closures-export-actions";
 
 type PageSearchParams = {
   startDate?: string | string[];
@@ -92,14 +92,13 @@ export default async function FinanceAccountStatesPage({
             Filtra por rango de fechas y tipo de cierre.
           </p>
         </div>
-        <AccountStatesActions
+        <ClosuresSummaryExportActions
           summary={closuresRes.data}
           suppliers={
             suppliersRes.error || !suppliersRes.data ? [] : suppliersRes.data
           }
           startDate={startDate}
           endDate={endDate}
-          closureType={closureType}
         />
       </div>
       <ClosuresSummaryDashboard summary={closuresRes.data} />

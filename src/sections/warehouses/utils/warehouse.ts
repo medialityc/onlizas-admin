@@ -15,14 +15,15 @@ export const generateWarehouseTransferNumber = (): string => {
 };
 
 export const getWarehouseRoute = (
-  type: WAREHOUSE_TYPE_ENUM | string
+  type: WAREHOUSE_TYPE_ENUM | string,
 ): "physical" | "virtual" | string => {
   switch (type) {
-    case WAREHOUSE_TYPE_ENUM.warehouse:
     case "Warehouse":
       return "physical";
-
-    case WAREHOUSE_TYPE_ENUM.virtualwarehouse:
+    case "proveedor":
+      return "virtual";
+    case "fisico":
+      return "physical";
     case "Virtualwarehouse":
       return "virtual";
 
