@@ -15,14 +15,14 @@ const SidebarProviderSection = ({
   const hasActiveItem = useMemo(
     () =>
       section.items.some((item) =>
-        item.path ? isActiveLink(item.path) : false
+        item.path ? isActiveLink(item.path) : false,
       ),
-    [section.items, isActiveLink]
+    [section.items, isActiveLink],
   );
 
   // Estado local de apertura/cierre del acordeón
   const [isOpen, setIsOpen] = useState<boolean>(
-    () => hasActiveItem || expandedItems[section.id]
+    () => hasActiveItem || expandedItems[section.id],
   );
 
   // Si cambia el item activo, autoexpande la sección
@@ -68,6 +68,7 @@ const SidebarProviderSection = ({
               key={item.id}
               item={item}
               active={item.path ? isActiveLink(item.path) : false}
+              isActive={item.path ? isActiveLink(item.path) : false}
               isExpanded={expandedItems[item.id]}
               onToggle={() => onToggleItem(item.id)}
               isActiveLink={isActiveLink}
@@ -89,6 +90,7 @@ const SidebarProviderSection = ({
                 key={item.id}
                 item={item}
                 active={item.path ? isActiveLink(item.path) : false}
+                isActive={item.path ? isActiveLink(item.path) : false}
                 isExpanded={expandedItems[item.id]}
                 onToggle={() => onToggleItem(item.id)}
                 isActiveLink={isActiveLink}

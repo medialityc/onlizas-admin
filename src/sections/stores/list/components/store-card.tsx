@@ -80,7 +80,7 @@ export const SoreCard = ({ store }: DataCardProps) => {
               alt={store.name + " banner"}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 100vw, 33vw"
+              // sizes="(max-width: 768px) 100vw, 33vw"
               onError={() => setHasHomeBannerError(true)}
             />
             <div className="absolute inset-0 bg-black/5 dark:bg-black/20" />

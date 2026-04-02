@@ -21,8 +21,6 @@ export const productTransformData = (product: Product): ProductFormData => {
 
     image: isValidUrl(product.image as string) ? product.image : "",
 
-    details: detailsObjectToArray(product.details) ?? [],
-
     // 👇 Valores de Aduana normalizados
     /* customsValueAduanaUsd: product.customsValue ?? 0,
     valuePerUnit: product.customsValueAduanaUsd ?? 0, */

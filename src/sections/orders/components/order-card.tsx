@@ -9,9 +9,9 @@ import {
   DollarSign,
   User,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Image from "next/image";
-import { Order, OrderStatus } from "@/types/order";
+import { Order, OrderStatus, SubOrder } from "@/types/order";
 import { Card, CardContent, CardHeader } from "@/components/cards/card";
 import { formatCurrency, formatDate } from "@/utils/format";
 import { Button } from "@/components/button/button";
@@ -19,7 +19,7 @@ import Badge from "@/components/badge/badge"; // legacy badge (mantener si se us
 import { StatusBadge } from "@/components/orders/status-badge";
 import { getStatusLabel } from "@/lib/order-utils";
 import { CountdownTimer } from "@/components/orders/countdown-timer";
-import { Eye, Download } from "lucide-react";
+import { Eye, Download, Tag } from "lucide-react";
 import { urlToFile } from "@/lib/utils";
 
 interface OrderCardProps {
@@ -34,7 +34,33 @@ export function OrderCard({
   isAdmin = true,
 }: OrderCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  // configuredTime ahora se interpreta como MINUTOS
+  const [exportingAllLabels, setExportingAllLabels] = useState(false);
+  const [exportingLabel, setExportingLabel] = useState<string | null>(null);
+
+  const handleAllLabels = useCallback(async () => {
+    setExportingAllLabels(true);
+    try {
+      const { exportSubOrderLabelPdf } = await import("../utils/exporters");
+      for (const subOrder of order.subOrders) {
+        await exportSubOrderLabelPdf(order, subOrder);
+      }
+    } finally {
+      setExportingAllLabels(false);
+    }
+  }, [order]);
+
+  const handleOneLabel = useCallback(
+    async (subOrder: SubOrder) => {
+      setExportingLabel(subOrder.id);
+      try {
+        const { exportSubOrderLabelPdf } = await import("../utils/exporters");
+        await exportSubOrderLabelPdf(order, subOrder);
+      } finally {
+        setExportingLabel(null);
+      }
+    },
+    [order],
+  );
 
   const weightLabel = (w: number) => {
     if (w >= 1000) {
@@ -99,6 +125,16 @@ export function OrderCard({
             <span className="text-lg font-bold text-primary">
               {formatCurrency(order.totalAmountPaid, "USD")}
             </span>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={exportingAllLabels}
+              onClick={handleAllLabels}
+              title="Descargar etiquetas de todas las sub-órdenes"
+            >
+              <Tag className="h-4 w-4 mr-1" />
+              {exportingAllLabels ? "Generando..." : "Etiquetas"}
+            </Button>
             <Button size="sm" onClick={() => setIsExpanded(!isExpanded)}>
               {isExpanded ? (
                 <ChevronUp className="h-4 w-4" />
@@ -177,7 +213,9 @@ export function OrderCard({
           </div>
           <div className="flex items-center gap-1">
             <DollarSign className="h-4 w-4 text-muted-foreground" />
-            <span>Envío: {formatCurrency(order.totalDeliveryAmount, "USD")}</span>
+            <span>
+              Envío: {formatCurrency(order.totalDeliveryAmount, "USD")}
+            </span>
           </div>
         </div>
 
@@ -241,6 +279,15 @@ export function OrderCard({
                   <div className="flex md:flex-col items-center md:items-end gap-2 md:gap-1 w-full md:w-auto">
                     <StatusBadge status={subOrder.status as OrderStatus} />
                     <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={exportingLabel === subOrder.id}
+                        onClick={() => handleOneLabel(subOrder)}
+                      >
+                        <Tag className="h-3 w-3 mr-1" />
+                        {exportingLabel === subOrder.id ? "..." : "Etiqueta"}
+                      </Button>
                       <Button
                         size="sm"
                         variant="outline"

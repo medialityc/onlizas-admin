@@ -29,6 +29,7 @@ interface Props {
   loading?: boolean;
   onSuccess?: () => void;
   zone?: Zone | null;
+  type?: "provider" | "onlizas";
 }
 
 export default function ZoneModal({
@@ -37,6 +38,7 @@ export default function ZoneModal({
   loading = false,
   onSuccess,
   zone,
+  type,
 }: Props) {
   const getDistrictsFromZone = useCallback((zoneData: Zone): District[] => {
     if (!zoneData.districtsIds?.length) return [];
@@ -154,7 +156,10 @@ export default function ZoneModal({
   const submit = async (data: ZoneInput) => {
     try {
       if (zone) {
-        const res = await updateZone(zone.id, data);
+        const res = await updateZone(zone.id, {
+          ...data,
+          isSystemZone: zone.isSystemZone,
+        });
         if (!res.error) {
           toast.success("Zona actualizada correctamente");
         } else if (res.message) {
@@ -162,7 +167,10 @@ export default function ZoneModal({
           return;
         }
       } else {
-        const res = await createZone(data);
+        const res = await createZone({
+          ...data,
+          isSystemZone: type === "onlizas",
+        });
         if (!res.error) {
           toast.success("Zona creada correctamente");
         } else if (res.message) {

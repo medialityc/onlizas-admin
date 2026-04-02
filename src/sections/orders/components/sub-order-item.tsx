@@ -3,16 +3,18 @@ import { useState, useCallback } from "react";
 import { OrderStatus, SubOrder } from "@/types/order";
 import { Card } from "@/components/cards/card";
 import { Button } from "@/components/button/button";
-import { Eye, Download, ArrowRight } from "lucide-react";
+import { Eye, Download, ArrowRight, Tag } from "lucide-react";
 import { getStatusLabel } from "@/lib/order-utils";
 import { formatCurrency, formatDate } from "@/utils/format";
 import Badge from "@/components/badge/badge";
 import { urlToFile } from "@/lib/utils";
 import SimpleModal from "@/components/modal/modal";
 import { Textarea } from "@/components/textarea";
+import { Order } from "@/types/order";
 
 interface SubOrderItemProps {
   subOrder: SubOrder;
+  order: Order;
   onUpdateStatus?: (
     subOrderIds: string | string[],
     status: OrderStatus,
@@ -62,6 +64,7 @@ const getStatusDefaultDescription = (status: OrderStatus): string => {
 
 export function SubOrderItem({
   subOrder,
+  order,
   onUpdateStatus,
   isSupplier,
   selected,
@@ -91,6 +94,17 @@ export function SubOrderItem({
   );
 
   const hasFacture = !!subOrder.factureUrl && subOrder.factureUrl.trim() !== "";
+  const [exportingLabel, setExportingLabel] = useState(false);
+
+  const handlePrintLabel = useCallback(async () => {
+    setExportingLabel(true);
+    try {
+      const { exportSubOrderLabelPdf } = await import("../utils/exporters");
+      await exportSubOrderLabelPdf(order, subOrder);
+    } finally {
+      setExportingLabel(false);
+    }
+  }, [order, subOrder]);
 
   const handleViewFacture = useCallback(() => {
     if (!hasFacture) return;
@@ -289,6 +303,24 @@ export function SubOrderItem({
                       No disponible
                     </span>
                   )}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <p className="text-xs font-medium text-muted-foreground md:text-right">
+                  Etiqueta
+                </p>
+                <div className="flex justify-start md:justify-end">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    disabled={exportingLabel}
+                    onClick={handlePrintLabel}
+                    className="gap-1"
+                  >
+                    <Tag className="h-4 w-4" />
+                    <span>{exportingLabel ? "Generando..." : "Imprimir"}</span>
+                  </Button>
                 </div>
               </div>
             </div>

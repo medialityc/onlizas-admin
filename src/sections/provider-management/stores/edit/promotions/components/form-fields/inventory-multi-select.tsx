@@ -83,7 +83,7 @@ export default function InventorySelect({
       name={name}
       label={label}
       placeholder="Buscar items de inventario..."
-      onFetch={fetchInventory}
+      onFetch={(p) => fetchInventory(p)}
       objectValueKey="id"
       objectKeyLabel="parentProductName"
       renderOption={renderInventoryOption}

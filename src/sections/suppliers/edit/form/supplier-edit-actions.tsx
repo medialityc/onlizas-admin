@@ -12,19 +12,21 @@ export default function SupplierEditActions({
   isLoading: boolean;
   onCancel: () => void;
 }) {
-  const { control, formState: { dirtyFields, errors } } = useFormContext<UpdateSupplierFormData>();
-  
+  const {
+    control,
+    formState: { dirtyFields, errors },
+  } = useFormContext<UpdateSupplierFormData>();
+
   // useWatch fuerza re-renders cuando cambian estos campos
   const watchedExpirationDate = useWatch({ control, name: "expirationDate" });
   const watchedImportersIds = useWatch({ control, name: "importersIds" });
-  
+
   // useWatch para campos de información básica
   const watchedName = useWatch({ control, name: "name" });
   const watchedEmail = useWatch({ control, name: "email" });
   const watchedPhone = useWatch({ control, name: "phone" });
   const watchedSupplierType = useWatch({ control, name: "supplierType" });
-  const watchedCountryId = useWatch({ control, name: "countryId" });
-  
+
   // Control de permisos
   const { hasPermission } = usePermissions();
   const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
@@ -32,7 +34,7 @@ export default function SupplierEditActions({
   // Consider only meaningful fields for the dirty indicator (ignore temp pickers, etc.)
   const hasMeaningfulDirty = useMemo(() => {
     const df = dirtyFields as any;
-    
+
     return !!(
       df?.name ||
       df?.email ||
@@ -54,14 +56,13 @@ export default function SupplierEditActions({
       df?.approvedCategories
     );
   }, [
-    dirtyFields, 
-    watchedExpirationDate, 
-    watchedImportersIds, 
-    watchedName, 
-    watchedEmail, 
-    watchedPhone, 
-    watchedSupplierType, 
-    watchedCountryId
+    dirtyFields,
+    watchedExpirationDate,
+    watchedImportersIds,
+    watchedName,
+    watchedEmail,
+    watchedPhone,
+    watchedSupplierType,
   ]);
 
   return (

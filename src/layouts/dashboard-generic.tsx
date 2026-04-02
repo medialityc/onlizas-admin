@@ -4,6 +4,7 @@ import Header from "./header/header";
 import MainContainer from "./main-container";
 import ScrollToTop from "./scroll-to-top";
 import Portals from "./portals";
+import AutoBreadcrumbs from "@/components/breadcrumbs/auto-breadcrumbs";
 
 export default function DashboardGeneric({
   children,
@@ -25,7 +26,7 @@ export default function DashboardGeneric({
             {/* BEGIN TOP NAVBAR */}
             <Header />
             {/* END TOP NAVBAR */}
-
+            <AutoBreadcrumbs />
             {/* BEGIN CONTENT AREA */}
             <ContentAnimation>{children}</ContentAnimation>
             {/* END CONTENT AREA */}

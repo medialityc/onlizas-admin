@@ -63,7 +63,7 @@ export default function PromotionRow({
         exact: false,
       });
       toast.success(
-        `Promoción ${p.active ? "desactivada" : "activada"} exitosamente`
+        `Promoción ${p.active ? "desactivada" : "activada"} exitosamente`,
       );
     },
     onError: (error: any) => {
@@ -173,8 +173,7 @@ export default function PromotionRow({
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            {/* Botón editar temporalmente oculto */}
-            {/* {onEdit && hasUpdatePermission && (
+            {onEdit && hasUpdatePermission && (
               <button
                 onClick={() => onEdit(p)}
                 className="p-1 text-gray-500 dark:text-gray-300 hover:text-blue-600 transition-colors"
@@ -182,7 +181,7 @@ export default function PromotionRow({
               >
                 <PencilIcon className="w-4 h-4" />
               </button>
-            )} */}
+            )}
 
             {onDelete && hasDeletePermission && (
               <button

@@ -14,9 +14,10 @@ import Badge from "@/components/badge/badge";
 
 interface ZonesListProps {
   data?: GetZones;
+  type?: "provider" | "onlizas";
 }
 
-export default function ZonesList({ data }: ZonesListProps) {
+export default function ZonesList({ data, type }: ZonesListProps) {
   const { getModalState, openModal, closeModal } = useModalState();
   const router = useRouter();
 
@@ -42,7 +43,7 @@ export default function ZonesList({ data }: ZonesListProps) {
         showToast("Error obteniendo datos de la zona", "error");
       }
     },
-    [openModal]
+    [openModal],
   );
 
   const handleDelete = useCallback(
@@ -60,7 +61,7 @@ export default function ZonesList({ data }: ZonesListProps) {
         showToast("Ocurrió un error, intente nuevamente", "error");
       }
     },
-    [router]
+    [router],
   );
 
   const handleAfterSave = useCallback(() => {
@@ -119,7 +120,7 @@ export default function ZonesList({ data }: ZonesListProps) {
         ),
       },
     ],
-    [handleEdit, handleDelete]
+    [handleEdit, handleDelete],
   );
 
   return (
@@ -140,6 +141,7 @@ export default function ZonesList({ data }: ZonesListProps) {
         open={createModal.open}
         onClose={() => closeModal("create")}
         onSuccess={handleAfterSave}
+        type={type}
       />
 
       <ZoneModal
@@ -150,6 +152,7 @@ export default function ZonesList({ data }: ZonesListProps) {
         }}
         onSuccess={handleAfterSave}
         zone={selectedZone}
+        type={type}
       />
     </>
   );

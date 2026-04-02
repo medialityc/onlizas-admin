@@ -50,12 +50,5 @@ export const setSupplierProductFormData = async (
   formData.append("aduanaCategoryGuid", String(product.aduanaCategoryGuid));
   formData.append("brandId", String(product.brandId));
 
-  if (product.details) {
-    formData.append(
-      "details",
-      JSON.stringify(detailsArrayToObject(product.details as any[])),
-    );
-  }
-
   return formData;
 };

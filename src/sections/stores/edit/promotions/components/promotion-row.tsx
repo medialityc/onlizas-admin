@@ -7,13 +7,18 @@ import {
   useWatch,
 } from "react-hook-form";
 import { RHFSwitch } from "@/components/react-hook-form";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 export default function PromotionRow({
   p,
   onToggle,
+  onEdit,
+  onDelete,
 }: {
   p: Promotion;
   onToggle: (id: string, checked: boolean) => void;
+  onEdit?: (p: Promotion) => void;
+  onDelete?: (id: string) => void;
 }) {
   const methods = useForm<{ active: boolean }>({
     defaultValues: { active: p.active },
@@ -78,6 +83,26 @@ export default function PromotionRow({
                 {p.usedCount ?? 0} usos
               </div>
             </div>
+            {onEdit && (
+              <button
+                type="button"
+                onClick={() => onEdit(p)}
+                className="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                title="Editar"
+              >
+                <PencilIcon className="size-4" />
+              </button>
+            )}
+            {onDelete && (
+              <button
+                type="button"
+                onClick={() => onDelete(p.id)}
+                className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                title="Eliminar"
+              >
+                <TrashIcon className="size-4" />
+              </button>
+            )}
             <div onClick={(e) => e.stopPropagation()}>
               <RHFSwitch
                 name="active"

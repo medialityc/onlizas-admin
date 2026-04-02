@@ -22,13 +22,16 @@ interface Props {
 
 export default function PromotionsContainer({ store }: Props) {
   const [open, setOpen] = useState(false);
+  const [editingPromotion, setEditingPromotion] = useState<Promotion | null>(
+    null,
+  );
   const { register, setValue, getValues } = useFormContext();
   const initial = (getValues("promotionsPayload") as any[])?.length
     ? (getValues("promotionsPayload") as any[])
     : mockPromotions;
   const [items, setItems] = useState<Promotion[]>(initial);
   const [source] = useState<string>(
-    (getValues("promotionsPayload") as any[])?.length ? "form" : "mock"
+    (getValues("promotionsPayload") as any[])?.length ? "form" : "mock",
   );
 
   useEffect(() => {
@@ -44,7 +47,7 @@ export default function PromotionsContainer({ store }: Props) {
     const active = items.filter((x) => x.active).length;
     const uses = items.reduce((acc, x) => acc + (x.usedCount ?? 0), 0);
     const expired = items.filter(
-      (x) => x.endDate && new Date(x.endDate) < new Date()
+      (x) => x.endDate && new Date(x.endDate) < new Date(),
     ).length;
     return { total, active, uses, expired };
   }, [items]);
@@ -95,8 +98,15 @@ export default function PromotionsContainer({ store }: Props) {
             p={p}
             onToggle={(id, checked) =>
               setItems((prev) =>
-                prev.map((x) => (x.id === id ? { ...x, active: checked } : x))
+                prev.map((x) => (x.id === id ? { ...x, active: checked } : x)),
               )
+            }
+            onEdit={(promotion) => {
+              setEditingPromotion(promotion);
+              setOpen(true);
+            }}
+            onDelete={(id) =>
+              setItems((prev) => prev.filter((x) => x.id !== id))
             }
           />
         ))}
@@ -104,8 +114,15 @@ export default function PromotionsContainer({ store }: Props) {
 
       <CreatePromotionModal
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false);
+          setEditingPromotion(null);
+        }}
         onCreate={(p) => setItems((prev) => [p, ...prev])}
+        initialValues={editingPromotion ?? undefined}
+        onEdit={(p) =>
+          setItems((prev) => prev.map((x) => (x.id === p.id ? p : x)))
+        }
       />
     </div>
   );

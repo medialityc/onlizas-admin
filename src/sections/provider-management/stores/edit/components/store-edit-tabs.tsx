@@ -36,7 +36,7 @@ const StoreTabs = ({ store }: TabsProps) => {
       promotions: 3,
       followers: 4,
     }),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -75,7 +75,7 @@ const StoreTabs = ({ store }: TabsProps) => {
               content: <PromotionsContainer store={store} />,
             },
             {
-              label: "Followers",
+              label: "Seguidores",
               icon: <UsersIcon className="w-6 h-6" />,
               content: <FollowersContainer store={store} />,
             },

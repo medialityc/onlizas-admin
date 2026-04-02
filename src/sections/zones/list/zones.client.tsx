@@ -3,9 +3,10 @@ import ZonesList from "./zones-list";
 
 interface Props {
   initialData?: GetZones;
+  type?: "provider" | "onlizas";
 }
 
-export default function ZonesClient({ initialData }: Props) {
+export default function ZonesClient({ initialData, type }: Props) {
   return (
     <div>
       <div className="mb-3 flex items-center justify-between">
@@ -16,7 +17,7 @@ export default function ZonesClient({ initialData }: Props) {
           </p>
         </div>
       </div>
-      <ZonesList data={initialData} />
+      <ZonesList data={initialData} type={type} />
     </div>
   );
 }

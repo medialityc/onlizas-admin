@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 
 import GeneralStatusCard from "./components/general-status-card";
 import BasicInfoCard from "./components/basic-info-card";
-import ContactInfoCard from "./components/contact-info-card";
 import PoliciesCard from "./components/policies-card";
 import LoaderButton from "@/components/loaders/loader-button";
 import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
@@ -74,13 +73,7 @@ export default function GeneralContainer({ store }: Props) {
         <GeneralStatusCard />
 
         {/* Información básica y contacto */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Información Básica */}
-          <BasicInfoCard />
-
-          {/* Información de Contacto */}
-          <ContactInfoCard />
-        </div>
+        <BasicInfoCard />
 
         {/* Políticas de la tienda */}
         {/*  <PoliciesCard /> */}

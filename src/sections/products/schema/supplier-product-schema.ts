@@ -77,35 +77,6 @@ export const supplierProductSchema = z
       .default([]),
 
     // details dinámicos (objeto de claves arbitrarias string -> string)
-    details: z
-      .union([
-        z.array(
-          z.object({
-            key: z.string().trim().min(1, "Clave requerida"),
-            value: z.string().trim().min(1, "Valor requerido para el detalle"),
-          }),
-        ),
-        z.record(z.string(), z.string()),
-      ])
-      .default([])
-      .transform((details) => {
-        if (Array.isArray(details)) {
-          return details;
-        }
-        return detailsObjectToArray(details);
-      })
-      .refine(
-        (arrayDetails) => {
-          const uniqueKeys = new Set(
-            arrayDetails.map((d) => d.key.toLowerCase().trim()),
-          );
-          return uniqueKeys.size === arrayDetails.length;
-        },
-        {
-          message:
-            "Las claves de detalles deben ser únicas (no se permiten duplicados).",
-        },
-      ),
 
     image: z
       .union([z.string(), z.instanceof(File)])

@@ -12,6 +12,7 @@ import OrderList from "./order-card-list";
 import { Button } from "@/components/button/button";
 import { OrderStats } from "../components/order-stats";
 import { StatusFilter } from "@/components/filters/status-filters";
+import { OrdersListExportActions } from "../components/orders-export-actions";
 
 type Props = {
   data: ApiResponse<GetAllOrders>;
@@ -75,6 +76,7 @@ export default function AdminOrdersPage({ data, query }: Props) {
               Panel de administración para todas las órdenes del sistema
             </p>
           </div>
+          <OrdersListExportActions orders={data.data?.data ?? []} />
         </div>
 
         {/* Stats */}

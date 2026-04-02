@@ -36,12 +36,6 @@ export const setProductFormData = async (
   formData.append("aboutThis", JSON.stringify(product.aboutThis));
   formData.append("tutorials", JSON.stringify(product.tutorials));
   // Details: enviar como pares details[clave]
-  if (product.details) {
-    formData.append(
-      "details",
-      JSON.stringify(detailsArrayToObject(product.details)),
-    );
-  }
 
   return formData;
 };

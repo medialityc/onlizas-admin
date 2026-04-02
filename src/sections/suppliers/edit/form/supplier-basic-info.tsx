@@ -4,7 +4,6 @@ import { useFormContext } from "react-hook-form";
 import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
 import { Title, Group } from "@mantine/core";
 import { RHFCountrySelect } from "@/components/react-hook-form/rhf-country-code-select";
-import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { RHFPhoneCountrySelect } from "@/components/react-hook-form/rhf-phone-country-select";
 import {
   SUPPLIER_NATIONALITY_OPTIONS,
@@ -14,14 +13,7 @@ import {
 } from "../../constants/supplier.options";
 import { useMemo, useEffect } from "react";
 import { useCountries } from "@/components/phone-input/use-countries";
-import {
-  District,
-  State,
-  getCountries,
-  getCountriesPaginated,
-  getDistrictsByState,
-  getStatesByCountry,
-} from "@/services/countries";
+
 import { Button } from "@/components/button/button";
 
 interface SupplierBasicInfoProps {
@@ -52,9 +44,6 @@ export default function SupplierBasicInfo({
   // Leer los valores para control de nacionalidad
   const nacionalityType = watch("nacionalityType");
   const mincexCode = watch("mincexCode");
-  const countryId = watch("countryId");
-  const stateId = watch("stateId");
-
   // Encontrar Cuba en la lista de países
   const cubaCountry = countries?.find(
     (country) => country.code === "CU" || country.name === "Cuba",
@@ -63,16 +52,11 @@ export default function SupplierBasicInfo({
   // Aplicar reglas de nacionalidad
   useEffect(() => {
     if (nacionalityType === SUPPLIER_NATIONALITY.Nacional) {
-      // Nacional: Asignar Cuba automáticamente y limpiar código MINCEX
-      if (cubaCountry && countryId !== cubaCountry.id) {
-        setValue("countryId", cubaCountry.id);
-      }
       if (mincexCode) {
         setValue("mincexCode", "");
       }
     }
-    // Nota: Para extranjeros, el país se selecciona manualmente desde el componente de autocompletado
-  }, [nacionalityType, cubaCountry, countryId, mincexCode, setValue]);
+  }, [nacionalityType, mincexCode, setValue]);
 
   // Función para guardar cambios
   // La función handleSaveChanges ya no es necesaria ya que el formulario principal maneja el guardado
@@ -84,7 +68,6 @@ export default function SupplierBasicInfo({
     const email = watch("email");
     const phone = watch("phone");
     const sellerType = watch("sellerType");
-    const address = watch("address");
 
     // Obtener labels
     const getSupplierTypeLabel = () => {
@@ -106,13 +89,6 @@ export default function SupplierBasicInfo({
         (o) => o.value === nacionalityType,
       );
       return option?.label || "-";
-    };
-
-    const getCountryLabel = () => {
-      const country = countries?.find(
-        (c) => String(c.id) === String(countryId),
-      );
-      return country?.name || "-";
     };
 
     return (
@@ -199,16 +175,6 @@ export default function SupplierBasicInfo({
             </label>
             <div className="px-3 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
               {getNationalityLabel()}
-            </div>
-          </div>
-
-          {/* Dirección */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Dirección
-            </label>
-            <div className="px-3 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
-              {address || "-"}
             </div>
           </div>
 
@@ -325,51 +291,6 @@ export default function SupplierBasicInfo({
         />
 
         {/* Nacionalidad: se infiere desde Tipo de Proveedor, no editable */}
-
-        {/* País */}
-        <div className="space-y-2">
-          <RHFAutocompleteFetcherInfinity
-            name="countryId"
-            label="País"
-            placeholder="Seleccione un país"
-            objectValueKey="id"
-            objectKeyLabel="name"
-            queryKey="supplier-edit-countries"
-            onFetch={(params) => getCountries(params.search)}
-          />
-        </div>
-
-        {/* Provincia / Estado */}
-        <div className="space-y-2">
-          <RHFAutocompleteFetcherInfinity<State>
-            name="stateId"
-            label="Provincia / Estado"
-            placeholder="Seleccione una provincia/estado"
-            objectValueKey="id"
-            objectKeyLabel="name"
-            queryKey={"supplier-edit-states-" + String(countryId || "none")}
-            disabled={!countryId}
-            onFetch={(params) =>
-              countryId ? getStatesByCountry(countryId, params) : undefined
-            }
-          />
-        </div>
-
-        {/* Distrito */}
-        <div className="space-y-2">
-          <RHFAutocompleteFetcherInfinity<District>
-            name="districtId"
-            label="Distrito"
-            placeholder="Seleccione un distrito"
-            objectValueKey="id"
-            objectKeyLabel="name"
-            queryKey={"supplier-edit-districts-" + String(stateId || "none")}
-            disabled={!stateId}
-            onFetch={(params) =>
-              stateId ? getDistrictsByState(stateId, params) : undefined
-            }
-          />
-        </div>
 
         {/* Código Mincex - Solo visible para extranjeros y ambos */}
         {nacionalityType !== undefined &&

@@ -12,6 +12,7 @@ import SimpleModal from "@/components/modal/modal";
 import { getOrderById, updateSubOrderStatus } from "@/services/order";
 import showToast from "@/config/toast/toastConfig";
 import { CountdownTimer } from "@/components/orders/countdown-timer";
+import { OrderDetailExportActions } from "./orders-export-actions";
 
 interface OrderDetailsProps {
   onOpen: boolean;
@@ -198,7 +199,8 @@ export function OrderDetails({
               Dar seguimiento
             </Button>
           )}
-          <div className="flex justify-end flex-1">
+          <div className="flex justify-end flex-1 items-center gap-2">
+            {order && <OrderDetailExportActions order={order} />}
             <Button type="button" onClick={onClose} disabled={isUpdating}>
               Cerrar
             </Button>
@@ -237,6 +239,7 @@ export function OrderDetails({
             <Separator />
             <SubOrdersSection
               subOrders={order.subOrders}
+              order={order}
               onUpdateStatus={handleUpdateSubOrderStatus}
               isSupplier={isSupplier}
               isProcessingLocked={isProcessingLocked}

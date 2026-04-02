@@ -16,9 +16,6 @@ export const updateSupplierSchema = z.object({
     .max(20, "El teléfono no puede tener más de 20 caracteres."),
   phoneCountryCode: z.string().optional(),
   countryCode: z.string().optional(),
-  countryId: z.string().optional(),
-  stateId: z.string().optional(),
-  districtId: z.string().optional(),
   message: z
     .string()
     .max(500, "El mensaje no puede tener más de 500 caracteres.")
@@ -59,7 +56,7 @@ export const updateSupplierSchema = z.object({
     .min(0, "La nacionalidad no puede estar vacía."),
   mincexCode: z.string().optional(),
   // Expiration date of the supplier account (ISO date string)
-  expirationDate: z.date().default(new Date()).optional(),
+  expirationDate: z.date().nullable().optional(),
   // Tarifa fija (porcentaje 0-100)
   fixedTax: z
     .number({ error: "La tarifa fija es obligatoria." })

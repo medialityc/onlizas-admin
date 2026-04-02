@@ -3,7 +3,6 @@
 import React from "react";
 import GeneralStatusCard from "./components/general-status-card";
 import BasicInfoCard from "./components/basic-info-card";
-import ContactInfoCard from "./components/contact-info-card";
 import PoliciesCard from "./components/policies-card";
 
 export default function GeneralContainer() {
@@ -12,13 +11,7 @@ export default function GeneralContainer() {
       <GeneralStatusCard />
 
       {/* Información básica y contacto */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Información Básica */}
-        <BasicInfoCard />
-
-        {/* Información de Contacto */}
-        <ContactInfoCard />
-      </div>
+      <BasicInfoCard />
 
       {/* Políticas de la tienda */}
       <PoliciesCard />

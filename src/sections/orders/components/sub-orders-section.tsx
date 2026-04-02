@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
-import { OrderStatus, SubOrder } from "@/types/order";
+import { OrderStatus, SubOrder, Order } from "@/types/order";
 import { SubOrderItem } from "./sub-order-item";
 import SimpleModal from "@/components/modal/modal";
 import { Textarea } from "@/components/textarea";
@@ -9,6 +9,7 @@ import { getStatusLabel } from "@/lib/order-utils";
 
 interface SubOrdersSectionProps {
   subOrders: SubOrder[];
+  order: Order;
   onUpdateStatus?: (
     subOrderIds: string | string[],
     status: OrderStatus,
@@ -20,6 +21,7 @@ interface SubOrdersSectionProps {
 
 export function SubOrdersSection({
   subOrders,
+  order,
   onUpdateStatus,
   isSupplier,
   isProcessingLocked = false,
@@ -98,6 +100,7 @@ export function SubOrdersSection({
           <SubOrderItem
             key={subOrder.id}
             subOrder={subOrder}
+            order={order}
             onUpdateStatus={onUpdateStatus}
             isSupplier={isSupplier}
             selected={selectedIds.includes(subOrder.id)}

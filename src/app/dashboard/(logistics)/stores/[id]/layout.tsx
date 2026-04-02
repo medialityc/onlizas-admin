@@ -19,7 +19,6 @@ export default async function StoreLayout({ children, params }: LayoutProps) {
   return (
     <div className="p-6 space-y-4">
       {/* Breadcrumb */}
-      <StoreBreadcrumb store={store} />
 
       {/* Beautiful header with key store info */}
       <StoreEditHeader store={store} />

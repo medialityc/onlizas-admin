@@ -19,7 +19,7 @@ export default async function MyZonesPage() {
 
   return (
     <div className="space-y-6 p-4">
-      <ZonesClient initialData={zonesRes.data} />
+      <ZonesClient initialData={zonesRes.data} type="provider" />
     </div>
   );
 }

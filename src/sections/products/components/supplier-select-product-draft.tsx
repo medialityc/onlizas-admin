@@ -47,11 +47,6 @@ const ProductOptionRender = ({
           Propio
         </Badge>
       )}
-      {option.details && Object.keys(option.details).length > 0 && (
-        <span className="text-xs text-gray-500 dark:text-gray-400 shrink-0">
-          {Object.keys(option.details).length} detalles
-        </span>
-      )}
     </div>
   );
 };
@@ -86,8 +81,6 @@ const SupplierSelectProductDraft = ({
       product?.categories?.map((cat: any) => cat?.id || cat),
     );
     setValue("aboutThis", product?.aboutThis);
-    setValue("details", detailsObjectToArray(product?.details));
-    setValue("detailsArray", detailsObjectToArray(product?.details));
     setValue(
       "image",
       isValidUrl(product?.image as string) ? product?.image : null,
