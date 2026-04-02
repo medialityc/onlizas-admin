@@ -17,8 +17,10 @@ import {
   CardTitle,
 } from "@/components/cards/card";
 import { Button } from "@/components/button/button";
-import { Promotion } from "@/types/promotions";
+import { Promotion, UpdatePromotionRequest } from "@/types/promotions";
 import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
+import { updatePromotion } from "@/services/promotions";
+import { toast } from "react-toastify";
 
 const emptyDefaults: Partial<PromotionFormValues> = {
   type: "percent",
@@ -69,10 +71,12 @@ export default function CreatePromotionModal({
     }
   }, [open, initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const [saving, setSaving] = React.useState(false);
+
   const toYMD = (d?: Date) =>
     d ? new Date(d).toISOString().slice(0, 10) : undefined;
 
-  const onSubmit = (data: PromotionFormValues) => {
+  const onSubmit = async (data: PromotionFormValues) => {
     const promotion: Promotion = {
       ...(initialValues ?? {
         id: Date.now().toString(),
@@ -95,7 +99,31 @@ export default function CreatePromotionModal({
     };
 
     if (isEditing) {
-      onEdit?.(promotion);
+      setSaving(true);
+      try {
+        const payload: UpdatePromotionRequest = {
+          name: promotion.name,
+          description: promotion.description,
+          discountType: promotion.discountType,
+          discountValue: promotion.discountValue,
+          code: promotion.code,
+          usageLimit: promotion.usageLimit,
+          startDate: promotion.startDate,
+          endDate: promotion.endDate,
+        };
+        const res = await updatePromotion(initialValues!.id, payload);
+        if (res.error) {
+          toast.error(res.message || "Error al actualizar la promoción");
+          return;
+        }
+        toast.success("Promoción actualizada correctamente");
+        onEdit?.(promotion);
+      } catch {
+        toast.error("Error al actualizar la promoción");
+        return;
+      } finally {
+        setSaving(false);
+      }
     } else {
       onCreate(promotion);
     }
@@ -206,9 +234,14 @@ export default function CreatePromotionModal({
             <Button
               className="shadow-none"
               type="button"
+              disabled={saving}
               onClick={() => methods.handleSubmit(onSubmit)()}
             >
-              {isEditing ? "Guardar cambios" : "Guardar"}
+              {saving
+                ? "Guardando..."
+                : isEditing
+                  ? "Guardar cambios"
+                  : "Guardar"}
             </Button>
           </div>
         </div>

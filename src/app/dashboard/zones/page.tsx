@@ -18,7 +18,7 @@ export default async function ZonesPage({
 
   return (
     <div className="space-y-6 p-4">
-      <ZonesClient initialData={zonesRes.data} />
+      <ZonesClient initialData={zonesRes.data} type="onlizas" />
     </div>
   );
 }

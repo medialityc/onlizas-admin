@@ -360,6 +360,8 @@ export const backendRoutes = {
       `${process.env.NEXT_PUBLIC_API_URL}promotions/code/${promotionId}`,
     delete: (promotionId: number | string) =>
       `${process.env.NEXT_PUBLIC_API_URL}promotions/${promotionId}`,
+    update: (promotionId: number | string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}promotions/${promotionId}`,
     toggle: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/toggle-state`,
     code: () => `${process.env.NEXT_PUBLIC_API_URL}promotions/code/generate`,
     getPromotionById: (promotionId: number | string) =>
