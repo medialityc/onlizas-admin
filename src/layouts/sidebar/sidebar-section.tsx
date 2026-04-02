@@ -98,6 +98,7 @@ const SidebarSection = ({
                     key={item.id}
                     item={item}
                     isActive={item.path ? isActiveLink(item.path) : false}
+                    active={item.path ? isActiveLink(item.path) : false}
                     isExpanded={expandedItems[item.id]}
                     onToggle={() => onToggleItem(item.id)}
                     isActiveLink={isActiveLink}
@@ -167,6 +168,9 @@ const SidebarSection = ({
                               key={item.id}
                               item={item}
                               isActive={
+                                item.path ? isActiveLink(item.path) : false
+                              }
+                              active={
                                 item.path ? isActiveLink(item.path) : false
                               }
                               isExpanded={expandedItems[item.id]}

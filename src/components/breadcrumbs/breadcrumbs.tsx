@@ -5,6 +5,7 @@ export interface BreadcrumbItem {
   label: string;
   onClick?: () => void;
   linkTo?: string;
+  href?: string; // for backward compatibility, treated the same as linkTo
 }
 
 interface BreadcrumbProps {

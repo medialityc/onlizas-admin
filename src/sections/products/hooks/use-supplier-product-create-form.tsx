@@ -31,7 +31,6 @@ const initValues: SupplierProductFormData = {
   categoryIds: [],
   aboutThis: [],
   tutorials: [],
-  details: [],
   image: null,
   brandId: "",
   aduanaCategoryGuid: "",

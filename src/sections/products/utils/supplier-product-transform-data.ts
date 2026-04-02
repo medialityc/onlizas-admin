@@ -4,7 +4,7 @@ import { SupplierProductFormData } from "../schema/supplier-product-schema";
 import { ProductFormData } from "../schema/product-schema";
 
 export const supplierProductTransformData = (
-  product: ProductFormData | Product
+  product: ProductFormData | Product,
 ): SupplierProductFormData => {
   return {
     ...product,
@@ -17,6 +17,5 @@ export const supplierProductTransformData = (
     //@ts-expect-error
     categoryIds: product.categories.map((c) => c.id),
     image: isValidUrl(product.image as string) ? product?.image : undefined,
-    details: detailsObjectToArray(product.details),
   };
 };
