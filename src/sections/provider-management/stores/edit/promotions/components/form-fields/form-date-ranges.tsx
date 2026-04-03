@@ -3,6 +3,7 @@ import RHFDatePickerBanner from "@/components/react-hook-form/rhf-date-picker-ba
 import { Button } from "@/components/button/button";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import RHFDateInput from "@/components/react-hook-form/rhf-date-input";
 
 /**
  * FormDateRanges manages an array of date ranges (start/end pairs) that the user can add/remove.
@@ -73,14 +74,14 @@ export default function FormDateRanges({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <RHFDatePickerBanner
+                <RHFDateInput
                   name={`${name}.${idx}.startDate`}
                   label="Fecha de inicio"
                   minDate={today}
                 />
               </div>
               <div>
-                <RHFDatePickerBanner
+                <RHFDateInput
                   name={`${name}.${idx}.endDate`}
                   label="Fecha de fin"
                   minDate={today}
