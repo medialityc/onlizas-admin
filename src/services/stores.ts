@@ -9,6 +9,8 @@ import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { updateTag } from "next/cache";
 import { PaginatedResponse } from "@/types/common";
+import { Inventory } from "@/sections/warehouses/contexts/warehouse-inventory-transfer.stote";
+import { InventoryProvider } from "@/types/inventory";
 
 export async function getAllStores(
   params: IQueryable,
@@ -259,4 +261,25 @@ export async function getStoreFollowers(
 
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync<PaginatedResponse<StoreFollower>>(res);
+}
+
+export async function getInventoriesStore(
+  storeId: string,
+  params: IQueryable,
+): Promise<ApiResponse<PaginatedResponse<InventoryProvider>>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.store.inventories(storeId),
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["stores-metrics"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<PaginatedResponse<InventoryProvider>>(res);
 }

@@ -4,7 +4,8 @@ import {
   getAllInventoryByUserProvider,
 } from "@/services/inventory-providers";
 import { usePermissions } from "@/hooks/use-permissions";
-import { PERMISSION_ENUM } from "@/lib/permissions";
+import { PERMISSION_ENUM, PERMISSIONS } from "@/lib/permissions";
+import { getInventoriesStore } from "@/services/stores";
 
 interface InventorySelectProps {
   name: string;
@@ -40,12 +41,10 @@ export default function InventorySelect({
     const isAdmin = hasPermission([
       PERMISSION_ENUM.CREATE,
       PERMISSION_ENUM.UPDATE,
+      PERMISSION_ENUM.SUPPLIER_RETRIEVE,
     ]);
     if (isAdmin) {
-      console.log("entro");
-      return getAllInventory(params);
-    } else {
-      return getAllInventoryByUserProvider(supplierId, params);
+      return getInventoriesStore(storeId, params);
     }
   };
 
