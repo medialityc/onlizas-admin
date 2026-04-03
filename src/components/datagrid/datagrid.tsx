@@ -30,6 +30,7 @@ export function DataGrid<T extends Record<string, any>>({
   customActions,
   createPermissions,
   removePanel,
+  fetching,
 }: DataGridProps<T>) {
   const [searchValue, setSearchValue] = useState(searchParams.search || "");
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<T>>({
@@ -49,7 +50,7 @@ export function DataGrid<T extends Record<string, any>>({
 
   // Get visible columns (filter out hidden ones)
   const visibleColumns = columns.filter(
-    (column) => !hiddenColumns.includes(column.accessor as string)
+    (column) => !hiddenColumns.includes(column.accessor as string),
   );
 
   // Handle search with state update
@@ -108,8 +109,7 @@ export function DataGrid<T extends Record<string, any>>({
             columns={visibleColumns}
             records={data?.data || simpleData || []}
             // Agregar el loading
-            // fetching={loading}
-
+            fetching={fetching}
             minHeight={minHeight}
             sortStatus={
               enableSorting ? sortStatus : ({} as DataTableSortStatus<T>)

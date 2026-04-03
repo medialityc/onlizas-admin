@@ -92,6 +92,7 @@ export default function FollowersContainer({ store }: Props) {
         enableSearch
         enablePagination
         enableSorting
+        fetching={isFetching}
       />
     </div>
   );

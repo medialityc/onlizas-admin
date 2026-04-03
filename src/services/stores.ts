@@ -283,3 +283,24 @@ export async function getInventoriesStore(
 
   return buildApiResponseAsync<PaginatedResponse<InventoryProvider>>(res);
 }
+
+export async function getFollowers(
+  storeId: string,
+  params: IQueryable,
+): Promise<ApiResponse<PaginatedResponse<InventoryProvider>>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.store.inventories(storeId),
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: ["stores-metrics"] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<PaginatedResponse<InventoryProvider>>(res);
+}
