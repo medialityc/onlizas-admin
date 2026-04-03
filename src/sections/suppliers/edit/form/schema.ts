@@ -15,6 +15,7 @@ export const updateSupplierSchema = z.object({
     .min(1, "El teléfono no puede estar vacío.")
     .max(20, "El teléfono no puede tener más de 20 caracteres."),
   phoneCountryCode: z.string().optional(),
+  phoneNumberCode: z.string().optional(),
   countryCode: z.string().optional(),
   message: z
     .string()

@@ -14,10 +14,7 @@ export const suppliersSchema = z.object({
     .string()
     .max(20, "El teléfono no puede tener más de 20 caracteres.")
     .optional(),
-  countryCode: z.string().min(1, "El código de país es obligatorio."),
-  countryId: z.string().min(1, "El país es obligatorio."),
-  stateId: z.string().min(1, "La provincia/estado es obligatoria."),
-  districtId: z.string().min(1, "El distrito es obligatorio."),
+  phoneNumberCode: z.string().optional(),
   // When selecting an existing user
   createUserAutomatically: z.boolean().optional(),
   userMissingEmail: z.boolean().optional(),
@@ -144,38 +141,6 @@ export const suppliersSchemaWithRules = suppliersSchema.superRefine(
           code: z.ZodIssueCode.custom,
           path: ["phone"],
           message: "El teléfono es obligatorio.",
-        });
-      }
-
-      if (!data.countryCode || data.countryCode.trim().length === 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["countryCode"],
-          message: "El código de país es obligatorio.",
-        });
-      }
-
-      if (!data.countryId || data.countryId.trim().length === 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["countryId"],
-          message: "El país es obligatorio.",
-        });
-      }
-
-      if (!data.stateId || data.stateId.trim().length === 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["stateId"],
-          message: "La provincia/estado es obligatoria.",
-        });
-      }
-
-      if (!data.districtId || data.districtId.trim().length === 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["districtId"],
-          message: "El distrito es obligatorio.",
         });
       }
     }

@@ -123,7 +123,7 @@ export type SupplierDetails = Supplier & {
   countryId?: number;
   city?: string | number;
   districtId?: string | number;
-
+  phoneNumberCode?: string;
   pendingDocuments: [
     {
       fileName: string;

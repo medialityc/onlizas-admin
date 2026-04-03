@@ -11,12 +11,14 @@ type Props = {
   phoneFieldName: string;
   countryFieldName: string;
   countryValueKey?: keyof Country;
+  phoneNumberCodeFieldName?: string;
 };
 
 export function RHFPhoneCountrySelect({
   phoneFieldName,
   countryFieldName,
   countryValueKey = "code",
+  phoneNumberCodeFieldName,
 }: Props) {
   const { formState, watch, setValue } = useFormContext();
   const { errors, touchedFields, dirtyFields, isSubmitted } = formState;
@@ -32,9 +34,10 @@ export function RHFPhoneCountrySelect({
 
     if (currentPhoneNumberCode && currentCountry == null) {
       const country = countries?.find((c) => {
-        const key: keyof Country = countryValueKey ?? "code";
-        return c[key] === currentPhoneNumberCode;
+        const key: keyof Country = countryValueKey ?? "phoneNumberCode";
+        return c[key].toString() === currentPhoneNumberCode;
       });
+
       if (country) {
         setCurrentCountry(country);
         return;
@@ -53,6 +56,9 @@ export function RHFPhoneCountrySelect({
   const handleChangeCountry = (country: Country) => {
     setCurrentCountry(country);
     setValue(countryFieldName, country[countryValueKey]);
+    if (phoneNumberCodeFieldName) {
+      setValue(phoneNumberCodeFieldName, String(country.phoneNumberCode));
+    }
   };
 
   const rawPhoneValue = watch(phoneFieldName);

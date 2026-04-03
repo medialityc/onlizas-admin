@@ -143,15 +143,21 @@ export default function SupplierBasicInfo({
             </label>
             <div className="px-3 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
               {(() => {
+                const phoneNumberCode = watch("phoneNumberCode");
                 const phoneCountryCode = watch("phoneCountryCode");
                 const phoneValue = phone || "-";
-                if (phoneCountryCode && phone) {
-                  const country = countries?.find(
-                    (c) => c.code === phoneCountryCode,
-                  );
-                  return country
-                    ? `+${country.phoneNumberCode} ${phoneValue}`
-                    : phoneValue;
+                if (phone) {
+                  if (phoneNumberCode) {
+                    return `+${phoneNumberCode} ${phoneValue}`;
+                  }
+                  if (phoneCountryCode) {
+                    const country = countries?.find(
+                      (c) => c.code === phoneCountryCode,
+                    );
+                    return country
+                      ? `+${country.phoneNumberCode} ${phoneValue}`
+                      : phoneValue;
+                  }
                 }
                 return phoneValue;
               })()}
@@ -276,8 +282,8 @@ export default function SupplierBasicInfo({
           <div className="[&_.combobox-trigger]:bg-white [&_.combobox-trigger]:dark:bg-gray-800 [&_.combobox-content]:bg-white [&_.combobox-content]:dark:bg-gray-800">
             <RHFPhoneCountrySelect
               phoneFieldName="phone"
-              countryFieldName="phoneCountryCode"
-              countryValueKey="code"
+              countryFieldName="phoneNumberCode"
+              countryValueKey="phoneNumberCode"
             />
           </div>
         </div>

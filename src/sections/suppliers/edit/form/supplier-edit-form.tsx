@@ -58,7 +58,7 @@ export default function SupplierEditForm({
       name: supplierDetails.name,
       email: supplierDetails.email,
       phone: supplierDetails.phone,
-      countryCode: supplierDetails.countryCode ?? "",
+      phoneNumberCode: supplierDetails.phoneNumberCode,
       message: supplierDetails.message || "",
       active: supplierDetails.active,
       sellerType: supplierDetails.sellerType

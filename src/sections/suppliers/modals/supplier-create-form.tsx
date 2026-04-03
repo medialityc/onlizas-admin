@@ -20,21 +20,11 @@ import { PERMISSION_ENUM } from "@/lib/permissions";
 import { AlertBox } from "@/components/alert/alert-box";
 import {
   SUPPLIER_NATIONALITY,
-  SUPPLIER_NATIONALITY_OPTIONS,
   SUPPLIER_TYPE_SELLER_OPTIONS,
   SUPPLIER_TYPE,
 } from "../constants/supplier.options";
 import { RHFPhoneCountrySelect } from "@/components/react-hook-form/rhf-phone-country-select";
 import { getAllCategories } from "@/services/categories";
-import {
-  District,
-  State,
-  getCountries,
-  getCountriesPaginated,
-  getDistrictsByState,
-  getStatesByCountry,
-} from "@/services/countries";
-import { IQueryable } from "@/types/fetch/request";
 
 function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
   const {
@@ -50,9 +40,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
     React.useState<Business | null>(null);
   const nacionalityType = watch("nacionalityType");
   const supplierType = watch("supplierType");
-  const countryId = watch("countryId");
-  const stateId = watch("stateId");
-  console.log(errors, selectedUser);
 
   // Inferir nacionalidad a partir del tipo de proveedor (TCP/Mipyme/Extranjero)
   React.useEffect(() => {
@@ -141,9 +128,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                     if (option.emails && option.emails.length > 0) {
                       setValue("email", option.emails[0].address);
                     }
-                    if (option.phones && option.phones.length > 0) {
-                      setValue("countryCode", option.phones[0].countryId);
-                    }
                     setValue("userMissingEmail", !option.hasEmail);
                     setValue("userMissingPhone", !option.hasPhoneNumber);
                     setValue("userMissingAddress", false);
@@ -221,6 +205,7 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                             countryFieldName="countryCode"
                             countryValueKey="id"
                             phoneFieldName="phone"
+                            phoneNumberCodeFieldName="phoneNumberCode"
                           />
                         )}
                       </div>
@@ -260,6 +245,7 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
                 countryFieldName="countryCode"
                 countryValueKey="id"
                 phoneFieldName="phone"
+                phoneNumberCodeFieldName="phoneNumberCode"
               />
             </div>
 
@@ -298,67 +284,6 @@ function SupplierCreateForm({ handleClose }: { handleClose: () => void }) {
           </div>
         )}
 
-        {/* Dirección detallada: País, Estado/Provincia, Distrito y texto libre */}
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <RHFAutocompleteFetcherInfinity
-              name="countryId"
-              label="País"
-              placeholder="Selecciona un país"
-              onFetch={(params: IQueryable) => getCountries(params.search)}
-              objectValueKey="id"
-              objectKeyLabel="name"
-              required
-              queryKey="supplier-create-countries"
-            />
-
-            <RHFAutocompleteFetcherInfinity<State>
-              key={`states-${countryId}`}
-              name="stateId"
-              label="Estado / Provincia"
-              placeholder="Selecciona un estado"
-              onFetch={
-                countryId
-                  ? (params) =>
-                      getStatesByCountry(String(countryId), {
-                        page: params.page as number,
-                        pageSize: params.pageSize as number,
-                        search: params.search as any,
-                      })
-                  : undefined
-              }
-              objectValueKey="id"
-              objectKeyLabel="name"
-              disabled={!countryId}
-              required
-              queryKey={`supplier-create-states-${countryId ?? "none"}`}
-            />
-
-            <RHFAutocompleteFetcherInfinity<District>
-              key={`districts-${stateId}`}
-              name="districtId"
-              label="Distrito"
-              placeholder="Selecciona un distrito"
-              onFetch={
-                stateId
-                  ? (params) =>
-                      getDistrictsByState(String(stateId), {
-                        page: params.page as number,
-                        pageSize: params.pageSize as number,
-                        search: params.search as any,
-                      })
-                  : undefined
-              }
-              objectValueKey="id"
-              objectKeyLabel="name"
-              disabled={!stateId}
-              required
-              queryKey={`supplier-create-districts-${stateId ?? "none"}`}
-            />
-          </div>
-
-          {/* Campo de dirección eliminado; ya no es necesario en creación */}
-        </div>
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
