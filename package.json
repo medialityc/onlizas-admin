@@ -94,7 +94,7 @@
     "typescript": "^5.9.3",
     "universal-cookie": "^8.0.1",
     "xlsx": "^0.18.5",
-    "zas-sso-client": "^1.2.53",
+    "zas-sso-client": "^1.2.54",
     "zod": "^4.3.6",
     "zustand": "^5.0.11"
   },
