@@ -6,21 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
-      - name: Run build
-        run: npm run build
-
   deploy:
-    needs: build
     environment: dev
     runs-on: ubuntu-latest
     steps:
@@ -37,7 +23,6 @@ jobs:
           echo "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}" >> .env
           echo "NEXT_PUBLIC_REFRESH_ENDPOINT=${{ secrets.NEXT_PUBLIC_REFRESH_ENDPOINT }}" >> .env
           echo "NEXT_PUBLIC_PERMISSIONS_ENDPOINT=${{ secrets.NEXT_PUBLIC_PERMISSIONS_ENDPOINT }}" >> .env
-          echo "NEXT_PUBLIC_TINYMCE_API_KEY=${{ secrets.NEXT_PUBLIC_TINYMCE_API_KEY }}" >> .env
           echo "NEXT_PUBLIC_CLIENT_URL=${{ secrets.NEXT_PUBLIC_CLIENT_URL }}" >> .env
           echo "NEXT_PUBLIC_TRACK_URL=${{ secrets.NEXT_PUBLIC_TRACK_URL }}" >> .env
 
