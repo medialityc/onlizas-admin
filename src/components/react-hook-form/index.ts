@@ -7,7 +7,6 @@ export { default as RHFSelectWithLabel } from "./rhf-select";
 
 // Rich Text Editors
 export { default as RHFSimpleEditor } from "./rhf-tiny-editor";
-export { default as RHFTinyMCEEditor } from "./rhf-tinymce-editor";
 export { default as RHFTiptapEditor } from "./rhf-tiptap-editor";
 
 // Other Components
