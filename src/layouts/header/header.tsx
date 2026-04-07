@@ -8,6 +8,7 @@ import themeConfig from "@/theme.config";
 import ThemeSwitcher from "./theme-switcher";
 import UserProfileDropdown from "./user-profile-dropdown";
 import Logo from "@/components/logo-component";
+import { NotificationBell } from "@/sections/notifications";
 
 export default function Header() {
   const dispatch = useDispatch();
@@ -42,7 +43,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center space-x-1.5 dropdown sm:flex-1 lg:space-x-2 justify-end">
-            {/* <NotificationsDropdown /> */}
+            <NotificationBell />
             <ThemeSwitcher />
 
             <UserProfileDropdown />

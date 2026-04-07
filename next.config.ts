@@ -14,22 +14,12 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "http",
-        hostname: "**.onlizas.com",
+        hostname: "**",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "**.onlizas.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "http",
-        hostname: "**.zasdistributor.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "**.zasdistributor.com",
+        hostname: "**",
         pathname: "/**",
       },
     ],
