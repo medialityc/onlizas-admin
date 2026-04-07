@@ -12,6 +12,7 @@ import "react-phone-number-input/style.css";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
 import { mantineHtmlProps } from "@mantine/core";
 import { SSOProvider } from "zas-sso-client";
+import { Toaster } from "sileo";
 
 const nunito = Nunito({
   weight: ["400", "500", "600", "700", "800"],
@@ -90,6 +91,14 @@ export default async function RootLayout({
               defaultTheme="light"
               disableTransitionOnChange
             >
+              <Toaster
+                position="bottom-right"
+                // theme="dark"
+                options={{
+                  fill: "#454545",
+                  styles: { description: "text-white/75!" },
+                }}
+              />
               {children}
               <ToastContainer />
             </ThemeProvider>
