@@ -62,7 +62,6 @@ const SupplierSelectProductDraft = ({
     product: ProductFormData & { isOwned?: boolean },
   ) => {
     if (!product) return;
-    console.log(product.brand);
 
     // Actualizar los campos del formulario con la información del producto
     setValue("id", product?.id);

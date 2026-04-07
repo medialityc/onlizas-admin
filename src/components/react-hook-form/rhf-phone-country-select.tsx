@@ -35,7 +35,10 @@ export function RHFPhoneCountrySelect({
     if (currentPhoneNumberCode && currentCountry == null) {
       const country = countries?.find((c) => {
         const key: keyof Country = countryValueKey ?? "phoneNumberCode";
-        return c[key].toString() === currentPhoneNumberCode;
+        return (
+          c[key].toString() === currentPhoneNumberCode ||
+          c.code === currentPhoneNumberCode
+        );
       });
 
       if (country) {
@@ -57,7 +60,10 @@ export function RHFPhoneCountrySelect({
     setCurrentCountry(country);
     setValue(countryFieldName, country[countryValueKey]);
     if (phoneNumberCodeFieldName) {
-      setValue(phoneNumberCodeFieldName, String(country.phoneNumberCode));
+      setValue(
+        phoneNumberCodeFieldName,
+        String(country.phoneNumberCode.toString()),
+      );
     }
   };
 

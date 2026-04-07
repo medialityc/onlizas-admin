@@ -20,11 +20,11 @@ import { updateTag } from "next/cache";
 import { IQueryable } from "@/types/fetch/request";
 
 export async function getAllProducts(
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<GetAllProducts>> {
   const url = new QueryParamsURLFactory(
     params,
-    backendRoutes.products.list
+    backendRoutes.products.list,
   ).build();
 
   const res = await nextAuthFetch({
@@ -39,11 +39,11 @@ export async function getAllProducts(
 }
 
 export async function getAllProductsVariants(
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<ProductVariantsApiResponse>> {
   const url = new QueryParamsURLFactory(
     params,
-    backendRoutes.products.productVariants
+    backendRoutes.products.productVariants,
   ).build();
 
   const res = await nextAuthFetch({
@@ -59,11 +59,11 @@ export async function getAllProductsVariants(
 
 export async function getAllProductsBySupplier(
   supplierId: string,
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<GetAllProducts>> {
   const url = new QueryParamsURLFactory(
     params,
-    backendRoutes.products.listBySupplier(supplierId)
+    backendRoutes.products.listBySupplier(supplierId),
   ).build();
 
   const res = await nextAuthFetch({
@@ -78,7 +78,7 @@ export async function getAllProductsBySupplier(
 }
 
 export async function getProductById(
-  id: string
+  id: string,
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.byId(id),
@@ -93,7 +93,7 @@ export async function getProductById(
 }
 
 export async function createProduct(
-  data: FormData
+  data: FormData,
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.create,
@@ -110,7 +110,7 @@ export async function createProduct(
 
 export async function updateProduct(
   id: string,
-  data: FormData
+  data: FormData,
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.update(id),
@@ -126,7 +126,7 @@ export async function updateProduct(
 }
 
 export async function deleteProduct(
-  id: number
+  id: number,
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.delete(id),
@@ -141,7 +141,7 @@ export async function deleteProduct(
 }
 
 export async function deactivateProduct(
-  id: number
+  id: number,
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.deactivate(id),
@@ -156,7 +156,7 @@ export async function deactivateProduct(
 }
 
 export async function canDeleteProduct(
-  id: number
+  id: number,
 ): Promise<ApiResponse<CanDeleteResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.canDelete(id),
@@ -171,7 +171,7 @@ export async function canDeleteProduct(
 
 export async function assignSuppliersToProduct(
   productId: number,
-  data: AssignSuppliersRequest
+  data: AssignSuppliersRequest,
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.assignSuppliers(productId),
@@ -191,7 +191,7 @@ export async function assignSuppliersToProduct(
 
 export async function unassignSuppliersFromProduct(
   productId: number,
-  data: AssignSuppliersRequest
+  data: AssignSuppliersRequest,
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.unassignSuppliers(productId),
@@ -241,11 +241,11 @@ export async function getSimpleSuppliers(): Promise<
 }
 
 export async function getCategoryFeatures(
-  categoryIds: number[]
+  categoryIds: number[],
 ): Promise<ApiResponse<CategoryFeaturesResponse>> {
   const url = new QueryParamsURLFactory(
     { categoryIds: categoryIds.join(",") },
-    backendRoutes.products.categoryFeatures
+    backendRoutes.products.categoryFeatures,
   ).build();
 
   const res = await nextAuthFetch({
@@ -261,7 +261,7 @@ export async function getCategoryFeatures(
 }
 
 export async function toggleActiveProduct(
-  typeId: string
+  typeId: string,
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.toggleActive(typeId),
@@ -276,11 +276,11 @@ export async function toggleActiveProduct(
 /* MY PRODUCTS */
 
 export async function getAllMyProducts(
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<GetAllProducts>> {
   const url = new QueryParamsURLFactory(
     params,
-    backendRoutes.products.listMyProducts
+    backendRoutes.products.listMyProducts,
   ).build();
 
   const res = await nextAuthFetch({
@@ -295,7 +295,7 @@ export async function getAllMyProducts(
 }
 
 export async function createSupplierProductLink(
-  productId: string
+  productId: string,
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.createSupplierProductByLink,
@@ -313,7 +313,7 @@ export async function createSupplierProductLink(
 }
 
 export async function createSupplierProduct(
-  data: FormData
+  data: FormData,
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.createSupplierProduct,
@@ -330,7 +330,7 @@ export async function createSupplierProduct(
 
 export async function updateSupplierProduct(
   productId: string,
-  data: FormData
+  data: FormData,
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.updateSupplierProduct(productId),
@@ -346,7 +346,7 @@ export async function updateSupplierProduct(
 }
 
 export async function getSupplierProductById(
-  id: number
+  id: number,
 ): Promise<ApiResponse<Product>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.byId(id),
@@ -361,7 +361,7 @@ export async function getSupplierProductById(
 }
 
 export async function deleteSupplierProduct(
-  productId: number
+  productId: number,
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.deleteSupplierProduct(productId),
@@ -376,11 +376,11 @@ export async function deleteSupplierProduct(
 }
 
 export async function getAllMyApprovedProducts(
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<GetAllProducts>> {
   const url = new QueryParamsURLFactory(
     params,
-    backendRoutes.products.meApprovedProducts
+    backendRoutes.products.meApprovedProducts,
   ).build();
 
   const res = await nextAuthFetch({
@@ -395,7 +395,7 @@ export async function getAllMyApprovedProducts(
 }
 
 export async function meToggleActiveProduct(
-  productId: number | string
+  productId: number | string,
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.products.meToggleActive(productId),

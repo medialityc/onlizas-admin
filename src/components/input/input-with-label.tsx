@@ -4,11 +4,10 @@ import { EyeIcon } from "@heroicons/react/24/solid";
 import { CSSProperties, ChangeEvent, ReactNode, forwardRef } from "react";
 import { FieldError } from "react-hook-form";
 
-interface Props
-  extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    "onChange" | "onBlur" | "value" | "size" | "className"
-  > {
+interface Props extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "onChange" | "onBlur" | "value" | "size" | "className"
+> {
   id: string;
   placeholder?: string;
   value: string | number;
@@ -67,7 +66,7 @@ const InputWithLabel = forwardRef<HTMLInputElement, Props>(
       maskValue,
       ...rest
     },
-    ref
+    ref,
   ) => (
     <div
       className={cn("w-full flex flex-col gap-1 relative", containerClassname)}
@@ -78,7 +77,7 @@ const InputWithLabel = forwardRef<HTMLInputElement, Props>(
           {label && (
             <label
               htmlFor={id}
-              className="text-sm font-semibold text-gray-700 dark:text-gray-200"
+              className="text-sm flex font-semibold text-gray-700 dark:text-gray-200"
             >
               {label}
               {required && <span className="text-red-500"> *</span>}
@@ -124,7 +123,7 @@ const InputWithLabel = forwardRef<HTMLInputElement, Props>(
                   "border-red-500 focus:border-red-500 focus:ring-red-500",
                 disabled && "cursor-not-allowed opacity-50",
                 // Añadir padding extra cuando hay ícono de ojo
-                isPassword && "pr-10"
+                isPassword && "pr-10",
               )}
               autoComplete={autoComplete}
               required={required}
@@ -178,7 +177,7 @@ const InputWithLabel = forwardRef<HTMLInputElement, Props>(
         <p className="text-xs ml-3 text-red-500">{errorAlert.message}</p>
       )}
     </div>
-  )
+  ),
 );
 
 InputWithLabel.displayName = "InputWithLabel";
