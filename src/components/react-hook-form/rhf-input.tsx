@@ -134,7 +134,7 @@ export default function RHFInputWithLabel({
             {label && (
               <label
                 htmlFor={name}
-                className="text-sm font-semibold text-gray-700 dark:text-gray-200"
+                className="text-sm flex font-semibold text-gray-700 dark:text-gray-200"
               >
                 {label}
                 {required && <span className="text-red-500"> *</span>}
@@ -169,7 +169,7 @@ export default function RHFInputWithLabel({
                 {label && (
                   <label
                     htmlFor={name}
-                    className="text-sm font-semibold text-gray-700 dark:text-gray-200"
+                    className="text-sm flex font-semibold text-gray-700 dark:text-gray-200"
                   >
                     {label}
                     {required && <span className="text-red-500"> *</span>}

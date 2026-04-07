@@ -78,10 +78,8 @@ const InventoryProviderDetailSection = () => {
       featureDescription:
         watched?.featureDescription ?? fallback?.featureDescription,
       suggestions: watched?.suggestions ?? fallback?.suggestions ?? [],
-      isRequired:
-        watched?.isRequired === true || fallback?.isRequired === true,
-      isFeature:
-        watched?.isFeature === true || fallback?.isFeature === true,
+      isRequired: watched?.isRequired === true || fallback?.isRequired === true,
+      isFeature: watched?.isFeature === true || fallback?.isFeature === true,
     };
   });
 
@@ -158,8 +156,8 @@ const InventoryProviderDetailSection = () => {
                 Garantía
               </span>
               <span className="text-sm font-medium dark:text-black-light">
-                {warranty.warrantyTime} {getWarrantyUnitLabel(warranty.timeUnit)} /
-                {" "}
+                {warranty.warrantyTime}{" "}
+                {getWarrantyUnitLabel(warranty.timeUnit)} /{" "}
                 {Number(warranty.warrantyPrice || 0) > 0
                   ? `$${warranty.warrantyPrice}`
                   : "GRATIS"}
@@ -172,7 +170,8 @@ const InventoryProviderDetailSection = () => {
                 Paquetería
               </span>
               <span className="text-sm font-medium dark:text-black-light">
-                {volume ? `${volume} vol` : "-"} {weight ? ` / ${weight} lb` : ""}
+                {volume ? `${volume} vol` : "-"}{" "}
+                {weight ? ` / ${weight} lb` : ""}
               </span>
             </div>
           )}
@@ -195,7 +194,7 @@ const InventoryProviderDetailSection = () => {
             const currentValue = watch(inputPath) ?? "";
 
             return (
-              <div className="col-span-1" key={feat.id}>
+              <div className="col-span-1 flex flex-col gap-2" key={feat.id}>
                 <div className="sr-only">
                   <RHFInputWithLabel
                     name={keyPath}
@@ -204,67 +203,62 @@ const InventoryProviderDetailSection = () => {
                     readOnly
                   />
                 </div>
-                <div className="flex flex-row">
-                  <RHFInputWithLabel
-                    name={inputPath}
-                    type="text"
-                    label={
-                      <div className="flex flex-row gap-1">
-                        <p>{feat.featureName}</p>
-                        {feat.featureDescription && (
-                          <Tippy
-                            trigger="mouseenter focus"
-                            content={feat.featureDescription}
-                            className=""
-                          >
-                            <InformationCircleIcon className="w-5 h-5 text-blue-500" />
-                          </Tippy>
-                        )}
-                      </div>
-                    }
-                    placeholder={feat.featureDescription ?? feat.featureName}
-                    required={feat.isRequired}
-                  />
-                  <div className="ml-2 self-center flex flex-col gap-1">
-                    {feat.suggestions && feat.suggestions.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {feat.suggestions.map((sugg: string, i: number) => {
-                          const isActive = currentValue === sugg;
-                          return (
-                            <button
-                              key={i}
-                              type="button"
-                              tabIndex={0}
-                              aria-pressed={isActive}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter" || e.key === " ") {
-                                  e.preventDefault();
-                                  setValue(inputPath, sugg, {
-                                    shouldDirty: true,
-                                    shouldValidate: true,
-                                  });
-                                }
-                              }}
-                              onClick={() =>
-                                setValue(inputPath, sugg, {
-                                  shouldDirty: true,
-                                  shouldValidate: true,
-                                })
-                              }
-                              className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded focus:outline-none focus:ring-2 focus:ring-offset-1 ${
-                                isActive
-                                  ? "bg-blue-600 text-white dark:bg-blue-500"
-                                  : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
-                              }`}
-                            >
-                              {sugg}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
+                <RHFInputWithLabel
+                  name={inputPath}
+                  type="text"
+                  label={
+                    <div className="flex flex-row gap-1 items-center">
+                      <p>{feat.featureName}</p>
+                      {feat.featureDescription && (
+                        <Tippy
+                          trigger="mouseenter focus"
+                          content={feat.featureDescription}
+                        >
+                          <InformationCircleIcon className="w-4 h-4 text-blue-500 cursor-help" />
+                        </Tippy>
+                      )}
+                    </div>
+                  }
+                  placeholder={feat.featureDescription ?? feat.featureName}
+                  required={feat.isRequired}
+                />
+                {feat.suggestions && feat.suggestions.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {feat.suggestions.map((sugg: string, i: number) => {
+                      const isSelected = currentValue === sugg;
+                      return (
+                        <button
+                          key={i}
+                          type="button"
+                          tabIndex={0}
+                          aria-pressed={isSelected}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setValue(inputPath, isSelected ? "" : sugg, {
+                                shouldDirty: true,
+                                shouldValidate: true,
+                              });
+                            }
+                          }}
+                          onClick={() =>
+                            setValue(inputPath, isSelected ? "" : sugg, {
+                              shouldDirty: true,
+                              shouldValidate: true,
+                            })
+                          }
+                          className={`inline-flex items-center px-2.5 py-1 text-xs rounded-full border transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1 ${
+                            isSelected
+                              ? "bg-blue-600 border-blue-600 text-white dark:bg-blue-500 dark:border-blue-500"
+                              : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-400 hover:text-blue-600 dark:hover:border-blue-500 dark:hover:text-blue-400"
+                          }`}
+                        >
+                          {sugg}
+                        </button>
+                      );
+                    })}
                   </div>
-                </div>
+                )}
               </div>
             );
           })}
