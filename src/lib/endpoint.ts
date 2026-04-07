@@ -273,6 +273,11 @@ export const backendRoutes = {
     userNotifications: `${process.env.NEXT_PUBLIC_API_URL}admin/user/notifications/`,
     delete: (id: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}admin/notifications/${id}`,
+    unreadCount: `${process.env.NEXT_PUBLIC_API_URL}user-notifications/unread-count`,
+    markRead: (id: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}notifications/${id}/mark-read`,
+    respond: (id: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}notifications/${id}/respond`,
   },
   documents: {
     validate: (id: number) =>
