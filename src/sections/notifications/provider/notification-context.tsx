@@ -16,6 +16,7 @@ import {
   respondToNotification,
 } from "@/services/notifications";
 import showToast from "@/config/toast/toastConfig";
+import { sileo } from "sileo";
 import { useNotificationSignal } from "../hooks/use-notification-signal";
 import type {
   AppNotification,
@@ -98,6 +99,13 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       };
       setNotifications((prev) => [newNotif, ...prev]);
       setUnreadCount((prev) => prev + 1);
+
+      sileo.info({
+        title: incoming.title,
+        description: incoming.description,
+        position: "top-right",
+        duration: 6000,
+      });
     };
 
     const onStatusUpdate = (update: NotificationStatusUpdate) => {
