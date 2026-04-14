@@ -58,13 +58,38 @@ export interface NotificationStatusUpdate {
   respondedInSystem?: string | null;
 }
 
+export interface UserNotification {
+  id: string;
+  createdDatetime: string;
+  updatedDatetime: string;
+  active: boolean;
+  userId: string;
+  title: string;
+  description: string;
+  priority: NotificationPriority;
+  notificationType: NotificationType;
+  originSystemId: string;
+  questionText?: string | null;
+  options?: string | null;
+  metadata?: string | null;
+  isRead: boolean;
+  readAt?: string | null;
+  response?: string | null;
+  respondedAt?: string | null;
+  respondedInSystem?: string | null;
+  callbackUrl?: string | null;
+}
+
 export interface NotificationContextValue {
   notifications: AppNotification[];
   unreadCount: number;
   connected: boolean;
   connecting: boolean;
+  ringing: boolean;
   loadingIds: Set<string>;
   loadingNotifications: boolean;
   markAsRead: (notificationId: string) => Promise<void>;
   respond: (notificationId: string, response: string) => Promise<void>;
+  requestPushPermission: () => Promise<void>;
+  testPushNotification: () => void;
 }
