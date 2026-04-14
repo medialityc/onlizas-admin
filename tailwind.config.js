@@ -32,6 +32,19 @@ module.exports = {
         "gradient-saffron-orange":
           "linear-gradient(225deg, hsl(23,100%,50%) 0%, hsl(47,98%,46%) 100%)",
       },
+      keyframes: {
+        "bell-ring": {
+          "0%, 100%": { transform: "rotate(0deg)" },
+          "10%": { transform: "rotate(18deg)" },
+          "30%": { transform: "rotate(-16deg)" },
+          "50%": { transform: "rotate(12deg)" },
+          "70%": { transform: "rotate(-10deg)" },
+          "90%": { transform: "rotate(6deg)" },
+        },
+      },
+      animation: {
+        "bell-ring": "bell-ring 0.7s ease-in-out",
+      },
     },
   },
 };

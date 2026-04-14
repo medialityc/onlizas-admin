@@ -10,6 +10,7 @@ import {
 } from "react";
 import { useAuth } from "zas-sso-client";
 import { useQuery } from "@tanstack/react-query";
+import useSound from "use-sound";
 import {
   getUnreadNotificationsCount,
   markNotificationAsRead,
@@ -18,6 +19,7 @@ import {
 import showToast from "@/config/toast/toastConfig";
 import { sileo } from "sileo";
 import { useNotificationSignal } from "../hooks/use-notification-signal";
+import { usePushNotification } from "../hooks/use-push-notification";
 import type {
   AppNotification,
   NotificationContextValue,
@@ -33,11 +35,15 @@ const NotificationContext = createContext<NotificationContextValue | null>(
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const { connection, connected, connecting } = useNotificationSignal();
   const session = useAuth();
-  const userId = session.user?.id ?? "";
+  const userId = String(session.user?.id ?? "");
+
+  const { showPush, requestPermission, testPush } = usePushNotification(userId);
+  const [playSound] = useSound("/assets/sounds/success.mp3", { volume: 0.5 });
 
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loadingIds, setLoadingIds] = useState<Set<string>>(new Set());
+  const [ringing, setRinging] = useState(false);
 
   const addLoading = useCallback(
     (id: string) => setLoadingIds((prev) => new Set(prev).add(id)),
@@ -100,12 +106,23 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       setNotifications((prev) => [newNotif, ...prev]);
       setUnreadCount((prev) => prev + 1);
 
+      // Sonido
+      playSound();
+
+      // Push OS-level (solo si tab sin foco)
+      showPush(incoming.title, incoming.description, incoming.priority);
+
+      // Toast in-app
       sileo.info({
         title: incoming.title,
         description: incoming.description,
         position: "top-right",
         duration: 6000,
       });
+
+      // Animación de campana
+      setRinging(true);
+      setTimeout(() => setRinging(false), 800);
     };
 
     const onStatusUpdate = (update: NotificationStatusUpdate) => {
@@ -213,10 +230,13 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         unreadCount,
         connected,
         connecting,
+        ringing,
         loadingIds,
         loadingNotifications,
         markAsRead,
         respond,
+        requestPushPermission: requestPermission,
+        testPushNotification: () => testPush(),
       }}
     >
       {children}

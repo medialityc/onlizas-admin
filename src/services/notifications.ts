@@ -1,9 +1,13 @@
 "use server";
 
 import { backendRoutes } from "@/lib/endpoint";
-import { nextAuthFetch } from "./utils/next-auth-fetch";
+import { nextAuthFetch, getMemoizedSession } from "./utils/next-auth-fetch";
 import { ApiResponse } from "@/types/fetch/api";
 import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
+import { QueryParamsURLFactory } from "@/lib/request";
+import { IQueryable } from "@/types/fetch/request";
+import { PaginatedResponse } from "@/types/common";
+import type { UserNotification } from "@/sections/notifications/types/notification.types";
 
 export async function getUnreadNotificationsCount(): Promise<number> {
   const res = await nextAuthFetch({
@@ -53,6 +57,27 @@ export async function respondToNotification(
     method: "POST",
     useAuth: true,
     data: { response },
+  });
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync(res);
+}
+
+export async function getUserNotifications(
+  params: IQueryable & { unreadOnly?: boolean },
+): Promise<ApiResponse<PaginatedResponse<UserNotification>>> {
+  const session = await getMemoizedSession();
+  const userId = (session?.user as any)?.id;
+
+  const url = new QueryParamsURLFactory(
+    { ...params, ...(userId ? { userId } : {}) },
+    backendRoutes.notifications.userNotifications,
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    cache: "no-cache",
   });
   if (!res.ok) return handleApiServerError(res);
   return buildApiResponseAsync(res);

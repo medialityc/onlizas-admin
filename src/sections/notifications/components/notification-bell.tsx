@@ -6,10 +6,23 @@ import { NotificationQuestion } from "./notification-question";
 import { NotificationEmpty } from "./notification-empty";
 import Dropdown from "@/components/ui/dropdown";
 import IconBellBing from "@/components/icon/icon-bell-bing";
+import Link from "next/link";
 
 export function NotificationBell() {
-  const { notifications, unreadCount, connecting, loadingNotifications } =
-    useNotifications();
+  const {
+    notifications,
+    unreadCount,
+    connecting,
+    loadingNotifications,
+    ringing,
+    requestPushPermission,
+    testPushNotification,
+  } = useNotifications();
+
+  const showPushBanner =
+    typeof window !== "undefined" &&
+    "Notification" in window &&
+    Notification.permission === "default";
 
   return (
     <Dropdown
@@ -39,7 +52,9 @@ export function NotificationBell() {
               />
             </svg>
           ) : (
-            <IconBellBing className="h-5 w-5" />
+            <IconBellBing
+              className={`h-5 w-5 ${ringing ? "animate-bell-ring" : ""}`}
+            />
           )}
           {!loadingNotifications && connecting && (
             <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center">
@@ -55,7 +70,7 @@ export function NotificationBell() {
         </span>
       }
     >
-      <div className="w-80 overflow-hidden rounded-xl shadow-lg sm:w-96">
+      <div className="w-80 overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-gray-200 dark:bg-[#1b2e4b] dark:ring-white/10 sm:w-96">
         {/* Header */}
         <div className="flex items-center justify-between bg-linear-to-r from-primary to-primary/80 px-4 py-3">
           <div className="flex items-center gap-2">
@@ -69,8 +84,37 @@ export function NotificationBell() {
           )}
         </div>
 
+        {/* Push permission banner */}
+        {showPushBanner && (
+          <div className="flex items-center justify-between border-b border-gray-200 bg-amber-50 px-4 py-2 dark:border-white/10 dark:bg-amber-900/20">
+            <span className="text-xs text-amber-700 dark:text-amber-400">
+              Activa las notificaciones push
+            </span>
+            <button
+              type="button"
+              onClick={requestPushPermission}
+              className="rounded-md bg-amber-500 px-2.5 py-1 text-xs font-medium text-white transition-colors hover:bg-amber-600"
+            >
+              Activar
+            </button>
+          </div>
+        )}
+
+        {/* Test push (development only) */}
+        {process.env.NODE_ENV === "development" && (
+          <div className="border-b border-gray-200 px-4 py-1.5 dark:border-white/10">
+            <button
+              type="button"
+              onClick={testPushNotification}
+              className="text-[10px] text-gray-400 underline hover:text-primary"
+            >
+              Test push
+            </button>
+          </div>
+        )}
+
         {/* List */}
-        <ul className="max-h-105 my-0 py-0 overflow-y-auto">
+        <ul className="max-h-105 my-0 overflow-y-auto py-0">
           {notifications.length === 0 ? (
             <NotificationEmpty key={0} />
           ) : (
@@ -89,6 +133,16 @@ export function NotificationBell() {
             )
           )}
         </ul>
+
+        {/* Footer - link to full page */}
+        <div className="border-t border-gray-200 bg-gray-50 px-4 py-2.5 dark:border-white/10 dark:bg-white/5">
+          <Link
+            href="/dashboard/notifications"
+            className="block text-center text-xs font-medium text-primary hover:underline"
+          >
+            Ver todas las notificaciones
+          </Link>
+        </div>
       </div>
     </Dropdown>
   );
