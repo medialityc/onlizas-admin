@@ -98,7 +98,7 @@
     "use-sound": "^5.0.0",
     "web-push": "^3.6.7",
     "xlsx": "^0.18.5",
-    "zas-sso-client": "^1.2.54",
+    "zas-sso-client": "^1.2.56",
     "zod": "^4.3.6",
     "zustand": "^5.0.11"
   },
