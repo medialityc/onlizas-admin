@@ -2,7 +2,7 @@
 import { handlers } from "@/sso";
 
 // Exportas directamente GET y POST compatibles con el App Router
-export const { GET } = handlers;
+export const { GET, POST } = handlers;
 
 // (Opcional) si quieres forzar runtime node por uso de crypto:
 // export const runtime = "nodejs";
