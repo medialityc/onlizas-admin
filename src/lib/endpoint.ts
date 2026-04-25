@@ -240,7 +240,7 @@ export const backendRoutes = {
   business: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}businesses`,
     getByProvider: (id: string | number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}suppliers/${id}/businesses`, // todo pasar id
+      `${process.env.NEXT_PUBLIC_API_URL}admin/suppliers/${id}/businesses`, // todo pasar id
     getAllLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/business`,
     create: `${process.env.NEXT_PUBLIC_API_URL}admin/businesses`,
     createBySupplier: `${process.env.NEXT_PUBLIC_API_URL}suppliers/businesses`,
