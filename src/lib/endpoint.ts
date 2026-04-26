@@ -88,6 +88,7 @@ export const backendRoutes = {
     listImporterAccess: `${process.env.NEXT_PUBLIC_API_URL}importer-access/categories`, // GET para importadoras
     listLogs: `${process.env.NEXT_PUBLIC_API_URL}logs/categories`, // GET
     aduanaCategories: `${process.env.NEXT_PUBLIC_API_URL}aduana-categories`,
+    aduanaCategoriesScroll: `${process.env.NEXT_PUBLIC_API_URL}aduana-categories/scroll`,
     toggleStatus: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}categories/${id}/toggle-status`, // TOGGLE STATUS
     update: (id: string | number) =>
