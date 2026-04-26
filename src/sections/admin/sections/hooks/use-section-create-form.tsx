@@ -67,8 +67,20 @@ export const useSectionCreateForm = (
     form: form,
     isPending,
     startDate,
-    onSubmit: form.handleSubmit((values) => {
-      mutate(values);
-    }),
+    onSubmit: form.handleSubmit(
+      (values) => {
+        mutate(values);
+      },
+      (errors) => {
+        // Evita que el botón Guardar parezca "muerto" cuando zod rechaza:
+        // muestra el primer error de validación al usuario.
+        const firstError = Object.values(errors).find(Boolean) as
+          | { message?: string }
+          | undefined;
+        toast.error(
+          firstError?.message ?? "Revisa los campos del formulario",
+        );
+      },
+    ),
   };
 };

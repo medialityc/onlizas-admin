@@ -80,9 +80,9 @@ export const sectionSchema = z
 
     // selects
     targetUserSegment: z.string().min(1, "El segmento de usuario es requerido"),
-    targetDeviceType: z.string().min(1, "El tipo de dispositivo es requerido"),
-
-    startDate: z.union([z.date(), z.string()]).refine(
+    // Campo actualmente oculto en la UI (input comentado). Se mantiene como
+    // opcional para no bloquear el submit del formulario con un error invisible.
+    targetDeviceType: z.string().optional().default(""),
       (val) => {
         if (typeof val === "string") return !isNaN(Date.parse(val));
         return true;
