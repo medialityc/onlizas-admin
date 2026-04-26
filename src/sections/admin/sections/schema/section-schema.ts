@@ -83,6 +83,8 @@ export const sectionSchema = z
     // Campo actualmente oculto en la UI (input comentado). Se mantiene como
     // opcional para no bloquear el submit del formulario con un error invisible.
     targetDeviceType: z.string().optional().default(""),
+
+    startDate: z.union([z.date(), z.string()]).refine(
       (val) => {
         if (typeof val === "string") return !isNaN(Date.parse(val));
         return true;
