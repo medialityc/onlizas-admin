@@ -25,7 +25,8 @@ export function NotificationQuestion({ notification }: Props) {
   let options: string[] = [];
   try {
     if (notification.options) {
-      options = JSON.parse(notification.options) as string[];
+      const parsed = JSON.parse(notification.options);
+      options = Array.isArray(parsed) ? (parsed as string[]) : [];
     }
   } catch {
     options = [];
