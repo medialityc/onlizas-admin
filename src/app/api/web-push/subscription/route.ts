@@ -1,15 +1,11 @@
 import webpush from "web-push";
 import { NextRequest, NextResponse } from "next/server";
 import { subscriptions } from "@/lib/push-subscriptions";
-
-webpush.setVapidDetails(
-  process.env.VAPID_EMAIL!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!,
-);
+import { ensureVapidDetails } from "@/lib/web-push";
 
 export async function POST(request: NextRequest) {
   try {
+    ensureVapidDetails();
     const body = await request.json();
     const { subscription, userId } = body as {
       subscription: webpush.PushSubscription;
