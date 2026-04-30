@@ -2,11 +2,19 @@ import webpush from "web-push";
 import { NextRequest, NextResponse } from "next/server";
 import { subscriptions } from "@/lib/push-subscriptions";
 
-webpush.setVapidDetails(
-  process.env.VAPID_EMAIL!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!,
-);
+function ensureVapidDetails() {
+  const subject = process.env.VAPID_EMAIL;
+  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  const privateKey = process.env.VAPID_PRIVATE_KEY;
+
+  if (!subject || !publicKey || !privateKey) {
+    throw new Error(
+      "VAPID credentials not configured. Set VAPID_EMAIL, NEXT_PUBLIC_VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY environment variables."
+    );
+  }
+
+  webpush.setVapidDetails(subject, publicKey, privateKey);
+}
 
 export interface PushPayload {
   title: string;
@@ -19,6 +27,7 @@ export interface PushPayload {
 
 export async function POST(request: NextRequest) {
   try {
+    ensureVapidDetails();
     const body = await request.json();
     const { userId, payload } = body as {
       userId?: string;
