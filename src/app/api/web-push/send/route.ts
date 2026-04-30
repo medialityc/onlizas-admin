@@ -1,3 +1,4 @@
+import webpush from "web-push";
 import { NextRequest, NextResponse } from "next/server";
 import { subscriptions } from "@/lib/push-subscriptions";
 import { ensureVapidDetails } from "@/lib/web-push";
