@@ -71,7 +71,7 @@ export function SubOrdersSection({
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold">Sub-órdenes</h3>
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100">Sub-órdenes</h3>
         {onUpdateStatus && (
           <Button
             size="sm"
@@ -90,7 +90,7 @@ export function SubOrdersSection({
         )}
       </div>
       {isProcessingLocked && (
-        <p className="mb-2 text-xs text-amber-600">
+        <p className="mb-2 text-xs text-amber-600 dark:text-amber-400">
           No se puede avanzar a "Procesando" hasta que termine el tiempo de
           espera configurado para la orden.
         </p>
@@ -134,12 +134,12 @@ export function SubOrdersSection({
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <p className="font-medium">Estado actual</p>
-                <p>{getStatusLabel(baseStatus)}</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">Estado actual</p>
+                <p className="text-gray-700 dark:text-gray-300">{getStatusLabel(baseStatus)}</p>
               </div>
               <div>
-                <p className="font-medium">Nuevo estado</p>
-                <p>{getStatusLabel(nextStatus)}</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">Nuevo estado</p>
+                <p className="text-gray-700 dark:text-gray-300">{getStatusLabel(nextStatus)}</p>
               </div>
             </div>
             <div className="space-y-1">

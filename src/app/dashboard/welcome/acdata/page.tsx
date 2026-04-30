@@ -10,10 +10,13 @@ export const metadata: Metadata = {
   title: "Paso 6: Configura tu cuenta bancaria | Onlizas",
 };
 
+// MODO DESARROLLO: desactiva redirecciones para probar el flujo
+const DEV_MODE = false;
+
 export default async function WelcomeAcdataPage() {
   const { data } = await getSupplierItemsCount();
 
-  if (data?.bankAccountCount && data.bankAccountCount > 0) {
+  if (!DEV_MODE && data?.bankAccountCount && data.bankAccountCount > 0) {
     redirect("/dashboard/welcome/inventory");
   }
 

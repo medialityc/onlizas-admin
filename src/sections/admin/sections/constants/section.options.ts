@@ -5,12 +5,7 @@ export const TEMPLATE_TYPE_ENUM_OPTIONS: {
   label: string;
 }[] = [
   { value: TEMPLATE_TYPE_ENUM.carousel, label: "Carrousel de Productos" },
-  {
-    value: TEMPLATE_TYPE_ENUM.featured,
-    label: "Características de productos",
-  },
   { value: TEMPLATE_TYPE_ENUM.list, label: "Lista de productos" },
-  { value: TEMPLATE_TYPE_ENUM.masonry, label: "Masonería de productos" },
 ];
 
 export const TARGET_USER_SEGMENT_OPTIONS = [

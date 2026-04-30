@@ -26,7 +26,7 @@ export function EditableAddress({
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <h3 className="font-semibold">{title}</h3>
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
         {!isEditing && (
           <Button variant="outline" size="sm" onClick={onEdit}>
             Editar

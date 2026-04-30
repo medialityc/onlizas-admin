@@ -9,10 +9,13 @@ export const metadata: Metadata = {
   title: "Paso 2: Crea un producto | Onlizas",
 };
 
+// MODO DESARROLLO: desactiva redirecciones para probar el flujo
+const DEV_MODE = false;
+
 export default async function WelcomeProductsPage() {
   const { data } = await getSupplierItemsCount();
 
-  if (data?.productCount && data.productCount > 0) {
+  if (!DEV_MODE && data?.productCount && data.productCount > 0) {
     // Si ya creó productos, saltar al siguiente paso pendiente
     redirect("/dashboard/welcome/stores");
   }

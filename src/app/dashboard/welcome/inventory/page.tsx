@@ -10,10 +10,13 @@ export const metadata: Metadata = {
   title: "Paso 7: Crea tu inventario | Onlizas",
 };
 
+// MODO DESARROLLO: desactiva redirecciones para probar el flujo
+const DEV_MODE = false;
+
 export default async function WelcomeInventoryPage() {
   const { data } = await getSupplierItemsCount();
 
-  if (data?.inventoryCount && data.inventoryCount > 0) {
+  if (!DEV_MODE && data?.inventoryCount && data.inventoryCount > 0) {
     redirect("/dashboard");
   }
 
@@ -50,7 +53,7 @@ export default async function WelcomeInventoryPage() {
       <div className="rounded-xl border bg-white/90 p-4 shadow-sm dark:bg-gray-950/80">
         <WelcomeInventoryFormSection
           providerId={userId}
-          afterCreateRedirectTo={""}
+          afterCreateRedirectTo="/dashboard"
         />
       </div>
 

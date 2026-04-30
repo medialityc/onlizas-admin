@@ -91,7 +91,7 @@ export async function SupplierInventorySteps() {
       title: "Crea el inventario",
       description:
         "Este es el último paso de configuración: genera un inventario que relacione producto, tienda, almacén y, si aplican, zonas de entrega.",
-      href: "/dashboard/inventory/listing",
+      href: "/dashboard/welcome/inventory",
       cta: "Ir a inventario",
     },
   ];

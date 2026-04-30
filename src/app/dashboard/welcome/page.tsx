@@ -65,6 +65,13 @@ const STEP_ORDER: Array<{
   },
 ];
 
+// ============================================================
+// MODO DESARROLLO / TESTING
+// Cambia a true para desactivar redirecciones y poder probar
+// todos los pasos del formulario de bienvenida sin borrar datos.
+// ============================================================
+const DEV_MODE = false;
+
 export default async function WelcomePage() {
   const { data } = await getSupplierItemsCount();
 
@@ -73,7 +80,8 @@ export default async function WelcomePage() {
     redirect("/dashboard");
   }
 
-  if (data.inventoryCount > 0) {
+  // En modo DEV, no redirigimos aunque tenga todo completado
+  if (!DEV_MODE && data.inventoryCount > 0) {
     // Ya tiene inventario, no necesita la guía
     redirect("/dashboard");
   }
@@ -82,16 +90,29 @@ export default async function WelcomePage() {
     (step) => (data[step.counterKey] ?? 0) === 0,
   );
 
-  if (!firstPending) {
+  // En modo DEV, no redirigimos aunque esté todo completado
+  if (!DEV_MODE && !firstPending) {
     redirect("/dashboard");
   }
 
-  const currentStepIndex =
-    STEP_ORDER.findIndex((step) => step.id === firstPending.id) + 1;
+  const currentStepIndex = firstPending
+    ? STEP_ORDER.findIndex((step) => step.id === firstPending.id) + 1
+    : STEP_ORDER.length;
   const totalSteps = STEP_ORDER.length;
 
   return (
     <div className="space-y-8 p-4 sm:p-6">
+      {/* Banner de modo desarrollo */}
+      {DEV_MODE && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-200">
+          <p className="font-semibold">🛠️ Modo Desarrollo Activo</p>
+          <p className="text-xs">
+            Las redirecciones automáticas están desactivadas. Puedes navegar a
+            cualquier paso para probar los formularios.
+          </p>
+        </div>
+      )}
+
       <section className="rounded-2xl border border-gray-200/60 bg-white/80 p-6 shadow-sm backdrop-blur-sm dark:border-gray-800/60 dark:bg-gray-900/80">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-2">
@@ -114,11 +135,15 @@ export default async function WelcomePage() {
           </div>
           <div className="flex flex-col items-start gap-3 sm:items-end">
             <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200">
-              Tu siguiente paso: {firstPending.label}
+              {firstPending
+                ? `Tu siguiente paso: ${firstPending.label}`
+                : "Todos los pasos completados"}
             </span>
-            <Link href={`/dashboard/welcome/${firstPending.id}`}>
-              <Button size="sm">Comenzar configuración</Button>
-            </Link>
+            {firstPending && (
+              <Link href={`/dashboard/welcome/${firstPending.id}`}>
+                <Button size="sm">Comenzar configuración</Button>
+              </Link>
+            )}
           </div>
         </div>
       </section>
@@ -164,9 +189,14 @@ export default async function WelcomePage() {
                         }`
                       : "Aún no has configurado este paso"}
                   </span>
-                  {!isDone && step.id === firstPending.id && (
+                  {/* En modo DEV, siempre mostramos el botón para navegar */}
+                  {(DEV_MODE || (!isDone && step.id === firstPending?.id)) && (
                     <Link href={`/dashboard/welcome/${step.id}`}>
-                      <Button variant="outline">Ir a este paso</Button>
+                      <Button variant="outline" size="sm">
+                        {DEV_MODE && isDone
+                          ? "Ver paso"
+                          : "Ir a este paso"}
+                      </Button>
                     </Link>
                   )}
                 </div>

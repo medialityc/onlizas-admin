@@ -142,7 +142,7 @@ export function SubOrderItem({
             <div className="flex flex-1 items-start gap-3">
               <input
                 type="checkbox"
-                className="mt-1 h-4 w-4 accent-primary"
+                className="mt-1 h-4 w-4 accent-primary rounded border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:bg-[#1a1c23]"
                 checked={selected}
                 onChange={onToggleSelected}
               />
@@ -299,7 +299,7 @@ export function SubOrderItem({
                     <span>Descargar</span>
                   </Button>
                   {!hasFacture && (
-                    <span className="text-[11px] text-muted-foreground">
+                    <span className="text-[11px] text-gray-500 dark:text-gray-400">
                       No disponible
                     </span>
                   )}
@@ -364,14 +364,14 @@ export function SubOrderItem({
         }
       >
         <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700 dark:text-gray-300">
             <div>
-              <p className="font-medium">Estado actual</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">Estado actual</p>
               <p>{getStatusLabel(selectedStatus)}</p>
             </div>
             {pendingStatus !== null && (
               <div>
-                <p className="font-medium">Nuevo estado</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">Nuevo estado</p>
                 <p>{getStatusLabel(pendingStatus)}</p>
               </div>
             )}
