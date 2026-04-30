@@ -37,6 +37,7 @@ export function WelcomeMeWarehouseFormSection({
           zipcode: existingWarehouse.address?.zipcode ?? "",
           annotations: existingWarehouse.address?.annotations ?? "",
           districtId: existingWarehouse.address?.districtId,
+          stateId: existingWarehouse.address?.stateId,
           countryId: existingWarehouse.address?.countryId,
         },
       }

@@ -41,6 +41,7 @@ import {
   PERMISSION_SUPPLIER_ACCOUNTS,
   PERMISSION_SUPPLIER_ZONES,
   PERMISSION_FINANCE_SUPPLIER_CLOSURES,
+  PERMISSION_ENUM,
 } from "@/lib/permissions";
 
 export const sidebarSections: SidebarSection[] = [
@@ -113,7 +114,13 @@ export const sidebarSections: SidebarSection[] = [
         label: "Marcas",
         path: paths.dashboard.brands.list,
         icon: <CubeIcon className="h-4 w-4" />,
-        permissions: PERMISSION_ADMIN,
+        permissions: [
+          ...PERMISSION_ADMIN,
+          PERMISSION_ENUM.SUPPLIER_CREATE,
+          PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+          PERMISSION_ENUM.SUPPLIER_UPDATE,
+          PERMISSION_ENUM.SUPPLIER_DELETE,
+        ],
       },
       {
         id: "products",

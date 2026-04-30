@@ -15,10 +15,13 @@ interface BrandFormProps {
   initValue?: BrandFormData;
 }
 
+/** Permisos que permiten guardar/crear marcas (admin o proveedor) */
+const SAVE_BRAND_PERMS = [PERMISSION_ENUM.RETRIEVE, PERMISSION_ENUM.SUPPLIER_RETRIEVE];
+
 export default function BrandForm({ initValue }: BrandFormProps) {
   const { form, isPending, onSubmit } = useBrandCreateForm(initValue);
   const { hasPermission } = usePermissions();
-  const hasUpdatePermission = hasPermission([PERMISSION_ENUM.RETRIEVE]);
+  const hasUpdatePermission = hasPermission(SAVE_BRAND_PERMS);
 
   const { push } = useRouter();
   const handleCancel = useCallback(() => push("/dashboard/brands"), [push]);

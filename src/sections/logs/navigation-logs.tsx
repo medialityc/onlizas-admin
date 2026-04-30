@@ -1,11 +1,8 @@
 "use client";
 import {
   BuildingOffice2Icon,
-  BuildingOfficeIcon,
   CurrencyDollarIcon,
   TagIcon,
-  UserGroupIcon,
-  KeyIcon,
   MapPinIcon,
   GlobeAmericasIcon,
 } from "@heroicons/react/24/solid";
@@ -15,14 +12,6 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
 const modules = [
-  {
-    name: "Negocios",
-    href: "/dashboard/businesslogs",
-    icon: BuildingOfficeIcon,
-    color: "text-blue-600 dark:text-blue-400",
-    bg: "bg-blue-50 dark:bg-blue-900/20",
-    permissions: [PERMISSION_ENUM.RETRIEVE], // Admin puede ver todos los logs
-  },
   {
     name: "Categorías",
     href: "/dashboard/categorieslogs",
@@ -48,35 +37,11 @@ const modules = [
     permissions: [PERMISSION_ENUM.RETRIEVE],
   },
   {
-    name: "Usuarios",
-    href: "/dashboard/userslogs",
-    icon: UserGroupIcon,
-    color: "text-pink-600 dark:text-pink-400",
-    bg: "bg-pink-50 dark:bg-pink-900/20",
-    permissions: [PERMISSION_ENUM.RETRIEVE],
-  },
-  {
-    name: "Permisos",
-    href: "/dashboard/permissionslogs",
-    icon: KeyIcon,
-    color: "text-amber-600 dark:text-amber-400",
-    bg: "bg-amber-50 dark:bg-amber-900/20",
-    permissions: [PERMISSION_ENUM.RETRIEVE],
-  },
-  {
     name: "Regiones",
     href: "/dashboard/regionslogs",
     icon: GlobeAmericasIcon,
     color: "text-cyan-600 dark:text-cyan-400",
     bg: "bg-cyan-50 dark:bg-cyan-900/20",
-    permissions: [PERMISSION_ENUM.RETRIEVE],
-  },
-  {
-    name: "Roles",
-    href: "/dashboard/roleslogs",
-    icon: UserGroupIcon,
-    color: "text-indigo-600 dark:text-indigo-400",
-    bg: "bg-indigo-50 dark:bg-indigo-900/20",
     permissions: [PERMISSION_ENUM.RETRIEVE],
   },
   {

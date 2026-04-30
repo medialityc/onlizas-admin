@@ -76,7 +76,7 @@ export function WelcomeSupplierAccountFormSection({
           maxLength={100}
         />
 
-        <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 space-y-3">
+        <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 space-y-3 dark:border-gray-700 dark:bg-[#232830]">
           <div className="flex justify-center">
             <Cards
               number={cardNumber || ""}
@@ -91,7 +91,7 @@ export function WelcomeSupplierAccountFormSection({
               name="accountNumber"
               control={methods.control}
               render={({ field, fieldState: { error } }) => (
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-2">
                   <label className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                     Número de tarjeta
                   </label>
@@ -107,11 +107,11 @@ export function WelcomeSupplierAccountFormSection({
                       placeholder="0000 0000 0000 0000"
                       maxLength={19}
                       inputMode="numeric"
-                      className={`form-input w-full pl-10 font-mono tracking-widest${
-                        error ? " border-red-500 focus:border-red-500" : ""
-                      }`}
+                          className={`form-input w-full pl-10 font-mono tracking-widest${
+                            error ? " border-red-500 focus:border-red-500" : ""
+                          }`}
                     />
-                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
                       <svg
                         className="h-4 w-4"
                         viewBox="0 0 24 24"
@@ -131,11 +131,11 @@ export function WelcomeSupplierAccountFormSection({
                       </svg>
                     </span>
                   </div>
-                  {error && (
-                    <span className="text-sm text-red-600">
-                      {error.message}
-                    </span>
-                  )}
+                      {error && (
+                        <span className="text-sm text-red-600 dark:text-red-400">
+                          {error.message}
+                        </span>
+                      )}
                 </div>
               )}
             />

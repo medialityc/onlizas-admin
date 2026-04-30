@@ -22,6 +22,12 @@ interface BrandListProps {
   onSearchParamsChange: (params: SearchParams) => void;
 }
 
+/** Permisos que permiten crear/editar/eliminar marcas (admin o proveedor) */
+const CREATE_BRAND_PERMS = [PERMISSION_ENUM.CREATE, PERMISSION_ENUM.SUPPLIER_CREATE];
+const UPDATE_BRAND_PERMS = [PERMISSION_ENUM.UPDATE, PERMISSION_ENUM.SUPPLIER_UPDATE];
+const DELETE_BRAND_PERMS = [PERMISSION_ENUM.DELETE, PERMISSION_ENUM.SUPPLIER_DELETE];
+const VIEW_BRAND_PERMS = [PERMISSION_ENUM.RETRIEVE, PERMISSION_ENUM.SUPPLIER_RETRIEVE];
+
 export function BrandList({
   data,
   searchParams,
@@ -42,7 +48,7 @@ export function BrandList({
   }, [editBrandId, viewBrandId, data?.data]);
 
   const handleCreateBrand = useCallback(() => {
-    if (!hasPermission([PERMISSION_ENUM.CREATE])) return;
+    if (!hasPermission(CREATE_BRAND_PERMS)) return;
     const params = new URLSearchParams(urlSearchParams);
     params.set("create", "true");
     router.push(`${paths.dashboard.brands.list}?${params.toString()}`);
@@ -50,7 +56,7 @@ export function BrandList({
 
   const handleEditBrand = useCallback(
     (brand: Brand) => {
-      if (!hasPermission([PERMISSION_ENUM.UPDATE])) return;
+      if (!hasPermission(UPDATE_BRAND_PERMS)) return;
       const params = new URLSearchParams(urlSearchParams);
       params.set("edit", brand.id.toString());
       router.push(`${paths.dashboard.brands.list}?${params.toString()}`);
@@ -123,10 +129,10 @@ export function BrandList({
                   showToast("Error al eliminar", "error");
                 }
               }}
-              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
-              editPermissions={[PERMISSION_ENUM.UPDATE]}
-              deletePermissions={[PERMISSION_ENUM.DELETE]}
-              activePermissions={[PERMISSION_ENUM.UPDATE]}
+              viewPermissions={VIEW_BRAND_PERMS}
+              editPermissions={UPDATE_BRAND_PERMS}
+              deletePermissions={DELETE_BRAND_PERMS}
+              activePermissions={UPDATE_BRAND_PERMS}
             />
           </div>
         ),
@@ -156,7 +162,7 @@ export function BrandList({
         onSearchParamsChange={handleSearchParamsChangeDebounced}
         searchPlaceholder="Buscar marcas..."
         onCreate={handleCreateBrand}
-        createPermissions={[PERMISSION_ENUM.CREATE]}
+        createPermissions={CREATE_BRAND_PERMS}
         emptyText="No se encontraron marcas"
         createText="Crear marca"
       />

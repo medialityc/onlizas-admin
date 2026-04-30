@@ -28,7 +28,6 @@
     "**/*.ts",
     "**/*.tsx",
     "next-env.d.ts",
-    "ni18n.config.ts.js",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],

@@ -144,6 +144,7 @@ export default function ImporterQRModal({ open, onClose, importer }: Props) {
         },
         close: {
           color: "light-dark(#374151, #e5e7eb)",
+          backgroundColor: "transparent",
         },
       }}
     >
@@ -151,22 +152,16 @@ export default function ImporterQRModal({ open, onClose, importer }: Props) {
 
       {qrData ? (
         <Stack gap="md">
-          <div
-            className="p-4 rounded-lg border"
-            style={{
-              backgroundColor: "light-dark(#f9fafb, #1b2e4b)",
-              borderColor: "light-dark(#e5e7eb, #17263c)",
-            }}
-          >
+          <div className="p-4 rounded-lg border bg-gray-50 dark:bg-[#1b2e4b] dark:border-[#17263c]">
             <Text
               size="sm"
               fw={500}
               mb="xs"
-              className="text-black dark:text-white"
+              className="text-gray-900 dark:!text-white"
             >
               Instrucciones:
             </Text>
-            <Text size="sm" c="dimmed" style={{ whiteSpace: "pre-line" }}>
+            <Text size="sm" className="text-gray-600 dark:!text-white" style={{ whiteSpace: "pre-line" }}>
               {qrData.instructions}
             </Text>
           </div>
@@ -211,30 +206,17 @@ export default function ImporterQRModal({ open, onClose, importer }: Props) {
             )}
           </Stack>
 
-          <div
-            className="p-4 rounded-lg border"
-            style={{
-              backgroundColor: "light-dark(#f9fafb, #1b2e4b)",
-              borderColor: "light-dark(#e5e7eb, #17263c)",
-            }}
-          >
+          <div className="p-4 rounded-lg border bg-gray-50 dark:bg-[#1b2e4b] dark:border-[#17263c]">
             <Text
               size="sm"
               fw={500}
               mb="xs"
-              className="text-black dark:text-white"
+              className="text-gray-900 dark:!text-white"
             >
               URL de Acceso:
             </Text>
             <Group gap="xs" wrap="nowrap">
-              <div
-                className="p-3 rounded border font-mono text-sm flex-1"
-                style={{
-                  backgroundColor: "light-dark(#ffffff, #0e1726)",
-                  borderColor: "light-dark(#e5e7eb, #17263c)",
-                  color: "light-dark(#000000, #ffffff)",
-                }}
-              >
+              <div className="p-3 rounded border font-mono text-sm flex-1 bg-white dark:bg-[#0e1726] dark:border-[#17263c] text-gray-900 dark:!text-white">
                 {accessUrl}
               </div>
               <CopyButton value={accessUrl} timeout={2000}>
@@ -258,30 +240,17 @@ export default function ImporterQRModal({ open, onClose, importer }: Props) {
             </Group>
           </div>
 
-          <div
-            className="p-4 rounded-lg border"
-            style={{
-              backgroundColor: "light-dark(#f9fafb, #1b2e4b)",
-              borderColor: "light-dark(#e5e7eb, #17263c)",
-            }}
-          >
+          <div className="p-4 rounded-lg border bg-gray-50 dark:bg-[#1b2e4b] dark:border-[#17263c]">
             <Text
               size="sm"
               fw={500}
               mb="xs"
-              className="text-black dark:text-white"
+              className="text-gray-900 dark:!text-white"
             >
               Clave Secreta (manual):
             </Text>
             <Group gap="xs" wrap="nowrap">
-              <div
-                className="p-3 rounded border font-mono text-sm flex-1"
-                style={{
-                  backgroundColor: "light-dark(#ffffff, #0e1726)",
-                  borderColor: "light-dark(#e5e7eb, #17263c)",
-                  color: "light-dark(#000000, #ffffff)",
-                }}
-              >
+              <div className="p-3 rounded border font-mono text-sm flex-1 bg-white dark:bg-[#0e1726] dark:border-[#17263c] text-gray-900 dark:!text-white">
                 {qrData.secretKey}
               </div>
               <CopyButton value={qrData.secretKey} timeout={2000}>
@@ -308,14 +277,9 @@ export default function ImporterQRModal({ open, onClose, importer }: Props) {
           <Alert
             color="yellow"
             variant="light"
-            styles={{
-              root: {
-                backgroundColor: "light-dark(#FEF9C3, rgba(161, 98, 7, 0.2))",
-                borderColor: "light-dark(#FDE047, rgba(161, 98, 7, 0.5))",
-              },
-            }}
+            className="bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800"
           >
-            <Text size="sm">
+            <Text size="sm" className="text-yellow-900 dark:!text-white">
               <strong>Importante:</strong> Esta clave secreta debe guardarse en
               un lugar seguro. La importadora la necesitará si pierde acceso a
               su aplicación de autenticación.
@@ -323,7 +287,12 @@ export default function ImporterQRModal({ open, onClose, importer }: Props) {
           </Alert>
 
           <Group justify="flex-end" mt="md">
-            <Button onClick={handleClose}>Cerrar</Button>
+            <Button
+              onClick={handleClose}
+              className="bg-white text-gray-900 border border-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 dark:border-gray-600"
+            >
+              Cerrar
+            </Button>
           </Group>
         </Stack>
       ) : (
@@ -332,14 +301,9 @@ export default function ImporterQRModal({ open, onClose, importer }: Props) {
             color="blue"
             variant="light"
             icon={<IconInfoCircle />}
-            styles={{
-              root: {
-                backgroundColor: "light-dark(#EFF6FF, rgba(30, 58, 138, 0.2))",
-                borderColor: "light-dark(#BFDBFE, rgba(30, 58, 138, 0.5))",
-              },
-            }}
+            className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800"
           >
-            <Text size="sm">
+            <Text size="sm" className="text-blue-900 dark:!text-white">
               Aquí puedes generar o regenerar el código QR de acceso para la
               importadora <strong>{importer.name}</strong>.
             </Text>
@@ -348,22 +312,17 @@ export default function ImporterQRModal({ open, onClose, importer }: Props) {
           <Alert
             color="gray"
             variant="light"
-            styles={{
-              root: {
-                backgroundColor: "light-dark(#F9FAFB, #111827)",
-                borderColor: "light-dark(#E5E7EB, #374151)",
-              },
-            }}
+            className="bg-gray-50 dark:bg-gray-800/40 border-gray-200 dark:border-gray-700"
           >
             <Text
               size="sm"
               fw={500}
               mb="xs"
-              className="text-black dark:text-white"
+              className="text-gray-900 dark:!text-white"
             >
               ¿Qué hacer con el QR actual?
             </Text>
-            <Text size="xs" c="dimmed" mb="sm">
+            <Text size="xs" className="text-gray-600 dark:!text-white" mb="sm">
               - "Mantener QR actual": reutiliza un QR ya generado si existe.
               <br />- "Invalidar y regenerar": revoca el QR anterior y genera
               uno nuevo.
@@ -376,16 +335,18 @@ export default function ImporterQRModal({ open, onClose, importer }: Props) {
                 }
                 color={forceRegenerate ? "red" : "green"}
                 label={
-                  forceRegenerate
-                    ? "Invalidar y regenerar QR"
-                    : "Mantener QR actual (si existe)"
+                  <span className="text-gray-900 dark:!text-white">
+                    {forceRegenerate
+                      ? "Invalidar y regenerar QR"
+                      : "Mantener QR actual (si existe)"}
+                  </span>
                 }
               />
             </Group>
           </Alert>
 
           <Stack align="center" gap="sm" py="md">
-            <Text size="sm" c="dimmed" ta="center">
+            <Text size="sm" className="text-gray-600 dark:!text-white" ta="center">
               Selecciona primero qué hacer con el QR actual y luego pulsa el
               botón para generar el código.
             </Text>
@@ -396,9 +357,9 @@ export default function ImporterQRModal({ open, onClose, importer }: Props) {
 
           <Group justify="flex-end" mt="md">
             <Button
-              variant="default"
               onClick={handleClose}
               disabled={isLoading}
+              className="bg-white text-gray-900 border border-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 dark:border-gray-600"
             >
               Cerrar
             </Button>

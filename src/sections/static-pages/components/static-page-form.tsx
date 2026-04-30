@@ -94,9 +94,9 @@ export default function StaticPageForm({ initValue }: StaticPageFormProps) {
       <FormProvider methods={form} onSubmit={onSubmit} id="static-page-form">
         <div className="space-y-5">
           {/* Card: Información básica */}
-          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-[#1a1c23]">
             <div className="mb-4 flex items-center gap-2">
-              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-50 text-blue-600">
+              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300">
                 <svg
                   className="h-3.5 w-3.5"
                   viewBox="0 0 20 20"
@@ -109,7 +109,7 @@ export default function StaticPageForm({ initValue }: StaticPageFormProps) {
                   />
                 </svg>
               </span>
-              <h2 className="text-sm font-semibold text-gray-700">
+              <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                 Información básica
               </h2>
             </div>
@@ -142,9 +142,9 @@ export default function StaticPageForm({ initValue }: StaticPageFormProps) {
           </div>
 
           {/* Card: Contenido HTML */}
-          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-[#1a1c23]">
             <div className="mb-4 flex items-center gap-2">
-              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-purple-50 text-purple-600">
+              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-300">
                 <svg
                   className="h-3.5 w-3.5"
                   viewBox="0 0 20 20"
@@ -157,7 +157,7 @@ export default function StaticPageForm({ initValue }: StaticPageFormProps) {
                   />
                 </svg>
               </span>
-              <h2 className="text-sm font-semibold text-gray-700">
+              <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                 Contenido HTML
               </h2>
             </div>
@@ -165,9 +165,9 @@ export default function StaticPageForm({ initValue }: StaticPageFormProps) {
           </div>
 
           {/* Card: SEO */}
-          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-[#1a1c23]">
             <div className="mb-4 flex items-center gap-2">
-              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-green-50 text-green-600">
+              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-300">
                 <svg
                   className="h-3.5 w-3.5"
                   viewBox="0 0 20 20"
@@ -180,7 +180,7 @@ export default function StaticPageForm({ initValue }: StaticPageFormProps) {
                   />
                 </svg>
               </span>
-              <h2 className="text-sm font-semibold text-gray-700">SEO</h2>
+              <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200">SEO</h2>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <RHFInputWithLabel
@@ -203,7 +203,7 @@ export default function StaticPageForm({ initValue }: StaticPageFormProps) {
       </FormProvider>
 
       {/* Acciones */}
-      <div className="flex justify-end gap-3 border-t border-gray-100 pt-4">
+      <div className="flex justify-end gap-3 border-t border-gray-100 pt-4 dark:border-gray-700">
         <Button type="button" variant="secondary" onClick={handleCancel}>
           Cancelar
         </Button>
@@ -223,13 +223,13 @@ export default function StaticPageForm({ initValue }: StaticPageFormProps) {
       {/* Asistente de IA */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Prompt de IA */}
-        <div className="rounded-xl border border-blue-100 bg-blue-50 p-5">
+        <div className="rounded-xl border border-blue-100 bg-blue-50 p-5 dark:border-blue-900/40 dark:bg-blue-950/30">
           <div className="mb-3 flex items-start justify-between gap-3">
             <div>
-              <h3 className="text-sm font-semibold text-blue-800">
+              <h3 className="text-sm font-semibold text-blue-800 dark:text-blue-300">
                 Prompt de IA para generar contenido HTML
               </h3>
-              <p className="mt-0.5 text-xs text-blue-600">
+              <p className="mt-0.5 text-xs text-blue-600 dark:text-blue-400">
                 Copia este prompt y úsalo en ChatGPT, Copilot u otro asistente
                 de IA.
               </p>
@@ -237,7 +237,7 @@ export default function StaticPageForm({ initValue }: StaticPageFormProps) {
             <button
               type="button"
               onClick={handleCopyPrompt}
-              className="flex shrink-0 items-center gap-1.5 rounded-lg border border-blue-200 bg-white px-3 py-1.5 text-xs font-medium text-blue-700 transition hover:bg-blue-100 active:scale-95"
+              className="flex shrink-0 items-center gap-1.5 rounded-lg border border-blue-200 bg-white px-3 py-1.5 text-xs font-medium text-blue-700 transition hover:bg-blue-100 active:scale-95 dark:border-blue-800 dark:bg-[#1a1c23] dark:text-blue-300 dark:hover:bg-blue-900/40"
             >
               {copied ? (
                 <>
@@ -269,27 +269,27 @@ export default function StaticPageForm({ initValue }: StaticPageFormProps) {
               )}
             </button>
           </div>
-          <pre className="max-h-64 overflow-y-auto whitespace-pre-wrap rounded-lg bg-white p-4 text-xs leading-relaxed text-gray-700 shadow-inner">
+          <pre className="max-h-64 overflow-y-auto whitespace-pre-wrap rounded-lg bg-white p-4 text-xs leading-relaxed text-gray-700 shadow-inner dark:bg-[#121e32] dark:text-gray-300">
             {AI_PROMPT}
           </pre>
         </div>
 
         {/* Tips para mejorar el prompt */}
-        <div className="rounded-xl border border-amber-100 bg-amber-50 p-5">
-          <h3 className="mb-3 text-sm font-semibold text-amber-800">
+        <div className="rounded-xl border border-amber-100 bg-amber-50 p-5 dark:border-amber-900/40 dark:bg-amber-950/20">
+          <h3 className="mb-3 text-sm font-semibold text-amber-800 dark:text-amber-300">
             Tips para mejorar el prompt
           </h3>
           <ul className="space-y-2.5">
             {PROMPT_TIPS.map((tip, i) => (
               <li key={i} className="flex gap-2.5">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-200 text-xs font-bold text-amber-800">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-200 text-xs font-bold text-amber-800 dark:bg-amber-800 dark:text-amber-200">
                   {i + 1}
                 </span>
                 <div>
-                  <p className="text-xs font-semibold text-amber-900">
+                  <p className="text-xs font-semibold text-amber-900 dark:text-amber-200">
                     {tip.title}
                   </p>
-                  <p className="text-xs text-amber-700">{tip.description}</p>
+                  <p className="text-xs text-amber-700 dark:text-amber-400">{tip.description}</p>
                 </div>
               </li>
             ))}

@@ -93,27 +93,27 @@ export function OrderCard({
                 />
               )}
               {/* Datos básicos */}
-              <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
+              <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] text-gray-500 dark:text-gray-400">
                 <div>
-                  <span className="font-medium text-foreground">
+                  <span className="font-medium text-gray-900 dark:text-gray-100">
                     Peso Total:
                   </span>{" "}
                   {weightLabel(order.totalWeight)}
                 </div>
                 <div>
-                  <span className="font-medium text-foreground">
+                  <span className="font-medium text-gray-900 dark:text-gray-100">
                     Impuesto Total:
                   </span>{" "}
                   {formatCurrency(order.totalTaxAmount, "USD")}
                 </div>
                 <div>
-                  <span className="font-medium text-foreground">
+                  <span className="font-medium text-gray-900 dark:text-gray-100">
                     Envio Total:
                   </span>{" "}
                   {formatCurrency(order.totalDeliveryAmount, "USD")}
                 </div>
                 <div>
-                  <span className="font-medium text-foreground">
+                  <span className="font-medium text-gray-900 dark:text-gray-100">
                     Monto Total (USD):
                   </span>{" "}
                   {formatCurrency(order.totalAmountPaid, "USD")}
@@ -159,7 +159,7 @@ export function OrderCard({
             <div className="flex items-start gap-2">
               <User className="h-4 w-4 text-muted-foreground mt-0.5" />
               <div className="text-sm space-y-1">
-                <p className="font-medium">Remitente: {order.senderName}</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">Remitente: {order.senderName}</p>
                 {order.senderEmail && (
                   <p className="text-muted-foreground break-all">
                     Email: {order.senderEmail}
@@ -183,7 +183,7 @@ export function OrderCard({
             <div className="flex items-start gap-2">
               <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
               <div className="text-sm space-y-1">
-                <p className="font-medium">
+                <p className="font-medium text-gray-900 dark:text-gray-100">
                   Destinatario: {order.receiverName}
                 </p>
                 {order.receiverEmail && (
@@ -219,14 +219,16 @@ export function OrderCard({
           </div>
         </div>
 
-        {isExpanded && (
-          <div className="mt-4 space-y-3 pt-4 border-t">
-            <h4 className="font-semibold text-sm">Sub-órdenes:</h4>
+          {isExpanded && (
+          <div className="mt-4 space-y-3 pt-4 border-t dark:border-gray-700">
+            <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100">
+              Sub-órdenes:
+            </h4>
             {order.subOrders.map((subOrder) => {
               return (
                 <div
                   key={subOrder.id}
-                  className="flex flex-col md:flex-row md:items-center gap-3 p-3 rounded-lg bg-muted/30"
+                  className="flex flex-col md:flex-row md:items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-[#232830]"
                 >
                   <div className="flex items-center gap-3 w-full md:w-auto">
                     <Image
@@ -237,42 +239,42 @@ export function OrderCard({
                       className="rounded-md object-cover shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate">
+                      <p className="font-medium truncate text-gray-900 dark:text-gray-100">
                         {subOrder.productName}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         Nº: {subOrder.subOrderNumber}
                       </p>
                       {isAdmin && subOrder.storeName && (
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
                           Tienda: {subOrder.storeName}
                         </p>
                       )}
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px] flex-1">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px] flex-1 text-gray-600 dark:text-gray-400">
                     <div>
-                      <span className="font-medium">Cant:</span>{" "}
+                      <span className="font-medium text-gray-900 dark:text-gray-100">Cant:</span>{" "}
                       {subOrder.requestedQuantity}
                     </div>
                     <div>
-                      <span className="font-medium">Pagado:</span>{" "}
+                      <span className="font-medium text-gray-900 dark:text-gray-100">Pagado:</span>{" "}
                       {formatCurrency(subOrder.amountPaid, "USD")}
                     </div>
                     <div>
-                      <span className="font-medium">Impuesto:</span>{" "}
+                      <span className="font-medium text-gray-900 dark:text-gray-100">Impuesto:</span>{" "}
                       {formatCurrency(subOrder.taxAmount, "USD")}
                     </div>
                     <div>
-                      <span className="font-medium">Envío:</span>{" "}
+                      <span className="font-medium text-gray-900 dark:text-gray-100">Envío:</span>{" "}
                       {formatCurrency(subOrder.deliveryAmount, "USD")}
                     </div>
                     <div>
-                      <span className="font-medium">Peso:</span>{" "}
+                      <span className="font-medium text-gray-900 dark:text-gray-100">Peso:</span>{" "}
                       {weightLabel(subOrder.weight)}
                     </div>
                     <div>
-                      <span className="font-medium">Fecha:</span>{" "}
+                      <span className="font-medium text-gray-900 dark:text-gray-100">Fecha:</span>{" "}
                       {formatDate(subOrder.createdDatetime)}
                     </div>
                   </div>

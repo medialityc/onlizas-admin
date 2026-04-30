@@ -292,21 +292,33 @@ export default function ZoneModal({
               disabled={!selectedCountryId}
               queryKey={`zone-states-${selectedCountryId || "none"}`}
             />
-            <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
-              <p>
-                Puedes seleccionar distritos individuales o elegir estados y
-                usar la acción masiva para incluir todos sus distritos.
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 rounded-lg border border-primary/10 bg-primary/[0.03] px-4 py-3 dark:border-primary/20 dark:bg-primary/[0.06]">
+              <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed flex-1">
+                Selecciona uno o varios estados arriba y pulsa el botón para
+                incluir automáticamente todos sus distritos.
               </p>
               <button
                 type="button"
                 onClick={handleSelectAllDistrictsForStates}
                 disabled={!selectedStateIds || selectedStateIds.length === 0}
-                className="btn btn-xs btn-outline-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="shrink-0 inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-white px-3 py-1.5 text-xs font-semibold text-primary shadow-sm transition hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-primary dark:border-primary/40 dark:bg-[#1a1c23] dark:hover:bg-primary dark:hover:text-white dark:disabled:hover:bg-[#1a1c23] dark:disabled:hover:text-primary"
                 aria-disabled={
                   !selectedStateIds || selectedStateIds.length === 0
                 }
               >
-                Seleccionar distritos de estados
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="h-3.5 w-3.5"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Seleccionar todos los distritos
               </button>
             </div>
             <RHFAutocompleteFetcherInfinity<District>

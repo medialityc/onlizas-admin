@@ -10,10 +10,13 @@ export const metadata: Metadata = {
   title: "Paso 5: Configura zonas de entrega | Onlizas",
 };
 
+// MODO DESARROLLO: desactiva redirecciones para probar el flujo
+const DEV_MODE = false;
+
 export default async function WelcomeZonesPage() {
   const { data } = await getSupplierItemsCount();
 
-  if (data?.zoneCount && data.zoneCount > 0) {
+  if (!DEV_MODE && data?.zoneCount && data.zoneCount > 0) {
     redirect("/dashboard/welcome/acdata");
   }
 

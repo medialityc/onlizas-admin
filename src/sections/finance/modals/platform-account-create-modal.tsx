@@ -134,7 +134,7 @@ export default function PlatformAccountCreateModal({
               autoFocus
               maxLength={100}
             />
-            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 space-y-3">
+            <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 space-y-3 dark:border-gray-700 dark:bg-[#232830]">
               <div className="flex justify-center">
                 <Cards
                   number={cardNumber || ""}
@@ -149,7 +149,7 @@ export default function PlatformAccountCreateModal({
                   name="accountNumber"
                   control={methods.control}
                   render={({ field, fieldState: { error } }) => (
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-2">
                       <label className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                         Número de tarjeta
                       </label>
@@ -169,7 +169,7 @@ export default function PlatformAccountCreateModal({
                             error ? " border-red-500 focus:border-red-500" : ""
                           }`}
                         />
-                        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
                           <svg
                             className="h-4 w-4"
                             viewBox="0 0 24 24"
@@ -190,7 +190,7 @@ export default function PlatformAccountCreateModal({
                         </span>
                       </div>
                       {error && (
-                        <span className="text-sm text-red-600">
+                        <span className="text-sm text-red-600 dark:text-red-400">
                           {error.message}
                         </span>
                       )}
@@ -225,8 +225,9 @@ export default function PlatformAccountCreateModal({
                 type="checkbox"
                 id="isMainAccount"
                 {...methods.register("isMainAccount")}
+                className="h-4 w-4 shrink-0 rounded border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:bg-[#1a1c23]"
               />
-              <label htmlFor="isMainAccount" className="text-sm">
+              <label htmlFor="isMainAccount" className="!mb-0 text-sm text-gray-700 dark:text-gray-300">
                 Marcar como principal
               </label>
             </div>

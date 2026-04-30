@@ -231,8 +231,10 @@ export function OrderDetails({
             )}
             <Separator />
             <div className="space-y-2 text-sm">
-              <p className="font-medium">Dirección de Entrega (Destinatario)</p>
-              <p className="text-muted-foreground whitespace-pre-line">
+              <p className="font-medium text-gray-900 dark:text-gray-100">
+                Dirección de Entrega (Destinatario)
+              </p>
+              <p className="text-gray-600 dark:text-gray-400 whitespace-pre-line">
                 {order.receiverAddress || "Sin dirección registrada"}
               </p>
             </div>

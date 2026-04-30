@@ -3,7 +3,11 @@
 import RHFInput from "@/components/react-hook-form/rhf-input";
 import RHFCheckbox from "@/components/react-hook-form/rhf-checkbox";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
-import { getDistrictsByCountry } from "@/services/districts";
+import {
+  getStatesByCountry,
+  getDistrictsByState,
+  State,
+} from "@/services/countries";
 import { useFormContext } from "react-hook-form";
 import { MapPinIcon } from "@heroicons/react/24/outline";
 import { RHFCountrySelect } from "@/components/react-hook-form/rhf-country-code-select";
@@ -15,7 +19,9 @@ export default function AddressSection({
 }: Props) {
   const { watch } = useFormContext();
   const countryIdFromForm = watch("address.countryId");
+  const stateIdFromForm = watch("address.stateId");
   const countryId = countryIdFromForm;
+  const stateId = stateIdFromForm;
 
   return (
     <section className="rounded-lg border border-gray-100 dark:border-gray-700 p-4">
@@ -35,43 +41,62 @@ export default function AddressSection({
               variant="name"
               label="País"
               placeholder="Selecciona un país"
-              required
               fullwidth
             />
           </div>
         )}
-        <RHFAutocompleteFetcherInfinity
-          key={`districts-${countryId}`}
-          name="address.districtId"
-          label="Distrito"
-          placeholder="Selecciona el distrito"
+        <RHFAutocompleteFetcherInfinity<State>
+          key={`warehouse-states-${countryId || "none"}`}
+          name="address.stateId"
+          label="Estado / Provincia"
+          placeholder={
+            countryId
+              ? "Selecciona el estado"
+              : "Seleccione un país primero"
+          }
           onFetch={
-            Boolean(countryId)
+            countryId
               ? (params) =>
-                  getDistrictsByCountry(countryId, {
-                    ...params,
-                    searchTerm: params.search,
+                  getStatesByCountry(String(countryId), {
+                    page: params.page as number,
+                    pageSize: params.pageSize as number,
+                    search: params.search as any,
                   })
               : undefined
           }
           objectValueKey="id"
           objectKeyLabel="name"
           disabled={!countryId}
-          required
-          queryKey={`districts-${countryId}`}
+          queryKey={`warehouse-states-${countryId || "none"}`}
         />
-        <RHFInput
-          name="address.city"
-          label="Ciudad"
-          required
-          placeholder="Ciudad"
+        <RHFAutocompleteFetcherInfinity
+          key={`warehouse-districts-${stateId || "none"}`}
+          name="address.districtId"
+          label="Distrito"
+          placeholder={
+            stateId
+              ? "Selecciona el distrito"
+              : "Seleccione un estado primero"
+          }
+          onFetch={
+            stateId
+              ? (params) =>
+                  getDistrictsByState(String(stateId), {
+                    page: params.page as number,
+                    pageSize: params.pageSize as number,
+                    search: params.search as any,
+                  })
+              : undefined
+          }
+          objectValueKey="id"
+          objectKeyLabel="name"
+          disabled={!stateId}
+          queryKey={`warehouse-districts-${stateId || "none"}`}
         />
-
         <RHFInput
           name="address.mainStreet"
           label="Calle principal"
           placeholder="Calle principal"
-          required
         />
         <RHFInput name="address.number" label="Número" placeholder="Número" />
 

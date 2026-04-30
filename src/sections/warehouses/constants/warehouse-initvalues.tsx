@@ -17,6 +17,7 @@ export const initValueWarehouse: WarehouseFormData = {
     zipcode: "",
     annotations: "",
     districtId: "",
+    stateId: "",
   },
   capacity: 0,
   capacityUnit: "KG",
@@ -36,6 +37,7 @@ export const initValueMeWarehouse: MeWarehouseFormData = {
     zipcode: "",
     annotations: "",
     districtId: "",
+    stateId: "",
   },
   rules: "",
 };

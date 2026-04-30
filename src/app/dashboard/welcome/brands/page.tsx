@@ -9,10 +9,13 @@ export const metadata: Metadata = {
   title: "Paso 1: Crea una marca | Onlizas",
 };
 
+// MODO DESARROLLO: desactiva redirecciones para probar el flujo
+const DEV_MODE = false;
+
 export default async function WelcomeBrandsPage() {
   const { data } = await getSupplierItemsCount();
 
-  if (data?.brandCount && data.brandCount > 0) {
+  if (!DEV_MODE && data?.brandCount && data.brandCount > 0) {
     redirect("/dashboard/welcome/products");
   }
 
