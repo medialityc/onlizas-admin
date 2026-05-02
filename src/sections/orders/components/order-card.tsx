@@ -230,7 +230,7 @@ export function OrderCard({
                   key={subOrder.id}
                   className="flex flex-col md:flex-row md:items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-[#232830]"
                 >
-                  <div className="flex items-center gap-3 w-full md:w-auto">
+                  <div className="flex items-center gap-3 w-full md:w-auto md:max-w-[260px] md:shrink-0">
                     <Image
                       src={subOrder.image || "/placeholder.svg"}
                       alt={subOrder.productName}
@@ -252,7 +252,7 @@ export function OrderCard({
                       )}
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px] flex-1 text-gray-600 dark:text-gray-400">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px] flex-1 min-w-0 text-gray-600 dark:text-gray-400">
                     <div>
                       <span className="font-medium text-gray-900 dark:text-gray-100">Cant:</span>{" "}
                       {subOrder.requestedQuantity}

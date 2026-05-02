@@ -76,7 +76,7 @@ const AdressField = ({
           <p>
             {" "}
             {loadingCountry ? (
-              <span className="h-10 bg-gray-200 rounded animate-pulse w-64"></span>
+              <span className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-64"></span>
             ) : (
               <span className="flex  items-center gap-2">
                 {country && flag ? (

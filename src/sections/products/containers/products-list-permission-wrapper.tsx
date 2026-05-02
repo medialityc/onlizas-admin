@@ -59,12 +59,12 @@ export default function ProductsListPermissionWrapper({ query }: Props) {
   if (permissionsLoading && !stableData) {
     return (
       <div className="space-y-4">
-        <div className="h-10 w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+        <div className="h-10 w-full bg-gray-200 dark:bg-gray-700 animate-pulse rounded" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
-              className="h-48 bg-gray-100 dark:bg-gray-800 animate-pulse rounded"
+              className="h-48 bg-gray-200 dark:bg-gray-700 animate-pulse rounded"
             />
           ))}
         </div>
@@ -75,12 +75,12 @@ export default function ProductsListPermissionWrapper({ query }: Props) {
   if (!permissionsLoading && isLoading && !productsResponse && !stableData) {
     return (
       <div className="space-y-4">
-        <div className="h-10 w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+        <div className="h-10 w-full bg-gray-200 dark:bg-gray-700 animate-pulse rounded" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
-              className="h-48 bg-gray-100 dark:bg-gray-800 animate-pulse rounded"
+              className="h-48 bg-gray-200 dark:bg-gray-700 animate-pulse rounded"
             />
           ))}
         </div>
@@ -100,12 +100,12 @@ export default function ProductsListPermissionWrapper({ query }: Props) {
   if (!effectiveData) {
     return (
       <div className="space-y-4">
-        <div className="h-10 w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+        <div className="h-10 w-full bg-gray-200 dark:bg-gray-700 animate-pulse rounded" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
-              className="h-48 bg-gray-100 dark:bg-gray-800 animate-pulse rounded"
+              className="h-48 bg-gray-200 dark:bg-gray-700 animate-pulse rounded"
             />
           ))}
         </div>
