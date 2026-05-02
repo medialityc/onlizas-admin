@@ -24,17 +24,17 @@ function DashboardSkeleton() {
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="h-24 bg-gray-100 dark:bg-gray-800 animate-pulse rounded"
+            className="h-24 bg-gray-200 dark:bg-gray-700 animate-pulse rounded"
           />
         ))}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
-          <div className="h-64 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
-          <div className="h-64 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+          <div className="h-64 bg-gray-200 dark:bg-gray-700 animate-pulse rounded" />
+          <div className="h-64 bg-gray-200 dark:bg-gray-700 animate-pulse rounded" />
         </div>
         <div className="lg:col-span-1 space-y-4">
-          <div className="h-64 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+          <div className="h-64 bg-gray-200 dark:bg-gray-700 animate-pulse rounded" />
         </div>
       </div>
     </div>
