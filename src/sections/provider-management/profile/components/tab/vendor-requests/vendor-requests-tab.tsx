@@ -42,12 +42,8 @@ export default function VendorRequestsTab({
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
   const [expirationModalOpen, setExpirationModalOpen] = useState(false);
   const existingIds = [
-    ...(approvalProcess?.approvedCategories ?? []).map((c: { id: number }) =>
-      String(c.id)
-    ),
-    ...(approvalProcess?.pendingCategories ?? []).map((c: { id: number }) =>
-      String(c.id)
-    ),
+    ...(approvalProcess?.approvedCategories ?? []).map((c) => String(c.id)),
+    ...(approvalProcess?.pendingCategories ?? []).map((c) => String(c.id)),
   ];
 
   // Hook centralizado para manejo de solicitudes de aprobación
