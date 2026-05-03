@@ -9,7 +9,6 @@ function SupplierCategoriesSection({
 }: {
   categories: EnhancedCategory[];
 }) {
-  console.log(categories);
   const approvedCategories = categories.map((cat) => ({
     id: cat.id,
     name: cat.name,
