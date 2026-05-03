@@ -12,7 +12,7 @@ interface Category {
   id: number | string;
   name: string;
   active?: boolean;
-  departmentId?: number;
+  departmentId?: number | string;
   departmentName?: string;
   description?: string;
   image?: string;
