@@ -13,11 +13,11 @@ import { StoreFormData, storeSchema } from "./stores-schema";
 import { CreateStore } from "@/types/stores";
 import { createStore } from "@/services/stores";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
-import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { useRouter } from "next/navigation";
-import { getAllBusinessByProvider } from "@/services/business";
+import { getSupplierApprovalProcessById } from "@/services/supplier";
 import { useAuth } from "zas-sso-client";
 import { processImageFile } from "@/utils/image-helpers";
+import { useEffect, useState } from "react";
 
 interface StoresModalProps {
   open: boolean;
@@ -48,18 +48,59 @@ export default function StoresCreateModal({
       address: store?.address ?? "",
       logoStyle: store?.logoStyle ?? undefined,
       ownerId: user?.id ?? 0,
-      businessId: store?.businessId ?? undefined,
+      approvalProcessId: store?.approvalProcessId ?? undefined,
     },
   });
 
   const {
     reset,
     watch,
+    register,
     formState: { isSubmitting },
   } = methods;
 
   const ownerId = watch("ownerId");
-  const businessId = watch("businessId");
+  const approvalProcessId = watch("approvalProcessId");
+
+  // Estado para el proceso de aprobación (auto-carga al seleccionar owner)
+  const [approvalProcessName, setApprovalProcessName] = useState<string>("");
+  const [approvalProcessLoading, setApprovalProcessLoading] = useState(false);
+
+  // Auto-cargar proceso de aprobación cuando cambia el propietario
+  useEffect(() => {
+    if (!ownerId) {
+      methods.setValue("approvalProcessId", "");
+      setApprovalProcessName("");
+      return;
+    }
+
+    let cancelled = false;
+    setApprovalProcessLoading(true);
+    getSupplierApprovalProcessById(ownerId)
+      .then((res) => {
+        if (cancelled) return;
+        if (res.data) {
+          methods.setValue("approvalProcessId", String(res.data.id));
+          setApprovalProcessName(res.data.name);
+        } else {
+          methods.setValue("approvalProcessId", "");
+          setApprovalProcessName("");
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          methods.setValue("approvalProcessId", "");
+          setApprovalProcessName("");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setApprovalProcessLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [ownerId, methods]);
 
   const handleClose = () => {
     reset();
@@ -73,8 +114,8 @@ export default function StoresCreateModal({
       toast.error("Propietario no disponible");
       return;
     }
-    if (!data.businessId) {
-      toast.error("Debe seleccionar un negocio");
+    if (!data.approvalProcessId) {
+      toast.error("Debe seleccionar un proceso de aprobación");
       return;
     }
     try {
@@ -91,8 +132,8 @@ export default function StoresCreateModal({
       }
 
       formData.append("ownerId", String(data.ownerId));
-      formData.append("businessId", String(data.businessId));
-      console.log(formData.get("businessId"), "Esta es la data");
+      formData.append("approvalProcessId", String(data.approvalProcessId));
+      console.log(formData.get("approvalProcessId"), "Esta es la data");
       // url es obligatorio según el schema
       formData.append("url", data.url);
       formData.append("name", data.name);
@@ -121,7 +162,7 @@ export default function StoresCreateModal({
         handleClose();
       } else {
         if (response?.status === 409) {
-          toast.error("Ya existe un negocio con ese código");
+          toast.error("Ya existe un proceso de aprobación con ese código");
         } else {
           toast.error(response?.message || "No se pudo procesar esta Tienda");
         }
@@ -174,19 +215,27 @@ export default function StoresCreateModal({
                 containerClassname="[&>div>div>label]:text-base"
               />
             </div>
-            <RHFAutocompleteFetcherInfinity
-              name="businessId"
-              label="Negocio"
-              placeholder="Buscar negocio..."
-              required
-              onFetch={(params) =>
-                getAllBusinessByProvider(user?.id ?? 0, params)
-              }
-              objectKeyLabel="name"
-              size="medium"
-              params={{ pageSize: 10 }}
-              containerClassname="[&>div>div>label]:text-base"
-            />
+            {/* Proceso de aprobación — auto-completa */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-[13px]">
+                Proceso de Aprobación <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={approvalProcessLoading ? "Cargando..." : approvalProcessName}
+                  disabled
+                  className="form-input w-full bg-gray-50 dark:bg-gray-900 cursor-not-allowed"
+                />
+                {approvalProcessLoading && (
+                  <div className="absolute right-3 top-2.5">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 dark:border-gray-100"></div>
+                  </div>
+                )}
+              </div>
+              {/* Campo hidden registrado en RHF para que se incluya en el submit */}
+              <input type="hidden" {...register("approvalProcessId")} />
+            </div>
 
             {/* Logo Upload */}
             <RHFImageUpload
@@ -245,7 +294,7 @@ export default function StoresCreateModal({
               type="submit"
               loading={isSubmitting}
               className="btn btn-primary text-textColor"
-              disabled={isSubmitting || !ownerId || !businessId}
+              disabled={isSubmitting || !ownerId || !approvalProcessId}
             >
               Crear Tienda
             </LoaderButton>

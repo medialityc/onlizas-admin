@@ -52,7 +52,7 @@ export default function StoresCreateModal({
       font: "ARIAL",
       template: "MODERNO",
       ownerId: store?.ownerId ?? undefined,
-      businessId: store?.businessId ?? undefined,
+      approvalProcessId: store?.approvalProcessId ?? undefined,
     },
   });
 
@@ -87,13 +87,13 @@ export default function StoresCreateModal({
         }
       }
 
-      if (!data.ownerId || !data.businessId) {
-        toast.error("Debe seleccionar propietario y negocio");
+      if (!data.ownerId || !data.approvalProcessId) {
+        toast.error("Debe seleccionar propietario y proceso de aprobación");
         return;
       }
 
       formData.append("ownerId", data.ownerId.toString());
-      formData.append("businessId", data.businessId.toString());
+      formData.append("approvalProcessId", data.approvalProcessId.toString());
       // url es obligatorio según el schema
       formData.append("url", data.url);
       formData.append("name", data.name);
@@ -129,7 +129,7 @@ export default function StoresCreateModal({
         handleClose();
       } else {
         if (response.status === 409) {
-          toast.error("Ya existe un negocio con ese código");
+          toast.error("Ya existe un proceso de aprobación con ese código");
         } else {
           toast.error(response.message || "No se pudo procesar esta Tienda");
         }

@@ -110,7 +110,7 @@ export const CountriesCombobox: React.FC<CountriesComboboxProps> = ({
       <ul
         {...getMenuProps({
           className: cn(
-            "absolute left-0 mt-1 w-72 bg-white shadow-md max-h-80 overflow-auto z-20 rounded-md border border-gray-200 p-1",
+            "absolute left-0 mt-1 w-72 bg-white dark:!bg-gray-800 shadow-md max-h-80 overflow-auto z-20 rounded-md border border-gray-200 dark:border-gray-700 p-1",
             !isOpen && "hidden",
             listClassName,
           ),
@@ -123,19 +123,19 @@ export const CountriesCombobox: React.FC<CountriesComboboxProps> = ({
               {...getItemProps({ item, index })}
               className={cn(
                 "flex cursor-pointer items-center gap-2 rounded px-3 py-2 text-sm",
-                highlightedIndex === index && "bg-blue-100",
+                highlightedIndex === index && "bg-blue-100 dark:!bg-blue-900",
                 (selectedItem?.id === item.id ||
                   selectedCountry?.id === item.id) &&
-                  "bg-blue-50 font-semibold",
+                  "bg-blue-50 dark:!bg-blue-900/50 font-semibold",
               )}
             >
               <CountryFlag country={item} />
-              <span className="text-gray-900">+{item.phoneNumberCode}</span>
-              <span className="text-xs text-gray-500">{item.name}</span>
+              <span className="!text-gray-900 dark:!text-gray-100">+{item.phoneNumberCode}</span>
+              <span className="text-xs !text-gray-500 dark:!text-gray-400">{item.name}</span>
             </li>
           ))}
         {isOpen && items.length === 0 && (
-          <li className="px-3 py-2 text-sm text-gray-500">Sin resultados</li>
+          <li className="px-3 py-2 text-sm !text-gray-500 dark:!text-gray-400">Sin resultados</li>
         )}
       </ul>
     </div>

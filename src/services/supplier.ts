@@ -6,6 +6,7 @@ import { QueryParamsURLFactory } from "@/lib/request";
 
 import { ApiResponse } from "@/types/fetch/api";
 import { IQueryable } from "@/types/fetch/request";
+import { PaginatedResponse } from "@/types/common";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { updateTag } from "next/cache";
 import {
@@ -178,8 +179,9 @@ export async function getApprovalProcess(
 export async function getSupplierApprovalProcessById(
   id: string | number,
 ): Promise<ApiResponse<SupplierApprovalProcess>> {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}suppliers/${id}/approval-process`;
   const res = await nextAuthFetch({
-    url: `${process.env.NEXT_PUBLIC_API_URL}suppliers/${id}/approval-process`,
+    url,
     method: "GET",
     cache: "no-store",
   });
@@ -202,6 +204,40 @@ export async function getSupplierApprovalProcess(): Promise<
   if (!res.ok) return handleApiServerError(res);
 
   return buildApiResponseAsync<SupplierApprovalProcess>(res);
+}
+
+/**
+ * Lista procesos de aprobación para un supplier específico.
+ * Como un supplier típicamente tiene un solo approval process, 
+ * devuelve el resultado como una lista paginada de un solo elemento.
+ * Usado por el autocomplete en el formulario de creación de tienda.
+ */
+export async function getApprovalProcessBySupplier(
+  supplierId: string | number,
+  _params: IQueryable,
+): Promise<ApiResponse<PaginatedResponse<SupplierApprovalProcess>>> {
+  const res = await getSupplierApprovalProcessById(supplierId);
+
+  if (!res.data || res.status !== 200) {
+    return {
+      data: { data: [], totalCount: 0, page: 1, pageSize: 10, hasNext: false, hasPrevious: false },
+      status: res.status,
+      message: res.message || "Sin procesos de aprobación",
+    } as ApiResponse<PaginatedResponse<SupplierApprovalProcess>>;
+  }
+
+  return {
+    data: {
+      data: [res.data],
+      totalCount: 1,
+      page: 1,
+      pageSize: 10,
+      hasNext: false,
+      hasPrevious: false,
+    },
+    status: res.status,
+    message: res.message,
+  } as ApiResponse<PaginatedResponse<SupplierApprovalProcess>>;
 }
 
 export async function countSuppliers(): Promise<

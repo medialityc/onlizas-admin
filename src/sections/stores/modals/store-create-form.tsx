@@ -8,10 +8,9 @@ import RHFColorPicker from "@/components/react-hook-form/rhf-color-picker";
 import { RHFImageUpload } from "@/components/react-hook-form/rhf-image-upload";
 import RHFSwitch from "@/components/react-hook-form/rhf-switch";
 import {
-  getAllBusinessByProvider,
-  getAllBusinessByUser,
-} from "@/services/business";
-import React, { useEffect, useRef } from "react";
+  getSupplierApprovalProcessById,
+} from "@/services/supplier";
+import React, { useEffect, useRef, useState } from "react";
 import { StoreFormData } from "./stores-schema";
 import { useFormContext } from "react-hook-form";
 import { getAllSupplierUsers } from "@/services/users";
@@ -39,11 +38,15 @@ type Props = {
   isEditMode?: boolean;
 };
 function StoreCreateForm({ handleClose, isSubmitting, isEditMode = false }: Props) {
-  const { watch, setValue } = useFormContext<StoreFormData>();
+  const { watch, setValue, register } = useFormContext<StoreFormData>();
   const ownerId = watch("ownerId");
   const storeName = watch("name");
   const storeUrl = watch("url");
   const urlTouchedRef = useRef(false);
+
+  // Estado para el proceso de aprobación (auto-carga al seleccionar owner)
+  const [approvalProcessName, setApprovalProcessName] = useState<string>("");
+  const [approvalProcessLoading, setApprovalProcessLoading] = useState(false);
 
   useEffect(() => {
     if (isEditMode) {
@@ -61,13 +64,42 @@ function StoreCreateForm({ handleClose, isSubmitting, isEditMode = false }: Prop
   const isSupplierMode =
     !hasCreatePermission && hasCreateStorePermission && user?.id;
 
-  // Clear business when owner changes
+  // Auto-cargar proceso de aprobación cuando cambia el propietario
   useEffect(() => {
-    if (ownerId) {
-      setValue("businessId", "");
+    if (!ownerId) {
+      setValue("approvalProcessId", "");
+      setApprovalProcessName("");
+      return;
     }
+
+    let cancelled = false;
+    setApprovalProcessLoading(true);
+    getSupplierApprovalProcessById(ownerId)
+      .then((res) => {
+        if (cancelled) return;
+        if (res.data) {
+          setValue("approvalProcessId", String(res.data.id));
+          setApprovalProcessName(res.data.name);
+        } else {
+          setValue("approvalProcessId", "");
+          setApprovalProcessName("");
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setValue("approvalProcessId", "");
+          setApprovalProcessName("");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setApprovalProcessLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [ownerId, setValue]);
-  // Si modo proveedor: setear ownerId oculto y limpiar business cuando cambia usuario
+  // Si modo proveedor: setear ownerId oculto y limpiar approval process cuando cambia usuario
   useEffect(() => {
     if (isSupplierMode && user?.id) {
       // establecer ownerId interno si no está
@@ -162,32 +194,28 @@ function StoreCreateForm({ handleClose, isSubmitting, isEditMode = false }: Prop
             key={`owner-${ownerId}`}
           />
         )}
-        {/* Negocio depende del modo */}
-        {!isSupplierMode && ownerId && (
-          <RHFAutocompleteFetcherInfinity
-            key={`business-${ownerId}`}
-            queryKey={`business-by-owner-${ownerId}`}
-            enabled={!!ownerId}
-            name="businessId"
-            label="Negocio"
-            placeholder="Buscar negocio..."
-            required
-            onFetch={(params) => getAllBusinessByProvider(ownerId, params)}
-            size="medium"
-          />
-        )}
-        {isSupplierMode && (
-          <RHFAutocompleteFetcherInfinity
-            key={`business-by-user-${user?.id}`}
-            queryKey={`business-by-user-${user?.id}`}
-            enabled={!!user?.id}
-            name="businessId"
-            label="Negocio"
-            placeholder="Buscar negocio..."
-            required
-            onFetch={(params) => getAllBusinessByUser(params)}
-            size="medium"
-          />
+        {/* Proceso de aprobación — auto-completa al seleccionar propietario */}
+        {(ownerId || isSupplierMode) && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-[13px]">
+              Proceso de Aprobación <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                value={approvalProcessLoading ? "Cargando..." : approvalProcessName}
+                disabled
+                className="form-input w-full bg-gray-50 dark:bg-gray-900 cursor-not-allowed"
+              />
+              {approvalProcessLoading && (
+                <div className="absolute right-3 top-2.5">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 dark:border-gray-100"></div>
+                </div>
+              )}
+            </div>
+            {/* Campo hidden registrado en RHF para que se incluya en el submit */}
+            <input type="hidden" {...register("approvalProcessId")} />
+          </div>
         )}
         {/* Logo Upload */}
         <RHFImageUpload
