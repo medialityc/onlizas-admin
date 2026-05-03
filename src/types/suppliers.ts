@@ -156,34 +156,6 @@ export type ApprovalProcess = {
   rejectedBy?: string;
 };
 
-export type ApprovalProcessDocument = {
-  id: string;
-  fileName: string;
-  content: string;
-  beApproved: boolean | null;
-  rejectionReason: string | null;
-};
-
-export type ApprovalProcessCategoryFeature = {
-  featureId: string;
-  featureName: string;
-  featureDescription: string;
-  suggestions: string[];
-  isRequired: boolean;
-  isPrimary: boolean;
-};
-
-export type ApprovalProcessCategory = {
-  id: string;
-  name: string;
-  active: boolean;
-  departmentId: string;
-  departmentName: string;
-  description: string;
-  image: string;
-  features: ApprovalProcessCategoryFeature[];
-};
-
 export type SupplierApprovalProcess = {
   id: string;
   approvalProcessId?: number;
@@ -205,23 +177,23 @@ export type SupplierApprovalProcess = {
   fixedTax?: number | null;
   message: string;
   userId: string;
-  pendingDocuments: ApprovalProcessDocument[];
-  approvedDocuments: ApprovalProcessDocument[];
-  pendingCategories: ApprovalProcessCategory[];
-  approvedCategories: ApprovalProcessCategory[];
+  pendingDocuments: EnhancedDocument[];
+  approvedDocuments: EnhancedDocument[];
+  pendingCategories: EnhancedCategory[];
+  approvedCategories: EnhancedCategory[];
 };
 
 // New extended types for enhanced approval process
 export type EnhancedDocument = {
-  id: number;
+  id: string;
   fileName: string;
   content: string;
-  beApproved: boolean;
-  rejectionReason: string;
+  beApproved: boolean | null;
+  rejectionReason: string | null;
 };
 
 export type CategoryFeature = {
-  featureId: number;
+  featureId: string;
   featureName: string;
   featureDescription: string;
   suggestions: string[];
@@ -230,10 +202,10 @@ export type CategoryFeature = {
 };
 
 export type EnhancedCategory = {
-  id: number;
+  id: string;
   name: string;
   active: boolean;
-  departmentId: number;
+  departmentId: string;
   departmentName: string;
   description: string;
   image: string;
