@@ -156,24 +156,59 @@ export type ApprovalProcess = {
   rejectedBy?: string;
 };
 
+export type ApprovalProcessDocument = {
+  id: string;
+  fileName: string;
+  content: string;
+  beApproved: boolean | null;
+  rejectionReason: string | null;
+};
+
+export type ApprovalProcessCategoryFeature = {
+  featureId: string;
+  featureName: string;
+  featureDescription: string;
+  suggestions: string[];
+  isRequired: boolean;
+  isPrimary: boolean;
+};
+
+export type ApprovalProcessCategory = {
+  id: string;
+  name: string;
+  active: boolean;
+  departmentId: string;
+  departmentName: string;
+  description: string;
+  image: string;
+  features: ApprovalProcessCategoryFeature[];
+};
+
 export type SupplierApprovalProcess = {
-  approvalProcessId: number;
+  id: string;
+  approvalProcessId?: number;
   state: string;
   isApproved: boolean;
   name: string;
   email: string;
   phone: string;
-  countryId: number;
+  phoneNumberCode: string;
+  active: boolean;
+  type: string;
   countryName: string;
   nacionality: string;
+  businessName: string;
+  businessCode: string;
   sellerType: string;
   mincexCode: string;
   expirationDate: string;
   fixedTax?: number | null;
-  pendingDocuments: EnhancedDocument[];
-  approvedDocuments: EnhancedDocument[];
-  pendingCategories: EnhancedCategory[];
-  approvedCategories: EnhancedCategory[];
+  message: string;
+  userId: string;
+  pendingDocuments: ApprovalProcessDocument[];
+  approvedDocuments: ApprovalProcessDocument[];
+  pendingCategories: ApprovalProcessCategory[];
+  approvedCategories: ApprovalProcessCategory[];
 };
 
 // New extended types for enhanced approval process
