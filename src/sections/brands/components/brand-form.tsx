@@ -16,7 +16,7 @@ interface BrandFormProps {
 }
 
 /** Permisos que permiten guardar/crear marcas (admin o proveedor) */
-const SAVE_BRAND_PERMS = [PERMISSION_ENUM.RETRIEVE, PERMISSION_ENUM.SUPPLIER_RETRIEVE];
+const SAVE_BRAND_PERMS = [PERMISSION_ENUM.CREATE, PERMISSION_ENUM.SUPPLIER_CREATE];
 
 export default function BrandForm({ initValue }: BrandFormProps) {
   const { form, isPending, onSubmit } = useBrandCreateForm(initValue);

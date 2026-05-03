@@ -305,7 +305,11 @@ export function AdvancedSearchSelect<T>({
                       : "top-full mt-1"
                   }`}
                 >
-                  {filteredOptions.length > 0 ? (
+                  {loading && filteredOptions.length === 0 ? (
+                    <li className="px-4 py-2 text-gray-500 dark:text-gray-400">
+                      Cargando...
+                    </li>
+                  ) : filteredOptions.length > 0 ? (
                     filteredOptions.map((option) => {
                       const isSelected = multiple
                         ? Array.isArray(field.value) &&

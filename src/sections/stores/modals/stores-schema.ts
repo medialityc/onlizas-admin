@@ -42,7 +42,7 @@ export const storeSchema = z.object({
     .regex(HEX_COLOR_REGEX, "Color de acento inválido"),
   font: z.enum(["ARIAL", "ARGELIAN"]),
   template: z.enum(["MODERNO", "CLASICO", "MINIMALISTA", "AUDAZ"]),
-  businessId: z.string().optional(),
+  approvalProcessId: z.string().optional(),
   ownerId: z.string().optional(),
 });
 

@@ -64,7 +64,7 @@ type StoreMetrics = {
 export type CreateStoreRequest = {
   name: string;
   ownerId: string;
-  businessId: string;
+  approvalProcessId: string;
   url: string;
   description?: string;
   logoStyle?: string;

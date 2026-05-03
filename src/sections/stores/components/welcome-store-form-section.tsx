@@ -47,7 +47,7 @@ export function WelcomeStoreFormSection({
       font: existingStore?.font ?? "ARIAL",
       template: existingStore?.template ?? "MODERNO",
       ownerId: existingStore?.ownerId ?? undefined,
-      businessId: existingStore?.businessId ?? undefined,
+      approvalProcessId: existingStore?.approvalProcessId ?? undefined,
     },
   });
 
@@ -83,8 +83,8 @@ export function WelcomeStoreFormSection({
       if (data.ownerId) {
         formData.append("ownerId", data.ownerId.toString());
       }
-      if (data.businessId) {
-        formData.append("businessId", data.businessId.toString());
+      if (data.approvalProcessId) {
+        formData.append("approvalProcessId", data.approvalProcessId.toString());
       }
 
       formData.append("url", data.url);
@@ -110,7 +110,7 @@ export function WelcomeStoreFormSection({
         );
         router.push(afterCreateRedirectTo);
       } else if (response.status === 409) {
-        toast.error("Ya existe un negocio con ese código");
+        toast.error("Ya existe un proceso de aprobación con ese código");
       } else {
         toast.error(response.message || "No se pudo procesar esta Tienda");
       }

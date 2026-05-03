@@ -36,7 +36,7 @@ export function StoreCard({ store, onClick }: StoreCardProps) {
               {store.description || "Sin descripción disponible"}
             </p>
             <p className="text-[11px] text-muted-foreground">
-              Negocio: <span className="font-medium">{store.businessName}</span>
+              Proceso de Aprobación: <span className="font-medium">{store.businessName}</span>
             </p>
             {store.supplierName && (
               <p className="text-[11px] text-muted-foreground">
