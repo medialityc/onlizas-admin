@@ -221,9 +221,10 @@ export async function getApprovalProcessBySupplier(
   if (!res.data || res.status !== 200) {
     return {
       data: { data: [], totalCount: 0, page: 1, pageSize: 10, hasNext: false, hasPrevious: false },
+      error: false,
       status: res.status,
       message: res.message || "Sin procesos de aprobación",
-    } as ApiResponse<PaginatedResponse<SupplierApprovalProcess>>;
+    };
   }
 
   return {
@@ -235,9 +236,10 @@ export async function getApprovalProcessBySupplier(
       hasNext: false,
       hasPrevious: false,
     },
+    error: false,
     status: res.status,
     message: res.message,
-  } as ApiResponse<PaginatedResponse<SupplierApprovalProcess>>;
+  };
 }
 
 export async function countSuppliers(): Promise<
