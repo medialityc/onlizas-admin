@@ -25,8 +25,14 @@ export function NotificationQuestion({ notification }: Props) {
   let options: string[] = [];
   try {
     if (notification.options) {
-      const parsed = JSON.parse(notification.options);
-      options = Array.isArray(parsed) ? (parsed as string[]) : [];
+      // options puede llegar como string JSON (desde SignalR) o como array ya parseado (desde REST/jsonb)
+      const raw = notification.options;
+      if (Array.isArray(raw)) {
+        options = raw as string[];
+      } else if (typeof raw === "string") {
+        const parsed = JSON.parse(raw);
+        options = Array.isArray(parsed) ? (parsed as string[]) : [];
+      }
     }
   } catch {
     options = [];
