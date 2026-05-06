@@ -403,6 +403,7 @@ export const backendRoutes = {
   reviews: {
     byInventoryId: (inventoryId: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}reviews/${inventoryId}`,
+    my: `${process.env.NEXT_PUBLIC_API_URL}reviews/my`,
   },
   regions: {
     listById: (regionId: number | string) =>

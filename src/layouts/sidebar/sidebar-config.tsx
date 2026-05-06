@@ -15,6 +15,7 @@ import {
   PhotoIcon,
   PuzzlePieceIcon,
   TruckIcon,
+  StarIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "./types";
 
@@ -205,6 +206,13 @@ export const sidebarSections: SidebarSection[] = [
         path: paths.provider.zones.list,
         icon: <MapIcon className="size-4" />,
         permissions: PERMISSION_SUPPLIER_ZONES,
+      },
+      {
+        id: "my-reviews",
+        label: "Mis reseñas",
+        path: paths.provider.reviews.list,
+        icon: <StarIcon className="h-4 w-4" />,
+        permissions: [PERMISSION_ENUM.SUPPLIER_RETRIEVE],
       },
     ],
   },
