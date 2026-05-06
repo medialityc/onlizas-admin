@@ -672,6 +672,13 @@ export const backendRoutes = {
     supplier: `${process.env.NEXT_PUBLIC_API_URL}supplier/dashboard`,
     supplierItemsCount: `${process.env.NEXT_PUBLIC_API_URL}supplier/counters`,
   },
+  categorySuggestions: {
+    create: `${process.env.NEXT_PUBLIC_API_URL}category-suggestions`,
+    list: `${process.env.NEXT_PUBLIC_API_URL}category-suggestions`,
+    mine: `${process.env.NEXT_PUBLIC_API_URL}category-suggestions/mine`,
+    review: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}category-suggestions/${id}/review`,
+  },
   systemInfo: {
     addresses: {
       list: `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/addresses`,
