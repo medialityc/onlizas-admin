@@ -84,6 +84,10 @@ export const MODULE_PERMISSIONS = {
     PERMISSION_ENUM.SUPPLIER_UPDATE,
     PERMISSION_ENUM.SUPPLIER_DELETE,
   ],
+  categorySuggestions: [
+    PERMISSION_ENUM.SUPPLIER_CREATE,
+    PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+  ],
 } as const;
 
 export type ModuleName = keyof typeof MODULE_PERMISSIONS;

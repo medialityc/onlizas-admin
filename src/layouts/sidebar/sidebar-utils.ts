@@ -44,18 +44,29 @@ export const filterSectionsByPermissions = (
   granted: string[]
 ): SidebarSection[] => {
   const has = (perm?: string) => !perm || granted.includes(perm);
+  const hasAny = (perms?: string[]) =>
+    !perms || perms.length === 0 || perms.some((p) => granted.includes(p));
+  const itemAllowed = (i: { permission?: string; permissions?: string[] }) =>
+    has(i.permission) && hasAny(i.permissions);
+
   return sections
     .map((section) => {
       // clone shallow
       const newSection: SidebarSection = { ...section };
+
+      // Filter section-level permissions
+      if (!itemAllowed(section)) {
+        return null;
+      }
+
       if (section.items) {
-        newSection.items = section.items.filter((i) => has(i.permission));
+        newSection.items = section.items.filter(itemAllowed);
       }
       if (section.groups) {
         newSection.groups = section.groups
           .map((g) => ({
             ...g,
-            items: g.items.filter((i) => has(i.permission)),
+            items: g.items.filter(itemAllowed),
           }))
           .filter((g) => g.items.length > 0);
       }

@@ -59,7 +59,8 @@ export async function getAllDepartments(
 
   if (!res.ok) return handleApiServerError(res);
 
-  return buildApiResponseAsync<GetAllDepartments>(res);
+  const response = await buildApiResponseAsync<GetAllDepartments>(res);
+  return response;
 }
 
 export async function updateDepartment(

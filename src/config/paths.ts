@@ -15,6 +15,9 @@ export const paths = {
       view: (id: string | number) => `${DASHBOARD}/categories/${id}`,
       edit: (id: string | number) => `${DASHBOARD}/categories/${id}/edit`,
     },
+    categorySuggestions: {
+      list: `${DASHBOARD}/category-suggestions`,
+    },
     brands: {
       list: `${DASHBOARD}/brands`,
     },
@@ -134,6 +137,9 @@ export const paths = {
     },
     stores: {
       list: `${PROVIDER}/stores`,
+    },
+    categorySuggestions: {
+      list: `${DASHBOARD}/category-suggestions`,
     },
     bankAccounts: {
       list: `${DASHBOARD}/my-accounts`,
