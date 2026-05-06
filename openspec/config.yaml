@@ -1,0 +1,73 @@
+# openspec/config.yaml
+schema: spec-driven
+
+context: |
+  Tech stack: Next.js 16 (App Router) + React 19 + TypeScript 5 + TailwindCSS v4
+  Architecture: Feature-based (src/sections/), services layer, custom hooks, App Router
+  Testing: No test runner installed (testing pending)
+  Style: ESLint (next/core-web-vitals), Prettier, Tailwind v4 + Mantine + Radix
+
+strict_tdd: false
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+    - Identify affected modules/packages in src/sections/
+  specs:
+    - Use Given/When/Then format for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+  tasks:
+    - Group tasks by phase (infrastructure, implementation, testing)
+    - Use hierarchical numbering (1.1, 1.2, etc.)
+    - Keep tasks small enough to complete in one session
+  apply:
+    - Follow existing code patterns and conventions
+    - Load relevant coding skills for the project stack
+    tdd: false
+    test_command: ""
+  verify:
+    - Run type checks: npm run tsc
+    - Run linter: npm run lint
+    - Compare implementation against every spec scenario
+    test_command: ""
+    build_command: "npm run build"
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas (large removals)
+
+testing:
+  strict_tdd_mode: disabled
+  detected: 2026-05-03
+
+  test_runner:
+    command: null
+    framework: null
+
+  test_layers:
+    unit:
+      available: false
+      tool: null
+    integration:
+      available: false
+      tool: null
+    e2e:
+      available: false
+      tool: null
+
+  coverage:
+    available: false
+    command: null
+
+  quality_tools:
+    linter:
+      available: true
+      command: npm run lint
+    type_checker:
+      available: true
+      command: npm run tsc
+    formatter:
+      available: true
+      command: npx prettier --write .

@@ -141,6 +141,9 @@ export const paths = {
     zones: {
       list: `${DASHBOARD}/my-zones`,
     },
+    reviews: {
+      list: `${DASHBOARD}/my-reviews`,
+    },
   },
 
   content: {

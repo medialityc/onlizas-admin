@@ -9,6 +9,27 @@ import { GetInventoryReviewsResponse } from "@/types/reviews";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 
 const INVENTORY_REVIEWS_TAG_KEY = "inventory-reviews";
+const MY_REVIEWS_TAG_KEY = "my-reviews";
+
+export async function getMyReviews(
+  params?: IQueryable
+): Promise<ApiResponse<GetInventoryReviewsResponse>> {
+  const url = new QueryParamsURLFactory(
+    params ?? {},
+    backendRoutes.reviews.my
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+    next: { tags: [MY_REVIEWS_TAG_KEY] },
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+
+  return buildApiResponseAsync<GetInventoryReviewsResponse>(res);
+}
 
 export async function getReviewsByInventoryId(
   inventoryId: string | number,
