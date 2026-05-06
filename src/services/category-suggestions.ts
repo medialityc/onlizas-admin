@@ -13,6 +13,24 @@ import {
 } from "@/types/category-suggestions";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { updateTag } from "next/cache";
+import { CategorySuggestionState } from "@/sections/category-suggestions/constants/suggestion-state";
+
+function normalizeState(state: any): CategorySuggestionState {
+  if (typeof state === "string") return state as CategorySuggestionState;
+  const map: Record<number, CategorySuggestionState> = {
+    0: CategorySuggestionState.PENDING,
+    1: CategorySuggestionState.APPROVED,
+    2: CategorySuggestionState.REJECTED,
+  };
+  return map[state] ?? CategorySuggestionState.PENDING;
+}
+
+function normalizeSuggestions(items: any[]): CategorySuggestion[] {
+  return items.map((item) => ({
+    ...item,
+    state: normalizeState(item.state),
+  }));
+}
 
 export async function getAllCategorySuggestions(
   params: IQueryable,
@@ -31,7 +49,13 @@ export async function getAllCategorySuggestions(
 
   if (!res.ok) return handleApiServerError(res);
 
-  return buildApiResponseAsync<GetAllCategorySuggestions>(res);
+  const response = await buildApiResponseAsync<GetAllCategorySuggestions>(res);
+
+  if (response.data?.data) {
+    response.data.data = normalizeSuggestions(response.data.data);
+  }
+
+  return response;
 }
 
 export async function getMyCategorySuggestions(
@@ -48,7 +72,14 @@ export async function getMyCategorySuggestions(
     next: { tags: ["category-suggestions"] },
   });
   if (!res.ok) return handleApiServerError(res);
-  return buildApiResponseAsync<GetAllCategorySuggestions>(res);
+
+  const response = await buildApiResponseAsync<GetAllCategorySuggestions>(res);
+
+  if (response.data?.data) {
+    response.data.data = normalizeSuggestions(response.data.data);
+  }
+
+  return response;
 }
 
 export async function createCategorySuggestion(
