@@ -12,4 +12,4 @@ export const createSuggestionSchema = z.object({
     ),
 });
 
-export type CreateSuggestionFormData = z.infer<typeof createSuggestionSchema>;
+export type CreateSuggestionFormData = z.input<typeof createSuggestionSchema>;

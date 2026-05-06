@@ -66,7 +66,10 @@ export default function CreateSuggestionModal({
 
   const submit = async (data: CreateSuggestionFormData) => {
     try {
-      const res = await createCategorySuggestion(data);
+      const res = await createCategorySuggestion({
+        ...data,
+        departmentId: String(data.departmentId),
+      });
       if (!res.error) {
         toast.success("Sugerencia enviada correctamente");
         onSuccess?.();
