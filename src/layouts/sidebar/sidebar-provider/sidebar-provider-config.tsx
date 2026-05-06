@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "../types";
 import IconCashBanknotes from "@/components/icon/icon-cash-banknotes";
-import { TagIcon } from "@heroicons/react/24/outline";
+import { TagIcon, ClipboardDocumentIcon } from "@heroicons/react/24/outline";
 
 export const sidebarProviderSections: SidebarSection[] = [
   {
@@ -32,6 +32,12 @@ export const sidebarProviderSections: SidebarSection[] = [
         label: "Mis Marcas",
         path: paths.dashboard.brands.list,
         icon: <TagIcon className="h-4 w-4" />,
+      },
+      {
+        id: "provider-category-suggestions",
+        label: "Sugerencias de categorías",
+        path: paths.provider.categorySuggestions.list,
+        icon: <ClipboardDocumentIcon className="h-4 w-4" />,
       },
       {
         id: "provider-inventory",

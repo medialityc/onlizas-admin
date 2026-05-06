@@ -110,6 +110,13 @@ export const sidebarSections: SidebarSection[] = [
         permissions: PERMISSION_ADMIN,
       },
       {
+        id: "category-suggestions",
+        label: "Sugerencias de categorías",
+        path: paths.dashboard.categorySuggestions.list,
+        icon: <ClipboardDocumentIcon className="h-4 w-4" />,
+        permissions: [PERMISSION_ENUM.SUPPLIER_RETRIEVE],
+      },
+      {
         id: "brands",
         label: "Marcas",
         path: paths.dashboard.brands.list,
