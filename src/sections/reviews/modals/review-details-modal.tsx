@@ -53,25 +53,19 @@ export function ReviewDetailsModal({
             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
               Calidad del Producto
             </label>
-            <p className="text-sm font-medium text-gray-900 dark:text-white">
-              {review.productQuality} / 5
-            </p>
+            <RatingStars value={review.productQuality} size="sm" showValue />
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
               Calidad del Proveedor
             </label>
-            <p className="text-sm font-medium text-gray-900 dark:text-white">
-              {review.supplierQuality} / 5
-            </p>
+            <RatingStars value={review.supplierQuality} size="sm" showValue />
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
               Calidad de Entrega
             </label>
-            <p className="text-sm font-medium text-gray-900 dark:text-white">
-              {review.deliveryQuality} / 5
-            </p>
+            <RatingStars value={review.deliveryQuality} size="sm" showValue />
           </div>
         </div>
 

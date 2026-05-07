@@ -7,7 +7,7 @@ import { SearchParams } from "@/types/fetch/request";
 import { InventoryReview, GetInventoryReviewsResponse } from "@/types/reviews";
 import { RatingStars } from "@/components/ui/rating-stars";
 import { ReviewDetailsModal } from "../modals/review-details-modal";
-import { EyeIcon } from "@heroicons/react/24/outline";
+import ActionsMenu from "@/components/menu/actions-menu";
 
 interface ReviewsListProps {
   data?: GetInventoryReviewsResponse;
@@ -54,12 +54,13 @@ export function ReviewsList({
       {
         accessor: "message",
         title: "Mensaje",
+        width: 280,
         render: (r) => {
           const text = r.message || "";
           const truncated =
             text.length > 80 ? text.slice(0, 80) + "…" : text;
           return (
-            <span className="text-sm text-gray-600 dark:text-gray-400">
+            <span className="text-sm text-gray-600 dark:text-gray-400 truncate block max-w-[260px]">
               {truncated || "—"}
             </span>
           );
@@ -68,18 +69,13 @@ export function ReviewsList({
       {
         accessor: "actions",
         title: "Acciones",
-        width: 120,
         textAlign: "center",
         render: (r) => (
-          <button
-            type="button"
-            onClick={() => handleOpenDetails(r)}
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
-            title="Ver detalles"
-          >
-            <EyeIcon className="h-3.5 w-3.5" />
-            Ver detalles
-          </button>
+          <div className="flex justify-center">
+            <ActionsMenu
+              onViewDetails={() => handleOpenDetails(r)}
+            />
+          </div>
         ),
       },
     ],
