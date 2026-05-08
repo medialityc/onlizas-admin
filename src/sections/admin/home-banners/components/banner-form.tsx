@@ -61,6 +61,8 @@ export default function HomeBannerForm({ initValue }: Props) {
                 height: 557,
                 width: 1920,
               }}
+              minWidth={500}
+              minHeight={300}
             />
           </div>
           <div className="col-span-1">

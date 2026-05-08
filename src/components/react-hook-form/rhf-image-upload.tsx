@@ -32,6 +32,8 @@ interface RHFImageUploadProps extends UseControllerProps {
   showDimensions?: boolean;
   showFileSize?: boolean;
   cropDimensions?: CropDimensions;
+  minWidth?: number;
+  minHeight?: number;
 }
 
 interface ImageInfo {
@@ -53,6 +55,8 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
       showDimensions = true,
       showFileSize = true,
       cropDimensions = { width: 1024, height: 1024 },
+      minWidth = 500,
+      minHeight = 500,
       ...props
     },
     forwardedRef,
@@ -138,19 +142,18 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
         img.onload = () => {
           URL.revokeObjectURL(objectUrl);
 
-          const minSize = 500;
-          const maxSize = 3200;
+          const maxDim = 3200;
 
-          if (img.width < minSize || img.height < minSize) {
+          if (img.width < minWidth || img.height < minHeight) {
             resolve(
-              `La imagen debe tener al menos ${minSize}×${minSize} píxeles (actual: ${img.width}×${img.height})`,
+              `La imagen debe tener al menos ${minWidth}×${minHeight} píxeles (actual: ${img.width}×${img.height})`,
             );
             return;
           }
 
-          if (img.width > maxSize || img.height > maxSize) {
+          if (img.width > maxDim || img.height > maxDim) {
             resolve(
-              `La imagen no debe superar ${maxSize}×${maxSize} píxeles (actual: ${img.width}×${img.height})`,
+              `La imagen no debe superar ${maxDim}×${maxDim} píxeles (actual: ${img.width}×${img.height})`,
             );
             return;
           }
@@ -374,7 +377,7 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
                   </p>
                   {!isDisabledOrValidating && (
                     <p className="text-xs text-gray-500">
-                      Solo imágenes entre 500×500 y 3200×3200 px, máximo 10MB
+                      Solo imágenes entre {minWidth}×{minHeight} y 3200×3200 px, máximo 10MB
                     </p>
                   )}
                 </div>
@@ -510,6 +513,8 @@ export const RHFImageUpload = forwardRef<HTMLDivElement, RHFImageUploadProps>(
           imageSrc={tempImageSrc}
           fileName={tempFileName}
           cropDimensions={cropDimensions}
+          minWidth={minWidth}
+          minHeight={minHeight}
         />
       </>
     );
