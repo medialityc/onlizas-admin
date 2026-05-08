@@ -680,6 +680,10 @@ export const backendRoutes = {
     review: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}category-suggestions/${id}/review`,
   },
+  claims: {
+    list: `${process.env.NEXT_PUBLIC_API_URL}claims`,
+    resolve: (id: string | number) => `${process.env.NEXT_PUBLIC_API_URL}claims/${id}/resolve`,
+  },
   systemInfo: {
     addresses: {
       list: `${process.env.NEXT_PUBLIC_API_URL}admin/system-info/addresses`,

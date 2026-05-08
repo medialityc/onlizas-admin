@@ -88,6 +88,10 @@ export const MODULE_PERMISSIONS = {
     PERMISSION_ENUM.SUPPLIER_CREATE,
     PERMISSION_ENUM.SUPPLIER_RETRIEVE,
   ],
+  claims: [
+    PERMISSION_ENUM.RETRIEVE,
+    PERMISSION_ENUM.UPDATE,
+  ],
 } as const;
 
 export type ModuleName = keyof typeof MODULE_PERMISSIONS;

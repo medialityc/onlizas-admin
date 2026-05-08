@@ -18,6 +18,9 @@ export const paths = {
     categorySuggestions: {
       list: `${DASHBOARD}/category-suggestions`,
     },
+    claims: {
+      list: `${DASHBOARD}/claims`,
+    },
     brands: {
       list: `${DASHBOARD}/brands`,
     },
