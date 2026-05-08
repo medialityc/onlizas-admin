@@ -83,9 +83,15 @@ export default function CropModal({
       });
       if (!ctx) return;
 
-      // Preserve the exact crop region aspect ratio; never stretch to arbitrary target dimensions
-      canvas.width = cropData.width;
-      canvas.height = cropData.height;
+      // Preserve natural resolution — NEVER upscale the image beyond its original
+      // size. The client uses object-fit: cover to fill the banner slot.
+      const scale = Math.min(
+        1,
+        cropDimensions.width / cropData.width,
+        cropDimensions.height / cropData.height,
+      );
+      canvas.width = Math.round(cropData.width * scale);
+      canvas.height = Math.round(cropData.height * scale);
 
       const img = new window.Image();
 
@@ -95,9 +101,7 @@ export default function CropModal({
         img.src = imageSrc;
       });
 
-      // Draw the cropped area into the canvas. Do NOT fill the canvas background — keep alpha.
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       ctx.drawImage(
         img,
         cropData.x,
@@ -106,8 +110,8 @@ export default function CropModal({
         cropData.height,
         0,
         0,
-        cropData.width,
-        cropData.height,
+        canvas.width,
+        canvas.height,
       );
 
       // Export as PNG to preserve transparency
