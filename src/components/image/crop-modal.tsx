@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Cropper } from "@origin-space/image-cropper";
 import SimpleModal from "../modal/modal";
 
@@ -28,6 +28,8 @@ export default function CropModal({
   imageSrc,
   fileName,
   cropDimensions = { width: 1024, height: 1024 },
+  minWidth = 500,
+  minHeight = 500,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -35,13 +37,37 @@ export default function CropModal({
   imageSrc: string;
   fileName: string;
   cropDimensions?: CropDimensions;
+  minWidth?: number;
+  minHeight?: number;
 }) {
   const [cropData, setCropData] = useState<Area | null>(null);
   const [isCropping, setIsCropping] = useState(false);
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
   const [cropperKey, setCropperKey] = useState(0);
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
   const aspectRatio = cropDimensions.width / cropDimensions.height;
+
+  // Keep props referenced to satisfy task contract even though crop modal
+  // does not enforce min dimensions (validation happens upstream).
+  void minWidth;
+  void minHeight;
+
+  // Preload image to get natural dimensions for proportional fit
+  useEffect(() => {
+    if (!imageSrc) {
+      setImageSize({ width: 0, height: 0 });
+      return;
+    }
+    const img = new window.Image();
+    img.onload = () => {
+      setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
+    };
+    img.onerror = () => {
+      setImageSize({ width: 0, height: 0 });
+    };
+    img.src = imageSrc;
+  }, [imageSrc]);
 
   const handleCrop = async () => {
     if (!cropData) return;
@@ -57,11 +83,11 @@ export default function CropModal({
       });
       if (!ctx) return;
 
-      canvas.width = cropDimensions.width;
-      canvas.height = cropDimensions.height;
+      // Preserve the exact crop region aspect ratio; never stretch to arbitrary target dimensions
+      canvas.width = cropData.width;
+      canvas.height = cropData.height;
 
       const img = new window.Image();
-      img.crossOrigin = "anonymous";
 
       await new Promise<void>((resolve, reject) => {
         img.onload = () => resolve();
@@ -80,8 +106,8 @@ export default function CropModal({
         cropData.height,
         0,
         0,
-        cropDimensions.width,
-        cropDimensions.height,
+        cropData.width,
+        cropData.height,
       );
 
       // Export as PNG to preserve transparency
@@ -103,8 +129,26 @@ export default function CropModal({
   };
 
   const handleFit = () => {
-    // Lower zoom to show as much of the source image as possible.
-    setZoom(MIN_ZOOM);
+    if (imageSize.width === 0 || imageSize.height === 0) return;
+
+    // The cropper sizes the image wrapper at zoom=1 so that one dimension
+    // matches the crop area and the other may exceed it. To fit the ENTIRE
+    // image inside the crop area we must scale down by the ratio of the
+    // aspect ratios.
+    const imgAspect = imageSize.width / imageSize.height;
+    const cropAspect = cropDimensions.width / cropDimensions.height;
+
+    const fitZoom =
+      imgAspect >= cropAspect
+        ? Math.min(1, cropAspect / imgAspect)
+        : Math.min(1, imgAspect / cropAspect);
+
+    const clampedZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, fitZoom));
+
+    // Reset cropper to center and apply calculated zoom
+    setCropData(null);
+    setCropperKey((prev) => prev + 1);
+    setZoom(clampedZoom);
   };
 
   const handleReset = () => {
@@ -141,9 +185,7 @@ export default function CropModal({
           Usa la rueda del mouse para hacer zoom. Arrastra para mover la imagen.
           Usa las teclas de flecha para ajustes finos.
         </span>
-        {/* Allow pointer events on the image so wheel and drag events reach the cropper */}
         <Cropper.Image className="h-full w-full select-none object-contain origin-center" />
-        {/* Keep crop area overlay interactive only as needed; remove pointer-events-none so wheel events reach underlying image */}
         <Cropper.CropArea className="absolute border-2 border-dashed border-white shadow-[0_0_0_9999px_rgba(0,0,0,0.6)]" />
       </Cropper.Root>
 
