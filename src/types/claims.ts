@@ -29,12 +29,9 @@ export interface Claim {
   createdAt: string;
 }
 
-export interface GetAllClaims {
-  data: Claim[];
-  totalCount: number;
-  page: number;
-  pageSize: number;
-}
+import { PaginatedResponse } from "./common";
+
+export type GetAllClaims = PaginatedResponse<Claim>;
 
 export interface ResolveClaimPayload {
   claimId: string;

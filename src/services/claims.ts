@@ -48,11 +48,18 @@ function normalizeClaims(items: any[]): Claim[] {
 }
 
 function mapPaginatedResponse(response: any): GetAllClaims {
+  const page = response.page ?? 0;
+  const pageSize = response.pageSize ?? 0;
+  const totalCount = response.totalCount ?? 0;
+  const data = response.items || response.data || [];
+
   return {
-    data: response.items || response.data || [],
-    totalCount: response.totalCount,
-    page: response.page,
-    pageSize: response.pageSize,
+    data,
+    totalCount,
+    page,
+    pageSize,
+    hasNext: totalCount > (page + 1) * pageSize,
+    hasPrevious: page > 0,
   };
 }
 
