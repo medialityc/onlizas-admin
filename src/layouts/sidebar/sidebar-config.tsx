@@ -16,6 +16,7 @@ import {
   PuzzlePieceIcon,
   TruckIcon,
   StarIcon,
+  ShieldExclamationIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "./types";
 
@@ -88,6 +89,13 @@ export const sidebarSections: SidebarSection[] = [
         path: paths.dashboard.orders.list,
         icon: <ClipboardDocumentIcon className="h-4 w-4" />,
         permissions: PERMISSION_ORDERS,
+      },
+      {
+        id: "claims",
+        label: "Reclamaciones",
+        path: paths.dashboard.claims.list,
+        icon: <ShieldExclamationIcon className="h-4 w-4" />,
+        permissions: [PERMISSION_ENUM.RETRIEVE],
       },
     ],
   },
