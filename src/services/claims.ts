@@ -16,7 +16,7 @@ import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { updateTag } from "next/cache";
 
 function normalizeStatus(status: any): ClaimStatus {
-  if (typeof status === "string") return status as ClaimStatus;
+  const numericStatus = typeof status === "string" ? Number(status) : status;
   const map: Record<number, ClaimStatus> = {
     0: ClaimStatus.PENDING,
     1: ClaimStatus.UNDER_REVIEW,
@@ -24,11 +24,11 @@ function normalizeStatus(status: any): ClaimStatus {
     3: ClaimStatus.RESOLVED_FAVOR_SUPPLIER,
     4: ClaimStatus.CANCELLED,
   };
-  return map[status] ?? ClaimStatus.PENDING;
+  return map[numericStatus] ?? ClaimStatus.PENDING;
 }
 
 function normalizeType(type: any): ClaimType {
-  if (typeof type === "string") return type as ClaimType;
+  const numericType = typeof type === "string" ? Number(type) : type;
   const map: Record<number, ClaimType> = {
     0: ClaimType.DEFECTIVE_PRODUCT,
     1: ClaimType.WRONG_PRODUCT,
@@ -36,7 +36,7 @@ function normalizeType(type: any): ClaimType {
     3: ClaimType.INCOMPLETE_ORDER,
     99: ClaimType.OTHER,
   };
-  return map[type] ?? ClaimType.OTHER;
+  return map[numericType] ?? ClaimType.OTHER;
 }
 
 function normalizeClaims(items: any[]): Claim[] {
