@@ -15,8 +15,9 @@ import {
 } from "../schema/supplier-product-schema";
 import { setSupplierProductFormData } from "../constants/supplier-product-data";
 import { focusFirstError } from "@/utils/focust";
+import { useIsSupplierApproved } from "@/hooks/use-is-supplier-approved";
 
-const initValues: SupplierProductFormData = {
+const getInitValues = (isApproved: boolean): SupplierProductFormData => ({
   isDraft: false,
   name: "",
   description: "",
@@ -27,27 +28,30 @@ const initValues: SupplierProductFormData = {
   height: 0,
   weight: 0,
 
-  active: false,
+  active: isApproved,
   categoryIds: [],
   aboutThis: [],
   tutorials: [],
   image: null,
   brandId: "",
   aduanaCategoryGuid: "",
-};
+});
 
 type UseSupplierProductCreateFormOptions = {
   afterCreateRedirectTo?: string;
 };
 
 export const useSupplierProductCreateForm = (
-  defaultValues: SupplierProductFormData = initValues,
+  defaultValues: SupplierProductFormData | undefined,
   isEdit: boolean = false,
   options?: UseSupplierProductCreateFormOptions,
 ) => {
   const { push } = useRouter();
+  const isApproved = useIsSupplierApproved();
+  const initValues = getInitValues(isApproved);
+
   const form = useForm({
-    defaultValues,
+    defaultValues: defaultValues ?? initValues,
     resolver: zodResolver(supplierProductSchema),
   });
 
@@ -57,7 +61,11 @@ export const useSupplierProductCreateForm = (
     mutationFn: async (
       payload: SupplierProductFormData & { isLink?: boolean },
     ) => {
-      const fromData = await setSupplierProductFormData(payload);
+      const enforcedPayload = {
+        ...payload,
+        active: isApproved ? payload.active : false,
+      };
+      const fromData = await setSupplierProductFormData(enforcedPayload);
 
       let res = undefined;
       if (!payload?.isDraft) {

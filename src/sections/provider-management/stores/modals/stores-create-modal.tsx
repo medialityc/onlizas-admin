@@ -17,6 +17,8 @@ import { useRouter } from "next/navigation";
 import { getSupplierApprovalProcessById } from "@/services/supplier";
 import { useAuth } from "zas-sso-client";
 import { processImageFile } from "@/utils/image-helpers";
+import { useIsSupplierApproved } from "@/hooks/use-is-supplier-approved";
+import { PendingApprovalBanner } from "@/components/pending-approval-banner";
 
 interface StoresModalProps {
   open: boolean;
@@ -35,6 +37,7 @@ export default function StoresCreateModal({
 }: StoresModalProps) {
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
+  const isApproved = useIsSupplierApproved();
   const routerHook = useRouter();
 
   const methods = useForm<StoreFormData>({
@@ -46,6 +49,7 @@ export default function StoresCreateModal({
       phoneNumber: store?.phoneNumber ?? "",
       address: store?.address ?? "",
       logoStyle: store?.logoStyle ?? undefined,
+      active: isApproved,
       ownerId: user?.id ?? 0,
       approvalProcessId: store?.approvalProcessId ?? undefined,
     },
@@ -139,6 +143,7 @@ export default function StoresCreateModal({
       formData.append("email", data.email);
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("address", data.address);
+      formData.append("active", (isApproved ? data.active : false) ? "true" : "false");
 
       console.log(formData);
       let response = null;
@@ -183,6 +188,7 @@ export default function StoresCreateModal({
       title={"Crear Nueva Tienda"}
     >
       <div className="p-5">
+        <PendingApprovalBanner />
         {error && (
           <div className="mb-4">
             <AlertBox title="Error" variant="danger" message={error} />

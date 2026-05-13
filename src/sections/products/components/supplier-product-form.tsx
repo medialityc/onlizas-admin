@@ -23,6 +23,7 @@ import { ProductCustomsInfoSection } from "./product-custom-info";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import { SupplierApprovalProcess } from "@/types/suppliers";
+import { PendingApprovalBanner } from "@/components/pending-approval-banner";
 
 type Props = {
   initValue?: SupplierProductFormData;
@@ -46,6 +47,7 @@ const SupplierProductForm = ({ initValue, isEdit, approvalProcess }: Props) => {
 
   return (
     <section>
+      <PendingApprovalBanner />
       <FormProvider methods={form} onSubmit={onSubmit} id="product-form">
         <div className="grid grid-cols-1 lg:grid-cols-2  gap-2 md:gap-4">
           {!isEdit && (

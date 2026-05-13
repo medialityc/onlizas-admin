@@ -5,6 +5,7 @@ import { Button } from "@/components/button/button";
 import LoaderButton from "@/components/loaders/loader-button";
 import { useInventoryCreateForm } from "../../hooks/use-inventory-easy-create";
 import InventoryForm from "./inventory-form";
+import { PendingApprovalBanner } from "@/components/pending-approval-banner";
 
 type Props = {
   provider?: string;
@@ -30,6 +31,7 @@ const InventoryProviderForm = ({
 
   return (
     <section>
+      <PendingApprovalBanner />
       <FormProvider methods={form} onSubmit={onSubmit}>
         <InventoryForm provider={provider} forProvider={forProvider} />
         {/* Botones de acción */}

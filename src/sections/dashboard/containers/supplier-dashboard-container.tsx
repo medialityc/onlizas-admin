@@ -9,6 +9,7 @@ import GroupedSummary from "@/sections/dashboard/components/grouped-summary";
 import { SupplierInventorySteps } from "@/sections/dashboard/components/supplier-inventory-steps";
 import { ApiResponse } from "@/types/fetch/api";
 import { SupplierDashboard } from "@/types/dashboard";
+import { PendingApprovalBanner } from "@/components/pending-approval-banner";
 export function buildSupplierSummary(d?: {
   totalProducts?: number;
   activeProducts?: number;
@@ -76,6 +77,7 @@ export default function SupplierDashboardContainer({
 
   return (
     <div className="space-y-6 p-4 sm:p-6">
+      <PendingApprovalBanner />
       <SupplierInventorySteps />
       <div className="space-y-4">
         {/* Tarjetas de resumen para rellenar mejor el layout */}

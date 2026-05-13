@@ -138,6 +138,7 @@ export interface IUserResponseMe {
   businesses: Business[];
   beneficiaries: Beneficiary[];
   supplierInfo: SuplierInfo;
+  isApproved?: boolean;
 }
 
 interface SuplierInfo {

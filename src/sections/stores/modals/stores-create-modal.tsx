@@ -13,6 +13,8 @@ import { createStore } from "@/services/stores";
 import { isValidUrl, urlToFile } from "@/utils/format";
 import { useRouter } from "next/navigation";
 import StoreCreateForm from "./store-create-form";
+import { useIsSupplierApproved } from "@/hooks/use-is-supplier-approved";
+import { PendingApprovalBanner } from "@/components/pending-approval-banner";
 
 interface StoresModalProps {
   open: boolean;
@@ -32,6 +34,7 @@ export default function StoresCreateModal({
   afterCreateRedirectTo,
 }: StoresModalProps) {
   const [error, setError] = useState<string | null>(null);
+  const isApproved = useIsSupplierApproved();
 
   const routerHook = useRouter();
 
@@ -45,7 +48,7 @@ export default function StoresCreateModal({
       countryCode: store?.countryCode ?? "",
       address: store?.address ?? "",
       logoStyle: store?.logoStyle ?? undefined,
-      active: true,
+      active: isApproved,
       primaryColor: "#3B82F6",
       secondaryColor: "#111827",
       accentColor: "#F59E0B",
@@ -101,7 +104,7 @@ export default function StoresCreateModal({
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("countryCode", data.countryCode);
       formData.append("address", data.address);
-      formData.append("active", data.active ? "true" : "false");
+      formData.append("active", (isApproved ? data.active : false) ? "true" : "false");
       formData.append("primaryColor", data.primaryColor);
       formData.append("secondaryColor", data.secondaryColor);
       formData.append("accentColor", data.accentColor);
@@ -150,6 +153,7 @@ export default function StoresCreateModal({
       title={"Crear Nueva Tienda"}
     >
       <div className="p-5">
+        <PendingApprovalBanner />
         {error && (
           <div className="mb-4">
             <AlertBox title="Error" variant="danger" message={error} />
