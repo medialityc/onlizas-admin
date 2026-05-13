@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 import { AlertBox } from "@/components/alert/alert-box";
+import { PendingApprovalBanner } from "@/components/pending-approval-banner";
 import FormProvider from "@/components/react-hook-form/form-provider";
 import {
   StoreFormData,
@@ -16,6 +17,7 @@ import { createStore, updateSupplierStore } from "@/services/stores";
 import { isValidUrl, urlToFile } from "@/utils/format";
 import StoreCreateForm from "@/sections/stores/modals/store-create-form";
 import { Store } from "@/types/stores";
+import { useIsSupplierApproved } from "@/hooks/use-is-supplier-approved";
 
 interface WelcomeStoreFormSectionProps {
   afterCreateRedirectTo: string;
@@ -29,6 +31,7 @@ export function WelcomeStoreFormSection({
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const isEditMode = Boolean(existingStore?.id);
+  const isApproved = useIsSupplierApproved();
 
   const methods = useForm<StoreFormData>({
     resolver: zodResolver(storeSchema),
@@ -40,7 +43,7 @@ export function WelcomeStoreFormSection({
       countryCode: existingStore?.countryCode ?? "",
       address: existingStore?.address ?? "",
       logoStyle: existingStore?.logoStyle ?? undefined,
-      active: existingStore?.active ?? true,
+      active: isEditMode ? existingStore?.active ?? true : isApproved,
       primaryColor: existingStore?.primaryColor ?? "#3B82F6",
       secondaryColor: existingStore?.secondaryColor ?? "#111827",
       accentColor: existingStore?.accentColor ?? "#F59E0B",
@@ -93,7 +96,7 @@ export function WelcomeStoreFormSection({
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("countryCode", data.countryCode);
       formData.append("address", data.address);
-      formData.append("active", data.active ? "true" : "false");
+      formData.append("active", (isApproved ? data.active : false) ? "true" : "false");
       formData.append("primaryColor", data.primaryColor);
       formData.append("secondaryColor", data.secondaryColor);
       formData.append("accentColor", data.accentColor);
@@ -124,6 +127,7 @@ export function WelcomeStoreFormSection({
 
   return (
     <div className="space-y-4">
+      <PendingApprovalBanner />
       {error && (
         <div className="mb-4">
           <AlertBox title="Error" variant="danger" message={error} />

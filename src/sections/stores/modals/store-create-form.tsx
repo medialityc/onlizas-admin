@@ -19,6 +19,7 @@ import { useAuth } from "zas-sso-client";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import { RHFPhoneCountrySelect } from "@/components/react-hook-form/rhf-phone-country-select";
 import { getValidSuppliers } from "@/services/supplier";
+import { useIsSupplierApproved } from "@/hooks/use-is-supplier-approved";
 
 const FONT_OPTIONS = [
   { value: "ARIAL", label: "Arial" },
@@ -63,6 +64,7 @@ function StoreCreateForm({ handleClose, isSubmitting, isEditMode = false }: Prop
   const { user } = useAuth();
   const isSupplierMode =
     !hasCreatePermission && hasCreateStorePermission && user?.id;
+  const isApproved = useIsSupplierApproved();
 
   // Auto-cargar proceso de aprobación cuando cambia el propietario
   useEffect(() => {
@@ -267,6 +269,13 @@ function StoreCreateForm({ handleClose, isSubmitting, isEditMode = false }: Prop
             name="active"
             label="Tienda activa y visible para clientes"
             checkedClassName="peer-checked:bg-gradient-to-r peer-checked:from-secondary peer-checked:to-indigo-600"
+            disabled={!isApproved}
+            aria-disabled={!isApproved}
+            helperText={
+              !isApproved
+                ? "No puedes activar la tienda hasta que tu cuenta sea aprobada."
+                : undefined
+            }
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

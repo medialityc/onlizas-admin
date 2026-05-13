@@ -1,0 +1,8 @@
+{
+  "supplier": {
+    "pendingApproval": {
+      "banner": "Account under review",
+      "description": "Your account is being reviewed. New resources will be created as inactive until you are approved."
+    }
+  }
+}

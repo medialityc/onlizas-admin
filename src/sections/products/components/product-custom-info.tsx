@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import RHFAutocompleteFetcherInfinity from "@/components/react-hook-form/rhf-autcomplete-fetcher-scroll-infinity";
 import { getAduanaCategories } from "@/services/categories";
 import { getAllBrands } from "@/services/brands";
+import { useIsSupplierApproved } from "@/hooks/use-is-supplier-approved";
 
 export const ProductCustomsInfoSection = ({
   nacionality,
@@ -13,6 +14,7 @@ export const ProductCustomsInfoSection = ({
   nacionality?: string;
 }) => {
   const pathname = usePathname();
+  const isApproved = useIsSupplierApproved();
   return (
     <div className="bg-blur-card p-4 rounded-md flex flex-col w-full gap-4">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
@@ -43,7 +45,17 @@ export const ProductCustomsInfoSection = ({
       {/* Producto Duradero */}
 
       {!pathname.endsWith("edit") && (
-        <RHFCheckbox name="active" label="Producto activo" />
+        <RHFCheckbox
+          name="active"
+          label="Producto activo"
+          disabled={!isApproved}
+          aria-disabled={!isApproved}
+          title={
+            !isApproved
+              ? "No puedes activar el producto hasta que tu cuenta sea aprobada."
+              : undefined
+          }
+        />
       )}
 
       {nacionality !== "Nacional" && (

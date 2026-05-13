@@ -1,0 +1,8 @@
+{
+  "supplier": {
+    "pendingApproval": {
+      "banner": "Cuenta en revisión",
+      "description": "Tu cuenta está siendo revisada. Los recursos nuevos se crearán como inactivos hasta que seas aprobado."
+    }
+  }
+}

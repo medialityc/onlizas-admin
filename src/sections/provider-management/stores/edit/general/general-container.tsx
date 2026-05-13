@@ -18,12 +18,16 @@ import { buildStoreFormData } from "../utils/transform";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 import PoliciesCardTinyMCE from "./components/policies-card-tinymce";
+import { PendingApprovalBanner } from "@/components/pending-approval-banner";
+import { useIsSupplierApproved } from "@/hooks/use-is-supplier-approved";
 
 interface Props {
   store: Store;
 }
 
 export default function GeneralContainer({ store }: Props) {
+  const isApproved = useIsSupplierApproved();
+
   const methods = useForm<GeneralStoreForm>({
     resolver: zodResolver(GeneralStoreSchema),
     mode: "onBlur",
@@ -46,7 +50,10 @@ export default function GeneralContainer({ store }: Props) {
     try {
       const formData = buildStoreFormData({
         store,
-        data,
+        data: {
+          ...data,
+          active: isApproved ? data.active : false,
+        },
       });
       const res = await updateSupplierStore(store.id, formData);
       if (!res.error) {
@@ -70,6 +77,7 @@ export default function GeneralContainer({ store }: Props) {
   return (
     <FormProvider id="general-form" methods={methods} onSubmit={onSubmit}>
       <div className="space-y-6 bg-white dark:bg-gray-900 p-6">
+        <PendingApprovalBanner />
         <GeneralStatusCard />
 
         {/* Información básica y contacto */}

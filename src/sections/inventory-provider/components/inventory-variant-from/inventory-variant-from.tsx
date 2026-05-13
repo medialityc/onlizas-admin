@@ -20,6 +20,8 @@ import {
   getSupplierApprovalProcess,
   getSupplierApprovalProcessById,
 } from "@/services/supplier";
+import { PendingApprovalBanner } from "@/components/pending-approval-banner";
+import { useIsSupplierApproved } from "@/hooks/use-is-supplier-approved";
 
 type Props = {
   variantIndex: number;
@@ -57,6 +59,7 @@ const InventoryVariantFrom = ({
   const { watch, control, setValue } = useFormContext<ProductVariant>();
   const { hasSpecificPermission, isLoading: permissionsLoading } =
     usePermissions();
+  const isApproved = useIsSupplierApproved();
 
   const [isWarranty, isLimit, id, deliveryMode, warrantyType] = watch([
     "warranty.isWarranty",
@@ -157,6 +160,7 @@ const InventoryVariantFrom = ({
 
   return (
     <div className="flex flex-col gap-2  ">
+      <PendingApprovalBanner />
       {/* details section */}
       <InventoryProviderDetailSection />
       <Separator className="my-2" />
@@ -370,7 +374,17 @@ const InventoryVariantFrom = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           <RHFSwitch name={`isPrime`} label="Entrega express" />
-          <RHFSwitch name={`isActive`} label="Variante Activa?" />
+          <RHFSwitch
+            name={`isActive`}
+            label="Variante Activa?"
+            disabled={!isApproved}
+            aria-disabled={!isApproved}
+            helperText={
+              !isApproved
+                ? "No puedes activar la variante hasta que tu cuenta sea aprobada."
+                : undefined
+            }
+          />
         </div>
       </div>
 

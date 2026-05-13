@@ -7,6 +7,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ReactNode, Suspense } from "react";
 import { Provider } from "react-redux";
 import Loading from "./loading";
+import { NextIntlClientProvider } from "next-intl";
+import messages from "../../messages/es.json";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,22 +21,26 @@ const queryClient = new QueryClient({
   },
 });
 
+const locale = process.env.NEXT_PUBLIC_LOCALE || "es";
+
 interface IProps {
   children?: ReactNode;
 }
 
 const ProviderComponent = ({ children }: IProps) => {
   return (
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <Suspense fallback={<Loading />}>
-          <MantineProvider>
-            <App>{children} </App>
-          </MantineProvider>
-        </Suspense>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </Provider>
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <Suspense fallback={<Loading />}>
+            <MantineProvider>
+              <App>{children} </App>
+            </MantineProvider>
+          </Suspense>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </Provider>
+    </NextIntlClientProvider>
   );
 };
 

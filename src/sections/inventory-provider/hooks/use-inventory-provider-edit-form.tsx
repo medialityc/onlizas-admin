@@ -14,8 +14,9 @@ import {
   editVariantInventory,
 } from "@/services/inventory-providers";
 import { useEffect } from "react";
+import { useIsSupplierApproved } from "@/hooks/use-is-supplier-approved";
 
-const initValue: ProductVariant = {
+const getInitValue = (isApproved: boolean): ProductVariant => ({
   id: "",
   sku: "",
   upc: "",
@@ -23,7 +24,7 @@ const initValue: ProductVariant = {
   gtin: "",
   condition: 0,
   details: {},
-  isActive: true,
+  isActive: isApproved,
   stock: 0,
   price: 0,
   volume: 0,
@@ -44,37 +45,44 @@ const initValue: ProductVariant = {
   deliveryMode: "ONLIZAS" as "ONLIZAS" | "PROVEEDOR",
   zoneIds: [],
   zones: [],
-};
+});
 
 export const useInventoryProviderEditForm = (
-  defaultValues: ProductVariant = initValue,
+  defaultValues: ProductVariant | undefined,
   inventoryId: string,
   allVariants: ProductVariant[] = [],
   handleClose?: () => void
 ) => {
+  const isApproved = useIsSupplierApproved();
+  const initValue = getInitValue(isApproved);
+  const resolvedDefaults = defaultValues ?? initValue;
   const { reset, ...form } = useForm<
     z.input<typeof productVariants>,
     unknown,
     z.output<typeof productVariants>
   >({
-    defaultValues: defaultValues as z.input<typeof productVariants>,
+    defaultValues: resolvedDefaults as z.input<typeof productVariants>,
     resolver: zodResolver(productVariants),
   });
 
   // Solo resetear cuando el ID cambia (edición de diferentes variantes)
   // No resetear en cada cambio de defaultValues para evitar perder valores del formulario
-  const variantId = defaultValues?.id;
+  const variantId = resolvedDefaults?.id;
   const normalizeGtin = (value?: string) => (value || "").trim();
   
   useEffect(() => {
-    if (defaultValues && variantId) {
-      reset(defaultValues);
+    if (resolvedDefaults && variantId) {
+      reset(resolvedDefaults);
     }
-  }, [variantId, reset, defaultValues]);
+  }, [variantId, reset, resolvedDefaults]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: ProductVariant) => {
-      const formData = await buildCreateProductVariantFormData(payload);
+      const enforcedPayload = {
+        ...payload,
+        isActive: isApproved ? payload.isActive : false,
+      };
+      const formData = await buildCreateProductVariantFormData(enforcedPayload);
       
       const res = payload.id
         ? await editVariantInventory(payload.id, formData)

@@ -12,8 +12,9 @@ import CreateInventoryVariantModal from "../modal/create-inventory-variant-modal
 import VariantsManager from "../components/inventory-variant-list/inventory-variant-list";
 import { ProductVariant } from "../schemas/inventory-provider.schema";
 import { DETAILS_MAX_ITEMS } from "@/utils/format";
+import { useIsSupplierApproved } from "@/hooks/use-is-supplier-approved";
 
-type VariantDetailRow = {
+ type VariantDetailRow = {
   key: string;
   value: string;
   isRequired?: boolean;
@@ -28,6 +29,7 @@ type Props = {
   features: CategoryFeature[];
 };
 function EditContainer({ inventory, features }: Props) {
+  const isApproved = useIsSupplierApproved();
   const { getModalState, openModal, closeModal } = useModalState();
   const createModal = getModalState("create");
 
@@ -133,7 +135,7 @@ function EditContainer({ inventory, features }: Props) {
       gtin: "",
       condition: 0,
       details: featureDetails as any,
-      isActive: true,
+      isActive: isApproved,
       stock: 0,
       price: 0,
       purchaseLimit: 0,
@@ -153,7 +155,7 @@ function EditContainer({ inventory, features }: Props) {
       zones: [],
       zoneIds: [],
     }),
-    [featureDetails],
+    [featureDetails, isApproved],
   );
 
   return (

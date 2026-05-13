@@ -7,8 +7,9 @@ import { InventoryProvider } from "@/types/inventory";
 import { ShadCnButton } from "@/components/button/shadcn-button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { PendingApprovalBanner } from "@/components/pending-approval-banner";
 
-type Props = {
+ type Props = {
   inventory: InventoryProvider;
   features: CategoryFeature[];
 };
@@ -17,6 +18,7 @@ const InventoryProviderEditContainer = ({ inventory, features }: Props) => {
 
   return (
     <div>
+      <PendingApprovalBanner />
       <div className="mb-5 flex items-center justify-start gap-2">
         <ShadCnButton
           variant={"ghost"}
