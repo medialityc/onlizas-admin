@@ -99,6 +99,11 @@ export default function SupplierAccountsList({
       { accessor: "accountNumber", title: "Número de cuenta" },
       { accessor: "bank", title: "Banco" },
       {
+        accessor: "accountHolderName",
+        title: "Titular",
+        render: (r) => <span>{r.accountHolderName || "-"}</span>,
+      },
+      {
         accessor: "isPrimaryAccount",
         title: "Principal",
         render: (r) => (
@@ -112,19 +117,15 @@ export default function SupplierAccountsList({
         title: "Acciones",
         textAlign: "center",
         render: (account) => (
-          <div className="flex justify-center gap-2">
-            {!account.isPrimaryAccount && (
-              <button
-                onClick={() => handleSetPrimary(account)}
-                className="btn btn-sm btn-outline-primary"
-                title="Marcar como principal"
-              >
-                Hacer principal
-              </button>
-            )}
+          <div className="flex justify-center">
             <ActionsMenu
               onEdit={() => handleEdit(account)}
               onDelete={() => handleDelete(account)}
+              onSetPrimary={
+                !account.isPrimaryAccount
+                  ? () => handleSetPrimary(account)
+                  : undefined
+              }
             />
           </div>
         ),

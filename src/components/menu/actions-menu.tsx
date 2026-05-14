@@ -31,6 +31,7 @@ interface MenuProps {
   onActive?: () => void;
   active?: boolean;
   onSetDefault?: () => void;
+  onSetPrimary?: () => void;
   onBlocked?: () => void;
   isBlocked?: boolean;
   onVerify?: () => void;
@@ -51,6 +52,7 @@ interface MenuProps {
   deletePermissions?: string[];
   activePermissions?: string[];
   setDefaultPermissions?: string[];
+  setPrimaryPermissions?: string[];
   documentsPermissions?: string[];
   addUsersPermissions?: string[];
   payPermissions?: string[];
@@ -92,6 +94,7 @@ const ActionsMenu = ({
   onChangeExpirationDate,
   onChangeRate,
   onSetDefault,
+  onSetPrimary,
   onApprove,
   onReject,
   onViewSupplier,
@@ -100,6 +103,7 @@ const ActionsMenu = ({
   deletePermissions,
   activePermissions,
   setDefaultPermissions,
+  setPrimaryPermissions,
   documentsPermissions,
   addUsersPermissions,
   payPermissions,
@@ -289,6 +293,16 @@ const ActionsMenu = ({
               onClick={onSetDefault}
             >
               Establecer como actual
+            </Menu.Item>
+          )}
+
+          {onSetPrimary && hasPermission(setPrimaryPermissions) && (
+            <Menu.Item
+              className="p-1 text-sm hover:text-white"
+              leftSection={<StarIcon className="h-4 w-4 " />}
+              onClick={onSetPrimary}
+            >
+              Hacer principal
             </Menu.Item>
           )}
 

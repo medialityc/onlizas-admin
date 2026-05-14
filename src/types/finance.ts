@@ -21,6 +21,12 @@ export type PlatformAccount = {
   isMainAccount: boolean;
   description: string;
   active: boolean;
+  accountHolderName?: string | null;
+  documentType?: "NIT" | "CC" | "CE" | "Pasaporte" | "Otro" | null;
+  documentNumber?: string | null;
+  city?: string | null;
+  country?: string | null;
+  swiftCode?: string | null;
 };
 
 export type GetPlatformAccounts = {
@@ -38,6 +44,12 @@ export type SupplierAccount = {
   accountType?: string | null;
   description?: string | null;
   active: boolean;
+  accountHolderName?: string | null;
+  documentType?: "NIT" | "CC" | "CE" | "Pasaporte" | "Otro" | null;
+  documentNumber?: string | null;
+  city?: string | null;
+  country?: string | null;
+  swiftCode?: string | null;
 };
 
 export type GetSupplierAccounts = {
