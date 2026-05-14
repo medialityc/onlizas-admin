@@ -35,7 +35,7 @@ export function WelcomeSupplierAccountFormSection({
   const router = useRouter();
   const [focused, setFocused] = useState<Focused>("");
 
-  const methods = useForm<SupplierAccountInput>({
+  const methods = useForm({
     resolver: zodResolver(SupplierAccountSchema),
     defaultValues: {
       name: "",
