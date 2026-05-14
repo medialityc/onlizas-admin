@@ -35,19 +35,19 @@ export function WelcomeSupplierAccountFormSection({
   const router = useRouter();
   const [focused, setFocused] = useState<Focused>("");
 
-  const methods = useForm({
+  const methods = useForm<SupplierAccountInput>({
     resolver: zodResolver(SupplierAccountSchema),
     defaultValues: {
       name: "",
       accountNumber: "",
       bank: "",
       isPrimaryAccount: true,
-      accountHolderName: "",
-      documentType: "",
-      documentNumber: "",
-      city: "",
-      country: "",
-      swiftCode: "",
+      accountHolderName: null,
+      documentType: null,
+      documentNumber: null,
+      city: null,
+      country: null,
+      swiftCode: null,
     },
   });
 
@@ -59,8 +59,17 @@ export function WelcomeSupplierAccountFormSection({
   const cardName = methods.watch("name");
 
   const submit = async (data: SupplierAccountInput) => {
+    const payload = {
+      ...data,
+      accountHolderName: data.accountHolderName || null,
+      documentType: data.documentType || null,
+      documentNumber: data.documentNumber || null,
+      city: data.city || null,
+      country: data.country || null,
+      swiftCode: data.swiftCode || null,
+    };
     try {
-      const res = await createSupplierAccount(supplierId, data);
+      const res = await createSupplierAccount(supplierId, payload);
       if (!res.error) {
         toast.success("Cuenta creada correctamente");
         router.push(afterCreateRedirectTo);

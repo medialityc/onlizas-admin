@@ -49,12 +49,12 @@ export default function PlatformAccountCreateModal({
       bank: account?.bank || "",
       isMainAccount: account?.isMainAccount ?? false,
       description: account?.description || "",
-      accountHolderName: account?.accountHolderName || "",
-      documentType: account?.documentType || "",
-      documentNumber: account?.documentNumber || "",
-      city: account?.city || "",
-      country: account?.country || "",
-      swiftCode: account?.swiftCode || "",
+      accountHolderName: account?.accountHolderName ?? null,
+      documentType: account?.documentType ?? null,
+      documentNumber: account?.documentNumber ?? null,
+      city: account?.city ?? null,
+      country: account?.country ?? null,
+      swiftCode: account?.swiftCode ?? null,
     },
   });
 
@@ -69,9 +69,18 @@ export default function PlatformAccountCreateModal({
   };
 
   const submit = async (data: PlatformAccountCreateInput) => {
+    const payload = {
+      ...data,
+      accountHolderName: data.accountHolderName || null,
+      documentType: data.documentType || null,
+      documentNumber: data.documentNumber || null,
+      city: data.city || null,
+      country: data.country || null,
+      swiftCode: data.swiftCode || null,
+    };
     try {
       if (account) {
-        const res = await updatePlatformAccount(account.id, data);
+        const res = await updatePlatformAccount(account.id, payload);
         if (!res.error) {
           toast.success("Cuenta actualizada correctamente");
         } else if (res.message) {
@@ -79,7 +88,7 @@ export default function PlatformAccountCreateModal({
           return;
         }
       } else {
-        const res = await createPlatformAccount(data);
+        const res = await createPlatformAccount(payload);
         if (!res.error) {
           toast.success("Cuenta creada correctamente");
         } else if (res.message) {
@@ -105,12 +114,12 @@ export default function PlatformAccountCreateModal({
         bank: account.bank,
         isMainAccount: account.isMainAccount,
         description: account.description || "",
-        accountHolderName: account.accountHolderName || "",
-        documentType: account.documentType || "",
-        documentNumber: account.documentNumber || "",
-        city: account.city || "",
-        country: account.country || "",
-        swiftCode: account.swiftCode || "",
+        accountHolderName: account.accountHolderName ?? null,
+        documentType: account.documentType ?? null,
+        documentNumber: account.documentNumber ?? null,
+        city: account.city ?? null,
+        country: account.country ?? null,
+        swiftCode: account.swiftCode ?? null,
       });
     }
     // If modal closed and no account, ensure clean creation state
@@ -122,12 +131,12 @@ export default function PlatformAccountCreateModal({
         bank: "",
         isMainAccount: false,
         description: "",
-        accountHolderName: "",
-        documentType: "",
-        documentNumber: "",
-        city: "",
-        country: "",
-        swiftCode: "",
+        accountHolderName: null,
+        documentType: null,
+        documentNumber: null,
+        city: null,
+        country: null,
+        swiftCode: null,
       });
     }
   }, [account, open, reset]);
@@ -246,7 +255,7 @@ export default function PlatformAccountCreateModal({
                 {...methods.register("isMainAccount")}
                 className="h-4 w-4 shrink-0 rounded border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:bg-[#1a1c23]"
               />
-              <label htmlFor="isMainAccount" className="!mb-0 text-sm text-gray-700 dark:text-gray-300">
+              <label htmlFor="isMainAccount" className="mb-0! text-sm text-gray-700 dark:text-gray-300">
                 Marcar como principal
               </label>
             </div>
