@@ -10,16 +10,13 @@ export const PlatformAccountCreateSchema = z.object({
   isMainAccount: z.boolean(),
   description: z.string().optional(),
   accountHolderName: z.string().max(100).nullable().optional(),
-  documentType: z.preprocess(
-    (val) => (val === "" ? null : val),
-    z.enum(["NIT", "CC", "CE", "Pasaporte", "Otro"]).nullable().optional()
-  ),
+  documentType: z
+    .enum(["NIT", "CC", "CE", "Pasaporte", "Otro"])
+    .nullable()
+    .optional(),
   documentNumber: z.string().max(50).nullable().optional(),
   city: z.string().max(60).nullable().optional(),
-  country: z.preprocess(
-    (val) => (val === "" ? null : val),
-    z.string().length(2).nullable().optional()
-  ),
+  country: z.string().length(2).nullable().optional(),
   swiftCode: z.string().max(11).nullable().optional(),
 });
 

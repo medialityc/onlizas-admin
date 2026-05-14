@@ -49,12 +49,12 @@ export default function SupplierAccountModal({
       accountNumber: account?.accountNumber || "",
       bank: account?.bank || "",
       isPrimaryAccount: account?.isPrimaryAccount || false,
-      accountHolderName: account?.accountHolderName || "",
-      documentType: account?.documentType || "",
-      documentNumber: account?.documentNumber || "",
-      city: account?.city || "",
-      country: account?.country || "",
-      swiftCode: account?.swiftCode || "",
+      accountHolderName: account?.accountHolderName ?? null,
+      documentType: account?.documentType ?? null,
+      documentNumber: account?.documentNumber ?? null,
+      city: account?.city ?? null,
+      country: account?.country ?? null,
+      swiftCode: account?.swiftCode ?? null,
     },
   });
 
@@ -73,9 +73,18 @@ export default function SupplierAccountModal({
   };
 
   const submit = async (data: SupplierAccountInput) => {
+    const payload = {
+      ...data,
+      accountHolderName: data.accountHolderName || null,
+      documentType: data.documentType || null,
+      documentNumber: data.documentNumber || null,
+      city: data.city || null,
+      country: data.country || null,
+      swiftCode: data.swiftCode || null,
+    };
     try {
       if (account) {
-        const res = await updateSupplierAccount(account.id, data);
+        const res = await updateSupplierAccount(account.id, payload);
         if (!res.error) {
           toast.success("Cuenta actualizada correctamente");
         } else if (res.message) {
@@ -83,7 +92,7 @@ export default function SupplierAccountModal({
           return;
         }
       } else {
-        const res = await createSupplierAccount(supplierId, data);
+        const res = await createSupplierAccount(supplierId, payload);
         if (!res.error) {
           toast.success("Cuenta creada correctamente");
         } else if (res.message) {
@@ -106,12 +115,12 @@ export default function SupplierAccountModal({
         accountNumber: formatCardNumber(account.accountNumber),
         bank: account.bank,
         isPrimaryAccount: account.isPrimaryAccount,
-        accountHolderName: account.accountHolderName || "",
-        documentType: account.documentType || "",
-        documentNumber: account.documentNumber || "",
-        city: account.city || "",
-        country: account.country || "",
-        swiftCode: account.swiftCode || "",
+        accountHolderName: account.accountHolderName ?? null,
+        documentType: account.documentType ?? null,
+        documentNumber: account.documentNumber ?? null,
+        city: account.city ?? null,
+        country: account.country ?? null,
+        swiftCode: account.swiftCode ?? null,
       });
     }
     if (!open && !account) {
@@ -120,12 +129,12 @@ export default function SupplierAccountModal({
         accountNumber: "",
         bank: "",
         isPrimaryAccount: false,
-        accountHolderName: "",
-        documentType: "",
-        documentNumber: "",
-        city: "",
-        country: "",
-        swiftCode: "",
+        accountHolderName: null,
+        documentType: null,
+        documentNumber: null,
+        city: null,
+        country: null,
+        swiftCode: null,
       });
     }
   }, [account, open, reset]);
@@ -220,7 +229,7 @@ export default function SupplierAccountModal({
             </div>
             <label
               htmlFor="isPrimaryAccount"
-              className="!mb-0 flex items-center gap-2 cursor-pointer"
+              className="mb-0! flex items-center gap-2 cursor-pointer"
             >
               <input
                 type="checkbox"

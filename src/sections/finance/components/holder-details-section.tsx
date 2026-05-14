@@ -16,7 +16,7 @@ export default function HolderDetailsSection() {
 
   useEffect(() => {
     if (country === "CO" && !isInternational) {
-      setValue("swiftCode", "");
+      setValue("swiftCode", null);
     }
   }, [country, isInternational, setValue]);
 
