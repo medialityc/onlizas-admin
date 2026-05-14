@@ -49,7 +49,6 @@ export default function StoresCreateModal({
       phoneNumber: store?.phoneNumber ?? "",
       address: store?.address ?? "",
       logoStyle: store?.logoStyle ?? undefined,
-      active: isApproved,
       ownerId: user?.id ?? 0,
       approvalProcessId: store?.approvalProcessId ?? undefined,
     },
@@ -143,7 +142,7 @@ export default function StoresCreateModal({
       formData.append("email", data.email);
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("address", data.address);
-      formData.append("active", (isApproved ? data.active : false) ? "true" : "false");
+      formData.append("active", isApproved ? "true" : "false");
 
       console.log(formData);
       let response = null;
