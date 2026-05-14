@@ -16,6 +16,7 @@ import {
   SupplierAccountInput,
 } from "@/sections/finance/schemas/supplier-account";
 import { createSupplierAccount } from "@/services/finance/supplier-accounts";
+import HolderDetailsSection from "./holder-details-section";
 
 const formatCardNumber = (value: string) => {
   const digits = value.replace(/\D/g, "").slice(0, 16);
@@ -41,6 +42,12 @@ export function WelcomeSupplierAccountFormSection({
       accountNumber: "",
       bank: "",
       isPrimaryAccount: true,
+      accountHolderName: "",
+      documentType: "",
+      documentNumber: "",
+      city: "",
+      country: "",
+      swiftCode: "",
     },
   });
 
@@ -151,6 +158,9 @@ export function WelcomeSupplierAccountFormSection({
         <p className="text-xs text-muted-foreground">
           Esta cuenta se marcará como principal para recibir los pagos.
         </p>
+        <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+          <HolderDetailsSection />
+        </div>
       </div>
 
       <div className="flex justify-end gap-3 pt-6">

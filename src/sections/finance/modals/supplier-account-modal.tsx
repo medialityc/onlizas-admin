@@ -18,6 +18,7 @@ import {
 } from "@/services/finance/supplier-accounts";
 import { SupplierAccount } from "@/types/finance";
 import { toast } from "react-toastify";
+import HolderDetailsSection from "../components/holder-details-section";
 
 const formatCardNumber = (value: string) => {
   const digits = value.replace(/\D/g, "").slice(0, 16);
@@ -48,6 +49,12 @@ export default function SupplierAccountModal({
       accountNumber: account?.accountNumber || "",
       bank: account?.bank || "",
       isPrimaryAccount: account?.isPrimaryAccount || false,
+      accountHolderName: account?.accountHolderName || "",
+      documentType: account?.documentType || "",
+      documentNumber: account?.documentNumber || "",
+      city: account?.city || "",
+      country: account?.country || "",
+      swiftCode: account?.swiftCode || "",
     },
   });
 
@@ -99,6 +106,12 @@ export default function SupplierAccountModal({
         accountNumber: formatCardNumber(account.accountNumber),
         bank: account.bank,
         isPrimaryAccount: account.isPrimaryAccount,
+        accountHolderName: account.accountHolderName || "",
+        documentType: account.documentType || "",
+        documentNumber: account.documentNumber || "",
+        city: account.city || "",
+        country: account.country || "",
+        swiftCode: account.swiftCode || "",
       });
     }
     if (!open && !account) {
@@ -107,6 +120,12 @@ export default function SupplierAccountModal({
         accountNumber: "",
         bank: "",
         isPrimaryAccount: false,
+        accountHolderName: "",
+        documentType: "",
+        documentNumber: "",
+        city: "",
+        country: "",
+        swiftCode: "",
       });
     }
   }, [account, open, reset]);
@@ -213,6 +232,9 @@ export default function SupplierAccountModal({
                 Marcar como cuenta principal para pagos
               </span>
             </label>
+            <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+              <HolderDetailsSection />
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-6">

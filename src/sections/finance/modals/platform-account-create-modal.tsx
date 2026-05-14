@@ -18,6 +18,7 @@ import {
 import { PlatformAccount } from "@/types/finance";
 import { toast } from "react-toastify";
 import Cards, { Focused } from "react-credit-cards-2";
+import HolderDetailsSection from "../components/holder-details-section";
 
 const formatCardNumber = (value: string) => {
   const digits = value.replace(/\D/g, "").slice(0, 16);
@@ -48,6 +49,12 @@ export default function PlatformAccountCreateModal({
       bank: account?.bank || "",
       isMainAccount: account?.isMainAccount ?? false,
       description: account?.description || "",
+      accountHolderName: account?.accountHolderName || "",
+      documentType: account?.documentType || "",
+      documentNumber: account?.documentNumber || "",
+      city: account?.city || "",
+      country: account?.country || "",
+      swiftCode: account?.swiftCode || "",
     },
   });
 
@@ -98,6 +105,12 @@ export default function PlatformAccountCreateModal({
         bank: account.bank,
         isMainAccount: account.isMainAccount,
         description: account.description || "",
+        accountHolderName: account.accountHolderName || "",
+        documentType: account.documentType || "",
+        documentNumber: account.documentNumber || "",
+        city: account.city || "",
+        country: account.country || "",
+        swiftCode: account.swiftCode || "",
       });
     }
     // If modal closed and no account, ensure clean creation state
@@ -109,6 +122,12 @@ export default function PlatformAccountCreateModal({
         bank: "",
         isMainAccount: false,
         description: "",
+        accountHolderName: "",
+        documentType: "",
+        documentNumber: "",
+        city: "",
+        country: "",
+        swiftCode: "",
       });
     }
   }, [account, open, reset]);
@@ -239,6 +258,9 @@ export default function PlatformAccountCreateModal({
               maxLength={200}
               rows={3}
             />
+            <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+              <HolderDetailsSection />
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-6">

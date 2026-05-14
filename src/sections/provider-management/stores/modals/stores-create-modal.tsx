@@ -221,7 +221,7 @@ export default function StoresCreateModal({
             </div>
             {/* Proceso de aprobación — auto-completa */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-[13px]">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3.25">
                 Proceso de Aprobación <span className="text-red-500">*</span>
               </label>
               <div className="relative">

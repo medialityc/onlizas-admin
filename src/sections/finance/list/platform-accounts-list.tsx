@@ -98,6 +98,11 @@ export default function PlatformAccountsList({
       { accessor: "purposeName", title: "Propósito" },
       { accessor: "bank", title: "Banco" },
       {
+        accessor: "accountHolderName",
+        title: "Titular",
+        render: (r) => <span>{r.accountHolderName || "-"}</span>,
+      },
+      {
         accessor: "isMainAccount",
         title: "Principal",
         render: (r) => (
