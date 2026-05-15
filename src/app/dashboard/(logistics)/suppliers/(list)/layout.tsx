@@ -9,14 +9,16 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div>
       <div className="mb-5 flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold text-dark dark:text-white-light">
-            Gestión de Solicitud de Proveedores
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Administra las solicitudes de proveedores del sistema y sus datos
-            asociados
-          </p>
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-balance">
+              Gestión de Solicitud de Proveedores
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Administra las solicitudes de proveedores del sistema y sus datos
+              asociados
+            </p>
+          </div>
         </div>
       </div>
       <SupplierTabs />

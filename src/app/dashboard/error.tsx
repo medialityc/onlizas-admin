@@ -26,15 +26,6 @@ export default function ErrorBoundary({
 
   const message = error?.message || (error as any)?.cause?.message;
 
-  // Log discreto para debugging (no visible al usuario)
-  // Estructurado para facilitar observabilidad
-  console.error("[Dashboard ErrorBoundary]", {
-    status,
-    message,
-    digest: error?.digest,
-    full: error,
-  });
-
   if (status === 401) {
     return <Error401Fallback error={error} />;
   }

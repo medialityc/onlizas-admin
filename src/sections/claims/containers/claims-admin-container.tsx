@@ -20,10 +20,7 @@ interface Props {
   query: SearchParams;
 }
 
-export default function ClaimsAdminContainer({
-  claimsPromise,
-  query,
-}: Props) {
+export default function ClaimsAdminContainer({ claimsPromise, query }: Props) {
   const { updateFiltersInUrl } = useFiltersUrl();
   const { getModalState, openModal, closeModal } = useModalState();
   const [selectedClaim, setSelectedClaim] = useState<Claim | null>(null);
@@ -82,9 +79,7 @@ export default function ClaimsAdminContainer({
         sortable: true,
         render: (c) => (
           <span className="text-sm text-gray-500 dark:text-gray-400">
-            {c.createdAt
-              ? new Date(c.createdAt).toLocaleDateString()
-              : "-"}
+            {c.createdAt ? new Date(c.createdAt).toLocaleDateString() : "-"}
           </span>
         ),
       },
@@ -111,12 +106,10 @@ export default function ClaimsAdminContainer({
 
   return (
     <div className="space-y-6">
-      <div className="panel flex flex-col gap-4">
+      <div className=" flex flex-col gap-4">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-balance">
-              Reclamaciones
-            </h1>
+            <h1 className="text-3xl font-bold text-balance">Reclamaciones</h1>
             <p className="text-muted-foreground mt-1">
               Gestiona las reclamaciones de los clientes
             </p>

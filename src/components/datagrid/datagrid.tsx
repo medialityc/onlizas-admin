@@ -49,7 +49,7 @@ export function DataGrid<T extends Record<string, any>>({
   } = useDataGridHandlers({ searchParams, onSearchParamsChange });
 
   // Get visible columns (filter out hidden ones)
-  const visibleColumns = columns.filter(
+  const visibleColumns = (columns ?? [])?.filter(
     (column) => !hiddenColumns.includes(column.accessor as string),
   );
 
@@ -89,8 +89,8 @@ export function DataGrid<T extends Record<string, any>>({
         createLoading={createLoading}
         createText={createText}
         createPermissions={createPermissions}
-        columns={columns}
-        hiddenColumns={hiddenColumns}
+        columns={columns ?? []}
+        hiddenColumns={hiddenColumns ?? []}
         onToggleColumn={toggleColumnVisibility}
         showColumnSelector={showColumnSelector}
         onToggleColumnSelector={() =>
@@ -107,7 +107,7 @@ export function DataGrid<T extends Record<string, any>>({
           <DataTable<T>
             withTableBorder={false}
             columns={visibleColumns}
-            records={data?.data || simpleData || []}
+            records={Array.isArray(data?.data) ? data.data : (simpleData ?? [])}
             // Agregar el loading
             fetching={fetching}
             minHeight={minHeight}

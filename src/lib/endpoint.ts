@@ -96,6 +96,7 @@ export const backendRoutes = {
     detail: (id: string | number) =>
       `${process.env.NEXT_PUBLIC_API_URL}categories/admin/${id}`, // GET
 
+    suppliersByCategories: `${process.env.NEXT_PUBLIC_API_URL}admin/categories/suppliers`, // GET
     //me
     meApprovedCategories: `${process.env.NEXT_PUBLIC_API_URL}supplier/me/approved-categories`,
   },
@@ -682,7 +683,8 @@ export const backendRoutes = {
   },
   claims: {
     list: `${process.env.NEXT_PUBLIC_API_URL}claims`,
-    resolve: (id: string | number) => `${process.env.NEXT_PUBLIC_API_URL}claims/${id}/resolve`,
+    resolve: (id: string | number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}claims/${id}/resolve`,
   },
   systemInfo: {
     addresses: {

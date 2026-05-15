@@ -4,7 +4,11 @@ import { useEffect } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { ColumnSelectorProps } from "./types";
-import { EXCLUDED_COLUMN_ACCESSORS, COLUMN_SELECTOR_WIDTH, COLUMN_SELECTOR_MAX_HEIGHT } from "./constants";
+import {
+  EXCLUDED_COLUMN_ACCESSORS,
+  COLUMN_SELECTOR_WIDTH,
+  COLUMN_SELECTOR_MAX_HEIGHT,
+} from "./constants";
 
 export function ColumnSelector<T extends Record<string, any>>({
   columns,
@@ -14,7 +18,7 @@ export function ColumnSelector<T extends Record<string, any>>({
   onToggle,
 }: ColumnSelectorProps<T>) {
   // Get toggle-able columns (exclude actions and other special columns)
-  const toggleableColumns = columns.filter(column => {
+  const toggleableColumns = (columns ?? []).filter((column) => {
     const accessor = column.accessor as string;
     return !EXCLUDED_COLUMN_ACCESSORS.includes(accessor) && column.title;
   });
@@ -23,14 +27,15 @@ export function ColumnSelector<T extends Record<string, any>>({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      if (!target.closest('.column-selector-container')) {
+      if (!target.closest(".column-selector-container")) {
         onToggle();
       }
     };
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [isOpen, onToggle]);
 
@@ -43,18 +48,22 @@ export function ColumnSelector<T extends Record<string, any>>({
       >
         <EyeIcon className="h-4 w-4" />
         Columnas
-        <ChevronDownIcon 
-          className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} 
+        <ChevronDownIcon
+          className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
-      
+
       {isOpen && (
-        <div className={`absolute right-0 top-full z-50 mt-2 ${COLUMN_SELECTOR_WIDTH} rounded-lg border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-600 dark:bg-gray-800 dark:shadow-gray-900/20`}>
+        <div
+          className={`absolute right-0 top-full z-50 mt-2 ${COLUMN_SELECTOR_WIDTH} rounded-lg border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-600 dark:bg-gray-800 dark:shadow-gray-900/20`}
+        >
           <h4 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
             Mostrar/Ocultar Columnas
           </h4>
-          <div className={`space-y-2 ${COLUMN_SELECTOR_MAX_HEIGHT} overflow-y-auto`}>
-            {toggleableColumns.map((column) => {
+          <div
+            className={`space-y-2 ${COLUMN_SELECTOR_MAX_HEIGHT} overflow-y-auto`}
+          >
+            {(toggleableColumns ?? []).map((column) => {
               const accessor = column.accessor as string;
               const isVisible = !hiddenColumns.includes(accessor);
               return (

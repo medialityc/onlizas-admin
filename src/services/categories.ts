@@ -13,10 +13,11 @@ import {
   Category,
   GetAllAduanaCategories,
   GetAllCategories,
+  GetAllSuppliersByCategory,
 } from "@/types/categories";
 
 export async function createCategory(
-  data: FormData
+  data: FormData,
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.categories.create,
@@ -33,7 +34,7 @@ export async function createCategory(
 
 export async function updateCategory(
   id: string | number,
-  data: FormData
+  data: FormData,
 ): Promise<ApiResponse<Category>> {
   const res = await nextAuthFetch({
     url: backendRoutes.categories.update(id),
@@ -49,7 +50,7 @@ export async function updateCategory(
 }
 
 export async function toggleStatusCategory(
-  id: string | number
+  id: string | number,
 ): Promise<ApiResponse<ApiStatusResponse>> {
   const res = await nextAuthFetch({
     url: backendRoutes.categories.toggleStatus(id),
@@ -64,11 +65,11 @@ export async function toggleStatusCategory(
 }
 
 export async function getAllCategories(
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<GetAllCategories>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.categories.list
+    backendRoutes.categories.list,
   ).build();
 
   const res = await nextAuthFetch({
@@ -83,8 +84,26 @@ export async function getAllCategories(
   return buildApiResponseAsync<GetAllCategories>(res);
 }
 
+export async function getSuppliersByCategories(
+  params: IQueryable,
+): Promise<ApiResponse<GetAllSuppliersByCategory>> {
+  const url = new QueryParamsURLFactory(
+    { ...params },
+    backendRoutes.categories.suppliersByCategories,
+  ).build();
+
+  const res = await nextAuthFetch({
+    url,
+    method: "GET",
+    useAuth: true,
+  });
+
+  if (!res.ok) return handleApiServerError(res);
+  return buildApiResponseAsync<GetAllSuppliersByCategory>(res);
+}
+
 export async function getCategoryById(
-  id: string | number
+  id: string | number,
 ): Promise<ApiResponse<Category>> {
   const res = await nextAuthFetch({
     url: backendRoutes.categories.detail(id),
@@ -96,7 +115,7 @@ export async function getCategoryById(
   return buildApiResponseAsync<Category>(res);
 }
 export async function getAduanaCategories(
-  params?: IQueryable
+  params?: IQueryable,
 ): Promise<ApiResponse<GetAllAduanaCategories>> {
   // Usa el endpoint backend optimizado: GET /aduana-categories/scroll (keyset pagination).
   // Ventajas vs /aduana-categories (offset):
@@ -112,7 +131,7 @@ export async function getAduanaCategories(
   // tiene siempre el cursor anterior cuando se necesita.
   const page = Number(params?.page ?? 1);
   const pageSize = Number(
-    params?.pagination?.pageSize ?? params?.pageSize ?? 35
+    params?.pagination?.pageSize ?? params?.pageSize ?? 35,
   );
   const search = (params?.search as string | undefined) ?? "";
   const active = params?.active as boolean | undefined;
@@ -205,11 +224,11 @@ function getCursorMap(sig: string): Map<number, string> {
 }
 // Para autocomplete infinito en promociones
 export async function getCategoriesForPromotion(
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<GetAllCategories>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.categories.list
+    backendRoutes.categories.list,
   ).build();
 
   const res = await nextAuthFetch({
@@ -227,11 +246,11 @@ export async function getCategoriesForPromotion(
 // Me supplier
 
 export async function getAllMeApprovedCategories(
-  params: IQueryable
+  params: IQueryable,
 ): Promise<ApiResponse<GetAllCategories>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.categories.list
+    backendRoutes.categories.list,
   ).build();
 
   const res = await nextAuthFetch({
@@ -249,11 +268,11 @@ export async function getAllMeApprovedCategories(
 // Get categories by importer (filtered by importer's nomenclators)
 export async function getCategoriesByImporter(
   importerId: string | number,
-  params: IQueryable = {}
+  params: IQueryable = {},
 ): Promise<ApiResponse<GetAllCategories>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.importers.categories(importerId)
+    backendRoutes.importers.categories(importerId),
   ).build();
 
   const res = await nextAuthFetch({

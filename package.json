@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Panel de administración para el sistema ZAS - Gestión de usuarios, subsistemas y configuraciones",
   "private": true,
+  "packageManager": "pnpm@10.15.1",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",

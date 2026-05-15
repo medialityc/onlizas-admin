@@ -25,7 +25,6 @@ import {
   History,
   LayoutDashboard,
   ShieldCheck,
-  Wallet,
   WarehouseIcon,
   CalendarRange,
   ClipboardList,
@@ -48,25 +47,13 @@ import {
 
 export const sidebarSections: SidebarSection[] = [
   {
-    id: "dashboard",
-    label: "Panel Principal",
-    noSection: true,
-    items: [
-      {
-        id: "dashboard-main",
-        label: "Dashboard",
-        path: paths.dashboard.root,
-        icon: <CubeIcon className="h-4 w-4" />,
-      },
-    ],
-  },
-  {
     id: "sales",
     label: "Ventas y Pedidos",
     permissions: [
       ...PERMISSION_STORE,
       ...PERMISSION_ORDERS,
       ...PERMISSION_ADMIN,
+      PERMISSION_ENUM.RETRIEVE,
     ],
     items: [
       {
@@ -102,7 +89,14 @@ export const sidebarSections: SidebarSection[] = [
   {
     id: "catalog",
     label: "Catálogo",
-    permissions: [...PERMISSION_ADMIN, ...PERMISSION_PRODUCT],
+    permissions: [
+      ...PERMISSION_ADMIN,
+      ...PERMISSION_PRODUCT,
+      PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+      PERMISSION_ENUM.SUPPLIER_CREATE,
+      PERMISSION_ENUM.SUPPLIER_UPDATE,
+      PERMISSION_ENUM.SUPPLIER_DELETE,
+    ],
     items: [
       {
         id: "departments",
@@ -169,9 +163,14 @@ export const sidebarSections: SidebarSection[] = [
     ],
   },
   {
-    id: "inventory",
-    label: "Inventario",
-    permissions: [...PERMISSION_ADMIN, ...PERMISSION_INVENTORY],
+    id: "operations",
+    label: "Operaciones",
+    permissions: [
+      ...PERMISSION_ADMIN,
+      ...PERMISSION_INVENTORY,
+      ...PERMISSION_SUPPLIER_ZONES,
+      PERMISSION_ENUM.SUPPLIER_RETRIEVE,
+    ],
     items: [
       {
         id: "inventory",
@@ -261,14 +260,6 @@ export const sidebarSections: SidebarSection[] = [
         icon: <Landmark className="size-4" />,
         permissions: PERMISSION_SUPPLIER_ACCOUNTS,
       },
-    ],
-  },
-  {
-    id: "payments",
-    label: "Pagos",
-    icon: <Wallet className="size-4" />,
-    permissions: [...PERMISSION_ADMIN],
-    items: [
       {
         id: "payment-gateway",
         label: "Pasarelas de Pago",
@@ -286,8 +277,8 @@ export const sidebarSections: SidebarSection[] = [
     ],
   },
   {
-    id: "security",
-    label: "Seguridad",
+    id: "admin",
+    label: "Administración",
     permissions: [...PERMISSION_ADMIN],
     items: [
       {
@@ -310,15 +301,11 @@ export const sidebarSections: SidebarSection[] = [
 
 export const defaultExpandedSections = {
   dashboard: true,
-  "order-management": false,
-  operations: false,
-  financial: false,
+  sales: true,
   catalog: true,
-  security: true,
-  logistics: true,
-  administration: false,
-  finance: true,
-  payments: true,
+  operations: false,
+  finance: false,
+  admin: false,
 };
 
 export const defaultExpandedItems = {

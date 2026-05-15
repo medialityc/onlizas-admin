@@ -38,6 +38,16 @@ export type CreateCategory = {
 
 export type UpdateCategory = CreateCategory;
 
+export type SupplierListItem = {
+  id: string;
+  name: string;
+  businessName?: string;
+  email?: string;
+};
+
+export type GetAllSuppliersByCategory =
+  import("./common").PaginatedResponse<SupplierListItem>;
+
 export type GetAllCategories = PaginatedResponse<Category>;
 export type GetAllAduanaCategories = PaginatedResponse<AduanaCategory>;
 export type CategoryLogs = {

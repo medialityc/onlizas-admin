@@ -52,10 +52,10 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
   const filteredOptions = useMemo(() => {
     if (!searchTerm.trim()) return options;
     const term = searchTerm.toLowerCase();
-    return options.filter(
+    return options?.filter(
       (option) =>
         option.label.toLowerCase().includes(term) ||
-        option.value.toLowerCase().includes(term)
+        option.value.toLowerCase().includes(term),
     );
   }, [options, searchTerm]);
 
@@ -75,7 +75,7 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
 
       router.replace(`?${params.toString()}`, { scroll: false });
     },
-    [router, searchParams, searchParamKey, allowMultiple, separator]
+    [router, searchParams, searchParamKey, allowMultiple, separator],
   );
 
   const handleStatusToggle = useCallback(
@@ -91,7 +91,7 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
         updateSearchParams(newStatuses);
       }
     },
-    [allowMultiple, selectedStatuses, updateSearchParams]
+    [allowMultiple, selectedStatuses, updateSearchParams],
   );
 
   const clearAll = useCallback(() => {
@@ -248,7 +248,7 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
                           },
                           "hover:bg-gray-50 dark:hover:bg-gray-700",
                           "transition-colors duration-150",
-                          "flex items-center justify-between group"
+                          "flex items-center justify-between group",
                         )}
                         type="button"
                         role="option"

@@ -1,14 +1,18 @@
 FROM node:22-alpine AS base
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
 FROM base AS deps
 
 RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN npm i --legacy-peer-deps
+RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
 
@@ -20,7 +24,7 @@ COPY . .
 
 COPY .env .env.production
 
-RUN npm run build
+RUN pnpm run build
 
 FROM base AS runner
 
