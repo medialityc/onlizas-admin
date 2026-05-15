@@ -33,7 +33,7 @@ export function WarehouseForm({ warehouse, afterCreateRedirectTo }: Props) {
 
   return (
     <FormProvider
-      methods={form}
+      methods={form as any}
       onSubmit={onSubmit}
       id="warehouse-form"
       noValidate

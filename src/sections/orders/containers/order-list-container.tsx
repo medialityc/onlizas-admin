@@ -3,7 +3,6 @@
 import { Download, RefreshCw } from "lucide-react";
 import { useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ApiResponse } from "zas-sso-client/dist/lib/api";
 import { GetAllOrders, OrderStatus } from "@/types/order";
 import useFiltersUrl from "@/hooks/use-filters-url";
 import { SearchParams } from "@/types/fetch/request";
@@ -13,6 +12,7 @@ import { Button } from "@/components/button/button";
 import { OrderStats } from "../components/order-stats";
 import { StatusFilter } from "@/components/filters/status-filters";
 import { OrdersListExportActions } from "../components/orders-export-actions";
+import { ApiResponse } from "@/types/api";
 
 type Props = {
   data: ApiResponse<GetAllOrders>;

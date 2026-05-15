@@ -1,5 +1,4 @@
 import { fetchMyPermissions, getServerSession } from "zas-sso-client";
-import type { Permission as SSOPermission } from "zas-sso-client/dist/permissions-control/server";
 import {
   getPermissionCodes,
   determineUserRole,
@@ -8,7 +7,8 @@ import {
 
 export type { UserRole, ModuleName } from "./permission-utils";
 
-export interface Permission extends SSOPermission {
+export interface Permission {
+  code: string;
   subsystemId?: string;
   subsystem?: {
     id: string;
@@ -75,7 +75,10 @@ export async function getServerPermissions(): Promise<Permission[]> {
 
     const resolvedPermissions = extractPermissionsFromResponse(permissions);
 
-    if (!Array.isArray(resolvedPermissions) || resolvedPermissions.length === 0) {
+    if (
+      !Array.isArray(resolvedPermissions) ||
+      resolvedPermissions.length === 0
+    ) {
       return [];
     }
 

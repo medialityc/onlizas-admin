@@ -39,7 +39,7 @@ export default function WarehouseSelectedModal({
         });
       }
     },
-    [form]
+    [form],
   );
 
   // Control de permisos
@@ -56,7 +56,7 @@ export default function WarehouseSelectedModal({
     <SimpleModal open={open} onClose={onClose} title={"Transferencia"}>
       <div className="p-5">
         <FormProvider
-          methods={form}
+          methods={form as any}
           onSubmit={onSubmit}
           id="warehouse-origin-selected-form"
         >

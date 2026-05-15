@@ -4,17 +4,17 @@ import { buildApiResponseAsync, handleApiServerError } from "@/lib/api";
 import { nextAuthFetch } from "./utils/next-auth-fetch";
 import { backendRoutes } from "@/lib/endpoint";
 import { IQueryable } from "@/types/fetch/request";
-import { ApiResponse } from "zas-sso-client/dist/lib/api";
 import { QueryParamsURLFactory } from "@/lib/request";
 import { Gateway, GetAllGateways } from "@/types";
+import { ApiResponse } from "@/types/api";
 
 // Obtener todas las pasarelas
 export async function getAllGateways(
-  params: IQueryable = {}
+  params: IQueryable = {},
 ): Promise<ApiResponse<Gateway[]>> {
   const url = new QueryParamsURLFactory(
     { ...params },
-    backendRoutes.regions.payments.list
+    backendRoutes.regions.payments.list,
   ).build();
 
   const res = await nextAuthFetch({
@@ -31,7 +31,7 @@ export async function getAllGateways(
 
 // Obtener una pasarela específica
 export async function getGatewayById(
-  id: string
+  id: string,
 ): Promise<ApiResponse<Gateway>> {
   const url = backendRoutes.regions.payments.update(id);
 
@@ -49,7 +49,7 @@ export async function getGatewayById(
 
 // Crear una nueva pasarela
 export async function createGateway(
-  data: Omit<Gateway, "id">
+  data: Omit<Gateway, "id">,
 ): Promise<ApiResponse<Gateway>> {
   const url = backendRoutes.regions.payments.list;
   const res = await nextAuthFetch({
@@ -68,7 +68,7 @@ export async function createGateway(
 // Actualizar una pasarela
 export async function updateGateway(
   id: string,
-  data: Gateway
+  data: Gateway,
 ): Promise<ApiResponse<Gateway>> {
   const url = backendRoutes.regions.payments.update(id);
 
@@ -107,7 +107,7 @@ export async function deleteGateway(id: string): Promise<ApiResponse<void>> {
 
 // Establecer una pasarela como predeterminada
 export async function setGatewayAsDefault(
-  id: string
+  id: string,
 ): Promise<ApiResponse<void>> {
   const url = backendRoutes.regions.payments.setDefault(id);
 

@@ -31,7 +31,7 @@ export function MeWarehouseForm({ warehouse, onClose }: Props) {
 
   return (
     <FormProvider
-      methods={form}
+      methods={form as any}
       onSubmit={onSubmit}
       id="me-warehouse-form"
       noValidate

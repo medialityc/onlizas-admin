@@ -33,7 +33,7 @@ const InventoryEditForm = ({
   return (
     <section>
       {/* details */}
-      <FormProvider methods={{ ...form, reset }} onSubmit={onSubmit}>
+      <FormProvider methods={{ ...(form as any), reset }} onSubmit={onSubmit}>
         <InventoryEditVariantContent
           index={index}
           isPending={isPending}
