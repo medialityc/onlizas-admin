@@ -82,7 +82,7 @@ const InventoryProviderCard = ({ item, reviewSummary }: Props) => {
         </div>
       </CardHeader>
 
-      <CardContent className="pb-4">
+      <CardContent className="pb-0">
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-muted-foreground">Variantes</p>
@@ -102,7 +102,7 @@ const InventoryProviderCard = ({ item, reviewSummary }: Props) => {
           </div>
         </div>
 
-        <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-3 space-y-1.5">
+        <div className="mt-2 border-t border-gray-200 dark:border-gray-700 pt-2 space-y-1.5">
           <div className="flex items-center justify-between">
             <span className="text-xs text-muted-foreground">Producto</span>
             <RatingStars value={reviewSummary?.productQuality ?? 0} size="sm" />
@@ -127,7 +127,7 @@ const InventoryProviderCard = ({ item, reviewSummary }: Props) => {
         </div>
       </CardContent>
 
-      <CardFooter className="grid grid-cols-2 gap-2 pt-2">
+      <CardFooter className="grid grid-cols-2 gap-2 pt-0">
         {hasReadPermission && (
           <Link href={`/dashboard/inventory/${item?.id}/details`}>
             <Button

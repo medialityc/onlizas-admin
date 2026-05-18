@@ -13,18 +13,27 @@ import { usePermissions } from "@/hooks/use-permissions";
 
 interface BrandFormProps {
   initValue?: BrandFormData;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+  submitLabel?: string;
 }
 
 /** Permisos que permiten guardar/crear marcas (admin o proveedor) */
 const SAVE_BRAND_PERMS = [PERMISSION_ENUM.CREATE, PERMISSION_ENUM.SUPPLIER_CREATE];
 
-export default function BrandForm({ initValue }: BrandFormProps) {
-  const { form, isPending, onSubmit } = useBrandCreateForm(initValue);
+export default function BrandForm({ initValue, onSuccess, onCancel, submitLabel }: BrandFormProps) {
+  const { form, isPending, onSubmit } = useBrandCreateForm(initValue, onSuccess);
   const { hasPermission } = usePermissions();
   const hasUpdatePermission = hasPermission(SAVE_BRAND_PERMS);
 
   const { push } = useRouter();
-  const handleCancel = useCallback(() => push("/dashboard/brands"), [push]);
+  const handleCancel = useCallback(() => {
+    if (onCancel) {
+      onCancel();
+    } else {
+      push("/dashboard/brands");
+    }
+  }, [onCancel, push]);
 
   return (
     <section>
@@ -52,7 +61,7 @@ export default function BrandForm({ initValue }: BrandFormProps) {
             disabled={isPending}
             className="btn btn-primary"
           >
-            Guardar
+            {submitLabel || "Guardar"}
           </LoaderButton>
         )}
       </div>
