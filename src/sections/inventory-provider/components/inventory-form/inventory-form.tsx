@@ -87,6 +87,7 @@ function InventoryForm({ provider, forProvider }: Props) {
         label="Seleccionar un producto"
         onFetch={(params) => getAllProductsBySupplier(supplierId, params)}
         disabled={!supplierId}
+        enabled={!!supplierId}
         extraFilters={{ supplierId }}
         required
         queryKey={"products"}
@@ -120,6 +121,7 @@ function InventoryForm({ provider, forProvider }: Props) {
         name="storeId"
         label="Tienda"
         disabled={!supplierId}
+        enabled={!!supplierId}
         required
         onFetch={(params) => getAllProviderStores(supplierId, params)}
         extraFilters={{ supplierId }}
