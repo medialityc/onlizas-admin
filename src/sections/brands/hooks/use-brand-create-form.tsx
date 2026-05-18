@@ -12,7 +12,8 @@ const initValues: BrandFormData = {
 };
 
 export const useBrandCreateForm = (
-  defaultValues: BrandFormData = initValues
+  defaultValues: BrandFormData = initValues,
+  onSuccessCallback?: () => void
 ) => {
   const { push } = useRouter();
   const form = useForm({
@@ -34,7 +35,11 @@ export const useBrandCreateForm = (
       toast.success(
         `Se ${defaultValues?.id ? "editó" : "creó"} correctamente la marca`
       );
-      push("/dashboard/brands");
+      if (onSuccessCallback) {
+        onSuccessCallback();
+      } else {
+        push("/dashboard/brands");
+      }
     },
     onError: async (error: any) => {
       toast.error(error?.message);

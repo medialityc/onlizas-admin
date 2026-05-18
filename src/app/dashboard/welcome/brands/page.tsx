@@ -41,7 +41,7 @@ export default async function WelcomeBrandsPage() {
         </div>
       </div>
 
-      <div className="rounded-xl border bg-white/90 p-4 shadow-sm dark:bg-gray-950/80">
+      <div className="rounded-xl border bg-white/90 p-6 shadow-sm dark:bg-gray-950/80">
         <WelcomeBrandFormSection afterCreateRedirectTo="/dashboard/welcome/products" />
       </div>
 

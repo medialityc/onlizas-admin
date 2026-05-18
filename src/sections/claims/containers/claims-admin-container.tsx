@@ -12,6 +12,7 @@ import ActionsMenu from "@/components/menu/actions-menu";
 import { ClaimStatus, statusVariantMap } from "../constants/claim-status";
 import { typeLabelMap } from "../constants/claim-type";
 import ResolveClaimModal from "../modals/resolve-claim-modal";
+import ViewClaimModal from "../modals/view-claim-modal";
 import { useModalState } from "@/hooks/use-modal-state";
 import { PERMISSION_ENUM } from "@/lib/permissions";
 
@@ -28,6 +29,14 @@ export default function ClaimsAdminContainer({ claimsPromise, query }: Props) {
   const handleSearchParamsChange = (params: SearchParams) => {
     updateFiltersInUrl(params);
   };
+
+  const handleViewDetails = useCallback(
+    (claim: Claim) => {
+      setSelectedClaim(claim);
+      openModal("view", claim.id);
+    },
+    [openModal],
+  );
 
   const handleResolve = useCallback(
     (claim: Claim) => {
@@ -89,19 +98,24 @@ export default function ClaimsAdminContainer({ claimsPromise, query }: Props) {
         textAlign: "center",
         render: (c) => (
           <div className="flex justify-center">
-            {c.status === ClaimStatus.PENDING && (
-              <ActionsMenu
-                onViewDetails={() => handleResolve(c)}
-                viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
-              />
-            )}
+            <ActionsMenu
+              onViewDetails={() => handleViewDetails(c)}
+              viewPermissions={[PERMISSION_ENUM.RETRIEVE]}
+              onEdit={
+                c.status === ClaimStatus.PENDING
+                  ? () => handleResolve(c)
+                  : undefined
+              }
+              editPermissions={[PERMISSION_ENUM.UPDATE]}
+            />
           </div>
         ),
       },
     ],
-    [handleResolve],
+    [handleViewDetails, handleResolve],
   );
 
+  const viewModalState = getModalState("view");
   const resolveModalState = getModalState("resolve");
 
   return (
@@ -128,6 +142,12 @@ export default function ClaimsAdminContainer({ claimsPromise, query }: Props) {
           emptyText="No se encontraron reclamaciones"
         />
       </div>
+
+      <ViewClaimModal
+        open={viewModalState.open}
+        onClose={() => closeModal("view")}
+        claim={selectedClaim}
+      />
 
       <ResolveClaimModal
         open={resolveModalState.open}
