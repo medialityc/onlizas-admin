@@ -99,6 +99,27 @@ export const sidebarSections: SidebarSection[] = [
     ],
     items: [
       {
+        id: "inventory",
+        label: "Inventario",
+        path: paths.dashboard.inventory.all,
+        icon: <ClipboardDocumentIcon className="h-4 w-4" />,
+        permissions: PERMISSION_INVENTORY,
+      },
+      {
+        id: "products",
+        label: "Productos",
+        path: paths.dashboard.products.list,
+        icon: <ShoppingBagIcon className="h-4 w-4" />,
+        permissions: PERMISSION_PRODUCT,
+      },
+      {
+        id: "warehouses",
+        label: "Almacenes",
+        path: paths.dashboard.warehouses.list,
+        icon: <WarehouseIcon className="h-4 w-4" />,
+        permissions: PERMISSION_WAREHOUSE,
+      },
+      {
         id: "departments",
         label: "Departamentos",
         path: paths.dashboard.departments.list,
@@ -132,13 +153,7 @@ export const sidebarSections: SidebarSection[] = [
           PERMISSION_ENUM.SUPPLIER_DELETE,
         ],
       },
-      {
-        id: "products",
-        label: "Productos",
-        path: paths.dashboard.products.list,
-        icon: <ShoppingBagIcon className="h-4 w-4" />,
-        permissions: PERMISSION_PRODUCT,
-      },
+
       {
         id: "content-sections",
         label: "Secciones",
@@ -172,20 +187,6 @@ export const sidebarSections: SidebarSection[] = [
       PERMISSION_ENUM.SUPPLIER_RETRIEVE,
     ],
     items: [
-      {
-        id: "inventory",
-        label: "Inventario",
-        path: paths.dashboard.inventory.all,
-        icon: <ClipboardDocumentIcon className="h-4 w-4" />,
-        permissions: PERMISSION_INVENTORY,
-      },
-      {
-        id: "warehouses",
-        label: "Almacenes",
-        path: paths.dashboard.warehouses.list,
-        icon: <WarehouseIcon className="h-4 w-4" />,
-        permissions: PERMISSION_WAREHOUSE,
-      },
       {
         id: "importers",
         label: "Importadoras",

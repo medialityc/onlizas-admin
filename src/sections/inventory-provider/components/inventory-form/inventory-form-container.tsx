@@ -35,7 +35,7 @@ const InventoryProviderForm = ({
       <FormProvider methods={form} onSubmit={onSubmit}>
         <InventoryForm provider={provider} forProvider={forProvider} />
         {/* Botones de acción */}
-        <div className="flex gap-4 pt-6 mt-6 border-t justify-end">
+        <div className="flex gap-4 pt-6 mt-6  justify-end">
           <Button type="button" variant="outline" onClick={onClose}>
             Cancelar
           </Button>

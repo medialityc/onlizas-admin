@@ -82,58 +82,64 @@ function InventoryForm({ provider, forProvider }: Props) {
         />
       )}
 
-      {supplierId && (
-        <>
-          <RHFAutocompleteFetcherInfinity
-            name="productId"
-            label="Seleccionar un producto"
-            onFetch={(params) => getAllProductsBySupplier(supplierId, params)}
-            disabled={!supplierId}
-            extraFilters={{ supplierId }}
-            required
-            queryKey={"products"}
-          />
-          {nacionality !== "Nacional" && (
-            <RHFCheckbox name="isPaqueteria" label="¿Es paquetería?" />
-          )}
+      <RHFAutocompleteFetcherInfinity
+        name="productId"
+        label="Seleccionar un producto"
+        onFetch={(params) => getAllProductsBySupplier(supplierId, params)}
+        disabled={!supplierId}
+        extraFilters={{ supplierId }}
+        required
+        queryKey={"products"}
+      />
 
-          {sellerTypeLoading && (
-            <div className="text-xs text-muted-foreground">
-              Cargando información del proveedor...
-            </div>
-          )}
-          {!sellerTypeLoading && canMarkMayorista && (
-            <RHFCheckbox name="isMayorista" label="¿Inventario mayorista?" />
-          )}
-          {!sellerTypeLoading && !canMarkMayorista && sellerTypeError && (
-            <div className="text-xs text-red-600">{sellerTypeError}</div>
-          )}
-
-          <RHFAutocompleteFetcherInfinity
-            name="storeId"
-            label="Tienda"
-            disabled={!supplierId}
-            required
-            onFetch={(params) => getAllProviderStores(supplierId, params)}
-            extraFilters={{ supplierId }}
-            queryKey={"stores"}
-          />
-
-          {!isPaqueteria && (
-            <RHFCheckbox
-              name="meWarehouse"
-              label="¿Guardar en almacén del proveedor?"
-            />
-          )}
-
-          <RenderWarehouseField
-            isPaqueteria={isPaqueteria}
-            meWarehouse={meWarehouse}
-            supplierId={supplierId}
-            forProvider={forProvider}
-          />
-        </>
+      {(!supplierId || nacionality !== "Nacional") && (
+        <RHFCheckbox
+          name="isPaqueteria"
+          label="¿Es paquetería?"
+          disabled={!supplierId}
+        />
       )}
+
+      {sellerTypeLoading && (
+        <div className="text-xs text-muted-foreground">
+          Cargando información del proveedor...
+        </div>
+      )}
+      {!sellerTypeLoading && (canMarkMayorista || !supplierId) && (
+        <RHFCheckbox
+          name="isMayorista"
+          label="¿Inventario mayorista?"
+          disabled={!supplierId}
+        />
+      )}
+      {!sellerTypeLoading && !canMarkMayorista && sellerTypeError && (
+        <div className="text-xs text-red-600">{sellerTypeError}</div>
+      )}
+
+      <RHFAutocompleteFetcherInfinity
+        name="storeId"
+        label="Tienda"
+        disabled={!supplierId}
+        required
+        onFetch={(params) => getAllProviderStores(supplierId, params)}
+        extraFilters={{ supplierId }}
+        queryKey={"stores"}
+      />
+
+      {!isPaqueteria && (
+        <RHFCheckbox
+          name="meWarehouse"
+          label="¿Guardar en almacén del proveedor?"
+          disabled={!supplierId}
+        />
+      )}
+
+      <RenderWarehouseField
+        isPaqueteria={isPaqueteria}
+        meWarehouse={meWarehouse}
+        supplierId={supplierId}
+        forProvider={forProvider}
+      />
     </div>
   );
 }
