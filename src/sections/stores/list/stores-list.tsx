@@ -228,7 +228,7 @@ export function StoresList({
         searchPlaceholder="Buscar tienda..."
         onCreate={handleCreateStore}
         createText="Nueva Tienda"
-        createPermissions={[PERMISSION_ENUM.CREATE]}
+        createPermissions={[PERMISSION_ENUM.CREATE, PERMISSION_ENUM.SUPPLIER_CREATE]}
         emptyText="No hay tiendas para mostrar"
       />
 
