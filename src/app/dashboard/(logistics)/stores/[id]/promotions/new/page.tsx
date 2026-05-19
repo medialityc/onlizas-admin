@@ -12,22 +12,26 @@ interface CreatePromotionPageProps {
  * Página para crear promociones
  * Recibe el tipo como query param y renderiza el formulario correspondiente
  */
-export default async function CreatePromotionPage({ params, searchParams }: CreatePromotionPageProps) {
+export default async function CreatePromotionPage({
+  params,
+  searchParams,
+}: CreatePromotionPageProps) {
   const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
-  
+
   const storeId = resolvedParams.id; // Mantener como string para GUIDs
   const promotionType = resolvedSearchParams.type;
 
   // Validar que el tipo existe
-  if (!promotionType || !PROMOTION_TYPES.find(t => t.value === promotionType)) {
+  if (
+    !promotionType ||
+    !PROMOTION_TYPES.find((t) => t.value === promotionType)
+  ) {
     notFound();
   }
 
-
-
   return (
-    <PromotionFormContainer 
+    <PromotionFormContainer
       storeId={storeId}
       mode="create"
       promotionType={promotionType}

@@ -93,27 +93,18 @@ function InventoryForm({ provider, forProvider }: Props) {
         queryKey={"products"}
       />
 
-      {(!supplierId || nacionality !== "Nacional") && (
-        <RHFCheckbox
-          name="isPaqueteria"
-          label="¿Es paquetería?"
-          disabled={!supplierId}
-        />
-      )}
-
-      {sellerTypeLoading && (
+      {supplierId && sellerTypeLoading && (
         <div className="text-xs text-muted-foreground">
           Cargando información del proveedor...
         </div>
       )}
-      {!sellerTypeLoading && (canMarkMayorista || !supplierId) && (
-        <RHFCheckbox
-          name="isMayorista"
-          label="¿Inventario mayorista?"
-          disabled={!supplierId}
-        />
+      {supplierId && !sellerTypeLoading && nacionality !== "Nacional" && (
+        <RHFCheckbox name="isPaqueteria" label="¿Es paquetería?" />
       )}
-      {!sellerTypeLoading && !canMarkMayorista && sellerTypeError && (
+      {supplierId && !sellerTypeLoading && canMarkMayorista && (
+        <RHFCheckbox name="isMayorista" label="¿Inventario mayorista?" />
+      )}
+      {supplierId && !sellerTypeLoading && sellerTypeError && (
         <div className="text-xs text-red-600">{sellerTypeError}</div>
       )}
 

@@ -17,6 +17,7 @@ import {
   TruckIcon,
   StarIcon,
   ShieldExclamationIcon,
+  UserGroupIcon,
 } from "@heroicons/react/24/solid";
 import { SidebarSection } from "./types";
 
@@ -54,6 +55,7 @@ export const sidebarSections: SidebarSection[] = [
       ...PERMISSION_ORDERS,
       ...PERMISSION_ADMIN,
       PERMISSION_ENUM.RETRIEVE,
+      PERMISSION_ENUM.MANAGE_WHOLESALE_BUYERS,
     ],
     items: [
       {
@@ -69,6 +71,13 @@ export const sidebarSections: SidebarSection[] = [
         path: paths.dashboard.suppliers.list,
         icon: <BriefcaseIcon className="h-4 w-4" />,
         permissions: PERMISSION_ADMIN,
+      },
+      {
+        id: "wholesale-buyers",
+        label: "Compradores Mayoristas",
+        path: paths.dashboard.wholesaleBuyers.list,
+        icon: <UserGroupIcon className="h-4 w-4" />,
+        permissions: [PERMISSION_ENUM.RETRIEVE],
       },
       {
         id: "orders",

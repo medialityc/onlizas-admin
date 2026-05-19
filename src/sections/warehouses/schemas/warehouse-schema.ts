@@ -13,10 +13,17 @@ export const warehouseSchema = z
       number: z.string().optional(),
       otherStreets: z.string().optional(),
       city: z.string().optional(),
-      zipcode: z.union([
-        z.literal(""),
-        z.string().regex(/^\d{5}$/, "El código postal debe tener exactamente 5 dígitos"),
-      ]).optional(),
+      zipcode: z
+        .union([
+          z.literal(""),
+          z
+            .string()
+            .regex(
+              /^\d{5}$/,
+              "El código postal debe tener exactamente 5 dígitos",
+            ),
+        ])
+        .optional(),
       annotations: z.string().optional(),
       districtId: z.string().optional(),
       stateId: z.string().optional(),
@@ -40,7 +47,7 @@ export const warehouseSchema = z
     },
     {
       message:
-        "Capacidad y unidad de capacidad son requeridos para almacenes físicos",
+        "Capacidad y unidad de capacidad son requeridos para almacenes Onlizas",
       path: ["capacity"],
     },
   )
@@ -53,7 +60,7 @@ export const warehouseSchema = z
     },
     {
       message:
-        "Capacidad y unidad de capacidad son requeridos para almacenes físicos",
+        "Capacidad y unidad de capacidad son requeridos para almacenes Onlizas",
       path: ["capacityUnit"],
     },
   )

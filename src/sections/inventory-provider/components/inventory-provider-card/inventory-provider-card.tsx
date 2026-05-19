@@ -46,7 +46,7 @@ const InventoryProviderCard = ({ item, reviewSummary }: Props) => {
             />
             {item.products[0]?.isPrime && (
               <Badge variant="warning" className="absolute bottom-1 right-1">
-                Prime
+                Express
               </Badge>
             )}
           </div>

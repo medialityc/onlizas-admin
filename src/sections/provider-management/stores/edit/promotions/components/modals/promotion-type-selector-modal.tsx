@@ -2,7 +2,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import SimpleModal from "@/components/modal/modal";
-import { PROMOTION_TYPES, PromotionTypeConfig } from "../../types/promotion-types";
+import {
+  PROMOTION_TYPES,
+  PromotionTypeConfig,
+} from "../../types/promotion-types";
 import PromotionTypeCard from "./promotion-type-card";
 
 interface PromotionTypeSelectorModalProps {
@@ -15,7 +18,7 @@ interface PromotionTypeSelectorModalProps {
  */
 export default function PromotionTypeSelectorModal({
   open,
-  onClose
+  onClose,
 }: PromotionTypeSelectorModalProps) {
   const router = useRouter();
   const params = useParams();
@@ -25,16 +28,21 @@ export default function PromotionTypeSelectorModal({
   const handleSelectType = (config: PromotionTypeConfig) => {
     // Mostrar loading en la tarjeta seleccionada
     setNavigatingTo(config.value);
-    
+
     // Pequeño delay para feedback visual
-      setTimeout(() => {
-        // Guardar path actual antes de navegar
-        if (typeof window !== "undefined") {
-          localStorage.setItem('promotionFormBackPath', window.location.pathname + window.location.search);
-        }
-        onClose();
-        router.push(`/stores/${storeId}/promotions/new?type=${config.value}`);
-      }, 150);
+    setTimeout(() => {
+      // Guardar path actual antes de navegar
+      if (typeof window !== "undefined") {
+        localStorage.setItem(
+          "promotionFormBackPath",
+          window.location.pathname + window.location.search,
+        );
+      }
+      onClose();
+      router.push(
+        `/dashboard/stores/${storeId}/promotions/new?type=${config.value}`,
+      );
+    }, 150);
   };
 
   return (
@@ -49,12 +57,12 @@ export default function PromotionTypeSelectorModal({
         <p className="text-sm text-gray-600 dark:text-gray-300">
           Selecciona el tipo de descuento que deseas crear para tu tienda.
         </p>
-        
+
         {/* Grid de tipos de promoción */}
         <div className="space-y-3 max-h-96 overflow-y-auto">
-          {PROMOTION_TYPES
-            .filter((config) => ['inventory', 'package'].includes(config.value))
-            .map((config) => (
+          {PROMOTION_TYPES.filter((config) =>
+            ["inventory", "package"].includes(config.value),
+          ).map((config) => (
             <PromotionTypeCard
               key={config.id}
               config={config}

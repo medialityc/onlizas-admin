@@ -194,10 +194,7 @@ export default function InventoryDetailView({
                   <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
                     Calidad del producto
                   </p>
-                  <RatingStars
-                    value={reviewSummary.productQuality}
-                    size="sm"
-                  />
+                  <RatingStars value={reviewSummary.productQuality} size="sm" />
                 </div>
                 <div className="rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3">
                   <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
@@ -302,12 +299,13 @@ export default function InventoryDetailView({
 
                       {p.warranty && p.warranty.isWarranty && (
                         <div className="mt-2 text-sm text-green-600 dark:text-green-400 text-center sm:text-left">
-                          Garantía: {p.warranty.warrantyTime} {getWarrantyUnitLabel((p.warranty as any).timeUnit)}
+                          Garantía: {p.warranty.warrantyTime}{" "}
+                          {getWarrantyUnitLabel((p.warranty as any).timeUnit)}
                         </div>
                       )}
                       {p.isPrime && (
                         <div className="mt-1 text-xs text-purple-600 dark:text-purple-400 text-center sm:text-left">
-                          Prime
+                          Express
                         </div>
                       )}
                       {p.isActive !== undefined && (
@@ -348,7 +346,11 @@ export default function InventoryDetailView({
                             {review.userName}
                           </p>
                         </div>
-                        <RatingStars value={review.averageScore} showValue size="sm" />
+                        <RatingStars
+                          value={review.averageScore}
+                          showValue
+                          size="sm"
+                        />
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
@@ -356,19 +358,28 @@ export default function InventoryDetailView({
                           <p className="text-[11px] text-gray-500 dark:text-gray-400">
                             Producto
                           </p>
-                          <RatingStars value={review.productQuality} size="sm" />
+                          <RatingStars
+                            value={review.productQuality}
+                            size="sm"
+                          />
                         </div>
                         <div className="rounded-md border border-gray-200 dark:border-gray-700 p-2">
                           <p className="text-[11px] text-gray-500 dark:text-gray-400">
                             Proveedor
                           </p>
-                          <RatingStars value={review.supplierQuality} size="sm" />
+                          <RatingStars
+                            value={review.supplierQuality}
+                            size="sm"
+                          />
                         </div>
                         <div className="rounded-md border border-gray-200 dark:border-gray-700 p-2">
                           <p className="text-[11px] text-gray-500 dark:text-gray-400">
                             Entrega
                           </p>
-                          <RatingStars value={review.deliveryQuality} size="sm" />
+                          <RatingStars
+                            value={review.deliveryQuality}
+                            size="sm"
+                          />
                         </div>
                       </div>
 

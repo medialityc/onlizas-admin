@@ -17,7 +17,7 @@ const detailsArraySchema = z
       key: z.string(),
       value: z.string(),
       isRequired: z.boolean().optional(),
-    })
+    }),
   )
   .max(DETAILS_MAX_ITEMS, `Máximo ${DETAILS_MAX_ITEMS} detalles permitidos.`)
   .superRefine((details, ctx) => {
@@ -61,7 +61,7 @@ const detailsRecordSchema = z
         value: z.string(),
         isRequired: z.boolean().optional(),
       }),
-    ])
+    ]),
   )
   .superRefine((details, ctx) => {
     const keys = Object.keys(details);
@@ -88,9 +88,7 @@ const detailsRecordSchema = z
 export const productVariants = z
   .object({
     id: z.string().optional(),
-    limitPurchaseLimit: z
-      .preprocess((v) => toNumber(v), z.number())
-      .optional(),
+    limitPurchaseLimit: z.preprocess((v) => toNumber(v), z.number()).optional(),
     sku: z.string().min(1, "El SKU es requerida"),
     upc: z.string().min(1, "EL UPC es requerida"),
     ean: z.string().min(1, "EL EAN es requerida"),
@@ -101,11 +99,11 @@ export const productVariants = z
       .regex(gtinRegex, "GTIN inválido. Usa 8, 12, 13 o 14 dígitos."),
     condition: z.preprocess(
       (v) => toNumber(v),
-      z.number().min(1, "La condición es requerida")
+      z.number().min(1, "La condición es requerida"),
     ),
     isActive: z.preprocess(
       (v) => (v === null || v === undefined ? true : v),
-      z.boolean().default(true)
+      z.boolean().default(true),
     ),
     details: z
       .union([detailsArraySchema, detailsRecordSchema])
@@ -124,79 +122,76 @@ export const productVariants = z
             key: d.key,
             value: d.value,
             isRequired: d.isRequired,
-          }))
+          })),
         );
       }),
     stock: z.preprocess(
       (v) => toNumber(v, 0),
-      z.number().min(0, "La cantidad no puede ser negativa").default(0)
+      z.number().min(0, "La cantidad no puede ser negativa").default(0),
     ),
     price: z.preprocess(
       (v) => toNumber(v, 0),
-      z.number().min(0, "El precio es requerido").default(0)
+      z.number().min(0, "El precio es requerido").default(0),
     ),
     costPrice: z.preprocess(
       (v) => toNumber(v, 0),
-      z.number().min(0, "El costo es requerido").default(0)
+      z.number().min(0, "El costo es requerido").default(0),
     ),
     deliveryMode: z.enum(["ONLIZAS", "PROVEEDOR"]).default("ONLIZAS"),
     isLimit: z.preprocess(
       (v) => (v === null || v === undefined ? false : v),
-      z.boolean().default(false)
+      z.boolean().default(false),
     ),
-    purchaseLimit: z.preprocess(
-      (v) => toNumber(v, 0),
-      z.number().default(0)
-    ),
+    purchaseLimit: z.preprocess((v) => toNumber(v, 0), z.number().default(0)),
     isPrime: z.preprocess(
       (v) => (v === null || v === undefined ? false : v),
-      z.boolean().default(false)
+      z.boolean().default(false),
     ),
     warranty: z.object({
       isWarranty: z.preprocess(
         (val) => (val === null ? false : val),
-        z.boolean().default(false)
+        z.boolean().default(false),
       ),
       warrantyType: z.enum(["GRATIS", "PAGO"]).default("GRATIS"),
       warrantyPrice: z.preprocess(
         (val) => (val == null || val === "" ? 0 : Number(val)),
-        z.number().default(0)
+        z.number().default(0),
       ),
       warrantyTime: z.preprocess(
         (val) => (val == null || val === "" ? 0 : Number(val)),
-        z.number().default(0)
+        z.number().default(0),
       ),
       timeUnit: z.preprocess(
         (val) => (val == null || val === "" ? 1 : Number(val)),
-        z.number().int().min(0).max(2).default(1)
+        z.number().int().min(0).max(2).default(1),
       ),
     }),
     packageDelivery: z.preprocess(
       (v) => (v === null || v === undefined ? false : v),
-      z.boolean().optional().default(false)
+      z.boolean().optional().default(false),
     ),
-    images: z
-      .preprocess(
-        (v) => (Array.isArray(v) ? v.filter((i: any) => i != null && i !== "") : []),
-        z
-          .array(
-            z.union([
-              z.string().min(1),
-              z.instanceof(File, { message: "Debe ser un archivo válido." }),
-            ])
-          )
-          .max(5, { message: "Máximo 5 imágenes permitidas." })
-          .optional()
-      ),
+    images: z.preprocess(
+      (v) =>
+        Array.isArray(v) ? v.filter((i: any) => i != null && i !== "") : [],
+      z
+        .array(
+          z.union([
+            z.string().min(1),
+            z.instanceof(File, { message: "Debe ser un archivo válido." }),
+          ]),
+        )
+        .max(5, { message: "Máximo 5 imágenes permitidas." })
+        .optional(),
+    ),
 
     // ⚡️ Campos de paquetería
     volume: z.preprocess(
       (v) => (v == null || v === "" ? undefined : Number(v)),
-      z.number().optional()
+      z.number().optional(),
     ),
     weight: z.preprocess(
       (v) => (v == null || v === "" ? undefined : Number(v)),
-      z.number().optional()
+      z.number().optional(),
     ),
 
     // Zonas de entrega - ahora acepta objetos completos
@@ -278,10 +273,10 @@ export const inventoryProviderArraySchema = z
           data.warehouseIds.length + data.warehousePhysicalIds.length > 0,
         {
           message:
-            "Debe existir al menos un almacén entre almacenes del proveedor y almacenes físicos",
+            "Debe existir al menos un almacén entre almacenes del proveedor y almacenes Onlizas",
           path: ["warehouseIds"],
-        }
-      )
+        },
+      ),
   )
   .min(1, "Debes seleccionar al menos una tienda")
   .transform((array) =>
@@ -295,7 +290,7 @@ export const inventoryProviderArraySchema = z
         ...item,
         warehouseIds: combinedWarehouseIds,
       };
-    })
+    }),
   );
 
 // ---------- PROVIDER SCHEMA ----------

@@ -61,7 +61,7 @@ export const paths = {
       reception: (
         type: string,
         id: string | number,
-        transferId: string | number
+        transferId: string | number,
       ) => `${DASHBOARD}/warehouses/${type}/${id}/reception/${transferId}`,
 
       view: (type: string, id: string | number) =>
@@ -72,6 +72,9 @@ export const paths = {
     },
     suppliers: {
       list: `${DASHBOARD}/suppliers`,
+    },
+    wholesaleBuyers: {
+      list: `${DASHBOARD}/wholesale-buyers`,
     },
     business: {
       list: `${DASHBOARD}/business`,

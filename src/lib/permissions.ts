@@ -22,6 +22,9 @@ export enum PERMISSION_ENUM {
   RETRIEVE_SUMMARY = "RetrieveSummary",
   // Dashboard
   RETRIEVE_DASHBOARD = "RetrieveDashBoard",
+
+  // Wholesale buyers
+  MANAGE_WHOLESALE_BUYERS = "OnliZasManageWholesaleBuyers",
 }
 export const PERMISSION_ADMIN = [
   PERMISSION_ENUM.CREATE,

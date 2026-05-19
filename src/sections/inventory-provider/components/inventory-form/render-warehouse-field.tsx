@@ -61,8 +61,8 @@ export const RenderWarehouseField = ({
 
     default: {
       name: "physicalWarehouseId",
-      label: "Almacenes físicos",
-      placeholder: "Seleccionar almacenes físicos",
+      label: "Almacenes Onlizas",
+      placeholder: "Seleccionar almacenes Onlizas",
       onFetch: (params) =>
         getAllWarehousesByType(params, WAREHOUSE_TYPE_ENUM.warehouse),
       queryKey: `warehouses-physical-${supplierId}`,

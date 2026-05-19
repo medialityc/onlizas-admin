@@ -1,4 +1,13 @@
 export const backendRoutes = {
+  wholesaleBuyers: {
+    list: `${process.env.NEXT_PUBLIC_API_URL}wholesale-buyers`,
+    approve: (id: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}wholesale-buyers/${id}/approve`,
+    reject: (id: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}wholesale-buyers/${id}/reject`,
+    revoke: (id: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}wholesale-buyers/${id}/revoke`,
+  },
   brands: {
     getAll: `${process.env.NEXT_PUBLIC_API_URL}brands`,
     create: `${process.env.NEXT_PUBLIC_API_URL}brands`,

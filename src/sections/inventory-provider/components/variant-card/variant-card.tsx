@@ -54,7 +54,7 @@ function VariantCard({
   const hiddenCount = details.length - visibleDetails.length;
   // Build a stable set of flags with consistent display: condition + 1 extra
   const extraFlags: string[] = [];
-  if (variant.isPrime) extraFlags.push("Prime");
+  if (variant.isPrime) extraFlags.push("Express");
   if (variant.isLimit) extraFlags.push(`Limite ${variant.purchaseLimit}`);
   if (variant.packageDelivery) extraFlags.push("Paquetería");
   if (variant?.warranty?.isWarranty) {

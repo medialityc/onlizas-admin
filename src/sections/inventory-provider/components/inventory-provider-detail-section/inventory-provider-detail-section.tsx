@@ -134,7 +134,7 @@ const InventoryProviderDetailSection = () => {
           </div>
           <div className="flex flex-col">
             <span className="text-xs text-gray-500 dark:text-black-light">
-              Prime
+              Express
             </span>
             <span className="text-sm font-medium dark:text-black-light">
               {isPrime ? "Sí" : "No"}
